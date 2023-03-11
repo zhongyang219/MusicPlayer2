@@ -180,17 +180,6 @@ public:
         RCM_LIGHT
     };
 
-    struct UiPlaylistInfo
-    {
-        int playlist_offset{};          //当前播放列表滚动的位移
-        int item_selected{ -1 };        //选中项的序号
-        CDrawCommon::ScrollInfo selected_item_scroll_info;  //绘制选中项滚动文本的结构体
-        std::vector<CRect> item_rects;  //播放列表中每个项目的矩形区域
-        CRect scrollbar_handle_rect;    //滚动条把手的位置
-        bool scrollbar_bover{};         //鼠标指向滚动条
-        bool scrollbar_handle_pressed{};    //滚动条把手被按下
-    };
-
     //根据按钮的类型获取对应的图标
     //big_icon: 某些按钮提供了不同的尺寸，如果为false，则图标大小为16x16，否则为20x20
     IconRes GetBtnIcon(BtnKey key, bool big_icon = false);
@@ -225,7 +214,7 @@ protected:
     void DrawVolumeButton(CRect rect, bool adj_btn_top = false, bool show_text = true);     //adj_btn_top：点击后弹出的音量调整按钮是否在上方；show_text：是否显示文本
     void DrawABRepeatButton(CRect rect);
     void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
-    void DrawPlaylist(CRect rect, UiPlaylistInfo& playlist_info, int item_height);                  //绘制播放列表
+    void DrawPlaylist(CRect rect, UiElement::Playlist* playlist_element, int item_height);                  //绘制播放列表
     void DrawCurrentPlaylistIndicator(CRect rect);      //绘制当前播放列表指示
     /**
      * @brief   绘制stackElement的指示器

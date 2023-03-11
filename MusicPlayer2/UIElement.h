@@ -232,6 +232,8 @@ namespace UiElement
     class Playlist : public Element
     {
     public:
+        friend class CPlayerUIBase;
+
         virtual void Draw() override;
         void LButtonUp(CPoint point);
         void LButtonDown(CPoint point);
@@ -252,10 +254,18 @@ namespace UiElement
         void Clicked(CPoint point);     //当播放列表被点击时调用此函数
 
     private:
-        CPlayerUIBase::UiPlaylistInfo playlist_info;
-        bool mouse_pressed{ false };        //鼠标左键是否按下
-        CPoint mouse_pressed_pos;           //鼠标按下时的位置
-        int mouse_pressed_offset{};         //鼠标按下时播放列表的位移
+        bool mouse_pressed{ };          //鼠标左键是否按下
+        bool hover{};                   //指标指向播放列表区域
+        CPoint mouse_pressed_pos;       //鼠标按下时的位置
+        int mouse_pressed_offset{};     //鼠标按下时播放列表的位移
+        int playlist_offset{};          //当前播放列表滚动的位移
+        int item_selected{ -1 };        //选中项的序号
+        CDrawCommon::ScrollInfo selected_item_scroll_info;  //绘制选中项滚动文本的结构体
+        std::vector<CRect> item_rects;  //播放列表中每个项目的矩形区域
+        CRect scrollbar_rect{};         //滚动条的位置
+        CRect scrollbar_handle_rect;    //滚动条把手的位置
+        bool scrollbar_hover{};         //鼠标指向滚动条
+        bool scrollbar_handle_pressed{};    //滚动条把手被按下
     };
 
     //当前播放列表指示

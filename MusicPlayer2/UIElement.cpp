@@ -925,7 +925,7 @@ void UiElement::Playlist::Draw()
     CalculateRect();
     RestrictOffset();
     CalculateItemRects();
-    ui->DrawPlaylist(rect, playlist_info, ui->DPI(item_height));
+    ui->DrawPlaylist(rect, this, ui->DPI(item_height));
     ui->ResetDrawArea();
     Element::Draw();
 }
@@ -933,32 +933,50 @@ void UiElement::Playlist::Draw()
 void UiElement::Playlist::LButtonUp(CPoint point)
 {
     mouse_pressed = false;
+    scrollbar_handle_pressed = false;
 }
 
 void UiElement::Playlist::LButtonDown(CPoint point)
 {
     if (rect.PtInRect(point))
     {
-        Clicked(point);
+        if (scrollbar_rect.PtInRect(point))
+        {
+            if (scrollbar_handle_rect.PtInRect(point))
+            {
+                scrollbar_handle_pressed = true;
+            }
+        }
+        else
+        {
+            Clicked(point);
+        }
+        mouse_pressed_offset = playlist_offset;
         mouse_pressed = true;
         mouse_pressed_pos = point;
-        mouse_pressed_offset = playlist_info.playlist_offset;
     }
     else
     {
         mouse_pressed = false;
-        playlist_info.item_selected = -1;
+        item_selected = -1;
     }
 }
 
 void UiElement::Playlist::MouseMove(CPoint point)
 {
-    if (rect.PtInRect(point))
+    hover = rect.PtInRect(point);
+    scrollbar_hover = scrollbar_rect.PtInRect(point);
+    if (scrollbar_handle_pressed)
     {
-        if (mouse_pressed)
-        {
-            playlist_info.playlist_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
-        }
+        int delta_scrollbar_offset = mouse_pressed_pos.y - point.y;  //滚动条移动的距离
+        //将滚动条移动的距离转换成播放列表的位移
+        int delta_playlist_offset = -delta_scrollbar_offset * (item_height * CPlayer::GetInstance().GetSongNum()) / rect.Height();
+
+        playlist_offset = mouse_pressed_offset + delta_playlist_offset;
+    }
+    else if (mouse_pressed)
+    {
+        playlist_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
     }
 }
 
@@ -986,7 +1004,7 @@ void UiElement::Playlist::RButtonDown(CPoint point)
     }
     else
     {
-        playlist_info.item_selected = -1;
+        item_selected = -1;
     }
 }
 
@@ -1006,7 +1024,7 @@ bool UiElement::Playlist::MouseWheel(int delta, CPoint point)
         if (lines < 1)
             lines = 1;
         step *= lines;
-        playlist_info.playlist_offset = (playlist_info.playlist_offset / ui->DPI(item_height) + step) * ui->DPI(item_height);
+        playlist_offset = (playlist_offset / ui->DPI(item_height) + step) * ui->DPI(item_height);
         return true;
     }
     return false;
@@ -1014,7 +1032,7 @@ bool UiElement::Playlist::MouseWheel(int delta, CPoint point)
 
 bool UiElement::Playlist::DoubleClick(CPoint point)
 {
-    if (rect.PtInRect(point) && playlist_info.item_selected >= 0)
+    if (rect.PtInRect(point) && item_selected >= 0)
     {
         ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_ITEM, 0);
     }
@@ -1025,17 +1043,17 @@ void UiElement::Playlist::EnsureItemVisible(int index)
 {
     if (index <= 0)
     {
-        playlist_info.playlist_offset = 0;
+        playlist_offset = 0;
         return;
     }
 
     CalculateRect();
     CalculateItemRects();
 
-    if (index >= static_cast<int>(playlist_info.item_rects.size()))
+    if (index >= static_cast<int>(item_rects.size()))
         return;
 
-    CRect item_rect{ playlist_info.item_rects[index] };
+    CRect item_rect{ item_rects[index] };
     //确定当前项目是否处于可见状态
     if (item_rect.top > rect.top && item_rect.bottom < rect.bottom)
         return;
@@ -1048,12 +1066,12 @@ void UiElement::Playlist::EnsureItemVisible(int index)
     //指定项目在播放列表下方
     else if (item_rect.bottom > rect.bottom)
         delta_offset = rect.bottom - item_rect.bottom;
-    playlist_info.playlist_offset -= delta_offset;
+    playlist_offset -= delta_offset;
 }
 
 void UiElement::Playlist::RestrictOffset()
 {
-    int& offset{ playlist_info.playlist_offset };
+    int& offset{ playlist_offset };
     if (offset < 0)
         offset = 0;
     int offset_max{ ui->DPI(item_height) * CPlayer::GetInstance().GetSongNum() - rect.Height() };
@@ -1065,25 +1083,25 @@ void UiElement::Playlist::RestrictOffset()
 
 void UiElement::Playlist::CalculateItemRects()
 {
-    playlist_info.item_rects.resize(CPlayer::GetInstance().GetSongNum());
+    item_rects.resize(CPlayer::GetInstance().GetSongNum());
     for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
     {
         //计算每一行的矩形区域
-        int start_y = -playlist_info.playlist_offset + rect.top + i * ui->DPI(item_height);
+        int start_y = -playlist_offset + rect.top + i * ui->DPI(item_height);
         CRect rect_item{ rect };
         rect_item.top = start_y;
         rect_item.bottom = rect_item.top + ui->DPI(item_height);
 
         //保存每一行的矩形区域
-        playlist_info.item_rects[i] = rect_item;
+        item_rects[i] = rect_item;
     }
 }
 
 int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)
 {
-    for (size_t i{}; i < playlist_info.item_rects.size(); i++)
+    for (size_t i{}; i < item_rects.size(); i++)
     {
-        if (playlist_info.item_rects[i].PtInRect(point))
+        if (item_rects[i].PtInRect(point))
             return static_cast<int>(i);
     }
     return -1;
@@ -1091,11 +1109,11 @@ int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)
 
 void UiElement::Playlist::Clicked(CPoint point)
 {
-    playlist_info.item_selected = GetPlaylistIndexByPoint(point);
+    item_selected = GetPlaylistIndexByPoint(point);
     CMusicPlayerDlg* pMainWnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     if (pMainWnd != nullptr)
-        pMainWnd->SetPlaylistSelected(playlist_info.item_selected);
-    playlist_info.selected_item_scroll_info.Reset();
+        pMainWnd->SetPlaylistSelected(item_selected);
+    selected_item_scroll_info.Reset();
 }
 
 void UiElement::PlaylistIndicator::Draw()
