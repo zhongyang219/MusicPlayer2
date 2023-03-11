@@ -925,7 +925,7 @@ void UiElement::Playlist::Draw()
     CalculateRect();
     RestrictOffset();
     CalculateItemRects();
-    ui->DrawPlaylist(rect, this, ui->DPI(item_height));
+    ui->DrawPlaylist(rect, this, ItemHeight());
     ui->ResetDrawArea();
     Element::Draw();
 }
@@ -970,9 +970,8 @@ void UiElement::Playlist::MouseMove(CPoint point)
     {
         int delta_scrollbar_offset = mouse_pressed_pos.y - point.y;  //滚动条移动的距离
         //将滚动条移动的距离转换成播放列表的位移
-        int delta_playlist_offset = -delta_scrollbar_offset * (item_height * CPlayer::GetInstance().GetSongNum()) / rect.Height();
-
-        playlist_offset = mouse_pressed_offset + delta_playlist_offset;
+        int delta_playlist_offset = delta_scrollbar_offset * (ItemHeight() * CPlayer::GetInstance().GetSongNum()) / (rect.Height());
+        playlist_offset = mouse_pressed_offset - delta_playlist_offset;
     }
     else if (mouse_pressed)
     {
@@ -1018,13 +1017,13 @@ bool UiElement::Playlist::MouseWheel(int delta, CPoint point)
         if (delta < 0)
             step = 1;
         //一次滚动的行数
-        int lines = rect.Height() / ui->DPI(item_height) / 2;
+        int lines = rect.Height() / ItemHeight() / 2;
         if (lines > 3)
             lines = 3;
         if (lines < 1)
             lines = 1;
         step *= lines;
-        playlist_offset = (playlist_offset / ui->DPI(item_height) + step) * ui->DPI(item_height);
+        playlist_offset = (playlist_offset / ItemHeight() + step) * ItemHeight();
         return true;
     }
     return false;
@@ -1074,7 +1073,7 @@ void UiElement::Playlist::RestrictOffset()
     int& offset{ playlist_offset };
     if (offset < 0)
         offset = 0;
-    int offset_max{ ui->DPI(item_height) * CPlayer::GetInstance().GetSongNum() - rect.Height() };
+    int offset_max{ ItemHeight() * CPlayer::GetInstance().GetSongNum() - rect.Height() };
     if (offset_max <= 0)
         offset = 0;
     else if (offset > offset_max)
@@ -1084,17 +1083,22 @@ void UiElement::Playlist::RestrictOffset()
 void UiElement::Playlist::CalculateItemRects()
 {
     item_rects.resize(CPlayer::GetInstance().GetSongNum());
-    for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
+    for (size_t i{}; i < item_rects.size(); i++)
     {
         //计算每一行的矩形区域
-        int start_y = -playlist_offset + rect.top + i * ui->DPI(item_height);
+        int start_y = -playlist_offset + rect.top + i * ItemHeight();
         CRect rect_item{ rect };
         rect_item.top = start_y;
-        rect_item.bottom = rect_item.top + ui->DPI(item_height);
+        rect_item.bottom = rect_item.top + ItemHeight();
 
         //保存每一行的矩形区域
         item_rects[i] = rect_item;
     }
+}
+
+int UiElement::Playlist::ItemHeight() const
+{
+    return ui->DPI(item_height);
 }
 
 int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)

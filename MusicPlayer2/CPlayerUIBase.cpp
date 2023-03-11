@@ -2491,7 +2491,7 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
             int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * CPlayer::GetInstance().GetSongNum()) };
             if (scroll_handle_length < DPI(8))
                 scroll_handle_length = DPI(8);
-            int scroll_pos{ (rect.Height()) * playlist_element->playlist_offset / (item_height * CPlayer::GetInstance().GetSongNum())};
+            int scroll_pos{ rect.Height() * playlist_element->playlist_offset / (item_height * CPlayer::GetInstance().GetSongNum())};
             playlist_element->scrollbar_handle_rect = playlist_element->scrollbar_rect;
             playlist_element->scrollbar_handle_rect.top = playlist_element->scrollbar_rect.top + scroll_pos;
             playlist_element->scrollbar_handle_rect.bottom = playlist_element->scrollbar_handle_rect.top + scroll_handle_length;
