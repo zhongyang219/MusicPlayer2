@@ -17,6 +17,7 @@ struct UIColors		//界面颜色
     COLORREF color_button_pressed;		//按钮按下的颜色
     COLORREF color_button_hover;		//按钮指向时的颜色
     COLORREF color_stack_indicator;     //staticElement指示器的颜色
+    COLORREF color_scrollbar_handle;    //滚动条把手的颜色
 };
 
 class CPlayerUIHelper

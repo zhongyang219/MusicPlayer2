@@ -2391,20 +2391,22 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
     }
     else
     {
-        BYTE alpha;
+        const int SCROLLBAR_WIDTH{ DPI(10) };
+        const int SCROLLBAR_WIDTH_NARROW{ DPI(6) };
+        BYTE background_alpha;
         if (!IsDrawBackgroundAlpha())
-            alpha = 255;
+            background_alpha = 255;
         else if (theApp.m_app_setting_data.dark_mode)
-            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
         else
-            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 
         for (int i{}; i < CPlayer::GetInstance().GetSongNum(); i++)
         {
             if (i < 0 || i >= static_cast<int>(playlist_element->item_rects.size()))
                 break;
             CRect rect_item{ playlist_element->item_rects[i] };
-            rect_item.right -= DPI(8);      //留出一定距离用于绘制滚动条
+            rect_item.right -= SCROLLBAR_WIDTH;      //留出一定距离用于绘制滚动条
             //如果绘制的行在播放列表区域之个，则不绘制该行
             if (!(rect_item & rect).IsRectEmpty())
             {
@@ -2424,9 +2426,9 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
                 {
                     m_draw.SetDrawArea(rect);
                     if (theApp.m_app_setting_data.button_round_corners)
-                        m_draw.DrawRoundRect(rect_item, back_color, DPI(4), alpha);
+                        m_draw.DrawRoundRect(rect_item, back_color, DPI(4), background_alpha);
                     else
-                        m_draw.FillAlphaRect(rect_item, back_color, alpha, true);
+                        m_draw.FillAlphaRect(rect_item, back_color, background_alpha, true);
                 }
 
                 //绘制正在播放指示
@@ -2470,26 +2472,28 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
         }
 
         //绘制滚动条
+        playlist_element->scrollbar_rect = rect;
+        playlist_element->scrollbar_rect.left = playlist_element->scrollbar_rect.right - SCROLLBAR_WIDTH;
         if (playlist_element->hover || playlist_element->mouse_pressed || playlist_element->scrollbar_handle_pressed)
         {
-            playlist_element->scrollbar_rect = rect;
-            playlist_element->scrollbar_rect.left = playlist_element->scrollbar_rect.right - DPI(6);
-            COLORREF scrollbar_handle_color{ m_colors.color_spectrum_back };
-            if (playlist_element->scrollbar_hover)
-                scrollbar_handle_color = m_colors.color_button_back;
-            else if (playlist_element->scrollbar_handle_pressed)
-                scrollbar_handle_color = m_colors.color_button_pressed;
-            auto drawRect = [&](CRect _rect, BYTE _alpha) {
+            CRect scrollbar_rect = playlist_element->scrollbar_rect;
+            if (!playlist_element->scrollbar_hover && !playlist_element->scrollbar_handle_pressed)  //如果鼠标没有指向也没有拖动滚动条，滚动条以更小的宽度显示
+            {
+                scrollbar_rect.left = scrollbar_rect.left + (scrollbar_rect.Width() - SCROLLBAR_WIDTH_NARROW) / 2;
+                scrollbar_rect.right = scrollbar_rect.left + SCROLLBAR_WIDTH_NARROW;
+            }
+
+            auto drawRect = [&](CRect _rect, COLORREF color, BYTE _alpha) {
                 if (theApp.m_app_setting_data.button_round_corners)
-                    m_draw.DrawRoundRect(_rect, scrollbar_handle_color, DPI(4), _alpha);
+                    m_draw.DrawRoundRect(_rect, color, DPI(4), _alpha);
                 else
-                    m_draw.FillAlphaRect(_rect, scrollbar_handle_color, _alpha, true);
+                    m_draw.FillAlphaRect(_rect, color, _alpha, true);
 
             };
 
             //填充背景
-            if (playlist_element->scrollbar_hover)
-                drawRect(playlist_element->scrollbar_rect, 40);
+            if (playlist_element->scrollbar_hover || playlist_element->scrollbar_handle_pressed)
+                drawRect(scrollbar_rect, m_colors.color_control_bar_back, background_alpha);
 
             //画滚动条把手
             if (CPlayer::GetInstance().GetSongNum() > 1 && item_height * CPlayer::GetInstance().GetSongNum() > rect.Height())
@@ -2498,10 +2502,18 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
                 if (scroll_handle_length < DPI(8))
                     scroll_handle_length = DPI(8);
                 int scroll_pos{ rect.Height() * playlist_element->playlist_offset / (item_height * CPlayer::GetInstance().GetSongNum())};
-                playlist_element->scrollbar_handle_rect = playlist_element->scrollbar_rect;
-                playlist_element->scrollbar_handle_rect.top = playlist_element->scrollbar_rect.top + scroll_pos;
+                playlist_element->scrollbar_handle_rect = scrollbar_rect;
+                playlist_element->scrollbar_handle_rect.top = scrollbar_rect.top + scroll_pos;
                 playlist_element->scrollbar_handle_rect.bottom = playlist_element->scrollbar_handle_rect.top + scroll_handle_length;
-                drawRect(playlist_element->scrollbar_handle_rect, alpha);
+                COLORREF scrollbar_handle_color{ m_colors.color_scrollbar_handle };
+                if (playlist_element->scrollbar_handle_pressed)
+                    scrollbar_handle_color = m_colors.color_button_pressed;
+                else if (playlist_element->scrollbar_hover)
+                    scrollbar_handle_color = m_colors.color_button_hover;
+                BYTE scrollbar_handle_alpha{ 255 };
+                if (IsDrawBackgroundAlpha())
+                    scrollbar_handle_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+                drawRect(playlist_element->scrollbar_handle_rect, scrollbar_handle_color, scrollbar_handle_alpha);
             }
         }
     }
