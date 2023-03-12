@@ -2492,13 +2492,14 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
 
             };
 
-            //填充滚动条背景
-            if (playlist_element->scrollbar_hover || playlist_element->scrollbar_handle_pressed)
-                drawRect(scrollbar_rect, m_colors.color_control_bar_back, background_alpha);
-
-            //画滚动条把手
+            //开始绘制滚动条
             if (CPlayer::GetInstance().GetSongNum() > 1 && item_height * CPlayer::GetInstance().GetSongNum() > rect.Height())
             {
+                //填充滚动条背景
+                if (playlist_element->scrollbar_hover || playlist_element->scrollbar_handle_pressed)
+                    drawRect(scrollbar_rect, m_colors.color_control_bar_back, background_alpha);
+
+                //画滚动条把手
                 //计算滚动条的长度
                 int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * CPlayer::GetInstance().GetSongNum()) };
                 playlist_element->scroll_handle_length_comp = 0;
