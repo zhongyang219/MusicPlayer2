@@ -970,7 +970,7 @@ void UiElement::Playlist::MouseMove(CPoint point)
     {
         int delta_scrollbar_offset = mouse_pressed_pos.y - point.y;  //滚动条移动的距离
         //将滚动条移动的距离转换成播放列表的位移
-        int delta_playlist_offset = delta_scrollbar_offset * (ItemHeight() * CPlayer::GetInstance().GetSongNum()) / (rect.Height());
+        int delta_playlist_offset = delta_scrollbar_offset * (ItemHeight() * CPlayer::GetInstance().GetSongNum()) / (rect.Height() - scroll_handle_length_comp);
         playlist_offset = mouse_pressed_offset - delta_playlist_offset;
     }
     else if (mouse_pressed)

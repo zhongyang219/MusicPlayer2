@@ -2391,8 +2391,9 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
     }
     else
     {
-        const int SCROLLBAR_WIDTH{ DPI(10) };
-        const int SCROLLBAR_WIDTH_NARROW{ DPI(6) };
+        const int SCROLLBAR_WIDTH{ DPI(10) };           //滚动条的宽度
+        const int SCROLLBAR_WIDTH_NARROW{ DPI(6) };     //鼠标未指向滚动条时的宽度
+        const int MIN_SCROLLBAR_LENGTH{ DPI(16) };      //滚动条的最小长度
         BYTE background_alpha;
         if (!IsDrawBackgroundAlpha())
             background_alpha = 255;
@@ -2491,28 +2492,37 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
 
             };
 
-            //填充背景
+            //填充滚动条背景
             if (playlist_element->scrollbar_hover || playlist_element->scrollbar_handle_pressed)
                 drawRect(scrollbar_rect, m_colors.color_control_bar_back, background_alpha);
 
             //画滚动条把手
             if (CPlayer::GetInstance().GetSongNum() > 1 && item_height * CPlayer::GetInstance().GetSongNum() > rect.Height())
             {
+                //计算滚动条的长度
                 int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * CPlayer::GetInstance().GetSongNum()) };
-                if (scroll_handle_length < DPI(8))
-                    scroll_handle_length = DPI(8);
-                int scroll_pos{ rect.Height() * playlist_element->playlist_offset / (item_height * CPlayer::GetInstance().GetSongNum())};
+                playlist_element->scroll_handle_length_comp = 0;
+                if (scroll_handle_length < MIN_SCROLLBAR_LENGTH)
+                {
+                    playlist_element->scroll_handle_length_comp = MIN_SCROLLBAR_LENGTH - scroll_handle_length;
+                    scroll_handle_length = MIN_SCROLLBAR_LENGTH;
+                }
+                //根据播放列表偏移量计算滚动条的位置
+                int scroll_pos{ (rect.Height() - playlist_element->scroll_handle_length_comp) * playlist_element->playlist_offset / (item_height * CPlayer::GetInstance().GetSongNum())};
                 playlist_element->scrollbar_handle_rect = scrollbar_rect;
                 playlist_element->scrollbar_handle_rect.top = scrollbar_rect.top + scroll_pos;
                 playlist_element->scrollbar_handle_rect.bottom = playlist_element->scrollbar_handle_rect.top + scroll_handle_length;
+                //滚动条把手的颜色
                 COLORREF scrollbar_handle_color{ m_colors.color_scrollbar_handle };
                 if (playlist_element->scrollbar_handle_pressed)
                     scrollbar_handle_color = m_colors.color_button_pressed;
                 else if (playlist_element->scrollbar_hover)
                     scrollbar_handle_color = m_colors.color_button_hover;
+                //滚动条把手的不透明度
                 BYTE scrollbar_handle_alpha{ 255 };
                 if (IsDrawBackgroundAlpha())
                     scrollbar_handle_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+                //绘制滚动条把手
                 drawRect(playlist_element->scrollbar_handle_rect, scrollbar_handle_color, scrollbar_handle_alpha);
             }
         }
