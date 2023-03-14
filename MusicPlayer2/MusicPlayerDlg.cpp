@@ -1670,6 +1670,28 @@ void CMusicPlayerDlg::SetPlaylistSelected(int index)
     m_item_selected = index;
     m_items_selected.clear();
     m_items_selected.push_back(index);
+    m_playlist_list.SetCurSel(index);
+    if (m_pFloatPlaylistDlg->GetSafeHwnd() != NULL)
+        m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(index);
+
+}
+
+void CMusicPlayerDlg::SetUiPlaylistSelected(int index)
+{
+    CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
+    if (user_ui != nullptr)
+    {
+        user_ui->IterateAllElementsInAllUi([index](UiElement::Element* ele) ->bool
+            {
+                UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(ele) };
+                if (playlist_element != nullptr)
+                {
+                    playlist_element->SetItemSelected(index);
+                }
+                return false;
+            });
+        m_ui_thread_para.ui_force_refresh = true;
+    }
 }
 
 void CMusicPlayerDlg::ShowFloatPlaylist()
@@ -3068,7 +3090,7 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: 在此添加控件通知处理程序代码
+    SetUiPlaylistSelected(pNMItemActivate->iItem);
     if (!m_searched)    //如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
     {
         if (pNMItemActivate->iItem < 0)
@@ -3120,7 +3142,7 @@ void CMusicPlayerDlg::OnReloadPlaylist()
 void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: 在此添加控件通知处理程序代码
+    SetUiPlaylistSelected(pNMItemActivate->iItem);
     if (!m_searched)
     {
         m_item_selected = pNMItemActivate->iItem;   //获取鼠标选中的项目
@@ -5229,7 +5251,7 @@ void CMusicPlayerDlg::OnMovePlaylistItemDown()
 void CMusicPlayerDlg::OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: 在此添加控件通知处理程序代码
+    SetUiPlaylistSelected(pNMItemActivate->iItem);
     GetPlaylistItemSelected(pNMItemActivate->iItem);
     *pResult = 0;
 }

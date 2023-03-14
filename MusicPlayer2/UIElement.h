@@ -247,6 +247,7 @@ namespace UiElement
         void RestrictOffset();             //将播放列表偏移量限制在正确的范围
         void CalculateItemRects();         //计算播放列表中每一项的矩形区域，保存在playlist_info.item_rects中
         int ItemHeight() const;
+        void SetItemSelected(int index);
 
         int item_height{ 28 };
 

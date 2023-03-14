@@ -305,7 +305,9 @@ void CFloatPlaylistDlg::OnSize(UINT nType, int cx, int cy)
 void CFloatPlaylistDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: 在此添加控件通知处理程序代码
+    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (main_wnd != nullptr)
+        main_wnd->SetUiPlaylistSelected(pNMItemActivate->iItem);
     if (!m_searched)
     {
         m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
@@ -328,7 +330,9 @@ void CFloatPlaylistDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 void CFloatPlaylistDlg::OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: 在此添加控件通知处理程序代码
+    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (main_wnd != nullptr)
+        main_wnd->SetUiPlaylistSelected(pNMItemActivate->iItem);
     if (!m_searched)	//如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
     {
         if (pNMItemActivate->iItem < 0)
@@ -434,7 +438,9 @@ void CFloatPlaylistDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 void CFloatPlaylistDlg::OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    // TODO: 在此添加控件通知处理程序代码
+    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (main_wnd != nullptr)
+        main_wnd->SetUiPlaylistSelected(pNMItemActivate->iItem);
     GetPlaylistItemSelected();
     *pResult = 0;
 }

@@ -1101,6 +1101,11 @@ int UiElement::Playlist::ItemHeight() const
     return ui->DPI(item_height);
 }
 
+void UiElement::Playlist::SetItemSelected(int index)
+{
+    item_selected = index;
+}
+
 int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)
 {
     for (size_t i{}; i < item_rects.size(); i++)

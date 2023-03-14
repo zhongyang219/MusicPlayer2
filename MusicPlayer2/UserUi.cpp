@@ -28,6 +28,13 @@ void CUserUi::IterateAllElements(std::function<bool(UiElement::Element*)> func)
     draw_element->IterateAllElements(func);
 }
 
+void CUserUi::IterateAllElementsInAllUi(std::function<bool(UiElement::Element*)> func)
+{
+    m_root_ui_big->IterateAllElements(func);
+    m_root_ui_narrow->IterateAllElements(func);
+    m_root_ui_small->IterateAllElements(func);
+}
+
 void CUserUi::VolumeAdjusted()
 {
     IterateAllElements([this](UiElement::Element* element) ->bool
