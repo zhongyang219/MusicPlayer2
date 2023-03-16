@@ -1111,6 +1111,7 @@ int UiElement::Playlist::ItemHeight() const
 void UiElement::Playlist::SetItemSelected(int index)
 {
     item_selected = index;
+    EnsureItemVisible(index);
 }
 
 int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)
