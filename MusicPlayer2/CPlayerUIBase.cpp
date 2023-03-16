@@ -2513,6 +2513,11 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
                 playlist_element->scrollbar_handle_rect = scrollbar_rect;
                 playlist_element->scrollbar_handle_rect.top = scrollbar_rect.top + scroll_pos;
                 playlist_element->scrollbar_handle_rect.bottom = playlist_element->scrollbar_handle_rect.top + scroll_handle_length;
+                //限制滚动条把手的位置
+                if (playlist_element->scrollbar_handle_rect.top < playlist_element->scrollbar_rect.top)
+                    playlist_element->scrollbar_handle_rect.MoveToY(playlist_element->scrollbar_rect.top);
+                if (playlist_element->scrollbar_handle_rect.bottom > playlist_element->scrollbar_rect.bottom)
+                    playlist_element->scrollbar_handle_rect.MoveToY(playlist_element->scrollbar_rect.bottom - playlist_element->scrollbar_handle_rect.Height());
                 //滚动条把手的颜色
                 COLORREF scrollbar_handle_color{ m_colors.color_scrollbar_handle };
                 if (playlist_element->scrollbar_handle_pressed)
