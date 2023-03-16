@@ -984,10 +984,17 @@ bool UiElement::Playlist::RButtunUp(CPoint point)
     if (rect.PtInRect(point))
     {
         mouse_pressed = false;
-        GetCursorPos(&point);
-        CMenu* menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+        CMenu* menu{};
+        if (item_selected >= 0 && !scrollbar_rect.PtInRect(point))
+            menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+        else
+            menu = &theApp.m_menu_set.m_playlist_toolbar_popup_menu;
         if (menu != nullptr)
-            menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, theApp.m_pMainWnd); //在指定位置显示弹出菜单
+        {
+            CPoint cursor_pos;
+            GetCursorPos(&cursor_pos);
+            menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cursor_pos.x, cursor_pos.y, theApp.m_pMainWnd); //在指定位置显示弹出菜单
+        }
         return true;
     }
     return false;
@@ -997,7 +1004,7 @@ bool UiElement::Playlist::RButtunUp(CPoint point)
 void UiElement::Playlist::RButtonDown(CPoint point)
 {
     mouse_pressed = false;
-    if (rect.PtInRect(point))
+    if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point))
     {
         Clicked(point);
     }

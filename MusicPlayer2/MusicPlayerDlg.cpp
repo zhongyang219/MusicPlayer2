@@ -3156,7 +3156,11 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
         m_playlist_list.GetItemSelectedSearched(m_items_selected);
     }
 
-    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+    CMenu* pContextMenu{};
+    if (m_item_selected >= 0)
+        pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+    else
+        pContextMenu = &theApp.m_menu_set.m_playlist_toolbar_popup_menu;
     m_playlist_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;
