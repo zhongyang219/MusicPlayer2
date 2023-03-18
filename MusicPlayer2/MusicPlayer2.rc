@@ -467,7 +467,7 @@ BEGIN
     CONTROL         "歌词卡拉OK样式显示(&K)",IDC_KARAOKE_DISP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,17,86,10
     CONTROL         "歌词模糊匹配(&F)",IDC_LYRIC_FUZZY_MATCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,145,17,63,10
     LTEXT           "歌词文件夹：",IDC_STATIC,17,43,42,8
-    GROUPBOX        "任务栏搜索框显示播放信息",IDC_STATIC,7,262,232,110
+    GROUPBOX        "任务栏搜索框显示播放信息（仅Windows 10）",IDC_STATIC,7,262,232,110
     CONTROL         "允许在任务栏搜索框中显示播放信息(&C)",IDC_SHOW_LYRIC_IN_CORTANA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,275,156,10
     CONTROL         "歌词双行显示(&D)",IDC_LYRIC_DOUBLE_LINE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,137,299,93,10
     LTEXT           "搜索框背景颜色：",IDC_STATIC,131,287,56,8
@@ -4297,7 +4297,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,19,137,10
     CONTROL         "Lyrics &fuzzy match",IDC_LYRIC_FUZZY_MATCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,169,19,88,10
     LTEXT           "Lyrics folder:",IDC_STATIC,17,58,47,8
-    GROUPBOX        "Show play information in taskbar search box",IDC_STATIC,7,284,324,114
+    GROUPBOX        "Show play information in taskbar search box (Windows 10 only)",IDC_STATIC,7,284,324,114
     CONTROL         "Allow play infomation displayed in &taskbar search box",IDC_SHOW_LYRIC_IN_CORTANA,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,296,215,10
     CONTROL         "Lyrics displayed in &double line",IDC_LYRIC_DOUBLE_LINE_CHECK,
