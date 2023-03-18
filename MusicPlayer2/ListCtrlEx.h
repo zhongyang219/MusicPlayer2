@@ -27,6 +27,7 @@ public:
     void SetDragEnable(bool enable = true) { m_drag_enable = enable; }      //是否允许鼠标拖动
     virtual void ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd);
     void FillLeftSpaceAfterPaint(bool fill);        //如果为true，则在每行绘制之后填充左侧空白，否则在绘制之前填充（如果表格没有图标或复选框，则应设置为true，否则设置为false）
+    void SetMouseWheelEnable(bool enable);  //设置是否允许响应鼠标滚轮
 
     typedef map<int, wstring> RowData;      //列表数据中每一行的数据，map的key为列序号，value为显示的文本
     typedef vector<RowData> ListData;       //列表数据，其中vector为每一行的数据
@@ -54,6 +55,8 @@ protected:
     bool m_fill_left_space_after_paint{ true };
 	ListData* m_pListData{};
 	bool m_enable_ctrl_a{ false };	//是否允许Ctrl+A全选
+    int m_row_height{};
+    bool m_mouse_wheel_enable{ true };
 
 public:
 	DECLARE_MESSAGE_MAP()

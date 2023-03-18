@@ -216,6 +216,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
         m_bass_radio.SetCheck(TRUE);
 
 	//m_device_info_list.SetColor(theApp.m_app_setting_data.theme_color);
+    m_device_info_list.SetMouseWheelEnable(false);
 	CRect rect;
 	m_device_info_list.GetClientRect(rect);
 	int width0, width1;

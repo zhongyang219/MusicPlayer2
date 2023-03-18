@@ -140,6 +140,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
 
     for (const auto& str : m_data.media_folders)
         m_dir_list_ctrl.AddString(str.c_str());
+    m_dir_list_ctrl.SetMouseWheelEnable(false);
 
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));

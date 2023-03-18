@@ -125,6 +125,7 @@ bool CListCtrlEx::SetRowHeight(int height)
 		BOOL rtn = imgList.Create(1, height, ILC_COLOR, 1, 1);
 		if (rtn != FALSE)
 		{
+            m_row_height = height;
 			SetImageList(&imgList, LVSIL_SMALL);
 			return true;
 		}
@@ -151,6 +152,11 @@ void CListCtrlEx::ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd)
 void CListCtrlEx::FillLeftSpaceAfterPaint(bool fill)
 {
     m_fill_left_space_after_paint = fill;
+}
+
+void CListCtrlEx::SetMouseWheelEnable(bool enable)
+{
+    m_mouse_wheel_enable = enable;
 }
 
 void CListCtrlEx::SetListData(ListData* pListData)
@@ -365,6 +371,20 @@ BOOL CListCtrlEx::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 		}
 	}
+
+    if (pMsg->message == WM_MOUSEWHEEL && !m_mouse_wheel_enable)
+    {
+        CRect rect;
+        GetWindowRect(rect);
+        //根据行高*行数小于控件高度来判断是否显示垂直滚动条
+        if (m_row_height > 0 && (m_row_height + 1) * GetItemCount() < rect.Height())
+        {
+            //如果不显示滚动条，则将鼠标滚轮消息发送给父窗口
+            CWnd* pParent = GetParent();
+            pParent->SendMessage(WM_MOUSEWHEEL, pMsg->wParam, pMsg->lParam);
+            return TRUE;
+        }
+    }
 
 	return CListCtrl::PreTranslateMessage(pMsg);
 }

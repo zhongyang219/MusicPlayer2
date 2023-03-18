@@ -159,6 +159,7 @@ bool CPlayListCtrl::SetRowHeight(int height)
         BOOL rtn = imgList.Create(blank_width, height, ILC_COLOR, 1, 1);      //创建指定宽度的空白图标，以设置列表左侧的空白
         if (rtn != FALSE)
         {
+            m_row_height = height;
             SetImageList(&imgList, LVSIL_SMALL);
             return true;
         }
