@@ -18,6 +18,8 @@ public:
     void VolumeAdjusted();      //当音量调整时需要调用此函数
     void ResetVolumeToPlayTime();   //定时器SHOW_VOLUME_TIMER_ID响应时需要调用此函数
     void PlaylistLocateToCurrent();     //播放列表控件使正在播放的曲目可见
+    void SaveStatackElementIndex(CArchive& archive);
+    void LoadStatackElementIndex(CArchive& archive);
 
     enum { SHOW_VOLUME_TIMER_ID = 1635 };
 

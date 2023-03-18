@@ -79,6 +79,37 @@ void CUserUi::PlaylistLocateToCurrent()
     });
 }
 
+void CUserUi::SaveStatackElementIndex(CArchive& archive)
+{
+    //遍历Playlist元素
+    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool
+        {
+            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
+            if (stack_element != nullptr)
+            {
+                archive << stack_element->GetCurIndex();
+            }
+            return false;
+        });
+}
+
+void CUserUi::LoadStatackElementIndex(CArchive& archive)
+{
+    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool
+        {
+            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
+            if (stack_element != nullptr)
+            {
+                int stack_element_index;
+                archive >> stack_element_index;
+                stack_element->SetCurrentElement(stack_element_index);
+            }
+            return false;
+        });
+
+}
+
+
 void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
 {
     std::shared_ptr<UiElement::Element> draw_element = GetCurrentTypeUi();

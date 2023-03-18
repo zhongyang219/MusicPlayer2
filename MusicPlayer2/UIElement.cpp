@@ -565,6 +565,11 @@ void UiElement::StackElement::Draw()
     ui->ResetDrawArea();
 }
 
+int UiElement::StackElement::GetCurIndex() const
+{
+    return cur_index;
+}
+
 std::shared_ptr<UiElement::Element> UiElement::StackElement::CurrentElement()
 {
     if (hover_to_switch && mouse_hover)

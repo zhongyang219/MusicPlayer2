@@ -100,6 +100,7 @@ BOOL CMusicPlayerApp::InitInstance()
     m_recent_playlist_data_path = m_config_dir + L"playlist\\recent_playlist.dat";
     m_desktop_path = CCommon::GetDesktopPath();
     m_lastfm_path = m_config_dir + L"lastfm.dat";
+    m_ui_data_path = m_config_dir + L"user_ui.dat";
     //m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
     m_playlist_dir = m_config_dir + L"playlist\\";
     CCommon::CreateDir(m_playlist_dir);

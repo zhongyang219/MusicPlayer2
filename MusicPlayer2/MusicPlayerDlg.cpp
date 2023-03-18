@@ -2044,6 +2044,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 {
     //载入设置
     LoadConfig();
+    LoadUiData();
 
     CMainDialogBase::OnInitDialog();
 
@@ -2830,6 +2831,7 @@ void CMusicPlayerDlg::OnDestroy()
 
     //退出时保存设置
     CPlayer::GetInstance().OnExit();
+    SaveUiData();
     SaveConfig();
     m_findDlg.SaveConfig();
     theApp.SaveConfig();
@@ -3708,6 +3710,57 @@ void CMusicPlayerDlg::Show(bool show)
     {
         m_pFloatPlaylistDlg->ShowWindow(window_show);
     }
+}
+
+void CMusicPlayerDlg::SaveUiData()
+{
+    CFile file;
+    BOOL bRet = file.Open(theApp.m_ui_data_path.c_str(), CFile::modeCreate | CFile::modeWrite);
+    if (!bRet) {
+        return;
+    }
+    CArchive ar(&file, CArchive::store);
+    /// 版本号
+    ar << (uint16_t)1;
+    for (const auto& ui : m_ui_list)
+    {
+        CUserUi* user_ui{ dynamic_cast<CUserUi*>(ui.get()) };
+        if (user_ui != nullptr)
+        {
+            user_ui->SaveStatackElementIndex(ar);
+        }
+    }
+    ar.Close();
+    file.Close();
+}
+
+void CMusicPlayerDlg::LoadUiData()
+{
+    CFile file;
+    BOOL bRet = file.Open(theApp.m_ui_data_path.c_str(), CFile::modeRead);
+    if (!bRet) {
+        return;
+    }
+    CArchive ar(&file, CArchive::load);
+    try {
+        uint16_t version;
+        ar >> version;
+        for (const auto& ui : m_ui_list)
+        {
+            CUserUi* user_ui{ dynamic_cast<CUserUi*>(ui.get()) };
+            if (user_ui != nullptr)
+            {
+                user_ui->LoadStatackElementIndex(ar);
+            }
+        }
+    }
+    catch (CArchiveException* exception) {
+        CString info;
+        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { theApp.m_ui_data_path, exception->m_cause });
+        theApp.WriteLog(wstring{ info });
+    }
+    ar.Close();
+    file.Close();
 }
 
 void CMusicPlayerDlg::OnBnClickedStop()

@@ -88,6 +88,7 @@ namespace UiElement
         int indicator_offset{};
         bool mouse_hover{};
         IPlayerUI::UIButton indicator{};        //指示器
+        int GetCurIndex() const;
 
     protected:
         std::shared_ptr<Element> CurrentElement();
