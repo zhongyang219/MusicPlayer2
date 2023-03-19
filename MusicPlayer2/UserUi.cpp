@@ -87,7 +87,7 @@ void CUserUi::SaveStatackElementIndex(CArchive& archive)
             UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
             if (stack_element != nullptr)
             {
-                archive << stack_element->GetCurIndex();
+                archive << static_cast<BYTE>(stack_element->GetCurIndex());
             }
             return false;
         });
@@ -100,7 +100,7 @@ void CUserUi::LoadStatackElementIndex(CArchive& archive)
             UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
             if (stack_element != nullptr)
             {
-                int stack_element_index;
+                BYTE stack_element_index;
                 archive >> stack_element_index;
                 stack_element->SetCurrentElement(stack_element_index);
             }
