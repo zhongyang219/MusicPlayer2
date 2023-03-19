@@ -33,8 +33,13 @@ using namespace ABI::Windows::Storage;
 using namespace Microsoft::WRL;
 using namespace Microsoft::WRL::Wrappers;
 
+void MediaTransControls::SetEnabled(bool enable)
+{
+    m_enabled = enable;
+}
+
 bool MediaTransControls::Init() {
-    if (m_initailzed) return true;
+    if (!m_enabled || m_initailzed) return true;
     /// Windows 8.1 or later is required
     if (!CWinVersionHelper::IsWindows81OrLater()) return false;
     CComPtr<ISystemMediaTransportControlsInterop> op;
@@ -149,7 +154,7 @@ bool AwaitForIAsyncOperation(CComPtr<ABI::Windows::Foundation::IAsyncOperation<T
 }
 
 void MediaTransControls::loadThumbnail(wstring fn) {
-    if (!fn.length() || !updater) return;
+    if (!m_enabled || !fn.length() || !updater) return;
     if (IsURL(fn)) return loadThumbnailFromUrl(fn);
     HRESULT ret;
     CComPtr<IStorageFileStatics> sfs;
@@ -181,7 +186,7 @@ void MediaTransControls::loadThumbnail(wstring fn) {
 }
 
 void MediaTransControls::loadThumbnail(const BYTE* content, size_t size) {
-    if (!content || !size || !updater) return;
+    if (!m_enabled || !content || !size || !updater) return;
     ComPtr<Streams::IRandomAccessStream> s;
     HRESULT ret;
     if ((ret = ActivateInstance(HStringReference(RuntimeClass_Windows_Storage_Streams_InMemoryRandomAccessStream).Get(), s.GetAddressOf())) != S_OK) {
@@ -203,7 +208,7 @@ void MediaTransControls::loadThumbnail(const BYTE* content, size_t size) {
 }
 
 void MediaTransControls::loadThumbnailFromUrl(wstring url) {
-    if (!url.length() || !updater) return;
+    if (!m_enabled || !url.length() || !updater) return;
     HRESULT ret;
     CComPtr<ABI::Windows::Foundation::IUriRuntimeClassFactory> u;
     if ((ret = Windows::Foundation::GetActivationFactory(HStringReference(RuntimeClass_Windows_Foundation_Uri).Get(), &u)) != S_OK) {
@@ -227,6 +232,8 @@ void MediaTransControls::loadThumbnailFromUrl(wstring url) {
 }
 
 bool MediaTransControls::IsActive() {
+    if (!m_enabled)
+        return false;
     if (controls) {
         boolean enabled;
         HRESULT hr;
@@ -252,13 +259,13 @@ void MediaTransControls::UpdateArtist(wstring artist) {
 
 void MediaTransControls::ClearAll()
 {
-    if (updater)
+    if (m_enabled && updater)
         updater->ClearAll();
 }
 
 void MediaTransControls::UpdateControls(Command cmd)
 {
-    if (controls)
+    if (m_enabled && controls)
     {
         switch (cmd) {
         case Command::PLAY:
@@ -279,7 +286,7 @@ void MediaTransControls::UpdateControls(Command cmd)
 
 void MediaTransControls::UpdateControlsMetadata(const SongInfo song)
 {
-    if (updater && music) {
+    if (m_enabled && updater && music) {
         updater->put_Type(MediaPlaybackType_Music);
         UpdateTitle(song.IsTitleEmpty() ? song.GetFileName() : song.GetTitle());
         UpdateArtist(song.GetArtist());
@@ -321,6 +328,8 @@ bool MediaTransControls::IsURL(wstring s) {
 }
 
 void MediaTransControls::UpdateDuration(int64_t duration) {
+    if (!m_enabled)
+        return;
     HRESULT hr;
     if (timeline) {
         hr = timeline->put_EndTime(ABI::Windows::Foundation::TimeSpan{ duration * 10000 });
@@ -335,6 +344,8 @@ void MediaTransControls::UpdateDuration(int64_t duration) {
 }
 
 void MediaTransControls::UpdatePosition(int64_t postion) {
+    if (!m_enabled)
+        return;
     HRESULT hr;
     if (timeline) {
         hr = timeline->put_Position(ABI::Windows::Foundation::TimeSpan{ postion * 10000 });
@@ -413,7 +424,7 @@ void MediaTransControls::UpdateGenres(std::vector<wstring> genres) {
 }
 
 void MediaTransControls::UpdateSpeed(float speed) {
-    if (controls2) {
+    if (m_enabled && controls2) {
         auto ret = controls2->put_PlaybackRate(speed);
         ASSERT(ret == S_OK);
     }
@@ -422,6 +433,10 @@ void MediaTransControls::UpdateSpeed(float speed) {
 #else
 
 MediaTransControls::MediaTransControls()
+{
+}
+
+void MediaTransControls::SetEnabled(bool enable)
 {
 }
 

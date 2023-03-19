@@ -32,6 +32,7 @@ public:
             controls2->remove_PlaybackRateChangeRequested(m_EventRegistrationToken3);
         }
     }
+    void SetEnabled(bool enable);
     /**
      * @brief Intitialize the interface
      * @param main
@@ -69,6 +70,7 @@ protected:
     void OnButtonPressed(SystemMediaTransportControlsButton button);
     bool IsURL(wstring s);
     bool m_initailzed = false;
+    bool m_enabled = true;
 };
 
 #else
@@ -77,6 +79,7 @@ class MediaTransControls
 {
 public:
     MediaTransControls();
+    void SetEnabled(bool enable);
     bool Init();
     void loadThumbnail(wstring fn);
     void loadThumbnail(const BYTE* content, size_t size);

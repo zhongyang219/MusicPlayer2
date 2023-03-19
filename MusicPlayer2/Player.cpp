@@ -81,6 +81,7 @@ void CPlayer::IniPlayerCore()
 
         m_pCore->InitCore();
     }
+    m_controls.SetEnabled(theApp.m_play_setting_data.use_media_trans_control);
 }
 
 void CPlayer::UnInitPlayerCore()

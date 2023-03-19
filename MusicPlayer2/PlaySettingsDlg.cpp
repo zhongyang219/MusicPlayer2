@@ -137,6 +137,7 @@ void CPlaySettingsDlg::GetDataFromUi()
     m_data.ffmpeg_core_max_retry_count = m_ffmpeg_max_retry_count.GetValue();
     m_data.ffmpeg_core_url_retry_interval = m_ffmpeg_url_retry_interval.GetValue();
     m_data.ffmpeg_core_max_wait_time = m_ffmpeg_max_wait_time.GetValue();
+    m_data.use_media_trans_control = (IsDlgButtonChecked(IDC_USE_MEDIA_TRANS_CONTORL_CHECK) != FALSE);
 }
 
 void CPlaySettingsDlg::ApplyDataToUi()
@@ -194,6 +195,16 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 		m_show_taskbar_progress_check.EnableWindow(FALSE);
 		m_show_play_state_icon_chk.EnableWindow(FALSE);
 	}
+
+    if (CWinVersionHelper::IsWindows81OrLater())
+    {
+        CheckDlgButton(IDC_USE_MEDIA_TRANS_CONTORL_CHECK, m_data.use_media_trans_control);
+    }
+    else
+    {
+        CheckDlgButton(IDC_USE_MEDIA_TRANS_CONTORL_CHECK, FALSE);
+        EnableDlgCtrl(IDC_USE_MEDIA_TRANS_CONTORL_CHECK, FALSE);
+    }
 
     bool enable_ffmpeg = false;
     if (CPlayer::GetInstance().IsFfmpegCore()) {

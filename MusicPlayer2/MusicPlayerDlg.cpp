@@ -473,6 +473,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"show_playstate_icon", theApp.m_play_setting_data.show_playstate_icon);
     ini.WriteBool(L"config", L"fade_effect", theApp.m_play_setting_data.fade_effect);
     ini.WriteInt(L"config", L"fade_time", theApp.m_play_setting_data.fade_time);
+    ini.WriteBool(L"config", L"use_media_trans_control", theApp.m_play_setting_data.use_media_trans_control);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
     ini.WriteBool(L"config", L"use_mci", theApp.m_play_setting_data.use_mci);
     ini.WriteBool(L"config", L"use_ffmpeg", theApp.m_play_setting_data.use_ffmpeg);
@@ -672,6 +673,10 @@ void CMusicPlayerDlg::LoadConfig()
         theApp.m_play_setting_data.fade_time = 0;
     if (theApp.m_play_setting_data.fade_time > 2000)
         theApp.m_play_setting_data.fade_time = 2000;
+    if (CWinVersionHelper::IsWindows81OrLater())
+        theApp.m_play_setting_data.use_media_trans_control = ini.GetBool(L"config", L"use_media_trans_control", true);
+    else
+        theApp.m_play_setting_data.use_media_trans_control = false;
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
     theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
     theApp.m_play_setting_data.use_ffmpeg = ini.GetBool(L"config", L"use_ffmpeg", false);
