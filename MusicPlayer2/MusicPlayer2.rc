@@ -3899,6 +3899,8 @@ BEGIN
     IDS_PLAYLIST_MENU       "播放列表菜单"
     IDS_RECENT_FOLDER_OR_PLAYLIST "最近播放的文件夹/播放列表"
     IDS_PLAYLIST_EMPTY_INFO "播放列表为空。"
+    IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP 
+                            "勾选此项后，在切换播放列表时，如果新的播放列表中存在正在播放的曲目，则在切换播放列表后继续播放当前播放的曲目。"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -7219,6 +7221,8 @@ BEGIN
     IDS_PLAYLIST_MENU       "Playlist menu"
     IDS_RECENT_FOLDER_OR_PLAYLIST "Recently played folder/playlist"
     IDS_PLAYLIST_EMPTY_INFO "The playlist is empty."
+    IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP 
+                            "When this option is selected, if the playing track exists in the new playlist, the playing track will continue to be played after the playlist is switched."
 END
 
 #endif    // 英语(美国) resources
