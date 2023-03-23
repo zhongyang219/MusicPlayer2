@@ -2,7 +2,7 @@
 #include "CPlayerUIBase.h"
 #include "MusicPlayerDlg.h"
 #include "MiniModeUserUi.h"
-#include "PlayListCtrl.h"
+#include "SongInfoHelper.h"
 #include "UIElement.h"
 
 CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
@@ -1224,6 +1224,11 @@ void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
     m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetToolTipIdOffset());
 }
 
+void CPlayerUIBase::UpdateMouseToolTipPosition(int btn, CRect rect)
+{
+    m_tool_tip.SetToolRect(m_pMainWnd, btn + GetToolTipIdOffset(), rect);
+}
+
 void CPlayerUIBase::UpdateVolumeToolTip()
 {
     m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetToolTipIdOffset());
@@ -2036,7 +2041,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
             }
             else
             {
-                str_next_song += CPlayListCtrl::GetDisplayStr(next_song, theApp.m_media_lib_setting_data.display_format);
+                str_next_song += CSongInfoHelper::GetDisplayStr(next_song, theApp.m_media_lib_setting_data.display_format);
             }
             static CDrawCommon::ScrollInfo scroll_info3;
             m_draw.DrawScrollText(rect_next_track, str_next_song.c_str(), m_colors.color_text_lable, GetScrollTextPixel(), false, scroll_info3, reset);
@@ -2154,7 +2159,7 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
 
 int CPlayerUIBase::GetToolTipIdOffset()
 {
-    return GetUiIndex() * 100;
+    return GetUiIndex() * PlayerUiConstVal::BTN_MAX_NUM;
 }
 
 CString CPlayerUIBase::GetCmdShortcutKeyForTooltips(UINT id)
@@ -2457,7 +2462,7 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
                 CRect rect_name{ rect_item };
                 rect_name.left = rect_num.right + DPI(4);
                 rect_name.right = rect_item.right - DPI(50);
-                std::wstring display_name{ CPlayListCtrl::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format) };
+                std::wstring display_name{ CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format) };
                 m_draw.SetDrawArea(rect & rect_name);
                 if (i == playlist_element->item_selected)
                     m_draw.DrawScrollText(rect_name, display_name.c_str(), m_colors.color_text, GetScrollTextPixel(), false, playlist_element->selected_item_scroll_info, false, true);
@@ -2822,6 +2827,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_LOCATE_TO_CURRENT, CCommon::LoadText(IDS_LOCATE_TO_CURRENT, GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT)));
     AddMouseToolTip(BTN_PLAYLIST_MENU, CCommon::LoadText(IDS_PLAYLIST_MENU));
     AddMouseToolTip(BTN_PLAYLIST_DROP_DOWN, CCommon::LoadText(IDS_RECENT_FOLDER_OR_PLAYLIST));
+    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::PLAYLIST_TOOLTIP_INDEX), _T(""));
 
     UpdateRepeatModeToolTip();
 }

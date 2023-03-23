@@ -4,8 +4,8 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "LyricRelateDlg.h"
+#include "SongInfoHelper.h"
 #include "MusicPlayerCmdHelper.h"
-#include "PlayListCtrl.h"
 #include "SongDataManager.h"
 
 
@@ -127,7 +127,7 @@ BOOL CLyricRelateDlg::OnInitDialog()
 
     wstring lyric_name;
     if (CPlayer::GetInstance().GetCurrentSongInfo().is_cue || CPlayer::GetInstance().IsOsuFile())
-        lyric_name = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), DF_ARTIST_TITLE);
+        lyric_name = CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), DF_ARTIST_TITLE);
     else
         lyric_name = CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).GetFileNameWithoutExtension();
     SetDlgItemText(IDC_LYRIC_NAME_EDIT, lyric_name.c_str());

@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "MusicPlayerDlg.h"
 #include "MiniModeUserUi.h"
+#include "SongInfoHelper.h"
 
 // CMiniModeDlg 对话框
 
@@ -92,7 +93,7 @@ void CMiniModeDlg::UpdateSongTipInfo()
 void CMiniModeDlg::SetTitle()
 {
     CString title;
-    title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str();
+    title = CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str();
     if (!title.IsEmpty())
         title += _T(" - ");
     title += APP_NAME;

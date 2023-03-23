@@ -230,6 +230,8 @@ namespace UiElement
     };
 
     //播放列表
+    const int PLAYLIST_TOOLTIP_INDEX = 999;
+
     class Playlist : public Element
     {
     public:

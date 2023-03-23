@@ -32,6 +32,7 @@
 #include "RecentFolderAndPlaylist.h"
 #include "UserUi.h"
 #include "FfmpegCore.h"
+#include "SongInfoHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -4070,7 +4071,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
 {
     CString title;
-    title = CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str();
+    title = CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str();
 
     CString title_suffix;
     if (!title.IsEmpty())

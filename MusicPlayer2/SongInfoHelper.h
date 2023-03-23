@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "SongInfo.h"
+#include "CommonData.h"
 class CSongInfoHelper
 {
 public:
@@ -17,4 +18,7 @@ public:
     };
     static void SetSongChannelInfo(SongInfo& song, const ChannelInfo& channel_info);
     static ChannelInfo GetSongChannelInfo(const SongInfo& song);
+    static std::wstring GetDisplayStr(const SongInfo& song_info, DisplayFormat display_format);		//根据display_format指定的显示格式，返回一首曲目显示的字符串
+    static std::wstring GetPlaylistItemToolTip(const SongInfo& song_info, bool show_title, bool show_full_path);
+
 };

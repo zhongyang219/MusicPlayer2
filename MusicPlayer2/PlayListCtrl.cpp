@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "PlayListCtrl.h"
-
+#include "SongInfoHelper.h"
 
 // CPlayListCtrl
 
@@ -18,38 +18,6 @@ CPlayListCtrl::CPlayListCtrl(const vector<SongInfo>& all_song_info) :m_all_song_
 
 CPlayListCtrl::~CPlayListCtrl()
 {
-}
-
-
-wstring CPlayListCtrl::GetDisplayStr(const SongInfo & song_info, DisplayFormat display_format)
-{
-	AudioType type{ CAudioCommon::GetAudioTypeByFileName(song_info.file_path) };
-	if (type == AU_MIDI)		//MIDI只显示文件名
-	{
-		display_format = DF_FILE_NAME;
-	}
-	switch (display_format)
-	{
-	case DF_FILE_NAME:		//显示为文件名
-		return song_info.GetFileName();
-	case DF_TITLE:			//显示为歌曲标题
-		if (song_info.IsTitleEmpty())	//如果获取不到歌曲标题，就显示文件名
-			return song_info.GetFileName();
-		else
-			return song_info.title;
-	case DF_ARTIST_TITLE:	//显示为艺术家 - 标题
-		if (song_info.IsTitleEmpty() && song_info.IsArtistEmpty())		//如果标题和艺术家都获取不到，就显示文件名
-			return song_info.GetFileName();
-		else
-			return (song_info.GetArtist() + _T(" - ") + song_info.GetTitle());
-	case DF_TITLE_ARTIST:	//显示为标题 - 艺术家
-		if (song_info.IsTitleEmpty() && song_info.IsArtistEmpty())		//如果标题和艺术家都获取不到，就显示文件名
-			return song_info.GetFileName();
-		else
-			return (song_info.GetTitle() + _T(" - ") + song_info.GetArtist());
-	default:
-		return song_info.GetFileName();
-	}
 }
 
 void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_result)
@@ -69,7 +37,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 		{
 			CListCtrlEx::RowData row_data;
 			row_data[0] = std::to_wstring(index + 1);
-			row_data[1] = GetDisplayStr(song, display_format);
+			row_data[1] = CSongInfoHelper::GetDisplayStr(song, display_format);
 			row_data[2] = song.length().toString();
 			m_list_data.push_back(std::move(row_data));
 			index++;
@@ -91,7 +59,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 			{
 				CListCtrlEx::RowData row_data;
 				row_data[0] = std::to_wstring(index + 1);
-				row_data[1] = GetDisplayStr(m_all_song_info[index], display_format);
+				row_data[1] = CSongInfoHelper::GetDisplayStr(m_all_song_info[index], display_format);
 				row_data[2] = m_all_song_info[index].length().toString();
 				m_list_data.push_back(std::move(row_data));
 			}
@@ -195,7 +163,6 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 	//如果开启文本提示
 	if (theApp.m_media_lib_setting_data.show_playlist_tooltip)
 	{
-		CString str_tip;
 		LVHITTESTINFO lvhti;
 
 		// 判断鼠标当前所在的位置(行, 列)
@@ -211,14 +178,6 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 			// 如果鼠标移动到一个合法的行，则显示新的提示信息，否则不显示提示
 			if (m_nItem >= 0 && m_nItem < static_cast<int>(m_all_song_info.size()) && !m_dragging)
 			{
-				CString dis_str = GetItemText(m_nItem, 1);
-				int strWidth = GetStringWidth(dis_str) + theApp.DPI(10);		//获取要显示当前字符串的最小宽度
-				int columnWidth = GetColumnWidth(1);	//获取鼠标指向列的宽度
-				if (columnWidth < strWidth)		//当单元格内的的字符无法显示完全时在提示的第1行显示单元格内文本
-				{
-					str_tip += dis_str;
-					str_tip += _T("\r\n");
-				}
 				int song_index;
 				if (!m_searched)
 				{
@@ -231,33 +190,13 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 				}
 				if (song_index < 0 || song_index >= static_cast<int>(m_all_song_info.size()))
 					return;
-                if (CPlayer::GetInstance().IsPlaylistMode() || CPlayer::GetInstance().IsContainSubFolder())
-                {
-                    str_tip += CCommon::LoadText(IDS_PATH, _T(": "));
-                    str_tip += m_all_song_info[song_index].file_path.c_str();
-                }
-                else
-                {
-                    str_tip += CCommon::LoadText(IDS_FILE_NAME, _T(": "));
-                    str_tip += m_all_song_info[song_index].GetFileName().c_str();
-                }
-				str_tip += _T("\r\n");
 
-				str_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
-				str_tip += m_all_song_info[song_index].GetTitle().c_str();
-				str_tip += _T("\r\n");
-
-				str_tip += CCommon::LoadText(IDS_ARTIST, _T(": "));
-				str_tip += m_all_song_info[song_index].GetArtist().c_str();
-				str_tip += _T("\r\n");
-
-				str_tip += CCommon::LoadText(IDS_ALBUM, _T(": "));
-				str_tip += m_all_song_info[song_index].GetAlbum().c_str();
-				str_tip += _T("\r\n");
-
-				CString str_bitrate;
-				str_bitrate.Format(CCommon::LoadText(IDS_BITRATE, _T(": %dkbps")), m_all_song_info[song_index].bitrate);
-				str_tip += str_bitrate;
+				CString dis_str = GetItemText(m_nItem, 1);
+				int strWidth = GetStringWidth(dis_str) + theApp.DPI(10);		//获取要显示当前字符串的最小宽度
+				int columnWidth = GetColumnWidth(1);	//获取鼠标指向列的宽度
+                bool show_title = (columnWidth < strWidth);		//当单元格内的的字符无法显示完全时在提示的第1行显示单元格内文本
+                bool show_full_path = (CPlayer::GetInstance().IsPlaylistMode() || CPlayer::GetInstance().IsContainSubFolder());
+                CString str_tip = CSongInfoHelper::GetPlaylistItemToolTip(m_all_song_info[song_index], show_title, show_full_path).c_str();
 
 				m_toolTip.SetMaxTipWidth(theApp.DPI(400));		//设置提示信息的宽度，以支持提示换行
 

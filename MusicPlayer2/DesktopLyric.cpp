@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "DesktopLyric.h"
 #include "MusicPlayer2.h"
-#include "PlayListCtrl.h"
+#include "SongInfoHelper.h"
 #include "GdiPlusTool.h"
 #include "Define.h"
 #include "CPlayerUIHelper.h"
@@ -137,7 +137,7 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
     else
     {
         const SongInfo& cur_song_info = CPlayer::GetInstance().GetCurrentSongInfo();
-        std::wstring display_text = CPlayListCtrl::GetDisplayStr(cur_song_info, DF_ARTIST_TITLE);
+        std::wstring display_text = CSongInfoHelper::GetDisplayStr(cur_song_info, DF_ARTIST_TITLE);
         if (display_text != GetLyricStr().GetString())
         {
             UpdateLyrics(display_text.c_str(), 0);

@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "CortanaLyric.h"
-#include "PlayListCtrl.h"
+#include "SongInfoHelper.h"
 #include "CPlayerUIBase.h"
 #include "CPlayerUIHelper.h"
 
@@ -155,13 +155,13 @@ void CCortanaLyric::DrawInfo()
                     static CString str_now_playing{ CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) };
                     if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
                     {
-                        DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, CPlayerUIHelper::GetScrollTextPixel());
+                        DrawCortanaText((str_now_playing + CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, CPlayerUIHelper::GetScrollTextPixel());
                         index = CPlayer::GetInstance().GetIndex();
                         song_name = CPlayer::GetInstance().GetFileName();
                     }
                     else
                     {
-                        DrawCortanaText((str_now_playing + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, CPlayerUIHelper::GetScrollTextPixel());
+                        DrawCortanaText((str_now_playing + CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, CPlayerUIHelper::GetScrollTextPixel());
                     }
                 }
             }
@@ -211,7 +211,7 @@ void CCortanaLyric::DrawInfo()
             else
             {
                 //没有歌词时显示当前播放歌曲的名称
-                str_disp = CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")).GetString() + CPlayListCtrl::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format);
+                str_disp = CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")).GetString() + CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format);
             }
 
             if(str_disp != str_disp_last)

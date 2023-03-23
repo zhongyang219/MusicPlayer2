@@ -39,6 +39,11 @@ struct SLayoutData
     const int menubar_height = theApp.DPI(24);                  //菜单栏的高度
 };
 
+namespace PlayerUiConstVal
+{
+    const int BTN_MAX_NUM = 1000;
+}
+
 class CPlayerUIBase : public IPlayerUI
 {
 public:
@@ -238,6 +243,7 @@ protected:
     virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str);      //为一个按钮添加鼠标提示
     virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
     virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override { UpdateMouseToolTip(static_cast<BtnKey>(btn), str); }
+    virtual void UpdateMouseToolTipPosition(int btn, CRect rect);
 
     virtual void UpdateToolTipPosition() override;
 

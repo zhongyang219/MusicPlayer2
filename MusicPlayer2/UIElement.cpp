@@ -2,7 +2,7 @@
 #include "UIElement.h"
 #include "MusicPlayer2.h"
 #include "MusicPlayerDlg.h"
-
+#include "SongInfoHelper.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -981,6 +981,30 @@ void UiElement::Playlist::MouseMove(CPoint point)
     else if (mouse_pressed)
     {
         playlist_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
+    }
+
+    //显示鼠标提示
+    if (theApp.m_media_lib_setting_data.show_playlist_tooltip && hover && !scrollbar_hover)
+    {
+        int item_size{ static_cast<int>(item_rects.size()) };
+        for (int i{}; i < item_size && i < CPlayer::GetInstance().GetSongNum(); i++)
+        {
+            if (item_rects[i].PtInRect(point))
+            {
+                static int last_item_index{ -1 };
+                if (last_item_index != i)
+                {
+                    last_item_index = i;
+                    const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[i];
+                    bool show_full_path = (CPlayer::GetInstance().IsPlaylistMode() || CPlayer::GetInstance().IsContainSubFolder());
+                    std::wstring str_tip = CSongInfoHelper::GetPlaylistItemToolTip(song_info, true, show_full_path);
+
+                    ui->UpdateMouseToolTip(PLAYLIST_TOOLTIP_INDEX, str_tip.c_str());
+                    ui->UpdateMouseToolTipPosition(PLAYLIST_TOOLTIP_INDEX, item_rects[i]);
+                }
+                break;
+            }
+        }
     }
 }
 

@@ -7,7 +7,7 @@
 #include "afxdialogex.h"
 #include "MessageDlg.h"
 #include "WIC.h"
-#include "PlayListCtrl.h"
+#include "SongInfoHelper.h"
 #include "SongDataManager.h"
 
 
@@ -185,7 +185,7 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 
     if (m_song.is_cue || CPlayer::GetInstance().IsOsuFile())
     {
-        m_lyric_name = CPlayListCtrl::GetDisplayStr(m_song, DF_ARTIST_TITLE);
+        m_lyric_name = CSongInfoHelper::GetDisplayStr(m_song, DF_ARTIST_TITLE);
         CCommon::FileNameNormalize(m_lyric_name);
     }
     else
