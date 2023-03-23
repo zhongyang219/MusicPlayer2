@@ -38,6 +38,10 @@ bool CRegFileRelate::AddFileTypeRelate(LPCTSTR file_ext, LPCTSTR ico_path, bool 
     if (!OpenItem(key, CString("Software\\Classes\\") + str_ext))
         return false;
 
+    //为cue格式添加PerceivedType属性，以便在资源管理中直接预览cue文件内容
+    if (CString(str_ext) == _T(".cue"))
+        key.SetStringValue(_T("PerceivedType"), _T("text"));
+
     if (default_icon)
         str_ext.Empty();
 
