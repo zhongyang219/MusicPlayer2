@@ -984,7 +984,7 @@ void UiElement::Playlist::MouseMove(CPoint point)
     }
 
     //显示鼠标提示
-    if (theApp.m_media_lib_setting_data.show_playlist_tooltip && hover && !scrollbar_hover)
+    if (theApp.m_media_lib_setting_data.show_playlist_tooltip && hover && !scrollbar_hover && !scrollbar_handle_pressed)
     {
         int item_size{ static_cast<int>(item_rects.size()) };
         for (int i{}; i < item_size && i < CPlayer::GetInstance().GetSongNum(); i++)
