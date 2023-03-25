@@ -29,6 +29,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
     ON_NOTIFY(NM_CLICK, IDC_SYSLINK_SCINTILLA, &CAboutDlg::OnNMClickSyslinkScintilla)
     ON_NOTIFY(NM_CLICK, IDC_SYSLINK_TRAFFICMONITOR, &CAboutDlg::OnNMClickSyslinkTrafficmonitor)
     ON_NOTIFY(NM_CLICK, IDC_SYSLINK_SIMPLENOTEPAD, &CAboutDlg::OnNMClickSyslinkSimplenotepad)
+    ON_NOTIFY(NM_CLICK, IDC_ACKNOWLEDGEMENT_SYSLINK, &CAboutDlg::OnNMClickAcknowledgementSyslink)
 END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
@@ -272,5 +273,16 @@ void CAboutDlg::OnNMClickSyslinkSimplenotepad(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
     ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/SimpleNotePad"), NULL, NULL, SW_SHOW);	//打开超链接
+    *pResult = 0;
+}
+
+
+void CAboutDlg::OnNMClickAcknowledgementSyslink(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    // TODO: 在此添加控件通知处理程序代码
+    CMessageDlg dlg;
+    dlg.SetWindowTitle(CCommon::LoadText(IDS_ACKNOWLEDGEMENT));
+    dlg.SetMessageText(CCommon::GetTextResource(IDR_ACKNOWLEDGEMENT, CodeType::UTF8_NO_BOM));
+    dlg.DoModal();
     *pResult = 0;
 }

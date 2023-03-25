@@ -388,7 +388,7 @@ IDI_FIX_D               ICON                    "res\\fix_d.ico"
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 191, 135
+IDD_ABOUTBOX DIALOGEX 0, 0, 191, 137
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "关于 MusicPlayer2"
 FONT 9, "微软雅黑", 400, 0, 0x0
@@ -396,11 +396,11 @@ BEGIN
     LTEXT           "MusicPlayer2，<version>版",IDC_STATIC_VERSION,11,36,162,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2017-<year> By ZhongYang\n最后编译日期：<compile_date>",IDC_STATIC_COPYRIGHT,11,46,163,17
     DEFPUSHBUTTON   "确定",IDOK,145,115,39,14,WS_GROUP
-    CONTROL         "<a>联系作者</a>",IDC_SYSLINK1,"SysLink",0x0,6,119,31,10
-    CONTROL         "<a>检查更新</a>",IDC_SYSLINK2,"SysLink",WS_TABSTOP,37,119,30,10
-    CONTROL         "<a>GitHub</a>",IDC_GITHUB_SYSLINK,"SysLink",WS_TABSTOP,67,119,28,10
-    CONTROL         "<a>捐助</a>",IDC_DONATE_SYSLINK,"SysLink",WS_TABSTOP,125,119,19,10
-    CONTROL         "<a>开源协议</a>",IDC_LICENSE_SYSLINK,"SysLink",WS_TABSTOP,94,119,30,10
+    CONTROL         "<a>联系作者</a>",IDC_SYSLINK1,"SysLink",0x0,6,114,31,10
+    CONTROL         "<a>检查更新</a>",IDC_SYSLINK2,"SysLink",WS_TABSTOP,40,114,30,10
+    CONTROL         "<a>GitHub</a>",IDC_GITHUB_SYSLINK,"SysLink",WS_TABSTOP,73,114,28,10
+    CONTROL         "<a>捐助</a>",IDC_DONATE_SYSLINK,"SysLink",WS_TABSTOP,7,124,19,10
+    CONTROL         "<a>开源协议</a>",IDC_LICENSE_SYSLINK,"SysLink",WS_TABSTOP,102,114,30,10
     LTEXT           "本项目使用的第三方库：",IDC_STATIC,11,68,118,8
     CONTROL         "<a>BASS</a>",IDC_SYSLINK_BASS,"SysLink",WS_TABSTOP,11,78,25,10
     CONTROL         "<a>TagLib</a>",IDC_SYSLINK_TAGLIB,"SysLink",WS_TABSTOP,40,78,32,10
@@ -410,6 +410,7 @@ BEGIN
     CONTROL         "<a>TrafficMonitor</a>",IDC_SYSLINK_TRAFFICMONITOR,
                     "SysLink",WS_TABSTOP,11,100,54,10
     CONTROL         "<a>SimpleNotePad</a>",IDC_SYSLINK_SIMPLENOTEPAD,"SysLink",WS_TABSTOP,73,100,54,10
+    CONTROL         "<a>鸣谢</a>",IDC_ACKNOWLEDGEMENT_SYSLINK,"SysLink",WS_TABSTOP,39,123,37,9
 END
 
 IDD_SET_PATH_DIALOG DIALOGEX 0, 0, 279, 173
@@ -1408,7 +1409,7 @@ BEGIN
         RIGHTMARGIN, 184
         VERTGUIDE, 11
         TOPMARGIN, 7
-        BOTTOMMARGIN, 129
+        BOTTOMMARGIN, 131
     END
 
     IDD_SET_PATH_DIALOG, DIALOG
@@ -2993,6 +2994,8 @@ END
 
 IDR_TEXT1               TEXT                    "Help.txt"
 
+IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement.txt"
+
 IDR_COMPILE_TIME        TEXT                    "compile_time.txt"
 
 
@@ -3901,6 +3904,7 @@ BEGIN
     IDS_PLAYLIST_EMPTY_INFO "播放列表为空。"
     IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP 
                             "勾选此项后，在切换播放列表时，如果新的播放列表中存在正在播放的曲目，则在切换播放列表后继续播放当前播放的曲目。"
+    IDS_ACKNOWLEDGEMENT     "鸣谢"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -3918,28 +3922,30 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 187, 133
+IDD_ABOUTBOX DIALOGEX 0, 0, 222, 139
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About MusicPlayer2"
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
-    LTEXT           "MusicPlayer2, V<version>",IDC_STATIC_VERSION,13,36,158,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2017-<year> By ZhongYang\nLast compiled date: <compile_date>",IDC_STATIC_COPYRIGHT,13,47,158,18
-    DEFPUSHBUTTON   "OK",IDOK,132,114,48,14,WS_GROUP
-    CONTROL         "<a>Contract author</a>",IDC_SYSLINK1,"SysLink",0x0,13,112,57,8
-    CONTROL         "<a>Check for update</a>",IDC_SYSLINK2,"SysLink",WS_TABSTOP,13,121,61,8
-    CONTROL         "<a>GitHub</a>",IDC_GITHUB_SYSLINK,"SysLink",WS_TABSTOP,71,112,30,10
-    CONTROL         "<a>Donate</a>",IDC_DONATE_SYSLINK,"SysLink",WS_TABSTOP,83,121,33,8
-    CONTROL         "<a>License</a>",IDC_LICENSE_SYSLINK,"SysLink",WS_TABSTOP,101,112,30,10
-    LTEXT           "The third-party libraries used in this project:",IDC_STATIC,13,67,159,8
-    CONTROL         "<a>BASS</a>",IDC_SYSLINK_BASS,"SysLink",WS_TABSTOP,13,77,27,9
-    CONTROL         "<a>TagLib</a>",IDC_SYSLINK_TAGLIB,"SysLink",WS_TABSTOP,44,77,35,9
-    CONTROL         "<a>TinyXML2</a>",IDC_SYSLINK_TINYXML2,"SysLink",WS_TABSTOP,82,77,40,9
-    CONTROL         "<a>Scintilla</a>",IDC_SYSLINK_SCINTILLA,"SysLink",WS_TABSTOP,135,77,38,9
-    LTEXT           "The author's other software:",IDC_STATIC,13,88,144,8
+    LTEXT           "MusicPlayer2, V<version>",IDC_STATIC_VERSION,13,41,158,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2017-<year> By ZhongYang\nLast compiled date: <compile_date>",IDC_STATIC_COPYRIGHT,13,52,158,18
+    DEFPUSHBUTTON   "OK",IDOK,167,119,48,14,WS_GROUP
+    CONTROL         "<a>Contract author</a>",IDC_SYSLINK1,"SysLink",0x0,8,117,57,8
+    CONTROL         "<a>Check for update</a>",IDC_SYSLINK2,"SysLink",WS_TABSTOP,8,126,59,8
+    CONTROL         "<a>GitHub</a>",IDC_GITHUB_SYSLINK,"SysLink",WS_TABSTOP,69,117,30,10
+    CONTROL         "<a>Donate</a>",IDC_DONATE_SYSLINK,"SysLink",WS_TABSTOP,69,126,28,8
+    CONTROL         "<a>License</a>",IDC_LICENSE_SYSLINK,"SysLink",WS_TABSTOP,100,117,30,10
+    LTEXT           "The third-party libraries used in this project:",IDC_STATIC,13,72,159,8
+    CONTROL         "<a>BASS</a>",IDC_SYSLINK_BASS,"SysLink",WS_TABSTOP,13,82,27,9
+    CONTROL         "<a>TagLib</a>",IDC_SYSLINK_TAGLIB,"SysLink",WS_TABSTOP,44,82,35,9
+    CONTROL         "<a>TinyXML2</a>",IDC_SYSLINK_TINYXML2,"SysLink",WS_TABSTOP,82,82,40,9
+    CONTROL         "<a>Scintilla</a>",IDC_SYSLINK_SCINTILLA,"SysLink",WS_TABSTOP,135,82,38,9
+    LTEXT           "The author's other software:",IDC_STATIC,13,93,144,8
     CONTROL         "<a>TrafficMonitor</a>",IDC_SYSLINK_TRAFFICMONITOR,
-                    "SysLink",WS_TABSTOP,13,97,59,9
-    CONTROL         "<a>SimpleNotePad</a>",IDC_SYSLINK_SIMPLENOTEPAD,"SysLink",WS_TABSTOP,80,97,59,9
+                    "SysLink",WS_TABSTOP,13,102,59,9
+    CONTROL         "<a>SimpleNotePad</a>",IDC_SYSLINK_SIMPLENOTEPAD,"SysLink",WS_TABSTOP,80,102,59,9
+    CONTROL         "<a>Acknowledgement</a>",IDC_ACKNOWLEDGEMENT_SYSLINK,
+                    "SysLink",WS_TABSTOP,100,126,66,8
 END
 
 IDD_APPEREANCE_SETTING_DLG DIALOGEX 0, 0, 338, 469
@@ -4893,9 +4899,9 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 180
+        RIGHTMARGIN, 215
         TOPMARGIN, 7
-        BOTTOMMARGIN, 130
+        BOTTOMMARGIN, 136
     END
 
     IDD_APPEREANCE_SETTING_DLG, DIALOG
@@ -6429,6 +6435,8 @@ IDR_TEXT1               TEXT                    "Help_en_us.txt"
 
 IDR_LICENSE             TEXT                    "..\\LICENSE"
 
+IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement_en.txt"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -7223,6 +7231,7 @@ BEGIN
     IDS_PLAYLIST_EMPTY_INFO "The playlist is empty."
     IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP 
                             "When this option is selected, if the playing track exists in the new playlist, the playing track will continue to be played after the playlist is switched."
+    IDS_ACKNOWLEDGEMENT     "Acknowledgement"
 END
 
 #endif    // 英语(美国) resources

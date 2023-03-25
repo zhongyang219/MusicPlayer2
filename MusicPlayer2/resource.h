@@ -781,6 +781,7 @@
 #define IDS_APP_RUNING_INFO             587
 #define IDI_FIX_D                       587
 #define IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 588
+#define IDR_ACKNOWLEDGEMENT             588
 #define IDS_EXCLUSIVE_MODE              589
 #define IDS_PLAYLIST_FIX_PATH_ERROR_INFO 590
 #define IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE 591
@@ -789,6 +790,7 @@
 #define IDS_RECENT_FOLDER_OR_PLAYLIST   594
 #define IDS_PLAYLIST_EMPTY_INFO         595
 #define IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP 596
+#define IDS_ACKNOWLEDGEMENT             597
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1223,6 +1225,7 @@
 #define IDC_CHECK9                      1223
 #define IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK 1223
 #define IDC_FFMPEG_MAX_WAIT_TIME        1224
+#define IDC_ACKNOWLEDGEMENT_SYSLINK     1225
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1676,9 +1679,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        588
+#define _APS_NEXT_RESOURCE_VALUE        589
 #define _APS_NEXT_COMMAND_VALUE         33464
-#define _APS_NEXT_CONTROL_VALUE         1225
+#define _APS_NEXT_CONTROL_VALUE         1226
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
