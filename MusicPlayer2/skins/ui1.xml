@@ -1,0 +1,170 @@
+﻿<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2101/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
+      name="%(528) 1">
+
+  <ui type="big">
+    <verticalLayout margin="4">
+      <horizontalLayout height="90">
+        <rectangle width="118" no_corner_radius="true">
+          <albumCover margin="2">
+            <spectrum draw_reflex="false" fixed_width="true" alignment="left" height="60%" margin-bottom="0"/>
+          </albumCover>
+        </rectangle>
+        <verticalLayout margin-left="4">
+          <trackInfo/>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(161):"/>
+            <text type="title"/>
+          </horizontalLayout>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(164):"/>
+            <text type="artist"/>
+          </horizontalLayout>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(165):"/>
+            <text type="album"/>
+          </horizontalLayout>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(166):"/>
+            <text type="format"/>
+          </horizontalLayout>
+        </verticalLayout>
+      </horizontalLayout>
+      <rectangle height="24" margin-top="6">
+        <toolbar show_translate_btn="false"/>
+      </rectangle>
+      <horizontalLayout height="36" margin-top="4">
+        <button key="stop" bigIcon="true" width="36"/>
+        <button key="previous" bigIcon="true" width="36"/>
+        <button key="playPause" bigIcon="true" width="36"/>
+        <button key="next" bigIcon="true" width="36"/>
+        <progressBar show_play_time="true" margin="4"/>
+        <button key="favorite" width="24" height="24"/>
+        <button key="mediaLib" width="24" height="24"/>
+        <button key="switchDisplay" width="24" height="24"/>
+        <button key="showPlaylist" width="24" height="24"/>
+      </horizontalLayout>
+      <stackElement>
+        <verticalLayout>
+          <horizontalLayout height="24" margin-left="6" margin-right="6">
+            <text type="userDefine" text="%(171):"/>
+            <placeHolder/>
+            <button key="lyricTranslate" width="24" height="24"/>
+          </horizontalLayout>
+          <lyrics margin-top="4" margin-left="6" margin-right="6" margin-bottom="6"/>
+        </verticalLayout>
+        <verticalLayout margin="4">
+          <playlistIndicator height="30" margin-bottom="4"/>
+          <playlist/>
+        </verticalLayout>
+      </stackElement>
+    </verticalLayout>
+  </ui>
+
+  <ui type="narrow">
+    <verticalLayout margin="4">
+      <horizontalLayout height="90">
+        <rectangle width="118" no_corner_radius="true">
+          <albumCover margin="2">
+            <spectrum draw_reflex="false" fixed_width="true" alignment="left" height="60%" margin-bottom="0"/>
+          </albumCover>
+        </rectangle>
+        <verticalLayout margin-left="4">
+          <trackInfo/>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(161):"/>
+            <text type="title"/>
+          </horizontalLayout>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(164):"/>
+            <text type="artist"/>
+          </horizontalLayout>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(165):"/>
+            <text type="album"/>
+          </horizontalLayout>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(166):"/>
+            <text type="format"/>
+          </horizontalLayout>
+        </verticalLayout>
+      </horizontalLayout>
+      <rectangle height="24" margin-top="6">
+        <toolbar show_translate_btn="false"/>
+      </rectangle>
+      <progressBar show_play_time="true" height="22"/>
+      <horizontalLayout height="36">
+        <button key="stop" bigIcon="true" width="36"/>
+        <button key="previous" bigIcon="true" width="36"/>
+        <button key="playPause" bigIcon="true" width="36"/>
+        <button key="next" bigIcon="true" width="36"/>
+        <placeHolder/>
+        <button key="favorite" width="24" height="24"/>
+        <button key="mediaLib" width="24" height="24"/>
+        <button key="switchDisplay" width="24" height="24"/>
+        <button key="showPlaylist" width="24" height="24"/>
+      </horizontalLayout>
+      <stackElement>
+        <verticalLayout>
+          <horizontalLayout height="24" margin-left="6" margin-right="6">
+            <text type="userDefine" text="%(171):"/>
+            <placeHolder/>
+            <button key="lyricTranslate" width="24" height="24"/>
+          </horizontalLayout>
+          <lyrics margin-top="4" margin-left="6" margin-right="6" margin-bottom="6"/>
+        </verticalLayout>
+        <verticalLayout margin="4">
+          <playlistIndicator height="30" margin-bottom="4"/>
+          <playlist/>
+        </verticalLayout>
+      </stackElement>
+    </verticalLayout>
+  </ui>
+
+  <ui type="small">
+    <verticalLayout margin="4">
+      <horizontalLayout height="90">
+        <rectangle width="118" no_corner_radius="true">
+          <albumCover margin="2">
+            <spectrum draw_reflex="false" fixed_width="true" alignment="left" height="60%" margin-bottom="0"/>
+          </albumCover>
+        </rectangle>
+        <verticalLayout margin-left="4">
+          <trackInfo/>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(161):"/>
+            <text type="title"/>
+          </horizontalLayout>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(164):"/>
+            <text type="artist"/>
+          </horizontalLayout>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(165):"/>
+            <text type="album"/>
+          </horizontalLayout>
+          <horizontalLayout>
+            <text width="54" type="userDefine" text="%(166):"/>
+            <text type="format"/>
+          </horizontalLayout>
+        </verticalLayout>
+      </horizontalLayout>
+      <rectangle height="24" margin-top="4">
+        <toolbar show_translate_btn="false"/>
+      </rectangle>
+      <lyrics margin-top="4" hide-height="192"/>
+      <progressBar show_play_time="true" height="20"/>
+      <horizontalLayout max-height="36">
+        <button key="stop" bigIcon="true" width="36"/>
+        <button key="previous" bigIcon="true" width="36"/>
+        <button key="playPause" bigIcon="true" width="36"/>
+        <button key="next" bigIcon="true" width="36"/>
+        <placeHolder/>
+        <button key="favorite" width="24" height="24"/>
+        <button key="mediaLib" width="24" height="24"/>
+        <button key="showPlaylist" width="24" height="24"/>
+      </horizontalLayout>
+    </verticalLayout>
+  </ui>
+
+
+</root>

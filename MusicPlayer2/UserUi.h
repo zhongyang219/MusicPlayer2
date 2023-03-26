@@ -8,8 +8,10 @@ class CUserUi :
 {
 public:
     CUserUi(CWnd* pMainWnd, const std::wstring& xml_path);
+    CUserUi(CWnd* pMainWnd);    //此构造函数不传递xml文件的路径，需要使用LoadFromContents函数直接读取xml文件的内容
     ~CUserUi();
 
+    void LoadFromContents(const std::string& xml_contents);
     void SetIndex(int index);
     bool IsIndexValid() const;
 
@@ -62,6 +64,5 @@ protected:
     const std::vector<std::shared_ptr<UiElement::Element>>& GetStackElements() const;
 
 protected:
-    void LoadUi();      //从xml文件载入界面
     virtual void SwitchStackElement() override;
 };

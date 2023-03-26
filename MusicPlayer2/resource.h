@@ -783,7 +783,9 @@
 #define IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 588
 #define IDR_ACKNOWLEDGEMENT             588
 #define IDS_EXCLUSIVE_MODE              589
+#define IDR_UI1                         589
 #define IDS_PLAYLIST_FIX_PATH_ERROR_INFO 590
+#define IDR_UI2                         590
 #define IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE 591
 #define IDS_LOCATE                      592
 #define IDS_PLAYLIST_MENU               593
@@ -1682,7 +1684,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        589
+#define _APS_NEXT_RESOURCE_VALUE        591
 #define _APS_NEXT_COMMAND_VALUE         33464
 #define _APS_NEXT_CONTROL_VALUE         1226
 #define _APS_NEXT_SYMED_VALUE           101

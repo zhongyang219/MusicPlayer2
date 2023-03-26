@@ -1726,23 +1726,35 @@ bool CCommon::GetNumberBit(unsigned short num, int bit)
     return (num & (1 << bit)) != 0;
 }
 
-CString CCommon::GetTextResource(UINT id, CodeType code_type)
+std::string CCommon::GetTextResourceRawData(UINT id)
 {
-    CString res_str;
+    std::string res_data;
     HRSRC hRes = FindResource(NULL, MAKEINTRESOURCE(id), _T("TEXT"));
     if (hRes != NULL)
     {
         HGLOBAL hglobal = LoadResource(NULL, hRes);
         if (hglobal != NULL)
         {
-            if (code_type == CodeType::UTF16LE)
-            {
-                res_str = (const wchar_t*)hglobal;
-            }
-            else
-            {
-                res_str = CCommon::StrToUnicode((const char*)hglobal, code_type).c_str();
-            }
+            res_data = (const char*)hglobal;
+        }
+    }
+    return res_data;
+}
+
+CString CCommon::GetTextResource(UINT id, CodeType code_type)
+{
+    std::string res_data = GetTextResourceRawData(id);
+    res_data.push_back('\0');
+    CString res_str;
+    if (!res_data.empty())
+    {
+        if (code_type == CodeType::UTF16LE)
+        {
+            res_str = (const wchar_t*)res_data.c_str();
+        }
+        else
+        {
+            res_str = CCommon::StrToUnicode(res_data, code_type).c_str();
         }
     }
     return res_str;

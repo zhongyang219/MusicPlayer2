@@ -6438,6 +6438,10 @@ IDR_TEXT1               TEXT                    "Help_en_us.txt"
 
 IDR_LICENSE             TEXT                    "..\\LICENSE"
 
+IDR_UI1                 TEXT                    "skins\\ui1.xml"
+
+IDR_UI2                 TEXT                    "skins\\ui2.xml"
+
 IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement_en.txt"
 
 

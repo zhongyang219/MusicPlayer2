@@ -4,12 +4,49 @@
 CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
     : CPlayerUIBase(theApp.m_ui_data, pMainWnd), m_xml_path(xml_path)
 {
-    LoadUi();
+    size_t length;
+    const char* xml_contents = CCommon::GetFileContent(m_xml_path.c_str(), length);
+    LoadFromContents(std::string(xml_contents, length));
+    delete[] xml_contents;
+}
+
+CUserUi::CUserUi(CWnd* pMainWnd)
+    : CPlayerUIBase(theApp.m_ui_data, pMainWnd)
+{
 }
 
 
 CUserUi::~CUserUi()
 {
+}
+
+void CUserUi::LoadFromContents(const std::string& xml_contents)
+{
+    m_stack_elements.clear();
+    tinyxml2::XMLDocument xml_doc;
+    xml_doc.Parse(xml_contents.c_str());
+    tinyxml2::XMLElement* root = xml_doc.RootElement();
+    m_ui_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(root, "name"), CodeType::UTF8_NO_BOM);
+    CCommon::ReplaceUiStringRes(m_ui_name);
+    std::string ui_index = CTinyXml2Helper::ElementAttribute(root, "index");
+    if (!ui_index.empty())
+        m_index = atoi(ui_index.c_str());
+    CTinyXml2Helper::IterateChildNode(root, [&](tinyxml2::XMLElement* xml_child)
+        {
+            std::string item_name = CTinyXml2Helper::ElementName(xml_child);
+            if (item_name == "ui")
+            {
+                std::string str_type = CTinyXml2Helper::ElementAttribute(xml_child, "type");
+                if (str_type == "big")
+                    m_root_ui_big = BuildUiElementFromXmlNode(xml_child);
+                else if (str_type == "narrow")
+                    m_root_ui_narrow = BuildUiElementFromXmlNode(xml_child);
+                else if (str_type == "small")
+                    m_root_ui_small = BuildUiElementFromXmlNode(xml_child);
+                else
+                    m_root_default = BuildUiElementFromXmlNode(xml_child);
+            }
+        });
 }
 
 void CUserUi::SetIndex(int index)
@@ -689,35 +726,6 @@ const std::vector<std::shared_ptr<UiElement::Element>>& CUserUi::GetStackElement
         return iter->second;
     static std::vector<std::shared_ptr<UiElement::Element>> vec_empty;
     return vec_empty;
-}
-
-void CUserUi::LoadUi()
-{
-    m_stack_elements.clear();
-    tinyxml2::XMLDocument xml_doc;
-    CTinyXml2Helper::LoadXmlFile(xml_doc, m_xml_path.c_str());
-    tinyxml2::XMLElement* root = xml_doc.RootElement();
-    m_ui_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(root, "name"), CodeType::UTF8_NO_BOM);
-    CCommon::ReplaceUiStringRes(m_ui_name);
-    std::string ui_index = CTinyXml2Helper::ElementAttribute(root, "index");
-    if (!ui_index.empty())
-        m_index = atoi(ui_index.c_str());
-    CTinyXml2Helper::IterateChildNode(root, [&](tinyxml2::XMLElement* xml_child)
-        {
-            std::string item_name = CTinyXml2Helper::ElementName(xml_child);
-            if (item_name == "ui")
-            {
-                std::string str_type = CTinyXml2Helper::ElementAttribute(xml_child, "type");
-                if (str_type == "big")
-                    m_root_ui_big = BuildUiElementFromXmlNode(xml_child);
-                else if (str_type == "narrow")
-                    m_root_ui_narrow = BuildUiElementFromXmlNode(xml_child);
-                else if (str_type == "small")
-                    m_root_ui_small = BuildUiElementFromXmlNode(xml_child);
-                else
-                    m_root_default = BuildUiElementFromXmlNode(xml_child);
-            }
-        });
 }
 
 void CUserUi::SwitchStackElement()

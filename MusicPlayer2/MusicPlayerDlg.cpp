@@ -26,8 +26,6 @@
 #include "SongDataManager.h"
 #include "TagFromFileNameDlg.h"
 #include "PropertyDlgHelper.h"
-#include "CPlayerUI.h"
-#include "CPlayerUI2.h"
 #include "TagLibHelper.h"
 #include "RecentFolderAndPlaylist.h"
 #include "UserUi.h"
@@ -51,8 +49,14 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     m_path_edit.SetTooltopText(CCommon::LoadText(IDS_RECENT_FOLDER_OR_PLAYLIST));
 
     //初始化UI
-    m_ui_list.push_back(std::make_shared<CPlayerUI>(theApp.m_ui_data, &m_ui_static_ctrl));
-    m_ui_list.push_back(std::make_shared<CPlayerUI2>(theApp.m_ui_data, &m_ui_static_ctrl));
+    //加载内置界面
+    std::shared_ptr<CUserUi> ui1 = std::make_shared<CUserUi>(&m_ui_static_ctrl);
+    std::shared_ptr<CUserUi> ui2 = std::make_shared<CUserUi>(&m_ui_static_ctrl);
+    ui1->LoadFromContents(CCommon::GetTextResourceRawData(IDR_UI1));
+    ui2->LoadFromContents(CCommon::GetTextResourceRawData(IDR_UI2));
+    m_ui_list.push_back(ui1);
+    m_ui_list.push_back(ui2);
+
     //加载skins目录下的用户自定义界面
     std::vector<std::shared_ptr<CUserUi>> user_ui_list_with_index;      //指定了序号的用户自定义界面
     std::vector<std::shared_ptr<CUserUi>> user_ui_list;                 //未指定序号的用户自定义界面
@@ -688,7 +692,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode = ini.GetBool(L"config", L"ffmpeg_core_enable_WASAPI_exclusive_mode", false);
     theApp.m_play_setting_data.ffmpeg_core_max_wait_time = ini.GetInt(L"config", L"ffmpeg_core_max_wait_time", 3000);
 
-    int ui_selected = ini.GetInt(L"config", L"UI_selected", 9);
+    int ui_selected = ini.GetInt(L"config", L"UI_selected", 1);
     if (ui_selected < 0 || ui_selected >= static_cast<int>(m_ui_list.size()))
     {
         if (m_ui_list.size() >= 2)
@@ -1846,7 +1850,6 @@ void CMusicPlayerDlg::InitUiMenu()
 
             pMenu->AppendMenu(MF_SEPARATOR);
 
-            bool user_ui_separator_added{};
             for (size_t i{}; i < m_ui_list.size() && i < SELECT_UI_MAX_SIZE; i++)
             {
                 CString str_name = m_ui_list[i]->GetUIName();   //获取界面的名称
@@ -1863,15 +1866,8 @@ void CMusicPlayerDlg::InitUiMenu()
                 {
                     str_name += _T("\tCtrl+0");
                 }
-                if (!user_ui_separator_added)
-                {
-                    CUserUi* user_ui = dynamic_cast<CUserUi*>(m_ui_list[i].get());
-                    if (user_ui != nullptr)     //在用户界面前面添加一个分隔符
-                    {
-                        pMenu->AppendMenu(MF_SEPARATOR);
-                        user_ui_separator_added = true;
-                    }
-                }
+                if (i == 2)
+                    pMenu->AppendMenu(MF_SEPARATOR);
                 pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_SWITCH_UI + i + 1, str_name);
             }
         }
