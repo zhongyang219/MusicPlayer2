@@ -353,6 +353,9 @@ public:
     //从资源文件中载入字符串，并将资源字符串中形如<%序号%>的字符串替换成可变参数列表中的参数
     static CString LoadTextFormat(UINT id, const std::initializer_list<CVariant>& paras);
 
+    //将字符串形如“%(数字)”格式的字符替换成字符串资源中对应id的字符串
+    static void ReplaceUiStringRes(std::wstring& str);
+
     //设置线程语言
     static void SetThreadLanguage(Language language);
 

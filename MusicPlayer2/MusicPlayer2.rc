@@ -3905,6 +3905,9 @@ BEGIN
     IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP 
                             "勾选此项后，在切换播放列表时，如果新的播放列表中存在正在播放的曲目，则在切换播放列表后继续播放当前播放的曲目。"
     IDS_ACKNOWLEDGEMENT     "鸣谢"
+    IDS_SIMPLE_UI           "简洁UI"
+    IDS_GROOVE_MUSIC_STYLE  "Groove音乐风格"
+    IDS_DEFAULT_UI          "默认界面"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -7232,6 +7235,9 @@ BEGIN
     IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP 
                             "When this option is selected, if the playing track exists in the new playlist, the playing track will continue to be played after the playlist is switched."
     IDS_ACKNOWLEDGEMENT     "Acknowledgement"
+    IDS_SIMPLE_UI           "Simple UI"
+    IDS_GROOVE_MUSIC_STYLE  "Groove Style"
+    IDS_DEFAULT_UI          "Default UI"
 END
 
 #endif    // 英语(美国) resources

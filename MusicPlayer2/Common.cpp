@@ -1407,6 +1407,31 @@ CString CCommon::LoadTextFormat(UINT id, const std::initializer_list<CVariant>& 
     return StringFormat(str.GetString(), paras);
 }
 
+void CCommon::ReplaceUiStringRes(std::wstring& str)
+{
+    size_t index{};
+    while (true)
+    {
+        index = str.find(L"%(", index);
+        if (index == std::wstring::npos)
+            break;
+        size_t right_bracket_index = str.find(L')', index + 2);
+        if (right_bracket_index == std::wstring::npos)
+            break;
+        int res_id = _wtoi(str.substr(index + 2, right_bracket_index - index - 2).c_str());
+        std::wstring res_str = LoadText(static_cast<UINT>(res_id)).GetString();
+        if (!res_str.empty())
+        {
+            str.replace(index, right_bracket_index - index + 1, res_str);
+            index += res_str.size();
+        }
+        else
+        {
+            index = right_bracket_index + 1;
+        }
+    }
+}
+
 
 void CCommon::SetThreadLanguage(Language language)
 {

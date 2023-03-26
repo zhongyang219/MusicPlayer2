@@ -499,6 +499,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 //text
                 std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
                 text->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+                CCommon::ReplaceUiStringRes(text->text);
                 //alignment
                 std::string str_alignment = CTinyXml2Helper::ElementAttribute(xml_node, "alignment");
                 if (str_alignment == "left")
@@ -697,6 +698,7 @@ void CUserUi::LoadUi()
     CTinyXml2Helper::LoadXmlFile(xml_doc, m_xml_path.c_str());
     tinyxml2::XMLElement* root = xml_doc.RootElement();
     m_ui_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(root, "name"), CodeType::UTF8_NO_BOM);
+    CCommon::ReplaceUiStringRes(m_ui_name);
     std::string ui_index = CTinyXml2Helper::ElementAttribute(root, "index");
     if (!ui_index.empty())
         m_index = atoi(ui_index.c_str());

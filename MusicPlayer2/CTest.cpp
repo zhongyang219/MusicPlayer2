@@ -52,6 +52,7 @@ void CTest::Test()
 
     //TestCueSave();
     TestFilePathHelper();
+    TestReplaceStringRes();
 }
 
 void CTest::TestStringMatch()
@@ -260,4 +261,11 @@ void CTest::TestFilePathHelper()
     ASSERT(file_name_whthout_extension == L"efg");
     ASSERT(file_dir == L"C:\\abc.d\\");
     ASSERT(folder_name == L"abc.d");
+}
+
+void CTest::TestReplaceStringRes()
+{
+    wstring str{ L"abc%(118)eee%(263)" };
+    CCommon::ReplaceUiStringRes(str);
+    ASSERT(str == L"abc播放eee自动重命名");
 }
