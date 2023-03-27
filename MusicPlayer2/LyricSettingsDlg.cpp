@@ -6,7 +6,7 @@
 #include "LyricSettingsDlg.h"
 #include "afxdialogex.h"
 #include "CortanaLyric.h"
-
+#include "MusicPlayerDlg.h"
 
 // CLyricSettingsDlg 对话框
 
@@ -188,7 +188,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     str.Format(_T("%d%%"), m_data.desktop_lyric_data.opacity);
     SetDlgItemText(IDC_LYRIC_OPACITY_STATIC, str);
 
-    if (CWinVersionHelper::IsWindows10())    //搜索框显示播放信息只有Windows10可用
+    if (CWinVersionHelper::IsWindows10OrLater() && CMusicPlayerDlg::GetInstance()->GetCortanaLyric().IsSearchBoxAvailable())    //搜索框显示播放信息只有Windows10可用
     {
         m_cortana_info_enable_check.SetCheck(m_data.cortana_info_enable);
     }

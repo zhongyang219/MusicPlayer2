@@ -26,14 +26,38 @@ CCortanaLyric::~CCortanaLyric()
 
 void CCortanaLyric::Init()
 {
-    if (m_enable)
+    m_hCortanaBar = NULL;
+    HWND hTaskBar = ::FindWindow(_T("Shell_TrayWnd"), NULL);	//任务栏的句柄
+    if (CWinVersionHelper::IsWindows11OrLater())
     {
-        CSingleLock sync(&m_critical, TRUE);
-        HWND hTaskBar = ::FindWindow(_T("Shell_TrayWnd"), NULL);	//任务栏的句柄
+        m_hCortanaBar = ::FindWindowEx(hTaskBar, NULL, _T("SIBTrayButton"), NULL);      //如果找到类名为SIBTrayButton的窗口，则说明搜索框是通过StartAllBack软件实现的
+        
+        if (m_hCortanaBar != NULL)
+        {
+            //确保搜索框的宽度大于一定值
+            CRect rect_search_box;
+            ::GetClientRect(m_hCortanaBar, m_cortana_rect);
+            if (m_cortana_rect.Width() < theApp.DPI(64))
+                m_hCortanaBar = ::FindWindowEx(hTaskBar, m_hCortanaBar, _T("SIBTrayButton"), NULL); //查找下一个SIBTrayButton
+        }
+
+        if (m_hCortanaBar != NULL)
+        {
+            m_cortana_hwnd = m_hCortanaBar;
+            m_hCortanaStatic = m_hCortanaBar;
+        }
+    }
+    if (m_hCortanaBar == NULL)
+    {
         m_hCortanaBar = ::FindWindowEx(hTaskBar, NULL, _T("TrayDummySearchControl"), NULL);	//Cortana栏的句柄（其中包含3个子窗口）
         m_cortana_hwnd = ::FindWindowEx(m_hCortanaBar, NULL, _T("Button"), NULL);	//Cortana搜索框中类名为“Button”的窗口的句柄
         m_hCortanaStatic = ::FindWindowEx(m_hCortanaBar, NULL, _T("Static"), NULL);		//Cortana搜索框中类名为“Static”的窗口的句柄
-        if (m_cortana_hwnd == NULL) return;
+    }
+    if (m_cortana_hwnd == NULL)
+        return;
+    if (m_enable)
+    {
+        CSingleLock sync(&m_critical, TRUE);
         wchar_t buff[32];
         ::GetWindowText(m_cortana_hwnd, buff, 31);		//获取Cortana搜索框中原来的字符串，用于在程序退出时恢复
         m_cortana_default_text = buff;
@@ -106,7 +130,7 @@ void CCortanaLyric::DrawInfo()
     bool is_midi_lyric = CPlayerUIHelper::IsMidiLyric();
 
     //不使用兼容模式显示歌词，直接在小娜搜索框内绘图
-    if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode)
+    if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode || CWinVersionHelper::IsWindows11OrLater())   //Windows11无法使用兼容模式显示歌词
     {
         if (m_pDC != nullptr)
         {
@@ -331,7 +355,7 @@ void CCortanaLyric::DrawSpectrum()
 
     m_draw.SetDrawArea(rc_spectrum);
     rc_spectrum.right += theApp.DPI(8);
-    m_draw.DrawSpectrum(rc_spectrum, CUIDrawer::SC_64, false, theApp.m_app_setting_data.spectrum_low_freq_in_center);
+    m_draw.DrawSpectrum(rc_spectrum, CUIDrawer::SC_64, false, theApp.m_app_setting_data.spectrum_low_freq_in_center, true);
     m_draw.SetDrawArea(m_cortana_rect);
 }
 
@@ -412,6 +436,11 @@ void CCortanaLyric::ApplySearchBoxTransparentChanged()
         m_cortana_opaque = false;
         SetCortanaBarOpaque(true);
     }
+}
+
+bool CCortanaLyric::IsSearchBoxAvailable() const
+{
+    return m_cortana_hwnd != NULL;
 }
 
 void CCortanaLyric::AlbumCoverEnable(bool enable)

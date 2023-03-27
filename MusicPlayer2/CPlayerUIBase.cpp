@@ -151,7 +151,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
 
             //更新任务栏缩略图区域
             CRect thumbnail_rect = GetThumbnailClipArea();
-            CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+            CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
             if (pMainWindow != nullptr)
             {
                 pMainWindow->SetThumbnailClipArea(thumbnail_rect);

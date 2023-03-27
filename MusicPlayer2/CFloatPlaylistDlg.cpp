@@ -305,7 +305,7 @@ void CFloatPlaylistDlg::OnSize(UINT nType, int cx, int cy)
 void CFloatPlaylistDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* main_wnd = CMusicPlayerDlg::GetInstance();
     if (main_wnd != nullptr)
         main_wnd->SetUiPlaylistSelected(pNMItemActivate->iItem);
     if (!m_searched)
@@ -334,7 +334,7 @@ void CFloatPlaylistDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 void CFloatPlaylistDlg::OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* main_wnd = CMusicPlayerDlg::GetInstance();
     if (main_wnd != nullptr)
         main_wnd->SetUiPlaylistSelected(pNMItemActivate->iItem);
     if (!m_searched)	//如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
@@ -442,7 +442,7 @@ void CFloatPlaylistDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 void CFloatPlaylistDlg::OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* main_wnd = CMusicPlayerDlg::GetInstance();
     if (main_wnd != nullptr)
         main_wnd->SetUiPlaylistSelected(pNMItemActivate->iItem);
     GetPlaylistItemSelected();
@@ -458,7 +458,7 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
         if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
         {
             //响应Accelerator中设置的快捷键
-            CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+            CMusicPlayerDlg* main_wnd = CMusicPlayerDlg::GetInstance();
             if (main_wnd != nullptr && main_wnd->GetAccel() && ::TranslateAccelerator(m_hWnd, main_wnd->GetAccel(), pMsg))
                 return TRUE;
         }
@@ -546,7 +546,7 @@ afx_msg LRESULT CFloatPlaylistDlg::OnMainWindowActivated(WPARAM wParam, LPARAM l
 void CFloatPlaylistDlg::OnDropFiles(HDROP hDropInfo)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* main_wnd = CMusicPlayerDlg::GetInstance();
     if (main_wnd != nullptr)
         main_wnd->OnDropFiles(hDropInfo);
     else
@@ -574,7 +574,7 @@ BOOL CFloatPlaylistDlg::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     //转发给主窗口
-    CMusicPlayerDlg* main_wnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* main_wnd = CMusicPlayerDlg::GetInstance();
     if (main_wnd != nullptr)
         return main_wnd->OnCopyData(pWnd, pCopyDataStruct);
     else

@@ -46,7 +46,7 @@ void CMusicPlayerCmdHelper::FormatConvert(const std::vector<SongInfo>& songs)
 {
     if (!theApp.m_format_convert_dialog_exit)
         return;
-    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (pPlayerDlg == nullptr)
         return;
 
@@ -98,7 +98,7 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
         std::vector<SongInfo> selected_item_path;
         get_song_list(selected_item_path);
 
-        CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+        CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
 
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
@@ -126,7 +126,7 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         std::vector<SongInfo> selected_item_path;
         get_song_list(selected_item_path);
 
-        CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+        CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
 
         if (command == ID_ADD_TO_OTHER_PLAYLIST)
         {
@@ -615,7 +615,7 @@ bool CMusicPlayerCmdHelper::Rename(SongInfo& song, const wstring& new_name)
 
 void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_show)
 {
-    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (pPlayerDlg == nullptr)
         return;
 
@@ -655,7 +655,7 @@ void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_sho
 
 void CMusicPlayerCmdHelper::RefreshMediaTabData(enum eMediaLibTab tab_index)
 {
-    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
     {
         if (tab_index == ML_FOLDER)
@@ -690,7 +690,7 @@ void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
             return;
     }
     ShowMediaLib(CMusicPlayerCmdHelper::ML_ARTIST, MLDI_ARTIST);
-    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(artist))
     {
         pPlayerDlg->MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ARTIST_WARNING, { artist }), NULL, MB_OK | MB_ICONWARNING);
@@ -701,7 +701,7 @@ void CMusicPlayerCmdHelper::OnViewAlbum(const SongInfo& song_info)
 {
     wstring album = song_info.GetAlbum();
     ShowMediaLib(CMusicPlayerCmdHelper::ML_ALBUM, MLDI_ALBUM);
-    CMusicPlayerDlg* pPlayerDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(album))
     {
         pPlayerDlg->MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ALBUM_WARNING, { album }), NULL, MB_OK | MB_ICONWARNING);

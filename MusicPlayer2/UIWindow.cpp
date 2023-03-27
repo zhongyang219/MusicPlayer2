@@ -44,7 +44,7 @@ void CUIWindow::OnLButtonUp(UINT nFlags, CPoint point)
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     m_bTitlebarLButtonDown = false; // 此次仅为点击不是拖动
 
-    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
     auto pUi = pMainWindow->GetCurrentUi();
     pMainWindow->SetFocus();
 
@@ -70,7 +70,7 @@ void CUIWindow::OnLButtonUp(UINT nFlags, CPoint point)
 void CUIWindow::OnLButtonDown(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
     auto pUi = pMainWindow->GetCurrentUi();
     if ((pUi->PointInTitlebarArea(point) || pUi->PointInMenubarArea(point)) && !pUi->PointInControlArea(point) && !pUi->PointInAppIconArea(point))        //如果鼠标按下的地方是绘制的标题栏区域，并且不是按钮，则拖动窗口
     {
@@ -89,7 +89,7 @@ void CUIWindow::OnLButtonDown(UINT nFlags, CPoint point)
 void CUIWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
     auto pUi = pMainWindow->GetCurrentUi();
     if (pUi->PointInAppIconArea(point))
     {
@@ -127,7 +127,7 @@ void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
     if (m_bTitlebarLButtonDown)
     {
         m_bTitlebarLButtonDown = false;
-        CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+        CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
         // 以下处理为屏幕坐标
         CRect rect_max;
         pMainWindow->GetWindowRect(rect_max);                   // 获取最大化窗口位置信息
@@ -154,7 +154,7 @@ void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
 void CUIWindow::OnRButtonUp(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
     auto pUi = pMainWindow->GetCurrentUi();
     if ((pUi->PointInTitlebarArea(point) || pUi->PointInMenubarArea(point)) && !pUi->PointInControlArea(point))        //如果鼠标按下的地方是绘制的标题栏区域，并且不是按钮，则弹出系统菜单
     {
@@ -182,7 +182,7 @@ void CUIWindow::OnPaint()
     CPaintDC dc(this); // device context for painting
                        // TODO: 在此处添加消息处理程序代码
                        // 不为绘图消息调用 CStatic::OnPaint()
-    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
     //需要重绘时通知线程强制重绘
     if (pMainWindow != nullptr)
         pMainWindow->m_ui_thread_para.ui_force_refresh = true;
@@ -197,7 +197,7 @@ void CUIWindow::OnSize(UINT nType, int cx, int cy)
     theApp.m_ui_data.draw_area_width = cx;
     theApp.m_ui_data.draw_area_height = cy;
 
-    CMusicPlayerDlg* pMainWindow = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
     if (pMainWindow != nullptr)
     {
         pMainWindow->m_ui_thread_para.ui_force_refresh = true;

@@ -1156,7 +1156,7 @@ int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)
 void UiElement::Playlist::Clicked(CPoint point)
 {
     item_selected = GetPlaylistIndexByPoint(point);
-    CMusicPlayerDlg* pMainWnd = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    CMusicPlayerDlg* pMainWnd = CMusicPlayerDlg::GetInstance();
     if (pMainWnd != nullptr)
         pMainWnd->SetPlaylistSelected(item_selected);
     selected_item_scroll_info.Reset();

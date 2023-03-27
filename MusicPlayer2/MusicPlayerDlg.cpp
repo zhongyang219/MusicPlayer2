@@ -99,6 +99,11 @@ CMusicPlayerDlg::~CMusicPlayerDlg()
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
 }
 
+CMusicPlayerDlg* CMusicPlayerDlg::GetInstance()
+{
+    return dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+}
+
 bool CMusicPlayerDlg::IsTaskbarListEnable() const
 {
 #ifdef COMPILE_IN_WIN_XP
@@ -550,10 +555,10 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
     theApp.m_media_lib_setting_data.display_format = static_cast<DisplayFormat>(ini.GetInt(L"config", L"playlist_display_format", 2));
     theApp.m_lyric_setting_data.cortana_show_lyric = ini.GetBool(L"config", L"cortana_show_lyric", true);
-    if (CWinVersionHelper::IsWindows11OrLater())        //Windows11没有搜索框，禁用搜索框显示播放信息
-        theApp.m_lyric_setting_data.cortana_info_enable = false;
-    else
-        theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
+    //if (CWinVersionHelper::IsWindows11OrLater())        //Windows11没有搜索框，禁用搜索框显示播放信息
+    //    theApp.m_lyric_setting_data.cortana_info_enable = false;
+    //else
+    theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
     // theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
     theApp.m_lyric_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
     theApp.m_lyric_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
