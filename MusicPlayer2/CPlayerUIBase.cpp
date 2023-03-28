@@ -1046,6 +1046,8 @@ void CPlayerUIBase::DrawBeatIndicator(CRect rect)
         //else
         //  progress = (time.toInt() * 1000 / CPlayer::GetInstance().GetMidiInfo().tempo % 4 + 1) * 250;
         progress = (CPlayer::GetInstance().GetMidiInfo().midi_position % 4 + 1) * 250;
+        if (progress == 1000)
+            progress = 999;
     }
     else
     {
@@ -1456,6 +1458,7 @@ bool CPlayerUIBase::IsDrawMenuBar() const
 
 wstring CPlayerUIBase::GetDisplayFormatString()
 {
+    wstring result;
     int chans = CPlayer::GetInstance().GetChannels();
     int freq = CPlayer::GetInstance().GetFreq();
     CString chans_str;
@@ -1474,7 +1477,14 @@ wstring CPlayerUIBase::GetDisplayFormatString()
         swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
     else
         swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.GetString());
-    return buff;
+    result = buff;
+    if (CPlayer::GetInstance().IsMidi())
+    {
+        const MidiInfo& midi_info{ CPlayer::GetInstance().GetMidiInfo() };
+        swprintf_s(buff, L" %dbpm (%d/%d)", midi_info.speed, midi_info.midi_position, midi_info.midi_length);
+        result += buff;
+    }
+    return result;
 
 }
 
