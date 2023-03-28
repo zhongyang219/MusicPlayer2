@@ -13,19 +13,19 @@
           <trackInfo/>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(161):"/>
-            <text type="title"/>
+            <text type="title" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(164):"/>
-            <text type="artist"/>
+            <text type="artist" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(165):"/>
-            <text type="album"/>
+            <text type="album" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(166):"/>
-            <text type="format"/>
+            <text type="format" style="scroll"/>
           </horizontalLayout>
         </verticalLayout>
       </horizontalLayout>
@@ -72,19 +72,19 @@
           <trackInfo/>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(161):"/>
-            <text type="title"/>
+            <text type="title" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(164):"/>
-            <text type="artist"/>
+            <text type="artist" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(165):"/>
-            <text type="album"/>
+            <text type="album" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(166):"/>
-            <text type="format"/>
+            <text type="format" style="scroll"/>
           </horizontalLayout>
         </verticalLayout>
       </horizontalLayout>
@@ -132,19 +132,19 @@
           <trackInfo/>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(161):"/>
-            <text type="title"/>
+            <text type="title" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(164):"/>
-            <text type="artist"/>
+            <text type="artist" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(165):"/>
-            <text type="album"/>
+            <text type="album" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(166):"/>
-            <text type="format"/>
+            <text type="format" style="scroll"/>
           </horizontalLayout>
         </verticalLayout>
       </horizontalLayout>
