@@ -1067,7 +1067,7 @@ bool UiElement::Playlist::MouseWheel(int delta, CPoint point)
 
 bool UiElement::Playlist::DoubleClick(CPoint point)
 {
-    if (rect.PtInRect(point) && item_selected >= 0)
+    if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point) && item_selected >= 0)
     {
         ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_ITEM, 0);
     }
