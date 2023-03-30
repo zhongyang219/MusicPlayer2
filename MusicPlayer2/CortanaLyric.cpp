@@ -1,4 +1,6 @@
-﻿#include "stdafx.h"
+﻿m_cortana_hwnd = m_hCortanaBar;
+m_hCortanaStatic = m_hCortanaBar;
+#include "stdafx.h"
 #include "CortanaLyric.h"
 #include "SongInfoHelper.h"
 #include "CPlayerUIBase.h"
@@ -30,21 +32,34 @@ void CCortanaLyric::Init()
     HWND hTaskBar = ::FindWindow(_T("Shell_TrayWnd"), NULL);	//任务栏的句柄
     if (CWinVersionHelper::IsWindows11OrLater())
     {
+        auto isWindowSearchBox = [](HWND hWnd) -> bool
+        {
+            CRect rect_search_box;
+            ::GetClientRect(hWnd, rect_search_box);
+            return rect_search_box.Width() >= theApp.DPI(120);            //确保搜索框的宽度大于一定值
+        };
+
         m_hCortanaBar = ::FindWindowEx(hTaskBar, NULL, _T("SIBTrayButton"), NULL);      //如果找到类名为SIBTrayButton的窗口，则说明搜索框是通过StartAllBack软件实现的
         
         if (m_hCortanaBar != NULL)
         {
             //确保搜索框的宽度大于一定值
-            CRect rect_search_box;
-            ::GetClientRect(m_hCortanaBar, m_cortana_rect);
-            if (m_cortana_rect.Width() < theApp.DPI(64))
+            if (!isWindowSearchBox(m_hCortanaBar))
                 m_hCortanaBar = ::FindWindowEx(hTaskBar, m_hCortanaBar, _T("SIBTrayButton"), NULL); //查找下一个SIBTrayButton
         }
 
         if (m_hCortanaBar != NULL)
         {
-            m_cortana_hwnd = m_hCortanaBar;
-            m_hCortanaStatic = m_hCortanaBar;
+            if (isWindowSearchBox(m_hCortanaBar))
+            {
+                m_cortana_hwnd = m_hCortanaBar;
+                m_hCortanaStatic = m_hCortanaBar;
+            }
+            else
+            {
+                m_cortana_hwnd = NULL;
+                m_hCortanaStatic = NULL;
+            }
         }
     }
     if (m_hCortanaBar == NULL)
