@@ -1,6 +1,35 @@
 **[简体中文](./update_log.md) | English**<br>
 
 # MusicPlayer2 Update log
+## V2.76 (2023/04/02)
+
+* Added the function of customizing the mini mode UI. Added 2 mini mode UI.
+* Added the function of self-drawn playlist. Added the self-drawn playlist to "UI 4", "UI 6", "Groove Music Style", "Groove Music Style (Windows11)", and "default UI".
+* Added the function of customizing the save location of the album cover.
+* Added the support for verbatim lyrics in ksc format.
+* Added the function of "Play After Current Song" in the playlist right-click menu.
+* Added the FLAC format output support in Format conversion.
+* Added the function to sync playing tracks and playback records to LastFM.
+* Added support of the right-click menu by long-pressing on touchscreen devices.
+* Added the function of saving the cue audio tracks to the media library.
+* Added the function of customizing the row height of the playlist.
+* Added the function of customizing the buttons in the self-drawn title bar.
+* Added a dark/light toggle button.
+* Added the function to display track information in the lyrics area when there are no lyrics.
+* Updated several icons, fixed some icon that were blurry when scaled at 100%.
+* Fixed the issue that the program cannot be exited by right-clicking the notification area icon when a dialog box opened.
+* Added the function of writing the cue tag information and displaying the advanced label information of cue format.
+* Fixed the issue that the playlist cannot be saved in m3u and m3u8 formats when the playlists contains cue tracks.
+* When sorting by track number in the media library, sorting by CD number is preferred.
+* Add thread synchronization when media library update, increase the stability of the program.
+* Fixed the problem that conversion complite displayed when conversion errors in Format Conversion.
+* Added the functions of "Fix the wrong file path" and "Open the playlist file location" in the right-click menu of the playlist in the media library.
+* Added the function to remember the index of Stack Elements in the user defined UI.
+* Added the option of enable or disable MediaTransControl in the Option Settings.
+* Added "Artist - Album" type to Text element in user defined UI.
+* Improvements in other details.
+* Other bug fixes.
+
 ## V2.75 (2022/06/04)
 
 * Add the FFMPEG playback core (need to be downloaded separately).
@@ -71,7 +100,7 @@
 * Added support for TAK format audio (32-bit version only).
 * The "Edit Lyrics" editor changed to use Scintilla. Add the colors for the lyric editor.
 * Fixed the problem that the album cover cannot be copied to the target file when the format is converted to mp3 and wav.
-* Fixed the problem that there is no icon in "Repead Mode"-"Play Random" in the desktop lyrics right-click menu.
+* Fixed the problem that there is no icon in "Repeat Mode"-"Play Random" in the desktop lyrics right-click menu.
 * Fixed the problem that the sub-dialog in the "Option Setting" dialog cannot be scrolled using the touch screen when using a touch screen device.
 * Fixed the problem that "file already exists" is prompted when adding a currently playing track to a new playlist.
 * Fixed the problem that if the position of the child window in the "Option Setting" dialog is scrolled by the mouse wheel, the position of the child window is incorrect when the scroll bar is clicked.
