@@ -53,6 +53,7 @@ void CTest::Test()
     //TestCueSave();
     TestFilePathHelper();
     TestReplaceStringRes();
+    SaveAllStringRes(101, 600);
 }
 
 void CTest::TestStringMatch()
@@ -268,4 +269,15 @@ void CTest::TestReplaceStringRes()
     wstring str{ L"abc%(118)eee%(263)" };
     CCommon::ReplaceUiStringRes(str);
     ASSERT(str == L"abc播放eee自动重命名");
+}
+
+void CTest::SaveAllStringRes(int min_id, int max_id)
+{
+    std::ofstream stream(L"string_res.csv");
+    for (int i = min_id; i <= max_id; i++)
+    {
+        CString str = CCommon::LoadText(i);
+        CCommon::StringCsvNormalize(str);
+        stream << i << ',' << CCommon::UnicodeToStr(str.GetString(), CodeType::ANSI) << std::endl;
+    }
 }

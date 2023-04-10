@@ -26,5 +26,6 @@ private:
     static void TestCueSave();
     static void TestFilePathHelper();
     static void TestReplaceStringRes();
+    static void SaveAllStringRes(int min_id, int max_id);
 };
 
