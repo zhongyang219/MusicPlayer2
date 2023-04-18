@@ -351,7 +351,7 @@ std::wstring CMusicPlayerCmdHelper::SearchLyricFile(const SongInfo& song, bool f
     // cue与osu文件禁止按音频文件名搜索，无视模糊搜索，优先搜索“艺术家 - 标题”
     bool find_org_name{ !song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path) };
     CFilePathHelper lyric_path{ song.file_path };
-    if (find_org_name)
+    if (!find_org_name)
     {
         wstring ar_ti{ song.artist + L" - " + song.title + L".lrc"};    // 预先加扩展名防止之后ReplaceFileExtension替换误伤
         CCommon::FileNameNormalize(ar_ti);
