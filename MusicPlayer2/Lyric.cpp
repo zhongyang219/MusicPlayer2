@@ -458,7 +458,8 @@ CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool ignore_blank, boo
     int now_index{ GetLyricIndex(time) };
     if (!ignore_blank)                                          // 不忽略空行，返回原始歌词
         return GetLyric(now_index + is_next);
-    now_index = GetLyricIndexIgnoreBlank(now_index, is_next);   // 索引对齐到非空当前歌词
+    if (now_index < GetLyricCount() - 1)            //仅当没有到最后一句歌词时才进行此处理
+        now_index = GetLyricIndexIgnoreBlank(now_index, is_next);   // 索引对齐到非空当前歌词
     int blank_time{ GetBlankTimeBeforeLyric(now_index) };
     if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不添加进度符号
         return GetLyric(now_index);
