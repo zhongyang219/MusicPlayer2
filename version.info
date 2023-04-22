@@ -1,15 +1,17 @@
-﻿<version>2.76</version>
-<GitHub>
-	<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.76/MusicPlayer2_V2.76_x86.zip</link>
-	<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.76/MusicPlayer2_V2.76_x64.zip</link_x64>
-</GitHub>
-<Gitee>
-	<link>https://gitee.com/zhongyang219/MusicPlayer2/releases/download/V2.76/MusicPlayer2_V2.76_x86.zip</link>
-	<link_x64>https://gitee.com/zhongyang219/MusicPlayer2/releases/download/V2.76/MusicPlayer2_V2.76_x64.zip</link_x64>
-</Gitee>
-<update_contents>
-	<contents_zh_cn>新增迷你模式自定义界面的功能，新增两种迷你模式界面。\n新增自绘播放列表，界面4、界面6、Groove音乐风格、Groove音乐风格（Windows11）、默认界面新增自绘播放列表。\n新增自定义专辑封面保存位置的功能。\n新增ksc格式逐字歌词的支持。\n新增播放列表右键菜单中的下一首播放的功能。\n转换格式功能新增FLAC格式输出。\n新增将正在播放曲目和播放记录同步到LastFM的功能。\n新增触屏设备长按弹出右键菜单的支持。\n新增将cue音轨保存到媒体库的功能。\n新增自定义播放列表行高的功能。\n新增自定义自绘标题栏按钮的功能。\n新增深色/浅色切换按钮。\n新增没有歌词时在歌词区域显示播放曲目信息的功能。\n更新若干图标，修正部分图标在100%缩放比例时模糊的问题。\n修正有对话框打开时无法通过通知区图标右键菜单退出程序的问题。\n新增cue格式标签写入和显示高级标签信息的功能。\n修正播放列表中含有cue音轨时保存为m3u和m3u8格式时不正常的问题。\n媒体库中按音轨号排序时优先按CD序号排序。\n媒体库更新时添加线程同步的处理，增加程序的稳定性。\n修正转换格式时，转换出错仍然显示完成的问题。\n媒体库中播放列表右键菜单中新增“修复错误的文件路径”和“打开播放列表所在位置”的功能。\n新增记住用户自定义界面中StatackElement的序号的功能。\n新增是否启用MediaTransControl的选项。\n自定义界面中Text元素新增“艺术家 - 唱片集”类型。\n其他细节方面的改进。\n其他bug的修正。</contents_zh_cn>
-	<contents_en>Added the function of customizing the mini mode UI. Added 2 mini mode UI.\nAdded the function of self-drawn playlist. Added the self-drawn playlist to "UI 4", "UI 6", "Groove Music Style", "Groove Music Style (Windows11)", and "default UI".\nAdded the function of customizing the save location of the album cover.\nAdded the support for verbatim lyrics in ksc format.\nAdded the function of "Play After Current Song" in the playlist right-click menu.\nAdded the FLAC format output support in Format conversion.\nAdded the function to sync playing tracks and playback records to LastFM.\nAdded support of the right-click menu by long-pressing on touchscreen devices.\nAdded the function of saving the cue audio tracks to the media library.\nAdded the function of customizing the row height of the playlist.\nAdded the function of customizing the buttons in the self-drawn title bar.\nAdded a dark/light toggle button.\nAdded the function to display track information in the lyrics area when there are no lyrics.\nUpdated several icons, fixed some icon that were blurry when scaled at 100%.\nFixed the issue that the program cannot be exited by right-clicking the notification area icon when a dialog box opened.\nAdded the function of writing the cue tag information and displaying the advanced label information of cue format.\nFixed the issue that the playlist cannot be saved in m3u and m3u8 formats when the playlists contains cue tracks.\nWhen sorting by track number in the media library, sorting by CD number is preferred.\nAdd thread synchronization when media library update, increase the stability of the program.\nFixed the problem that conversion complite displayed when conversion errors in Format Conversion.\nAdded the functions of "Fix the wrong file path" and "Open the playlist file location" in the right-click menu of the playlist in the media library.\nAdded the function to remember the index of Statack Elements in the user defined UI.\nAdded the option of enable or disable MediaTransControl in the Option Settings.\nAdded "Artist - Album" type to Text element in user defined UI.\nImprovements in other details.\nOther bug fixes.</contents_en>
-</update_contents>
-<!--以下内容为了兼容旧版本程序的检查更新功能-->
-<contents>新增迷你模式自定义界面的功能，新增两种迷你模式界面。\n新增自绘播放列表，界面4、界面6、Groove音乐风格、Groove音乐风格（Windows11）、默认界面新增自绘播放列表。\n新增自定义专辑封面保存位置的功能。\n新增ksc格式逐字歌词的支持。\n新增播放列表右键菜单中的下一首播放的功能。\n转换格式功能新增FLAC格式输出。\n新增将正在播放曲目和播放记录同步到LastFM的功能。\n新增触屏设备长按弹出右键菜单的支持。\n新增将cue音轨保存到媒体库的功能。\n新增自定义播放列表行高的功能。\n新增自定义自绘标题栏按钮的功能。\n新增深色/浅色切换按钮。\n新增没有歌词时在歌词区域显示播放曲目信息的功能。\n更新若干图标，修正部分图标在100%缩放比例时模糊的问题。\n修正有对话框打开时无法通过通知区图标右键菜单退出程序的问题。\n新增cue格式标签写入和显示高级标签信息的功能。\n修正播放列表中含有cue音轨时保存为m3u和m3u8格式时不正常的问题。\n媒体库中按音轨号排序时优先按CD序号排序。\n媒体库更新时添加线程同步的处理，增加程序的稳定性。\n修正转换格式时，转换出错仍然显示完成的问题。\n媒体库中播放列表右键菜单中新增“修复错误的文件路径”和“打开播放列表所在位置”的功能。\n新增记住用户自定义界面中StatackElement的序号的功能。\n新增是否启用MediaTransControl的选项。\n自定义界面中Text元素新增“艺术家 - 唱片集”类型。\n其他细节方面的改进。\n其他bug的修正。</contents>
+﻿<MusicPlayer2>
+	<version>2.76.1</version>
+	<GitHub>
+		<link>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.76.1/MusicPlayer2_V2.76.1_x86.zip</link>
+		<link_x64>https://github.com/zhongyang219/MusicPlayer2/releases/download/V2.76.1/MusicPlayer2_V2.76.1_x64.zip</link_x64>
+	</GitHub>
+	<Gitee>
+		<link>https://gitee.com/zhongyang219/MusicPlayer2/releases/download/V2.76.1/MusicPlayer2_V2.76.1_x86.zip</link>
+		<link_x64>https://gitee.com/zhongyang219/MusicPlayer2/releases/download/V2.76.1/MusicPlayer2_V2.76.1_x64.zip</link_x64>
+	</Gitee>
+	<update_contents>
+		<contents_zh_cn>紧急修正无法自动关联歌词文件的问题。\n建议所有使用V2.76版本的用户都更新到此版本。</contents_zh_cn>
+		<contents_en>Urgently fix the problem of not being able to automatically associate lyrics files.\nIt is recommended that all users with version V2.76 update to this version.</contents_en>
+	</update_contents>
+	<!--以下内容为了兼容旧版本程序的检查更新功能-->
+	<contents>紧急修正无法自动关联歌词文件的问题。\n建议所有使用V2.76版本的用户都更新到此版本。</contents>
+</MusicPlayer2>
