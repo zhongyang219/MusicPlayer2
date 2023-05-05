@@ -1667,6 +1667,11 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
             m_draw.DrawWindowText(rect_text, volume_str, m_colors.color_text);
         }
     }
+    else
+    {
+        m_buttons[BTN_VOLUME_UP].rect = CRect();
+        m_buttons[BTN_VOLUME_DOWN].rect = CRect();
+    }
 }
 
 void CPlayerUIBase::DrawControlBar(CRect rect)
