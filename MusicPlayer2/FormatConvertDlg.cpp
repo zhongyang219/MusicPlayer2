@@ -450,6 +450,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
     //转换完成后向目标文件写入标签信息和专辑封面
     SongInfo song_info_out{ song_info };
     song_info_out.file_path = out_file_path;
+    song_info_out.is_cue = false;
     //写入标签信息
     if (pthis->m_write_tag)
     {
