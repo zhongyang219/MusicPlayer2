@@ -369,10 +369,10 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
         CString index_str;
         if (pthis->m_file_list.size() < 10)
             index_str.Format(_T("%d."), file_index + 1);
-        else if (pthis->m_file_list.size() < 10)
-            index_str.Format(_T("%2d."), file_index + 1);
+        else if (pthis->m_file_list.size() < 100)
+            index_str.Format(_T("%02d."), file_index + 1);
         else
-            index_str.Format(_T("%3d."), file_index + 1);
+            index_str.Format(_T("%03d."), file_index + 1);
         out_file_path += index_str;
     }
 
