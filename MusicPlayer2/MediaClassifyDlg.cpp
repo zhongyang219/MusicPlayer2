@@ -398,6 +398,7 @@ void CMediaClassifyDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_CLASSIFY_LIST, m_classify_list_ctrl);
     DDX_Control(pDX, IDC_SONG_LIST, m_song_list_ctrl);
     DDX_Control(pDX, IDC_MFCEDITBROWSE1, m_search_edit);
+    DDX_Control(pDX, IDC_HSPLITER_STATIC, m_splitter_ctrl);
 }
 
 
@@ -482,6 +483,10 @@ BOOL CMediaClassifyDlg::OnInitDialog()
         m_search_edit.EnableWindow(FALSE);
     else
         m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+
+    //初始化分隔条
+    m_splitter_ctrl.AttachCtrlAsLeftPane(IDC_CLASSIFY_LIST);
+    m_splitter_ctrl.AttachCtrlAsRightPane(IDC_SONG_LIST);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

@@ -257,6 +257,7 @@
     <ClInclude Include="FfmpegCore.h" />
     <ClInclude Include="FlacEncodeCfgDlg.h" />
     <ClInclude Include="GetTagOnlineDlg.h" />
+    <ClInclude Include="HorizontalSplitter.h" />
     <ClInclude Include="IPropertyTabDlg.h" />
     <ClInclude Include="LastFM.h" />
     <ClInclude Include="LastFMDataArchive.h" />
@@ -412,6 +413,7 @@
     <ClCompile Include="FfmpegCore.cpp" />
     <ClCompile Include="FlacEncodeCfgDlg.cpp" />
     <ClCompile Include="GetTagOnlineDlg.cpp" />
+    <ClCompile Include="HorizontalSplitter.cpp" />
     <ClCompile Include="LastFM.cpp" />
     <ClCompile Include="LastFMDataArchive.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />

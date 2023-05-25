@@ -1231,6 +1231,7 @@
 #define IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK 1223
 #define IDC_FFMPEG_MAX_WAIT_TIME        1224
 #define IDC_ACKNOWLEDGEMENT_SYSLINK     1225
+#define IDC_HSPLITER_STATIC             1226
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1686,7 +1687,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        591
 #define _APS_NEXT_COMMAND_VALUE         33464
-#define _APS_NEXT_CONTROL_VALUE         1226
+#define _APS_NEXT_CONTROL_VALUE         1227
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

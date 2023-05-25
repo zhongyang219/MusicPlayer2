@@ -378,6 +378,9 @@
     <Filter Include="公共的类\CommonData">
       <UniqueIdentifier>{4913a86a-5b69-423e-b02f-7cf56b8e4aeb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\HorizontalSplitter">
+      <UniqueIdentifier>{d878d4fa-d8e9-4877-a938-c3aa575f527d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -847,6 +850,9 @@
     <ClInclude Include="MiniModeUserUi.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="HorizontalSplitter.h">
+      <Filter>派生的控件类\HorizontalSplitter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1280,6 +1286,9 @@
     </ClCompile>
     <ClCompile Include="MiniModeUserUi.cpp">
       <Filter>PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="HorizontalSplitter.cpp">
+      <Filter>派生的控件类\HorizontalSplitter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

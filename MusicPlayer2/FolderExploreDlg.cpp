@@ -223,6 +223,7 @@ void CFolderExploreDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_MFCEDITBROWSE1, m_search_edit);
     DDX_Control(pDX, IDC_FOLDER_EXPLORE_TREE, m_folder_explore_tree);
     DDX_Control(pDX, IDC_SONG_LIST, m_song_list_ctrl);
+    DDX_Control(pDX, IDC_HSPLITER_STATIC, m_splitter_ctrl);
 }
 
 
@@ -286,6 +287,11 @@ BOOL CFolderExploreDlg::OnInitDialog()
 
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_FORDER), TRUE);
     //SetDlgItemText(IDC_SETTINGS_BUTTON, CCommon::LoadText(IDS_BTN_SETTINGS));
+
+    //初始化分隔条
+    m_splitter_ctrl.AttachCtrlAsLeftPane(IDC_FOLDER_EXPLORE_TREE);
+    m_splitter_ctrl.AttachCtrlAsRightPane(IDC_PATH_STATIC);
+    m_splitter_ctrl.AttachCtrlAsRightPane(IDC_SONG_LIST);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

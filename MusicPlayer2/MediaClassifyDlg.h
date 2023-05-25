@@ -3,6 +3,7 @@
 #include "ListCtrlEx.h"
 #include "SearchEditCtrl.h"
 #include "MediaLibTabDlg.h"
+#include "HorizontalSplitter.h"
 
 
 // CMediaClassifyDlg 对话框
@@ -59,6 +60,7 @@ protected:
     bool m_left_selected{};                         // 最后一次选中的是左侧还是右侧
 
     bool m_initialized{ false };
+    CHorizontalSplitter m_splitter_ctrl;
 
 protected:
     virtual void RefreshSongList() override;

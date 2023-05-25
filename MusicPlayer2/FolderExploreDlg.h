@@ -3,6 +3,7 @@
 #include "SearchEditCtrl.h"
 #include "TreeCtrlEx.h"
 #include "MediaLibTabDlg.h"
+#include "HorizontalSplitter.h"
 
 
 // CFolderExploreDlg 对话框
@@ -51,6 +52,7 @@ protected:
     wstring m_selected_string;
     bool m_searched{ false };
     bool m_initialized{ false };
+    CHorizontalSplitter m_splitter_ctrl;
 
 protected:
     virtual void RefreshSongList() override;

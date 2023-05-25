@@ -76,6 +76,7 @@ void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_LIST1, m_playlist_ctrl);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
     DDX_Control(pDX, IDC_SONG_LIST, m_song_list_ctrl);
+    DDX_Control(pDX, IDC_HSPLITER_STATIC, m_splitter_ctrl);
 }
 
 
@@ -319,6 +320,10 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     ShowSongList();
     m_search_edit.SetFocus();       //初始时将焦点设置到搜索框
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+
+    //初始化分隔条
+    m_splitter_ctrl.AttachCtrlAsLeftPane(IDC_LIST1);
+    m_splitter_ctrl.AttachCtrlAsRightPane(IDC_SONG_LIST);
 
     return FALSE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

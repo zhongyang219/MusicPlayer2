@@ -3,7 +3,7 @@
 #include "ListCtrlEx.h"
 #include "SearchEditCtrl.h"
 #include "MediaLibTabDlg.h"
-
+#include "HorizontalSplitter.h"
 
 // CSelectPlaylist 对话框
 #define WM_PLAYLIST_SELECTED (WM_USER+119)      //WPARA: 传递对话框窗口的指针；LPARA：-2:表示要播放默认的播放列表，>=0，表示要播放列表中指定序号的曲目
@@ -70,6 +70,7 @@ private:
     CListCtrlEx m_song_list_ctrl;
     CListCtrlEx::ListData m_list_data;  //右侧列表数据
     vector<SongInfo> m_cur_song_list;   //选中播放列表的数据
+    CHorizontalSplitter m_splitter_ctrl;
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
