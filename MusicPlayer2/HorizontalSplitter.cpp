@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "MusicPlayer2.h"
 #include "HorizontalSplitter.h"
 
 
@@ -11,7 +10,7 @@
 IMPLEMENT_DYNAMIC(CHorizontalSplitter, CStatic)
 
 CHorizontalSplitter::CHorizontalSplitter()
-    :CStatic(), m_pParent(NULL), m_iLeftMin(10), m_iRightMin(10)
+    :CStatic(), m_pParent(NULL), m_iLeftMin(100), m_iRightMin(100)
 {
 
 }
@@ -61,7 +60,7 @@ void CHorizontalSplitter::AdjustLayout()
         pane = m_pParent->GetDlgItem(id);
         pane->GetWindowRect(&rcPane);
         m_pParent->ScreenToClient(&rcPane);
-        rcPane.right = rcBar.left - 1;
+        rcPane.right = rcBar.left;
         pane->MoveWindow(&rcPane, FALSE);
     }
 
@@ -72,11 +71,16 @@ void CHorizontalSplitter::AdjustLayout()
         pane->GetWindowRect(&rcPane);
         m_pParent->ScreenToClient(&rcPane);
 
-        rcPane.left = rcBar.right + 1;
+        rcPane.left = rcBar.right;
         pane->MoveWindow(&rcPane, FALSE);
     }
 
     m_pParent->Invalidate();
+}
+
+void CHorizontalSplitter::RegAdjustLayoutCallBack(pfAdjustLayout pFunc)
+{
+    m_pAdjLayoutFunc = pFunc;
 }
 
 BEGIN_MESSAGE_MAP(CHorizontalSplitter, CStatic)
@@ -94,12 +98,17 @@ END_MESSAGE_MAP()
 
 BOOL CHorizontalSplitter::GetMouseClipRect(LPRECT rcClip, CPoint point)
 {
-    RECT rcOrg, rcTarget, rcParent, rcPane;
+    CRect rcOrg, rcTarget, rcParent, rcPane;
     DWORD id;
 
     GetWindowRect(&rcOrg);
     m_pParent->GetClientRect(&rcParent);
     m_pParent->ClientToScreen(&rcParent);
+    if (rcParent.Width() < m_iLeftMin + m_iRightMin + rcOrg.Width())        //如果父窗口的宽度小于两侧的最小宽度加上分割条的宽度，则说明分割条已经无法拖动了
+    {
+        TRACE(_T("No room to drag the x-splitter bar"));
+        return FALSE;
+    }
 
     rcTarget = rcOrg;
     rcTarget.left = rcParent.left + m_iLeftMin;
@@ -217,7 +226,10 @@ void CHorizontalSplitter::OnLButtonUp(UINT nFlags, CPoint point)
         ::ReleaseCapture(); 
 
         MoveWindow(m_rcOldRect);
-        AdjustLayout();
+        if (m_pAdjLayoutFunc != nullptr)
+            m_pAdjLayoutFunc(m_rcOldRect);
+        else
+            AdjustLayout();
     }
     ::ClipCursor(NULL);
 }
@@ -228,7 +240,7 @@ void CHorizontalSplitter::OnPaint()
     CPaintDC dc(this); // device context for painting
                        // TODO: 在此处添加消息处理程序代码
                        // 不为绘图消息调用 CStatic::OnPaint()
-
+    
     CRect rect;
     ::GetClientRect(m_hWnd, rect);
     dc.FillSolidRect(rect, GetSysColor(COLOR_3DFACE));

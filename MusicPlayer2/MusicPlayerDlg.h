@@ -33,6 +33,7 @@
 #include "UIWindow.h"
 #include "CDevicesManager.h"
 #include "MenuEditCtrl.h"
+#include "HorizontalSplitter.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -151,6 +152,7 @@ protected:
 
     CNotifyIcon m_notify_icon;
     CPlayerToolBar m_playlist_toolbar;
+    CHorizontalSplitter m_splitter_ctrl;
 
     bool m_no_lbtnup{ false };      //当它为true时，不响应WM_LBUTTONUP消息
     bool m_ignore_color_change{ false };    //当它为true时，不响应颜色变化，防止短时间内重复收到主题颜色变化的消息
@@ -186,8 +188,8 @@ private:
     void SetTransparency();			//根据m_transparency的值设置窗口透明度
     void SetDesptopLyricTransparency();
     void DrawInfo(bool reset = false);		//绘制信息
-    void SetPlaylistSize(int cx, int cy);		//设置播放列表的大小
-    void SetDrawAreaSize(int cx, int cy);
+    void SetPlaylistSize(int cx, int cy, int playlist_width);		//设置播放列表的大小
+    void SetDrawAreaSize(int cx, int cy, int playlist_width);
     void SetAlwaysOnTop();
 
     bool IsMainWindowPopupMenu() const;      //当前弹出的右键是主窗口右键菜单还是播放列表右键菜单
@@ -256,6 +258,8 @@ protected:
 
     void SaveUiData();
     void LoadUiData();
+
+    static void OnSplitterChanged(CRect splitter_rect);
 
     // 生成的消息映射函数
     virtual BOOL OnInitDialog();

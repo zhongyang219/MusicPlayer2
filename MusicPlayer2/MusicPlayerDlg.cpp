@@ -125,6 +125,7 @@ void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
     //DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
     DDX_Control(pDX, IDC_UI_STATIC, m_ui_static_ctrl);
+    DDX_Control(pDX, IDC_HSPLITER_STATIC, m_splitter_ctrl);
 }
 
 BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
@@ -764,10 +765,9 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
         m_ui_thread_para.draw_reset = true;
 }
 
-void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
+void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy, int playlist_width)
 {
     //设置播放列表大小
-    int playlist_width = CalculatePlaylistWidth(cx);
     int playlist_x = cx - playlist_width;
     CPlayerUIBase* pUiBase = dynamic_cast<CPlayerUIBase*>(m_pUI);
     if (!theApp.m_ui_data.narrow_mode)
@@ -852,9 +852,24 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy)
     rect_toolbar.bottom = rect_toolbar.top + m_layout.toolbar_height;
     m_playlist_toolbar.MoveWindow(rect_toolbar);
     m_playlist_toolbar.Invalidate();
+
+    //设置分隔条的大小和位置
+    if (!theApp.m_ui_data.narrow_mode && theApp.m_ui_data.show_playlist)
+    {
+        m_splitter_ctrl.ShowWindow(SW_SHOW);
+        CRect rect_splitter;
+        rect_splitter.bottom = cy;
+        rect_splitter.left = cx - playlist_width - 1;
+        rect_splitter.right = cx - playlist_width + m_layout.margin - 1;
+        m_splitter_ctrl.MoveWindow(rect_splitter);
+    }
+    else
+    {
+        m_splitter_ctrl.ShowWindow(SW_HIDE);
+    }
 }
 
-void CMusicPlayerDlg::SetDrawAreaSize(int cx, int cy)
+void CMusicPlayerDlg::SetDrawAreaSize(int cx, int cy, int playlist_width)
 {
     //调整绘图区域的大小
     CRect draw_rect;
@@ -866,7 +881,7 @@ void CMusicPlayerDlg::SetDrawAreaSize(int cx, int cy)
     {
         if (!theApp.m_ui_data.narrow_mode)
         {
-            draw_rect = CRect{ CPoint(), CPoint{ cx - CalculatePlaylistWidth(cx), cy} };
+            draw_rect = CRect{ CPoint(), CPoint{ cx - playlist_width - 1, cy} };
         }
         else
         {
@@ -1010,6 +1025,7 @@ void CMusicPlayerDlg::SetPlaylistVisible()
     //m_clear_search_button.ShowWindow(cmdShow);
     m_set_path_button.ShowWindow(cmdShow);
     m_playlist_toolbar.ShowWindow(cmdShow);
+    m_splitter_ctrl.ShowWindow(cmdShow);
 }
 
 void CMusicPlayerDlg::SetMenubarVisible()
@@ -1733,7 +1749,7 @@ void CMusicPlayerDlg::ShowFloatPlaylist()
     SetPlaylistVisible();
     CRect rect;
     GetClientRect(rect);
-    SetDrawAreaSize(rect.Width(), rect.Height());       //调整绘图区域的大小和位置
+    SetDrawAreaSize(rect.Width(), rect.Height(), CalculatePlaylistWidth(rect.Width()));       //调整绘图区域的大小和位置
     DrawInfo(true);
 }
 
@@ -1755,7 +1771,9 @@ void CMusicPlayerDlg::ShowHidePlaylist()
     SetPlaylistVisible();
     CRect rect;
     GetClientRect(rect);
-    SetDrawAreaSize(rect.Width(), rect.Height());       //调整绘图区域的大小和位置
+    int playlsit_size = CalculatePlaylistWidth(rect.Width());
+    SetDrawAreaSize(rect.Width(), rect.Height(), playlsit_size);       //调整绘图区域的大小和位置
+    SetPlaylistSize(rect.Width(), rect.Height(), playlsit_size);
 
     DrawInfo(true);
 }
@@ -2227,6 +2245,11 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, CCommon::LoadText(IDS_LOCATE_TO_CURRENT, CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT)), ID_LOCATE_TO_CURRENT);
 
+    //初始化分隔条
+    m_splitter_ctrl.RegAdjustLayoutCallBack(CMusicPlayerDlg::OnSplitterChanged);
+    SLayoutData layout_data;
+    m_splitter_ctrl.SetMinWidth(layout_data.width_threshold / 2, layout_data.width_threshold / 2);
+
     //设置定时器
     //SetTimer(TIMER_ID, theApp.m_app_setting_data.ui_refresh_interval, NULL);
     SetTimer(TIMER_ID, TIMER_ELAPSE, NULL);
@@ -2320,9 +2343,9 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
         }
         if (m_playlist_list.m_hWnd)
         {
-            SetPlaylistSize(cx, cy);
+            SetPlaylistSize(cx, cy, CalculatePlaylistWidth(cx));
         }
-        SetDrawAreaSize(cx, cy);
+        SetDrawAreaSize(cx, cy, CalculatePlaylistWidth(cx));
 
         if (nType == SIZE_RESTORED)
         {
@@ -2387,7 +2410,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             GetClientRect(rect);
             //theApp.m_ui_data.client_width = rect.Width();
             //theApp.m_ui_data.client_height = rect.Height();
-            SetPlaylistSize(rect.Width(), rect.Height());       //调整播放列表的大小和位置
+            SetPlaylistSize(rect.Width(), rect.Height(), CalculatePlaylistWidth(rect.Width()));       //调整播放列表的大小和位置
             m_path_static.Invalidate();
             //SetPorgressBarSize(rect.Width(), rect.Height());      //调整进度条在窗口中的大小和位置
             SetPlaylistVisible();
@@ -3768,6 +3791,23 @@ void CMusicPlayerDlg::LoadUiData()
     }
     ar.Close();
     file.Close();
+}
+
+
+void CMusicPlayerDlg::OnSplitterChanged(CRect splitter_rect)
+{
+    CMusicPlayerDlg* pThis{ dynamic_cast<CMusicPlayerDlg*>(AfxGetMainWnd()) };
+    if (pThis != nullptr)
+    {
+        //调整两侧界面的宽度
+        CRect rect;
+        pThis->GetClientRect(rect);
+        int playlist_width = rect.Width() - splitter_rect.left;
+        pThis->SetPlaylistSize(rect.Width(), rect.Height(), playlist_width);
+        pThis->SetDrawAreaSize(rect.Width(), rect.Height(), playlist_width);
+        //将两侧宽度的比例保存
+        theApp.m_app_setting_data.playlist_width_percent = playlist_width * 100 / rect.Width();
+    }
 }
 
 void CMusicPlayerDlg::OnBnClickedStop()
