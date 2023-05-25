@@ -3805,6 +3805,8 @@ void CMusicPlayerDlg::OnSplitterChanged(CRect splitter_rect)
         int playlist_width = rect.Width() - splitter_rect.left;
         pThis->SetPlaylistSize(rect.Width(), rect.Height(), playlist_width);
         pThis->SetDrawAreaSize(rect.Width(), rect.Height(), playlist_width);
+        pThis->m_path_static.Invalidate();
+        pThis->m_playlist_list.Invalidate();
         //将两侧宽度的比例保存
         theApp.m_app_setting_data.playlist_width_percent = playlist_width * 100 / rect.Width();
     }
