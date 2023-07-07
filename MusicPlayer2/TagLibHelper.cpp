@@ -382,6 +382,16 @@ static void OtherPropertyToSongInfo(SongInfo& song_info, const std::map<std::wst
     song_info.disc_num = static_cast<BYTE>(_wtoi(disc_number.substr(0, index).c_str()));
 }
 
+template<class T>
+static void WriteOtherProperties(const SongInfo& song_info, T& file)
+{
+    TagLib::PropertyMap properties = file.properties();
+    if (!song_info.album_artist.empty())
+        properties["ALBUMARTIST"].append(song_info.album_artist);
+    if (song_info.disc_num != 0)
+        properties["DISCNUMBER"].append(std::to_wstring(static_cast<int>(song_info.disc_num)));
+    file.setProperties(properties);
+}
 
 //解析Windows资源管理器设置的分级信息
 static int ParseAudioRating(int rate_raw)
@@ -1516,6 +1526,7 @@ bool CTagLibHelper::WriteMpegTag(const SongInfo& song_info)
     //    tags |= MPEG::File::ID3v1;
     if (file.hasAPETag())
         tags |= MPEG::File::APE;
+    WriteOtherProperties(song_info, file);
     bool saved = file.save(tags, File::StripOthers, GetWriteId3v2Version());
     return saved;
 }
@@ -1525,6 +1536,7 @@ bool CTagLibHelper::WriteFlacTag(const SongInfo& song_info)
     FLAC::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save();
     return saved;
 }
@@ -1543,6 +1555,7 @@ bool CTagLibHelper::WriteWavTag(const SongInfo& song_info)
     RIFF::WAV::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save(RIFF::WAV::File::AllTags, File::StripOthers, GetWriteId3v2Version());
     return saved;
 }
@@ -1552,6 +1565,7 @@ bool CTagLibHelper::WriteOggTag(const SongInfo& song_info)
     Vorbis::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save();
     return saved;
 }
@@ -1561,6 +1575,7 @@ bool CTagLibHelper::WriteApeTag(const SongInfo& song_info)
     APE::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save();
     return saved;
 }
@@ -1570,6 +1585,7 @@ bool CTagLibHelper::WriteMpcTag(const SongInfo& song_info)
     MPC::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save();
     return saved;
 }
@@ -1579,6 +1595,7 @@ bool CTagLibHelper::WriteOpusTag(const SongInfo& song_info)
     Ogg::Opus::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save();
     return saved;
 }
@@ -1588,6 +1605,7 @@ bool CTagLibHelper::WriteWavPackTag(const SongInfo& song_info)
     WavPack::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save();
     return saved;
 }
@@ -1597,6 +1615,7 @@ bool CTagLibHelper::WriteTtaTag(const SongInfo& song_info)
     TrueAudio::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save();
     return saved;
 }
@@ -1606,6 +1625,7 @@ bool CTagLibHelper::WriteAiffTag(const SongInfo& song_info)
     RIFF::AIFF::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save(GetWriteId3v2Version());
     return saved;
 }
@@ -1615,6 +1635,7 @@ bool CTagLibHelper::WriteAsfTag(const SongInfo& song_info)
     ASF::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save();
     return saved;
 }
@@ -1624,6 +1645,7 @@ bool CTagLibHelper::WriteSpxTag(const SongInfo& song_info)
     Ogg::Speex::File file(song_info.file_path.c_str());
     auto tag = file.tag();
     SongInfoToTag(song_info, tag);
+    WriteOtherProperties(song_info, file);
     bool saved = file.save();
     return saved;
 }
