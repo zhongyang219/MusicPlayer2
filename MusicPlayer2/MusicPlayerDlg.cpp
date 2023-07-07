@@ -2344,6 +2344,7 @@ void CMusicPlayerDlg::OnSize(UINT nType, int cx, int cy)
         if (m_playlist_list.m_hWnd)
         {
             SetPlaylistSize(cx, cy, CalculatePlaylistWidth(cx));
+            m_splitter_ctrl.Invalidate();
         }
         SetDrawAreaSize(cx, cy, CalculatePlaylistWidth(cx));
 
