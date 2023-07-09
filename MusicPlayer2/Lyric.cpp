@@ -235,15 +235,16 @@ void CLyrics::DisposeLrc()
 void CLyrics::DisposeLrcNetease()
 {
     // 网易源标准lrc歌词行间缺少\n（单行多时间标签）时按时间标签主动分割，进入扩展lrc段前退出分割
+    // 将 "[xx:xx.xx]?????#[xx:xx.xx]?????#" 于第一个#后拆分，同时不处理压缩lrc "[xx:xx.xx][xx:xx.xx][xx:xx.xx]?????#"
     for (size_t i{}; i < m_lyrics_str.size(); ++i)
     {
         if (m_lyrics_str[i].find(L"},\"klyric\":{") != wstring::npos) break;
-        size_t index{ m_lyrics_str[i].find_first_of(L'[', 1) };
-        if (index != wstring::npos)
-        {
-            m_lyrics_str.emplace(m_lyrics_str.begin() + i, m_lyrics_str[i].substr(0, index));
-            m_lyrics_str[i + 1] = m_lyrics_str[i + 1].substr(index);
-        }
+        size_t index = m_lyrics_str[i].find_first_not_of(L"[:.]0123456789-");   // 分离行起始时间标签（可能是连续的压缩时间标签）
+        if (index == wstring::npos) continue;
+        index = m_lyrics_str[i].find(L"[", index);  // 网易的歌词非扩展lrc，如果出现第二段时间标签则放入下一行
+        if (index == wstring::npos) continue;
+        m_lyrics_str.emplace(m_lyrics_str.begin() + i, m_lyrics_str[i].substr(0, index));
+        m_lyrics_str[i + 1] = m_lyrics_str[i + 1].substr(index);
     }
     DisposeLrc();
     DeleteRedundantLyric();
