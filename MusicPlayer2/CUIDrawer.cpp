@@ -15,9 +15,9 @@ CUIDrawer::~CUIDrawer()
 void CUIDrawer::DrawLryicCommon(CRect rect, Alignment align)
 {
     SetDrawArea(rect);
-
+    static int flag{};
     if (!IsDrawMultiLine(rect.Height()))
-        DrawLyricTextSingleLine(rect, true, align);
+        DrawLyricTextSingleLine(rect, flag, true, align);
     else
         DrawLyricTextMultiLine(rect, align);
 }
@@ -211,7 +211,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     SetFont(pOldFont);
 }
 
-void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment align)
+void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line, Alignment align)
 {
     CFont* pOldFont = SetLyricFont();
 
@@ -248,7 +248,9 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
         CLyrics::Lyric& current_lyric{ now_lyrics.GetLyric(time, false, ignore_blank, karaoke) };
         int progress{ now_lyrics.GetLyricProgress(time, ignore_blank, karaoke, [this](const wstring& str) { return GetTextExtent(str.c_str()).cx; }) };
-        static int last_progress{ -1 };
+        bool switch_flag{ flag > 5000 };
+        switch_flag ^= (flag % 5000) > progress;
+        flag = switch_flag ? 10000 + progress : progress;
 
         if (current_lyric.text.empty())
             current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
@@ -264,7 +266,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
             int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
             if (progress == 1000) fade_percent = 0;         // 进度为1000时当前歌词“已完成”不再高亮
             // 这里的fade_percent当合并空行开启时可能为负，在颜色渐变处规范取值，此处不再处理
-            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, last_progress > progress, fade_percent);
+            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, switch_flag, fade_percent);
         }
         else
         {
@@ -287,7 +289,6 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, bool double_line, Alignment 
             else
                 DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text_2, m_colors.color_text_2, progress, align, true);
         }
-        last_progress = progress;
     }
 
     SetFont(pOldFont);
@@ -427,8 +428,6 @@ int CUIDrawer::DPI(int pixel)
 void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, bool switch_flag, int fade_percent)
 {
     CFont* pOldFont = SetLyricFont();
-    static bool swap{};
-    swap ^= switch_flag;
 
     CRect up_rect{ rect }, down_rect{ rect };		//上半部分和下半部分歌词的矩形区域
     up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
@@ -437,7 +436,7 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyri
     //根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
     //GetDC()->SelectObject(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
     int width;
-    if (!swap)
+    if (!switch_flag)
         width = GetTextExtent(next_lyric).cx;
     else
         width = GetTextExtent(lyric).cx;
@@ -456,7 +455,7 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyri
     }
 
     // 绘制当前歌词
-    if (!swap)
+    if (!switch_flag)
     {
         DrawWindowText(up_rect, lyric, color1, color2, progress);
         DrawWindowText(down_rect, next_lyric, m_colors.color_text_2);

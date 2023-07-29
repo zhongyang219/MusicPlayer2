@@ -177,16 +177,13 @@ void CCortanaLyric::DrawInfo()
 
                 if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric && theApp.m_lyric_setting_data.cortana_show_lyric)		//有歌词时显示歌词
                 {
-				    if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
-				    {
-					    m_draw.DrawLyricTextMultiLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_align);
-				    }
-				    else
-				    {
-					    m_draw.DrawLyricTextSingleLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_double_line, theApp.m_lyric_setting_data.cortana_lyric_align);
-				    }
+                    static int flag{};
+                    if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
+                        m_draw.DrawLyricTextMultiLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_align);
+                    else
+                        m_draw.DrawLyricTextSingleLine(TextRect(), flag, theApp.m_lyric_setting_data.cortana_lyric_double_line, theApp.m_lyric_setting_data.cortana_lyric_align);
                 }
-                else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
+                else            //没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
                 {
                     static int index{};
                     static wstring song_name{};
