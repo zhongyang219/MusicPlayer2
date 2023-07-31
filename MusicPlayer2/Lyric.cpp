@@ -228,23 +228,34 @@ void CLyrics::DisposeLrc()
             } while (ParseLyricTimeTag(time_str, t, pos_start, pos_end));   // 压缩lrc在此展开
         }
     }
-    std::stable_sort(m_lyrics.begin(), m_lyrics.end());
+    // CombineSameTimeLyric()这行应当移动到DisposeLrcNetease()里面，但会影响早期下载的歌词的兼容性。虽然此方法已支持参数但不应在此设置默认合并误差
+    // 理由是歌词偏移量调整时若负偏移量导致歌词在时间0处堆积则现有代码会将它们拉开10ms间距存储如果这里出现10及以上的参数会误合并
     CombineSameTimeLyric();
 }
 
 void CLyrics::DisposeLrcNetease()
 {
-    // 网易源标准lrc歌词行间缺少\n（单行多时间标签）时按时间标签主动分割，进入扩展lrc段前退出分割
-    // 将 "[xx:xx.xx]?????#[xx:xx.xx]?????#" 于第一个#后拆分，同时不处理压缩lrc "[xx:xx.xx][xx:xx.xx][xx:xx.xx]?????#"
     for (size_t i{}; i < m_lyrics_str.size(); ++i)
     {
+        // 仅处理网易歌词原文，这行同时保证[i + 1]不会越界
         if (m_lyrics_str[i].find(L"},\"klyric\":{") != wstring::npos) break;
-        size_t index = m_lyrics_str[i].find_first_not_of(L"[:.]0123456789-");   // 分离行起始时间标签（可能是连续的压缩时间标签）
-        if (index == wstring::npos) continue;
-        index = m_lyrics_str[i].find(L"[", index);  // 网易的歌词非扩展lrc，如果出现第二段时间标签则放入下一行
-        if (index == wstring::npos) continue;
-        m_lyrics_str.emplace(m_lyrics_str.begin() + i, m_lyrics_str[i].substr(0, index));
-        m_lyrics_str[i + 1] = m_lyrics_str[i + 1].substr(index);
+        // 歌词行间缺少\n（单行多段时间标签）时按时间标签主动分割
+        // 将 "[xx:xx.xx]?????#[xx:xx.xx]?????#" 于第一个#后拆分，同时不处理压缩lrc "[xx:xx.xx][xx:xx.xx][xx:xx.xx]?????#"
+        size_t index{ m_lyrics_str[i].find_first_not_of(L"[:.]0123456789-") };   // 分离行起始时间标签（可能是连续的压缩时间标签）
+        size_t index1{ m_lyrics_str[i].find(L"[", index) };                 // 网易的歌词非扩展lrc，如果出现第二段时间标签则放入下一行
+        if (index1 != wstring::npos)
+        {
+            m_lyrics_str.emplace(m_lyrics_str.begin() + i, m_lyrics_str[i].substr(0, index1));
+            m_lyrics_str[i + 1] = m_lyrics_str[i + 1].substr(index1);
+        }
+        // 有重复时间标签的（第一个内容空白，歌词在第二个里），此处将其内容合并。
+        index = m_lyrics_str[i].rfind(L"]", index) + 1;                     // 避免截取到歌词开头的数字，同时也避开非时间标签的[id:xxx],[ti:xxx]等
+        if (index == wstring::npos || index == 0) continue;
+        if (!m_lyrics_str[i].compare(0,index,m_lyrics_str[i + 1],0,index))
+        {
+            m_lyrics_str[i] += m_lyrics_str[i + 1].substr(index);
+            m_lyrics_str.erase(m_lyrics_str.begin() + i + 1);
+        }
     }
     DisposeLrc();
     DeleteRedundantLyric();
@@ -700,11 +711,12 @@ void CLyrics::SaveLyric2()
     m_modified = false;
 }
 
-void CLyrics::CombineSameTimeLyric()
+void CLyrics::CombineSameTimeLyric(int error)
 {
+    std::stable_sort(m_lyrics.begin(), m_lyrics.end());
     for (int i{}; i < static_cast<int>(m_lyrics.size() - 1); i++)
     {
-        if (m_lyrics[i].time_start_raw == m_lyrics[i + 1].time_start_raw)   // 找到相同时间标签的歌词
+        if (m_lyrics[i + 1].time_start_raw - m_lyrics[i].time_start_raw <= error)   // 找到相同时间标签的歌词
         {
             m_lyrics[i].translate = m_lyrics[i + 1].text;
             m_lyrics.erase(m_lyrics.begin() + i + 1);   // 删除后面一句歌词
