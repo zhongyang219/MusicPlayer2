@@ -71,6 +71,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return;
+    ASSERT(align != Alignment::AUTO);
     m_pDC->SetTextColor(color);
     m_pDC->SetBkMode(TRANSPARENT);
     if (m_pfont != nullptr)
@@ -112,6 +113,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return;
+    ASSERT(align != Alignment::AUTO);
     if (split < 0) split = 0;
     if (split > 1000) split = 1000;
     m_pDC->SetBkMode(TRANSPARENT);

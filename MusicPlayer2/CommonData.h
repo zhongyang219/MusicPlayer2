@@ -184,7 +184,7 @@ struct DesktopLyricSettingData		//桌面歌词设置
     bool hide_lyric_window_when_paused{ false };	//暂停时隐藏歌词窗口
     bool lyric_background_penetrate{ false };
     bool show_unlock_when_locked{ true };           //桌面歌词锁定时显示解锁图标
-    Alignment lyric_align{ Alignment::CENTER }; //歌词的对齐方式
+    Alignment lyric_align{ Alignment::AUTO };   //歌词的对齐方式
 };
 
 struct LyricSettingData
@@ -209,7 +209,7 @@ struct LyricSettingData
 
     FontInfo lyric_font;						//歌词字体
     int lyric_line_space{ 2 };					//歌词的行间距
-    Alignment lyric_align{ Alignment::CENTER }; //歌词的对齐方式
+    Alignment lyric_align{ Alignment::AUTO };   //歌词的对齐方式
 
     bool cortana_info_enable{};				    //是否允许在Cortana的搜索框中显示信息
     bool cortana_show_lyric{ true };            //是否在Cortana搜索框中显示歌词
@@ -222,7 +222,7 @@ struct LyricSettingData
     bool cortana_lyric_keep_display{ false };	//搜索框歌词是否在暂停时保持显示
     bool cortana_show_spectrum{ false };		//是否在搜索框显示频谱
     bool cortana_opaque{ false };				//搜索框不透明
-    Alignment cortana_lyric_align{ Alignment::CENTER };               //搜索框歌词对齐方式
+    Alignment cortana_lyric_align{ Alignment::AUTO };           //搜索框歌词对齐方式
     bool show_default_album_icon_in_search_box{ false };      //没有歌词时搜索框显示黑色胶片图标
     COLORREF cortana_transparent_color{};
 

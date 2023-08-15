@@ -49,6 +49,9 @@ void CUIDrawer::SetForCortanaLyric(bool for_cortana_lyric)
 
 void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
 {
+    // AUTO时多行歌词居中显示
+    if (align == Alignment::AUTO) align = Alignment::CENTER;
+
     int line_space{};
     if (m_for_cortana_lyric)
     {
@@ -92,7 +95,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
             if (artist.empty())
                 artist = cur_song.GetArtist();
             song_info_str.Format(_T("%s - %s\r\n%s"), artist.c_str(), cur_song.GetAlbum().c_str(), cur_song.GetTitle().c_str());
-            DrawWindowText(lyric_area, song_info_str, m_colors.color_text, theApp.m_lyric_setting_data.lyric_align, false, true);
+            DrawWindowText(lyric_area, song_info_str, m_colors.color_text, align, false, true);
         }
         //显示“当前歌曲没有歌词”
         else
@@ -229,7 +232,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
             const SongInfo& cur_song{ CPlayer::GetInstance().GetCurrentSongInfo() };
             song_info_str.Format(_T("%s - %s"), cur_song.GetArtist().c_str(), cur_song.GetTitle().c_str());
             static CDrawCommon::ScrollInfo lyric_scroll_info;
-            DrawScrollText(rect, song_info_str, m_colors.color_text, CPlayerUIHelper::GetScrollTextPixel(), theApp.m_lyric_setting_data.lyric_align == Alignment::CENTER, lyric_scroll_info);
+            DrawScrollText(rect, song_info_str, m_colors.color_text, CPlayerUIHelper::GetScrollTextPixel(), theApp.m_lyric_setting_data.lyric_align != Alignment::LEFT, lyric_scroll_info);
         }
         //显示“当前歌曲没有歌词”
         else
@@ -266,10 +269,12 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
             int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
             if (progress == 1000) fade_percent = 0;         // 进度为1000时当前歌词“已完成”不再高亮
             // 这里的fade_percent当合并空行开启时可能为负，在颜色渐变处规范取值，此处不再处理
-            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), progress, switch_flag, fade_percent);
+            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), align, progress, switch_flag, fade_percent);
         }
         else
         {
+            // AUTO时单行歌词居中显示
+            if (align == Alignment::AUTO) align = Alignment::CENTER;
             // 单行歌词在这里显示翻译，同时更新歌词区域为单行有翻译时的位置
             if (theApp.m_lyric_setting_data.show_translate && !current_lyric.translate.empty() && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
             {
@@ -425,23 +430,18 @@ int CUIDrawer::DPI(int pixel)
         return theApp.DPI(pixel);
 }
 
-void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, bool switch_flag, int fade_percent)
+void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, Alignment align, int progress, bool switch_flag, int fade_percent)
 {
     CFont* pOldFont = SetLyricFont();
 
-    CRect up_rect{ rect }, down_rect{ rect };		//上半部分和下半部分歌词的矩形区域
+    CRect up_rect{ rect }, down_rect{ rect };       //上半部分和下半部分歌词的矩形区域
     up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
     down_rect.top = down_rect.bottom - (down_rect.Height() / 2);
 
-    //根据下一句歌词的文本计算需要的宽度，从而实现下一行歌词右对齐
-    //GetDC()->SelectObject(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
-    int width;
-    if (!switch_flag)
-        width = GetTextExtent(next_lyric).cx;
-    else
-        width = GetTextExtent(lyric).cx;
-    if (width < rect.Width())
-        down_rect.left = down_rect.right - width;
+    // 对齐方式为AUTO时使用上左下右的卡拉OK对齐方式
+    Alignment up_align{ Alignment::LEFT }, down_align{ Alignment::RIGHT };
+    if (align != Alignment::AUTO)
+        up_align = down_align = align;
 
     COLORREF color1, color2;
     if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
@@ -457,13 +457,13 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyri
     // 绘制当前歌词
     if (!switch_flag)
     {
-        DrawWindowText(up_rect, lyric, color1, color2, progress);
-        DrawWindowText(down_rect, next_lyric, m_colors.color_text_2);
+        DrawWindowText(up_rect, lyric, color1, color2, progress, up_align);
+        DrawWindowText(down_rect, next_lyric, m_colors.color_text_2, down_align);
     }
     else
     {
-        DrawWindowText(up_rect, next_lyric, m_colors.color_text_2);
-        DrawWindowText(down_rect, lyric, color1, color2, progress);
+        DrawWindowText(up_rect, next_lyric, m_colors.color_text_2, up_align);
+        DrawWindowText(down_rect, lyric, color1, color2, progress, down_align);
     }
     SetFont(pOldFont);
 }

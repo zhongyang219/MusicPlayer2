@@ -565,7 +565,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
     theApp.m_lyric_setting_data.lyric_font.style.FromInt(ini.GetInt(L"config", L"font_style", 0));
     theApp.m_lyric_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 4);
-    theApp.m_lyric_setting_data.lyric_align = static_cast<Alignment>(ini.GetInt(L"config", L"lyric_align", 2));
+    theApp.m_lyric_setting_data.lyric_align = static_cast<Alignment>(ini.GetInt(L"config", L"lyric_align", static_cast<int>(Alignment::AUTO)));
     theApp.m_app_setting_data.sprctrum_height = ini.GetInt(L"config", L"spectrum_height", 80);
     theApp.m_lyric_setting_data.cortana_lyric_double_line = ini.GetBool(L"config", L"cortana_lyric_double_line", true);
     theApp.m_app_setting_data.show_spectrum = ini.GetBool(L"config", L"show_spectrum", 1);
@@ -583,7 +583,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.cortana_font.style.FromInt(ini.GetInt(L"config", L"cortana_font_style", 0));
     theApp.m_lyric_setting_data.cortana_lyric_keep_display = ini.GetBool(L"config", L"cortana_lyric_keep_display", false);
     theApp.m_lyric_setting_data.cortana_show_spectrum = ini.GetBool(L"config", L"cortana_show_spectrum", false);
-    theApp.m_lyric_setting_data.cortana_lyric_align = static_cast<Alignment>(ini.GetInt(L"config", L"cortana_lyric_align", 2));
+    theApp.m_lyric_setting_data.cortana_lyric_align = static_cast<Alignment>(ini.GetInt(L"config", L"cortana_lyric_align", static_cast<int>(Alignment::AUTO)));
     theApp.m_lyric_setting_data.show_default_album_icon_in_search_box = ini.GetBool(L"config", L"show_default_album_icon_in_search_box", false);
 
     theApp.m_lyric_setting_data.show_desktop_lyric = ini.GetBool(L"desktop_lyric", L"show_desktop_lyric", false);
@@ -603,7 +603,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate = ini.GetBool(L"desktop_lyric", L"lyric_background_penetrate", false);
     theApp.m_lyric_setting_data.desktop_lyric_data.opacity = ini.GetInt(L"desktop_lyric", L"opacity", 100);
     theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked = ini.GetBool(L"desktop_lyric", L"show_unlock_when_locked", true);
-    theApp.m_lyric_setting_data.desktop_lyric_data.lyric_align = static_cast<Alignment>(ini.GetInt(L"desktop_lyric", L"lyric_align", static_cast<int>(Alignment::CENTER)));
+    theApp.m_lyric_setting_data.desktop_lyric_data.lyric_align = static_cast<Alignment>(ini.GetInt(L"desktop_lyric", L"lyric_align", static_cast<int>(Alignment::AUTO)));
     m_desktop_lyric_pos.x = ini.GetInt(L"desktop_lyric", L"position_x", -1);
     m_desktop_lyric_pos.y = ini.GetInt(L"desktop_lyric", L"position_y", -1);
     m_desktop_lyric_size.cx = ini.GetInt(L"desktop_lyric", L"width", 0);

@@ -140,6 +140,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 
     m_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));
     m_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
+    m_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_AUTO));
     m_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_CENTER));
     m_lyric_alignment_combo.SetCurSel(static_cast<int>(m_data.lyric_align));
 
@@ -181,6 +182,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 
     m_desktop_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));
     m_desktop_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
+    m_desktop_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_AUTO));
     m_desktop_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_CENTER));
     m_desktop_lyric_alignment_combo.SetCurSel(static_cast<int>(m_data.desktop_lyric_data.lyric_align));
 
@@ -225,6 +227,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
 
     m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));
     m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
+    m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_AUTO));
     m_alignment_combo.AddString(CCommon::LoadText(IDS_CENTER));
     m_alignment_combo.SetCurSel(static_cast<int>(m_data.cortana_lyric_align));
 

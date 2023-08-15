@@ -3915,6 +3915,7 @@ BEGIN
     IDS_SIMPLE_UI           "简洁UI"
     IDS_GROOVE_MUSIC_STYLE  "Groove音乐风格"
     IDS_DEFAULT_UI          "默认界面"
+    IDS_ALIGN_AUTO          "自动"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -7252,6 +7253,7 @@ BEGIN
     IDS_SIMPLE_UI           "Simple UI"
     IDS_GROOVE_MUSIC_STYLE  "Groove Style"
     IDS_DEFAULT_UI          "Default UI"
+    IDS_ALIGN_AUTO          "Auto"
 END
 
 #endif    // 英语(美国) resources

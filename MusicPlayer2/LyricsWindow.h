@@ -145,7 +145,7 @@ protected:
     CSize m_frameSize{};
     CRect m_rcWindow;
     int m_toobar_height = 0;
-	Alignment m_alignment{ Alignment::CENTER };	//对齐方式
+    Alignment m_alignment{ Alignment::AUTO };   //对齐方式
     bool m_lyric_karaoke_disp = true;   //歌词卡拉OK样式显示
 
 protected:
