@@ -243,7 +243,26 @@ void CBrowseEdit::OnBrowse()
                 OnAfterUpdate();
             }
         }
-            break;
+        break;
+        case CBrowseEdit::EditBrowseMode::LIST2:
+        {
+            // 列表模式2 下，将编辑框的文本用""包裹后以逗号分隔后以列表的形式编辑
+            CString strFile;
+            GetWindowText(strFile);
+            vector<wstring> items;
+            CCommon::SplitStringList(items, wstring(strFile));
+
+            CEditStringListDlg dlg(items);
+            dlg.SetTitle(m_poopup_dlg_title);
+            if (dlg.DoModal() == IDOK)
+            {
+                strFile = CCommon::MergeStringList(items).c_str();
+                SetWindowText(strFile);
+                SetModify(TRUE);
+                OnAfterUpdate();
+            }
+        }
+        break;
         default:
             break;
 

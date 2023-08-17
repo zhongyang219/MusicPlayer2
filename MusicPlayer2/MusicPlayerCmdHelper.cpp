@@ -668,7 +668,7 @@ void CMusicPlayerCmdHelper::RefreshMediaTabData(enum eMediaLibTab tab_index)
 void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
 {
     vector<wstring> artist_list;
-    song_info.GetArtistList(artist_list);     //获取艺术家（可能有多个）
+    song_info.GetArtistList(artist_list, theApp.m_media_lib_setting_data.artist_split_ext);     // 获取艺术家（可能有多个）
     wstring artist;
     if (artist_list.empty())
     {

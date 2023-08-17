@@ -60,6 +60,7 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_LASTFM_ENABLE_HTTPS, m_lastfm_enable_https);
     DDX_Control(pDX, IDC_LASTFM_ENABLE_NOWPLAYING, m_lastfm_enable_nowplaying);
     DDX_Control(pDX, IDC_PLAYLIST_ITEM_HEIGHT_EDIT, m_playlist_item_height_edit);
+    DDX_Control(pDX, IDC_ARTIST_SPLIT_EXT_EDIT, m_artist_split_ext_edit);
 }
 
 void CMediaLibSettingDlg::GetDataFromUi()
@@ -117,6 +118,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_LASTFM_UPLOAD_CACHE, &CMediaLibSettingDlg::OnBnClickedLastfmUploadCache)
     ON_BN_CLICKED(IDC_LASTFM_ENABLE_HTTPS, &CMediaLibSettingDlg::OnBnClickedLastfmEnableHttps)
     ON_BN_CLICKED(IDC_LASTFM_ENABLE_NOWPLAYING, &CMediaLibSettingDlg::OnBnClickedLastfmEnableNowplaying)
+    ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CMediaLibSettingDlg::OnEditBrowseChanged)
 END_MESSAGE_MAP()
 
 
@@ -138,6 +140,11 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     CheckDlgButton(IDC_DISABLE_DELETE_FROM_DISK_CHECK, m_data.disable_delete_from_disk);
     CheckDlgButton(IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK, m_data.remove_file_not_exist_when_update);
 
+    m_artist_split_ext_edit.SetWindowTextW(CCommon::MergeStringList(m_data.artist_split_ext).c_str());
+    m_artist_split_ext_edit.SetEditBrowseMode(CBrowseEdit::EditBrowseMode::LIST2);
+    m_artist_split_ext_edit.SetPopupDlgTitle(CCommon::LoadText(IDS_SET_MULTI_ARTIST_SPLIT_EXT));
+    m_artist_split_ext_edit.SetReadOnly(true);  // 没有异常处理故禁用手动编辑（应当使用弹出窗口）
+
     for (const auto& str : m_data.media_folders)
         m_dir_list_ctrl.AddString(str.c_str());
     m_dir_list_ctrl.SetMouseWheelEnable(false);
@@ -146,6 +153,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
     m_toolTip.AddTool(GetDlgItem(IDC_CLEAN_DATA_FILE_BUTTON), CCommon::LoadText(IDS_CLEAR_DATA_FILE_TIP_INFO));
     m_toolTip.AddTool(&m_update_media_lib_chk, CCommon::LoadText(IDS_UPDATE_MEDIA_LIB_TIP));
+    m_toolTip.AddTool(&m_artist_split_ext_edit, CCommon::LoadText(IDS_ARTIST_SPLIT_EXT_TIP_INFO));
 
     m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_FILE_NAME));
     m_playlist_display_mode_combo.AddString(CCommon::LoadText(IDS_TITLE));
@@ -492,4 +500,17 @@ void CMediaLibSettingDlg::OnBnClickedLastfmEnableHttps() {
 
 void CMediaLibSettingDlg::OnBnClickedLastfmEnableNowplaying() {
     m_data.lastfm_enable_nowplaying = (m_lastfm_enable_nowplaying.GetCheck() != 0);
+}
+
+
+afx_msg LRESULT CMediaLibSettingDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lParam)
+{
+    CBrowseEdit* pEdit = (CBrowseEdit*)lParam;
+    if (pEdit == &m_artist_split_ext_edit)
+    {
+        CString temp;
+        m_artist_split_ext_edit.GetWindowTextW(temp);
+        CCommon::SplitStringList(m_data.artist_split_ext, wstring(temp));
+    }
+    return 0;
 }

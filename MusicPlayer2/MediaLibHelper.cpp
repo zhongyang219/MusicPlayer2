@@ -36,7 +36,7 @@ void CMediaClassifier::ClassifyMedia()
         switch (m_type)
         {
         case CMediaClassifier::CT_ARTIST:
-            song_info.second.GetArtistList(item_names);      //有的歌曲可能有多个艺术家，将解析到的艺术家保存到vector里
+            song_info.second.GetArtistList(item_names, theApp.m_media_lib_setting_data.artist_split_ext);   // 有的歌曲可能有多个艺术家，将解析到的艺术家保存到vector里
             for (auto& item_name : item_names)
                 CCommon::StringNormalize(item_name);
             if (item_names.empty() || (item_names.size() == 1 && item_names[0] == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()))

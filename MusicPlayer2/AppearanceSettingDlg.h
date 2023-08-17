@@ -119,7 +119,6 @@ public:
     afx_msg void OnBnClickedAlbumCoverBackgroundCheck();
     afx_msg void OnBnClickedShowSpectrumCheck();
     afx_msg void OnBnClickedUseOutImageCheck();
-    afx_msg void OnEnChangeDefaultCoverNameEdit();
     afx_msg void OnBnClickedBackgroundGaussBlurCheck();
     afx_msg void OnBnClickedLyricBackgroundCheck();
     afx_msg void OnBnClickedDarkModeCheck();

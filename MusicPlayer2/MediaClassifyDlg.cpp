@@ -71,7 +71,7 @@ bool CMediaClassifyDlg::SetLeftListSel(const wstring& item)
             if (m_type == CMediaClassifier::CT_ARTIST)
             {
                 vector<wstring> artist_list;
-                song.GetArtistList(artist_list);
+                song.GetArtistList(artist_list, theApp.m_media_lib_setting_data.artist_split_ext);
                 if (CCommon::IsItemInVector(artist_list, item))
                 {
                     other_index = i;

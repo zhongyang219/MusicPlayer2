@@ -354,6 +354,7 @@ enum MediaLibDisplayItem
 struct MediaLibSettingData
 {
     vector<wstring> media_folders;      //媒体库文件夹浏览中显示的文件夹
+    vector<wstring> artist_split_ext;   // 艺术家分割例外，设置名字本身含有分隔符（/;&、）的艺术家（22/7）
     bool hide_only_one_classification;  //媒体库中将只有一项的分类归到其他类中
     bool disable_delete_from_disk;      //禁用从磁盘删除
     bool show_tree_tool_tips;           //树控件显示鼠标提示

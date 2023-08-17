@@ -210,7 +210,7 @@ void CCommon::StringSplit(const wstring& str, const wstring& div_str, vector<wst
     }
 }
 
-void CCommon::StringSplitWithMulitChars(const wstring& str, const wchar_t* div_ch, vector<wstring>& results, bool skip_empty /*= true*/)
+void CCommon::StringSplitWithMulitChars(const wstring& str, const wstring& div_ch, vector<wstring>& results, bool skip_empty /*= true*/)
 {
     results.clear();
     size_t split_index = -1;
@@ -276,6 +276,36 @@ wstring CCommon::StringMerge(const vector<wstring>& strings, wchar_t div_ch)
     if (!strings.empty())
         result.pop_back();
     return result;
+}
+
+wstring CCommon::MergeStringList(const vector<wstring>& values)
+{
+    wstring str_merge;
+    int index = 0;
+    // 在每个字符串前后加上引号，再将它们用逗号连接起来
+    for (wstring str : values)
+    {
+        StringNormalize(str);
+        if (str.empty()) continue;
+        if (index > 0)
+            str_merge.push_back(L',');
+        str_merge.push_back(L'\"');
+        str_merge += str;
+        str_merge.push_back(L'\"');
+        index++;
+    }
+    return str_merge;
+}
+
+void CCommon::SplitStringList(vector<wstring>& values, const wstring& str_value)
+{
+    CCommon::StringSplit(str_value, L"\",\"", values);
+    if (!values.empty())
+    {
+        // 结果中第一项前面和最后一项的后面各还有一个引号，将它们删除
+        values.front() = values.front().substr(1);
+        values.back().pop_back();
+    }
 }
 
 wstring CCommon::TranslateToSimplifiedChinese(const wstring& str)

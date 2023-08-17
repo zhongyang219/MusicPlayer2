@@ -81,7 +81,7 @@ BOOL CMediaLibStatisticsDlg::OnInitDialog()
     {
         //处理多个艺术家情况
         std::vector<std::wstring> artist_list;
-        item.second.GetArtistList(artist_list);
+        item.second.GetArtistList(artist_list, theApp.m_media_lib_setting_data.artist_split_ext);
         for (const auto& artist : artist_list)
             artist_set.emplace(artist);
 

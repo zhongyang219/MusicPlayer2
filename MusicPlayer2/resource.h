@@ -797,6 +797,8 @@
 #define IDS_GROOVE_MUSIC_STYLE          599
 #define IDS_DEFAULT_UI                  600
 #define IDS_ALIGN_AUTO                  601
+#define IDS_SET_MULTI_ARTIST_SPLIT_EXT  602
+#define IDS_ARTIST_SPLIT_EXT_TIP_INFO   603
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -1233,6 +1235,7 @@
 #define IDC_FFMPEG_MAX_WAIT_TIME        1224
 #define IDC_ACKNOWLEDGEMENT_SYSLINK     1225
 #define IDC_HSPLITER_STATIC             1226
+#define IDC_ARTIST_SPLIT_EXT_EDIT       1227
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1688,7 +1691,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        591
 #define _APS_NEXT_COMMAND_VALUE         33464
-#define _APS_NEXT_CONTROL_VALUE         1227
+#define _APS_NEXT_CONTROL_VALUE         1228
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

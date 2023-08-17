@@ -128,7 +128,7 @@ public:
     //str: 原始字符串
     //div_ch: 字符串中任意一个字符作为分割字符
     //result: 接收分割后的结果
-    static void StringSplitWithMulitChars(const wstring& str, const wchar_t* div_ch, vector<wstring>& results, bool skip_empty = true);
+    static void StringSplitWithMulitChars(const wstring& str, const wstring& div_ch, vector<wstring>& results, bool skip_empty = true);
 
     //使用指定的分割符分割字符串，将按每个分割符中的顺序分割字符串，每个分割符只用一次
     //str: 原始字符串
@@ -139,6 +139,11 @@ public:
     //将若干个字符串合并成一个字符串
     //div_ch: 用于分割的字符
     static wstring StringMerge(const vector<wstring>& strings, wchar_t div_ch);
+
+    // 合并字符串，"aa","bb","cc"模式，skip_empty，trim
+    static wstring MergeStringList(const vector<wstring>& values);
+    // 分割字符串，"aa","bb","cc"模式，skip_empty，trim
+    static void SplitStringList(vector<wstring>& values, const wstring& str_value);
 
     //中文繁简转换
     static wstring TranslateToSimplifiedChinese(const wstring& str);

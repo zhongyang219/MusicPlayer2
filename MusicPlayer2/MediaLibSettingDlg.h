@@ -4,6 +4,7 @@
 #include "afxwin.h"
 #include "MyComboBox.h"
 #include "SpinEdit.h"
+#include "BrowseEdit.h"
 
 // CMediaLibSettingDlg 对话框
 
@@ -47,6 +48,7 @@ private:
     CButton m_lastfm_upload_cache;
     CButton m_lastfm_enable_https;
     CButton m_lastfm_enable_nowplaying;
+    CBrowseEdit m_artist_split_ext_edit;
 
 protected:
     void ShowDataSizeInfo();
@@ -84,4 +86,6 @@ public:
     afx_msg void OnBnClickedLastfmUploadCache();
     afx_msg void OnBnClickedLastfmEnableHttps();
     afx_msg void OnBnClickedLastfmEnableNowplaying();
+protected:
+    afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
 };
