@@ -799,6 +799,7 @@
 #define IDS_ALIGN_AUTO                  601
 #define IDS_SET_MULTI_ARTIST_SPLIT_EXT  602
 #define IDS_ARTIST_SPLIT_EXT_TIP_INFO   603
+#define IDS_FILES_TOO_SHORT             604
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

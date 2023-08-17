@@ -304,6 +304,13 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
                     return length_is_zero || path_invalid;
                 });
         }
+        if (dlg.IsCleanFileTooShort())
+        {
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
+                {
+                    return song.length().toInt() < 30 * 1000;
+                });
+        }
         if (clear_cnt > 0)
             theApp.SaveSongData();		//清理后将数据写入文件
 

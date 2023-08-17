@@ -16,6 +16,7 @@ public:
     bool IsCleanFileNotExist() const { return m_clean_file_not_exist; }
     bool IsCleanFileNotInMediaLibDir() const { return m_clean_file_not_in_media_lib_dir; }
     bool IsCleanFileWrong() const { return m_clean_file_wrong; }
+    bool IsCleanFileTooShort() const { return m_clean_file_too_short; }
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -27,6 +28,7 @@ protected:
     bool m_clean_file_not_exist{};
     bool m_clean_file_not_in_media_lib_dir{};
     bool m_clean_file_wrong{};
+    bool m_clean_file_too_short{};
 
 protected:
     virtual CString GetDialogName() const override;
