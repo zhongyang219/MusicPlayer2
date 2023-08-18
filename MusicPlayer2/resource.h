@@ -999,6 +999,7 @@
 #define IDC_LYRIC_PATH_EDIT2            1065
 #define IDC_ARTIST_EDIT1                1065
 #define IDC_VBR_QUA_EDIT                1065
+#define IDC_FILE_TOO_SHORT_SEC_EDIT     1065
 #define IDC_SPIN1                       1066
 #define IDC_SIZE_STATIC                 1067
 #define IDC_TITLE_EDIT1                 1069
@@ -1237,6 +1238,7 @@
 #define IDC_ACKNOWLEDGEMENT_SYSLINK     1225
 #define IDC_HSPLITER_STATIC             1226
 #define IDC_ARTIST_SPLIT_EXT_EDIT       1227
+#define IDC_IGNORE_TOO_SHORT_CHECK      1228
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1692,7 +1694,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        591
 #define _APS_NEXT_COMMAND_VALUE         33464
-#define _APS_NEXT_CONTROL_VALUE         1228
+#define _APS_NEXT_CONTROL_VALUE         1229
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

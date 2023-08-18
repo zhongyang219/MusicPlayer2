@@ -539,6 +539,9 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     // refresh为true时会强制更新cue的时长与标签（直接更新到媒体库）
     CAudioCommon::GetCueTracks(all_media_songs, CPlayer::GetInstance().GetPlayerCore(), index, refresh);
 
+    // 根据设置阻止非cue的过短文件被自动加入媒体库（这也会阻止获取时长失败的一般文件）（手动仍然可以）
+    bool ignore_too_short_when_update{ theApp.m_media_lib_setting_data.ignore_too_short_when_update };
+    int file_too_short_ms{ theApp.m_media_lib_setting_data.file_too_short_sec * 1000 };
     theApp.m_media_update_para.total_num = all_media_songs.size();   //保存音频总数
     //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& song : all_media_songs)
@@ -561,6 +564,8 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
             IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
             if (pPlayerCore != nullptr)
                 pPlayerCore->GetAudioInfo(song_info.file_path.c_str(), song_info, flag);
+            if (ignore_too_short_when_update && !song_info.is_cue && song_info.length().toInt() < file_too_short_ms)
+                continue;
             if (is_osu_file)
                 COSUPlayerHelper::GetOSUAudioTitleArtist(song_info);
 

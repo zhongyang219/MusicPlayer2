@@ -510,6 +510,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"disable_delete_from_disk", theApp.m_media_lib_setting_data.disable_delete_from_disk);
     ini.WriteBool(L"media_lib", L"show_tree_tool_tips", theApp.m_media_lib_setting_data.show_tree_tool_tips);
     ini.WriteBool(L"media_lib", L"update_media_lib_when_start_up", theApp.m_media_lib_setting_data.update_media_lib_when_start_up);
+    ini.WriteBool(L"media_lib", L"ignore_too_short_when_update", theApp.m_media_lib_setting_data.ignore_too_short_when_update);
+    ini.WriteInt(L"media_lib", L"file_too_short_sec", theApp.m_media_lib_setting_data.file_too_short_sec);
     ini.WriteBool(L"media_lib", L"remove_file_not_exist_when_update", theApp.m_media_lib_setting_data.remove_file_not_exist_when_update);
     ini.WriteBool(L"media_lib", L"disable_drag_sort", theApp.m_media_lib_setting_data.disable_drag_sort);
     ini.WriteBool(L"media_lib", L"ignore_songs_already_in_playlist", theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
@@ -723,6 +725,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.disable_delete_from_disk = ini.GetBool(L"media_lib", L"disable_delete_from_disk", false);
     theApp.m_media_lib_setting_data.show_tree_tool_tips = ini.GetBool(L"media_lib", L"show_tree_tool_tips", true);
     theApp.m_media_lib_setting_data.update_media_lib_when_start_up = ini.GetBool(L"media_lib", L"update_media_lib_when_start_up", true);
+    theApp.m_media_lib_setting_data.ignore_too_short_when_update = ini.GetBool(L"media_lib", L"ignore_too_short_when_update", true);
+    theApp.m_media_lib_setting_data.file_too_short_sec = ini.GetInt(L"media_lib", L"file_too_short_sec", 30);
     theApp.m_media_lib_setting_data.remove_file_not_exist_when_update = ini.GetBool(L"media_lib", L"remove_file_not_exist_when_update", true);
     theApp.m_media_lib_setting_data.disable_drag_sort = ini.GetBool(L"media_lib", L"disable_drag_sort", false);
     theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist = ini.GetBool(L"media_lib", L"ignore_songs_already_in_playlist", true);
@@ -1918,46 +1922,52 @@ void CMusicPlayerDlg::SetPlaylistDragEnable()
 void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
 {
     theApp.m_hot_key.UnRegisterAllHotKey();
-
-    COptionsDlg optionDlg(pParent);
-    //初始化对话框中变量的值
-    optionDlg.m_tab_selected = m_tab_selected;
-    optionDlg.m_tab1_dlg.m_data = theApp.m_lyric_setting_data;
-    optionDlg.m_tab1_dlg.m_pDesktopLyric = &m_desktop_lyric;
-    if (m_miniModeDlg.m_hWnd == NULL)
-        optionDlg.m_tab2_dlg.m_hMainWnd = m_hWnd;
-    else
-        optionDlg.m_tab2_dlg.m_hMainWnd = m_miniModeDlg.m_hWnd;
-    optionDlg.m_tab2_dlg.m_data = theApp.m_app_setting_data;
-    optionDlg.m_tab3_dlg.m_data = theApp.m_general_setting_data;
-    optionDlg.m_tab4_dlg.m_data = theApp.m_play_setting_data;
-    optionDlg.m_tab5_dlg.m_hotkey_group = theApp.m_hot_key.GetHotKeyGroup();
-    optionDlg.m_tab5_dlg.m_data = theApp.m_hot_key_setting_data;
-    optionDlg.m_media_lib_dlg.m_data = theApp.m_media_lib_setting_data;
-
-    int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;        //保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
-    int background_transparency = theApp.m_app_setting_data.background_transparency;        //同上
-    int desktop_lyric_opacity = theApp.m_lyric_setting_data.desktop_lyric_data.opacity;
-
-    if (optionDlg.DoModal() == IDOK)
+    try
     {
-        ApplySettings(optionDlg);
+        // 设置窗口类的内存申请从栈移动到堆以修正警告
+        std::shared_ptr<COptionsDlg> pOptionDlg = std::make_shared<COptionsDlg>(pParent);
+        //初始化对话框中变量的值
+        pOptionDlg->m_tab_selected = m_tab_selected;
+        pOptionDlg->m_tab1_dlg.m_data = theApp.m_lyric_setting_data;
+        pOptionDlg->m_tab1_dlg.m_pDesktopLyric = &m_desktop_lyric;
+        if (m_miniModeDlg.m_hWnd == NULL)
+            pOptionDlg->m_tab2_dlg.m_hMainWnd = m_hWnd;
+        else
+            pOptionDlg->m_tab2_dlg.m_hMainWnd = m_miniModeDlg.m_hWnd;
+        pOptionDlg->m_tab2_dlg.m_data = theApp.m_app_setting_data;
+        pOptionDlg->m_tab3_dlg.m_data = theApp.m_general_setting_data;
+        pOptionDlg->m_tab4_dlg.m_data = theApp.m_play_setting_data;
+        pOptionDlg->m_tab5_dlg.m_hotkey_group = theApp.m_hot_key.GetHotKeyGroup();
+        pOptionDlg->m_tab5_dlg.m_data = theApp.m_hot_key_setting_data;
+        pOptionDlg->m_media_lib_dlg.m_data = theApp.m_media_lib_setting_data;
+
+        int sprctrum_height = theApp.m_app_setting_data.sprctrum_height;        //保存theApp.m_app_setting_data.sprctrum_height的值，如果用户点击了选项对话框的取消，则需要把恢复为原来的
+        int background_transparency = theApp.m_app_setting_data.background_transparency;        //同上
+        int desktop_lyric_opacity = theApp.m_lyric_setting_data.desktop_lyric_data.opacity;
+
+        if (pOptionDlg->DoModal() == IDOK)
+        {
+            ApplySettings(*pOptionDlg);
+        }
+        else
+        {
+            SetTransparency();      //如果点击了取消，则需要重新设置窗口透明度
+            SetDesptopLyricTransparency();
+
+            if (m_miniModeDlg.m_hWnd != NULL)
+                m_miniModeDlg.SetTransparency();
+
+            theApp.m_app_setting_data.sprctrum_height = sprctrum_height;
+            theApp.m_app_setting_data.background_transparency = background_transparency;
+            theApp.m_lyric_setting_data.desktop_lyric_data.opacity = desktop_lyric_opacity;
+        }
+
+        m_tab_selected = pOptionDlg->m_tab_selected;
     }
-    else
+    catch (std::bad_alloc& ex)
     {
-        SetTransparency();      //如果点击了取消，则需要重新设置窗口透明度
-        SetDesptopLyricTransparency();
-
-        if (m_miniModeDlg.m_hWnd != NULL)
-            m_miniModeDlg.SetTransparency();
-
-        theApp.m_app_setting_data.sprctrum_height = sprctrum_height;
-        theApp.m_app_setting_data.background_transparency = background_transparency;
-        theApp.m_lyric_setting_data.desktop_lyric_data.opacity = desktop_lyric_opacity;
+        // 这里暂时不处理了，只是保险起见
     }
-
-    m_tab_selected = optionDlg.m_tab_selected;
-
     if (theApp.m_hot_key_setting_data.hot_key_enable)
         theApp.m_hot_key.RegisterAllHotKey();
 }
