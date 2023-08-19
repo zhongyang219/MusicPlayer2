@@ -532,7 +532,11 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     //获取所有音频文件的路径
     for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
     {
-        CAudioCommon::GetAudioFiles(item, all_media_songs, 50000, true);
+        // 这里还是特殊处理比较好，避免自动加入大量无关文件（比如配的视频等等）
+        if (!COSUPlayerHelper::IsOsuFolder(item))
+            CAudioCommon::GetAudioFiles(item, all_media_songs, 50000, true);
+        else
+            COSUPlayerHelper::GetOSUAudioFiles(item, all_media_songs);
     }
     int index = 0;
     // 解析并移除cue文件及其关联的音频文件，并将分割后的音轨插入
