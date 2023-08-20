@@ -881,8 +881,8 @@ void CSelectPlaylistDlg::OnPlaylistSaveAs()
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_info.path);
         //将播放列表保存到文件
-        wstring file_path = fileDlg.GetPathName();
-        wstring file_extension = fileDlg.GetFileExt();
+        wstring file_path{ fileDlg.GetPathName() };
+        wstring file_extension{ fileDlg.GetFileExt() };
         file_extension = L'.' + file_extension;
         CPlaylistFile::Type file_type{};
         if (file_extension == PLAYLIST_EXTENSION)

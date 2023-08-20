@@ -91,7 +91,7 @@ void CFolderExploreDlg::ShowSongList()
     m_right_items.clear();
     for (const auto& file : files)
     {
-        SongInfo& song = CSongDataManager::GetInstance().GetSongInfo3(file);
+        const SongInfo& song{ CSongDataManager::GetInstance().GetSongInfo3(file) };
         m_right_items.push_back(song);
     }
 
@@ -113,7 +113,7 @@ void CFolderExploreDlg::ShowSongList()
 void CFolderExploreDlg::FolderTreeClicked(HTREEITEM hItem)
 {
     m_left_selected = true;
-    wstring folder_path_selected = m_folder_explore_tree.GetItemPath(hItem);
+    wstring folder_path_selected{ m_folder_explore_tree.GetItemPath(hItem) };
     if (folder_path_selected != m_folder_path_selected)
     {
         m_folder_path_selected = folder_path_selected;
@@ -455,7 +455,7 @@ void CFolderExploreDlg::OnOK()
     // TODO: 在此添加专用代码和/或调用基类
     if (m_left_selected)        //选中左侧树时，播放选中文件夹
     {
-        wstring folder_path = m_folder_explore_tree.GetItemPath(m_tree_item_selected);
+        wstring folder_path{ m_folder_explore_tree.GetItemPath(m_tree_item_selected) };
         CPlayer::GetInstance().OpenFolder(folder_path, true, true);
         CTabDlg::OnOK();
         CWnd* pParent = GetParentWindow();

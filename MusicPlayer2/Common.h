@@ -486,7 +486,7 @@ public:
 
     // https://stackoverflow.com/questions/17074324
     template <typename T, typename Compare>
-    static std::vector<std::size_t> sort_permutation(const std::vector<T>& vec, Compare& compare);
+    static std::vector<std::size_t> sort_permutation(const std::vector<T>& vec, Compare compare);
 
     template <typename T>
     static std::vector<T> apply_permutation(const std::vector<T>& vec, const std::vector<std::size_t>& p);
@@ -644,12 +644,12 @@ inline void CCommon::DeleteModelessDialog(T*& dlg)
 }
 
 template <typename T, typename Compare>
-inline std::vector<std::size_t> CCommon::sort_permutation(const std::vector<T>& vec, Compare& compare)
+inline std::vector<std::size_t> CCommon::sort_permutation(const std::vector<T>& vec, Compare compare)
 {
     std::vector<std::size_t> p(vec.size());
     std::iota(p.begin(), p.end(), 0);
     std::sort(p.begin(), p.end(),
-        [&](std::size_t i, std::size_t j) { return compare(vec[i], vec[j]); });
+        [&](std::size_t i, std::size_t j) { return compare(std::cref(vec[i]), std::cref(vec[j])); });
     return p;
 }
 

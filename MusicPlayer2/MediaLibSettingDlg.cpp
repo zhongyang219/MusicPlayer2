@@ -468,8 +468,8 @@ failed:
 void CMediaLibSettingDlg::UpdateLastFMStatus() {
     m_enable_lastfm.SetCheck(m_data.enable_lastfm);
     auto has_key = theApp.m_lastfm.HasSessionKey();
-    auto& basic = has_key ? CCommon::LoadText(IDS_LOGGED) : CCommon::LoadText(IDS_LOGIN_REQUIRED);
-    auto& s = has_key ? std::wstring(basic.GetString()) + L" (" + theApp.m_lastfm.UserName() + L")" : std::wstring(basic.GetString());
+    const auto& basic = has_key ? CCommon::LoadText(IDS_LOGGED) : CCommon::LoadText(IDS_LOGIN_REQUIRED);
+    const auto& s = has_key ? std::wstring(basic.GetString()) + L" (" + theApp.m_lastfm.UserName() + L")" : std::wstring(basic.GetString());
     m_lastfm_status.SetWindowTextW(CString(s.c_str()));
     bool login_enabled = m_data.enable_lastfm && !has_key;
     m_lastfm_login.EnableWindow(login_enabled);

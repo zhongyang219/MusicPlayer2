@@ -137,7 +137,7 @@ void CMediaClassifier::ClassifyMedia()
     //查找只有一个项目的分类，将其归到“其他”类里
     if (m_hide_only_one_classification && (m_type == CT_ARTIST || m_type == CT_ALBUM || m_type == CT_GENRE))
     {
-        for (auto& iter = m_media_list.begin(); iter != m_media_list.end();)
+        for (auto iter{ m_media_list.begin() }; iter != m_media_list.end();)
         {
             if (iter->second.size() == 1)
             {
@@ -170,7 +170,7 @@ void CMediaClassifier::ClassifyMedia()
     //将年份不是4位数字的归到“其他”类里
     if (m_type == CT_YEAR)
     {
-        for (auto& iter = m_media_list.begin(); iter != m_media_list.end();)
+        for (auto iter{ m_media_list.begin() }; iter != m_media_list.end();)
         {
             if (!iter->first.empty() && !IsStringYear(iter->first))     //如果年份不是4位数字，则添加到其他列表里
             {

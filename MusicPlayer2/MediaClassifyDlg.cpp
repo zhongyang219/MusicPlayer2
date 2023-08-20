@@ -348,7 +348,7 @@ void CMediaClassifyDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
         auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
         for (int index : m_left_selected_items)
         {
-            wstring str_selected = GetClassifyListSelectedString(index);
+            wstring str_selected{ GetClassifyListSelectedString(index) };
             auto iter = media_list.find(str_selected);
             if (iter != media_list.end())
             {

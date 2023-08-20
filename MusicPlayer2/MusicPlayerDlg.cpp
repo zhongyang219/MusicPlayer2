@@ -2827,7 +2827,8 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
 
             if (pMsg->wParam == VK_APPS)        // 按菜单键弹出主菜单
             {
-                SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&CPoint(0, 0));
+                CPoint poi(0, 0);
+                SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&poi);
                 return TRUE;
             }
         }
@@ -3896,7 +3897,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
     }
     else
     {
-        CLyrics::Lyric& lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), false, theApp.m_lyric_setting_data.donot_show_blank_lines, false) };
+        const CLyrics::Lyric& lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), false, theApp.m_lyric_setting_data.donot_show_blank_lines, false) };
         lyric_str = lyric.text;
         if (theApp.m_lyric_setting_data.show_translate && !lyric.translate.empty())
         {
@@ -5084,7 +5085,7 @@ void CMusicPlayerDlg::OnCreatePlayShortcut()
     if (MessageBox(CCommon::LoadText(IDS_CREATE_PLAY_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
         //创建播放/暂停快捷方式
-        wstring play_pause = CCommon::LoadText(IDS_PLAY_PAUSE, L".lnk");
+        wstring play_pause{ CCommon::LoadText(IDS_PLAY_PAUSE, L".lnk") };
         CCommon::FileNameNormalize(play_pause);
 
         bool success = true;
@@ -5826,8 +5827,8 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
         CPlaylistFile playlist;
         playlist.FromSongList(CPlayer::GetInstance().GetPlayList());        //获取当前播放列表
         //将当前播放列表保存到文件
-        wstring file_path = fileDlg.GetPathName();
-        wstring file_extension = fileDlg.GetFileExt();
+        wstring file_path{ fileDlg.GetPathName() };
+        wstring file_extension{ fileDlg.GetFileExt() };
         file_extension = L'.' + file_extension;
         CPlaylistFile::Type file_type{};
         if (file_extension == PLAYLIST_EXTENSION)
@@ -5852,7 +5853,7 @@ void CMusicPlayerDlg::OnFileOpenPlaylist()
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {
-        wstring file_path = fileDlg.GetPathName();
+        wstring file_path{ fileDlg.GetPathName() };
         CPlayer::GetInstance().OpenPlaylistFile(file_path);
     }
 

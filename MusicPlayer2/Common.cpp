@@ -1836,11 +1836,10 @@ string CCommon::GetPngImageResourceData(UINT id)
 int CCommon::Random(int min, int max)
 {
     std::random_device rd;
-    std::default_random_engine engine{ rd() };
-    std::uniform_int_distribution<> dis{ min, max - 1 };
-    auto dice = std::bind(dis, engine);
-    int _rand = dice();
-    return _rand;
+    std::mt19937 engine(rd());
+    std::uniform_int_distribution<int> dis(min, max - 1);
+    int dis_{ dis(engine) };
+    return dis_;
 }
 
 CString CCommon::GetDesktopBackgroundPath()

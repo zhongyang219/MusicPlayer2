@@ -249,7 +249,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
         const bool ignore_blank{ theApp.m_lyric_setting_data.donot_show_blank_lines};
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        CLyrics::Lyric& current_lyric{ now_lyrics.GetLyric(time, false, ignore_blank, karaoke) };
+        CLyrics::Lyric current_lyric{ now_lyrics.GetLyric(time, false, ignore_blank, karaoke) };
         int progress{ now_lyrics.GetLyricProgress(time, ignore_blank, karaoke, [this](const wstring& str) { return GetTextExtent(str.c_str()).cx; }) };
         bool switch_flag{ flag > 5000 };
         switch_flag ^= (flag % 5000) > progress;

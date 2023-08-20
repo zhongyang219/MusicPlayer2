@@ -10,6 +10,7 @@
 #include "SongDataManager.h"
 #include "SongInfoHelper.h"
 #include "RecentFolderAndPlaylist.h"
+#include <random>
 
 CPlayer CPlayer::m_instance;
 
@@ -2791,6 +2792,9 @@ void CPlayer::InitShuffleList(int first_song)
     //将生成的序号打乱
     if (m_shuffle_list.size() > 1)
     {
+        // 创建随机数引擎
+        std::random_device rd;
+        std::mt19937 generator(rd());
         if (first_song != -1)  // 指定第一首
         {
             if (first_song != 0)
@@ -2799,17 +2803,11 @@ void CPlayer::InitShuffleList(int first_song)
                 m_shuffle_list[first_song] = 0;
                 m_shuffle_list[0] = first_song;
             }
-            std::random_shuffle(m_shuffle_list.begin() + 1, m_shuffle_list.end(), [](int n)
-                {
-                    return CCommon::Random(0, n);
-                });
+            std::shuffle(m_shuffle_list.begin() + 1, m_shuffle_list.end(), generator);
         }
         else
         {
-            std::random_shuffle(m_shuffle_list.begin(), m_shuffle_list.end(), [](int n)
-                {
-                    return CCommon::Random(0, n);
-                });
+            std::shuffle(m_shuffle_list.begin(), m_shuffle_list.end(), generator);
         }
     }
     m_shuffle_index = 0;

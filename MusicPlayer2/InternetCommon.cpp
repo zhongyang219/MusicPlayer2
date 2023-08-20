@@ -92,12 +92,12 @@ int CInternetCommon::HttpPost(const wstring& str_url, wstring& result) {
     return HttpPost(str_url, result, body, headers);
 }
 
-int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, wstring& body, wstring& headers, bool custom_ua) {
-    auto& tmp = CCommon::UnicodeToStr(body, CodeType::UTF8_NO_BOM);
+int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, const wstring& body, wstring& headers, bool custom_ua) {
+    const auto& tmp = CCommon::UnicodeToStr(body, CodeType::UTF8_NO_BOM);
     return HttpPost(str_url, result, tmp, headers, custom_ua);
 }
 
-int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, string& body, wstring& headers, bool custom_ua)
+int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, const string& body, wstring& headers, bool custom_ua)
 {
     wstring log_info;
     log_info = L"http post: " + str_url;

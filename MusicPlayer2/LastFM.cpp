@@ -109,7 +109,7 @@ public:
         auto code = attr->IntValue();
         if (code) {
             theApp.WriteLog(L"Last fm: Some data was ignored.");
-            auto& msg = ele->GetText() ? CCommon::StrToUnicode(ele->GetText(), CodeType::UTF8) : L"";
+            const auto& msg = ele->GetText() ? CCommon::StrToUnicode(ele->GetText(), CodeType::UTF8) : L"";
             theApp.WriteLog(msg);
         }
     }

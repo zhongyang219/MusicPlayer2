@@ -399,7 +399,7 @@ void CDrawCommon::DrawImage(const CImage& image, CPoint start_point, CSize size,
     }
     ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode, no_clip_area);
     Gdiplus::Bitmap bm(image, NULL);
-    m_pGraphics->DrawImage(&bm, start_point.x, start_point.y, size.cx, size.cy);
+    m_pGraphics->DrawImage(&bm, INT(start_point.x), INT(start_point.y), INT(size.cx), INT(size.cy));
     m_pGraphics->ResetClip();
 }
 
@@ -412,7 +412,7 @@ void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize si
         m_pGraphics->SetClip(rect_clip);
     }
     ImageDrawAreaConvert(CSize(pImage->GetWidth(), pImage->GetHeight()), start_point, size, stretch_mode, no_clip_area);
-    m_pGraphics->DrawImage(pImage, start_point.x, start_point.y, size.cx, size.cy);
+    m_pGraphics->DrawImage(pImage, INT(start_point.x), INT(start_point.y), INT(size.cx), INT(size.cy));
     m_pGraphics->ResetClip();
 }
 
@@ -589,7 +589,8 @@ void CDrawCommon::DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int ra
     CGdiPlusTool::CreateRoundRectPath(round_rect_path, rc, radius);
 
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
-    m_pGraphics->FillPath(&Gdiplus::SolidBrush(color), &round_rect_path);          //填充路径
+    Gdiplus::SolidBrush brush(color);
+    m_pGraphics->FillPath(&brush, &round_rect_path);          //填充路径
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
 }
 
@@ -604,7 +605,8 @@ void CDrawCommon::DrawEllipse(Gdiplus::Rect rect, Gdiplus::Color color)
     Gdiplus::GraphicsPath ellipse_path;
     ellipse_path.AddEllipse(rect);
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
-    m_pGraphics->FillPath(&Gdiplus::SolidBrush(color), &ellipse_path);                  //填充路径
+    Gdiplus::SolidBrush brush(color);
+    m_pGraphics->FillPath(&brush, &ellipse_path);                  //填充路径
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
 }
 
@@ -673,24 +675,21 @@ void CDrawCommon::ImageResize(const CImage& img_src, const wstring& path_dest, i
 
     ImageResize(img_src, imDest, size_dest);
     //输出为指定格式
-    const GUID* pType{ &(GUID)GUID_NULL };
     switch (type)
     {
     case IT_JPG:
-        pType = &Gdiplus::ImageFormatJPEG;
+        imDest.Save(path_dest.c_str(), Gdiplus::ImageFormatJPEG);
         break;
     case IT_PNG:
-        pType = &Gdiplus::ImageFormatPNG;
+        imDest.Save(path_dest.c_str(), Gdiplus::ImageFormatPNG);
         break;
     case IT_GIF:
-        pType = &Gdiplus::ImageFormatGIF;
+        imDest.Save(path_dest.c_str(), Gdiplus::ImageFormatGIF);
         break;
     default:
-        pType = &Gdiplus::ImageFormatBMP;
+        imDest.Save(path_dest.c_str(), Gdiplus::ImageFormatBMP);
         break;
     }
-
-    imDest.Save(path_dest.c_str(), *pType);
 }
 
 void CDrawCommon::ImageResize(const wstring& path_src, const wstring& path_dest, int size, ImageType type)
