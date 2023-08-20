@@ -304,7 +304,7 @@ void CLyrics::DisposeKsc()
             else
             {
                 lyric.text = lyric_raw;
-                for (int i{ 1 }; i <= lyric.text.size(); ++i)
+                for (size_t i{ 1 }; i <= lyric.text.size(); ++i)
                 {
                     lyric.split.push_back(i);
                 }
@@ -331,14 +331,14 @@ void CLyrics::NormalizeLyric()
     std::stable_sort(m_lyrics.begin(), m_lyrics.end()); // 非必要，但为防止出错还是重新排序
     int last{};
     // 填充time_start，应用偏移量同时避免出现重叠，重叠的时间标签会被歌词翻译合并误处理
-    for (int i{}; i < m_lyrics.size(); ++i)
+    for (size_t i{}; i < m_lyrics.size(); ++i)
     {
         last = max(last, m_lyrics[i].time_start_raw + m_offset);
         m_lyrics[i].time_start = last;
         last += 10;
     }
     // 填充time_span
-    for (int i{}; i < m_lyrics.size() - 1; ++i)
+    for (size_t i{}; i < m_lyrics.size() - 1; ++i)
     {
         auto& now{ m_lyrics[i] };
         auto& next{ m_lyrics[i + 1] };
@@ -528,8 +528,7 @@ int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std
         {
             if (without_mark)               // 不显示进度符号+逐字歌词 在此处填充lyric_line_size
                 lyric_line_size = measure(now_lyric.text);
-            size_t split_num{ min(now_lyric.split.size(), now_lyric.word_time.size()) };    // 避免原始歌词不标准可能导致的索引越界
-            int i{};
+            size_t i{}, split_num{ min(now_lyric.split.size(), now_lyric.word_time.size()) };    // 避免原始歌词不标准可能导致的索引越界
             while (i < split_num && lyric_current_time > now_lyric.word_time[i])
                 lyric_current_time -= now_lyric.word_time[i++];
             if (i < split_num)
@@ -661,7 +660,7 @@ wstring CLyrics::GetLyricsString2() const
             lyric_string += L"', '";
             bool remove_bracket{ true };
             wstring text{};
-            for (int i{}; i < a_lyric.split.size(); ++i)
+            for (size_t i{}; i < a_lyric.split.size(); ++i)
             {
                 if (i == 0)
                     text += L"[" + a_lyric.text.substr(0, a_lyric.split[i]) + L"]";
@@ -672,7 +671,7 @@ wstring CLyrics::GetLyricsString2() const
             }
             lyric_string += remove_bracket ? a_lyric.text : text;
             lyric_string += L"', '";
-            for (int i{}; i < a_lyric.word_time.size(); ++i)
+            for (size_t i{}; i < a_lyric.word_time.size(); ++i)
             {
                 lyric_string += std::to_wstring(a_lyric.word_time[i]);
                 if (i != a_lyric.word_time.size() - 1)
@@ -758,8 +757,8 @@ void CLyrics::TimeTagDelay()
 // 解析使用括号包含的歌词翻译
 static bool ParseLyricTextWithBracket(const wstring& lyric_text_ori, wstring& lyric_text, wstring& lyric_translate, wchar_t bracket_left, wchar_t bracket_right)
 {
-    int index1 = lyric_text_ori.rfind(bracket_left);        // 左括号的位置
-    int index2 = lyric_text_ori.rfind(bracket_right);       // 右括号的位置
+    size_t index1 = lyric_text_ori.rfind(bracket_left);        // 左括号的位置
+    size_t index2 = lyric_text_ori.rfind(bracket_right);       // 右括号的位置
     if (index1 == wstring::npos || index2 == wstring::npos || index1 >= lyric_text_ori.size() - 1 || index1 >= index2)      // 确保左括号在右括号的左边
         return false;
     lyric_translate = lyric_text_ori.substr(index1 + 1, index2 - index1 - 1);           // 取括号之间的文本作为翻译

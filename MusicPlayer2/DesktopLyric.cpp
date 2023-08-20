@@ -156,7 +156,7 @@ void CDesktopLyric::ClearLyric()
 
 void CDesktopLyric::ApplySettings(const DesktopLyricSettingData& data)
 {
-    SetLyricsFont(data.lyric_font.name.c_str(), theApp.DPI(data.lyric_font.size), CGdiPlusTool::ToGDIPluseFontStyle(data.lyric_font.style));
+    SetLyricsFont(data.lyric_font.name.c_str(), static_cast<Gdiplus::REAL>(theApp.DPI(data.lyric_font.size)), CGdiPlusTool::ToGDIPluseFontStyle(data.lyric_font.style));
     SetLyricsColor(CGdiPlusTool::COLORREFToGdiplusColor(data.text_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.text_color2), static_cast<LyricsGradientMode>(data.text_gradient));
     SetHighlightColor(CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color1), CGdiPlusTool::COLORREFToGdiplusColor(data.highlight_color2), static_cast<LyricsGradientMode>(data.highlight_gradient));
     //SetLyricWindowLock(data.lock_desktop_lyric);

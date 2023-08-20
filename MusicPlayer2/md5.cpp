@@ -143,7 +143,7 @@ void md5Finalize(MD5Context* ctx) {
     uint32_t bitLenLo = ctx->bytesHashed << 3;
     size_t padLength = ((ctx->bytesHashed) % 64 < 56) ? 64 : 128;
     ctx->buffer[ctx->bufferLength] = 0x80;
-    for (auto i = ctx->bufferLength + 1; i < padLength - 8; i++) {
+    for (size_t i = ctx->bufferLength + 1; i < padLength - 8; i++) {
         ctx->buffer[i] = 0;
     }
     writeUint32LE(bitLenLo, ctx->buffer, padLength - 8);

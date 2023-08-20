@@ -473,7 +473,7 @@ bool LastFM::IsPushed() {
 }
 
 bool LastFM::IsScrobbeable() {
-    return ar.cached_tracks.size() >= theApp.m_media_lib_setting_data.lastfm_auto_scrobble_min;
+    return static_cast<int>(ar.cached_tracks.size()) >= theApp.m_media_lib_setting_data.lastfm_auto_scrobble_min;
 }
 
 bool LastFM::CurrentTrackScrobbleable() {

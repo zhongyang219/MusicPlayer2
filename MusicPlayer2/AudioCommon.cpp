@@ -299,7 +299,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             vector<SongInfo> cue_tracks;                // 储存解析到的cue音轨
 
             // 遍历temp分析对应音频文件修正信息，修正后最终结果放入cue_tracks，并移除files内的原始音频文件
-            for (int j = 0; j < temp.size(); ++j)
+            for (size_t j = 0; j < temp.size(); ++j)
             {
                 CFilePathHelper audio_file_path{ temp[j].file_path };                       // 用于检查与查找音频文件
                 // 检查音轨是否存在于媒体库，音频不存在的话audio_file_name改变后会被重新设置
@@ -372,8 +372,8 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
                         });
                     if (find != files.end())
                     {
-                        int index_find = find - files.begin();
-                        if (index_find < i)       // 如果删除的文件在当前文件的前面，则循环变量减1
+                        int index_find = static_cast<int>(find - files.begin());
+                        if (index_find < static_cast<int>(i))              // 如果删除的文件在当前文件的前面，则循环变量减1
                             i--;
 
                         if (index < index_find)                            // 移除文件在index之前则index自减1保持与files的对齐
@@ -429,7 +429,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
             // 为true表示此次添加不接受重复曲目
             bool ignore{ theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist };
             // 指示此次需要为index同步files[i]位置曲目数量的增减
-            bool before_index{ i < index };
+            bool before_index{ static_cast<int>(i) < index };
             // 指示此次cue_tracks为索引指定cue，需要index跟踪其第一轨位置
             bool is_index{ i == index };
 

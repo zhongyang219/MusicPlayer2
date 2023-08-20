@@ -422,7 +422,7 @@ CScintillaEditView::eEolMode CScintillaEditView::JudgeEolMode(const wstring& str
 
 int CScintillaEditView::CharactorPosToBytePos(int pos, const wchar_t * str, size_t size)
 {
-    if (pos >= size)
+    if (pos >= static_cast<int>(size))
         return size;
     else
         return WideCharToMultiByte(CP_UTF8, 0, str, pos, NULL, 0, NULL, NULL);
@@ -430,7 +430,7 @@ int CScintillaEditView::CharactorPosToBytePos(int pos, const wchar_t * str, size
 
 int CScintillaEditView::BytePosToCharactorPos(int pos, const char * str, size_t size)
 {
-    if (pos >= size)
+    if (pos >= static_cast<int>(size))
         return size;
     else
         return MultiByteToWideChar(CP_UTF8, 0, str, pos, NULL, 0);

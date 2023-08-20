@@ -265,7 +265,7 @@ void CMediaLibSettingDlg::OnBnClickedDeleteButton()
 {
     // TODO: 在此添加控件通知处理程序代码
     int index = m_dir_list_ctrl.GetCurSel();
-    if (index >= 0 && index < m_data.media_folders.size())
+    if (index >= 0 && index < static_cast<int>(m_data.media_folders.size()))
     {
         m_data.media_folders.erase(m_data.media_folders.begin() + index);
         m_dir_list_ctrl.DeleteItem(index);

@@ -116,11 +116,11 @@ static void FileToByteVector(ByteVector& data, const std::wstring& file_path)
 
     //获取文件长度
     file.seekg(0, file.end);
-    size_t length = file.tellg();
+    unsigned int length = static_cast<unsigned int>(file.tellg());
     file.seekg(0, file.beg);
 
     data.clear();
-    data.resize(static_cast<unsigned int>(length));
+    data.resize(length);
 
     file.read(data.data(), length);
 

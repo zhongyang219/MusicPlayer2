@@ -217,7 +217,7 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
     //如果文本宽度大于控件宽度，就滚动文本
     if (text_size.cx > rect.Width())
     {
-        text_rect.MoveToX(rect.left - scroll_info.shift_cnt * pixel);
+        text_rect.MoveToX(static_cast<int>((rect.left - scroll_info.shift_cnt * pixel)));
         if ((text_rect.right < rect.right || text_rect.left > rect.left))       //移动到边界时换方向
         {
             if (!scroll_info.dir_changed)
@@ -291,11 +291,11 @@ void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color
     //如果文本宽度大于控件宽度，就滚动文本
     if (text_size.cx > rect.Width())
     {
-        text_rect.MoveToX(rect.left - scroll_info.shift_cnt * pixel);
+        text_rect.MoveToX(static_cast<int>(rect.left - scroll_info.shift_cnt * pixel));
         if ((text_rect.right < rect.right || text_rect.left > rect.left))       //移动超出边界时暂停滚动，freez从20开始递减
         {
             scroll_info.shift_cnt--;    //让文本往回移动一次，防止反复判断为超出边界
-            text_rect.MoveToX(rect.left - scroll_info.shift_cnt * pixel);
+            text_rect.MoveToX(static_cast<int>(rect.left - scroll_info.shift_cnt * pixel));
             scroll_info.freez = 20;     //变换方向时稍微暂停滚动一段时间
         }
     }

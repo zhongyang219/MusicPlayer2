@@ -39,7 +39,7 @@ void CMediaLibTabDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
     const vector<SongInfo>& o_song_list{ GetSongList() };
     for (int index : GetItemsSelected())
     {
-        if (index < 0 || index > o_song_list.size())
+        if (index < 0 || index > static_cast<int>(o_song_list.size()))
             continue;
         song_list.push_back(o_song_list[index]);
     }

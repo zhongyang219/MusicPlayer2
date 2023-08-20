@@ -1105,7 +1105,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
             if (theApp.m_play_setting_data.show_playstate_icon && CPlayer::GetInstance().GetPlayingState2() == 1)
                 m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.pause.GetIcon(), L"");
             else
-                m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
+                m_pTaskbar->SetOverlayIcon(m_hWnd, HICON(), L"");
         }
 #endif
     }
@@ -1964,7 +1964,7 @@ void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
 
         m_tab_selected = pOptionDlg->m_tab_selected;
     }
-    catch (std::bad_alloc& ex)
+    catch (std::bad_alloc)
     {
         // 这里暂时不处理了，只是保险起见
     }
@@ -4476,7 +4476,7 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
         CFilePathHelper cover_path(CPlayer::GetInstance().GetAlbumCoverPath());
         extension = cover_path.GetFileExtension().c_str();
     }
-    file_name.Format(_T("AlbumCover - %s - %s.%s"), CPlayer::GetInstance().GetCurrentSongInfo().artist.c_str(), CPlayer::GetInstance().GetCurrentSongInfo().album.c_str(), extension);
+    file_name.Format(_T("AlbumCover - %s - %s.%s"), CPlayer::GetInstance().GetCurrentSongInfo().artist.c_str(), CPlayer::GetInstance().GetCurrentSongInfo().album.c_str(), extension.GetString());
     wstring file_name_wcs{ file_name };
     CCommon::FileNameNormalize(file_name_wcs);      //替换掉文件名中的无效字符
     //构造保存文件对话框

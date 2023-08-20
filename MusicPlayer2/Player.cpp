@@ -102,7 +102,7 @@ void CPlayer::Create()
     LoadRecentPath();
     LoadRecentPlaylist();
     bool change_to_default_playlist{};
-    for (int i{}; i < m_recent_path.size(); ++i)    // 清除最近播放文件夹列表中的无效项
+    for (size_t i{}; i < m_recent_path.size(); ++i)    // 清除最近播放文件夹列表中的无效项
     {
         if (!CAudioCommon::IsPathContainsAudioFile(m_recent_path[i].path, m_recent_path[i].contain_sub_folder) && !COSUPlayerHelper::IsOsuFolder(m_recent_path[i].path))
         {
@@ -334,7 +334,7 @@ void CPlayer::IniPlaylistComplate()
             bool tmp_find{ false };
             if (!m_current_song_tmp.IsEmpty())     // m_current_song_tmp不为空则查找播放此歌曲，同时定位到m_current_song_position_tmp
             {
-                for (int i{}; i < m_playlist.size(); i++)
+                for (size_t i{}; i < m_playlist.size(); i++)
                 {
                     if (m_current_song_tmp.IsSameSong(m_playlist[i]))
                     {
@@ -742,7 +742,7 @@ void CPlayer::CalculateSpectralDataPeak()
             else if (m_spectral_data[i] < m_spectral_peak[i])
             {
                 fall_count[i]++;
-                float fall_distance = fall_count[i] * (8.18824 / theApp.m_fps - 0.082353);
+                float fall_distance = fall_count[i] * (8.18824f / theApp.m_fps - 0.082353f);
                 if (fall_distance < 0)
                     fall_distance = 0;
                 m_spectral_peak[i] -= fall_distance;		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
@@ -1111,7 +1111,7 @@ void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
 void CPlayer::OpenFilesInDefaultPlaylist(const vector<wstring>& files, bool play)
 {
     vector<SongInfo> songs(files.size());
-    for (int i{}; i < files.size(); ++i)
+    for (size_t i{}; i < files.size(); ++i)
         songs[i].file_path = files[i];
     OpenSongsInDefaultPlaylist(songs, play);
 }
@@ -1261,7 +1261,7 @@ void CPlayer::OpenPlaylistFile(const wstring& file_path)
 bool CPlayer::AddFilesToPlaylist(const vector<wstring>& files, bool ignore_if_exist)
 {
     vector<SongInfo> songs(files.size());
-    for (int i{}; i < files.size(); ++i)
+    for (size_t i{}; i < files.size(); ++i)
         songs[i].file_path = files[i];
     return AddSongsToPlaylist(songs, ignore_if_exist);
 }
@@ -1320,7 +1320,7 @@ void CPlayer::SpeedUp()
 {
     if (m_speed < MAX_PLAY_SPEED)
     {
-        m_speed *= 1.0594631;     //加速一次频率变为原来的(2的1/12次方=1.0594631)倍，即使单调提高一个半音，减速时同理
+        m_speed *= 1.0594631f;     //加速一次频率变为原来的(2的1/12次方=1.0594631)倍，即使单调提高一个半音，减速时同理
         if (m_speed > MAX_PLAY_SPEED)
             m_speed = MAX_PLAY_SPEED;
         if (std::fabs(m_speed - 1) < 0.01)
@@ -1334,7 +1334,7 @@ void CPlayer::SlowDown()
 {
     if (m_speed > MIN_PLAY_SPEED)
     {
-        m_speed /= 1.0594631;
+        m_speed /= 1.0594631f;
         if (m_speed < MIN_PLAY_SPEED)
             m_speed = MIN_PLAY_SPEED;
         if (std::fabs(m_speed - 1) < 0.01)
@@ -1469,7 +1469,7 @@ void CPlayer::LoadConfig()
 
     bool playlist_mode_default = !CCommon::FileExist(theApp.m_recent_path_dat_path);
     m_playlist_mode = ini.GetBool(L"config", L"playlist_mode", playlist_mode_default);
-    m_speed = ini.GetDouble(L"config", L"speed", 1);
+    m_speed = static_cast<float>(ini.GetDouble(L"config", L"speed", 1));
     if (m_speed < MIN_PLAY_SPEED || m_speed > MAX_PLAY_SPEED)
         m_speed = 1;
 
@@ -1987,7 +1987,7 @@ SongInfo& CPlayer::GetCurrentSongInfo2()
 
 SongInfo CPlayer::GetNextTrack() const
 {
-    auto GetLegitSongInfo = [this](int x) { return x >= 0 && x < m_playlist.size() ? m_playlist[x] : SongInfo(); };
+    auto GetLegitSongInfo = [this](int x) { return x >= 0 && x < static_cast<int>(m_playlist.size()) ? m_playlist[x] : SongInfo(); };
     if (!m_next_tracks.empty())
     {
         return GetLegitSongInfo(m_next_tracks.front());
@@ -2093,7 +2093,7 @@ void CPlayer::AddListenTime(int sec)
         CSongDataManager::GetInstance().AddItem(song_info);
     }
     if (m_enable_lastfm) {
-        int speed = m_speed * 1000;
+        int speed = static_cast<int>(m_speed * 1000);
         theApp.m_lastfm.AddCurrentPlayedTime(sec * speed);
         if (!theApp.m_lastfm.IsPushed()) {
             if (theApp.m_lastfm.CurrentTrackScrobbleable()) {

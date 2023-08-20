@@ -374,7 +374,7 @@ size_t CCommon::GetFileSize(const wstring& file_name)
     file.seekg(0, std::ios::end);
     m = file.tellg();
     file.close();
-    return m - l;
+    return static_cast<size_t>(m - l);
 }
 
 wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_utf8)
@@ -1617,7 +1617,7 @@ bool CCommon::GetFileContent(const wchar_t* file_path, string& contents_buff, si
         return false;
     //获取文件长度
     file.seekg(0, file.end);
-    size_t length = file.tellg();
+    unsigned int length{ static_cast<unsigned int>(file.tellg()) };
     file.seekg(0, file.beg);
 
     char* buff = new char[length];
@@ -1638,7 +1638,7 @@ const char* CCommon::GetFileContent(const wchar_t* file_path, size_t& length)
         return nullptr;
     //获取文件长度
     file.seekg(0, file.end);
-    length = file.tellg();
+    length = static_cast<size_t>(file.tellg());
     file.seekg(0, file.beg);
 
     char* buff = new char[length];

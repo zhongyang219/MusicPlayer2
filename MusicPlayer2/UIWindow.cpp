@@ -137,9 +137,9 @@ void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
 
         CPoint offset{ m_ptLButtonDown - rect_max.TopLeft() };  // 最大化时从窗口原点指向点击位置的向量
         if (theApp.m_ui_data.show_playlist)                     // 将此向量映射为窗口大小还原后的对应向量（忽略边框大小）
-            offset.x *= (float)(rect.Width() / 2 - theApp.DPI(30) * 6) / (rect_max.Width() / 2 - theApp.DPI(30) * 6);
+            offset.x *= (LONG)((float)(rect.Width() / 2 - theApp.DPI(30) * 6) / (float)(rect_max.Width() / 2 - theApp.DPI(30) * 6));
         else
-            offset.x *= (float)(rect.Width() - theApp.DPI(30) * 6) / (rect_max.Width() - theApp.DPI(30) * 6);
+            offset.x *= (LONG)((float)(rect.Width() - theApp.DPI(30) * 6) / (float)(rect_max.Width() - theApp.DPI(30) * 6));
         offset = m_ptLButtonDown - rect.TopLeft() - offset;     // 计算所需偏移量
         pMainWindow->MoveWindow(rect + offset);
         pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MOVE | HTCAPTION);

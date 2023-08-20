@@ -113,7 +113,6 @@ std::wstring CSongInfoHelper::GetPlaylistItemToolTip(const SongInfo& song_info, 
         str_tip += GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format);
         str_tip += _T("\r\n");
     }
-    int song_index;
     if (show_full_path)
     {
         str_tip += CCommon::LoadText(IDS_PATH, _T(": "));

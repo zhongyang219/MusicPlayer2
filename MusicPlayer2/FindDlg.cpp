@@ -208,7 +208,7 @@ void CFindDlg::OnBnClickedFindButton()
         bool find_flag;
         if (m_find_current_playlist)        //查找当前播放列表时，在m_playlist窗口中查找
         {
-            for (size_t i{ 0 }; i < CPlayer::GetInstance().GetSongNum(); i++)
+            for (int i{ 0 }; i < CPlayer::GetInstance().GetSongNum(); i++)
             {
                 find_flag = false;
                 if (m_find_file && !find_flag)
