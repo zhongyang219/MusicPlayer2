@@ -56,6 +56,9 @@ BOOL CCleanupRangeDlg::OnInitDialog()
     m_list_ctrl.AddString(CCommon::LoadText(IDS_FILES_NOT_IN_MEDIA_LIB_DIR));
     m_list_ctrl.AddString(CCommon::LoadText(IDS_FILES_THAT_ERROR));
     m_list_ctrl.AddString(CCommon::LoadText(IDS_FILES_TOO_SHORT));
+    // 媒体库目录存在Songs文件夹的话再显示这个清理选项
+    if (m_clean_file_non_main_in_osu_enable)
+        m_list_ctrl.AddString(CCommon::LoadText(IDS_FILES_NON_MAIN_IN_OSU));
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -69,8 +72,10 @@ void CCleanupRangeDlg::OnOK()
     m_clean_file_not_in_media_lib_dir = m_list_ctrl.GetCheck(1);
     m_clean_file_wrong = m_list_ctrl.GetCheck(2);
     m_clean_file_too_short = m_list_ctrl.GetCheck(3);
+    if (m_clean_file_non_main_in_osu_enable)
+        m_clean_file_non_main_in_osu = m_list_ctrl.GetCheck(4);
 
-    if (!m_clean_file_not_exist && !m_clean_file_not_in_media_lib_dir && !m_clean_file_wrong && !m_clean_file_too_short)
+    if (!m_clean_file_not_exist && !m_clean_file_not_in_media_lib_dir && !m_clean_file_wrong && !m_clean_file_too_short && !m_clean_file_non_main_in_osu)
     {
         MessageBox(CCommon::LoadText(IDS_CLEAN_UP_MEDIA_WARNING), NULL, MB_OK | MB_ICONWARNING);
         return;

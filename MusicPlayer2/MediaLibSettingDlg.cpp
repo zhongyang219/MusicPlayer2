@@ -8,6 +8,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "CleanupRangeDlg.h"
 #include "SongDataManager.h"
+#include "COSUPlayerHelper.h"
 
 
 // CMediaLibSettingDlg 对话框
@@ -284,16 +285,21 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
 {
     // TODO: 在此添加控件通知处理程序代码
 
+    wstring osu_floder{};
+    for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
+        if (COSUPlayerHelper::IsOsuFolder(item))
+            osu_floder = item;
     CCleanupRangeDlg dlg;
+    dlg.SetCleanFileNonMainInOsuEnable(!osu_floder.empty());
     if (dlg.DoModal() == IDOK)
     {
         CWaitCursor wait_cursor;	//显示等待光标
         int clear_cnt{};
-        if (dlg.IsCleanFileNotExist())
+        if (dlg.IsCleanFileNotExist())  // 0
         {
             clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData();
         }
-        if (dlg.IsCleanFileNotInMediaLibDir())
+        if (dlg.IsCleanFileNotInMediaLibDir())  // 1
         {
             clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
                 {
@@ -307,7 +313,7 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
                     return true;
                 });
         }
-        if (dlg.IsCleanFileWrong())
+        if (dlg.IsCleanFileWrong())     // 2
         {
             clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
                 {
@@ -317,11 +323,21 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
                     return length_is_zero || path_invalid || time_error;
                 });
         }
-        if (dlg.IsCleanFileTooShort())
+        if (dlg.IsCleanFileTooShort())  // 3
         {
             clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
                 {
                     return song.length().toInt() < m_data.file_too_short_sec * 1000;
+                });
+        }
+        if (dlg.IsCleanFileNonMainInOsu())  // 4
+        {
+            vector<wstring> osu_songs;
+            COSUPlayerHelper::GetOSUAudioFiles(osu_floder, osu_songs);
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
+                {
+                    if (song.file_path.find(osu_floder) == wstring::npos) return false; // 跳过不在osu!目录的条目
+                    return !CCommon::IsItemInVector(osu_songs, song.file_path);     // 清除非主要曲目的文件
                 });
         }
         if (clear_cnt > 0)

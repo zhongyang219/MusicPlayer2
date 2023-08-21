@@ -17,6 +17,8 @@ public:
     bool IsCleanFileNotInMediaLibDir() const { return m_clean_file_not_in_media_lib_dir; }
     bool IsCleanFileWrong() const { return m_clean_file_wrong; }
     bool IsCleanFileTooShort() const { return m_clean_file_too_short; }
+    bool IsCleanFileNonMainInOsu() const { return m_clean_file_non_main_in_osu; };
+    void SetCleanFileNonMainInOsuEnable(bool enable) { m_clean_file_non_main_in_osu_enable = enable; };
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -29,6 +31,8 @@ protected:
     bool m_clean_file_not_in_media_lib_dir{};
     bool m_clean_file_wrong{};
     bool m_clean_file_too_short{};
+    bool m_clean_file_non_main_in_osu{};
+    bool m_clean_file_non_main_in_osu_enable{};
 
 protected:
     virtual CString GetDialogName() const override;
