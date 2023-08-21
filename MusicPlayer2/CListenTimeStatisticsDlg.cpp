@@ -123,15 +123,18 @@ BOOL CListenTimeStatisticsDlg::OnInitDialog()
 
     //获取数据
     //从所有歌曲信息中查找累计听的时间超过指定时间的曲目添加到vector
-    for (const auto& data : CSongDataManager::GetInstance().GetSongData())
-    {
-        SongInfo song{ data.second };
-        if (song.listen_time >= 20 && song.length() > 0)
+    CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map)
         {
-            song.file_path = data.first.path;
-            m_data_list.push_back(SongInfoToListItem(song));
-        }
-    }
+            for (const auto& data : song_data_map)
+            {
+                SongInfo song{ data.second };
+                if (song.listen_time >= 20 && song.length() > 0)
+                {
+                    song.file_path = data.first.path;
+                    m_data_list.push_back(SongInfoToListItem(song));
+                }
+            }
+        });
 
     //先按累计收听时间从大到小排序
     std::sort(m_data_list.begin(), m_data_list.end(), [](const ListItem& a, const ListItem& b)

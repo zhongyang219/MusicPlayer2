@@ -65,48 +65,51 @@ void CAllMediaDlg::InitListData()
     GetLocalTime(&sys_time);
     __int64 cur_time = CTime(sys_time).GetTime();
 
-    for (const auto& item : CSongDataManager::GetInstance().GetSongData())
-    {
-        if (m_type == DT_RECENT_MEDIA)      //如果显示最近播放曲目，则跳过没有播放过的曲目
+    CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map)
         {
-            if(item.second.last_played_time == 0)
-                continue;
-
-            //计算曲目上一次播放的时间和当前的时间差
-            __int64 time_span = cur_time - item.second.last_played_time;
-            //如果时间差超过了列表显示的范围，则跳过它
-            switch (theApp.m_media_lib_setting_data.recent_played_range)
+            for (const auto& item : song_data_map)
             {
-            case RPR_TODAY:
-                if (time_span > 24 * 3600)
-                    continue;
-                break;
-            case RPR_THREE_DAYS:
-                if (time_span > 3 * 24 * 3600)
-                    continue;
-                break;
-            case RPR_WEAK:
-                if (time_span > 7 * 24 * 3600)
-                    continue;
-                break;
-            case RPR_MONTH:
-                if (time_span > 30 * 24 * 3600)
-                    continue;
-                break;
-            case RPR_HALF_YEAR:
-                if (time_span > 180 * 24 * 3600)
-                    continue;
-                break;
-            case RPR_YEAR:
-                if (time_span > 360 * 24 * 3600)
-                    continue;
-                break;
-            default:
-                break;
+                if (m_type == DT_RECENT_MEDIA)      //如果显示最近播放曲目，则跳过没有播放过的曲目
+                {
+                    if (item.second.last_played_time == 0)
+                        continue;
+
+                    //计算曲目上一次播放的时间和当前的时间差
+                    __int64 time_span = cur_time - item.second.last_played_time;
+                    //如果时间差超过了列表显示的范围，则跳过它
+                    switch (theApp.m_media_lib_setting_data.recent_played_range)
+                    {
+                    case RPR_TODAY:
+                        if (time_span > 24 * 3600)
+                            continue;
+                        break;
+                    case RPR_THREE_DAYS:
+                        if (time_span > 3 * 24 * 3600)
+                            continue;
+                        break;
+                    case RPR_WEAK:
+                        if (time_span > 7 * 24 * 3600)
+                            continue;
+                        break;
+                    case RPR_MONTH:
+                        if (time_span > 30 * 24 * 3600)
+                            continue;
+                        break;
+                    case RPR_HALF_YEAR:
+                        if (time_span > 180 * 24 * 3600)
+                            continue;
+                        break;
+                    case RPR_YEAR:
+                        if (time_span > 360 * 24 * 3600)
+                            continue;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+                m_list_songs.push_back(item.second);
             }
-        }
-        m_list_songs.push_back(item.second);
-    }
+        });
     std::sort(m_list_songs.begin(), m_list_songs.end(), [&](const SongInfo& a, const SongInfo& b)
     {
         // 显示所有曲目时默认按标题排序，显示最近曲目时默认按最近播放时间排序

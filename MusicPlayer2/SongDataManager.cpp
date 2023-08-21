@@ -27,6 +27,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
     {
         return;
     }
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
@@ -34,7 +35,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (auto& song_data : m_song_data)
     {
-        ar << CString(song_data.first.path.c_str())		//保存映射容器的键，即歌曲的绝对路径
+        ar << CString(song_data.first.path.c_str())
             << song_data.second.start_pos.toInt()
             << song_data.second.end_pos.toInt()
             << song_data.second.bitrate
@@ -106,6 +107,8 @@ void CSongDataManager::LoadSongData(std::wstring path)
             ar >> size_1;
             size = static_cast<int>(size_1);
         }
+        // LoadSongData执行时主窗口还未启动应该没有其他线程，不过还是加上
+        std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
         for (int i{}; i < size; i++)
         {
             ar >> temp;
@@ -234,7 +237,6 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_info.disc_num;
                 ar >> song_info.total_discs;
             }
-            CSingleLock sync(&m_critical, TRUE);
             m_song_data[song_info] = song_info;     // 将读取到的一首歌曲信息添加到映射容器中
 
             std::wstring file_name{ song_info.GetFileName() };
@@ -272,7 +274,7 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
 {
     if (song_info.file_path.empty())
         return;
-    CSingleLock sync(&m_critical, TRUE);
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     SongInfo& song = m_song_data[song_info];
     song.file_path = song_info.file_path;
     song.cue_file_path = song_info.cue_file_path;
@@ -292,6 +294,7 @@ void CSongDataManager::SaveSongInfo(const SongInfo& song_info)
 
 void CSongDataManager::LoadSongInfo(SongInfo& song_info)
 {
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     auto iter = m_song_data.find(song_info);
     if (iter != m_song_data.end())
     {
@@ -310,8 +313,9 @@ void CSongDataManager::LoadSongInfo(SongInfo& song_info)
     }
 }
 
-SongInfo CSongDataManager::GetSongInfo(const SongDataMapKey& key) const
+SongInfo CSongDataManager::GetSongInfo(const SongDataMapKey& key)
 {
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     SongInfo song;
     auto iter = m_song_data.find(key);
     if (iter != m_song_data.end())
@@ -324,8 +328,9 @@ SongInfo CSongDataManager::GetSongInfo(const SongDataMapKey& key) const
     return song;
 }
 
-SongInfo CSongDataManager::GetSongInfo3(const SongInfo& song) const
+SongInfo CSongDataManager::GetSongInfo3(const SongInfo& song)
 {
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     if (song.IsEmpty())
         return song;
     ASSERT(!song.file_path.empty());
@@ -338,20 +343,22 @@ SongInfo CSongDataManager::GetSongInfo3(const SongInfo& song) const
     return tmp;
 }
 
-const CSongDataManager::SongDataMap& CSongDataManager::GetSongData()
+void CSongDataManager::GetSongData(const std::function<void(const CSongDataManager::SongDataMap&)>& func)
 {
-    return m_song_data;
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
+    func(m_song_data);
 }
 
-bool CSongDataManager::IsItemExist(const SongDataMapKey& key) const
+bool CSongDataManager::IsItemExist(const SongDataMapKey& key)
 {
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     auto iter = m_song_data.find(key);
     return iter != m_song_data.end();
 }
 
 void CSongDataManager::AddItem(const SongInfo& song)
 {
-    CSingleLock sync(&m_critical, TRUE);
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     ASSERT(!song.file_path.empty());
     m_song_data[song] = song;
     SetSongDataModified();
@@ -359,7 +366,7 @@ void CSongDataManager::AddItem(const SongInfo& song)
 
 bool CSongDataManager::RemoveItem(const SongDataMapKey& key)
 {
-    CSingleLock sync(&m_critical, TRUE);
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     auto iter = m_song_data.find(key);
     if (iter != m_song_data.end())
     {
@@ -369,28 +376,26 @@ bool CSongDataManager::RemoveItem(const SongDataMapKey& key)
     return false;
 }
 
-int CSongDataManager::RemoveItemIf(std::function<bool(const SongInfo&)> fun_condition)
+int CSongDataManager::RemoveItemIf(std::function<bool(const SongInfo&)>& fun_condition)
 {
-    int clear_cnt{};		//统计删除的项目的数量
-    //遍历映射容器，删除不必要的条目。
-    for (auto iter{ m_song_data.begin() }; iter != m_song_data.end();)
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
+    // 遍历映射容器，删除不必要的条目。
+    vector<SongDataMapKey> remove;
+    for (const auto& data: m_song_data)
     {
-        if (fun_condition(iter->second))
-        {
-            CSingleLock sync(&m_critical, TRUE);
-            iter = m_song_data.erase(iter);		//删除条目之后将迭代器指向被删除条目的前一个条目
-            clear_cnt++;
-        }
-        else
-        {
-            iter++;
-        }
+        if (fun_condition(data.second))
+            remove.push_back(data.first);
     }
-    return clear_cnt;
+    for (const auto& key : remove)
+    {
+        m_song_data.erase(key);
+    }
+    return remove.size();
 }
 
 void CSongDataManager::ClearPlayTime()
 {
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     for (auto& data : m_song_data)
     {
         data.second.listen_time = 0;
@@ -400,6 +405,7 @@ void CSongDataManager::ClearPlayTime()
 
 void CSongDataManager::ClearLastPlayedTime()
 {
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     for (auto& item : m_song_data)
     {
         item.second.last_played_time = 0;
@@ -409,10 +415,10 @@ void CSongDataManager::ClearLastPlayedTime()
 
 void CSongDataManager::ChangeFilePath(const wstring& file_path, const wstring& new_path)
 {
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     auto iter = m_song_data.find(file_path);
     if (iter != m_song_data.end())
     {
-        CSingleLock sync(&m_critical, TRUE);
         SongInfo song = iter->second;
         if (!song.file_path.empty())
             song.file_path = new_path;

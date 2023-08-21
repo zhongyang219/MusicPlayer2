@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "SongInfo.h"
 #include <functional>
+#include <shared_mutex>
 
 class CSongDataManager
 {
@@ -58,17 +59,20 @@ public:
     // 从媒体库加载信息更新到播放列表项目
     void LoadSongInfo(SongInfo& song_info);
 
-    SongInfo GetSongInfo(const SongDataMapKey& key) const;
+    SongInfo GetSongInfo(const SongDataMapKey& key);
     // 获取一个媒体库歌曲信息（不存在会返回和参数song一致的SongInfo）
     // 至少要保证用于查询的file_path,is_cue,track是正确的
     // 用于修改媒体库的歌曲属性，修改后需使用CSongDataManager::AddItem保存
-    SongInfo GetSongInfo3(const SongInfo& song) const;
+    SongInfo GetSongInfo3(const SongInfo& song);
 
-    const SongDataMap& GetSongData();
-    bool IsItemExist(const SongDataMapKey& key) const;
+    // 用于外部读取m_song_data，加读锁后以const m_song_data&为参数调用func
+    // 请勿在func中试图修改媒体库以避免未定义行为
+    void GetSongData(const std::function<void(const CSongDataManager::SongDataMap&)>& func);
+
+    bool IsItemExist(const SongDataMapKey& key);
     void AddItem(const SongInfo& song);
     bool RemoveItem(const SongDataMapKey& key);
-    int RemoveItemIf(std::function<bool(const SongInfo&)> fun_condition);       //删除符合条件的项目，返回已删除个数
+    int RemoveItemIf(std::function<bool(const SongInfo&)>& fun_condition);       //删除符合条件的项目，返回已删除个数
 
     void ClearPlayTime();       //清除播放时间统计数据
     void ClearLastPlayedTime();     //清除上次播放时间
@@ -87,6 +91,7 @@ private:
     SongDataMap m_song_data;        //储存所有歌曲信息数据的映射容器，键是每一个音频文件的绝对路径，对象是每一个音频文件的信息
     bool m_song_data_modified{};
     CString m_data_version;
-    CCriticalSection m_critical;    //线程同步对象
+    // 用于保证m_song_data读写的线程安全，遍历/查找加读锁，添加/删除加写锁
+    std::shared_mutex m_shared_mutex;  // 线程同步对象
     std::unordered_map<std::wstring, std::vector<std::wstring>> m_song_file_name_map; //保存文件名与SongInfo对象的对应关系
 };

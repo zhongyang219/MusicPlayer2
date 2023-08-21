@@ -214,22 +214,22 @@ void CFindDlg::OnBnClickedFindButton()
                 if (m_find_file && !find_flag)
                 {
                     index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].GetFileName(), m_key_word);
-                    if (index != string::npos) find_flag = true;
+                    if (index != wstring::npos) find_flag = true;
                 }
                 if (m_find_title && !find_flag)
                 {
                     index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].title, m_key_word);
-                    if (index != string::npos) find_flag = true;
+                    if (index != wstring::npos) find_flag = true;
                 }
                 if (m_find_artist && !find_flag)
                 {
                     index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].artist, m_key_word);
-                    if (index != string::npos) find_flag = true;
+                    if (index != wstring::npos) find_flag = true;
                 }
                 if (m_find_album && !find_flag)
                 {
                     index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].album, m_key_word);
-                    if (index != string::npos) find_flag = true;
+                    if (index != wstring::npos) find_flag = true;
                 }
                 if (find_flag)
                 {
@@ -237,39 +237,39 @@ void CFindDlg::OnBnClickedFindButton()
                 }
             }
         }
-        else        //查找所有播放列表时，在theApp.m_song_data窗口中查找
+        else        // 查找所有播放列表时，在SongDataMap中查找
         {
-            for (const auto& item : CSongDataManager::GetInstance().GetSongData())
-            {
-                find_flag = false;
-                if (m_find_file && !find_flag)
+            CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map)
                 {
-                    wstring file_name = CFilePathHelper(item.first.path).GetFileName();
-                    index = CCommon::StringFindNoCase(file_name, m_key_word);
-                    if (index != string::npos) find_flag = true;
-                }
-                if (m_find_title && !find_flag)
-                {
-                    index = CCommon::StringFindNoCase(item.second.title, m_key_word);
-                    if (index != string::npos) find_flag = true;
-                }
-                if (m_find_artist && !find_flag)
-                {
-                    index = CCommon::StringFindNoCase(item.second.artist, m_key_word);
-                    if (index != string::npos) find_flag = true;
-                }
-                if (m_find_album && !find_flag)
-                {
-                    index = CCommon::StringFindNoCase(item.second.album, m_key_word);
-                    if (index != string::npos) find_flag = true;
-                }
-                if (find_flag)
-                {
-                    SongInfo song = item.second;
-                    song.file_path = item.first.path;
-                    m_find_result.push_back(song);      //如果找到了，就保存结果
-                }
-            }
+                    for (const auto& item : song_data_map)
+                    {
+                        find_flag = false;
+                        if (m_find_file && !find_flag)
+                        {
+                            index = CCommon::StringFindNoCase(item.second.GetFileName(), m_key_word);
+                            if (index != wstring::npos) find_flag = true;
+                        }
+                        if (m_find_title && !find_flag)
+                        {
+                            index = CCommon::StringFindNoCase(item.second.title, m_key_word);
+                            if (index != wstring::npos) find_flag = true;
+                        }
+                        if (m_find_artist && !find_flag)
+                        {
+                            index = CCommon::StringFindNoCase(item.second.artist, m_key_word);
+                            if (index != wstring::npos) find_flag = true;
+                        }
+                        if (m_find_album && !find_flag)
+                        {
+                            index = CCommon::StringFindNoCase(item.second.album, m_key_word);
+                            if (index != wstring::npos) find_flag = true;
+                        }
+                        if (find_flag)
+                        {
+                            m_find_result.push_back(item.second);      //如果找到了，就保存结果
+                        }
+                    }
+                });
         }
         // 显示查找结果
         ShowFindResult();
