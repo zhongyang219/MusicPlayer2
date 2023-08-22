@@ -1070,8 +1070,8 @@ void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     if (path.empty() || (path.back() != L'/' && path.back() != L'\\'))      //如果打开的新路径为空或末尾没有斜杠，则在末尾加上一个
         path.append(1, L'\\');
     bool path_exist{ false };
-    int track;
-    int position;
+    int track{};
+    int position{};
     if (GetSongNum() > 0)
     {
         SaveCurrentPlaylist();
