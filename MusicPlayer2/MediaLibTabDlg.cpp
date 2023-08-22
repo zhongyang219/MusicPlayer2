@@ -94,7 +94,7 @@ void CMediaLibTabDlg::OnOK()
         CTabDlg::OnOK();
         CWnd* pParent = GetParentWindow();
         if (pParent != nullptr)
-            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 }
 
@@ -107,7 +107,7 @@ void CMediaLibTabDlg::OnCancel()
 
     CWnd* pParent = GetParentWindow();
     if (pParent != nullptr)
-        ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
+        ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
 }
 
 

@@ -18,7 +18,7 @@ CMediaLibDlg::CMediaLibDlg(int cur_tab, CWnd* pParent /*=nullptr*/)
 
 CMediaLibDlg::~CMediaLibDlg()
 {
-    SaveConfig();
+    // 保存设置更改到OnDestroy，因为CMediaLibDlg不会在关闭时被delete析构而是下次打开/程序退出时析构
 }
 
 void CMediaLibDlg::SetCurTab(int tab)
@@ -66,20 +66,11 @@ BEGIN_MESSAGE_MAP(CMediaLibDlg, CDialog)
     ON_BN_CLICKED(IDC_MEDIA_LIB_SETTINGS_BTN, &CMediaLibDlg::OnBnClickedMediaLibSettingsBtn)
     ON_WM_SIZE()
     ON_BN_CLICKED(IDC_STATISTICS_INFO_BUTTON, &CMediaLibDlg::OnBnClickedStatisticsInfoButton)
+    ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
 // CMediaLibDlg 消息处理程序
-
-
-void CMediaLibDlg::OnCancel()
-{
-    // TODO: 在此添加专用代码和/或调用基类
-    DestroyWindow();
-
-    //CDialog::OnCancel();
-}
-
 
 BOOL CMediaLibDlg::OnInitDialog()
 {
@@ -108,86 +99,98 @@ BOOL CMediaLibDlg::OnInitDialog()
     CImageList ImageList;
     ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
 
-    //创建子对话框
+    // 创建子对话框，因为CMediaLibDlg不会及时析构为避免持续占用大量内存不再使用成员变量存储子窗口窗口类
+    m_path_dlg = new CSetPathDlg();
+    m_playlist_dlg = new CSelectPlaylistDlg();
+    m_artist_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_ARTIST);
+    m_album_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_ALBUM);
+    m_genre_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_GENRE);
+    m_year_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_YEAR);
+    m_type_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_TYPE);
+    m_bitrate_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_BITRATE);
+    m_rating_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_RATING);
+    m_all_media_dlg = new CAllMediaDlg(CAllMediaDlg::DT_ALL_MEDIA);
+    m_recent_media_dlg = new CAllMediaDlg(CAllMediaDlg::DT_RECENT_MEDIA);
+    m_folder_explore_dlg = new CFolderExploreDlg();
     //文件夹
-    m_path_dlg.Create(IDD_SET_PATH_DIALOG);
+    m_path_dlg->Create(IDD_SET_PATH_DIALOG);
     ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));
-    m_tab_ctrl.AddWindow(&m_path_dlg, CCommon::LoadText(IDS_FOLDER));
+    m_tab_ctrl.AddWindow(m_path_dlg, CCommon::LoadText(IDS_FOLDER));
 
     //播放列表
-    m_playlist_dlg.Create(IDD_SELECT_PLAYLIST_DIALOG);
+    m_playlist_dlg->Create(IDD_SELECT_PLAYLIST_DIALOG);
     ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));
-    m_tab_ctrl.AddWindow(&m_playlist_dlg, CCommon::LoadText(IDS_PLAYLIST));
+    m_tab_ctrl.AddWindow(m_playlist_dlg, CCommon::LoadText(IDS_PLAYLIST));
 
     //艺术家
     if ((theApp.m_media_lib_setting_data.display_item & MLDI_ARTIST) || (m_tab_show_force & MLDI_ARTIST))
     {
-        m_artist_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        m_artist_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.artist.GetIcon(true));
-        m_tab_ctrl.AddWindow(&m_artist_dlg, CCommon::LoadText(IDS_ARTIST));
+        m_tab_ctrl.AddWindow(m_artist_dlg, CCommon::LoadText(IDS_ARTIST));
     }
     //唱片集
     if ((theApp.m_media_lib_setting_data.display_item & MLDI_ALBUM) || (m_tab_show_force & MLDI_ALBUM))
     {
-        m_album_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        m_album_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.album.GetIcon(true));
-        m_tab_ctrl.AddWindow(&m_album_dlg, CCommon::LoadText(IDS_ALBUM));
+        m_tab_ctrl.AddWindow(m_album_dlg, CCommon::LoadText(IDS_ALBUM));
     }
     //流派
     if (theApp.m_media_lib_setting_data.display_item & MLDI_GENRE)
     {
-        m_genre_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        m_genre_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.genre.GetIcon(true));
-        m_tab_ctrl.AddWindow(&m_genre_dlg, CCommon::LoadText(IDS_GENRE));
+        m_tab_ctrl.AddWindow(m_genre_dlg, CCommon::LoadText(IDS_GENRE));
     }
     //年份
     if (theApp.m_media_lib_setting_data.display_item & MLDI_YEAR)
     {
-        m_year_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        m_year_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.year.GetIcon(true));
-        m_tab_ctrl.AddWindow(&m_year_dlg, CCommon::LoadText(IDS_YEAR));
+        m_tab_ctrl.AddWindow(m_year_dlg, CCommon::LoadText(IDS_YEAR));
     }
     //类型
     if (theApp.m_media_lib_setting_data.display_item & MLDI_TYPE)
     {
-        m_type_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        m_type_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.file_relate);
-        m_tab_ctrl.AddWindow(&m_type_dlg, CCommon::LoadText(IDS_FILE_TYPE));
+        m_tab_ctrl.AddWindow(m_type_dlg, CCommon::LoadText(IDS_FILE_TYPE));
     }
     //比特率
     if (theApp.m_media_lib_setting_data.display_item & MLDI_BITRATE)
     {
-        m_bitrate_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        m_bitrate_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.bitrate);
-        m_tab_ctrl.AddWindow(&m_bitrate_dlg, CCommon::LoadText(IDS_BITRATE));
+        m_tab_ctrl.AddWindow(m_bitrate_dlg, CCommon::LoadText(IDS_BITRATE));
     }
     //分级
     if (theApp.m_media_lib_setting_data.display_item & MLDI_RATING)
     {
-        m_rating_dlg.Create(IDD_MEDIA_CLASSIFY_DIALOG);
+        m_rating_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.star);
-        m_tab_ctrl.AddWindow(&m_rating_dlg, CCommon::LoadText(IDS_RATING));
+        m_tab_ctrl.AddWindow(m_rating_dlg, CCommon::LoadText(IDS_RATING));
     }
     //所有曲目
     if (theApp.m_media_lib_setting_data.display_item & MLDI_ALL)
     {
-        m_all_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
+        m_all_media_dlg->Create(IDD_ALL_MEDIA_DIALOG);
         ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
-        m_tab_ctrl.AddWindow(&m_all_media_dlg, CCommon::LoadText(IDS_ALL_TRACKS));
+        m_tab_ctrl.AddWindow(m_all_media_dlg, CCommon::LoadText(IDS_ALL_TRACKS));
     }
     //最近播放
     if (theApp.m_media_lib_setting_data.display_item & MLDI_RECENT)
     {
-        m_recent_media_dlg.Create(IDD_ALL_MEDIA_DIALOG);
+        m_recent_media_dlg->Create(IDD_ALL_MEDIA_DIALOG);
         ImageList.Add(theApp.m_icon_set.recent_songs.GetIcon(true));
-        m_tab_ctrl.AddWindow(&m_recent_media_dlg, CCommon::LoadText(IDS_RECENT_PLAYED));
+        m_tab_ctrl.AddWindow(m_recent_media_dlg, CCommon::LoadText(IDS_RECENT_PLAYED));
     }
     //文件夹浏览
     if (theApp.m_media_lib_setting_data.display_item & MLDI_FOLDER_EXPLORE)
     {
-        m_folder_explore_dlg.Create(IDD_FOLDER_EXPLORE_DIALOG);
+        m_folder_explore_dlg->Create(IDD_FOLDER_EXPLORE_DIALOG);
         ImageList.Add(theApp.m_icon_set.folder_explore.GetIcon(true));
-        m_tab_ctrl.AddWindow(&m_folder_explore_dlg, CCommon::LoadText(IDS_FOLDER_EXPLORE));
+        m_tab_ctrl.AddWindow(m_folder_explore_dlg, CCommon::LoadText(IDS_FOLDER_EXPLORE));
     }
 
     m_tab_ctrl.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
@@ -212,8 +215,8 @@ BOOL CMediaLibDlg::OnInitDialog()
         SetWindowPos(nullptr, 0, 0, m_window_size.cx, m_window_size.cy, SWP_NOMOVE | SWP_NOZORDER);
     }
 
-    m_path_dlg.AdjustColumnWidth();
-    m_playlist_dlg.AdjustColumnWidth();
+    m_path_dlg->AdjustColumnWidth();
+    m_playlist_dlg->AdjustColumnWidth();
 
     CenterWindow(GetParent());
 
@@ -224,14 +227,10 @@ BOOL CMediaLibDlg::OnInitDialog()
 
 void CMediaLibDlg::OnBnClickedPlaySelected()
 {
+    // 调用子窗口的OnOK方法
     CTabDlg* current_tab = dynamic_cast<CTabDlg*>(m_tab_ctrl.GetCurrentTab());
     if (current_tab != nullptr)
         current_tab->OnOK();
-    //if (current_tab == &m_path_dlg)
-    //    m_path_dlg.OnOK();
-    //else if (current_tab == &m_playlist_dlg)
-    //    m_playlist_dlg.OnOK();
-    //else if(c)
 }
 
 
@@ -277,15 +276,6 @@ BOOL CMediaLibDlg::OnEraseBkgnd(CDC* pDC)
 }
 
 
-void CMediaLibDlg::OnOK()
-{
-    // TODO: 在此添加专用代码和/或调用基类
-
-    CDialog::OnOK();
-    DestroyWindow();
-
-}
-
 
 void CMediaLibDlg::OnBnClickedMediaLibSettingsBtn()
 {
@@ -313,4 +303,43 @@ void CMediaLibDlg::OnBnClickedStatisticsInfoButton()
     // TODO: 在此添加控件通知处理程序代码
     CMediaLibStatisticsDlg dlg;
     dlg.DoModal();
+}
+
+
+void CMediaLibDlg::OnDestroy()
+{
+    CDialog::OnDestroy();
+
+    // TODO: 在此处添加消息处理程序代码
+    SaveConfig();
+
+    // 销毁并释放子窗口内存
+    if (m_path_dlg != nullptr) { m_path_dlg->DestroyWindow(); delete m_path_dlg; m_path_dlg = nullptr; }
+    if (m_playlist_dlg != nullptr) { m_playlist_dlg->DestroyWindow(); delete m_playlist_dlg; m_playlist_dlg = nullptr; }
+    if (m_artist_dlg != nullptr) { m_artist_dlg->DestroyWindow(); delete m_artist_dlg; m_artist_dlg = nullptr; }
+    if (m_album_dlg != nullptr) { m_album_dlg->DestroyWindow(); delete m_album_dlg; m_album_dlg = nullptr; }
+    if (m_genre_dlg != nullptr) { m_genre_dlg->DestroyWindow(); delete m_genre_dlg; m_genre_dlg = nullptr; }
+    if (m_year_dlg != nullptr) { m_year_dlg->DestroyWindow(); delete m_year_dlg; m_year_dlg = nullptr; }
+    if (m_type_dlg != nullptr) { m_type_dlg->DestroyWindow(); delete m_type_dlg; m_type_dlg = nullptr; }
+    if (m_bitrate_dlg != nullptr) { m_bitrate_dlg->DestroyWindow(); delete m_bitrate_dlg; m_bitrate_dlg = nullptr; }
+    if (m_rating_dlg != nullptr) { m_rating_dlg->DestroyWindow(); delete m_rating_dlg; m_rating_dlg = nullptr; }
+    if (m_all_media_dlg != nullptr) { m_all_media_dlg->DestroyWindow(); delete m_all_media_dlg; m_all_media_dlg = nullptr; }
+    if (m_recent_media_dlg != nullptr) { m_recent_media_dlg->DestroyWindow(); delete m_recent_media_dlg; m_recent_media_dlg = nullptr; }
+    if (m_folder_explore_dlg != nullptr) { m_folder_explore_dlg->DestroyWindow(); delete m_folder_explore_dlg; m_folder_explore_dlg = nullptr; }
+}
+
+
+void CMediaLibDlg::OnOK()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    DestroyWindow();
+    // CDialog::OnOK();
+}
+
+
+void CMediaLibDlg::OnCancel()
+{
+    // TODO: 在此添加专用代码和/或调用基类
+    DestroyWindow();
+    // CDialog::OnCancel();
 }

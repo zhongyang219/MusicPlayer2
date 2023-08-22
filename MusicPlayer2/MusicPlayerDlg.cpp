@@ -1255,11 +1255,11 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         else if (media_lib_setting_changed)
         {
             CWaitCursor wait_cursor;
-            m_pMediaLibDlg->m_artist_dlg.RefreshData();
-            m_pMediaLibDlg->m_album_dlg.RefreshData();
-            m_pMediaLibDlg->m_genre_dlg.RefreshData();
-            m_pMediaLibDlg->m_folder_explore_dlg.RefreshData();
-            m_pMediaLibDlg->m_recent_media_dlg.RefreshData();
+            m_pMediaLibDlg->m_artist_dlg->RefreshData();
+            m_pMediaLibDlg->m_album_dlg->RefreshData();
+            m_pMediaLibDlg->m_genre_dlg->RefreshData();
+            m_pMediaLibDlg->m_folder_explore_dlg->RefreshData();
+            m_pMediaLibDlg->m_recent_media_dlg->RefreshData();
         }
     }
 
@@ -5767,7 +5767,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentPlayedListCleared(WPARAM wParam, LPARAM
     if (m_pMediaLibDlg != nullptr && IsWindow(m_pMediaLibDlg->m_hWnd))
     {
         CWaitCursor wait_cursor;
-        m_pMediaLibDlg->m_recent_media_dlg.RefreshData();
+        m_pMediaLibDlg->m_recent_media_dlg->RefreshData();
     }
 
     return 0;

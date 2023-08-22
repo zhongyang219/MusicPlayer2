@@ -72,7 +72,6 @@ public:
 	afx_msg void OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	//virtual void OnCancel();
 	virtual void OnOK();
 	afx_msg void OnBnClickedOpenFolder();
 	afx_msg void OnPlayPath();

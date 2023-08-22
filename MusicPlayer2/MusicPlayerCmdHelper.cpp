@@ -668,9 +668,9 @@ void CMusicPlayerCmdHelper::RefreshMediaTabData(enum eMediaLibTab tab_index)
     if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
     {
         if (tab_index == ML_FOLDER)
-            pPlayerDlg->m_pMediaLibDlg->m_path_dlg.RefreshTabData();         // 刷新媒体库文件夹列表
+            pPlayerDlg->m_pMediaLibDlg->m_path_dlg->RefreshTabData();         // 刷新媒体库文件夹列表
         else if(tab_index == ML_PLAYLIST)
-            pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.RefreshTabData();    // 刷新媒体库播放列表列表
+            pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg->RefreshTabData();    // 刷新媒体库播放列表列表
     }
 }
 

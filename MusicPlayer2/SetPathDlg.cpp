@@ -283,30 +283,6 @@ void CSetPathDlg::OnDestroy()
 }
 
 
-//void CSetPathDlg::OnBnClickedDeletePathButton()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	//m_path_selected = m_path_list.GetCurSel();
-//	if (SelectValid())
-//	{
-//		m_recent_path.erase(m_recent_path.begin() + m_path_selected);	//删除选中的路径
-//		ShowPathList();		//重新显示路径列表
-//	}
-//}
-
-
-//BOOL CSetPathDlg::OnCommand(WPARAM wParam, LPARAM lParam)
-//{
-//	// TODO: 在此添加专用代码和/或调用基类
-//	if (wParam == ID_FILE_OPEN_FOLDER)
-//	{
-//		OnCancel();		//点击了“打开新路径”按钮后关闭设置路径对话框
-//	}
-//
-//	return CTabDlg::OnCommand(wParam, lParam);
-//}
-
-
 void CSetPathDlg::OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
@@ -386,47 +362,32 @@ void CSetPathDlg::OnSize(UINT nType, int cx, int cy)
 }
 
 
-//void CSetPathDlg::OnCancel()
-//{
-//	// TODO: 在此添加专用代码和/或调用基类
-//	DestroyWindow();
-//
-//	//CTabDlg::OnCancel();
-//}
-
-
 void CSetPathDlg::OnOK()
 {
-	// TODO: 在此添加专用代码和/或调用基类
-	if (SelectValid())
+    // TODO: 在此添加专用代码和/或调用基类
+    if (SelectValid())
     {
-        //PathInfo path_info = GetSelPath();
-        //::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PATH_SELECTED, (WPARAM)&path_info, 0);
         m_folder_selected = true;
     }
-	CTabDlg::OnOK();
-
+    CTabDlg::OnOK();
     CWnd* pParent = GetParentWindow();
     if (pParent != nullptr)
     {
-        ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+        ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 }
 
 
 void CSetPathDlg::OnBnClickedOpenFolder()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_COMMAND, ID_FILE_OPEN_FOLDER, 0);
-	OnCancel();			//点击了“打开新路径”按钮后关闭设置路径对话框
-    CWnd* pParent = GetParent();
+    // TODO: 在此添加控件通知处理程序代码
+    // 向主窗口发送打开文件夹命令
+    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_COMMAND, ID_FILE_OPEN_FOLDER, 0);
+    // “打开新路径”处理完成后向媒体库请求关闭对话框
+    CTabDlg::OnOK();
+    CWnd* pParent = GetParentWindow();
     if (pParent != nullptr)
-    {
-        pParent = pParent->GetParent();
-        if (pParent != nullptr)
-            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
-    }
-
+        ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
 }
 
 

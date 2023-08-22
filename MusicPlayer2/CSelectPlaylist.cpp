@@ -532,7 +532,7 @@ void CSelectPlaylistDlg::OnOK()
 
         CWnd* pParent = GetParentWindow();
         if (pParent != nullptr)
-            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 
 }
@@ -839,18 +839,6 @@ void CSelectPlaylistDlg::OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult)
     if (m_right_selected_item >= 0 && m_right_selected_item < m_song_list_ctrl.GetItemCount())
         OnOK();
     *pResult = 0;
-}
-
-
-void CSelectPlaylistDlg::OnCancel()
-{
-    // TODO: 在此添加专用代码和/或调用基类
-
-    CTabDlg::OnCancel();
-
-    CWnd* pParent = GetParentWindow();
-    if (pParent != nullptr)
-        ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
 }
 
 

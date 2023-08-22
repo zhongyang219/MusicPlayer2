@@ -126,7 +126,6 @@ public:
     afx_msg void OnNMClickSongList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult);
-    virtual void OnCancel();
     afx_msg void OnSaveAsNewPlaylist();
     afx_msg void OnPlaylistSaveAs();
     afx_msg void OnDestroy();

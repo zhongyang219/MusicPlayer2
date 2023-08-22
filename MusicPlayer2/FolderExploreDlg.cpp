@@ -460,7 +460,7 @@ void CFolderExploreDlg::OnOK()
         CTabDlg::OnOK();
         CWnd* pParent = GetParentWindow();
         if (pParent != nullptr)
-            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
     else
     {
