@@ -326,6 +326,9 @@ void CPlayer::IniPlaylistComplate()
 
     //SearchLyrics();
 
+    // 修正程序启动时系统播放控件的播放状态不正确的问题（改在这里，可被下面的初始化后继续播放重新设置为playing状态）
+    m_controls.UpdateControls(Command::STOP);   // 这里设置GetSongNum()返回0时的默认SMTC状态
+
     if (GetSongNum() > 0)
     {
         if (m_playing == 0)     //播放列表初始化完成，并排序完成后，如果此时没有在播放，就重新设置播放的文件
@@ -383,8 +386,6 @@ void CPlayer::IniPlaylistComplate()
         m_random_list.push_back(m_index);
 
     m_thread_info = ThreadInfo();
-
-    m_controls.UpdateControls(Command::STOP);
 }
 
 void CPlayer::SearchLyrics(bool refresh)
@@ -537,8 +538,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
         else
             m_pCore->ClearReverb();
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
-        m_controls.UpdateControls(Command::PLAY);
         UpdateControlsMetadata(GetCurrentSongInfo());
+        m_controls.UpdateControls(Command::STOP);          // OPEN时设置为停止，PLAY时再设置为PLAY
         m_enable_lastfm = theApp.m_media_lib_setting_data.enable_lastfm;
         if (m_enable_lastfm) {
             UpdateLastFMCurrentTrack(GetCurrentSongInfo());
