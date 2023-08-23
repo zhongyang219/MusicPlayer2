@@ -583,6 +583,12 @@ void CSelectPlaylistDlg::OnPlayPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, -1);
+
+    // 设置播放列表完成后请求关闭媒体库窗口
+    CTabDlg::OnOK();
+    CWnd* pParent = GetParentWindow();
+    if (pParent != nullptr)
+        ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
 }
 
 
