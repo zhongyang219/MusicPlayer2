@@ -12,6 +12,7 @@
 #include "BassCore.h"
 #include "SpectralDataHelper.h"
 #include "MediaTransControls.h"
+#include <mutex>
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)         // 播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)      // 播放列表加载完成消息
@@ -237,6 +238,11 @@ private:
     static CPlayer m_instance;      //CPlayer类唯一的对象
     CCriticalSection m_critical;
     CCriticalSection m_album_cover_sync;    //用于专辑封面的线程同步对象
+    std::timed_mutex m_play_status_sync;    // 更改播放状态时加锁，请使用GetPlayStatusMutex获取
+public:
+    // 在“稳态”（稳定的播放/暂停/停止）之间切换期间请先持有此锁
+    // 避免其他线程中途介入以及当前操作发生重入
+    std::timed_mutex& GetPlayStatusMutex() { return m_play_status_sync; }
 
 public:
     //获取CPlayer类的唯一的对象

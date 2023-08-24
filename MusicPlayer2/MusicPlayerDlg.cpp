@@ -2543,50 +2543,55 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //    CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
         //}
 
-        //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))   //当前曲目播放完毕且没有出现错误时才播放下一曲
-        if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && (CPlayer::GetInstance().IsError() || CPlayer::GetInstance().GetSongLength() <= 0)))
-            && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum()
-            && CPlayer::GetInstance().IsFileOpened()) //当前曲目播放完毕且没有出现错误时才播放下一曲
+        // 这里在更改播放状态，需要先取得锁，没有成功取得锁的话下次再试
+        if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock())
         {
-            if (CPlayer::GetInstance().IsError() || CPlayer::GetInstance().GetSongLength() <= 0)
-                m_play_error_cnt++;
-            else
-                m_play_error_cnt = 0;
-            //当前正在编辑歌词，或顺序播放模式下列表中的歌曲播放完毕时（PlayTrack函数会返回false），播放完当前歌曲就停止播放
-            if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !CPlayer::GetInstance().PlayTrack(NEXT, true))
+            //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))   //当前曲目播放完毕且没有出现错误时才播放下一曲
+            if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && (CPlayer::GetInstance().IsError() || CPlayer::GetInstance().GetSongLength() <= 0)))
+                && m_play_error_cnt <= CPlayer::GetInstance().GetSongNum()
+                && CPlayer::GetInstance().IsFileOpened()) //当前曲目播放完毕且没有出现错误时才播放下一曲
             {
-                CPlayer::GetInstance().MusicControl(Command::STOP);     //停止播放
-                //ShowTime();
-                if (theApp.m_lyric_setting_data.cortana_info_enable)
-                    m_cortana_lyric.ResetCortanaText();
-            }
-            SwitchTrack();
-            UpdatePlayPauseButton();
-        }
-        if (CPlayer::GetInstance().IsPlaying() && (theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError()))
-        {
-            CPlayer::GetInstance().MusicControl(Command::PAUSE);
-            UpdatePlayPauseButton();
-        }
-
-        //处理AB重复
-        if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
-        {
-            Time a_position = CPlayer::GetInstance().GetARepeatPosition();
-            Time b_position = CPlayer::GetInstance().GetBRepeatPosition();
-            if (a_position > CPlayer::GetInstance().GetSongLength() || b_position > CPlayer::GetInstance().GetSongLength())
-            {
-                CPlayer::GetInstance().ResetABRepeat();
-                UpdateABRepeatToolTip();
-            }
-            else
-            {
-                Time current_play_time{ CPlayer::GetInstance().GetCurrentPosition() };
-                if (current_play_time < CPlayer::GetInstance().GetARepeatPosition() || current_play_time > CPlayer::GetInstance().GetBRepeatPosition())
+                if (CPlayer::GetInstance().IsError() || CPlayer::GetInstance().GetSongLength() <= 0)
+                    m_play_error_cnt++;
+                else
+                    m_play_error_cnt = 0;
+                //当前正在编辑歌词，或顺序播放模式下列表中的歌曲播放完毕时（PlayTrack函数会返回false），播放完当前歌曲就停止播放
+                if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !CPlayer::GetInstance().PlayTrack(NEXT, true))
                 {
-                    CPlayer::GetInstance().SeekTo(CPlayer::GetInstance().GetARepeatPosition().toInt());
+                    CPlayer::GetInstance().MusicControl(Command::STOP);     //停止播放
+                    //ShowTime();
+                    if (theApp.m_lyric_setting_data.cortana_info_enable)
+                        m_cortana_lyric.ResetCortanaText();
+                }
+                SwitchTrack();
+                UpdatePlayPauseButton();
+            }
+            if (CPlayer::GetInstance().IsPlaying() && (theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError()))
+            {
+                CPlayer::GetInstance().MusicControl(Command::PAUSE);
+                UpdatePlayPauseButton();
+            }
+
+            //处理AB重复
+            if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
+            {
+                Time a_position = CPlayer::GetInstance().GetARepeatPosition();
+                Time b_position = CPlayer::GetInstance().GetBRepeatPosition();
+                if (a_position > CPlayer::GetInstance().GetSongLength() || b_position > CPlayer::GetInstance().GetSongLength())
+                {
+                    CPlayer::GetInstance().ResetABRepeat();
+                    UpdateABRepeatToolTip();
+                }
+                else
+                {
+                    Time current_play_time{ CPlayer::GetInstance().GetCurrentPosition() };
+                    if (current_play_time < CPlayer::GetInstance().GetARepeatPosition() || current_play_time > CPlayer::GetInstance().GetBRepeatPosition())
+                    {
+                        CPlayer::GetInstance().SeekTo(CPlayer::GetInstance().GetARepeatPosition().toInt());
+                    }
                 }
             }
+            CPlayer::GetInstance().GetPlayStatusMutex().unlock();
         }
 
         if (CWinVersionHelper::IsWindowsVista())
