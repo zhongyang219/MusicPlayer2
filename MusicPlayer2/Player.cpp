@@ -1228,9 +1228,11 @@ void CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
             m_descending = path_info.descending;
         }
     }
-
-    //初始化播放列表
+    // 使用切换播放列表继续播放实现初始化线程后的指定歌曲播放
     m_current_song_tmp = song;
+    m_current_song_position_tmp = 0;
+    m_current_song_playing_tmp = play;
+    //初始化播放列表
     IniPlayList(false, false, play);        //根据新路径重新初始化播放列表
 }
 
