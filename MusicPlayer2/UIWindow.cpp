@@ -131,16 +131,31 @@ void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
         // 以下处理为屏幕坐标
         CRect rect_max;
         pMainWindow->GetWindowRect(rect_max);                   // 获取最大化窗口位置信息
+        int ui_width_max{ theApp.m_ui_data.draw_area_width };       // 最大化时的绘图区域宽度
         pMainWindow->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
         CRect rect;
         pMainWindow->GetWindowRect(rect);                       // 获取还原后窗口位置信息
+        int ui_width_org{ theApp.m_ui_data.draw_area_width };       // 还原后的绘图区域宽度
 
         CPoint offset{ m_ptLButtonDown - rect_max.TopLeft() };  // 最大化时从窗口原点指向点击位置的向量
-        if (theApp.m_ui_data.show_playlist)                     // 将此向量映射为窗口大小还原后的对应向量（忽略边框大小）
-            offset.x *= (LONG)((float)(rect.Width() / 2 - theApp.DPI(30) * 6) / (float)(rect_max.Width() / 2 - theApp.DPI(30) * 6));
-        else
-            offset.x *= (LONG)((float)(rect.Width() - theApp.DPI(30) * 6) / (float)(rect_max.Width() - theApp.DPI(30) * 6));
-        offset = m_ptLButtonDown - rect.TopLeft() - offset;     // 计算所需偏移量
+        int cnt{ 1 };   // “关闭”按钮
+        if (theApp.m_app_setting_data.show_maximize_btn_in_titlebar) ++cnt;
+        if (theApp.m_app_setting_data.show_minimize_btn_in_titlebar) ++cnt;
+        if (theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar) ++cnt;
+        if (theApp.m_app_setting_data.show_minimode_btn_in_titlebar) ++cnt;
+        if (theApp.m_app_setting_data.show_skin_btn_in_titlebar) ++cnt;
+        if (theApp.m_app_setting_data.show_settings_btn_in_titlebar) ++cnt;
+        if (theApp.m_ui_data.ShowWindowMenuBar()) ++cnt;
+        // 硬编码的按钮尺寸
+        cnt *= theApp.DPI(30);
+        // 映射向量时不含按钮位置
+        ui_width_org -= cnt;
+        ui_width_max -= cnt;
+        // 将此向量映射为窗口大小还原后的对应向量（忽略边框）
+        offset.x *= ui_width_org;
+        offset.x /= ui_width_max;
+        // 计算所需偏移量
+        offset = m_ptLButtonDown - rect.TopLeft() - offset;
         pMainWindow->MoveWindow(rect + offset);
         pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MOVE | HTCAPTION);
     }
