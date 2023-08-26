@@ -52,6 +52,7 @@ protected:
     //CButton m_search_box_opaque_chk;
 
     CButton m_desktop_lyric_double_line_chk;
+    CButton m_desktop_lyric_column_mode_chk;
     CColorStaticEx m_text_color1_static;
     CColorStaticEx m_text_color2_static;
     CMyComboBox m_text_gradient_combo;
@@ -117,6 +118,7 @@ public:
     afx_msg void OnBnClickedHideLyricWithoutLyricCheck();
     afx_msg void OnBnClickedHideLyricPauseCheck();
     afx_msg void OnBnClickedLyricDoubleLineCheck2();
+    afx_msg void OnBnClickedLyricColumnModeCheck();
     afx_msg void OnBnClickedDefaultStyle();
     afx_msg void OnLyricDefaultStyle1();
     afx_msg void OnLyricDefaultStyle2();

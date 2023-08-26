@@ -148,6 +148,11 @@ void CLyricsWindow::SetLyricDoubleLine(bool doubleLine)
 	m_bDoubleLine = doubleLine;
 }
 
+void CLyricsWindow::SetLyricColumnMode(bool columnMode)
+{
+	m_bColumnMode = columnMode;
+}
+
 void CLyricsWindow::SetShowTranslate(bool showTranslate)
 {
 	m_bShowTranslate = showTranslate;
@@ -304,57 +309,110 @@ void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText,
 	delete pStringPath; //销毁路径
 }
 
+void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool is_current, bool is_translate, bool draw_highlight)
+{
+	//竖排模式
+	// 思路：分别换行绘制此行歌词的每一个字符。 * 可能会有性能问题（？）大家可以帮忙优化一下(T-T) *
+	Gdiplus::REAL fontSize = is_translate ? m_FontSize * TRANSLATE_FONT_SIZE_FACTOR : m_FontSize;
+	if (fontSize < 1)
+		fontSize = m_FontSize;
+
+	//首先遍历字符串每一个字符
+	for (int i = 0; i < wcslen(strText); i++)
+	{
+		Gdiplus::RectF columnRect = rect;
+		columnRect.Y = columnRect.Y + i * fontSize; //确定每个字符的y坐标
+
+		//画出阴影
+		if (m_pShadowBrush)
+		{
+			Gdiplus::RectF layoutRect(0, 0, 0, 0);
+			layoutRect = columnRect;
+			layoutRect.X = layoutRect.X + m_nShadowOffset;
+			layoutRect.Y = layoutRect.Y + m_nShadowOffset;
+			Gdiplus::GraphicsPath* pShadowPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
+			pShadowPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, fontSize, layoutRect, m_pTextFormat); //把文字加入路径
+			pGraphics->FillPath(m_pShadowBrush, pShadowPath);//填充路径
+			delete pShadowPath; //销毁路径
+		}
+
+		//-----------------------------------------------------------
+		//画出歌词
+		Gdiplus::GraphicsPath* pStringPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
+		pStringPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, fontSize, columnRect, m_pTextFormat); //把文字加入路径
+		if (m_pTextPen) {
+			pGraphics->DrawPath(m_pTextPen, pStringPath);//画路径,文字边框
+		}
+		Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, columnRect);
+		pGraphics->FillPath(pBrush, pStringPath);//填充路径
+		delete pBrush;//销毁画刷
+
+		// TODO: 歌词进度绘制
+		// 暂未实现
+
+		delete pStringPath; //销毁路径
+	}
+}
+
 void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 {
-    int lyricHeight = m_nHeight - m_toobar_height;
+	int lyricHeight = m_nHeight - m_toobar_height;
 	//先取出文字宽度和高度
-	Gdiplus::RectF layoutRect(0,0,0,0);
+	Gdiplus::RectF layoutRect(0, 0, 0, 0);
 	Gdiplus::RectF boundingBox;
-	pGraphics->MeasureString (m_lpszLyrics, -1, m_pFont,layoutRect, m_pTextFormat,&boundingBox, 0, 0);
-    boundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
+	pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
+	boundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
+	//竖排模式特殊处理（不需要计算画出位置哦）
+	if (m_bColumnMode)
+	{
+		Gdiplus::RectF dstRect((m_nWidth - boundingBox.Width) / 2, m_toobar_height, boundingBox.Width, boundingBox.Height);
+		DrawLyricTextColumn(pGraphics, m_lpszLyrics, dstRect, true, false, m_lyric_karaoke_disp);		// 是当前歌词，不是翻译，开启卡拉OK模式时高亮
+		return;
+	}
+
 	//计算歌词画出的位置
 	Gdiplus::RectF dstRect;		//文字的矩形
 	Gdiplus::RectF transRect;	//翻译文本的矩形
-    bool bDrawTranslate = m_bShowTranslate && !m_strTranslate.IsEmpty();
-	if(!bDrawTranslate)
+	bool bDrawTranslate = m_bShowTranslate && !m_strTranslate.IsEmpty();
+	if (!bDrawTranslate)
 	{
-        switch (m_alignment)
-        {
-        case Alignment::LEFT:
-            dstRect = Gdiplus::RectF(0, m_toobar_height + (lyricHeight - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
-            break;
-        case Alignment::RIGHT:
-            dstRect = Gdiplus::RectF(m_nWidth - boundingBox.Width, m_toobar_height + (lyricHeight - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
-            break;
-        //居中
-        default:
-            dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width) / 2, m_toobar_height + (lyricHeight - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
-        }
-    }
+		switch (m_alignment)
+		{
+		case Alignment::LEFT:
+			dstRect = Gdiplus::RectF(0, m_toobar_height + (lyricHeight - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
+			break;
+		case Alignment::RIGHT:
+			dstRect = Gdiplus::RectF(m_nWidth - boundingBox.Width, m_toobar_height + (lyricHeight - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
+			break;
+			//居中
+		default:
+			dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width) / 2, m_toobar_height + (lyricHeight - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
+		}
+	}
 	else
 	{
 		Gdiplus::RectF transBoundingBox;
 		pGraphics->MeasureString(m_strTranslate, -1, m_pFont, layoutRect, m_pTextFormat, &transBoundingBox, 0, 0);
-        transBoundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
-        Gdiplus::REAL translateHeight = transBoundingBox.Height * TRANSLATE_FONT_SIZE_FACTOR;
+		transBoundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
+		Gdiplus::REAL translateHeight = transBoundingBox.Height * TRANSLATE_FONT_SIZE_FACTOR;
 		Gdiplus::REAL translateWidth = transBoundingBox.Width * TRANSLATE_FONT_SIZE_FACTOR;
 		Gdiplus::REAL gapHeight = boundingBox.Height * 0.2f;	//歌词和翻译之间的间隙
 		Gdiplus::REAL height = boundingBox.Height + gapHeight + translateHeight;
-        switch (m_alignment)
-        {
-        case Alignment::LEFT:
-            dstRect = Gdiplus::RectF(0, m_toobar_height + (lyricHeight - height) / 2, boundingBox.Width, boundingBox.Height);
-            transRect = Gdiplus::RectF(0, dstRect.GetBottom() + gapHeight, translateWidth, translateHeight);
-            break;
-        case Alignment::RIGHT:
-            dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width), m_toobar_height + (lyricHeight - height) / 2, boundingBox.Width, boundingBox.Height);
-            transRect = Gdiplus::RectF((m_nWidth - translateWidth), dstRect.GetBottom() + gapHeight, translateWidth, translateHeight);
-            break;
-        default:
-		    dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width) / 2, m_toobar_height + (lyricHeight - height) / 2, boundingBox.Width, boundingBox.Height);
-		    transRect = Gdiplus::RectF((m_nWidth - translateWidth) / 2, dstRect.GetBottom() + gapHeight, translateWidth, translateHeight);
-            break;
-        }
+		switch (m_alignment)
+		{
+		case Alignment::LEFT:
+			dstRect = Gdiplus::RectF(0, m_toobar_height + (lyricHeight - height) / 2, boundingBox.Width, boundingBox.Height);
+			transRect = Gdiplus::RectF(0, dstRect.GetBottom() + gapHeight, translateWidth, translateHeight);
+			break;
+		case Alignment::RIGHT:
+			dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width), m_toobar_height + (lyricHeight - height) / 2, boundingBox.Width, boundingBox.Height);
+			transRect = Gdiplus::RectF((m_nWidth - translateWidth), dstRect.GetBottom() + gapHeight, translateWidth, translateHeight);
+			break;
+		default:
+			dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width) / 2, m_toobar_height + (lyricHeight - height) / 2, boundingBox.Width, boundingBox.Height);
+			transRect = Gdiplus::RectF((m_nWidth - translateWidth) / 2, dstRect.GetBottom() + gapHeight, translateWidth, translateHeight);
+			break;
+		}
 	}
 
 	DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true, false, m_lyric_karaoke_disp);		// 是当前歌词，不是翻译，开启卡拉OK模式时高亮

@@ -39,6 +39,7 @@ void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
     //DDX_Control(pDX, IDC_SEARCH_BOX_OPAQUE_CHECK, m_search_box_opaque_chk);
     DDX_Control(pDX, IDC_SHOW_DESKTOP_LYRIC, m_show_desktop_lyric_chk);
     DDX_Control(pDX, IDC_LYRIC_DOUBLE_LINE_CHECK2, m_desktop_lyric_double_line_chk);
+    DDX_Control(pDX, IDC_LYRIC_COLUMN_MODE_CHECK, m_desktop_lyric_column_mode_chk);
     DDX_Control(pDX, IDC_TEXT_COLOR1_STATIC, m_text_color1_static);
     DDX_Control(pDX, IDC_TEXT_COLOR2_STATIC, m_text_color2_static);
     DDX_Control(pDX, IDC_TEXT_GRADIENT_COMBO, m_text_gradient_combo);
@@ -87,6 +88,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck)
     ON_BN_CLICKED(IDC_HIDE_LYRIC_PAUSE_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricPauseCheck)
     ON_BN_CLICKED(IDC_LYRIC_DOUBLE_LINE_CHECK2, &CLyricSettingsDlg::OnBnClickedLyricDoubleLineCheck2)
+    ON_BN_CLICKED(IDC_LYRIC_COLUMN_MODE_CHECK, &CLyricSettingsDlg::OnBnClickedLyricColumnModeCheck)
     ON_BN_CLICKED(IDC_DEFAULT_STYLE, &CLyricSettingsDlg::OnBnClickedDefaultStyle)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE1, &CLyricSettingsDlg::OnLyricDefaultStyle1)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2, &CLyricSettingsDlg::OnLyricDefaultStyle2)
@@ -161,6 +163,7 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_highlight_color1_static.SetFillColor(m_data.desktop_lyric_data.highlight_color1);
     m_highlight_color2_static.SetFillColor(m_data.desktop_lyric_data.highlight_color2);
     m_desktop_lyric_double_line_chk.SetCheck(m_data.desktop_lyric_data.lyric_double_line);
+    m_desktop_lyric_column_mode_chk.SetCheck(m_data.desktop_lyric_data.lyric_column_mode);
     m_lock_desktop_lyric_chk.SetCheck(m_data.desktop_lyric_data.lock_desktop_lyric);
     m_hide_lyric_without_lyric_chk.SetCheck(m_data.desktop_lyric_data.hide_lyric_window_without_lyric);
     m_hide_lyric_paused_chk.SetCheck(m_data.desktop_lyric_data.hide_lyric_window_when_paused);
@@ -591,6 +594,11 @@ void CLyricSettingsDlg::OnBnClickedLyricDoubleLineCheck2()
     m_data.desktop_lyric_data.lyric_double_line = (m_desktop_lyric_double_line_chk.GetCheck() != 0);
 }
 
+void CLyricSettingsDlg::OnBnClickedLyricColumnModeCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.desktop_lyric_data.lyric_column_mode = (m_desktop_lyric_column_mode_chk.GetCheck() != 0);
+}
 
 void CLyricSettingsDlg::OnBnClickedDefaultStyle()
 {

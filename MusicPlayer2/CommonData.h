@@ -185,6 +185,7 @@ struct DesktopLyricSettingData		//桌面歌词设置
     bool lyric_background_penetrate{ false };
     bool show_unlock_when_locked{ true };           //桌面歌词锁定时显示解锁图标
     Alignment lyric_align{ Alignment::CENTER }; //歌词的对齐方式
+    bool lyric_column_mode{ true };    //是否开启竖排模式
 };
 
 struct LyricSettingData

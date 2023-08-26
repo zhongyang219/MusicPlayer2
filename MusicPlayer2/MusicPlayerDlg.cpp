@@ -598,6 +598,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.desktop_lyric_data.highlight_gradient = ini.GetInt(L"desktop_lyric", L"highlight_gradient", 2);
     theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric = ini.GetBool(L"desktop_lyric", L"lock_desktop_lyric", false);
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line = ini.GetBool(L"desktop_lyric", L"lyric_double_line", false);
+    theApp.m_lyric_setting_data.desktop_lyric_data.lyric_column_mode = ini.GetBool(L"desktop_lyric", L"lyric_column_mode", false);
     theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric = ini.GetBool(L"desktop_lyric", L"hide_lyric_window_without_lyric", false);
     theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_when_paused = ini.GetBool(L"desktop_lyric", L"hide_lyric_window_when_paused", false);
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate = ini.GetBool(L"desktop_lyric", L"lyric_background_penetrate", false);
@@ -1679,6 +1680,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     //桌面歌词
     pMenu->CheckMenuItem(ID_LOCK_DESKTOP_LRYIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_LYRIC_DISPLAYED_DOUBLE_LINE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->CheckMenuItem(ID_LOCK_DESKTOP_LRYIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_column_mode ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_LYRIC_BACKGROUND_PENETRATE, MF_BYCOMMAND | (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_SHOW_DESKTOP_LYRIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.show_desktop_lyric ? MF_CHECKED : MF_UNCHECKED));
     pMenu->EnableMenuItem(ID_LOCK_DESKTOP_LRYIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.show_desktop_lyric ? MF_ENABLED : MF_GRAYED));

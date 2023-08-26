@@ -1144,6 +1144,7 @@
 #define IDC_ENABLE_BACKGROUND_CHECK     1151
 #define IDC_SHOW_UNLOCK_WHEN_LOCKED     1151
 #define IDC_TEST_PROGRESS_BAR           1152
+#define IDC_LYRIC_COLUMN_MODE_CHECK     1152
 #define IDC_PROGRESS_TEXT               1153
 #define IDC_PROGRESS_BAR                1154
 #define IDC_MFCEDITBROWSE1              1155

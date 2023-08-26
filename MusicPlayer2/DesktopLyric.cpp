@@ -77,6 +77,7 @@ void CDesktopLyric::ShowLyric()
         return;
 
     SetLyricDoubleLine(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+    SetLyricColumnMode(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_column_mode);
     SetShowTranslate(theApp.m_lyric_setting_data.show_translate);
     SetAlignment(theApp.m_lyric_setting_data.desktop_lyric_data.lyric_align);
     SetLyricKaraokeDisplay(theApp.m_lyric_setting_data.lyric_karaoke_disp);

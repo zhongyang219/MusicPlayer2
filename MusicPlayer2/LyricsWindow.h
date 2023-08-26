@@ -54,6 +54,8 @@ public:
 public:
 	//设置是否双行显示
 	void SetLyricDoubleLine(bool doubleLine);
+	//设置是否竖排显示
+	void SetLyricColumnMode(bool columnMode);
 	// 设置是否显示翻译
 	void SetShowTranslate(bool showTranslate);
 	// 更新当前歌词及高亮进度
@@ -102,6 +104,8 @@ private:
 protected:
     // 在指定rect实际绘制一行歌词，is_current决定是否跟随进度滚动，is_translate决定字号大小，draw_highlight决定是否绘制高亮
     void DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool is_current, bool is_translate, bool draw_highlight);
+	// 以竖排模式绘制歌词
+	void DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool is_current, bool is_translate, bool draw_highlight);
 	// 绘制单行歌词，含翻译
 	void DrawLyrics(Gdiplus::Graphics* pGraphics);
 	// 绘制能够交换显示的双行歌词
@@ -137,6 +141,7 @@ private:
 
 protected:
 	bool m_bDoubleLine = false;		//歌词双行显示
+	bool m_bColumnMode = false;		//歌词竖排显示
     bool m_bShowTranslate = false;  //显示歌词翻译
 	CString m_strTranslate;			//歌词翻译
 	CString m_strNextLyric;			//下一句歌词
