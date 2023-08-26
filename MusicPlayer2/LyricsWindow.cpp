@@ -362,18 +362,28 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 	Gdiplus::RectF boundingBox;
 	pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, layoutRect, m_pTextFormat, &boundingBox, 0, 0);
 	boundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
-	//竖排模式特殊处理（不需要计算画出位置哦）
-	if (m_bColumnMode)
-	{
-		Gdiplus::RectF dstRect((m_nWidth - boundingBox.Width) / 2, m_toobar_height, boundingBox.Width, boundingBox.Height);
-		DrawLyricTextColumn(pGraphics, m_lpszLyrics, dstRect, true, false, m_lyric_karaoke_disp);		// 是当前歌词，不是翻译，开启卡拉OK模式时高亮
-		return;
-	}
 
 	//计算歌词画出的位置
 	Gdiplus::RectF dstRect;		//文字的矩形
 	Gdiplus::RectF transRect;	//翻译文本的矩形
 	bool bDrawTranslate = m_bShowTranslate && !m_strTranslate.IsEmpty();
+	//竖排模式特殊处理
+	if (m_bColumnMode)
+	{
+		dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width) / 2, m_toobar_height, boundingBox.Width, boundingBox.Height);
+		if (bDrawTranslate)
+		{
+			dstRect.X -= 100;
+			transRect = dstRect;
+			transRect.X += 100;
+		}
+
+		DrawLyricTextColumn(pGraphics, m_lpszLyrics, dstRect, true, false, m_lyric_karaoke_disp);		// 是当前歌词，不是翻译，开启卡拉OK模式时高亮
+		if (bDrawTranslate)
+			DrawLyricTextColumn(pGraphics, m_strTranslate, transRect, true, true, false);				// 是当前歌词，是翻译，不绘制高亮
+		return;
+	}
+
 	if (!bDrawTranslate)
 	{
 		switch (m_alignment)
