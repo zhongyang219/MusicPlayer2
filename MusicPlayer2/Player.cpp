@@ -119,6 +119,8 @@ void CPlayer::Create()
     }
     else if (!m_playlist_mode)
     {
+        GetPlayStatusMutex().lock();
+        m_loading = true;
         IniPlayList();	//初始化播放列表
     }
     else
@@ -174,37 +176,34 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
 
 void CPlayer::IniPlayList(bool playlist_mode, bool refresh_info, bool play)
 {
-    if (!m_loading)
+    // 这里不再判断m_loading，因为调用此方法前一定加锁了，需要初始化线程发出消息触发IniPlaylistComplate解锁
+    m_playlist_mode = playlist_mode;
+    if (!playlist_mode)     //非播放列表模式下，从当前目录m_path下搜索文件
     {
-        m_playlist_mode = playlist_mode;
-        if (!playlist_mode)     //非播放列表模式下，从当前目录m_path下搜索文件
-        {
-            if (COSUPlayerHelper::IsOsuFolder(m_path))
-                COSUPlayerHelper::GetOSUAudioFiles(m_path, m_playlist);
-            else
-                CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM, m_contain_sub_folder);
-        }
-        //m_index = 0;
-        //m_song_num = m_playlist.size();
-        m_index_tmp = m_index;		//保存歌曲序号，cue未解析情况下当前的m_index有可能超过当前歌曲数目，临时存储待cue解析后恢复
-        if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
-
-        //m_song_length = { 0, 0, 0 };
-        if (GetSongNum() == 0)
-        {
-            m_playlist.push_back(SongInfo{});		//没有歌曲时向播放列表插入一个空的SongInfo对象
-        }
-
-        m_loading = true;
-        //m_thread_info.playlist = &m_playlist;
-        m_thread_info.refresh_info = refresh_info;
-        m_thread_info.is_playlist_mode = playlist_mode;
-        m_thread_info.play = play;
-        m_thread_info.play_index = m_index_tmp;
-        //m_thread_info.path = m_path;
-        //创建初始化播放列表的工作线程
-        m_pThread = AfxBeginThread(IniPlaylistThreadFunc, &m_thread_info);
+        if (COSUPlayerHelper::IsOsuFolder(m_path))
+            COSUPlayerHelper::GetOSUAudioFiles(m_path, m_playlist);
+        else
+            CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM, m_contain_sub_folder);
     }
+    //m_index = 0;
+    //m_song_num = m_playlist.size();
+    m_index_tmp = m_index;		//保存歌曲序号，cue未解析情况下当前的m_index有可能超过当前歌曲数目，临时存储待cue解析后恢复
+    if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
+
+    //m_song_length = { 0, 0, 0 };
+    if (GetSongNum() == 0)
+    {
+        m_playlist.push_back(SongInfo{});		//没有歌曲时向播放列表插入一个空的SongInfo对象
+    }
+
+    //m_thread_info.playlist = &m_playlist;
+    m_thread_info.refresh_info = refresh_info;
+    m_thread_info.is_playlist_mode = playlist_mode;
+    m_thread_info.play = play;
+    m_thread_info.play_index = m_index_tmp;
+    //m_thread_info.path = m_path;
+    //创建初始化播放列表的工作线程
+    m_pThread = AfxBeginThread(IniPlaylistThreadFunc, &m_thread_info);
 }
 
 UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
@@ -278,7 +277,6 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         // 将媒体库内信息更新到播放列表
         CSongDataManager::GetInstance().LoadSongInfo(song);
     }
-    GetInstance().m_loading = false;
     PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);
     return 0;
 }
@@ -386,6 +384,10 @@ void CPlayer::IniPlaylistComplate()
         m_random_list.push_back(m_index);
 
     m_thread_info = ThreadInfo();
+    // 检查过了只是保险起见
+    ASSERT(m_loading);
+    if (m_loading) GetPlayStatusMutex().unlock();
+    m_loading = false;
 }
 
 void CPlayer::SearchLyrics(bool refresh)
@@ -683,7 +685,6 @@ bool CPlayer::SongIsOver() const
 
 void CPlayer::GetPlayerCoreCurrentPosition()
 {
-    CSingleLock sync(&m_critical, TRUE);
     int current_position_int = m_pCore->GetCurPosition();
     //GetPlayerCoreError(L"GetCurPosition");
     if (!IsPlaylistEmpty() && m_playlist[m_index].is_cue)
@@ -967,7 +968,6 @@ void CPlayer::LoopPlaylist(int& song_track)
 
 void CPlayer::ChangePath(const wstring& path, int track, bool play)
 {
-    if (m_loading) return;
     MusicControl(Command::CLOSE);
     m_path = path;
     if (m_path.empty() || (m_path.back() != L'/' && m_path.back() != L'\\'))        //如果输入的新路径为空或末尾没有斜杠，则在末尾加上一个
@@ -985,8 +985,11 @@ void CPlayer::ChangePath(const wstring& path, int track, bool play)
 
 void CPlayer::SetPath(const PathInfo& path_info)
 {
-    if (m_loading)
-        return;
+    if (m_loading) return;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    m_loading = true;
+    IniPlayerCore();
+
     if (GetSongNum() > 0)
     {
         SaveCurrentPlaylist();
@@ -1013,8 +1016,10 @@ void CPlayer::SetPath(const PathInfo& path_info)
 
 void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init, bool play, bool force)
 {
-    if (m_loading)
-        return;
+    if (m_loading) return;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    m_loading = true;
+    IniPlayerCore();
 
     if (!init)
     {
@@ -1067,7 +1072,10 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
 void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
 {
     if (m_loading) return;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    m_loading = true;
     IniPlayerCore();
+
     if (path.empty() || (path.back() != L'/' && path.back() != L'\\'))      //如果打开的新路径为空或末尾没有斜杠，则在末尾加上一个
         path.append(1, L'\\');
     bool path_exist{ false };
@@ -1120,8 +1128,10 @@ void CPlayer::OpenFilesInDefaultPlaylist(const vector<wstring>& files, bool play
 void CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool play)
 {
     if (songs.empty()) return;
-    IniPlayerCore();
     if (m_loading) return;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    m_loading = true;
+    IniPlayerCore();
 
     MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
@@ -1167,8 +1177,10 @@ void CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool pla
 void CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_index, bool play /*= true*/)
 {
     if (songs.empty()) return;
-    IniPlayerCore();
     if (m_loading) return;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    m_loading = true;
+    IniPlayerCore();
 
     MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
@@ -1202,8 +1214,11 @@ void CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_in
 void CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
 {
     if (song.file_path.empty()) return;
-    IniPlayerCore();
     if (m_loading) return;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    m_loading = true;
+    IniPlayerCore();
+
     MusicControl(Command::CLOSE);
     if (GetSongNum() > 0)
     {
@@ -1238,7 +1253,6 @@ void CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
 
 void CPlayer::OpenPlaylistFile(const wstring& file_path)
 {
-    IniPlayerCore();
     CFilePathHelper helper(file_path);
     if (!CCommon::StringCompareNoCase(helper.GetDir(), theApp.m_playlist_dir))      //如果打开的播放列表文件不是程序默认的播放列表目录，则将其转换为*.playlist格式并复制到默认的播放列表目录
     {
@@ -1273,8 +1287,12 @@ bool CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_if_e
 {
     ASSERT(m_playlist_mode);    //此方法仅限播放列表模式使用
 
-    if (songs.empty())
-        return false;
+    if (songs.empty()) return false;
+    if (m_loading) return false;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
+    m_loading = true;
+    IniPlayerCore();
+
     if (m_playlist.size() == 1 && m_playlist[0].file_path.empty()/* && m_playlist[0].file_name.empty()*/)
         m_playlist.clear();     //删除播放列表中的占位项
 
@@ -1644,6 +1662,9 @@ bool CPlayer::DeleteAlbumCover()
 void CPlayer::ReloadPlaylist(bool refresh_info)
 {
     if (m_loading) return;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    m_loading = true;
+
     MusicControl(Command::CLOSE);
     m_current_song_tmp = GetCurrentSongInfo();	// 保存当前播放的曲目，用于在播放列表初始化结束时确保播放的还是之前播放的曲目
     m_current_song_position_tmp = GetCurrentPosition();
@@ -2134,21 +2155,25 @@ unsigned int CPlayer::GetBassHandle() const
 
 void CPlayer::ReIniPlayerCore(bool replay)
 {
-    CSingleLock sync(&m_critical, TRUE);
-    int playing = m_playing;
-    int current_position = GetCurrentPosition();
-    UnInitPlayerCore();
-    IniPlayerCore();
-    MusicControl(Command::OPEN);
-    SeekTo(current_position);
-    //MusicControl(Command::SEEK);
-    if (replay && playing == PS_PLAYING)
+    if (m_loading) return;
+    if (GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
     {
-        MusicControl(Command::PLAY);
-    }
-    else
-    {
-        m_playing = PS_STOPED;
+        int playing = m_playing;
+        int current_position = GetCurrentPosition();
+        UnInitPlayerCore();
+        IniPlayerCore();
+        MusicControl(Command::OPEN);
+        SeekTo(current_position);
+        //MusicControl(Command::SEEK);
+        if (replay && playing == PS_PLAYING)
+        {
+            MusicControl(Command::PLAY);
+        }
+        else
+        {
+            m_playing = PS_STOPED;
+        }
+        GetPlayStatusMutex().unlock();
     }
 }
 

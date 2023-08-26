@@ -236,12 +236,14 @@ private:
 
 private:
     static CPlayer m_instance;      //CPlayer类唯一的对象
-    CCriticalSection m_critical;
     CCriticalSection m_album_cover_sync;    //用于专辑封面的线程同步对象
     std::timed_mutex m_play_status_sync;    // 更改播放状态时加锁，请使用GetPlayStatusMutex获取
 public:
-    // 在“稳态”（稳定的播放/暂停/停止）之间切换期间请先持有此锁
-    // 避免其他线程中途介入以及当前操作发生重入
+    // 在“稳态”（稳定的播放/暂停/停止）之间切换期间请先持有此锁，避免其他线程中途介入以及当前操作发生重入
+    // 持有锁的临界区应尽量长整个切换期间不应当发生解锁再加锁，主窗口定时器回调(1ms)/UI线程会以try_lock方式获取锁
+    // 启动初始化播放列表线程的方法以try_lock_for获取锁再正式进行，由IniPlaylistComplate解锁 注：更安全的if (m_loading) return;
+    // 以上加锁的操作及其中调用的方法切勿重复加锁会有未定义行为，也不能换成递归锁(防止重入)
+    // 判断与以上操作互斥的操作理论上也应当加锁但我没有检查会不会死锁，可以放弃的操作可以用try_lock_for进行
     std::timed_mutex& GetPlayStatusMutex() { return m_play_status_sync; }
 
 public:

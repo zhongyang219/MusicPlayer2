@@ -4361,12 +4361,13 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
 
         //获取当前播放进度
         //这里将获取当前播放进度的处理放到UI线程中，和UI同步，使得当界面刷新时间间隔设置得比较小时歌词和进度条看起来更加流畅
-        if (CPlayer::GetInstance().IsPlaying())
+        if (CPlayer::GetInstance().IsPlaying() && CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(10)))
         {
             if (CPlayer::GetInstance().IsMciCore())
                 pThis->SendMessage(WM_GET_MUSIC_CURRENT_POSITION);     //由于MCI无法跨线程操作，因此在这里向主线程发送消息，在主线程中处理
             else
                 CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
+            CPlayer::GetInstance().GetPlayStatusMutex().unlock();
         }
 
         //绘制主界面
