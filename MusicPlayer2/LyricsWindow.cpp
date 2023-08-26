@@ -326,6 +326,9 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	//首先遍历字符串每一个字符
 	for (int i = 0; i < wcslen(strText); i++)
 	{
+		wchar_t aCurrentChar = strText[i];
+		bool anEnglishChar = ((aCurrentChar >= L'A' && aCurrentChar <= 'Z') || (aCurrentChar >= 'a' && aCurrentChar <= 'z'));
+
 		//为当前打印的字符创建一个私有StringPath，避免重复绘制。
 		Gdiplus::GraphicsPath* aCharPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 
@@ -338,22 +341,39 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		//画出阴影
 		if (m_pShadowBrush)
 		{
-			Gdiplus::RectF aLayoutRect(0, 0, 0, 0);
-			aLayoutRect = aColumnRect;
-			aLayoutRect.X = aLayoutRect.X + m_nShadowOffset;
-			aLayoutRect.Y = aLayoutRect.Y + m_nShadowOffset;
+			Gdiplus::RectF aLayoutRect = aColumnRect;
+			aLayoutRect.X += m_nShadowOffset;
+			aLayoutRect.Y += m_nShadowOffset;
 			Gdiplus::GraphicsPath* pShadowPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
-			pShadowPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, aFontSize, aLayoutRect, m_pTextFormat); //把文字加入路径
+			pShadowPath->AddString(&aCurrentChar, 1, m_pFontFamily, m_FontStyle, aFontSize, aLayoutRect, m_pTextFormat); //把文字加入路径
+			
+			if (anEnglishChar)
+			{
+				Gdiplus::Matrix aMatrix;
+				aMatrix.RotateAt(90, Gdiplus::PointF(aColumnRect.X + aColumnRect.Width / 2.0f, aColumnRect.Y + aColumnRect.Height / 2.0f));
+				pShadowPath->Transform(&aMatrix);
+			}
+			
 			pGraphics->FillPath(m_pShadowBrush, pShadowPath);//填充路径
 			delete pShadowPath; //销毁路径
 		}
 
 		//-----------------------------------------------------------
 		//画出歌词
-		aCharPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, aFontSize, aColumnRect, m_pTextFormat); //把文字加入路径
+		aCharPath->AddString(&aCurrentChar, 1, m_pFontFamily, m_FontStyle, aFontSize, aColumnRect, m_pTextFormat); //把文字加入路径
 		if (m_pTextPen) {
 			pGraphics->DrawPath(m_pTextPen, aCharPath);//画路径,文字边框
 		}
+
+		//对于英文字符和部分特殊符号，向间距妥协，直接旋转90度
+		if (anEnglishChar)
+		{
+			// TODO: 处理英文字符间距
+			Gdiplus::Matrix aMatrix;
+			aMatrix.RotateAt(90, Gdiplus::PointF(aColumnRect.X + aColumnRect.Width / 2.0f, aColumnRect.Y + aColumnRect.Height / 2.0f));
+			aCharPath->Transform(&aMatrix);
+		}
+
 		Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, aColumnRect);
 		pGraphics->FillPath(pBrush, aCharPath);//填充路径
 		delete pBrush;//销毁画刷
@@ -364,7 +384,6 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		delete aCharPath;//销毁私有StringPath
 	}
 
-	// TODO: 歌词进度绘制
 	if (draw_highlight)
 		DrawHighlightLyrics(pGraphics, aFinalStringPath, aHighlightRect);
 	delete aFinalStringPath; //销毁路径
