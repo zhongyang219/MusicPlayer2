@@ -382,8 +382,8 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 		if (bDrawTranslate)
 		{
 			transRect = dstRect;
-			transRect.X += 50;
-			dstRect.X -= 50;
+			transRect.X += 20;
+			dstRect.X -= 20;
 		}
 
 		DrawLyricTextColumn(pGraphics, m_lpszLyrics, dstRect, true, false, m_lyric_karaoke_disp);		// 是当前歌词，不是翻译，开启卡拉OK模式时高亮
