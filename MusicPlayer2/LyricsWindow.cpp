@@ -317,8 +317,8 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	if (aFontSize < 1)
 		aFontSize = m_FontSize;
 
-
-	Gdiplus::GraphicsPath* aStringPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
+	//提前创建好最终StringPath（也就是全部字都打印好了的图片）以供显示歌词进度
+	Gdiplus::GraphicsPath* aFinalStringPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 
 	//为歌词进度创建一个rect，稍后绘制
 	Gdiplus::RectF aHighlightRect = rect;
@@ -326,6 +326,9 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	//首先遍历字符串每一个字符
 	for (int i = 0; i < wcslen(strText); i++)
 	{
+		//为当前打印的字符创建一个私有StringPath，避免重复绘制。
+		Gdiplus::GraphicsPath* aCharPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
+
 		Gdiplus::RectF aColumnRect = rect;
 		aColumnRect.Y = aColumnRect.Y + i * aFontSize; //确定每个字符的y坐标
 
@@ -347,19 +350,24 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 
 		//-----------------------------------------------------------
 		//画出歌词
-		aStringPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, aFontSize, aColumnRect, m_pTextFormat); //把文字加入路径
+		aCharPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, aFontSize, aColumnRect, m_pTextFormat); //把文字加入路径
 		if (m_pTextPen) {
-			pGraphics->DrawPath(m_pTextPen, aStringPath);//画路径,文字边框
+			pGraphics->DrawPath(m_pTextPen, aCharPath);//画路径,文字边框
 		}
 		Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, aColumnRect);
-		pGraphics->FillPath(pBrush, aStringPath);//填充路径
+		pGraphics->FillPath(pBrush, aCharPath);//填充路径
 		delete pBrush;//销毁画刷
+
+		//将画出结果存储到最终StringPath中
+		aFinalStringPath->AddPath(aCharPath, false);
+
+		delete aCharPath;//销毁私有StringPath
 	}
 
 	// TODO: 歌词进度绘制
 	if (draw_highlight)
-		DrawHighlightLyrics(pGraphics, aStringPath, aHighlightRect);
-	delete aStringPath; //销毁路径
+		DrawHighlightLyrics(pGraphics, aFinalStringPath, aHighlightRect);
+	delete aFinalStringPath; //销毁路径
 }
 
 void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
