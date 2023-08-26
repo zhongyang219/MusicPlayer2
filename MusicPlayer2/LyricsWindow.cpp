@@ -313,45 +313,53 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 {
 	//竖排模式
 	// 思路：分别换行绘制此行歌词的每一个字符。 * 可能会有性能问题（？）大家可以帮忙优化一下(T-T) *
-	Gdiplus::REAL fontSize = is_translate ? m_FontSize * TRANSLATE_FONT_SIZE_FACTOR : m_FontSize;
-	if (fontSize < 1)
-		fontSize = m_FontSize;
+	Gdiplus::REAL aFontSize = is_translate ? m_FontSize * TRANSLATE_FONT_SIZE_FACTOR : m_FontSize;
+	if (aFontSize < 1)
+		aFontSize = m_FontSize;
+
+
+	Gdiplus::GraphicsPath* aStringPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
+
+	//为歌词进度创建一个rect，稍后绘制
+	Gdiplus::RectF aHighlightRect = rect;
 
 	//首先遍历字符串每一个字符
 	for (int i = 0; i < wcslen(strText); i++)
 	{
-		Gdiplus::RectF columnRect = rect;
-		columnRect.Y = columnRect.Y + i * fontSize; //确定每个字符的y坐标
+		Gdiplus::RectF aColumnRect = rect;
+		aColumnRect.Y = aColumnRect.Y + i * aFontSize; //确定每个字符的y坐标
+
+		//更新歌词进度rect的高度
+		aHighlightRect.Height += aFontSize;
 
 		//画出阴影
 		if (m_pShadowBrush)
 		{
-			Gdiplus::RectF layoutRect(0, 0, 0, 0);
-			layoutRect = columnRect;
-			layoutRect.X = layoutRect.X + m_nShadowOffset;
-			layoutRect.Y = layoutRect.Y + m_nShadowOffset;
+			Gdiplus::RectF aLayoutRect(0, 0, 0, 0);
+			aLayoutRect = aColumnRect;
+			aLayoutRect.X = aLayoutRect.X + m_nShadowOffset;
+			aLayoutRect.Y = aLayoutRect.Y + m_nShadowOffset;
 			Gdiplus::GraphicsPath* pShadowPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
-			pShadowPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, fontSize, layoutRect, m_pTextFormat); //把文字加入路径
+			pShadowPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, aFontSize, aLayoutRect, m_pTextFormat); //把文字加入路径
 			pGraphics->FillPath(m_pShadowBrush, pShadowPath);//填充路径
 			delete pShadowPath; //销毁路径
 		}
 
 		//-----------------------------------------------------------
 		//画出歌词
-		Gdiplus::GraphicsPath* pStringPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
-		pStringPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, fontSize, columnRect, m_pTextFormat); //把文字加入路径
+		aStringPath->AddString(&strText[i], 1, m_pFontFamily, m_FontStyle, aFontSize, aColumnRect, m_pTextFormat); //把文字加入路径
 		if (m_pTextPen) {
-			pGraphics->DrawPath(m_pTextPen, pStringPath);//画路径,文字边框
+			pGraphics->DrawPath(m_pTextPen, aStringPath);//画路径,文字边框
 		}
-		Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, columnRect);
-		pGraphics->FillPath(pBrush, pStringPath);//填充路径
+		Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, aColumnRect);
+		pGraphics->FillPath(pBrush, aStringPath);//填充路径
 		delete pBrush;//销毁画刷
-
-		// TODO: 歌词进度绘制
-		// 暂未实现
-
-		delete pStringPath; //销毁路径
 	}
+
+	// TODO: 歌词进度绘制
+	if (draw_highlight)
+		DrawHighlightLyrics(pGraphics, aStringPath, aHighlightRect);
+	delete aStringPath; //销毁路径
 }
 
 void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
@@ -373,9 +381,9 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 		dstRect = Gdiplus::RectF((m_nWidth - boundingBox.Width) / 2, m_toobar_height, boundingBox.Width, boundingBox.Height);
 		if (bDrawTranslate)
 		{
-			dstRect.X -= 100;
 			transRect = dstRect;
-			transRect.X += 100;
+			transRect.X += 50;
+			dstRect.X -= 50;
 		}
 
 		DrawLyricTextColumn(pGraphics, m_lpszLyrics, dstRect, true, false, m_lyric_karaoke_disp);		// 是当前歌词，不是翻译，开启卡拉OK模式时高亮
@@ -468,7 +476,13 @@ void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::Gr
 	Gdiplus::Region* pRegion=NULL;
     if (m_lyric_karaoke_disp){        // 卡拉OK模式下需要根据进度裁剪绘制高亮区域
 		Gdiplus::RectF CliptRect(dstRect);
-		CliptRect.Width=CliptRect.Width * m_nHighlight / 1000;
+
+		//对于竖排模式，应该裁剪高度而不是宽度
+		if (!m_bColumnMode)
+			CliptRect.Width = CliptRect.Width * m_nHighlight / 1000;
+		else
+			CliptRect.Height = CliptRect.Height * m_nHighlight / 1000;
+
 		pRegion=new Gdiplus::Region(CliptRect);
 		pGraphics->SetClip(pRegion, Gdiplus::CombineModeReplace);
 	}
