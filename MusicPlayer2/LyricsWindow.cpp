@@ -220,8 +220,8 @@ void CLyricsWindow::Draw()
     PreDrawLyric(pGraphics, m_pFont);
 
     bool bDrawTranslate = m_bShowTranslate && !m_strTranslate.IsEmpty();
-    if (m_bDoubleLine && !m_strNextLyric.IsEmpty() && !bDrawTranslate)
-        DrawLyricsDoubleLine(pGraphics);
+	if (m_bDoubleLine && !m_strNextLyric.IsEmpty() && !bDrawTranslate)
+		m_bColumnMode ? DrawLyricsDoubleLineColumn(pGraphics) : DrawLyricsDoubleLine(pGraphics);
     else
         DrawLyrics(pGraphics);
     AfterDrawLyric(pGraphics);
@@ -539,6 +539,34 @@ void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
 
     DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true, false, true);			// 当前歌词，不是翻译，显示高亮
     DrawLyricText(pGraphics, m_strNextLyric, nextRect, false, false, false);	// 下一句歌词，不是翻译，不显示高亮
+}
+
+void CLyricsWindow::DrawLyricsDoubleLineColumn(Gdiplus::Graphics* pGraphics)
+{
+	static bool bSwap{};
+	bSwap ^= m_lyricChangeFlag; // 如果歌词发生了改变，则交换当前歌词和下一句歌词的位置
+	//先取出文字宽度和高度
+	Gdiplus::RectF boundingBox;
+	pGraphics->MeasureString(m_lpszLyrics, -1, m_pFont, Gdiplus::RectF(0, 0, 0, 0), m_pTextFormat, &boundingBox, 0, 0);
+	boundingBox.Width += 1;     //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
+	//计算歌词画出的位置
+	Gdiplus::RectF dstRect;		//文字的矩形
+	Gdiplus::RectF nextRect;	//下一句文本的矩形
+
+	float aCenterX = (m_nWidth - boundingBox.Width) / 2;
+
+	dstRect = Gdiplus::RectF(aCenterX - m_FontSize * 1.5, m_toobar_height, boundingBox.Width, boundingBox.Height);
+	nextRect = Gdiplus::RectF(aCenterX + m_FontSize * 1.5, m_toobar_height, boundingBox.Width, boundingBox.Height);
+
+	if (bSwap)
+	{
+		std::swap(dstRect.X, nextRect.X);
+		nextRect.X = aCenterX - m_FontSize * 1.5;
+		dstRect.X = aCenterX + m_FontSize * 1.5;
+	}
+
+	DrawLyricTextColumn(pGraphics, m_lpszLyrics, dstRect, true, false, true);		// 当前歌词，不是翻译，显示高亮
+	DrawLyricTextColumn(pGraphics, m_strNextLyric, nextRect, false, false, false);	// 下一句歌词，不是翻译，不显示高亮
 }
 
 //绘制高亮歌词
