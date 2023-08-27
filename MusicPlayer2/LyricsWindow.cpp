@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "Common.h"
 #include "LyricsWindow.h"
 
 // CLyricsWindow
@@ -326,14 +327,31 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	//首先遍历字符串每一个字符
 	for (int i = 0; i < wcslen(strText); i++)
 	{
-		wchar_t aCurrentChar = strText[i];
-		bool anEnglishChar = ((aCurrentChar >= L'A' && aCurrentChar <= 'Z') || (aCurrentChar >= 'a' && aCurrentChar <= 'z'));
-
 		//为当前打印的字符创建一个私有StringPath，避免重复绘制。
 		Gdiplus::GraphicsPath* aCharPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 
 		Gdiplus::RectF aColumnRect = rect;
 		aColumnRect.Y = aColumnRect.Y + i * aFontSize; //确定每个字符的y坐标
+
+		std::wstring aFinalChar(1, strText[i]);
+
+		//对于非CJK字符需要特殊处理
+		bool aCJKPrint = true;
+		while (!CCommon::CharIsCJKCharacter(strText[i]) && i < wcslen(strText))
+		{
+			i++;
+			aFinalChar += strText[i];
+			aCJKPrint = false;
+		}
+
+		Gdiplus::RectF aBoundingBox;
+		Gdiplus::Matrix aNotCJKMatrix;
+		if (!aCJKPrint)
+		{
+			pGraphics->MeasureString(aFinalChar.c_str(), -1, m_pFont, aColumnRect, m_pTextFormat, &aBoundingBox, 0, 0);
+			aNotCJKMatrix.Translate(aBoundingBox.Width / 2 + aFontSize / 1.5, 0);
+			aNotCJKMatrix.RotateAt(90, Gdiplus::PointF(aBoundingBox.X, aBoundingBox.Y));
+		}
 
 		//更新歌词进度rect的高度
 		aHighlightRect.Height += aFontSize;
@@ -345,34 +363,22 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 			aLayoutRect.X += m_nShadowOffset;
 			aLayoutRect.Y += m_nShadowOffset;
 			Gdiplus::GraphicsPath* pShadowPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);//创建路径
-			pShadowPath->AddString(&aCurrentChar, 1, m_pFontFamily, m_FontStyle, aFontSize, aLayoutRect, m_pTextFormat); //把文字加入路径
+			pShadowPath->AddString(aFinalChar.c_str(), -1, m_pFontFamily, m_FontStyle, aFontSize, aLayoutRect, m_pTextFormat); //把文字加入路径
 			
-			if (anEnglishChar)
-			{
-				Gdiplus::Matrix aMatrix;
-				aMatrix.RotateAt(90, Gdiplus::PointF(aColumnRect.X + aColumnRect.Width / 2.0f, aColumnRect.Y + aColumnRect.Height / 2.0f));
-				pShadowPath->Transform(&aMatrix);
-			}
-			
+			if (!aCJKPrint)
+				pShadowPath->Transform(&aNotCJKMatrix);
+
 			pGraphics->FillPath(m_pShadowBrush, pShadowPath);//填充路径
 			delete pShadowPath; //销毁路径
 		}
 
 		//-----------------------------------------------------------
 		//画出歌词
-		aCharPath->AddString(&aCurrentChar, 1, m_pFontFamily, m_FontStyle, aFontSize, aColumnRect, m_pTextFormat); //把文字加入路径
-		if (m_pTextPen) {
+		aCharPath->AddString(aFinalChar.c_str(), -1, m_pFontFamily, m_FontStyle, aFontSize, aColumnRect, m_pTextFormat); //把文字加入路径
+		if (m_pTextPen)
 			pGraphics->DrawPath(m_pTextPen, aCharPath);//画路径,文字边框
-		}
-
-		//对于英文字符和部分特殊符号，向间距妥协，直接旋转90度
-		if (anEnglishChar)
-		{
-			// TODO: 处理英文字符间距
-			Gdiplus::Matrix aMatrix;
-			aMatrix.RotateAt(90, Gdiplus::PointF(aColumnRect.X + aColumnRect.Width / 2.0f, aColumnRect.Y + aColumnRect.Height / 2.0f));
-			aCharPath->Transform(&aMatrix);
-		}
+		if (!aCJKPrint)
+			aCharPath->Transform(&aNotCJKMatrix);
 
 		Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, aColumnRect);
 		pGraphics->FillPath(pBrush, aCharPath);//填充路径
@@ -382,6 +388,8 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		aFinalStringPath->AddPath(aCharPath, false);
 
 		delete aCharPath;//销毁私有StringPath
+
+		aCJKPrint = true;
 	}
 
 	if (draw_highlight)
@@ -409,8 +417,8 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 		if (bDrawTranslate)
 		{
 			transRect = dstRect;
-			transRect.X += 20;
-			dstRect.X -= 20;
+			transRect.X += (m_FontSize / 2);
+			dstRect.X -= (m_FontSize / 2);
 		}
 
 		DrawLyricTextColumn(pGraphics, m_lpszLyrics, dstRect, true, false, m_lyric_karaoke_disp);		// 是当前歌词，不是翻译，开启卡拉OK模式时高亮

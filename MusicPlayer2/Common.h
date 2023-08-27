@@ -117,6 +117,9 @@ public:
 
     static bool CharIsNumber(wchar_t ch);
 
+    //判断一个字符是否是CJK字符
+    static bool CharIsCJKCharacter(wchar_t ch);
+
     //将一个字符串分割成若干个字符串
     //str: 原始字符串
     //div_ch: 用于分割的字符

@@ -410,6 +410,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"desktop_lyric", L"highlight_gradient", theApp.m_lyric_setting_data.desktop_lyric_data.highlight_gradient);
     ini.WriteBool(L"desktop_lyric", L"lock_desktop_lyric", theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric);
     ini.WriteBool(L"desktop_lyric", L"lyric_double_line", theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+    ini.WriteBool(L"desktop_lyric", L"lyric_column_mode", theApp.m_lyric_setting_data.desktop_lyric_data.lyric_column_mode);
     ini.WriteBool(L"desktop_lyric", L"hide_lyric_window_without_lyric", theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_without_lyric);
     ini.WriteBool(L"desktop_lyric", L"hide_lyric_window_when_paused", theApp.m_lyric_setting_data.desktop_lyric_data.hide_lyric_window_when_paused);
     ini.WriteBool(L"desktop_lyric", L"lyric_background_penetrate", theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);

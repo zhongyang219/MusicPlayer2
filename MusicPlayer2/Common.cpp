@@ -172,6 +172,11 @@ bool CCommon::CharIsNumber(wchar_t ch)
     return (ch >= L'0' && ch <= L'9');
 }
 
+bool CCommon::CharIsCJKCharacter(wchar_t ch)
+{
+    return (ch >= 0x4E00 && ch <= 0x9FFF);
+}
+
 void CCommon::StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& results, bool skip_empty, bool trim)
 {
     results.clear();
