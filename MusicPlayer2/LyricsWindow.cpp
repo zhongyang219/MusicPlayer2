@@ -313,10 +313,8 @@ void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText,
 void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool is_current, bool is_translate, bool draw_highlight)
 {
 	// 竖排模式
-	// 
-	// TODO: GetLyricProgress的竖排模式 对于非等宽字体的兼容
-	// 
 	// 思路：分别换行绘制此行歌词的每一个字符。 * 可能会有性能问题（？）大家可以帮忙优化一下(T-T) *
+	// TODO: GetLyricProgress的竖排模式
 	Gdiplus::REAL aFontSize = is_translate ? m_FontSize * TRANSLATE_FONT_SIZE_FACTOR : m_FontSize;
 	if (aFontSize < 1)
 		aFontSize = m_FontSize;
@@ -325,20 +323,21 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	Gdiplus::GraphicsPath* aFinalStringPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 	Gdiplus::GraphicsPath* aFinalShadowPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 
+	Gdiplus::RectF aColumnRect(rect);
+
 	//首先遍历字符串每一个字符
 	for (int i = 0; i < wcslen(strText); i++)
 	{
 		//为当前打印的字符创建一个私有StringPath，避免重复绘制。
 		Gdiplus::GraphicsPath* aCharPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 
-		Gdiplus::RectF aColumnRect = rect;
-		aColumnRect.Y += i * aFontSize; //确定每个字符的y坐标
-
 		std::wstring aFinalChar(1, strText[i]);
 		//对于非CJK字符需要特殊处理
 		bool aCJKPrint = CCommon::CharIsCJKCharacter(strText[i]);
-		if (strText[i] == L'♪' || strText[i] == L' ')
-			aCJKPrint = true; //针对特别情况的特殊处理
+		//需要被视为方块字符的非CJK字符
+		const std::wstring aSpecialChar(L"♪ ");
+		if (aSpecialChar.find(strText[i]) != std::wstring::npos)
+			aCJKPrint = true;
 		
 		while (!aCJKPrint && i < wcslen(strText))
 		{
@@ -374,12 +373,24 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		//-----------------------------------------------------------
 		//画出歌词
 		aCharPath->AddString(aFinalChar.c_str(), -1, m_pFontFamily, m_FontStyle, aFontSize, aColumnRect, m_pTextFormat); //把文字加入路径
+		
 		if (m_pTextPen) 
 			pGraphics->DrawPath(m_pTextPen, aCharPath);//画路径,文字边框
 		if (!aCJKPrint)
 			aCharPath->Transform(&aNotCJKMatrix);
 		//将画出结果存储到最终StringPath中
 		aFinalStringPath->AddPath(aCharPath, false);
+		//顺带获取字体宽度和高度并更新y坐标（利用GraphicsPath获取，有效解决MeasureString对于CJK字符不精确的问题）
+		Gdiplus::Rect aStringRect;
+		aCharPath->GetBounds(&aStringRect);
+		if (aStringRect.Width == 1 && aStringRect.Height == 1)
+			//对于空像素，返回字体大小，防止极端字符（类似空格）
+			aStringRect.Height = aFontSize;
+		else
+			//如果高度小于宽度，那么高度等于宽度（解决类似“一”这种极端字符的问题）
+			aStringRect.Height = max(aStringRect.Height, aStringRect.Width);
+
+		aColumnRect.Y += aStringRect.Height;
 
 		delete aCharPath;//销毁私有StringPath
 	}
@@ -393,29 +404,25 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	// 如果文本高度大于控件高度，就要根据分割的位置滚动文本    
 	if (aTextHeight > m_nHeight)
 	{
+		Gdiplus::REAL aCliptY = 0;
+
 		// 如果分割的位置（歌词进度）剩下的高度已经小于控件高度的一半，此时使文本底部和控件底部对齐
 		if (aTextHeight - aHighlighHeight < m_nHeight / 2)
-		{
-			aLyricsRect.Y = m_nHeight - aTextHeight;
-		}
+			aCliptY = m_nHeight - aTextHeight;
 		// 分割位置剩下的高度还没有到小于控件高度的一半，但是分割位置的高度已经大于控件高度的一半时，需要移动文本使分割位置正好在控件的中间
 		else if (aHighlighHeight > m_nHeight / 2)
-		{
-			aLyricsRect.Y = m_nHeight / 2 - aHighlighHeight;
-		}
+			aCliptY = m_nHeight / 2 - aHighlighHeight;
 		// 分割位置还不到控件高度的一半时，使文本顶部和控件顶部对齐
 		else
-		{
-			aLyricsRect.Y = 0;
-		}
+			aCliptY = 0;
+
+		Gdiplus::Matrix aLyricsMatrix;
+		aLyricsMatrix.Translate(0, aCliptY);
+		aFinalStringPath->Transform(&aLyricsMatrix);
+		aFinalShadowPath->Transform(&aLyricsMatrix);
 	}
 
-	Gdiplus::Matrix aLyricsMatrix;
-	aLyricsMatrix.Translate(0, aLyricsRect.Y);
-	aFinalStringPath->Transform(&aLyricsMatrix);
-	aFinalShadowPath->Transform(&aLyricsMatrix);
-
-	pGraphics->FillPath(m_pShadowBrush, aFinalShadowPath);
+	pGraphics->FillPath(m_pShadowBrush, aFinalShadowPath);//填充阴影路径
 
 	Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, aLyricsRect);
 	pGraphics->FillPath(pBrush, aFinalStringPath);//填充路径
