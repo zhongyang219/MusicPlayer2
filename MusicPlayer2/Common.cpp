@@ -174,7 +174,10 @@ bool CCommon::CharIsNumber(wchar_t ch)
 
 bool CCommon::CharIsCJKCharacter(wchar_t ch)
 {
-    return (ch >= 0x4E00 && ch <= 0x9FFF);
+    return (ch >= 0x4E00  && ch <= 0x9FFF)  ||
+           (ch >= 0x3400  && ch <= 0x4DBF)  ||
+           (ch >= 0x20000 && ch <= 0x2A6DF) ||
+           (ch >= 0x2A700 && ch <= 0x2B73F);
 }
 
 void CCommon::StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& results, bool skip_empty, bool trim)

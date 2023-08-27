@@ -312,7 +312,10 @@ void CLyricsWindow::DrawLyricText(Gdiplus::Graphics* pGraphics, LPCTSTR strText,
 
 void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR strText, Gdiplus::RectF rect, bool is_current, bool is_translate, bool draw_highlight)
 {
-	//竖排模式
+	// 竖排模式
+	// 
+	// TODO: GetLyricProgress的竖排模式 对于非等宽字体的兼容
+	// 
 	// 思路：分别换行绘制此行歌词的每一个字符。 * 可能会有性能问题（？）大家可以帮忙优化一下(T-T) *
 	Gdiplus::REAL aFontSize = is_translate ? m_FontSize * TRANSLATE_FONT_SIZE_FACTOR : m_FontSize;
 	if (aFontSize < 1)
