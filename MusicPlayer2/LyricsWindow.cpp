@@ -329,13 +329,14 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		Gdiplus::GraphicsPath* aCharPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 
 		Gdiplus::RectF aColumnRect = rect;
-		aColumnRect.Y = aColumnRect.Y + i * aFontSize; //确定每个字符的y坐标
+		aColumnRect.Y += i * aFontSize; //确定每个字符的y坐标
 
 		std::wstring aFinalChar(1, strText[i]);
 		//对于非CJK字符需要特殊处理
 		bool aCJKPrint = CCommon::CharIsCJKCharacter(strText[i]);
 		if (strText[i] == L'♪' || strText[i] == L' ')
 			aCJKPrint = true; //针对特别情况的特殊处理
+		
 		while (!aCJKPrint && i < wcslen(strText))
 		{
 			i++;
