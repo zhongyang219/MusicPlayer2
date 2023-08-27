@@ -320,6 +320,7 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 
 	//提前创建好最终StringPath（也就是全部字都打印好了的图片）以供显示歌词进度
 	Gdiplus::GraphicsPath* aFinalStringPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
+	Gdiplus::GraphicsPath* aFinalShadowPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 
 	//为歌词进度创建一个rect，稍后绘制
 	Gdiplus::RectF aHighlightRect = rect;
@@ -334,14 +335,12 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		aColumnRect.Y = aColumnRect.Y + i * aFontSize; //确定每个字符的y坐标
 
 		std::wstring aFinalChar(1, strText[i]);
-
 		//对于非CJK字符需要特殊处理
-		bool aCJKPrint = true;
-		while (!CCommon::CharIsCJKCharacter(strText[i]) && i < wcslen(strText))
+		bool aCJKPrint = CCommon::CharIsCJKCharacter(strText[i]);
+		while (!aCJKPrint && i < wcslen(strText))
 		{
 			i++;
 			aFinalChar += strText[i];
-			aCJKPrint = false;
 		}
 
 		Gdiplus::RectF aBoundingBox;
@@ -367,33 +366,41 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 			
 			if (!aCJKPrint)
 				pShadowPath->Transform(&aNotCJKMatrix);
-
-			pGraphics->FillPath(m_pShadowBrush, pShadowPath);//填充路径
+			//将画出结果存储到最终ShadowPath中
+			aFinalShadowPath->AddPath(pShadowPath, false);
 			delete pShadowPath; //销毁路径
 		}
 
 		//-----------------------------------------------------------
 		//画出歌词
 		aCharPath->AddString(aFinalChar.c_str(), -1, m_pFontFamily, m_FontStyle, aFontSize, aColumnRect, m_pTextFormat); //把文字加入路径
-		if (m_pTextPen)
+		if (m_pTextPen) 
 			pGraphics->DrawPath(m_pTextPen, aCharPath);//画路径,文字边框
 		if (!aCJKPrint)
 			aCharPath->Transform(&aNotCJKMatrix);
-
-		Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, aColumnRect);
-		pGraphics->FillPath(pBrush, aCharPath);//填充路径
-		delete pBrush;//销毁画刷
-
 		//将画出结果存储到最终StringPath中
 		aFinalStringPath->AddPath(aCharPath, false);
 
 		delete aCharPath;//销毁私有StringPath
-
-		aCJKPrint = true;
 	}
+
+	Gdiplus::RectF aLyricsRect;
+	aFinalStringPath->GetBounds(&aLyricsRect);
+
+	Gdiplus::Matrix aLyricsMatrix;
+	aLyricsMatrix.Translate(0, (m_nHeight - m_toobar_height - aLyricsRect.Height) / 2);
+	aFinalStringPath->Transform(&aLyricsMatrix);
+	aFinalShadowPath->Transform(&aLyricsMatrix);
+
+	pGraphics->FillPath(m_pShadowBrush, aFinalShadowPath);
+
+	Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, rect);
+	pGraphics->FillPath(pBrush, aFinalStringPath);//填充路径
+	delete pBrush;//销毁画刷
 
 	if (draw_highlight)
 		DrawHighlightLyrics(pGraphics, aFinalStringPath, aHighlightRect);
+	delete aFinalShadowPath;
 	delete aFinalStringPath; //销毁路径
 }
 
