@@ -322,9 +322,6 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	Gdiplus::GraphicsPath* aFinalStringPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 	Gdiplus::GraphicsPath* aFinalShadowPath = new Gdiplus::GraphicsPath(Gdiplus::FillModeAlternate);
 
-	//为歌词进度创建一个rect，稍后绘制
-	Gdiplus::RectF aHighlightRect = rect;
-
 	//首先遍历字符串每一个字符
 	for (int i = 0; i < wcslen(strText); i++)
 	{
@@ -337,8 +334,8 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		std::wstring aFinalChar(1, strText[i]);
 		//对于非CJK字符需要特殊处理
 		bool aCJKPrint = CCommon::CharIsCJKCharacter(strText[i]);
-		if (strText[i] == L'♪')
-			aCJKPrint = true; //针对♪符号的特殊处理
+		if (strText[i] == L'♪' || strText[i] == L' ')
+			aCJKPrint = true; //针对特别情况的特殊处理
 		while (!aCJKPrint && i < wcslen(strText))
 		{
 			i++;
@@ -353,9 +350,6 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 			aNotCJKMatrix.Translate(aBoundingBox.Width / 2 + aFontSize / 1.5, 0);
 			aNotCJKMatrix.RotateAt(90, Gdiplus::PointF(aBoundingBox.X, aBoundingBox.Y));
 		}
-
-		//更新歌词进度rect的高度
-		aHighlightRect.Height += aFontSize;
 
 		//画出阴影
 		if (m_pShadowBrush)
@@ -400,10 +394,10 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	pGraphics->FillPath(pBrush, aFinalStringPath);//填充路径
 	delete pBrush;//销毁画刷
 
-	aHighlightRect.Offset(Gdiplus::PointF(0, (m_nHeight - m_toobar_height - aLyricsRect.Height) / 2));
-	
+	aLyricsRect.Offset(0, (m_nHeight - m_toobar_height - aLyricsRect.Height) / 2);
+
 	if (draw_highlight)
-		DrawHighlightLyrics(pGraphics, aFinalStringPath, aHighlightRect);
+		DrawHighlightLyrics(pGraphics, aFinalStringPath, aLyricsRect);
 	delete aFinalShadowPath;
 	delete aFinalStringPath; //销毁路径
 }
