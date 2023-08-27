@@ -337,6 +337,8 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		std::wstring aFinalChar(1, strText[i]);
 		//对于非CJK字符需要特殊处理
 		bool aCJKPrint = CCommon::CharIsCJKCharacter(strText[i]);
+		if (strText[i] == L'♪')
+			aCJKPrint = true; //针对♪符号的特殊处理
 		while (!aCJKPrint && i < wcslen(strText))
 		{
 			i++;
@@ -397,6 +399,8 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, rect);
 	pGraphics->FillPath(pBrush, aFinalStringPath);//填充路径
 	delete pBrush;//销毁画刷
+
+	aHighlightRect.Offset(Gdiplus::PointF(0, (m_nHeight - m_toobar_height - aLyricsRect.Height) / 2));
 
 	if (draw_highlight)
 		DrawHighlightLyrics(pGraphics, aFinalStringPath, aHighlightRect);
