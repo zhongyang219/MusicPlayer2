@@ -387,18 +387,39 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	Gdiplus::RectF aLyricsRect;
 	aFinalStringPath->GetBounds(&aLyricsRect);
 
+	Gdiplus::REAL aTextHeight = aLyricsRect.Height + m_toobar_height + 20;
+	Gdiplus::REAL aHighlighHeight = aLyricsRect.Height * m_nHighlight / 1000;
+
+	// 如果文本高度大于控件高度，就要根据分割的位置滚动文本    
+	if (aTextHeight > m_nHeight)
+	{
+		// 如果分割的位置（歌词进度）剩下的高度已经小于控件高度的一半，此时使文本底部和控件底部对齐
+		if (aTextHeight - aHighlighHeight < m_nHeight / 2)
+		{
+			aLyricsRect.Y = m_nHeight - aTextHeight;
+		}
+		// 分割位置剩下的高度还没有到小于控件高度的一半，但是分割位置的高度已经大于控件高度的一半时，需要移动文本使分割位置正好在控件的中间
+		else if (aHighlighHeight > m_nHeight / 2)
+		{
+			aLyricsRect.Y = m_nHeight / 2 - aHighlighHeight;
+		}
+		// 分割位置还不到控件高度的一半时，使文本顶部和控件顶部对齐
+		else
+		{
+			aLyricsRect.Y = 0;
+		}
+	}
+
 	Gdiplus::Matrix aLyricsMatrix;
-	aLyricsMatrix.Translate(0, (m_nHeight - m_toobar_height - aLyricsRect.Height) / 2);
+	aLyricsMatrix.Translate(0, aLyricsRect.Y);
 	aFinalStringPath->Transform(&aLyricsMatrix);
 	aFinalShadowPath->Transform(&aLyricsMatrix);
 
 	pGraphics->FillPath(m_pShadowBrush, aFinalShadowPath);
 
-	Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, rect);
+	Gdiplus::Brush* pBrush = CreateGradientBrush(m_TextGradientMode, m_TextColor1, m_TextColor2, aLyricsRect);
 	pGraphics->FillPath(pBrush, aFinalStringPath);//填充路径
 	delete pBrush;//销毁画刷
-
-	aLyricsRect.Offset(0, (m_nHeight - m_toobar_height - aLyricsRect.Height) / 2);
 
 	if (draw_highlight)
 		DrawHighlightLyrics(pGraphics, aFinalStringPath, aLyricsRect);
