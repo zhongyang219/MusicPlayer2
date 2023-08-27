@@ -173,11 +173,18 @@ bool CCommon::CharIsNumber(wchar_t ch)
 }
 
 bool CCommon::CharIsCJKCharacter(wchar_t ch)
-{
-    return (ch >= 0x4E00  && ch <= 0x9FFF)  ||
-           (ch >= 0x3400  && ch <= 0x4DBF)  ||
-           (ch >= 0x20000 && ch <= 0x2A6DF) ||
-           (ch >= 0x2A700 && ch <= 0x2B73F);
+{ 
+    https://zh.wikipedia.org/wiki/Unicode%E5%8D%80%E6%AE%B5
+    return (ch >= 0x4E00 && ch <= 0x9FFF)   ||  // 中日韩统一表意文字 (基本区) 
+           (ch >= 0x20000 && ch <= 0x2A6DF) ||  // 中日韩统一表意文字扩展区B 
+           (ch >= 0x2A700 && ch <= 0x2B73F) ||  // 中日韩统一表意文字扩展区C
+           (ch >= 0x2B740 && ch <= 0x2B81F) ||  // 中日韩统一表意文字扩展区D
+           (ch >= 0x2B820 && ch <= 0x2CEAF) ||  // 中日韩统一表意文字扩展区E
+           (ch >= 0x2CEB0 && ch <= 0x2EBEF) ||  // 中日韩统一表意文字扩展区F
+           (ch >= 0x3040 && ch <= 0x309F)   ||  // 平假名
+           (ch >= 0x30A0 && ch <= 0x30FF)   ||  // 片假名
+           (ch >= 0xAC00 && ch <= 0xD7AF)   ||  // 谚文音节
+           (ch >= 0xD7B0 && ch <= 0xD7FF);      // 谚文字母扩展-B
 }
 
 void CCommon::StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& results, bool skip_empty, bool trim)
