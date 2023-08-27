@@ -400,6 +400,8 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 	pGraphics->FillPath(pBrush, aFinalStringPath);//填充路径
 	delete pBrush;//销毁画刷
 
+	aHighlightRect.Offset(Gdiplus::PointF(0, (m_nHeight - m_toobar_height - aLyricsRect.Height) / 2));
+	
 	if (draw_highlight)
 		DrawHighlightLyrics(pGraphics, aFinalStringPath, aHighlightRect);
 	delete aFinalShadowPath;
