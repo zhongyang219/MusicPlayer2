@@ -272,8 +272,8 @@ public:
     //判断当前是否正在播放
     bool IsPlaying() const;
 
-    //播放指定序号的歌曲，如果是播放结束自动播放下一曲，则auto_next为true
-    bool PlayTrack(int song_track, bool auto_next = false);
+    //播放指定序号的歌曲，如果是播放结束自动播放下一曲，则auto_next为true，play为false时只打开不播放
+    bool PlayTrack(int song_track, bool auto_next = false, bool play = true);
     bool PlayAfterCurrentTrack(std::vector<int> tracks_to_play);		//设置指定序号歌曲为下一首播放的歌曲
 private:
     void LoopPlaylist(int& song_track);
@@ -460,8 +460,6 @@ public:
 private:
     //当无法播放时弹出提示信息
     void ConnotPlayWarning() const;
-    bool RemoveSongNotPlay(int index);
-    void AfterSongsRemoved(bool play);
     //如果专辑封面过大，将其缩小后再加载
     void AlbumCoverResize();
     //初始化随机播放列表

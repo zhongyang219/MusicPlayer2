@@ -467,7 +467,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
     if (m_pCore == nullptr)
         return;
 
-    if (command != Command::VOLUME_UP && command != Command::VOLUME_DOWN)
+    // VOLUME_UP和VOLUME_DOWN可在无法播放时使用
+    // stop和close也可以在m_index失效无法播放时使用（RemoveSong(s)）
+    if (command != Command::VOLUME_UP && command != Command::VOLUME_DOWN && command != Command::STOP && command != Command::CLOSE)
     {
         if (!CCommon::IsURL(GetCurrentFilePath()) && !CCommon::FileExist(GetCurrentFilePath()))
         {
@@ -557,6 +559,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         break;
     case Command::CLOSE:
         //RemoveFXHandle();
+        m_file_opend = false;   // 主窗口定时器使用此变量以阻止播放结束自动下一曲
         m_pCore->Close();
         m_playing = PS_STOPED;
         SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_AFTER_MUSIC_STREAM_CLOSED, 0, 0);
@@ -686,10 +689,9 @@ bool CPlayer::SongIsOver() const
 void CPlayer::GetPlayerCoreCurrentPosition()
 {
     int current_position_int = m_pCore->GetCurPosition();
-    //GetPlayerCoreError(L"GetCurPosition");
-    if (!IsPlaylistEmpty() && m_playlist[m_index].is_cue)
+    if (!IsPlaylistEmpty() && GetCurrentSongInfo().is_cue)
     {
-        current_position_int -= m_playlist[m_index].start_pos.toInt();
+        current_position_int -= GetCurrentSongInfo().start_pos.toInt();
     }
     m_current_position.fromInt(current_position_int);
 }
@@ -758,7 +760,7 @@ bool CPlayer::IsPlaying() const
     return m_playing == 2;
 }
 
-bool CPlayer::PlayTrack(int song_track, bool auto_next)
+bool CPlayer::PlayTrack(int song_track, bool auto_next, bool play)
 {
     if (song_track >= 0) {
         m_next_tracks.clear();     //手动播放时复位下一首列表
@@ -924,7 +926,8 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
     //IniLyrics();
     if (GetCurrentSongInfo().is_cue)
         SeekTo(0);
-    MusicControl(Command::PLAY);
+    if (play)
+        MusicControl(Command::PLAY);
     GetPlayerCoreCurrentPosition();
     SetTitle();
     SaveConfig();
@@ -1686,71 +1689,82 @@ void CPlayer::ReloadPlaylist(bool refresh_info)
 
 bool CPlayer::RemoveSong(int index)
 {
-    if (m_loading)
-        return false;
+    if (IsPlaylistEmpty()) return false;                    // 播放列表为空（或有一个占位SongInfo）返回
+    if (index < 0 || index >= GetSongNum()) return false;   // index无效返回
+    if (m_loading) return false;                            // 播放列表载入中返回
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;  // 取得播放状态锁失败返回
 
-    if (IsPlaylistEmpty())
-        return false;
-
-    if (index == m_index && index == GetSongNum() - 1)
+    bool rm_is_index{ index == m_index };
+    m_playlist.erase(m_playlist.begin() + index);
+    if (index < m_index) --m_index;                         //如果要删除的曲目在正在播放的曲目之前，则正在播放的曲目序号减1
+    // 当前播放被移除时需要进行的一些处理
+    if (rm_is_index)
     {
-        MusicControl(Command::STOP);
-        MusicControl(Command::CLOSE);
-    }
-
-    if (index >= 0 && index < GetSongNum())
-    {
-        m_playlist.erase(m_playlist.begin() + index);
-        //m_song_num--;
-        if (!m_playlist.empty())
-        {
-            if (index == m_index)		//如果要删除的曲目是正在播放的曲目，重新播放当前曲目
-            {
-                if (GetSongNum() > 0)
-                    PlayTrack(m_index);
-            }
-            else if (index < m_index)	//如果要删除的曲目在正在播放的曲目之前，则正在播放的曲目序号减1
-            {
-                m_index--;
-            }
+        if (m_index >= 0 && m_index < GetSongNum())
+        {   // 如果索引仍然有效那么播放
+            PlayTrack(m_index, false, IsPlaying());     // 删除index后播放m_index即播放紧邻的下一首歌曲
         }
         else
-        {
+        {   // 索引失效就停止，特别的当播放列表为空时插入一个空项目并清除显示
             MusicControl(Command::STOP);
             MusicControl(Command::CLOSE);
-            m_playlist.push_back(SongInfo());
-            m_album_cover.Destroy();
-            m_album_cover_blur.Destroy();
-            m_Lyrics = CLyrics();
+            if (m_playlist.empty())
+            {
+                m_album_cover.Destroy();
+                m_album_cover_blur.Destroy();
+                m_Lyrics = CLyrics();
+                m_playlist.push_back(SongInfo());
+                SetTitle();
+            }
         }
-        OnPlaylistChange();
-        return true;
     }
-    return false;
+    OnPlaylistChange();
+    GetPlayStatusMutex().unlock();
+    return true;
 }
 
 void CPlayer::RemoveSongs(vector<int> indexes)
 {
-    if (m_loading)
-        return;
-    int size = indexes.size();
-    bool is_playing = IsPlaying();
-    Time position = m_pCore->GetCurPosition();
-    SongInfo cur_song = GetCurrentSongInfo();
-    MusicControl(Command::STOP);
-    MusicControl(Command::CLOSE);
-    for (int i{}; i < size; i++)
+    if (IsPlaylistEmpty()) return;                          // 播放列表为空（或有一个占位SongInfo）返回
+    if (m_loading) return;                                  // 播放列表载入中返回
+    int list_size{ GetSongNum() };
+    vector<int> indexes_;
+    for (const auto& index : indexes)
+        if (index >= 0 && index < list_size)
+            indexes_.push_back(index);
+    if (indexes_.empty()) return;                           // 没有有效的移除index返回
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;    // 取得播放状态锁失败返回
+
+    std::sort(indexes_.rbegin(), indexes_.rend());      // 降序排序以免移除时需要修改索引值
+    auto iter = std::find(indexes_.begin(), indexes_.end(), m_index);
+    for (int rm_index : indexes_)
     {
-        RemoveSongNotPlay(indexes[i]);
-        if (i <= size - 2 && indexes[i + 1] > indexes[i])
-        {
-            for (int j{ i + 1 }; j < size; j++)
-                indexes[j]--;
+        m_playlist.erase(m_playlist.begin() + rm_index);
+        if (rm_index < m_index) --m_index;
+    }
+    // 当前播放被移除时需要进行的一些处理
+    if (iter != indexes_.end())
+    {
+        if (m_index >= 0 && m_index < GetSongNum())
+        {   // 如果索引仍然有效那么播放m_index即播放紧邻的下一首歌曲
+            PlayTrack(m_index, false, IsPlaying());
+        }
+        else
+        {   // 索引失效就停止，特别的当播放列表为空时插入一个空项目并清除显示
+            MusicControl(Command::STOP);
+            MusicControl(Command::CLOSE);
+            if (m_playlist.empty())
+            {
+                m_album_cover.Destroy();
+                m_album_cover_blur.Destroy();
+                m_Lyrics = CLyrics();
+                m_playlist.push_back(SongInfo());
+                SetTitle();
+            }
         }
     }
-    if (cur_song.IsSameSong(GetCurrentSongInfo()))        //如果删除后正在播放的曲目没有变化，就需要重新定位到之前播放到的位置
-        m_current_position = position;
-    AfterSongsRemoved(is_playing);
+    OnPlaylistChange();
+    GetPlayStatusMutex().unlock();
 }
 
 int CPlayer::RemoveSameSongs()
@@ -1758,20 +1772,12 @@ int CPlayer::RemoveSameSongs()
     if (m_loading)
         return 0;
 
-    auto isSameSong = [](const SongInfo& a, const SongInfo& b)
-    {
-        if (a.is_cue && b.is_cue)
-            return a.file_path == b.file_path && a.track == b.track;
-        else
-            return a.file_path == b.file_path;
-    };
-
     int removed = 0;
     for (int i = 0; i < GetSongNum(); i++)
     {
         for (int j = i + 1; j < GetSongNum(); j++)
         {
-            if (isSameSong(m_playlist[i], m_playlist[j]))
+            if (m_playlist[i].IsSameSong(m_playlist[j]))
             {
                 if (RemoveSong(j))
                 {
@@ -1803,10 +1809,15 @@ int CPlayer::RemoveInvalidSongs()
 
 void CPlayer::ClearPlaylist()
 {
-    if (m_loading) return;
+    if (IsPlaylistEmpty()) return;                                                      // 播放列表为空（或有一个占位SongInfo）返回
+    if (m_loading) return;                                                              // 播放列表载入中返回
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;  // 取得播放状态锁失败返回
+
     MusicControl(Command::STOP);
     MusicControl(Command::CLOSE);
     m_playlist.clear();
+    m_playlist.push_back(SongInfo());
+    GetPlayStatusMutex().unlock();
     //m_song_num = 0;
 }
 
@@ -2744,45 +2755,6 @@ void CPlayer::AlbumCoverGaussBlur()
         gauss_blur.SetSigma(static_cast<double>(theApp.m_app_setting_data.gauss_blur_radius) / 10);		//设置高斯模糊半径
         gauss_blur.DoGaussBlur(image_tmp, m_album_cover_blur);
     }
-}
-
-bool CPlayer::RemoveSongNotPlay(int index)
-{
-    if (m_loading)
-        return false;
-
-    if (IsPlaylistEmpty())
-        return false;
-
-    if (index >= 0 && index < GetSongNum())
-    {
-        m_playlist.erase(m_playlist.begin() + index);
-        //m_song_num--;
-        if (!m_playlist.empty())
-        {
-            if (index < m_index)	//如果要删除的曲目在正在播放的曲目之前，则正在播放的曲目序号减1
-            {
-                m_index--;
-            }
-        }
-        OnPlaylistChange();
-        return true;
-    }
-    return false;
-}
-
-void CPlayer::AfterSongsRemoved(bool play)
-{
-    if (m_playlist.empty())
-        return;
-
-    if (m_index < 0 || m_index >= GetSongNum())
-        m_index = 0;
-
-    MusicControl(Command::OPEN);
-    MusicControl(Command::SEEK);
-    if (play)
-        MusicControl(Command::PLAY);
 }
 
 void CPlayer::AlbumCoverResize()
