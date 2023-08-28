@@ -333,16 +333,17 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 
 		std::wstring aFinalChar(1, strText[i]);
 		//对于非CJK字符需要特殊处理
-		bool aCJKPrint = CCommon::CharIsCJKCharacter(strText[i]);
-		//需要被视为方块字符的非CJK字符
-		const std::wstring aSpecialChar(L"♪ ");
-		if (aSpecialChar.find(strText[i]) != std::wstring::npos)
-			aCJKPrint = true;
-		
-		while (!aCJKPrint && i < wcslen(strText))
+		const std::wstring aSpecialChar(L"♪ "); //需要被视为方块字符的非CJK字符
+
+		bool aCJKPrint = CCommon::CharIsCJKCharacter(strText[i]) || aSpecialChar.find(strText[i]) != std::wstring::npos;
+
+		if (!aCJKPrint)
 		{
-			i++;
-			aFinalChar += strText[i];
+			while (!(CCommon::CharIsCJKCharacter(strText[i + 1]) || aSpecialChar.find(strText[i + 1]) != std::wstring::npos) && i < wcslen(strText))
+			{	
+				i++;
+				aFinalChar += strText[i];
+			}
 		}
 
 		Gdiplus::RectF aBoundingBox;
