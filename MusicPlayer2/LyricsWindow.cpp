@@ -460,8 +460,8 @@ void CLyricsWindow::DrawLyrics(Gdiplus::Graphics* pGraphics)
 		if (bDrawTranslate)
 		{
 			transRect = dstRect;
-			transRect.X += (m_FontSize / 2);
-			dstRect.X -= (m_FontSize / 2);
+			transRect.X += m_FontSize;
+			dstRect.X -= m_FontSize;
 		}
 
 		DrawLyricTextColumn(pGraphics, m_lpszLyrics, dstRect, true, false, m_lyric_karaoke_disp);		// 是当前歌词，不是翻译，开启卡拉OK模式时高亮
@@ -561,14 +561,14 @@ void CLyricsWindow::DrawLyricsDoubleLineColumn(Gdiplus::Graphics* pGraphics)
 
 	float aCenterX = (m_nWidth - boundingBox.Width) / 2;
 
-	dstRect = Gdiplus::RectF(aCenterX - m_FontSize * 1.5, m_toobar_height, boundingBox.Width, boundingBox.Height);
-	nextRect = Gdiplus::RectF(aCenterX + m_FontSize * 1.5, m_toobar_height, boundingBox.Width, boundingBox.Height);
+	dstRect = Gdiplus::RectF(aCenterX - m_FontSize, m_toobar_height, boundingBox.Width, boundingBox.Height);
+	nextRect = Gdiplus::RectF(aCenterX + m_FontSize, m_toobar_height, boundingBox.Width, boundingBox.Height);
 
 	if (bSwap)
 	{
 		std::swap(dstRect.X, nextRect.X);
-		nextRect.X = aCenterX - m_FontSize * 1.5;
-		dstRect.X = aCenterX + m_FontSize * 1.5;
+		nextRect.X = aCenterX - m_FontSize;
+		dstRect.X = aCenterX + m_FontSize;
 	}
 
 	DrawLyricTextColumn(pGraphics, m_lpszLyrics, dstRect, true, false, true);		// 当前歌词，不是翻译，显示高亮
