@@ -339,7 +339,7 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 
 		if (!aCJKPrint)
 		{
-			while (!(CCommon::CharIsCJKCharacter(strText[i + 1]) || aSpecialChar.find(strText[i + 1]) != std::wstring::npos) && i < wcslen(strText))
+			while (!(CCommon::CharIsCJKCharacter(strText[i + 1]) || aSpecialChar.find(strText[i + 1]) != std::wstring::npos) && i + 1 < wcslen(strText))
 			{	
 				i++;
 				aFinalChar += strText[i];
@@ -384,12 +384,9 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		//顺带获取字体宽度和高度并更新y坐标（利用GraphicsPath获取，有效解决MeasureString对于CJK字符不精确的问题）
 		Gdiplus::Rect aStringRect;
 		aCharPath->GetBounds(&aStringRect);
-		if (aStringRect.Width == 1 && aStringRect.Height == 1)
-			//对于空像素，返回字体大小，防止极端字符（类似空格）
-			aStringRect.Height = aFontSize;
-		else
-			//如果高度小于宽度，那么高度等于宽度（解决类似“一”这种极端字符的问题）
-			aStringRect.Height = max(aStringRect.Height, aStringRect.Width);
+
+		//如果高度小于字体大小，那么高度等于字体大小（解决类似“一”这种极端字符的问题）
+		aStringRect.Height = max(aStringRect.Height, aFontSize);
 
 		aColumnRect.Y += aStringRect.Height;
 
