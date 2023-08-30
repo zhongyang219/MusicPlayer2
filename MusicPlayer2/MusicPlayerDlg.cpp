@@ -2664,75 +2664,117 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 void CMusicPlayerDlg::OnPlayPause()
 {
     // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().m_loading) return;   // 这行大概率能够防止播放列表初始化线程工作时try_lock_for无意义等待
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+
     CPlayer::GetInstance().MusicControl(Command::PLAY_PAUSE);
     if (!CPlayer::GetInstance().IsPlaying())
         DrawInfo();
     UpdatePlayPauseButton();
     m_ui_thread_para.search_box_force_refresh = true;
     m_ui_thread_para.ui_force_refresh = true;
+
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 }
 
 void CMusicPlayerDlg::OnPlay()
 {
+    // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().m_loading) return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+
     CPlayer::GetInstance().MusicControl(Command::PLAY);
     UpdatePlayPauseButton();
     m_ui_thread_para.search_box_force_refresh = true;
     m_ui_thread_para.ui_force_refresh = true;
+
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 }
 
 void CMusicPlayerDlg::OnPause()
 {
+    // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().m_loading) return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+
     CPlayer::GetInstance().MusicControl(Command::PAUSE);
     UpdatePlayPauseButton();
     m_ui_thread_para.search_box_force_refresh = true;
     m_ui_thread_para.ui_force_refresh = true;
+
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 }
 
 
 void CMusicPlayerDlg::OnStop()
 {
     // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().m_loading) return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+
     CPlayer::GetInstance().MusicControl(Command::STOP);
     UpdatePlayPauseButton();
     //ShowTime();
     m_ui_thread_para.search_box_force_refresh = true;
     m_ui_thread_para.ui_force_refresh = true;
+
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 }
 
 
 void CMusicPlayerDlg::OnPrevious()
 {
     // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().m_loading) return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+
     CPlayer::GetInstance().PlayTrack(PREVIOUS);
     SwitchTrack();
     UpdatePlayPauseButton();
+
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 }
 
 
 void CMusicPlayerDlg::OnNext()
 {
     // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().m_loading) return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+
     CPlayer::GetInstance().PlayTrack(NEXT);
     SwitchTrack();
     UpdatePlayPauseButton();
+
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 }
 
 
 void CMusicPlayerDlg::OnRew()
 {
     // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().m_loading) return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+
     CPlayer::GetInstance().MusicControl(Command::REW);
     UpdateTaskBarProgress();
     //ShowTime();
+
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 }
 
 
 void CMusicPlayerDlg::OnFF()
 {
     // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().m_loading) return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+
     CPlayer::GetInstance().MusicControl(Command::FF);
     UpdateTaskBarProgress();
     //ShowTime();
+
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 }
 
 
