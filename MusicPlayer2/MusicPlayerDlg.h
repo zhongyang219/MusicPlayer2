@@ -34,6 +34,7 @@
 #include "CDevicesManager.h"
 #include "MenuEditCtrl.h"
 #include "HorizontalSplitter.h"
+#include "powrprof.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -159,6 +160,9 @@ protected:
     enum { DELAY_TIMER_ID = 1200, INGORE_COLOR_CHANGE_TIMER_ID = 1201 };
 
     CDevicesManager* devicesManager;
+
+    static DEVICE_NOTIFY_CALLBACK_ROUTINE DeviceNotifyCallbackRoutine;
+    HPOWERNOTIFY RegistrationHandle;
 
     // 来自https://www.jianshu.com/p/9d4b68cdbd99
     struct Monitors
@@ -519,7 +523,7 @@ public:
     afx_msg void OnUseStandardTitleBar();
     void ApplyShowStandardTitlebar();
 protected:
-    afx_msg LRESULT OnDefaultMultimediaDeviceChanged(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnReInitBassContinuePlay(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnWindowPosChanging(WINDOWPOS* lpwndpos);
@@ -537,4 +541,5 @@ protected:
 public:
     afx_msg void OnPlayAsNext();
     afx_msg void OnPlaylistFixPathError();
+    afx_msg UINT OnPowerBroadcast(UINT nPowerEvent, LPARAM nEventData);
 };

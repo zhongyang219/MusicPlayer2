@@ -327,7 +327,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_VIEW_ALBUM, &CMusicPlayerDlg::OnViewAlbum)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CMusicPlayerDlg::OnLocateToCurrent)
     ON_COMMAND(ID_USE_STANDARD_TITLE_BAR, &CMusicPlayerDlg::OnUseStandardTitleBar)
-    ON_MESSAGE(WM_DEFAULT_MULTIMEDIA_DEVICE_CHANGED, &CMusicPlayerDlg::OnDefaultMultimediaDeviceChanged)
+    ON_MESSAGE(WM_RE_INIT_BASS_CONTINUE_PLAY, &CMusicPlayerDlg::OnReInitBassContinuePlay)
     ON_MESSAGE(WM_DISPLAYCHANGE, &CMusicPlayerDlg::OnDisplaychange)
     ON_WM_WINDOWPOSCHANGING()
     ON_WM_WINDOWPOSCHANGED()
@@ -339,6 +339,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, &CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged)
     ON_COMMAND(ID_PLAY_AS_NEXT, &CMusicPlayerDlg::OnPlayAsNext)
     ON_COMMAND(ID_PLAYLIST_FIX_PATH_ERROR, &CMusicPlayerDlg::OnPlaylistFixPathError)
+    ON_WM_POWERBROADCAST()
 END_MESSAGE_MAP()
 
 
@@ -2199,6 +2200,14 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     devicesManager = new CDevicesManager;
     devicesManager->InitializeDeviceEnumerator();
 
+    // 注册休眠/睡眠状态唤醒事件通知
+    if (CWinVersionHelper::IsWindows8OrLater()) // powrprof.dll在win8添加，没有实际测试过win10以外的系统会怎么样
+    {
+        static _DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS NotifyCallback = { DeviceNotifyCallbackRoutine, nullptr };
+        DWORD rtn = PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &NotifyCallback, &RegistrationHandle);
+        ASSERT(rtn == ERROR_SUCCESS);
+    }
+
     //注册全局热键
     if (theApp.m_hot_key_setting_data.hot_key_enable)
         theApp.m_hot_key.RegisterAllHotKey();
@@ -2933,6 +2942,10 @@ void CMusicPlayerDlg::OnDestroy()
     //取消注册接收音频设备变化通知回调的IMMNotificationClient接口
     devicesManager->ReleaseDeviceEnumerator();
     delete devicesManager;
+
+    // 取消注册电源状态切换通知
+    if (CWinVersionHelper::IsWindows8OrLater()) // powrprof.dll在win8添加，没有实际测试过其他系统会怎么样
+        PowerUnregisterSuspendResumeNotification(&RegistrationHandle);
 
     //退出时恢复Cortana的默认文本
     m_cortana_lyric.ResetCortanaText();
@@ -6372,7 +6385,7 @@ void CMusicPlayerDlg::ApplyShowStandardTitlebar()
 }
 
 
-afx_msg LRESULT CMusicPlayerDlg::OnDefaultMultimediaDeviceChanged(WPARAM wParam, LPARAM lParam)
+afx_msg LRESULT CMusicPlayerDlg::OnReInitBassContinuePlay(WPARAM wParam, LPARAM lParam)
 {
     if (CPlayer::GetInstance().GetPlayerCore() != nullptr && CPlayer::GetInstance().GetPlayerCore()->GetCoreType() == PlayerCoreType::PT_BASS)
     {
@@ -6618,4 +6631,24 @@ void CMusicPlayerDlg::OnPlaylistFixPathError()
         int fixed_count = helper.FixPlaylistPathError(CPlayer::GetInstance().GetPlaylistPath());
         MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE, { fixed_count }), NULL, MB_ICONINFORMATION | MB_OK);
     }
+}
+
+
+UINT CMusicPlayerDlg::OnPowerBroadcast(UINT nPowerEvent, LPARAM nEventData)
+{
+    // theApp.WriteLog(L"OnPowerBroadcast " + std::to_wstring(nPowerEvent));
+    // 按文档描述应该是这里收到4，18，7才对，实际上这里好像只能收到10(交流适配器插入拔出)
+    // 自win8之后加入的powrprof.h含有新的PowerRegisterSuspendResumeNotification可能代替了这里的功能
+    if (nPowerEvent == PBT_APMRESUMESUSPEND)  // 系统正在从“睡眠S3”“休眠S4”唤醒（由用户触发）
+        ::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_RE_INIT_BASS_CONTINUE_PLAY, 0, 0);
+    return CMainDialogBase::OnPowerBroadcast(nPowerEvent, nEventData);
+}
+
+ULONG CMusicPlayerDlg::DeviceNotifyCallbackRoutine(PVOID Context, ULONG Type, PVOID Setting)
+{
+    // theApp.WriteLog(L"DeviceNotifyCallbackRoutine " + std::to_wstring(Type));
+    // 睡眠唤醒流程依次收到4，18，7
+    if (Type == PBT_APMRESUMESUSPEND)   // 系统正在从“睡眠S3”“休眠S4”唤醒（由用户触发）
+        ::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_RE_INIT_BASS_CONTINUE_PLAY, 0, 0);
+    return 0;
 }
