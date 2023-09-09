@@ -1695,8 +1695,9 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_SET_B_POINT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE ? MF_ENABLED : MF_GRAYED));
 
-    //删除当前歌曲
-    pMenu->EnableMenuItem(ID_REMOVE_CURRENT_FROM_PLAYLIST, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
+    // 工具->删除正在播放的曲目
+    pMenu->EnableMenuItem(ID_REMOVE_CURRENT_FROM_PLAYLIST, MF_BYCOMMAND | (playlist_mode && !CPlayer::GetInstance().IsPlaylistEmpty() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_CURRENT_FROM_DISK, MF_BYCOMMAND | (!theApp.m_media_lib_setting_data.disable_delete_from_disk && !CPlayer::GetInstance().IsPlaylistEmpty() ? MF_ENABLED : MF_GRAYED));
 
     //专辑封面
     bool always_use_external_album_cover{ cur_song_ori.AlwaysUseExternalAlbumCover() };
@@ -6000,6 +6001,8 @@ void CMusicPlayerDlg::OnRemoveCurrentFromPlaylist()
 void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
 {
     // TODO: 在此添加命令处理程序代码
+    if (theApp.m_media_lib_setting_data.disable_delete_from_disk) return;
+
     CString info;
     SongInfo song = CPlayer::GetInstance().GetCurrentSongInfo();
     wstring file_path = song.file_path;
