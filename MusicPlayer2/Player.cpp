@@ -1687,12 +1687,13 @@ void CPlayer::ReloadPlaylist(bool refresh_info)
     }
 }
 
-bool CPlayer::RemoveSong(int index)
+bool CPlayer::RemoveSong(int index, bool skip_locking)
 {
     if (IsPlaylistEmpty()) return false;                    // 播放列表为空（或有一个占位SongInfo）返回
     if (index < 0 || index >= GetSongNum()) return false;   // index无效返回
     if (m_loading) return false;                            // 播放列表载入中返回
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;  // 取得播放状态锁失败返回
+    if (!skip_locking)
+        if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;  // 取得播放状态锁失败返回
 
     bool rm_is_index{ index == m_index };
     m_playlist.erase(m_playlist.begin() + index);
@@ -1719,11 +1720,12 @@ bool CPlayer::RemoveSong(int index)
         }
     }
     OnPlaylistChange();
-    GetPlayStatusMutex().unlock();
+    if (!skip_locking)
+        GetPlayStatusMutex().unlock();
     return true;
 }
 
-void CPlayer::RemoveSongs(vector<int> indexes)
+void CPlayer::RemoveSongs(vector<int> indexes, bool skip_locking)
 {
     if (IsPlaylistEmpty()) return;                          // 播放列表为空（或有一个占位SongInfo）返回
     if (m_loading) return;                                  // 播放列表载入中返回
@@ -1733,7 +1735,8 @@ void CPlayer::RemoveSongs(vector<int> indexes)
         if (index >= 0 && index < list_size)
             indexes_.push_back(index);
     if (indexes_.empty()) return;                           // 没有有效的移除index返回
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;    // 取得播放状态锁失败返回
+    if (!skip_locking)
+        if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;    // 取得播放状态锁失败返回
 
     std::sort(indexes_.rbegin(), indexes_.rend());      // 降序排序以免移除时需要修改索引值
     auto iter = std::find(indexes_.begin(), indexes_.end(), m_index);
@@ -1764,7 +1767,8 @@ void CPlayer::RemoveSongs(vector<int> indexes)
         }
     }
     OnPlaylistChange();
-    GetPlayStatusMutex().unlock();
+    if (!skip_locking)
+        GetPlayStatusMutex().unlock();
 }
 
 int CPlayer::RemoveSameSongs()
@@ -2167,25 +2171,23 @@ unsigned int CPlayer::GetBassHandle() const
 void CPlayer::ReIniPlayerCore(bool replay)
 {
     if (m_loading) return;
-    if (GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(5000))) return;    // 这里多等一会，系统从挂起中恢复可能很卡
+    int playing = m_playing;
+    int current_position = GetCurrentPosition();
+    UnInitPlayerCore();
+    IniPlayerCore();
+    MusicControl(Command::OPEN);
+    SeekTo(current_position);
+    //MusicControl(Command::SEEK);
+    if (replay && playing == PS_PLAYING)
     {
-        int playing = m_playing;
-        int current_position = GetCurrentPosition();
-        UnInitPlayerCore();
-        IniPlayerCore();
-        MusicControl(Command::OPEN);
-        SeekTo(current_position);
-        //MusicControl(Command::SEEK);
-        if (replay && playing == PS_PLAYING)
-        {
-            MusicControl(Command::PLAY);
-        }
-        else
-        {
-            m_playing = PS_STOPED;
-        }
-        GetPlayStatusMutex().unlock();
+        MusicControl(Command::PLAY);
     }
+    else
+    {
+        m_playing = PS_STOPED;
+    }
+    GetPlayStatusMutex().unlock();
 }
 
 void CPlayer::SortPlaylist(bool change_index)
@@ -2647,7 +2649,11 @@ bool CPlayer::ContinueABRepeat()
     {
         m_a_repeat = m_b_repeat;
         m_ab_repeat_mode = AM_A_SELECTED;
-        SeekTo(m_a_repeat.toInt());
+        if (GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
+        {
+            SeekTo(m_a_repeat.toInt());
+            GetPlayStatusMutex().unlock();
+        }
         return true;
     }
     return false;

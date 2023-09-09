@@ -472,7 +472,11 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
             {
                 int ckick_pos = point.x - m_buttons[BTN_PROGRESS].rect.left;
                 double progress = static_cast<double>(ckick_pos) / m_buttons[BTN_PROGRESS].rect.Width();
-                CPlayer::GetInstance().SeekTo(progress);
+                if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
+                {
+                    CPlayer::GetInstance().SeekTo(progress);
+                    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
+                }
             }
             return true;
 

@@ -3621,8 +3621,9 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
         return;
     CString info;
     info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { m_items_selected.size() });
-    if (MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
-        return;
+    if (MessageBoxW(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK) return;
+    // 以下操作可能涉及MusicControl，先取得锁
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
     int rtn;
     wstring delected_file;
     vector<wstring> delected_files;
@@ -3651,13 +3652,14 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 
         rtn = CCommon::DeleteAFile(m_hWnd, delected_file);
     }
-    if (rtn == 0)
+    if (rtn == ERROR_SUCCESS)
     {
         //如果文件删除成功，同时从播放列表中移除
         if (m_items_selected.size() > 1)
-            CPlayer::GetInstance().RemoveSongs(m_items_selected);
+            CPlayer::GetInstance().RemoveSongs(m_items_selected, true);
         else
-            CPlayer::GetInstance().RemoveSong(m_item_selected);
+            CPlayer::GetInstance().RemoveSong(m_item_selected, true);
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
         ShowPlayList(false);
         UpdatePlayPauseButton();
         DrawInfo(true);
@@ -3690,7 +3692,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
             }
         }
     }
-    else if (rtn == 1223)   //如果在弹出的对话框中点击“取消”则返回值为1223
+    else if (rtn == ERROR_CANCELLED)   //如果在弹出的对话框中点击“取消”则返回值为1223
     {
         if (m_item_selected == CPlayer::GetInstance().GetIndex())       //如果删除的文件是正在播放的文件，又点击了“取消”，则重新打开当前文件
         {
@@ -3700,9 +3702,11 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
             UpdatePlayPauseButton();
             DrawInfo(true);
         }
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
     }
     else
     {
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();   // 在进入模态对话框MessageBox前及时解锁
         MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
     }
 }
@@ -4725,6 +4729,8 @@ void CMusicPlayerDlg::OnMoveFileTo()
     {
         if (m_item_selected < 0 || m_item_selected >= CPlayer::GetInstance().GetSongNum())
             return;
+        if (CPlayer::GetInstance().m_loading) return;
+        if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
         wstring source_file;
         vector<wstring> source_files;
         int rtn;
@@ -4752,17 +4758,18 @@ void CMusicPlayerDlg::OnMoveFileTo()
             source_file = song.file_path;
             rtn = CCommon::MoveAFile(m_hWnd, source_file, wstring(folderPickerDlg.GetPathName()));
         }
-        if (rtn == 0)
+        if (rtn == ERROR_SUCCESS)
         {
             //如果文件移动成功，同时从播放列表中移除
             if (m_items_selected.size() > 1)
-                CPlayer::GetInstance().RemoveSongs(m_items_selected);
+                CPlayer::GetInstance().RemoveSongs(m_items_selected, true);
             else
-                CPlayer::GetInstance().RemoveSong(m_item_selected);
+                CPlayer::GetInstance().RemoveSong(m_item_selected, true);
             ShowPlayList();
             UpdatePlayPauseButton();
             DrawInfo(true);
         }
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
     }
 }
 
@@ -6001,6 +6008,7 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
     info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { file_path });
     if (MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
         return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
     bool file_exist = CCommon::FileExist(file_path);
     int rtn{};
     if (file_exist)
@@ -6008,10 +6016,11 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
         CPlayer::GetInstance().MusicControl(Command::CLOSE);
         rtn = CCommon::DeleteAFile(m_hWnd, file_path);
     }
-    if (rtn == 0 || !file_exist)
+    if (rtn == ERROR_SUCCESS || !file_exist)
     {
         //如果文件删除成功，同时从播放列表中移除
-        CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
+        CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex(), true);
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
         ShowPlayList(false);
         UpdatePlayPauseButton();
         DrawInfo(true);
@@ -6020,17 +6029,19 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
         CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
         CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"lrc").c_str());
     }
-    else if (rtn == 1223)   //如果在弹出的对话框中点击“取消”则返回值为1223
+    else if (rtn == ERROR_CANCELLED)   //如果在弹出的对话框中点击“取消”则返回值为1223
     {
         //如果点击了“取消”，则重新打开当前文件
         CPlayer::GetInstance().MusicControl(Command::OPEN);
         CPlayer::GetInstance().MusicControl(Command::SEEK);
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
         //CPlayer::GetInstance().Refresh();
         UpdatePlayPauseButton();
         DrawInfo(true);
     }
     else
     {
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
         MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
     }
 }

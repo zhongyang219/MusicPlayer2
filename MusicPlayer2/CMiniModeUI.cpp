@@ -249,7 +249,11 @@ bool CMiniModeUI::LButtonUp(CPoint point)
             {
                 int ckick_pos = point.x - btn.second.rect.left;
                 double progress = static_cast<double>(ckick_pos) / btn.second.rect.Width();
-                CPlayer::GetInstance().SeekTo(progress);
+                if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
+                {
+                    CPlayer::GetInstance().SeekTo(progress);
+                    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
+                }
             }
             break;
             }

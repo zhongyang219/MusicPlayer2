@@ -1065,7 +1065,11 @@ void CLyricEditDlg::OnSeekToCurLine()
     }
     if (m_original_lyric_path == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file && CLyrics::ParseLyricTimeTag(cur_line, t, pos_start, pos_end, bracket_left, bracket_right))
     {
-        CPlayer::GetInstance().SeekTo(t.toInt());
+        if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
+        {
+            CPlayer::GetInstance().SeekTo(t.toInt());
+            CPlayer::GetInstance().GetPlayStatusMutex().unlock();
+        }
     }
 }
 

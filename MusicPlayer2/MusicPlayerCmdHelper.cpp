@@ -220,8 +220,10 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
     //如何要删除的文件是正在播放的文件，则先停止播放
     if (CCommon::IsItemInVector(delected_files, current_file))
     {
+        CPlayer::GetInstance().GetPlayStatusMutex().lock();
         CPlayer::GetInstance().MusicControl(Command::STOP);
         CPlayer::GetInstance().MusicControl(Command::CLOSE);
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
     }
     int rtn{};
     rtn = CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);

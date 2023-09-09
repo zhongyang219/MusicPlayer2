@@ -375,9 +375,9 @@ public:
     void ReloadPlaylist(bool refresh_info = true);
 
     //从播放列表中删除指定的项目
-    bool RemoveSong(int index);
+    bool RemoveSong(int index, bool skip_locking = false);
     //从播放列表中删除多个指定的项目
-    void RemoveSongs(vector<int> indexes);
+    void RemoveSongs(vector<int> indexes, bool skip_locking = false);
     //从播放列表中移除相同的曲目，返回已移除的曲目数量
     int RemoveSameSongs();
     //从播放列表中移除无效的曲目，返回已移除的曲目数量
