@@ -173,7 +173,7 @@ private:
     void IniPlayList(bool playlist_mode = false, bool refresh_info = false, bool play = false);
 
     //改变当前路径
-    void ChangePath(const wstring& path, int track = 0, bool play = false);
+    void ChangePath(const wstring& path, int track = 0, bool play = false, int position = 0);
 
     //应用一个均衡器通道的增益
     void ApplyEqualizer(int channel, int gain);
@@ -287,7 +287,7 @@ public:
     // 切换到指定播放列表模式 
     // force为true时忽略continue_when_switch_playlist设置播放track指定歌曲
     void SetPlaylist(const wstring& playlist_path, int track, int position, bool init = false, bool play = false, bool force = false);
-    // 切换到指定路径的播放列表模式/通过“打开文件夹”来设置路径的处理
+    // 切换到指定路径的播放列表模式/通过“打开文件夹”来设置路径的处理（不进行“切换播放列表时继续播放”）
     void OpenFolder(wstring path, bool contain_sub_folder = false, bool play = false);
 
     // 向默认播放列表添加并打开多个文件，play用来设置是否立即播放
