@@ -472,8 +472,7 @@ void CFindDlg::OnNMRClickFindList(NMHDR* pNMHDR, LRESULT* pResult)
     m_find_result_list.GetItemSelected(m_items_selected);
     GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 
-    if (m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
-        || !m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size())))
+    if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
     {
         //获取鼠标点击处的文本
         int sub_item;
@@ -601,6 +600,8 @@ void CFindDlg::OnInitMenu(CMenu* pMenu)
 
     // TODO: 在此处添加消息处理程序代码
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
+
+    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (!theApp.m_media_lib_setting_data.disable_delete_from_disk ? MF_ENABLED : MF_GRAYED));
 }
 
 
