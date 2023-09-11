@@ -3199,24 +3199,25 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     SetUiPlaylistSelected(pNMItemActivate->iItem);
+    int song_index{};
     if (!m_searched)    //如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
     {
-        if (pNMItemActivate->iItem < 0)
-            return;
-        CPlayer::GetInstance().PlayTrack(pNMItemActivate->iItem);
+        song_index = pNMItemActivate->iItem;
     }
     else        //如果播放列表处理选中状态，则曲目的索引是选中行第一列的数字-1
     {
-        int song_index;
         CString str;
         str = m_playlist_list.GetItemText(pNMItemActivate->iItem, 0);
         song_index = _ttoi(str) - 1;
-        if (song_index < 0)
-            return;
-        CPlayer::GetInstance().PlayTrack(song_index);
     }
+
+    if (song_index < 0) return;
+    if (CPlayer::GetInstance().m_loading) return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    CPlayer::GetInstance().PlayTrack(song_index);
     SwitchTrack();
     UpdatePlayPauseButton();
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 
     *pResult = 0;
 }
@@ -3278,9 +3279,12 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 void CMusicPlayerDlg::OnPlayItem()
 {
     // TODO: 在此添加命令处理程序代码
+    if (CPlayer::GetInstance().m_loading) return;
+    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
     CPlayer::GetInstance().PlayTrack(m_item_selected);
     SwitchTrack();
     UpdatePlayPauseButton();
+    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
 }
 
 

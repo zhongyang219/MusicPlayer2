@@ -559,7 +559,9 @@ void CFindDlg::OnOK()
     if (iter != CPlayer::GetInstance().GetPlayList().end())      //如果查找结果是当前播放列表中的曲目，则在当前播放列表中查找选中的曲目，并播放
     {
         int selected_track = iter - CPlayer::GetInstance().GetPlayList().begin();
+        CPlayer::GetInstance().GetPlayStatusMutex().lock();
         CPlayer::GetInstance().PlayTrack(selected_track);
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
         m_result_in_current_playlist = true;
     }
     else

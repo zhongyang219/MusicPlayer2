@@ -321,13 +321,12 @@ void CPlayer::IniPlaylistComplate()
     if (!m_thread_info.is_playlist_mode && m_playlist.size() > 1)
         SortPlaylist(false);
 
+    ASSERT(m_playing == 0);         // 这里应该一定是停止状态，我将之前的旧代码换成了这个断言，有问题的话再改回去
     // 修正程序启动时系统播放控件的播放状态不正确的问题（改在这里，可被下面的初始化后继续播放重新设置为playing状态）
-    m_controls.UpdateControls(Command::STOP);   // 这里设置GetSongNum()返回0时的默认SMTC状态
+    MusicControl(Command::CLOSE);   // 这里设置GetSongNum()返回0时的默认SMTC状态
 
     if (GetSongNum() > 0)   // 播放列表初始化完成，根据m_index,m_current_position,m_thread_info.play还原播放状态
     {
-        ASSERT(m_playing == 0); // 这里应该一定是停止状态，我将之前的旧代码换成了这个断言，有问题的话再改回去
-        MusicControl(Command::CLOSE);
         bool tmp_find{ false };
         if (!m_current_song_tmp.IsEmpty())     // m_current_song_tmp不为空则改为查找播放此歌曲，同时定位到m_current_song_position_tmp
         {
