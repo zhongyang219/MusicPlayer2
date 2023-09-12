@@ -156,6 +156,7 @@ void CMediaLibTabDlg::OnPlayAsNext()
     vector<SongInfo> songs;
     GetSongsSelected(songs);
     CPlayer::GetInstance().PlayAfterCurrentTrack(songs);
+    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_SET_UI_FORCE_FRESH_FLAG, 0, 0);
 }
 
 

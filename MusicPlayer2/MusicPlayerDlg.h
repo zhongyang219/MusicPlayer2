@@ -542,4 +542,6 @@ public:
     afx_msg void OnPlayAsNext();
     afx_msg void OnPlaylistFixPathError();
     afx_msg UINT OnPowerBroadcast(UINT nPowerEvent, LPARAM nEventData);
+protected:
+    afx_msg LRESULT OnSetUiForceFreshFlag(WPARAM wParam, LPARAM lParam);
 };

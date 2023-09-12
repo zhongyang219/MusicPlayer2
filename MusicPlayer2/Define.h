@@ -163,8 +163,9 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define WM_RE_INIT_BASS_CONTINUE_PLAY (WM_USER+138) // BASS内核出问题时post此消息到主窗口重启内核
 #define WM_VOLUME_CHANGED (WM_USER+139)             //音量变化时发送的消息
 #define WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED (WM_USER+140)  //最近打开的文件夹或播放列表发生了改变
+#define WM_SET_UI_FORCE_FRESH_FLAG (WM_USER+141)            // 通知主窗口设置UI强制刷新标志m_ui_thread_para.ui_force_refresh
 
-#define WM_NEXT_USER_MSG (WM_USER+141)
+#define WM_NEXT_USER_MSG (WM_USER+142)
 
 #ifdef _DEBUG
 #define ADD_TO_PLAYLIST_MAX_SIZE 10         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）

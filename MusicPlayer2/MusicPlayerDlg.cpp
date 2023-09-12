@@ -340,6 +340,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAY_AS_NEXT, &CMusicPlayerDlg::OnPlayAsNext)
     ON_COMMAND(ID_PLAYLIST_FIX_PATH_ERROR, &CMusicPlayerDlg::OnPlaylistFixPathError)
     ON_WM_POWERBROADCAST()
+    ON_MESSAGE(WM_SET_UI_FORCE_FRESH_FLAG, &CMusicPlayerDlg::OnSetUiForceFreshFlag)
 END_MESSAGE_MAP()
 
 
@@ -6637,7 +6638,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, 
 
 void CMusicPlayerDlg::OnPlayAsNext() {
     CPlayer::GetInstance().PlayAfterCurrentTrack(m_items_selected);
-    DrawInfo(false);
+    m_ui_thread_para.ui_force_refresh = true;   // 虽然现在这行的效果被“主窗口拥有焦点”盖过了，不过保留这行
 }
 
 
@@ -6668,5 +6669,12 @@ ULONG CMusicPlayerDlg::DeviceNotifyCallbackRoutine(PVOID Context, ULONG Type, PV
     // 睡眠唤醒流程依次收到4，18，7
     if (Type == PBT_APMRESUMESUSPEND)   // 系统正在从“睡眠S3”“休眠S4”唤醒（由用户触发）
         ::PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_RE_INIT_BASS_CONTINUE_PLAY, 0, 0);
+    return 0;
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnSetUiForceFreshFlag(WPARAM wParam, LPARAM lParam)
+{
+    m_ui_thread_para.ui_force_refresh = true;
     return 0;
 }
