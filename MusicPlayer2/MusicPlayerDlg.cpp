@@ -1861,7 +1861,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
     initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSubMenu(0));
     initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_popup_menu.GetSubMenu(4)->GetSubMenu(0));
     initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0)->GetSubMenu(1));
-    initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSubMenu(3));
+    initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSubMenu(4));
     initAddToMenu(theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(2));
     initAddToMenu(theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0)->GetSubMenu(2));
 }

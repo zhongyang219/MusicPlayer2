@@ -925,13 +925,33 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next, bool play)
     return valid;
 }
 
-bool CPlayer::PlayAfterCurrentTrack(vector<int> tracks_to_play) {
-    if (tracks_to_play.empty()) {
-        return false;
+bool CPlayer::PlayAfterCurrentTrack(const std::vector<int>& tracks_to_play)
+{
+    bool add{ false };
+    for (const int& track : tracks_to_play)
+    {
+        if (track >= 0 && track < static_cast<int>(m_playlist.size()))
+        {
+            m_next_tracks.push_front(track);
+            add = true;
+        }
     }
-    m_next_tracks.insert(m_next_tracks.begin(), tracks_to_play.begin(), tracks_to_play.end());
-    // TODO 无序播放时的修改
-    return true;
+    return add;
+}
+
+bool CPlayer::PlayAfterCurrentTrack(const std::vector<SongInfo>& tracks_to_play)
+{
+    bool add{ false };
+    for (const SongInfo& track : tracks_to_play)
+    {
+        int index = IsSongInPlayList(track);
+        if(index != -1)
+        {
+            m_next_tracks.push_front(index);
+            add = true;
+        }
+    }
+    return add;
 }
 
 void CPlayer::LoopPlaylist(int& song_track)
@@ -1523,6 +1543,27 @@ void CPlayer::ExploreLyric() const
         str.Format(_T("/select,\"%s\""), m_Lyrics.GetPathName().c_str());
         ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
     }
+}
+
+int CPlayer::IsSongInPlayList(const SongInfo& song)
+{
+    auto iter = std::find_if(m_playlist.begin(), m_playlist.end(),
+        [&](const SongInfo& songinfo) { return song.IsSameSong(songinfo); });
+    if (iter != m_playlist.end())
+        return iter - m_playlist.begin();
+    return -1;
+}
+
+bool CPlayer::IsSongsInPlayList(const vector<SongInfo>& songs_list)
+{
+    for (const SongInfo& song : songs_list)
+    {
+        auto iter = std::find_if(m_playlist.begin(), m_playlist.end(),
+            [&](const SongInfo& songinfo) { return song.IsSameSong(songinfo); });
+        if (iter == m_playlist.end())
+            return false;
+    }
+    return true;    // 没有找到不存在于m_playlist中的songs_list元素，返回true
 }
 
 int CPlayer::GetSongNum() const

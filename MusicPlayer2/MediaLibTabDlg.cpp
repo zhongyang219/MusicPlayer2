@@ -30,6 +30,7 @@ BEGIN_MESSAGE_MAP(CMediaLibTabDlg, CTabDlg)
     ON_COMMAND(ID_DELETE_FROM_DISK, &CMediaLibTabDlg::OnDeleteFromDisk)
     ON_COMMAND(ID_ITEM_PROPERTY, &CMediaLibTabDlg::OnItemProperty)
     ON_COMMAND(ID_COPY_TEXT, &CMediaLibTabDlg::OnCopyText)
+    ON_COMMAND(ID_PLAY_AS_NEXT, &CMediaLibTabDlg::OnPlayAsNext)
 END_MESSAGE_MAP()
 
 
@@ -131,8 +132,13 @@ void CMediaLibTabDlg::OnInitMenu(CMenu* pMenu)
 {
     CTabDlg::OnInitMenu(pMenu);
 
-    // TODO: 在此处添加消息处理程序代码
+    // TODO: 在此处添加消息处理程序代码    vector<SongInfo> songs;
+    vector<SongInfo> songs;
+    GetSongsSelected(songs);
+    bool select_all_in_playing_list = CPlayer::GetInstance().IsSongsInPlayList(songs);
+
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
+    pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (select_all_in_playing_list ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (theApp.m_media_lib_setting_data.disable_delete_from_disk ? MF_GRAYED : MF_ENABLED));
 }
 
@@ -141,6 +147,15 @@ void CMediaLibTabDlg::OnPlayItem()
 {
     // TODO: 在此添加命令处理程序代码
     OnOK();
+}
+
+
+void CMediaLibTabDlg::OnPlayAsNext()
+{
+    // TODO: 在此添加命令处理程序代码
+    vector<SongInfo> songs;
+    GetSongsSelected(songs);
+    CPlayer::GetInstance().PlayAfterCurrentTrack(songs);
 }
 
 

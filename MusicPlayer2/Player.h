@@ -274,7 +274,10 @@ public:
 
     //播放指定序号的歌曲，如果是播放结束自动播放下一曲，则auto_next为true，play为false时只打开不播放
     bool PlayTrack(int song_track, bool auto_next = false, bool play = true);
-    bool PlayAfterCurrentTrack(std::vector<int> tracks_to_play);		//设置指定序号歌曲为下一首播放的歌曲
+    // 设置指定序号歌曲为下一首播放的歌曲，无效的index会被忽略
+    bool PlayAfterCurrentTrack(const std::vector<int>& tracks_to_play);
+    // 设置指定SongInfo为下一首播放的歌曲，不存在于m_playlist的条目会被忽略
+    bool PlayAfterCurrentTrack(const std::vector<SongInfo>& tracks_to_play);
 private:
     void LoopPlaylist(int& song_track);
 
@@ -348,6 +351,11 @@ public:
 
     //获取播放列表的引用
     vector<SongInfo>& GetPlayList() { return m_playlist; }
+
+    // 判断参数中的曲目是否存在于m_playlist，存在返回索引不存在返回-1（IsSameSong）
+    int IsSongInPlayList(const SongInfo& song);
+    // 判断参数中的曲目是否全部存在于m_playlist（IsSameSong）
+    bool IsSongsInPlayList(const vector<SongInfo>& songs_list);
     //获取歌曲总数
     int GetSongNum() const;
     //获取当前播放曲目的目录

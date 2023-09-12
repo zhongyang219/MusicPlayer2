@@ -46,6 +46,7 @@ public:
 
     afx_msg void OnInitMenu(CMenu* pMenu);
     afx_msg void OnPlayItem();
+    afx_msg void OnPlayAsNext();
     afx_msg void OnPlayItemInFolderMode();
     afx_msg void OnAddToNewPlaylist();
     afx_msg void OnAddToNewPalylistAndPlay();

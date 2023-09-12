@@ -164,6 +164,7 @@ BEGIN_MESSAGE_MAP(CFindDlg, CBaseDialog)
     ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CFindDlg::OnAddToNewPalylistAndPlay)
     ON_WM_INITMENU()
     ON_COMMAND(ID_DELETE_FROM_DISK, &CFindDlg::OnDeleteFromDisk)
+    ON_COMMAND(ID_PLAY_AS_NEXT, &CFindDlg::OnPlayAsNext)
 END_MESSAGE_MAP()
 
 
@@ -546,18 +547,11 @@ void CFindDlg::OnItemProperty()
 void CFindDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
+    if (m_item_selected < 0 || m_item_selected >= static_cast<int>(m_find_result.size())) return;
 
-    SongInfo song_selected;
-    if (m_item_selected < 0 || m_item_selected >= static_cast<int>(m_find_result.size()))
-        return;
-    song_selected = m_find_result[m_item_selected];
-    auto iter = std::find_if(CPlayer::GetInstance().GetPlayList().begin(), CPlayer::GetInstance().GetPlayList().end(), [&](const SongInfo& song)
-        {
-            return song.IsSameSong(song_selected);
-        });
-    if (iter != CPlayer::GetInstance().GetPlayList().end())      //如果查找结果是当前播放列表中的曲目，则在当前播放列表中查找选中的曲目，并播放
+    int selected_track = CPlayer::GetInstance().IsSongInPlayList(m_find_result[m_item_selected]);
+    if (selected_track != -1)      //如果查找结果是当前播放列表中的曲目，则在当前播放列表中查找选中的曲目，并播放
     {
-        int selected_track = iter - CPlayer::GetInstance().GetPlayList().begin();
         CPlayer::GetInstance().GetPlayStatusMutex().lock();
         CPlayer::GetInstance().PlayTrack(selected_track);
         CPlayer::GetInstance().GetPlayStatusMutex().unlock();
@@ -599,8 +593,12 @@ void CFindDlg::OnInitMenu(CMenu* pMenu)
     CBaseDialog::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);
+    vector<SongInfo> songs;
+    GetSongsSelected(songs);
+    bool select_all_in_playing_list = CPlayer::GetInstance().IsSongsInPlayList(songs);
 
+    pMenu->SetDefaultItem(ID_PLAY_ITEM);
+    pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (select_all_in_playing_list ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (!theApp.m_media_lib_setting_data.disable_delete_from_disk ? MF_ENABLED : MF_GRAYED));
 }
 
@@ -643,4 +641,13 @@ void CFindDlg::OnDeleteFromDisk()
         m_find_result.erase(iter_removed, m_find_result.end());
         ShowFindResult();
     }
+}
+
+
+void CFindDlg::OnPlayAsNext()
+{
+    // TODO: 在此添加命令处理程序代码
+    vector<SongInfo> songs;
+    GetSongsSelected(songs);
+    CPlayer::GetInstance().PlayAfterCurrentTrack(songs);
 }
