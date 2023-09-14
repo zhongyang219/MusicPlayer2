@@ -169,7 +169,8 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
-    OpenPlaylistFile(playlist_path);
+    wstring tmp{ playlist_path };
+    OpenPlaylistFile(tmp);
     SetTitle();
     m_controls.Init();
 }
@@ -972,7 +973,6 @@ void CPlayer::LoopPlaylist(int& song_track)
 
 void CPlayer::ChangePath(const wstring& path, int track, bool play, int position)
 {
-    MusicControl(Command::CLOSE);
     m_path = path;
     if (m_path.empty() || (m_path.back() != L'/' && m_path.back() != L'\\'))        //如果输入的新路径为空或末尾没有斜杠，则在末尾加上一个
         m_path.append(1, L'\\');
@@ -983,8 +983,6 @@ void CPlayer::ChangePath(const wstring& path, int track, bool play, int position
     m_current_position.fromInt(position);
     SaveConfig();
     SetTitle();
-    //MusicControl(Command::OPEN);
-    //IniLyrics();
 }
 
 void CPlayer::SetPath(const PathInfo& path_info)
@@ -993,6 +991,8 @@ void CPlayer::SetPath(const PathInfo& path_info)
     if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
     m_loading = true;
     IniPlayerCore();
+
+    MusicControl(Command::CLOSE);
 
     if (GetSongNum() > 0)
     {
@@ -1016,10 +1016,10 @@ void CPlayer::SetPath(const PathInfo& path_info)
 
 }
 
-void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init, bool play, bool force)
+bool CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init, bool play, bool force)
 {
-    if (m_loading) return;
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    if (m_loading) return false;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
     m_loading = true;
     IniPlayerCore();
 
@@ -1069,14 +1069,17 @@ void CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     EmplaceCurrentPlaylistToRecent();
 
     IniPlayList(true, false, play);
+    return true;
 }
 
-void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
+bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
 {
-    if (m_loading) return;
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    if (m_loading) return false;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
     m_loading = true;
     IniPlayerCore();
+
+    MusicControl(Command::CLOSE);
 
     if (path.empty() || (path.back() != L'/' && path.back() != L'\\'))      //如果打开的新路径为空或末尾没有斜杠，则在末尾加上一个
         path.append(1, L'\\');
@@ -1115,21 +1118,22 @@ void CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     }
     EmplaceCurrentPathToRecent();       //保存打开的路径到最近路径
     SaveRecentPath();
+    return true;
 }
 
-void CPlayer::OpenFilesInDefaultPlaylist(const vector<wstring>& files, bool play)
+bool CPlayer::OpenFilesInDefaultPlaylist(const vector<wstring>& files, bool play)
 {
     vector<SongInfo> songs(files.size());
     for (size_t i{}; i < files.size(); ++i)
         songs[i].file_path = files[i];
-    OpenSongsInDefaultPlaylist(songs, play);
+    return OpenSongsInDefaultPlaylist(songs, play);
 }
 
-void CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool play)
+bool CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool play)
 {
-    if (songs.empty()) return;
-    if (m_loading) return;
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    if (songs.empty()) return false;
+    if (m_loading) return false;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
     m_loading = true;
     IniPlayerCore();
 
@@ -1172,6 +1176,7 @@ void CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool pla
     SetTitle();     //用当前正在播放的歌曲名作为窗口标题
 
     IniPlayList(true, false, play);
+    return true;
 }
 
 void CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_index, bool play /*= true*/)
@@ -1251,7 +1256,7 @@ void CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     IniPlayList(false, false, play);        //根据新路径重新初始化播放列表
 }
 
-void CPlayer::OpenPlaylistFile(const wstring& file_path)
+bool CPlayer::OpenPlaylistFile(wstring& file_path)
 {
     CFilePathHelper helper(file_path);
     if (!CCommon::StringCompareNoCase(helper.GetDir(), theApp.m_playlist_dir))      //如果打开的播放列表文件不是程序默认的播放列表目录，则将其转换为*.playlist格式并复制到默认的播放列表目录
@@ -1264,13 +1269,14 @@ void CPlayer::OpenPlaylistFile(const wstring& file_path)
         CPlaylistFile playlist;
         playlist.LoadFromFile(file_path);
         playlist.SaveToFile(new_path);
+        file_path = new_path;
 
-        SetPlaylist(new_path, 0, 0);
+        return SetPlaylist(new_path, 0, 0);
     }
     else        //如果打开的播放文件就在默认播放列表目录下，则直接打开
     {
         auto path_info = CPlaylistMgr::Instance().FindPlaylistInfo(file_path);
-        SetPlaylist(file_path, path_info.track, path_info.position);
+        return SetPlaylist(file_path, path_info.track, path_info.position);
     }
 
 }

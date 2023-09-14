@@ -928,12 +928,18 @@ void CCommon::WriteLog(const wchar_t* path, const wstring& content)
         cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
     ofstream out_put{ path, std::ios::app };
     out_put << buff << CCommon::UnicodeToStr(content, CodeType::UTF8_NO_BOM) << std::endl;
+    out_put.close();    // 这里需要显式关闭以避免被不同线程连续调用时丢失内容（不过还是不能承受并发，多线程并发时请自行加锁
 }
 
-wstring CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& files)
+void CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& files)
 {
+    // 解析命令行参数中的文件/文件夹路径放入files
+    // files 中能够接受音频文件路径/播放列表文件路径/文件夹路径随意乱序出现
+    // files 中无法被识别为“播放列表文件路径”“文件夹路径”的项目会被直接加入默认播放列表
+    // TODO: 这里可能需要添加以下功能，我没有其他windows版本的经验，不确定这里怎样改
+    //       文件/文件夹存在判断；路径通配符展开；相对路径转换绝对路径；支持不在同一文件夹下的多个文件路径
     files.clear();
-    if (cmd_line.empty()) return wstring();
+    if (cmd_line.empty()) return;
     wstring path;
     //先找出字符串中的文件夹路径，从命令行参数传递过来的文件肯定都是同一个文件夹下的
     if (cmd_line[0] == L'\"')		//如果第一个文件用双引号包含起来
@@ -951,13 +957,7 @@ wstring CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& f
         files.push_back(cmd_line.substr(0, index1));
     }
     int path_size = path.size();
-    if (path_size < 2) return wstring();
-    if (IsFolder(files[0]))
-        //if (files[0].size() > 4 && files[0][files[0].size() - 4] != L'.' && files[0][files[0].size() - 5] != L'.')
-    {
-        //如果第1个文件不是文件而是文件夹，则返直接回该文件夹的路径
-        return files[0];
-    }
+    if (path_size < 2) return;
     int index{};
     while (true)
     {
@@ -974,7 +974,7 @@ wstring CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& f
             files.push_back(cmd_line.substr(index, index1 - index));
         }
     }
-    return wstring();
+    return;
     //CString out_info;
     //out_info += _T("命令行参数：");
     //out_info += cmd_line.c_str();

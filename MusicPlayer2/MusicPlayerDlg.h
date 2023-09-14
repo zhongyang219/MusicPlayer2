@@ -91,6 +91,8 @@ protected:
     HACCEL m_hAccel{};
 
     wstring m_cmdLine;	//命令行参数
+    std::mutex m_cmd_open_files_mutx;   // 保护m_cmd_open_files的线程同步对象
+    vector<wstring> m_cmd_open_files;   // 来自命令行/copy_data的待打开文件队列
 
     CDC* m_pUiDC;				//当前窗口的DC
     std::vector<std::shared_ptr<CPlayerUIBase>> m_ui_list;      //保存每个界面类的指针

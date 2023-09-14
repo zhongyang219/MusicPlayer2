@@ -288,23 +288,25 @@ public:
     // 切换到指定路径的文件夹模式，没有PathInfo时应使用CPlayer::OpenFolder
     void SetPath(const PathInfo& path_info);
     // 切换到指定播放列表模式 
-    // force为true时忽略continue_when_switch_playlist设置播放track指定歌曲
-    void SetPlaylist(const wstring& playlist_path, int track, int position, bool init = false, bool play = false, bool force = false);
-    // 切换到指定路径的播放列表模式/通过“打开文件夹”来设置路径的处理（不进行“切换播放列表时继续播放”）
-    void OpenFolder(wstring path, bool contain_sub_folder = false, bool play = false);
+    // force为true时忽略continue_when_switch_playlist设置播放track指定歌曲（没能取得播放状态锁返回false）
+    bool SetPlaylist(const wstring& playlist_path, int track, int position, bool init = false, bool play = false, bool force = false);
+    // 切换到指定路径的播放列表模式/通过“打开文件夹”来设置路径的处理
+    // （不进行“切换播放列表时继续播放”）（没能取得播放状态锁返回false）
+    bool OpenFolder(wstring path, bool contain_sub_folder = false, bool play = false);
 
-    // 向默认播放列表添加并打开多个文件，play用来设置是否立即播放
+    // 向默认播放列表添加并打开多个文件，play用来设置是否立即播放（没能取得播放状态锁返回false）
     // 由于cue解析问题，请在判断需要“添加歌曲”而不是“添加文件”时尽量使用CPlayer::OpenSongsInDefaultPlaylist代替此方法而不是使用path构建SongInfo
-    void OpenFilesInDefaultPlaylist(const vector<wstring>& files, bool play = true);
-    // 向默认播放列表添加并打开多个歌曲，play用来设置是否立即播放
-    void OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool play = true);
+    bool OpenFilesInDefaultPlaylist(const vector<wstring>& files, bool play = true);
+    // 向默认播放列表添加并打开多个歌曲，play用来设置是否立即播放（没能取得播放状态锁返回false）
+    bool OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool play = true);
     // 打开多个歌曲并覆盖临时播放列表，play用来设置是否立即播放
     void OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_index = 0, bool play = true);
     // 切换到此歌曲音频文件目录的文件夹模式并播放此歌曲
     void OpenASongInFolderMode(const SongInfo& song, bool play = false);
 
-    // 打开一个播放列表文件（支持所有支持的播放列表格式，不在默认播放列表目录则以.playlist格式复制到默认播放列表目录）
-    void OpenPlaylistFile(const wstring& file_path);
+    // 打开一个播放列表文件（没能取得播放状态锁返回false）
+    // 支持所有支持的播放列表格式，不在默认播放列表目录则以.playlist格式复制到默认播放列表目录，会修改参数file_path为复制后的路径
+    bool OpenPlaylistFile(wstring& file_path);
     // 向当前播放列表添加文件，仅在播放列表模式可用，如果一个都没有添加，则返回false，否则返回true
     // 由于cue解析问题，请在判断需要“添加歌曲”而不是“添加文件”时尽量使用CPlayer::AddSongs代替此方法而不是使用path构建SongInfo
     // files内含有cue原始文件时返回值可能不正确（处理在线程函数，无法及时返回是否添加，初始化线程结束后有保存操作，不必另外执行保存）

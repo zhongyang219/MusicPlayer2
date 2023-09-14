@@ -87,6 +87,7 @@ using _tstring = std::string;
 #define TIMER_1_SEC 1237
 #define TIMER_DESKTOP_LYRIC 1238
 #define TIMER_DESKTOP_LYRIC_2 1239
+#define TIMER_CMD_OPEN_FILES_DELAY 1240
 
 #define UI_INTERVAL_DEFAULT 50   //定义界面刷新时间的默认时间间隔（毫秒）
 #define MIN_UI_INTERVAL 10      //界面刷新时间间隔最小值

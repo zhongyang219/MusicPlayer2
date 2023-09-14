@@ -2417,6 +2417,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
 
+    static bool cmd_open_files_ing{ false };    // 用于阻止TIMER_CMD_OPEN_FILES_DELAY重入
     //响应主定时器
     if (nIDEvent == TIMER_ID)
     {
@@ -2454,20 +2455,35 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             }
             else        //从命令行参数获取要打开的文件
             {
+                bool open_default_playlist{ true };
                 vector<wstring> files;
-                wstring path = CCommon::DisposeCmdLineFiles(m_cmdLine, files);
-                if (!path.empty())
+                CCommon::DisposeCmdLineFiles(m_cmdLine, files);
+                if (!files.empty())
                 {
-                    CPlayer::GetInstance().CreateWithPath(path);
+                    if (CPlaylistFile::IsPlaylistFile(files.front()))
+                    {
+                        CPlayer::GetInstance().CreateWithPlaylist(files.front());
+                        files.erase(files.begin());
+                        open_default_playlist = false;
+                    }
+                    else if (CCommon::IsFolder(files.front()))
+                    {
+                        CPlayer::GetInstance().CreateWithPath(files.front());
+                        files.erase(files.begin());
+                        open_default_playlist = false;
+                    }
                 }
-                else
+                if (open_default_playlist)
                 {
-                    if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
-                        CPlayer::GetInstance().CreateWithPlaylist(files[0]);
-                    else
-                        CPlayer::GetInstance().CreateWithFiles(files);
+                    CPlayer::GetInstance().CreateWithPlaylist(theApp.m_playlist_dir + DEFAULT_PLAYLIST_NAME);
                 }
-                //MessageBox(m_cmdLine.c_str(), NULL, MB_ICONINFORMATION);
+                if (!files.empty())
+                {
+                    std::unique_lock<std::mutex> lock(m_cmd_open_files_mutx);
+                    // theApp.WriteLog(m_cmdLine + L"<from_first_timer>");
+                    m_cmd_open_files.insert(m_cmd_open_files.begin(), files.begin(), files.end());  // 当前实例成功创建互斥量，故插入到开头
+                    SetTimer(TIMER_CMD_OPEN_FILES_DELAY, 1000, nullptr);
+                }
             }
             DrawInfo();
             m_uiThread = AfxBeginThread(UiThreadFunc, (LPVOID)&m_ui_thread_para);
@@ -2666,6 +2682,81 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         CUserUi* cur_ui = dynamic_cast<CUserUi*>(GetCurrentUi());
         if (cur_ui != nullptr)
             cur_ui->ResetVolumeToPlayTime();
+    }
+
+    // 距最后一次设置此定时器1s，说明已经1s没有收到copy_data消息，将m_cmd_open_files内容设为当前播放
+    else if (nIDEvent == TIMER_CMD_OPEN_FILES_DELAY && !cmd_open_files_ing)
+    {
+        cmd_open_files_ing = true;
+        // 这里会在一次一次的回调中先逐个打开并移除m_cmd_open_files中的播放列表/文件夹条目
+        // m_cmd_open_files中不含播放列表/文件夹后将剩余歌曲一次在默认播放列表打开并清空m_cmd_open_files
+        // m_cmd_open_files为空后再KillTimer
+        wstring path_playlist, path_folder, path_playlist_new;
+        vector<wstring> path_songs;
+        m_cmd_open_files_mutx.lock();
+        auto iter_p = std::find_if(m_cmd_open_files.begin(), m_cmd_open_files.end(),
+            [&](const wstring& path) { return CPlaylistFile::IsPlaylistFile(path); });
+        if (iter_p != m_cmd_open_files.end())
+            path_playlist = *iter_p;
+        else
+        {
+            auto iter_f = std::find_if(m_cmd_open_files.begin(), m_cmd_open_files.end(),
+                [&](const wstring& path) { return CCommon::IsFolder(path); });
+            if (iter_f != m_cmd_open_files.end())
+                path_folder = *iter_f;
+            else
+                path_songs = m_cmd_open_files;
+        }
+        m_cmd_open_files_mutx.unlock();
+        // CPlayer的初始化方法会向主线程发消息而主线程的copy_data有可能正在等待获取这个锁故需要先解锁，否则有可能死锁
+        if (!path_playlist.empty())
+        {
+            path_playlist_new = path_playlist;
+            if (CPlayer::GetInstance().OpenPlaylistFile(path_playlist_new))   // 注意OpenPlaylistFile会修改参数，需将修改结果反映到m_cmd_open_files，防止反复复制播放列表
+                path_playlist_new.clear();  // 下面的行为是path_playlist_new为空直接移除path_playlist，否则将m_cmd_open_files中的path_playlist替换为path_playlist_new
+        }
+        else if (!path_folder.empty())
+        {
+            if (!CPlayer::GetInstance().OpenFolder(path_folder))
+                path_folder.clear();
+        }
+        else
+        {
+            if (!CPlayer::GetInstance().OpenFilesInDefaultPlaylist(path_songs))
+                path_songs.clear();
+        }
+        m_cmd_open_files_mutx.lock();
+        if (!path_playlist.empty())
+        {
+            auto iter = std::find(m_cmd_open_files.begin(), m_cmd_open_files.end(), path_playlist);
+            if (iter != m_cmd_open_files.end())
+            {
+                if (!path_playlist_new.empty())
+                    *iter = path_playlist_new;
+                else
+                    m_cmd_open_files.erase(iter);
+            }
+        }
+        else if (!path_folder.empty())
+        {
+            auto iter = std::find(m_cmd_open_files.begin(), m_cmd_open_files.end(), path_folder);
+            if (iter != m_cmd_open_files.end())
+            {
+                m_cmd_open_files.erase(iter);
+            }
+        }
+        else if (!path_songs.empty())
+        {
+            // 因为中间解锁过所以m_cmd_open_files和path_songs不一定相同，不能直接清空m_cmd_open_files
+            auto new_end = std::remove_if(m_cmd_open_files.begin(), m_cmd_open_files.end(),
+                [&](const wstring& path) { return CCommon::IsItemInVector(path_songs, path); });
+            m_cmd_open_files.erase(new_end, m_cmd_open_files.end());
+        }
+        // 如果m_cmd_open_files已全部处理完成则关闭定时器，否则下次时间到再尝试
+        if (m_cmd_open_files.empty())
+            KillTimer(TIMER_CMD_OPEN_FILES_DELAY);
+        m_cmd_open_files_mutx.unlock();
+        cmd_open_files_ing = false;
     }
 
     CMainDialogBase::OnTimer(nIDEvent);
@@ -6112,19 +6203,12 @@ BOOL CMusicPlayerDlg::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
             if (cmd_line.empty())
                 return 0;
             vector<wstring> files;
-            CCommon::DisposeCmdLineFiles(wstring(cmd_line), files);
-            if (pCopyDataStruct->dwData == COPY_DATA_OPEN_FILE)
-            {
-                if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
-                    CPlayer::GetInstance().OpenPlaylistFile(files[0]);
-                else
-                    CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files);
-            }
-            else if (pCopyDataStruct->dwData == COPY_DATA_ADD_FILE)
-            {
-                if (CPlayer::GetInstance().IsPlaylistMode())
-                    CPlayer::GetInstance().AddFilesToPlaylist(files, true);
-            }
+            CCommon::DisposeCmdLineFiles(cmd_line, files);
+            // 这里不再区分COPY_DATA_OPEN_FILE和COPY_DATA_ADD_FILE，统一处理
+            std::unique_lock<std::mutex> lock(m_cmd_open_files_mutx);
+            // theApp.WriteLog(cmd_line + L"<from_copy_data>");
+            m_cmd_open_files.insert(m_cmd_open_files.end(), files.begin(),files.end());     // 将来自其他实例的cmd追加到末尾
+            SetTimer(TIMER_CMD_OPEN_FILES_DELAY, 1000, nullptr);
         }
     }
 
