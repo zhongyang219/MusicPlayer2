@@ -2665,12 +2665,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         m_fps_cnt = 0;
     }
 
-    else if (nIDEvent == DELAY_TIMER_ID)
-    {
-        KillTimer(DELAY_TIMER_ID);
-        m_no_lbtnup = false;
-    }
-
     else if (nIDEvent == INGORE_COLOR_CHANGE_TIMER_ID)
     {
         KillTimer(INGORE_COLOR_CHANGE_TIMER_ID);
@@ -2913,8 +2907,6 @@ afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
         //m_findDlg.ClearFindResult();      //更换路径后清除查找结果
         CPlayer::GetInstance().SaveRecentPath();
         m_play_error_cnt = 0;
-        SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个文件夹播放后，500毫秒内不响应WM_LBUTTONUP消息
-        m_no_lbtnup = true;
     }
     return 0;
 }
@@ -5430,8 +5422,6 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
         CPlayer::GetInstance().SaveRecentPath();
         IniPlaylistPopupMenu();
         m_play_error_cnt = 0;
-        SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个播放列表播放后，500毫秒内不响应WM_LBUTTONUP消息
-        m_no_lbtnup = true;
     }
     return 0;
 }
