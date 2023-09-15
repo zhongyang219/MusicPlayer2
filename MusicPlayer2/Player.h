@@ -461,8 +461,8 @@ public:
     //重新初始化BASS。当replay为true时，如果原来正在播放，则重新初始化后继续播放
     void ReIniPlayerCore(bool replay = false);
 
-    //播放列表按照m_sort_mode排序（当change_index为true时，排序后重新查找正在播放的歌曲）
-    void SortPlaylist(bool change_index = true);
+    //播放列表按照m_sort_mode排序（当is_init为false时，排序后重新查找正在播放的歌曲）
+    void SortPlaylist(bool is_init = false);
     //将整个播放列表倒序
     void InvertPlaylist();
     //获取专辑封面

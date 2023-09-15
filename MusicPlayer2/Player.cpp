@@ -310,19 +310,14 @@ void CPlayer::IniPlaylistComplate()
         item.is_favourite = favourite_playlist.IsSongInPlaylist(item);
     }
 
-    if (!IsPlaying())
-    {
-        //清除歌词和专辑封面
-        m_album_cover.Destroy();
-        m_album_cover_blur.Destroy();
-        m_Lyrics = CLyrics();
-    }
-
-    //对播放列表排序
-    if (!m_thread_info.is_playlist_mode && m_playlist.size() > 1)
-        SortPlaylist(false);
-
     ASSERT(m_playing == 0);         // 这里应该一定是停止状态，我将之前的旧代码换成了这个断言，有问题的话再改回去
+    // 对播放列表排序
+    if (!m_thread_info.is_playlist_mode && m_playlist.size() > 1)
+        SortPlaylist(true);
+    // 清除歌词和专辑封面
+    m_album_cover.Destroy();
+    m_album_cover_blur.Destroy();
+    m_Lyrics = CLyrics();
     // 修正程序启动时系统播放控件的播放状态不正确的问题（改在这里，可被下面的初始化后继续播放重新设置为playing状态）
     MusicControl(Command::CLOSE);   // 这里设置GetSongNum()返回0时的默认SMTC状态
 
@@ -2214,9 +2209,9 @@ void CPlayer::ReIniPlayerCore(bool replay)
     GetPlayStatusMutex().unlock();
 }
 
-void CPlayer::SortPlaylist(bool change_index)
+void CPlayer::SortPlaylist(bool is_init)
 {
-    if (m_loading) return;
+    if (m_loading && !is_init) return;
     CWaitCursor wait_cursor;
     SongInfo current_song = GetCurrentSongInfo();
     switch (m_sort_mode)
@@ -2272,7 +2267,7 @@ void CPlayer::SortPlaylist(bool change_index)
         break;
     }
 
-    if (change_index)
+    if (!is_init)   // 由初始化完成方法调用时不重新查找index
     {
         //播放列表排序后，查找正在播放项目的序号
         for (int i{}; i < GetSongNum(); i++)
