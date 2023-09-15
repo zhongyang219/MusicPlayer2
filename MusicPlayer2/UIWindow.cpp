@@ -59,7 +59,8 @@ void CUIWindow::OnLButtonUp(UINT nFlags, CPoint point)
     }
     else
     {
-        m_pUI->LButtonUp(point);
+        if (pMainWindow != nullptr && !pMainWindow->m_no_lbtnup)
+            m_pUI->LButtonUp(point);
 
         CStatic::OnLButtonUp(nFlags, point);
     }
