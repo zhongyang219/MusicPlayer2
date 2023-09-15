@@ -48,7 +48,7 @@ void CPlaylistFile::LoadFromFile(const wstring & file_path)
         std::getline(stream, current_line);
         DisposePlaylistFileLine(current_line, utf8);
     }
-
+    stream.close();
 }
 
 void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
@@ -101,6 +101,7 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
             }
         }
     }
+    stream.close();
 }
 
 const vector<SongInfo>& CPlaylistFile::GetPlaylist() const
@@ -132,10 +133,7 @@ void CPlaylistFile::FromSongList(const vector<SongInfo>& song_list)
 
 void CPlaylistFile::ToSongList(vector<SongInfo>& song_list)
 {
-    for (const auto& item : m_playlist)
-    {
-        song_list.push_back(item);
-    }
+    song_list.insert(song_list.end(), m_playlist.begin(), m_playlist.end());
 }
 
 bool CPlaylistFile::IsSongInPlaylist(const SongInfo& song)

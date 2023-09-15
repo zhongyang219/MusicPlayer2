@@ -114,6 +114,12 @@ void CPlaylistMgr::UpdateCurrentPlaylist(int track, int pos, int track_num, int 
     }
 }
 
+void CPlaylistMgr::UpdateCurrentPlaylistType(const wstring& path)
+{
+    if (path.empty()) return;
+    m_cur_playlist_type = GetPlaylistType(path);
+}
+
 void CPlaylistMgr::UpdatePlaylistInfo(PlaylistInfo playlist_info)
 {
     PlaylistType type = GetPlaylistType(playlist_info.path);
@@ -340,6 +346,18 @@ PlaylistInfo CPlaylistMgr::FindPlaylistInfo(const wstring& str) const
         else
             return *iter;
     }
+}
+
+PlaylistInfo CPlaylistMgr::GetCurrentPlaylistInfo() const
+{
+    if (m_cur_playlist_type == PT_DEFAULT || m_recent_playlists.empty())    // m_recent_playlists为空时返回默认播放列表
+        return m_default_playlist;
+    else if (m_cur_playlist_type == PT_FAVOURITE)
+        return m_favourite_playlist;
+    else if (m_cur_playlist_type == PT_TEMP)
+        return m_temp_playlist;
+    else
+        return m_recent_playlists.front();
 }
 
 PlaylistType CPlaylistMgr::GetPlaylistType(const wstring& path) const

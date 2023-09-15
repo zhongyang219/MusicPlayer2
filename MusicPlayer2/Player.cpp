@@ -101,45 +101,31 @@ void CPlayer::Create()
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
-    bool change_to_default_playlist{};
+    m_controls.Init();
+    bool change_to_default_playlist{ !m_playlist_mode && m_recent_path.empty() };
     for (size_t i{}; i < m_recent_path.size(); ++i)    // 清除最近播放文件夹列表中的无效项
     {
         if (!CAudioCommon::IsPathContainsAudioFile(m_recent_path[i].path, m_recent_path[i].contain_sub_folder) && !COSUPlayerHelper::IsOsuFolder(m_recent_path[i].path))
         {
             m_recent_path.erase(m_recent_path.begin() + i);
-            change_to_default_playlist = (i == 0);
+            change_to_default_playlist |= (i == 0);
             i--;
         }
     }
     if (change_to_default_playlist)
     {
-        PlaylistInfo playlist_info;
-        playlist_info = CPlaylistMgr::Instance().m_default_playlist;
-        SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
+        const PlaylistInfo& playlist_info = CPlaylistMgr::Instance().m_default_playlist;
+        SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position);
     }
     else if (!m_playlist_mode)
     {
-        GetPlayStatusMutex().lock();
-        m_loading = true;
-        IniPlayList();	//初始化播放列表
+        SetPath(m_recent_path.front());
     }
     else
     {
-        PlaylistInfo playlist_info;
-        if (CPlaylistMgr::Instance().m_cur_playlist_type == PT_USER && CPlaylistMgr::Instance().m_recent_playlists.empty())
-            CPlaylistMgr::Instance().m_cur_playlist_type = PT_DEFAULT;
-        if (CPlaylistMgr::Instance().m_cur_playlist_type == PT_DEFAULT)
-            playlist_info = CPlaylistMgr::Instance().m_default_playlist;
-        else if (CPlaylistMgr::Instance().m_cur_playlist_type == PT_FAVOURITE)
-            playlist_info = CPlaylistMgr::Instance().m_favourite_playlist;
-        else if (CPlaylistMgr::Instance().m_cur_playlist_type == PT_TEMP)
-            playlist_info = CPlaylistMgr::Instance().m_temp_playlist;
-        else
-            playlist_info = CPlaylistMgr::Instance().m_recent_playlists.front();
-        SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, true);
+        const PlaylistInfo& playlist_info = CPlaylistMgr::Instance().GetCurrentPlaylistInfo();
+        SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position);
     }
-    SetTitle();     //用当前正在播放的歌曲名作为窗口标题
-    m_controls.Init();
 }
 
 void CPlayer::CreateWithFiles(const vector<wstring>& files)
@@ -148,8 +134,8 @@ void CPlayer::CreateWithFiles(const vector<wstring>& files)
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
-    OpenFilesInDefaultPlaylist(files);
     m_controls.Init();
+    OpenFilesInDefaultPlaylist(files);
 }
 
 void CPlayer::CreateWithPath(const wstring& path)
@@ -158,9 +144,8 @@ void CPlayer::CreateWithPath(const wstring& path)
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
-    OpenFolder(path);
-    SetTitle();     //用当前正在播放的歌曲名作为窗口标题
     m_controls.Init();
+    OpenFolder(path);
 }
 
 void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
@@ -169,40 +154,40 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
     LoadConfig();
     LoadRecentPath();
     LoadRecentPlaylist();
-    wstring tmp{ playlist_path };
-    OpenPlaylistFile(tmp);
-    SetTitle();
     m_controls.Init();
+    wstring playlist_path_{ playlist_path };
+    OpenPlaylistFile(playlist_path_);
 }
 
-void CPlayer::IniPlayList(bool playlist_mode, bool refresh_info, bool play)
+void CPlayer::IniPlayList(bool play, bool refresh_info)
 {
-    // 这里不再判断m_loading，因为调用此方法前一定加锁了，需要初始化线程发出消息触发IniPlaylistComplate解锁
-    m_playlist_mode = playlist_mode;
-    if (!playlist_mode)     //非播放列表模式下，从当前目录m_path下搜索文件
+    m_playlist.clear();
+    if (m_playlist_mode)
     {
+        CPlaylistMgr::Instance().UpdateCurrentPlaylistType(m_playlist_path);
+        CPlaylistFile playlist;
+        playlist.LoadFromFile(m_playlist_path);
+        playlist.ToSongList(m_playlist);
+    }
+    else
+    {
+        if (m_path.empty() || (m_path.back() != L'/' && m_path.back() != L'\\'))        //如果输入的新路径为空或末尾没有斜杠，则在末尾加上一个
+            m_path.append(1, L'\\');
         if (COSUPlayerHelper::IsOsuFolder(m_path))
             COSUPlayerHelper::GetOSUAudioFiles(m_path, m_playlist);
         else
             CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM, m_contain_sub_folder);
     }
-    //m_index = 0;
-    //m_song_num = m_playlist.size();
-    m_index_tmp = m_index;		//保存歌曲序号，cue未解析情况下当前的m_index有可能超过当前歌曲数目，临时存储待cue解析后恢复
-    if (m_index < 0 || m_index >= GetSongNum()) m_index = 0;		//确保当前歌曲序号不会超过歌曲总数
 
-    //m_song_length = { 0, 0, 0 };
-    if (GetSongNum() == 0)
-    {
-        m_playlist.push_back(SongInfo{});		//没有歌曲时向播放列表插入一个空的SongInfo对象
-    }
+    m_index_tmp = m_index;  // 保存歌曲序号，cue未解析情况下当前的m_index有可能超过当前歌曲数目，临时存储待cue解析后恢复
+    m_index = 0;            // 在初始化期间为维持程序其他部分不报错（可能需要（但不应该需要））保持m_playlist[m_index]有效
+    if (m_playlist.empty())
+        m_playlist.push_back(SongInfo{});       // 没有歌曲时向播放列表插入一个空的SongInfo对象
 
-    //m_thread_info.playlist = &m_playlist;
     m_thread_info.refresh_info = refresh_info;
-    m_thread_info.is_playlist_mode = playlist_mode;
     m_thread_info.play = play;
     m_thread_info.play_index = m_index_tmp;
-    //m_thread_info.path = m_path;
+
     //创建初始化播放列表的工作线程
     m_pThread = AfxBeginThread(IniPlaylistThreadFunc, &m_thread_info);
 }
@@ -312,16 +297,14 @@ void CPlayer::IniPlaylistComplate()
 
     ASSERT(m_playing == 0);         // 这里应该一定是停止状态，我将之前的旧代码换成了这个断言，有问题的话再改回去
     // 对播放列表排序
-    if (!m_thread_info.is_playlist_mode && m_playlist.size() > 1)
+    if (!m_playlist_mode && m_playlist.size() > 1)
         SortPlaylist(true);
     // 清除歌词和专辑封面
     m_album_cover.Destroy();
     m_album_cover_blur.Destroy();
     m_Lyrics = CLyrics();
-    // 修正程序启动时系统播放控件的播放状态不正确的问题（改在这里，可被下面的初始化后继续播放重新设置为playing状态）
-    MusicControl(Command::CLOSE);   // 这里设置GetSongNum()返回0时的默认SMTC状态
 
-    if (GetSongNum() > 0)   // 播放列表初始化完成，根据m_index,m_current_position,m_thread_info.play还原播放状态
+    if (!IsPlaylistEmpty())         // 播放列表初始化完成，根据m_index,m_current_position,m_thread_info.play还原播放状态
     {
         bool tmp_find{ false };
         if (!m_current_song_tmp.IsEmpty())     // m_current_song_tmp不为空则改为查找播放此歌曲，同时定位到m_current_song_position_tmp
@@ -347,9 +330,7 @@ void CPlayer::IniPlaylistComplate()
             MusicControl(Command::PLAY);
     }
 
-    SaveCurrentPlaylist();
-    EmplaceCurrentPathToRecent();
-    EmplaceCurrentPlaylistToRecent();
+    SaveRecentInfoToFiles();
     SetTitle();
     OnPlaylistChange();
 
@@ -966,18 +947,25 @@ void CPlayer::LoopPlaylist(int& song_track)
     }
 }
 
-void CPlayer::ChangePath(const wstring& path, int track, bool play, int position)
+void CPlayer::SaveRecentInfoToFiles()
 {
-    m_path = path;
-    if (m_path.empty() || (m_path.back() != L'/' && m_path.back() != L'\\'))        //如果输入的新路径为空或末尾没有斜杠，则在末尾加上一个
-        m_path.append(1, L'\\');
-    m_playlist.clear();     //清空播放列表
-    m_index = track;
-    //初始化播放列表
-    IniPlayList(false, false, play);        //根据新路径重新初始化播放列表
-    m_current_position.fromInt(position);
-    SaveConfig();
-    SetTitle();
+    static bool initailzed{ false };
+    // 程序启动后第一次调用时不需要保存（m_playlist为空时进行播放列表保存会导致清空列表）
+    if (initailzed)
+    {
+        if (m_playlist_mode)
+        {
+            SaveCurrentPlaylist();
+            EmplaceCurrentPlaylistToRecent();
+            CPlaylistMgr::Instance().SavePlaylistData();
+        }
+        else
+        {
+            EmplaceCurrentPathToRecent();
+            SaveRecentPath();
+        }
+    }
+    initailzed = true;
 }
 
 void CPlayer::SetPath(const PathInfo& path_info)
@@ -987,14 +975,8 @@ void CPlayer::SetPath(const PathInfo& path_info)
     m_loading = true;
     IniPlayerCore();
 
-    MusicControl(Command::CLOSE);
+    SaveRecentInfoToFiles();
 
-    if (GetSongNum() > 0)
-    {
-        SaveCurrentPlaylist();
-        EmplaceCurrentPlaylistToRecent();
-        EmplaceCurrentPathToRecent();
-    }
     // 实现切换到文件夹模式时的同曲目播放保持
     if (theApp.m_play_setting_data.continue_when_switch_playlist)
     {
@@ -1003,68 +985,18 @@ void CPlayer::SetPath(const PathInfo& path_info)
         m_current_song_playing_tmp = (m_playing == PlayingState::PS_PLAYING);
     }
 
+    MusicControl(Command::CLOSE);
+
+    m_path = path_info.path;
+    m_playlist_path.clear();
+    m_playlist_mode = false;
     m_sort_mode = path_info.sort_mode;
     m_descending = path_info.descending;
     m_contain_sub_folder = path_info.contain_sub_folder;
-    ChangePath(path_info.path, path_info.track, path_info.position);
-    EmplaceCurrentPathToRecent();		//保存新的路径到最近路径
+    m_index = path_info.track;
+    m_current_position.fromInt(path_info.position);
 
-}
-
-bool CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool init, bool play, bool force)
-{
-    if (m_loading) return false;
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
-    m_loading = true;
-    IniPlayerCore();
-
-    if (!init)
-    {
-        // 实现切换到播放列表模式时的同曲目播放保持
-        if (theApp.m_play_setting_data.continue_when_switch_playlist && !force)
-        {
-            m_current_song_tmp = GetCurrentSongInfo();
-            m_current_song_position_tmp = GetCurrentPosition();
-            m_current_song_playing_tmp = (m_playing == PlayingState::PS_PLAYING);
-        }
-
-        if (!CCommon::StringCompareNoCase(playlist_path, m_playlist_path))
-            SaveCurrentPlaylist();
-        if (m_playlist_mode)
-            EmplaceCurrentPlaylistToRecent();
-        else
-            EmplaceCurrentPathToRecent();
-        MusicControl(Command::STOP);
-        MusicControl(Command::CLOSE);
-    }
-
-    if (playlist_path == CPlaylistMgr::Instance().m_default_playlist.path)
-        CPlaylistMgr::Instance().m_cur_playlist_type = PT_DEFAULT;
-    else if (playlist_path == CPlaylistMgr::Instance().m_favourite_playlist.path)
-        CPlaylistMgr::Instance().m_cur_playlist_type = PT_FAVOURITE;
-    else if (playlist_path == CPlaylistMgr::Instance().m_temp_playlist.path)
-        CPlaylistMgr::Instance().m_cur_playlist_type = PT_TEMP;
-    else
-        CPlaylistMgr::Instance().m_cur_playlist_type = PT_USER;
-
-    m_playlist.clear();
-    CPlaylistFile playlist;
-    playlist.LoadFromFile(playlist_path);
-
-    auto playlist_files{ playlist.GetPlaylist() };
-    for (const auto& file : playlist_files)
-    {
-        m_playlist.push_back(file);
-    }
-
-    m_index = track;
-    m_current_position.fromInt(position);
-    SetTitle();
-    m_playlist_path = playlist_path;
-    EmplaceCurrentPlaylistToRecent();
-
-    IniPlayList(true, false, play);
-    return true;
+    IniPlayList();
 }
 
 bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
@@ -1074,181 +1006,64 @@ bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     m_loading = true;
     IniPlayerCore();
 
+    SaveRecentInfoToFiles();
+
     MusicControl(Command::CLOSE);
 
-    if (path.empty() || (path.back() != L'/' && path.back() != L'\\'))      //如果打开的新路径为空或末尾没有斜杠，则在末尾加上一个
-        path.append(1, L'\\');
-    bool path_exist{ false };
-    int track{};
-    int position{};
-    if (GetSongNum() > 0)
-    {
-        SaveCurrentPlaylist();
-        EmplaceCurrentPlaylistToRecent();
-        EmplaceCurrentPathToRecent();
-    }
+    // 按照新文件夹设置
+    m_path = path;
+    m_sort_mode = SM_FILE;
+    m_descending = false;
     m_contain_sub_folder = contain_sub_folder;
-    //检查打开的路径是否已经存在于最近路径中
-    for (const auto& a_path_info : m_recent_path)
+    m_index = 0;
+    m_current_position.fromInt(0);
+
+    // 如果是打开过的文件夹那么用保存的设置覆盖默认值
+    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
+        [&](const PathInfo& path_info) { return path_info.path == m_path; });
+    if (iter != m_recent_path.end())
     {
-        if (path == a_path_info.path)
-        {
-            path_exist = true;
-            track = a_path_info.track;
-            position = a_path_info.position;
-            m_sort_mode = a_path_info.sort_mode;
-            m_descending = a_path_info.descending;
-            break;
-        }
+        const PathInfo& path_info = *iter;
+        m_sort_mode = path_info.sort_mode;
+        m_descending = path_info.descending;
+        m_index = path_info.track;
+        m_current_position.fromInt(path_info.position);
     }
-    if (path_exist)         //如果打开的路径已经存在于最近路径中
-    {
-        ChangePath(path, track, play, position);
-    }
-    else        //如果打开的路径是新的路径
-    {
-        m_sort_mode = SM_FILE;
-        m_descending = false;
-        ChangePath(path, 0, play);
-    }
-    EmplaceCurrentPathToRecent();       //保存打开的路径到最近路径
-    SaveRecentPath();
+
+    IniPlayList(play);
     return true;
 }
 
-bool CPlayer::OpenFilesInDefaultPlaylist(const vector<wstring>& files, bool play)
+bool CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position, bool play, bool force)
 {
-    vector<SongInfo> songs(files.size());
-    for (size_t i{}; i < files.size(); ++i)
-        songs[i].file_path = files[i];
-    return OpenSongsInDefaultPlaylist(songs, play);
-}
-
-bool CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool play)
-{
-    if (songs.empty()) return false;
     if (m_loading) return false;
     if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
     m_loading = true;
     IniPlayerCore();
 
-    MusicControl(Command::CLOSE);
-    if (GetSongNum() > 0)
+    SaveRecentInfoToFiles();
+
+    // 实现切换到播放列表模式时的同曲目播放保持
+    if (theApp.m_play_setting_data.continue_when_switch_playlist && !force)
     {
-        SaveCurrentPlaylist();
-        EmplaceCurrentPlaylistToRecent();
-        EmplaceCurrentPathToRecent();
+        m_current_song_tmp = GetCurrentSongInfo();
+        m_current_song_position_tmp = GetCurrentPosition();
+        m_current_song_playing_tmp = (m_playing == PlayingState::PS_PLAYING);
     }
 
-    CPlaylistMgr::Instance().m_cur_playlist_type = PT_DEFAULT;
+    MusicControl(Command::CLOSE);
+
+    m_path.clear();
+    m_playlist_path = playlist_path;
     m_playlist_mode = true;
-    m_playlist_path = CPlaylistMgr::Instance().m_default_playlist.path;
-
-    //加载默认播放列表
-    m_playlist.clear();
-    CPlaylistFile playlist;
-    playlist.LoadFromFile(CPlaylistMgr::Instance().m_default_playlist.path);
-    playlist.ToSongList(m_playlist);
-
-    //将播放的文件添加到默认播放列表
-    int play_index = GetSongNum();        //播放的序号
-    for (const auto& song : songs)
-    {
-        auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& tmp)
-            {
-                return song.IsSameSong(tmp);
-            });
-
-        if (iter == m_playlist.end())     //如果要打开的文件不在播放列表里才添加
-            m_playlist.push_back(song);
-        else
-            play_index = iter - m_playlist.begin();
-    }
-    m_index = play_index;
-    m_current_position = Time();
-
-    SaveCurrentPlaylist();
-    SetTitle();     //用当前正在播放的歌曲名作为窗口标题
-
-    IniPlayList(true, false, play);
-    return true;
-}
-
-void CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_index, bool play /*= true*/)
-{
-    if (songs.empty()) return;
-    if (m_loading) return;
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
-    m_loading = true;
-    IniPlayerCore();
-
-    MusicControl(Command::CLOSE);
-    if (GetSongNum() > 0)
-    {
-        if (!(CPlaylistMgr::Instance().m_cur_playlist_type == PT_TEMP))
-            SaveCurrentPlaylist();
-        EmplaceCurrentPlaylistToRecent();
-        EmplaceCurrentPathToRecent();
-    }
-
-    CPlaylistMgr::Instance().m_cur_playlist_type = PT_TEMP;
-    m_playlist_mode = true;
-    m_playlist_path = CPlaylistMgr::Instance().m_temp_playlist.path;
-    m_playlist.clear();
-    m_playlist = songs;
-    if (play_index >= 0 && play_index < static_cast<int>(m_playlist.size()))
-    {
-        m_current_song_tmp = m_playlist[play_index];
-        m_current_song_playing_tmp = play;
-    }
-    // 若m_current_song_tmp不存在于初始化后的播放列表则这里设置的0值作为默认值被使用
-    m_index = 0;
-    m_current_position = Time();
-
-    SaveCurrentPlaylist();
-    SetTitle();
-
-    IniPlayList(true, false, play);
-}
-
-void CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
-{
-    if (song.file_path.empty()) return;
-    if (m_loading) return;
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
-    m_loading = true;
-    IniPlayerCore();
-
-    MusicControl(Command::CLOSE);
-    if (GetSongNum() > 0)
-    {
-        SaveCurrentPlaylist();
-        EmplaceCurrentPlaylistToRecent();
-        EmplaceCurrentPathToRecent();
-    }
-    CFilePathHelper file_path(song.file_path);
-    m_path = file_path.GetDir();
-    m_playlist.clear();
-    m_current_position = { 0, 0, 0 };
-    m_index = 0;
-
-    //获取打开路径的排序方式
-    m_sort_mode = SortMode::SM_FILE;
+    m_sort_mode = SM_FILE;
     m_descending = false;
-    for (const auto& path_info : m_recent_path)
-    {
-        if (m_path == path_info.path)
-        {
-            m_sort_mode = path_info.sort_mode;
-            m_descending = path_info.descending;
-        }
-    }
-    // 使用切换播放列表继续播放实现初始化线程后的指定歌曲播放
-    m_current_song_tmp = song;
-    m_current_song_position_tmp = 0;
-    m_current_song_playing_tmp = play;
-    //初始化播放列表
-    IniPlayList(false, false, play);        //根据新路径重新初始化播放列表
+    m_contain_sub_folder = false;
+    m_index = track;
+    m_current_position.fromInt(position);
+
+    IniPlayList(play);
+    return true;
 }
 
 bool CPlayer::OpenPlaylistFile(wstring& file_path)
@@ -1270,10 +1085,121 @@ bool CPlayer::OpenPlaylistFile(wstring& file_path)
     }
     else        //如果打开的播放文件就在默认播放列表目录下，则直接打开
     {
-        auto path_info = CPlaylistMgr::Instance().FindPlaylistInfo(file_path);
+        const PlaylistInfo& path_info = CPlaylistMgr::Instance().FindPlaylistInfo(file_path);
         return SetPlaylist(file_path, path_info.track, path_info.position);
     }
+}
 
+bool CPlayer::OpenFilesInDefaultPlaylist(const vector<wstring>& files, bool play)
+{
+    vector<SongInfo> songs(files.size());
+    for (size_t i{}; i < files.size(); ++i)
+        songs[i].file_path = files[i];
+    return OpenSongsInDefaultPlaylist(songs, play);
+}
+
+bool CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool play)
+{
+    if (songs.empty()) return false;
+    if (m_loading) return false;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
+    m_loading = true;
+    IniPlayerCore();
+
+    SaveRecentInfoToFiles();
+
+    MusicControl(Command::CLOSE);
+
+    m_path.clear();
+    m_playlist_path = CPlaylistMgr::Instance().m_default_playlist.path;
+    m_playlist_mode = true;
+    m_sort_mode = SM_FILE;
+    m_descending = false;
+    m_contain_sub_folder = false;
+    m_index = 0;
+    m_current_position.fromInt(0);
+
+    // 向播放列表文件追加songs
+    CPlaylistFile playlist;
+    playlist.LoadFromFile(m_playlist_path);
+    playlist.AddSongsToPlaylist(songs, true); 
+    // 设置播放songs的第一个文件
+    m_index = playlist.GetSongIndexInPlaylist(songs.front());
+    playlist.SaveToFile(m_playlist_path);
+
+    IniPlayList(play);
+    return true;
+}
+
+void CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_index, bool play /*= true*/)
+{
+    if (songs.empty()) return;
+    if (m_loading) return;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    m_loading = true;
+    IniPlayerCore();
+
+    SaveRecentInfoToFiles();
+
+    MusicControl(Command::CLOSE);
+
+    m_path.clear();
+    m_playlist_path = CPlaylistMgr::Instance().m_temp_playlist.path;
+    m_playlist_mode = true;
+    m_sort_mode = SM_FILE;
+    m_descending = false;
+    m_contain_sub_folder = false;
+    m_index = play_index;
+    m_current_position.fromInt(0);
+
+    // 向播放列表文件覆写songs
+    CPlaylistFile playlist;
+    playlist.FromSongList(songs);
+    playlist.SaveToFile(m_playlist_path);
+
+    IniPlayList(play);
+}
+
+void CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
+{
+    if (song.file_path.empty()) return;
+    if (m_loading) return;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    m_loading = true;
+    IniPlayerCore();
+
+    SaveRecentInfoToFiles();
+
+    MusicControl(Command::CLOSE);
+
+    CFilePathHelper file_path(song.file_path);
+    m_path = file_path.GetDir();
+    m_playlist_path.clear();
+    m_playlist_mode = false;
+    m_sort_mode = SM_FILE;
+    m_descending = false;
+    m_contain_sub_folder = false;
+    m_index = 0;
+    m_current_position.fromInt(0);
+
+    // 如果是打开过的文件夹那么用保存的设置覆盖默认值
+    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
+        [&](const PathInfo& path_info) { return path_info.path == m_path; });
+    if (iter != m_recent_path.end())
+    {
+        const PathInfo& path_info = *iter;
+        m_sort_mode = path_info.sort_mode;
+        m_descending = path_info.descending;
+        m_contain_sub_folder = path_info.contain_sub_folder;
+        m_index = path_info.track;
+        m_current_position.fromInt(path_info.position);
+    }
+    // 使用切换播放列表继续播放实现初始化线程后的指定歌曲播放
+    m_current_song_tmp = song;
+    m_current_song_position_tmp = 0;
+    m_current_song_playing_tmp = play;
+
+    IniPlayList(play);
 }
 
 bool CPlayer::AddFilesToPlaylist(const vector<wstring>& files, bool ignore_if_exist)
@@ -1286,7 +1212,7 @@ bool CPlayer::AddFilesToPlaylist(const vector<wstring>& files, bool ignore_if_ex
 
 bool CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_if_exist)
 {
-    ASSERT(m_playlist_mode);    //此方法仅限播放列表模式使用
+    ASSERT(m_playlist_mode && !m_playlist_path.empty());    // 此方法仅限已处于播放列表模式时使用
 
     if (songs.empty()) return false;
     if (m_loading) return false;
@@ -1294,26 +1220,22 @@ bool CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_if_e
     m_loading = true;
     IniPlayerCore();
 
-    if (m_playlist.size() == 1 && m_playlist[0].file_path.empty()/* && m_playlist[0].file_name.empty()*/)
-        m_playlist.clear();     //删除播放列表中的占位项
+    // 这里有必要暂时关闭，故保存播放状态，AddSongsToPlaylist可能将歌曲插入到开头导致index不再准确
+    m_current_song_tmp = GetCurrentSongInfo();
+    m_current_song_position_tmp = GetCurrentPosition();
+    m_current_song_playing_tmp = (m_playing == PlayingState::PS_PLAYING);
 
-    bool added{ false };
-    SongInfo song_info;
-    for (const SongInfo& song : songs)
-    {
-        if (song.file_path.empty())
-            continue;
+    MusicControl(Command::CLOSE);
 
-        if (ignore_if_exist && CCommon::IsItemInVector(m_playlist, [&](const SongInfo& tmp) {
-            return song.IsSameSong(tmp);
-            }))
-            continue;
+    // 向当前播放列表文件追加songs
+    CPlaylistFile playlist;
+    playlist.LoadFromFile(m_playlist_path);
+    bool added = playlist.AddSongsToPlaylist(songs, true);
+    playlist.SaveToFile(m_playlist_path);
 
-        m_playlist.push_back(song);
-        added = true;
-    }
-    SaveCurrentPlaylist();
-    IniPlayList(true);
+    m_index = 0;
+
+    IniPlayList();
     return added;
 }
 
@@ -1686,24 +1608,20 @@ void CPlayer::ReloadPlaylist(bool refresh_info)
     if (m_loading) return;
     if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
     m_loading = true;
+    IniPlayerCore();
+
+    SaveRecentInfoToFiles();
+
+    // 保存当前播放状态，reload后如果当前歌曲还存在则恢复播放状态
+    m_current_song_tmp = GetCurrentSongInfo();
+    m_current_song_position_tmp = GetCurrentPosition();
+    m_current_song_playing_tmp = (m_playing == PlayingState::PS_PLAYING);
 
     MusicControl(Command::CLOSE);
-    m_current_song_tmp = GetCurrentSongInfo();	// 保存当前播放的曲目，用于在播放列表初始化结束时确保播放的还是之前播放的曲目
-    m_current_song_position_tmp = GetCurrentPosition();
-    if (!m_playlist_mode)
-    {
-        m_playlist.clear();		//清空播放列表
-        IniPlayList(false, refresh_info);		//根据新路径重新初始化播放列表
-    }
-    else
-    {
-        m_playlist.clear();
-        CPlaylistFile playlist;
-        playlist.LoadFromFile(m_playlist_path);
-        playlist.ToSongList(m_playlist);
 
-        IniPlayList(true, refresh_info);
-    }
+    m_index = 0;
+
+    IniPlayList(false, true);
 }
 
 bool CPlayer::RemoveSong(int index, bool skip_locking)
@@ -2342,10 +2260,7 @@ void CPlayer::OnExit()
         m_recent_path[0].track = m_index;
         m_recent_path[0].position = m_current_position.toInt();
     }
-    SaveRecentPath();
-    EmplaceCurrentPlaylistToRecent();
-    CPlaylistMgr::Instance().SavePlaylistData();
-    SaveCurrentPlaylist();
+    SaveRecentInfoToFiles();
 }
 
 void CPlayer::LoadRecentPath()
@@ -2479,15 +2394,6 @@ void CPlayer::SaveCurrentPlaylist()
 {
     if (m_playlist_mode)
     {
-        //wstring current_playlist;
-        //if (CPlaylistMgr::Instance().m_cur_playlist_type == PT_DEFAULT || CPlaylistMgr::Instance().m_recent_playlists.empty())
-        //	current_playlist = CPlaylistMgr::Instance().m_default_playlist.path;
-        //else if (CPlaylistMgr::Instance().m_cur_playlist_type == PT_FAVOURITE)
-        //	current_playlist = CPlaylistMgr::Instance().m_favourite_playlist.path;
-        //else if (CPlaylistMgr::Instance().m_cur_playlist_type == PT_TEMP)
-        //	current_playlist = CPlaylistMgr::Instance().m_temp_playlist.path;
-        //else
-        //	current_playlist = CPlaylistMgr::Instance().m_recent_playlists.front().path;
         CPlaylistFile playlist;
         playlist.FromSongList(m_playlist);
         playlist.SaveToFile(m_playlist_path);
@@ -2504,7 +2410,7 @@ void CPlayer::EmplaceCurrentPathToRecent()
         if (m_path == m_recent_path[i].path)
             m_recent_path.erase(m_recent_path.begin() + i);		//如果当前路径已经在最近路径中，就把它最近路径中删除
     }
-    if (IsPlaylistEmpty()) return;		//如果当前路径中没有文件，就不保存
+    if (IsPlaylistEmpty()) return;      // 如果当前路径中没有文件，就不保存
     PathInfo path_info;
     path_info.path = m_path;
     path_info.track = m_index;
@@ -2514,12 +2420,9 @@ void CPlayer::EmplaceCurrentPathToRecent()
     path_info.track_num = GetSongNum();
     path_info.total_time = m_total_time;
     path_info.contain_sub_folder = m_contain_sub_folder;
-    if (GetSongNum() > 0)
-    {
-        path_info.last_played_time = CCommon::GetCurTimeElapse();
-        m_recent_path.push_front(path_info);		//当前路径插入到m_recent_path的前面
-        CRecentFolderAndPlaylist::Instance().Init();
-    }
+    path_info.last_played_time = CCommon::GetCurTimeElapse();
+    m_recent_path.push_front(path_info);        // 当前路径插入到m_recent_path的前面
+    CRecentFolderAndPlaylist::Instance().Init();
 }
 
 
@@ -2891,7 +2794,6 @@ void CPlayer::SetContainSubFolder(bool contain_sub_folder)
         m_contain_sub_folder = contain_sub_folder;
         if (!IsPlaylistMode())
         {
-            EmplaceCurrentPathToRecent();
             ReloadPlaylist(false);
         }
     }

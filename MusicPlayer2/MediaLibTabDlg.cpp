@@ -186,8 +186,7 @@ void CMediaLibTabDlg::OnAddToNewPalylistAndPlay()
     wstring playlist_path;
     if (_OnAddToNewPlaylist(playlist_path))
     {
-        CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, false, true);
-        CPlayer::GetInstance().SaveRecentPath();
+        CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true);
         OnCancel();
     }
 }

@@ -31,12 +31,14 @@ public:
     void AddNewPlaylist(const wstring& path);
     bool DeletePlaylist(const wstring& path);
     void UpdateCurrentPlaylist(int track, int pos, int track_num, int total_time);
+    void UpdateCurrentPlaylistType(const wstring& path);
     void UpdatePlaylistInfo(PlaylistInfo playlist_info);
 
     void SavePlaylistData();
     void LoadPlaylistData();
 
     PlaylistInfo FindPlaylistInfo(const wstring& str) const;
+    PlaylistInfo GetCurrentPlaylistInfo() const;
     PlaylistType GetPlaylistType(const wstring& path) const;
 
 private:

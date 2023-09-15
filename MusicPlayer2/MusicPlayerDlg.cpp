@@ -2911,7 +2911,6 @@ afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
         //ShowTime();
         DrawInfo(true);
         //m_findDlg.ClearFindResult();      //更换路径后清除查找结果
-        CPlayer::GetInstance().SaveRecentPath();
         m_play_error_cnt = 0;
         SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个文件夹播放后，500毫秒内不响应WM_LBUTTONUP消息
         m_no_lbtnup = true;
@@ -3496,10 +3495,9 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                 {
                     if (item.playlist_info != nullptr)
                     {
-                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position, false, false);
+                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position);
                         UpdatePlayPauseButton();
                         DrawInfo(true);
-                        CPlayer::GetInstance().SaveRecentPath();
                         IniPlaylistPopupMenu();
                         m_play_error_cnt = 0;
                     }
@@ -3512,7 +3510,6 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                         CPlayer::GetInstance().SetPath(*item.folder_info);
                         UpdatePlayPauseButton();
                         DrawInfo(true);
-                        CPlayer::GetInstance().SaveRecentPath();
                         m_play_error_cnt = 0;
                     }
                 }
@@ -5420,14 +5417,13 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
                 }
             }
             // index大于等于0时即此次播放为从右侧列表指定歌曲，设置force为true以忽略continue_when_switch_playlist设置
-            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track_played, position, false, continue_play, index >= 0);
+            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track_played, position, continue_play, index >= 0);
         }
         UpdatePlayPauseButton();
         //SetPorgressBarSize();
         //ShowTime();
         DrawInfo(true);
         //m_findDlg.ClearFindResult();      //更换路径后清除查找结果
-        CPlayer::GetInstance().SaveRecentPath();
         IniPlaylistPopupMenu();
         m_play_error_cnt = 0;
         SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个播放列表播放后，500毫秒内不响应WM_LBUTTONUP消息
