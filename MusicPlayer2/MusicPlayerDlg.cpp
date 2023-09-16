@@ -2417,7 +2417,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
 
-    static bool cmd_open_files_ing{ false };    // 用于阻止TIMER_CMD_OPEN_FILES_DELAY重入
+    static std::atomic<bool> cmd_open_files_disable{ true };    // 用于阻止TIMER_CMD_OPEN_FILES_DELAY重入以及在避免在CPlayer::Create之前触发
     //响应主定时器
     if (nIDEvent == TIMER_ID)
     {
@@ -2485,6 +2485,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                     SetTimer(TIMER_CMD_OPEN_FILES_DELAY, 1000, nullptr);
                 }
             }
+            cmd_open_files_disable = false;
             DrawInfo();
             m_uiThread = AfxBeginThread(UiThreadFunc, (LPVOID)&m_ui_thread_para);
 
@@ -2685,9 +2686,9 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
     }
 
     // 距最后一次设置此定时器1s，说明已经1s没有收到copy_data消息，将m_cmd_open_files内容设为当前播放
-    else if (nIDEvent == TIMER_CMD_OPEN_FILES_DELAY && !cmd_open_files_ing)
+    else if (nIDEvent == TIMER_CMD_OPEN_FILES_DELAY && !cmd_open_files_disable)
     {
-        cmd_open_files_ing = true;
+        cmd_open_files_disable = true;
         // 这里会在一次一次的回调中先逐个打开并移除m_cmd_open_files中的播放列表/文件夹条目
         // m_cmd_open_files中不含播放列表/文件夹后将剩余歌曲一次在默认播放列表打开并清空m_cmd_open_files
         // m_cmd_open_files为空后再KillTimer
@@ -2756,7 +2757,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         if (m_cmd_open_files.empty())
             KillTimer(TIMER_CMD_OPEN_FILES_DELAY);
         m_cmd_open_files_mutx.unlock();
-        cmd_open_files_ing = false;
+        cmd_open_files_disable = false;
     }
 
     CMainDialogBase::OnTimer(nIDEvent);
