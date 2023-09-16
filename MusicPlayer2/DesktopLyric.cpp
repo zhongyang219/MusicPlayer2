@@ -304,10 +304,20 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
     const int btn_size = m_toobar_height;
     int toolbar_width = toolbar_num * btn_size;
     Gdiplus::Rect toolbar_rect;
-    toolbar_rect.Y = 0;
-    toolbar_rect.X = (m_rcWindow.Width() - toolbar_width) / 2;
-    toolbar_rect.Width = toolbar_width;
-    toolbar_rect.Height = btn_size;
+    if (!m_bColumnMode)
+    {
+        toolbar_rect.Y = 0;
+        toolbar_rect.X = (m_rcWindow.Width() - toolbar_width) / 2;
+        toolbar_rect.Width = toolbar_width;
+        toolbar_rect.Height = btn_size;
+    }
+    else
+    {
+        toolbar_rect.Y = (m_rcWindow.Height() - toolbar_width) / 2;
+        toolbar_rect.X = 0;
+        toolbar_rect.Width = btn_size;
+        toolbar_rect.Height = m_toobar_height;
+    }
 
     //绘制背景
     if (!bLocked || theApp.m_lyric_setting_data.desktop_lyric_data.show_unlock_when_locked)
@@ -332,32 +342,64 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
 
     if (!bLocked)
     {
-        DrawToolIcon(pGraphics, theApp.m_icon_set.app, rcIcon, BTN_APP);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.stop, rcIcon, BTN_STOP);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.previous, rcIcon, BTN_PREVIOUS);
-        rcIcon.MoveToX(rcIcon.right);
-        IconRes hPlayPauseIcon = (CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.pause : theApp.m_icon_set.play);
-        DrawToolIcon(pGraphics, hPlayPauseIcon, rcIcon, BTN_PLAY_PAUSE);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_delay, rcIcon, BTN_LYRIC_DELAY);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_forward, rcIcon, BTN_LYRIC_FORWARD);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.skin, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
-        rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
+        if (!m_bColumnMode)
+        {
+            DrawToolIcon(pGraphics, theApp.m_icon_set.app, rcIcon, BTN_APP);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.stop, rcIcon, BTN_STOP);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.previous, rcIcon, BTN_PREVIOUS);
+            rcIcon.MoveToX(rcIcon.right);
+            IconRes hPlayPauseIcon = (CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.pause : theApp.m_icon_set.play);
+            DrawToolIcon(pGraphics, hPlayPauseIcon, rcIcon, BTN_PLAY_PAUSE);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_delay, rcIcon, BTN_LYRIC_DELAY);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_forward, rcIcon, BTN_LYRIC_FORWARD);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.skin, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+            rcIcon.MoveToX(rcIcon.right);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
+        }
+        else
+        {
+            DrawToolIcon(pGraphics, theApp.m_icon_set.app, rcIcon, BTN_APP);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.stop, rcIcon, BTN_STOP);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.previous, rcIcon, BTN_PREVIOUS);
+            rcIcon.MoveToY(rcIcon.bottom);
+            IconRes hPlayPauseIcon = (CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.pause : theApp.m_icon_set.play);
+            DrawToolIcon(pGraphics, hPlayPauseIcon, rcIcon, BTN_PLAY_PAUSE);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_delay, rcIcon, BTN_LYRIC_DELAY);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_forward, rcIcon, BTN_LYRIC_FORWARD);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.skin, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+            rcIcon.MoveToY(rcIcon.bottom);
+            DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
+        }
 
         bool lyric_disable{ CPlayer::GetInstance().m_Lyrics.IsEmpty() || CPlayerUIHelper::IsMidiLyric() };
         m_buttons[BTN_LYRIC_FORWARD].enable = !lyric_disable;
