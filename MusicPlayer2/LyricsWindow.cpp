@@ -333,7 +333,7 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 
 		std::wstring aFinalChar(1, strText[i]);
 		//对于非CJK字符需要特殊处理
-		const std::wstring aSpecialChar(L"♪ "); //需要被视为方块字符的非CJK字符
+		const std::wstring aSpecialChar(L"♪"); //需要被视为方块字符的非CJK字符
 
 		bool aCJKPrint = CCommon::CharIsCJKCharacter(strText[i]) || aSpecialChar.find(strText[i]) != std::wstring::npos;
 
@@ -378,7 +378,11 @@ void CLyricsWindow::DrawLyricTextColumn(Gdiplus::Graphics* pGraphics, LPCTSTR st
 		if (m_pTextPen) 
 			pGraphics->DrawPath(m_pTextPen, aCharPath);//画路径,文字边框
 		if (!aCJKPrint)
+		{
 			aCharPath->Transform(&aNotCJKMatrix);
+			//对于非CJK字符，需要多留一个字体大小的空间，避免与接下来的CJK字符重叠
+			aColumnRect.Y += aFontSize;
+		}
 		//将画出结果存储到最终StringPath中
 		aFinalStringPath->AddPath(aCharPath, false);
 		//顺带获取字体宽度和高度并更新y坐标（利用GraphicsPath获取，有效解决MeasureString对于CJK字符不精确的问题）
@@ -594,6 +598,7 @@ void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::Gr
 		pGraphics->DrawPath (m_pHighlightPen,pPath);//画路径,文字边框
 	}
 	Gdiplus::Brush* pBrush = CreateGradientBrush(m_HighlightGradientMode, m_HighlightColor1,m_HighlightColor2,dstRect);
+
 	pGraphics->FillPath (pBrush,pPath);//填充路径
 	delete pBrush;//销毁画刷
 	//--------------------------------------------
@@ -614,7 +619,7 @@ Gdiplus::Brush* CLyricsWindow::CreateGradientBrush(LyricsGradientMode TextGradie
 	case LyricsGradientMode_Two://两色渐变
 		{
 			Gdiplus::PointF point1(dstRect.X,dstRect.Y);
-			Gdiplus::PointF point2(dstRect.X,dstRect.Y+dstRect.Height);
+			Gdiplus::PointF point2 = m_bColumnMode ? Gdiplus::PointF(dstRect.X + dstRect.Width, dstRect.Y) : Gdiplus::PointF(dstRect.X,dstRect.Y+dstRect.Height);
 			pBrush=new Gdiplus::LinearGradientBrush(point1,point2,Color1,Color2);
 			((Gdiplus::LinearGradientBrush*)pBrush)->SetWrapMode(Gdiplus::WrapModeTileFlipXY);
 			break;
@@ -623,7 +628,7 @@ Gdiplus::Brush* CLyricsWindow::CreateGradientBrush(LyricsGradientMode TextGradie
 	case LyricsGradientMode_Three://三色渐变
 		{
 			Gdiplus::PointF point1(dstRect.X,dstRect.Y);
-			Gdiplus::PointF point2(dstRect.X,dstRect.Y+dstRect.Height/2);
+			Gdiplus::PointF point2 = m_bColumnMode ? Gdiplus::PointF(dstRect.X + dstRect.Width / 2, dstRect.Y) : Gdiplus::PointF(dstRect.X,dstRect.Y+dstRect.Height/2);
 			pBrush=new Gdiplus::LinearGradientBrush(point1,point2,Color1,Color2);
 			((Gdiplus::LinearGradientBrush*)pBrush)->SetWrapMode(Gdiplus::WrapModeTileFlipXY);
 			break;

@@ -4396,6 +4396,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,32,294,10
     CONTROL         "Display song information when lyrics do not exist",IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,85,240,9
+    CONTROL         "Column Mode",IDC_LYRIC_COLUMN_MODE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,169,264,113,10
 END
 
 IDD_MP3_ENCODE_CFG_DIALOG DIALOGEX 0, 0, 209, 127
