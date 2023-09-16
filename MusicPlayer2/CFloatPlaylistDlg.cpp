@@ -198,6 +198,7 @@ void CFloatPlaylistDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
     //DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
+    DDX_Control(pDX, IDC_HSPLITER_STATIC, m_splitter_ctrl);
 }
 
 
@@ -232,6 +233,10 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     UpdateStyles();
     SetWindowText(CCommon::LoadText(IDS_PLAYLIST));
     SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
+
+    // 为浮动播放列表禁用分割条控件
+    m_splitter_ctrl.EnableWindow(false);
+    m_splitter_ctrl.ShowWindow(SW_HIDE);
 
     m_set_path_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
 
