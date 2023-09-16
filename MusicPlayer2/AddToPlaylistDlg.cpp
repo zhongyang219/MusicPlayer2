@@ -66,7 +66,7 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
 
     //初始化列表
-    for (const auto& item : CPlayer::GetInstance().GetRecentPlaylist().m_recent_playlists)
+    for (const auto& item : CPlaylistMgr::Instance().m_recent_playlists)
     {
         CFilePathHelper playlist_path{ item.path };
         m_list.push_back(playlist_path.GetFileNameWithoutExtension().c_str());

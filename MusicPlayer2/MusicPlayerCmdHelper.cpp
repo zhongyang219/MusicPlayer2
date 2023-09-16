@@ -92,7 +92,7 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
             return false;
         }
         //添加空的播放列表
-        CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
+        CPlaylistMgr::Instance().AddNewPlaylist(playlist_path);
 
         //获取选中的曲目的路径
         std::vector<SongInfo> selected_item_path;
@@ -144,13 +144,13 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         }
         else if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //添加到默认播放列表
         {
-            std::wstring default_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist.path;
+            std::wstring default_playlist_path = CPlaylistMgr::Instance().m_default_playlist.path;
             if (!AddToPlaylist(selected_item_path, default_playlist_path))
                 pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
         }
         else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
         {
-            std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
+            std::wstring favourite_playlist_path = CPlaylistMgr::Instance().m_favourite_playlist.path;
             if (!AddToPlaylist(selected_item_path, favourite_playlist_path))
                 pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
 

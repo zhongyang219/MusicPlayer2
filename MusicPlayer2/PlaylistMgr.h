@@ -30,7 +30,6 @@ public:
     void EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time);
     void AddNewPlaylist(const wstring& path);
     bool DeletePlaylist(const wstring& path);
-    void UpdateCurrentPlaylist(int track, int pos, int track_num, int total_time);
     void UpdateCurrentPlaylistType(const wstring& path);
     void UpdatePlaylistInfo(PlaylistInfo playlist_info);
 

@@ -179,12 +179,8 @@ private:
 
     //从文件载入最近路径列表
     void LoadRecentPath();
-    //从文件载入最近播放播放列表列表
-    void LoadRecentPlaylist();
 public:
     void SaveCurrentPlaylist();
-    void EmplaceCurrentPathToRecent();
-    void EmplaceCurrentPlaylistToRecent();
     //将最近路径列表保存到文件
     void SaveRecentPath() const;
     //退出时的处理
@@ -261,7 +257,7 @@ public:
     void MusicControl(Command command, int volume_step = 2);
     //判断当前音乐是否播放完毕
     bool SongIsOver() const;
-    //从播放内核获取当前播放到的位置（更新m_current_position），仅限UI线程主动调用
+    //从播放内核获取当前播放到的位置（更新m_current_position），调用需要取得播放状态锁
     void GetPlayerCoreCurrentPosition();
     //用m_volume的值设置音量
     void SetVolume();
@@ -282,12 +278,15 @@ public:
 private:
     void LoopPlaylist(int& song_track);
 
-    void SaveRecentInfoToFiles();
+    // 更新并保存最近播放文件夹/播放列表到文件，PlayTrack不需要保存playlist故设置参数控制
+    void SaveRecentInfoToFiles(bool save_playlist = true);
 
 public:
     // 以下十个方法调用后时间上直到IniPlaylistComplate的最后unlock为止
     // 都是处于与IniPlaylistThreadFunc/IniPlaylistComplate/CMusicPlayerDlg::OnPlaylistIniComplate的数据竞争状态
     // 建议改在调用以下方法之前或IniPlaylistComplate中进行需要的操作，代替紧接着调用与上述方法竞争数据的方法
+
+#pragma region 列表初始化方法
 
     // 切换到指定路径的文件夹模式，没有PathInfo时应使用CPlayer::OpenFolder
     void SetPath(const PathInfo& path_info);
@@ -318,6 +317,11 @@ public:
     bool AddFilesToPlaylist(const vector<wstring>& files, bool ignore_if_exist = false);
     // 向当前播放列表添加歌曲，仅在播放列表模式可用，如果一个都没有添加，则返回false，否则返回true
     bool AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_if_exist = false);
+
+    // 重新载入播放列表
+    void ReloadPlaylist(bool refresh_info = true);
+
+#pragma endregion 列表初始化方法
 
     //更改循环模式
     void SetRepeatMode();
@@ -386,9 +390,6 @@ public:
     int GetAlbumCoverType() const { return m_album_cover_type; }
     bool DeleteAlbumCover();
 
-    //重新载入播放列表
-    void ReloadPlaylist(bool refresh_info = true);
-
     //从播放列表中删除指定的项目
     bool RemoveSong(int index, bool skip_locking = false);
     //从播放列表中删除多个指定的项目
@@ -406,9 +407,9 @@ public:
     //移动多个项目到dest的位置，返回移动后第1个项目的索引
     int MoveItems(std::vector<int> indexes, int dest);
 
-    //定位到指定位置
+    // 定位到指定位置，需要加播放状态锁
     void SeekTo(int position);
-    //定位到指定位置(范围0~1)
+    // 定位到指定位置(范围0~1)，需要加播放状态锁
     void SeekTo(double position);
     //static void SeekTo(HSTREAM hStream, int position);
 
@@ -429,7 +430,6 @@ public:
     const float* GetFFTData() const { return m_fft; }
     //返回最近播放路径列表的引用
     deque<PathInfo>& GetRecentPath() { return m_recent_path; }
-    CPlaylistMgr& GetRecentPlaylist() { return CPlaylistMgr::Instance(); }
     //获取播放状态的字符串
     wstring GetPlayingState() const;
     //获取正在播放状态（0：已停止，1：已暂停，2：正在播放）
