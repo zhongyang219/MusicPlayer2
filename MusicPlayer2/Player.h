@@ -434,7 +434,9 @@ public:
     wstring GetPlayingState() const;
     //获取正在播放状态（0：已停止，1：已暂停，2：正在播放）
     int GetPlayingState2() const { return m_playing; }
+    // 获取当前SongInfo常引用，m_index无效时返回m_no_use
     const SongInfo& GetCurrentSongInfo() const;
+    // 获取当前SongInfo引用（可修改），m_index无效时返回m_no_use
     SongInfo& GetCurrentSongInfo2();
     //获取下一个要播放的曲目。如果返回的是空的SongInfo对象，则说明没有下一个曲目或下一个曲目不确定
     SongInfo GetNextTrack() const;

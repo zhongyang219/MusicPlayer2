@@ -161,6 +161,7 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
 
 void CPlayer::IniPlayList(bool play, bool refresh_info)
 {
+    m_no_use = SongInfo{};  // 安全起见，防止意外写入被应用
     m_playlist.clear();
     if (m_playlist_mode)
     {
@@ -439,55 +440,39 @@ void CPlayer::MusicControl(Command command, int volume_step)
     switch (command)
     {
     case Command::OPEN:
+    {
         m_file_opend = false;
         m_controls.ClearAll();  // Clear all metadata.
         SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_POST_MUSIC_STREAM_OPENED, 0, 0);
         m_error_code = 0;
         m_error_state = ES_NO_ERROR;
-        m_is_osu = COSUPlayerHelper::IsOsuFile(GetCurrentFilePath());
-        m_pCore->Open(GetCurrentFilePath().c_str());
+        SongInfo& cur_song = GetCurrentSongInfo2(); // 获取m_playlist[m_index]的引用，m_index无效时取得m_no_use
+        m_is_osu = COSUPlayerHelper::IsOsuFile(cur_song.file_path);
+        m_pCore->Open(cur_song.file_path.c_str());
         GetPlayerCoreError(L"Open");
         if (m_pCore->GetCoreType() == PT_BASS && GetBassHandle() == 0)
             m_error_state = ES_FILE_CONNOT_BE_OPEN;
         m_file_opend = true;
         //获取音频类型
-        m_current_file_type = m_pCore->GetAudioType();		//根据通道信息获取当前音频文件的类型
-        if (m_current_file_type.empty())		//如果获取不到音频文件的类型，则将其文件扩展名作为文件类型
+        m_current_file_type = m_pCore->GetAudioType();  // 根据通道信息获取当前音频文件的类型
+        if (m_current_file_type.empty())                // 如果获取不到音频文件的类型，则将其文件扩展名作为文件类型
         {
-            CFilePathHelper file_path{ m_playlist[m_index].GetFileName() };
+            CFilePathHelper file_path{ cur_song.file_path };
             m_current_file_type = file_path.GetFileExtension(true);
         }
-
-        if (GetSongNum() > 0)
+        if (!IsPlaylistEmpty())
         {
-            if (!m_playlist[m_index].info_acquired)	//如果当前打开的文件没有在初始化播放列表时获得信息，则打开时重新获取
-            {
-                int flag = AF_BITRATE;
-                if (!m_playlist[m_index].is_cue)
-                    flag |= AF_LENGTH;
-                if (!IsOsuFile())
-                    flag |= AF_TAG_INFO;
-                m_pCore->GetAudioInfo(m_playlist[m_index], flag);
-                if (IsOsuFile())
-                    COSUPlayerHelper::GetOSUAudioTitleArtist(m_playlist[m_index]);
-                CSongDataManager::GetInstance().SaveSongInfo(m_playlist[m_index]);
-            }
-            else if (!m_playlist[m_index].is_cue)
+            if (!cur_song.is_cue)
             {
                 m_pCore->GetAudioInfo(m_playlist[m_index], AF_LENGTH);
             }
-            m_song_length = m_playlist[m_index].length();
             //打开时获取专辑封面
             SearchAlbumCover();
             //初始化歌词
             SearchLyrics();
             IniLyrics();
         }
-        if (m_playlist[m_index].is_cue)
-        {
-            //SeekTo(0);
-            m_song_length = GetCurrentSongInfo().length();
-        }
+        m_song_length = cur_song.length();
         SetVolume();
         if (std::fabs(m_speed - 1) > 0.01)
             SetSpeed(m_speed);
@@ -506,7 +491,8 @@ void CPlayer::MusicControl(Command command, int volume_step)
         if (m_enable_lastfm) {
             UpdateLastFMCurrentTrack(GetCurrentSongInfo());
         }
-        break;
+    }
+    break;
     case Command::PLAY:
         ConnotPlayWarning();
         m_pCore->Play();
