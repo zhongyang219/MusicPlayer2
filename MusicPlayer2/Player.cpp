@@ -97,6 +97,7 @@ void CPlayer::UnInitPlayerCore()
 
 void CPlayer::Create()
 {
+    SetTitle();
     IniPlayerCore();
     LoadConfig();
     LoadRecentPath();
@@ -130,6 +131,7 @@ void CPlayer::Create()
 
 void CPlayer::CreateWithFiles(const vector<wstring>& files)
 {
+    SetTitle();
     IniPlayerCore();
     LoadConfig();
     LoadRecentPath();
@@ -140,6 +142,7 @@ void CPlayer::CreateWithFiles(const vector<wstring>& files)
 
 void CPlayer::CreateWithPath(const wstring& path)
 {
+    SetTitle();
     IniPlayerCore();
     LoadConfig();
     LoadRecentPath();
@@ -150,6 +153,7 @@ void CPlayer::CreateWithPath(const wstring& path)
 
 void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
 {
+    SetTitle();
     IniPlayerCore();
     LoadConfig();
     LoadRecentPath();
@@ -229,7 +233,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             if (!is_osu_file && !song_info.is_cue && (!song_info.info_acquired || pInfo->refresh_info))
                 flag |= AF_TAG_INFO;
             GetInstance().GetPlayerCore()->GetAudioInfo(song_info.file_path.c_str(), song_info, flag);
-            
+
             //更新CUE信息
             if (pInfo->refresh_info && song_info.is_cue)
             {
@@ -245,7 +249,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
                     song_info.end_pos = song_info_temp.length();
                 }
             }
-            
+
             if (is_osu_file)
                 COSUPlayerHelper::GetOSUAudioTitleArtist(song_info);
 
@@ -296,7 +300,7 @@ void CPlayer::IniPlaylistComplate()
         item.is_favourite = favourite_playlist.IsSongInPlaylist(item);
     }
 
-    ASSERT(m_playing == 0);         // 这里应该一定是停止状态，我将之前的旧代码换成了这个断言，有问题的话再改回去
+    ASSERT(m_playing == 0);
     // 对播放列表排序
     if (!m_playlist_mode && m_playlist.size() > 1)
         SortPlaylist(true);
@@ -327,6 +331,8 @@ void CPlayer::IniPlaylistComplate()
         }
         MusicControl(Command::OPEN);
         MusicControl(Command::SEEK);
+        // 这行判断描述如下：m_current_song_tmp被找到时以m_current_song_playing_tmp为准，覆盖其他设置
+        // 没有找到m_current_song_tmp则当(theApp.m_play_setting_data.auto_play_when_start || m_thread_info.play)为true时播放
         if ((theApp.m_play_setting_data.auto_play_when_start && !tmp_find) || m_thread_info.play)
             MusicControl(Command::PLAY);
     }
@@ -701,7 +707,7 @@ void CPlayer::CalculateSpectralDataPeak()
 
 bool CPlayer::IsPlaying() const
 {
-    return m_playing == 2;
+    return m_playing == PS_PLAYING;
 }
 
 bool CPlayer::PlayTrack(int song_track, bool auto_next, bool play)
@@ -983,7 +989,7 @@ void CPlayer::SetPath(const PathInfo& path_info)
     {
         m_current_song_tmp = GetCurrentSongInfo();
         m_current_song_position_tmp = GetCurrentPosition();
-        m_current_song_playing_tmp = (m_playing == PlayingState::PS_PLAYING);
+        m_current_song_playing_tmp = IsPlaying();
     }
 
     MusicControl(Command::CLOSE);
@@ -1049,7 +1055,7 @@ bool CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     {
         m_current_song_tmp = GetCurrentSongInfo();
         m_current_song_position_tmp = GetCurrentPosition();
-        m_current_song_playing_tmp = (m_playing == PlayingState::PS_PLAYING);
+        m_current_song_playing_tmp = IsPlaying();
     }
 
     MusicControl(Command::CLOSE);
@@ -1222,9 +1228,10 @@ bool CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_if_e
     IniPlayerCore();
 
     // 这里有必要暂时关闭，故保存播放状态，AddSongsToPlaylist可能将歌曲插入到开头导致index不再准确
+    // 待到将来万一m_playlist的多线程问题彻底修好以后或许可以做不停止的重新初始化
     m_current_song_tmp = GetCurrentSongInfo();
     m_current_song_position_tmp = GetCurrentPosition();
-    m_current_song_playing_tmp = (m_playing == PlayingState::PS_PLAYING);
+    m_current_song_playing_tmp = IsPlaying();
 
     MusicControl(Command::CLOSE);
 
@@ -1235,6 +1242,7 @@ bool CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_if_e
     playlist.SaveToFile(m_playlist_path);
 
     m_index = 0;
+    m_current_position.fromInt(0);
 
     IniPlayList();
     return added;
@@ -1252,11 +1260,12 @@ void CPlayer::ReloadPlaylist(bool refresh_info)
     // 保存当前播放状态，reload后如果当前歌曲还存在则恢复播放状态
     m_current_song_tmp = GetCurrentSongInfo();
     m_current_song_position_tmp = GetCurrentPosition();
-    m_current_song_playing_tmp = (m_playing == PlayingState::PS_PLAYING);
+    m_current_song_playing_tmp = IsPlaying();
 
     MusicControl(Command::CLOSE);
 
     m_index = 0;
+    m_current_position.fromInt(0);
 
     IniPlayList(false, true);
 }
@@ -1966,6 +1975,8 @@ SongInfo& CPlayer::GetCurrentSongInfo2()
 
 SongInfo CPlayer::GetNextTrack() const
 {
+    if (IsPlaylistEmpty())  // 播放列表中没有文件时下一曲播放显示无
+        return SongInfo{};
     auto GetLegitSongInfo = [this](int x) { return x >= 0 && x < static_cast<int>(m_playlist.size()) ? m_playlist[x] : SongInfo(); };
     if (!m_next_tracks.empty())
     {
@@ -2114,11 +2125,11 @@ void CPlayer::ReIniPlayerCore(bool replay)
     if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(5000))) return;    // 这里多等一会，系统从挂起中恢复可能很卡
     int playing = m_playing;
     int current_position = GetCurrentPosition();
+    MusicControl(Command::CLOSE);   // stop可以忽略但close中有不应忽略的保存歌词操作
     UnInitPlayerCore();
     IniPlayerCore();
     MusicControl(Command::OPEN);
     SeekTo(current_position);
-    //MusicControl(Command::SEEK);
     if (replay && playing == PS_PLAYING)
     {
         MusicControl(Command::PLAY);
@@ -2258,11 +2269,6 @@ void CPlayer::OnExit()
 {
     SaveConfig();
     //退出时保存最后播放的曲目和位置
-    if (!m_playlist_mode && !m_recent_path.empty() && GetSongNum() > 0 && !m_playlist[0].file_path.empty())
-    {
-        m_recent_path[0].track = m_index;
-        m_recent_path[0].position = m_current_position.toInt();
-    }
     SaveRecentInfoToFiles();
 }
 
