@@ -58,6 +58,7 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
     {
         for (const auto& item : m_playlist)
         {
+            if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             stream << CCommon::UnicodeToStr(item.file_path, CodeType::UTF8_NO_BOM);
             if (item.is_cue)
             {
@@ -81,6 +82,7 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
         std::set<std::wstring> saved_cue_path;      //已经保存过的cue文件的路径
         for (const auto& item : m_playlist)
         {
+            if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             if (item.is_cue)
             {
                 //如果播放列表中的项目是cue，且该cue文件没有保存过，则将其保存

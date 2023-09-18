@@ -390,6 +390,10 @@ public:
     int GetAlbumCoverType() const { return m_album_cover_type; }
     bool DeleteAlbumCover();
 
+private:
+    // 下方播放列表移除歌曲方法中的共有部分
+    void AfterRemoveSong(bool is_current);
+public:
     //从播放列表中删除指定的项目
     bool RemoveSong(int index, bool skip_locking = false);
     //从播放列表中删除多个指定的项目
@@ -400,6 +404,7 @@ public:
     int RemoveInvalidSongs();
     //清空播放列表
     void ClearPlaylist();
+
     //将指定范围内的项目上移
     bool MoveUp(int first, int last);
     //将指定范围内的项目下移

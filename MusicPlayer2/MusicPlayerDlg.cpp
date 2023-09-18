@@ -5456,7 +5456,6 @@ void CMusicPlayerDlg::OnRemoveFromPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().RemoveSongs(m_items_selected);
-    CPlayer::GetInstance().SaveCurrentPlaylist();
     ShowPlayList(false);
 }
 
@@ -5467,7 +5466,6 @@ void CMusicPlayerDlg::OnEmptyPlaylist()
     if (MessageBox(CCommon::LoadText(IDS_CLEAR_PLAYLIST_WARNING), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
         CPlayer::GetInstance().ClearPlaylist();
-        CPlayer::GetInstance().SaveCurrentPlaylist();
         ShowPlayList();
     }
 }
@@ -5546,7 +5544,6 @@ void CMusicPlayerDlg::OnRemoveSameSongs()
     int removed = CPlayer::GetInstance().RemoveSameSongs();
     if (removed > 0)
     {
-        CPlayer::GetInstance().SaveCurrentPlaylist();
         ShowPlayList();
     }
     MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
@@ -5633,7 +5630,6 @@ void CMusicPlayerDlg::OnRemoveInvalidItems()
     int removed = CPlayer::GetInstance().RemoveInvalidSongs();
     if (removed > 0)
     {
-        CPlayer::GetInstance().SaveCurrentPlaylist();
         ShowPlayList();
     }
     MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
@@ -5687,7 +5683,6 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
         if (MessageBox(CCommon::LoadText(IDS_REMOVE_MY_FAVOURITE_WARNING), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
         {
             CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
-            CPlayer::GetInstance().SaveCurrentPlaylist();
             ShowPlayList();
         }
     }
@@ -6085,7 +6080,6 @@ void CMusicPlayerDlg::OnRemoveCurrentFromPlaylist()
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
         CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
-        CPlayer::GetInstance().SaveCurrentPlaylist();
         ShowPlayList(false);
     }
 }
