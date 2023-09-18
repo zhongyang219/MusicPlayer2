@@ -291,7 +291,7 @@ void MediaTransControls::UpdateControlsMetadata(const SongInfo song)
 {
     if (m_enabled && updater && music) {
         updater->put_Type(MediaPlaybackType_Music);
-        UpdateTitle(song.IsTitleEmpty() ? song.GetFileName() : song.GetTitle());
+        UpdateTitle((!song.IsTitleEmpty() || song.file_path.empty()) ? song.GetTitle() : song.GetFileName());
         UpdateArtist(song.GetArtist());
         UpdateAlbumTitle(song.GetAlbum());
         UpdateTrackNumber(song.track);

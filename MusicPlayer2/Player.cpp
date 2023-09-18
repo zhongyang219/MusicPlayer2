@@ -304,10 +304,6 @@ void CPlayer::IniPlaylistComplate()
     // 对播放列表排序
     if (!m_playlist_mode && m_playlist.size() > 1)
         SortPlaylist(true);
-    // 清除歌词和专辑封面
-    m_album_cover.Destroy();
-    m_album_cover_blur.Destroy();
-    m_Lyrics = CLyrics();
 
     if (!IsPlaylistEmpty())         // 播放列表初始化完成，根据m_index,m_current_position,m_thread_info.play还原播放状态
     {
@@ -335,6 +331,19 @@ void CPlayer::IniPlaylistComplate()
         // 没有找到m_current_song_tmp则当(theApp.m_play_setting_data.auto_play_when_start || m_thread_info.play)为true时播放
         if ((theApp.m_play_setting_data.auto_play_when_start && !tmp_find) || m_thread_info.play)
             MusicControl(Command::PLAY);
+    }
+    else
+    {
+        // 列表为空没有执行OPEN时在这里复位显示
+        m_index = 0;
+        m_current_position.fromInt(0);
+        m_song_length.fromInt(0);
+        // 清除歌词和专辑封面
+        m_album_cover.Destroy();
+        m_album_cover_blur.Destroy();
+        m_Lyrics = CLyrics();
+        UpdateControlsMetadata(SongInfo());
+        MediaTransControlsLoadThumbnailDefaultImage();
     }
 
     SaveRecentInfoToFiles();
@@ -1649,11 +1658,15 @@ void CPlayer::AfterRemoveSong(bool is_current)
             MusicControl(Command::CLOSE);
             if (m_playlist.empty())
             {
+                m_playlist.push_back(SongInfo());
                 m_index = 0;
+                m_current_position.fromInt(0);
+                m_song_length.fromInt(0);
                 m_album_cover.Destroy();
                 m_album_cover_blur.Destroy();
                 m_Lyrics = CLyrics();
-                m_playlist.push_back(SongInfo());
+                UpdateControlsMetadata(SongInfo());
+                MediaTransControlsLoadThumbnailDefaultImage();
                 SetTitle();
             }
         }
@@ -2522,7 +2535,6 @@ void CPlayer::SearchAlbumCover()
     m_album_cover.Destroy();
     SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(GetCurrentSongInfo()) };
     bool always_use_external_album_cover{ song_info.AlwaysUseExternalAlbumCover() };
-    CSongDataManager::GetInstance().AddItem(song_info);
     if ((!theApp.m_app_setting_data.use_out_image || theApp.m_app_setting_data.use_inner_image_first) && !IsOsuFile() && !always_use_external_album_cover)
     {
         //从文件获取专辑封面
