@@ -867,8 +867,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy, int playlist_width)
         m_splitter_ctrl.ShowWindow(SW_SHOW);
         CRect rect_splitter;
         rect_splitter.bottom = cy;
-        rect_splitter.left = cx - playlist_width - 1;
-        rect_splitter.right = cx - playlist_width + m_layout.margin - 1;
+        rect_splitter.left = cx - playlist_width;
+        rect_splitter.right = cx - playlist_width + m_layout.margin;
         m_splitter_ctrl.MoveWindow(rect_splitter);
     }
     else
