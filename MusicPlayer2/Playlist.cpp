@@ -111,20 +111,18 @@ const vector<SongInfo>& CPlaylistFile::GetPlaylist() const
     return m_playlist;
 }
 
-bool CPlaylistFile::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_exist)
+int CPlaylistFile::AddSongsToPlaylist(const vector<SongInfo>& songs, bool insert_begin)
 {
-    bool added{ false };
+    int added{};
     for (const auto& file : songs)
     {
-        if (ignore_exist && CCommon::IsItemInVector(m_playlist, [&](const SongInfo& song) {
-            return song.IsSameSong(file);
-        }))
-        {
+        if (CCommon::IsItemInVector(m_playlist, [&](const SongInfo& song) { return song.IsSameSong(file); }))
             continue;
-        }
         m_playlist.push_back(file);
-        added = true;
+        ++added;
     }
+    if (insert_begin)   // 使用循环旋转将新增条目移动到开头而不是直接插入到开头，可对参数songs去重
+        std::rotate(m_playlist.rbegin(), m_playlist.rbegin() + added, m_playlist.rend());
     return added;
 }
 

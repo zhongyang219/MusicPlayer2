@@ -1175,7 +1175,7 @@ BEGIN
     COMBOBOX        IDC_PLAYLIST_DISPLAY_MODE_OMBO,173,229,59,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "最近播放显示范围：",IDC_STATIC,14,314,66,8
     COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,85,312,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "禁止向播放列表中添加已存在的曲目",IDC_IGNORE_EXIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,243,175,10
+    CONTROL         "向播放列表添加曲目时插入列表开头而不是追加到末尾",IDC_INSERT_BEGIN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,243,182,10
     GROUPBOX        "在媒体库中显示的项目",IDC_STATIC,6,175,230,39
     CONTROL         "艺术家",IDC_ARTIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,187,36,10
     CONTROL         "唱片集",IDC_ALBUM_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,55,186,36,10
@@ -4758,8 +4758,8 @@ BEGIN
     COMBOBOX        IDC_PLAYLIST_DISPLAY_MODE_OMBO,96,250,133,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Recently played display range:",IDC_STATIC,16,328,113,8
     COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,131,326,125,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Prohibit adding existing tracks to the playlist",IDC_IGNORE_EXIST_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,265,216,10
+    CONTROL         "Insert at the beginning of the playlist instead of appending to the end",IDC_INSERT_BEGIN_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,265,263,10
     GROUPBOX        "Items displayed in the media library",IDC_STATIC,6,180,329,39
     CONTROL         "Artist",IDC_ARTIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,192,41,10
     CONTROL         "Album",IDC_ALBUM_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,192,41,10
@@ -4778,7 +4778,7 @@ BEGIN
     CONTROL         "Disable delete from disk",IDC_DISABLE_DELETE_FROM_DISK_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,66,128,9
     CONTROL         "Show playlist tool tip",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,278,167,9
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,278,136,9
     GROUPBOX        "Last.fm",IDC_STATIC,6,447,329,119
     CONTROL         "Enable last.fm support",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,456,87,10
     LTEXT           "Current status: ",IDC_STATIC,14,469,49,8
@@ -4812,6 +4812,8 @@ BEGIN
     LTEXT           "Audio file low duration threshold:",IDC_STATIC,135,66,113,8
     LTEXT           "seconds",IDC_STATIC,291,66,28,8
     EDITTEXT        IDC_FILE_TOO_SHORT_SEC_EDIT,248,64,40,12,ES_AUTOHSCROLL
+    CONTROL         "Floating playlist follows main window",IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,172,278,145,10
 END
 
 IDD_LYRIC_RELATE_DIALOG DIALOGEX 0, 0, 329, 178

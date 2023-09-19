@@ -1139,7 +1139,7 @@ bool CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool pla
     // 向播放列表文件追加songs
     CPlaylistFile playlist;
     playlist.LoadFromFile(m_playlist_path);
-    playlist.AddSongsToPlaylist(songs, true); 
+    playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.insert_begin_of_playlist);
     // 设置播放songs的第一个文件
     m_index = playlist.GetSongIndexInPlaylist(songs.front());
     playlist.SaveToFile(m_playlist_path);
@@ -1219,15 +1219,15 @@ void CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     IniPlayList(play);
 }
 
-bool CPlayer::AddFilesToPlaylist(const vector<wstring>& files, bool ignore_if_exist)
+bool CPlayer::AddFilesToPlaylist(const vector<wstring>& files)
 {
     vector<SongInfo> songs(files.size());
     for (size_t i{}; i < files.size(); ++i)
         songs[i].file_path = files[i];
-    return AddSongsToPlaylist(songs, ignore_if_exist);
+    return AddSongsToPlaylist(songs);
 }
 
-bool CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_if_exist)
+bool CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs)
 {
     ASSERT(m_playlist_mode && !m_playlist_path.empty());    // 此方法仅限已处于播放列表模式时使用
 
@@ -1248,7 +1248,7 @@ bool CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_if_e
     // 向当前播放列表文件追加songs
     CPlaylistFile playlist;
     playlist.LoadFromFile(m_playlist_path);
-    bool added = playlist.AddSongsToPlaylist(songs, true);
+    bool added = playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.insert_begin_of_playlist);
     playlist.SaveToFile(m_playlist_path);
 
     m_index = 0;

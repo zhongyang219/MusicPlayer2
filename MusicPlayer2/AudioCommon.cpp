@@ -426,8 +426,6 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
 
             files.erase(files.begin() + i);             //从列表中删除cue文件
 
-            // 为true表示此次添加不接受重复曲目
-            bool ignore{ theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist };
             // 指示此次需要为index同步files[i]位置曲目数量的增减
             bool before_index{ static_cast<int>(i) < index };
             // 指示此次cue_tracks为索引指定cue，需要index跟踪其第一轨位置
@@ -435,30 +433,20 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCor
 
             for (const auto& cue_track : cue_tracks)
             {
-                if (ignore)
-                {
-                    // 查找当前cue_track是否已存在于files
-                    auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
-                        {
-                            return song.IsSameSong(cue_track);
-                        });
-                    if (find == files.end())
+                // 查找当前cue_track是否已存在于files
+                auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
                     {
-                        // files中不存在当前曲目，将cue_track插入files
-                        files.emplace(files.begin() + i++, cue_track);
-                        if (before_index)
-                            index++;
-                    }
-                    else if (is_index)      // 如果此cue的第一轨已存在于files中则将索引调整到其位置
-                        index = find - files.begin();
-                }
-                else
+                        return song.IsSameSong(cue_track);
+                    });
+                if (find == files.end())
                 {
-                    // 不检查重复直接添加，此时index位置一定正确指向第一轨无需处理
+                    // files中不存在当前曲目，将cue_track插入files
                     files.emplace(files.begin() + i++, cue_track);
                     if (before_index)
                         index++;
                 }
+                else if (is_index)      // 如果此cue的第一轨已存在于files中则将索引调整到其位置
+                    index = find - files.begin();
                 is_index = false;           // 仅对cue_tracks[0]修改index
             }
             i--;                            // 解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1
@@ -519,8 +507,6 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
             //从列表中删除原始音频文件
             files.erase(files.begin() + i);
 
-            // 为true表示此次添加不接受重复曲目
-            bool ignore{ theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist };
             // 指示此次需要为index同步files[i]位置曲目数量的增减
             bool before_index{ i < index };
             // 指示此次cue_tracks为索引指定cue，需要index跟踪其第一轨位置
@@ -528,30 +514,20 @@ void CAudioCommon::GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlay
 
             for (const auto& cue_track : cue_tracks)
             {
-                if (ignore)
-                {
-                    // 查找当前cue_track是否已存在于files
-                    auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
-                        {
-                            return song.IsSameSong(cue_track);
-                        });
-                    if (find == files.end())
+                // 查找当前cue_track是否已存在于files
+                auto find = std::find_if(files.begin(), files.end(), [&](const SongInfo& song)
                     {
-                        // files中不存在当前曲目，将cue_track插入files
-                        files.emplace(files.begin() + i++, cue_track);
-                        if (before_index)
-                            index++;
-                    }
-                    else if (is_index)      // 如果此cue的第一轨已存在于files中则将索引调整到其位置
-                        index = find - files.begin();
-                }
-                else
+                        return song.IsSameSong(cue_track);
+                    });
+                if (find == files.end())
                 {
-                    // 不检查重复直接添加，此时index位置一定正确指向第一轨无需处理
+                    // files中不存在当前曲目，将cue_track插入files
                     files.emplace(files.begin() + i++, cue_track);
                     if (before_index)
                         index++;
                 }
+                else if (is_index)      // 如果此cue的第一轨已存在于files中则将索引调整到其位置
+                    index = find - files.begin();
                 is_index = false;           // 仅对cue_tracks[0]修改index
             }
             i--;                            // 解析完一个cue文件后，由于该cue文件已经被移除，所以将循环变量减1

@@ -15,7 +15,7 @@ public:
     void LoadFromFile(const wstring& file_path);
     void SaveToFile(const wstring& file_path, Type type = PL_PLAYLIST) const;
     const vector<SongInfo>& GetPlaylist() const;
-    bool AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_exist = false);
+    int AddSongsToPlaylist(const vector<SongInfo>& songs, bool insert_begin = false);
     void FromSongList(const vector<SongInfo>& song_list);
     void ToSongList(vector<SongInfo>& song_list);
     bool IsSongInPlaylist(const SongInfo& song);

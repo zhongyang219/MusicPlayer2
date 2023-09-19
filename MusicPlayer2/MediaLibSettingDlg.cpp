@@ -49,7 +49,7 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_RECENT_PLAYED_RANGE_OMBO, m_recent_played_range_combo);
     DDX_Control(pDX, IDC_IGNORE_TOO_SHORT_CHECK, m_ignore_too_short_chk);
     DDX_Control(pDX, IDC_FILE_TOO_SHORT_SEC_EDIT, m_file_too_short_sec_edit);
-    DDX_Control(pDX, IDC_IGNORE_EXIST_CHECK, m_ignore_exist_chk);
+    DDX_Control(pDX, IDC_INSERT_BEGIN_CHECK, m_insert_begin_chk);
     DDX_Control(pDX, IDC_ID3V2_TYPE_COMBO, m_id3v2_type_combo);
     DDX_Control(pDX, IDC_ENABLE_LASTFM, m_enable_lastfm);
     DDX_Control(pDX, IDC_LASTFM_STATUS, m_lastfm_status);
@@ -113,7 +113,7 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_DISABLE_DRAGE_SORT_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck)
     ON_CBN_SELCHANGE(IDC_PLAYLIST_DISPLAY_MODE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo)
     ON_CBN_SELCHANGE(IDC_RECENT_PLAYED_RANGE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo)
-    ON_BN_CLICKED(IDC_IGNORE_EXIST_CHECK, &CMediaLibSettingDlg::OnBnClickedIgnoreExistCheck)
+    ON_BN_CLICKED(IDC_INSERT_BEGIN_CHECK, &CMediaLibSettingDlg::OnBnClickedInsertBeginCheck)
     ON_CBN_SELCHANGE(IDC_ID3V2_TYPE_COMBO, &CMediaLibSettingDlg::OnCbnSelchangeId3v2TypeCombo)
     ON_BN_CLICKED(IDC_REFRESH_MEDIA_LIB_BUTTON, &CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton)
     ON_BN_CLICKED(IDC_DISABLE_DELETE_FROM_DISK_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDeleteFromDiskCheck)
@@ -178,7 +178,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_recent_played_range_combo.AddString(CCommon::LoadText(IDS_LAST_YEAR));
     m_recent_played_range_combo.SetCurSel(static_cast<int>(m_data.recent_played_range));
 
-    m_ignore_exist_chk.SetCheck(m_data.ignore_songs_already_in_playlist);
+    m_insert_begin_chk.SetCheck(m_data.insert_begin_of_playlist);
     m_ignore_too_short_chk.SetCheck(m_data.ignore_too_short_when_update);
     CheckDlgButton(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, m_data.show_playlist_tooltip);
     CheckDlgButton(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK, m_data.float_playlist_follow_main_wnd);
@@ -399,10 +399,10 @@ void CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo()
 }
 
 
-void CMediaLibSettingDlg::OnBnClickedIgnoreExistCheck()
+void CMediaLibSettingDlg::OnBnClickedInsertBeginCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
-    m_data.ignore_songs_already_in_playlist = (m_ignore_exist_chk.GetCheck() != 0);
+    m_data.insert_begin_of_playlist = (m_insert_begin_chk.GetCheck() != 0);
 }
 
 

@@ -33,7 +33,7 @@ private:
 	CMyComboBox m_recent_played_range_combo;
     CButton m_ignore_too_short_chk;
     CSpinEdit m_file_too_short_sec_edit;
-    CButton m_ignore_exist_chk;
+    CButton m_insert_begin_chk;
     CMyComboBox m_id3v2_type_combo;
     CButton m_enable_lastfm;
     CSpinEdit m_playlist_item_height_edit;
@@ -80,7 +80,7 @@ public:
 	afx_msg void OnBnClickedDisableDrageSortCheck();
 	afx_msg void OnCbnSelchangePlaylistDisplayModeOmbo();
 	afx_msg void OnCbnSelchangeRecentPlayedRangeOmbo();
-    afx_msg void OnBnClickedIgnoreExistCheck();
+    afx_msg void OnBnClickedInsertBeginCheck();
     virtual void OnOK();
     afx_msg void OnCbnSelchangeId3v2TypeCombo();
     afx_msg void OnBnClickedRefreshMediaLibButton();

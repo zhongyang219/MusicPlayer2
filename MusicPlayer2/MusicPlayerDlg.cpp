@@ -516,7 +516,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"media_lib", L"file_too_short_sec", theApp.m_media_lib_setting_data.file_too_short_sec);
     ini.WriteBool(L"media_lib", L"remove_file_not_exist_when_update", theApp.m_media_lib_setting_data.remove_file_not_exist_when_update);
     ini.WriteBool(L"media_lib", L"disable_drag_sort", theApp.m_media_lib_setting_data.disable_drag_sort);
-    ini.WriteBool(L"media_lib", L"ignore_songs_already_in_playlist", theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
+    // ini.WriteBool(L"media_lib", L"ignore_songs_already_in_playlist", theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);不再使用，默认行为为true
+    ini.WriteBool(L"media_lib", L"insert_begin_of_playlist", theApp.m_media_lib_setting_data.insert_begin_of_playlist);
     ini.WriteBool(L"media_lib", L"show_playlist_tooltip", theApp.m_media_lib_setting_data.show_playlist_tooltip);
     ini.WriteBool(L"media_lib", L"float_playlist_follow_main_wnd", theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd);
     ini.WriteInt(L"media_lib", L"playlist_item_height", theApp.m_media_lib_setting_data.playlist_item_height);
@@ -731,7 +732,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.file_too_short_sec = ini.GetInt(L"media_lib", L"file_too_short_sec", 30);
     theApp.m_media_lib_setting_data.remove_file_not_exist_when_update = ini.GetBool(L"media_lib", L"remove_file_not_exist_when_update", true);
     theApp.m_media_lib_setting_data.disable_drag_sort = ini.GetBool(L"media_lib", L"disable_drag_sort", false);
-    theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist = ini.GetBool(L"media_lib", L"ignore_songs_already_in_playlist", true);
+    // theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist = ini.GetBool(L"media_lib", L"ignore_songs_already_in_playlist", true);不再使用，默认行为为true
+    theApp.m_media_lib_setting_data.insert_begin_of_playlist = ini.GetBool(L"media_lib", L"insert_begin_of_playlist", false);
     theApp.m_media_lib_setting_data.show_playlist_tooltip = ini.GetBool(L"media_lib", L"show_playlist_tooltip", true);
     theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd = ini.GetBool(L"media_lib", L"float_playlist_follow_main_wnd", true);
     theApp.m_media_lib_setting_data.playlist_item_height = ini.GetInt(L"media_lib", L"playlist_item_height", 24);
@@ -3150,7 +3152,7 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
         {
             if (CPlayer::GetInstance().IsPlaylistMode())
             {
-                if (!CPlayer::GetInstance().AddFilesToPlaylist(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+                if (!CPlayer::GetInstance().AddFilesToPlaylist(files))
                     MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
             }
             else
@@ -5446,7 +5448,7 @@ void CMusicPlayerDlg::OnPlaylistAddFile()
     CCommon::DoOpenFileDlg(filter, files, this);
     if (!files.empty())
     {
-        if (!CPlayer::GetInstance().AddFilesToPlaylist(files, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+        if (!CPlayer::GetInstance().AddFilesToPlaylist(files))
             MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
@@ -5617,7 +5619,7 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
         {
             CAudioCommon::GetAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list, MAX_SONG_NUM, include_sub_dir);
         }
-        if (!CPlayer::GetInstance().AddFilesToPlaylist(file_list, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+        if (!CPlayer::GetInstance().AddFilesToPlaylist(file_list))
             MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
 
     }
@@ -5697,7 +5699,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
             //添加到“我喜欢”播放列表
             if (!playlist.IsSongInPlaylist(current_file))
             {
-                playlist.AddSongsToPlaylist(std::vector<SongInfo> {current_file});
+                playlist.AddSongsToPlaylist(std::vector<SongInfo> {current_file}, theApp.m_media_lib_setting_data.insert_begin_of_playlist);
                 playlist.SaveToFile(favourite_playlist_path);
             }
             CPlayer::GetInstance().SetFavourite(true);
@@ -5753,7 +5755,7 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
         }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
-        if (!CPlayer::GetInstance().AddFilesToPlaylist(vecUrl, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+        if (!CPlayer::GetInstance().AddFilesToPlaylist(vecUrl))
             MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }

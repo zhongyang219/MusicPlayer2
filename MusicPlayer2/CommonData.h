@@ -364,7 +364,7 @@ struct MediaLibSettingData
     bool remove_file_not_exist_when_update{};   //更新媒体库时移除不存在的音频文件
     bool disable_drag_sort;				//禁止通过拖放排序
     DisplayFormat display_format{};		//播放列表中项目的显示样式
-    bool ignore_songs_already_in_playlist{ true };  //向播放列表中添加曲目时忽略已存在的曲目
+    bool insert_begin_of_playlist{ false };         // 向播放列表添加歌曲时插入开头而不是追加到末尾
     bool show_playlist_tooltip{};         //显示播放列表工具提示
     bool float_playlist_follow_main_wnd{};  //浮动播放列表跟随主窗口
     int playlist_item_height{ 24 };

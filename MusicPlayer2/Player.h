@@ -314,9 +314,9 @@ public:
     // 向当前播放列表添加文件，仅在播放列表模式可用，如果一个都没有添加，则返回false，否则返回true
     // 由于cue解析问题，请在判断需要“添加歌曲”而不是“添加文件”时尽量使用CPlayer::AddSongs代替此方法而不是使用path构建SongInfo
     // files内含有cue原始文件时返回值可能不正确（处理在线程函数，无法及时返回是否添加，初始化线程结束后有保存操作，不要另外执行保存）
-    bool AddFilesToPlaylist(const vector<wstring>& files, bool ignore_if_exist = false);
+    bool AddFilesToPlaylist(const vector<wstring>& files);
     // 向当前播放列表添加歌曲，仅在播放列表模式可用，如果一个都没有添加，则返回false，否则返回true
-    bool AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_if_exist = false);
+    bool AddSongsToPlaylist(const vector<SongInfo>& songs);
 
     // 重新载入播放列表
     void ReloadPlaylist(bool refresh_info = true);
