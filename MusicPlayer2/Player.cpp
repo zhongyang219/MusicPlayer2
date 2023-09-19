@@ -897,8 +897,9 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next, bool play)
 bool CPlayer::PlayAfterCurrentTrack(const std::vector<int>& tracks_to_play)
 {
     bool add{ false };
-    for (const int& track : tracks_to_play)
+    for (auto it = tracks_to_play.rbegin(); it != tracks_to_play.rend(); ++it)  // 为维持次序不变此处逆序遍历
     {
+        const int& track = *it;
         if (track >= 0 && track < static_cast<int>(m_playlist.size()))
         {
             m_next_tracks.push_front(track);
@@ -911,9 +912,9 @@ bool CPlayer::PlayAfterCurrentTrack(const std::vector<int>& tracks_to_play)
 bool CPlayer::PlayAfterCurrentTrack(const std::vector<SongInfo>& tracks_to_play)
 {
     bool add{ false };
-    for (const SongInfo& track : tracks_to_play)
+    for (auto it = tracks_to_play.rbegin(); it != tracks_to_play.rend(); ++it)  // 为维持次序不变此处逆序遍历
     {
-        int index = IsSongInPlayList(track);
+        int index = IsSongInPlayList(*it);
         if(index != -1)
         {
             m_next_tracks.push_front(index);
@@ -941,11 +942,11 @@ void CPlayer::LoopPlaylist(int& song_track)
 
 void CPlayer::SaveRecentInfoToFiles(bool save_playlist)
 {
-    static bool initailzed{ false };
+    static bool initialized{ false };
     // 程序启动后第一次调用时不需要保存（m_playlist为空时进行播放列表保存会导致清空列表）
-    if (!initailzed)
+    if (!initialized)
     {
-        initailzed = true;
+        initialized = true;
         return;
     }
     if (m_playlist_mode)
@@ -1716,7 +1717,7 @@ void CPlayer::RemoveSongs(vector<int> indexes, bool skip_locking)
         if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;    // 取得播放状态锁失败返回
 
     std::sort(indexes_.rbegin(), indexes_.rend());      // 降序排序以免移除时需要修改索引值
-    bool rm_is_index{ std::find(indexes_.begin(), indexes_.end(), m_index) == indexes_.end() };
+    bool rm_is_index{ std::find(indexes_.begin(), indexes_.end(), m_index) != indexes_.end() };
     for (int rm_index : indexes_)
     {
         m_playlist.erase(m_playlist.begin() + rm_index);
@@ -1797,7 +1798,6 @@ void CPlayer::ClearPlaylist()
     AfterRemoveSong(true);
 
     GetPlayStatusMutex().unlock();
-    //m_song_num = 0;
 }
 
 bool CPlayer::MoveUp(int first, int last)

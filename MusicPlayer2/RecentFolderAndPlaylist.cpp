@@ -23,7 +23,8 @@ void CRecentFolderAndPlaylist::Init()
     //添加最近播放播放列表
     m_list.emplace_back(&recent_playlist.m_default_playlist);
     m_list.emplace_back(&recent_playlist.m_favourite_playlist);
-    m_list.emplace_back(&recent_playlist.m_temp_playlist);
+    if (recent_playlist.m_temp_playlist.track_num > 0)          // 忽略没有文件的临时播放列表
+        m_list.emplace_back(&recent_playlist.m_temp_playlist);
     for (auto& item : recent_playlist.m_recent_playlists)
         m_list.emplace_back(&item);
 
