@@ -346,7 +346,6 @@ void CPlayer::IniPlaylistComplate()
         MediaTransControlsLoadThumbnailDefaultImage();
     }
 
-    SaveRecentInfoToFiles();
     SetTitle();
     OnPlaylistChange();
 
@@ -356,6 +355,11 @@ void CPlayer::IniPlaylistComplate()
 
     if (m_repeat_mode == RM_PLAY_RANDOM)
         m_random_list.push_back(m_index);
+
+    SaveRecentInfoToFiles();
+
+    // 刷新媒体库标签页（需要在SaveRecentInfoToFiles()之后，GetPlayStatusMutex().unlock()之前进行）
+    CMusicPlayerCmdHelper::RefreshMediaTabData(m_playlist_mode ? CMusicPlayerCmdHelper::ML_PLAYLIST : CMusicPlayerCmdHelper::ML_FOLDER);
 
     m_thread_info = ThreadInfo();
     // 检查过了只是保险起见
@@ -1680,12 +1684,14 @@ void CPlayer::AfterRemoveSong(bool is_current)
     }
     OnPlaylistChange();
     SaveRecentInfoToFiles();
+    // 文件夹模式“从磁盘删除”时刷新媒体库路径标签页否则刷新播放列表标签页
+    CMusicPlayerCmdHelper::RefreshMediaTabData(m_playlist_mode ? CMusicPlayerCmdHelper::ML_PLAYLIST : CMusicPlayerCmdHelper::ML_FOLDER);
 }
 
 bool CPlayer::RemoveSong(int index, bool skip_locking)
 {
     if (IsPlaylistEmpty()) return false;                    // 播放列表为空（或有一个占位SongInfo）返回
-    if (!m_playlist_mode) return false;                     // 不是播放列表模式返回
+    // if (!m_playlist_mode) return false;                     // 不是播放列表模式返回（文件夹模式可以“从磁盘删除”）
     if (index < 0 || index >= GetSongNum()) return false;   // index无效返回
     if (m_loading) return false;                            // 播放列表载入中返回
     if (!skip_locking)
@@ -1705,7 +1711,7 @@ bool CPlayer::RemoveSong(int index, bool skip_locking)
 void CPlayer::RemoveSongs(vector<int> indexes, bool skip_locking)
 {
     if (IsPlaylistEmpty()) return;                          // 播放列表为空（或有一个占位SongInfo）返回
-    if (!m_playlist_mode) return;                           // 不是播放列表模式返回
+    // if (!m_playlist_mode) return;                           // 不是播放列表模式返回（文件夹模式可以“从磁盘删除”）
     if (m_loading) return;                                  // 播放列表载入中返回
     int list_size{ GetSongNum() };
     vector<int> indexes_;   // 存储检查过的未越界待移除index
@@ -1754,8 +1760,9 @@ int CPlayer::RemoveSameSongs()
             }
         }
     }
-    // 移除重复歌曲时m_index总是能够保持指向相同歌曲（虽然本身值可能改变）所以参数总为false
-    AfterRemoveSong(false);
+
+    if (removed)
+        AfterRemoveSong(false); // 移除重复歌曲时m_index总是能够保持指向相同歌曲（虽然本身值可能改变）所以参数总为false
 
     GetPlayStatusMutex().unlock();
     return removed;
@@ -1781,7 +1788,8 @@ int CPlayer::RemoveInvalidSongs()
         }
     }
 
-    AfterRemoveSong(rm_is_index);
+    if (removed)
+        AfterRemoveSong(rm_is_index);
 
     return removed;
 }

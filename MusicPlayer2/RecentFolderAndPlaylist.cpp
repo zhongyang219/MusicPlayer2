@@ -38,7 +38,8 @@ void CRecentFolderAndPlaylist::Init()
             return item1.LastPlayedTime() > item2.LastPlayedTime();
         });
     //向主窗口发送通知
-    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, 0, 0);
+    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, 0, 0);  // 重新初始化快捷菜单
+    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_INIT_ADD_TO_MENU, 0, 0);   // 重新初始化右键菜单中的“添加到播放列表”子菜单
 }
 
 const std::vector<CRecentFolderAndPlaylist::Item>& CRecentFolderAndPlaylist::GetItemList() const

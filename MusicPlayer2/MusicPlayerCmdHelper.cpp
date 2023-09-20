@@ -664,7 +664,7 @@ void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_sho
     }
 }
 
-void CMusicPlayerCmdHelper::RefreshMediaTabData(enum eMediaLibTab tab_index)
+void CMusicPlayerCmdHelper::RefreshMediaTabData(eMediaLibTab tab_index)
 {
     CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))

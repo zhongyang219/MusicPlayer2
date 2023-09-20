@@ -2909,12 +2909,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
     if (pPathInfo != nullptr)
     {
         CPlayer::GetInstance().SetPath(*pPathInfo);
-        UpdatePlayPauseButton();
-        //SetPorgressBarSize();
-        //ShowTime();
-        DrawInfo(true);
         //m_findDlg.ClearFindResult();      //更换路径后清除查找结果
-        m_play_error_cnt = 0;
         SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个文件夹播放后，500毫秒内不响应WM_LBUTTONUP消息
         m_no_lbtnup = true;
     }
@@ -3078,11 +3073,6 @@ void CMusicPlayerDlg::OnFileOpen()
     if (!files.empty())
     {
         CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files);
-        UpdatePlayPauseButton();
-        DrawInfo(true);
-        // 打开文件时刷新媒体库播放列表标签
-        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
-        m_play_error_cnt = 0;
     }
 }
 
@@ -3108,13 +3098,6 @@ void CMusicPlayerDlg::OnFileOpenFolder()
         include_sub_dir = (checked != FALSE);
 #endif
         CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir);
-        //ShowPlayList();
-        UpdatePlayPauseButton();
-        //SetPorgressBarSize();
-        DrawInfo(true);
-        // 打开文件夹时刷新
-        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
-        m_play_error_cnt = 0;
     }
 }
 
@@ -3133,12 +3116,10 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
     {
         //file_path_wcs.push_back(L'\\');
         CPlayer::GetInstance().OpenFolder(file_path_wcs);
-        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
     }
     else if (CPlaylistFile::IsPlaylistFile(file_path_wcs))
     {
         CPlayer::GetInstance().OpenPlaylistFile(file_path_wcs);
-        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
     }
     else
     {
@@ -3158,14 +3139,9 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
             else
             {
                 CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files, false);
-                CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
             }
         }
     }
-    //ShowPlayList();
-    UpdatePlayPauseButton();
-    //SetPorgressBarSize();
-    DrawInfo(true);
 
     CMainDialogBase::OnDropFiles(hDropInfo);
 }
@@ -3335,10 +3311,6 @@ void CMusicPlayerDlg::OnReloadPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     CPlayer::GetInstance().ReloadPlaylist();
-    CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
-    //ShowPlayList();
-    //UpdatePlayPauseButton();
-    //ShowTime();
 }
 
 
@@ -3499,21 +3471,13 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                     if (item.playlist_info != nullptr)
                     {
                         CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position);
-                        UpdatePlayPauseButton();
-                        DrawInfo(true);
-                        IniPlaylistPopupMenu();
-                        m_play_error_cnt = 0;
                     }
-
                 }
                 else
                 {
                     if (item.folder_info != nullptr)
                     {
                         CPlayer::GetInstance().SetPath(*item.folder_info);
-                        UpdatePlayPauseButton();
-                        DrawInfo(true);
-                        m_play_error_cnt = 0;
                     }
                 }
             }
@@ -4582,6 +4546,9 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniStart(WPARAM wParam, LPARAM lParam
 {
     EnablePlaylist(false);
     theApp.DoWaitCursor(1);
+    m_play_error_cnt = 0;
+    UpdatePlayPauseButton();
+    DrawInfo(true);
     return 0;
 }
 
@@ -5422,13 +5389,6 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam
             // index大于等于0时即此次播放为从右侧列表指定歌曲，设置force为true以忽略continue_when_switch_playlist设置
             CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track_played, position, continue_play, index >= 0);
         }
-        UpdatePlayPauseButton();
-        //SetPorgressBarSize();
-        //ShowTime();
-        DrawInfo(true);
-        //m_findDlg.ClearFindResult();      //更换路径后清除查找结果
-        IniPlaylistPopupMenu();
-        m_play_error_cnt = 0;
         SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个播放列表播放后，500毫秒内不响应WM_LBUTTONUP消息
         m_no_lbtnup = true;
     }
@@ -5732,9 +5692,6 @@ void CMusicPlayerDlg::OnFileOpenUrl()
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
         CPlayer::GetInstance().OpenFilesInDefaultPlaylist(vecUrl);
-        UpdatePlayPauseButton();
-        DrawInfo(true);
-        m_play_error_cnt = 0;
     }
 }
 
