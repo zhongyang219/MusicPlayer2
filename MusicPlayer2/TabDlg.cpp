@@ -69,6 +69,7 @@ void CTabDlg::SetScrollbarInfo(int nPage, int nMax)
 	if (scrollinfo.nMax < 0)
 		scrollinfo.nMax = 0;
 	scrollinfo.nPos = scrollinfo.nMin;
+	m_last_pos = scrollinfo.nPos;
 	SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
 
     m_scroll_enable = true;
@@ -82,6 +83,7 @@ void CTabDlg::ResetScroll()
 		GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
 		int step = scrollinfo.nPos - scrollinfo.nMin;
 		scrollinfo.nPos = scrollinfo.nMin;
+        m_last_pos = scrollinfo.nPos;
 		SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
 		ScrollWindow(0, step);
 	}
