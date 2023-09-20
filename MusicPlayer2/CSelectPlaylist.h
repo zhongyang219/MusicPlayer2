@@ -28,7 +28,6 @@ public:
     wstring GetSelPlaylistPath() const;
     int GetTrack() const;
     int GetPosition() const;
-    bool IsPlaylistModified() const;
     void AdjustColumnWidth();       //自动调整列表宽度
     // 完全重新载入标签页数据
     void RefreshTabData();
@@ -38,7 +37,6 @@ private:
     int m_row_selected{ -1 };       //左侧选中的播放列表的序号（不管是否处于搜索状态都为列表中“序号”一列的值）
     int m_left_selected_index{ -1 };    //左侧列表选中行在列表中的索引（如果处于搜索状态，为列表选中项实际的索引）
     //CMenu m_menu;
-    bool m_playlist_modified{ false };
     CSearchEditCtrl m_search_edit;
     vector<int> m_search_result;                //储存快速搜索结果的歌曲序号
     bool m_searched{ false };                   //是否处于搜索状态
@@ -128,7 +126,6 @@ public:
     afx_msg void OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnSaveAsNewPlaylist();
     afx_msg void OnPlaylistSaveAs();
-    afx_msg void OnDestroy();
     afx_msg void OnPlaylistFixPathError();
     afx_msg void OnPlaylistBrowseFile();
 };

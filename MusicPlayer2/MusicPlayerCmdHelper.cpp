@@ -102,14 +102,14 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
 
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
-        if (!playlist.AddSongsToPlaylist(selected_item_path, theApp.m_media_lib_setting_data.insert_begin_of_playlist))
+        if (!playlist.AddSongsToPlaylist(selected_item_path, theApp.m_media_lib_setting_data.insert_begin_of_playlist)) // 这里由于是空列表所以实际上设置无效不过仍然传递设置
         {
             pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
             return false;
         }
         playlist.SaveToFile(playlist_path);
+        // 此方法需要自行更新“添加到播放列表”菜单和媒体库标签页
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
-
         RefreshMediaTabData(ML_PLAYLIST);
 
         return true;

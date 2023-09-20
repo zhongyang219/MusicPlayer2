@@ -46,11 +46,6 @@ int CSelectPlaylistDlg::GetPosition() const
     return GetSelectedPlaylist().position;
 }
 
-bool CSelectPlaylistDlg::IsPlaylistModified() const
-{
-    return m_playlist_modified;
-}
-
 void CSelectPlaylistDlg::AdjustColumnWidth()
 {
     vector<int> width;
@@ -573,7 +568,7 @@ wstring CSelectPlaylistDlg::DoNewPlaylist()
         CPlaylistMgr::Instance().AddNewPlaylist(playlist_path);
         ShowPathList();
         SetLeftListSelected(SPEC_PLAYLIST_NUM);     //选中新增的播放列表。添加新的播放列表后，新增的播放会排到前面，在特殊的播放列表的后一个位置
-        m_playlist_modified = true;
+        CRecentFolderAndPlaylist::Instance().Init();
         return playlist_path;
     }
     return wstring();
@@ -648,7 +643,7 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
         }
 
         ShowPathList();
-        m_playlist_modified = true;
+        CRecentFolderAndPlaylist::Instance().Init();
     }
 }
 
@@ -668,7 +663,7 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
         CPlaylistMgr::Instance().DeletePlaylist(playlist_path);
         CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
         ShowPathList();
-        m_playlist_modified = true;
+        CRecentFolderAndPlaylist::Instance().Init();
     }
     else if (index == playlists_size)           // 删除的是临时播放列表
     {
@@ -680,9 +675,6 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
         wstring playlist_path{ CPlaylistMgr::Instance().m_temp_playlist.path };
         CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
         ShowPathList();
-        m_playlist_modified = true;
-    }
-    if (m_playlist_modified) {
         CRecentFolderAndPlaylist::Instance().Init();
     }
 }
@@ -887,16 +879,6 @@ void CSelectPlaylistDlg::OnPlaylistSaveAs()
         playlist.SaveToFile(file_path, file_type);
     }
 
-}
-
-
-void CSelectPlaylistDlg::OnDestroy()
-{
-    //窗口关闭时，如果播放列表有更改，则通知主窗口更新“添加到播放列表”菜单
-    if (m_playlist_modified)
-        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
-
-    CMediaLibTabDlg::OnDestroy();
 }
 
 

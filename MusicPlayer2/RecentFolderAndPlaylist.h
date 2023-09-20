@@ -20,6 +20,7 @@ public:
         bool IsItemCurrentPlaying() const;      //判断是否为当前播放的文件夹/播放列表
     };
 
+    // 此方法会在更新数据后向主窗口SendMessage以更新“列表快捷切换”菜单和“添加到播放列表”菜单
     void Init();
     const std::vector<Item>& GetItemList() const;
 
