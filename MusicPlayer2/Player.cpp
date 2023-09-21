@@ -989,10 +989,10 @@ void CPlayer::SaveRecentInfoToFiles(bool save_playlist)
 
 #pragma region 列表初始化方法
 
-void CPlayer::SetPath(const PathInfo& path_info)
+bool CPlayer::SetPath(const PathInfo& path_info, bool play)
 {
-    if (m_loading) return;
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    if (m_loading) return false;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
     m_loading = true;
     IniPlayerCore();
 
@@ -1017,7 +1017,8 @@ void CPlayer::SetPath(const PathInfo& path_info)
     m_index = path_info.track;
     m_current_position.fromInt(path_info.position);
 
-    IniPlayList();
+    IniPlayList(play);
+    return true;
 }
 
 bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
@@ -1262,10 +1263,10 @@ bool CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs)
     return added;
 }
 
-void CPlayer::ReloadPlaylist(bool refresh_info)
+bool CPlayer::ReloadPlaylist(bool refresh_info)
 {
-    if (m_loading) return;
-    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
+    if (m_loading) return false;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
     m_loading = true;
     IniPlayerCore();
 
@@ -1282,6 +1283,17 @@ void CPlayer::ReloadPlaylist(bool refresh_info)
     m_current_position.fromInt(0);
 
     IniPlayList(false, true);
+    return true;
+}
+
+bool CPlayer::SetContainSubFolder()
+{
+    m_contain_sub_folder = !m_contain_sub_folder;
+    if (!IsPlaylistMode())
+    {
+        return ReloadPlaylist(false);
+    }
+    return true;    // 播放列表模式返回true
 }
 
 #pragma endregion 列表初始化方法
@@ -2707,18 +2719,6 @@ bool CPlayer::IsBassCore() const
 
 bool CPlayer::IsFfmpegCore() const {
     return m_pCore ? m_pCore->GetCoreType() == PT_FFMPEG : false;
-}
-
-void CPlayer::SetContainSubFolder(bool contain_sub_folder)
-{
-    if (m_contain_sub_folder != contain_sub_folder)
-    {
-        m_contain_sub_folder = contain_sub_folder;
-        if (!IsPlaylistMode())
-        {
-            ReloadPlaylist(false);
-        }
-    }
 }
 
 void CPlayer::UpdateControlsMetadata(SongInfo info)

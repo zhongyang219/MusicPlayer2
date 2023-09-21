@@ -208,7 +208,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE, &CMusicPlayerDlg::OnTranslateToSimplifiedChinese)
     ON_COMMAND(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, &CMusicPlayerDlg::OnTranslateToTranditionalChinese)
     ON_COMMAND(ID_ALBUM_COVER_SAVE_AS, &CMusicPlayerDlg::OnAlbumCoverSaveAs)
-    ON_MESSAGE(WM_PATH_SELECTED, &CMusicPlayerDlg::OnPathSelected)
+    // ON_MESSAGE(WM_PATH_SELECTED, &CMusicPlayerDlg::OnPathSelected)
     ON_MESSAGE(WM_CONNOT_PLAY_WARNING, &CMusicPlayerDlg::OnConnotPlayWarning)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMusicPlayerDlg::OnEnChangeSearchEdit)
     //ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CMusicPlayerDlg::OnBnClickedClearSearchButton)
@@ -2900,20 +2900,6 @@ void CMusicPlayerDlg::OnSetPath()
 
     CMusicPlayerCmdHelper helper;
     helper.ShowMediaLib();
-}
-
-
-afx_msg LRESULT CMusicPlayerDlg::OnPathSelected(WPARAM wParam, LPARAM lParam)
-{
-    PathInfo* pPathInfo = (PathInfo*)wParam;
-    if (pPathInfo != nullptr)
-    {
-        CPlayer::GetInstance().SetPath(*pPathInfo);
-        //m_findDlg.ClearFindResult();      //更换路径后清除查找结果
-        SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个文件夹播放后，500毫秒内不响应WM_LBUTTONUP消息
-        m_no_lbtnup = true;
-    }
-    return 0;
 }
 
 
@@ -6220,7 +6206,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnMainWindowActivated(WPARAM wParam, LPARAM lPa
 void CMusicPlayerDlg::OnContainSubFolder()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().SetContainSubFolder(!CPlayer::GetInstance().IsContainSubFolder());
+    CPlayer::GetInstance().SetContainSubFolder();
 }
 
 

@@ -288,8 +288,8 @@ public:
 
 #pragma region 列表初始化方法
 
-    // 切换到指定路径的文件夹模式，没有PathInfo时应使用CPlayer::OpenFolder
-    void SetPath(const PathInfo& path_info);
+    // 切换到指定路径的文件夹模式，没有PathInfo时应使用CPlayer::OpenFolder（没能取得播放状态锁返回false）
+    bool SetPath(const PathInfo& path_info, bool play = false);
     // 切换到指定路径的播放列表模式/通过“打开文件夹”来设置路径的处理
     // （不进行“切换播放列表时继续播放”）（没能取得播放状态锁返回false）
     bool OpenFolder(wstring path, bool contain_sub_folder = false, bool play = false);
@@ -318,8 +318,10 @@ public:
     // 向当前播放列表添加歌曲，仅在播放列表模式可用，如果一个都没有添加，则返回false，否则返回true
     bool AddSongsToPlaylist(const vector<SongInfo>& songs);
 
-    // 重新载入播放列表
-    void ReloadPlaylist(bool refresh_info = true);
+    // 重新载入播放列表（没能取得播放状态锁返回false）
+    bool ReloadPlaylist(bool refresh_info = true);
+    // 翻转是否包含子文件夹设置，如果当前为文件夹模式则直接重新加载播放列表（没能取得播放状态锁返回false）
+    bool SetContainSubFolder();
 
 #pragma endregion 列表初始化方法
 
@@ -506,7 +508,6 @@ public:
     bool IsFfmpegCore() const;
     bool IsFileOpened() const { return m_file_opend; }
     bool IsContainSubFolder() const { return m_contain_sub_folder; }
-    void SetContainSubFolder(bool contain_sub_folder);
 
 
     MediaTransControls m_controls;

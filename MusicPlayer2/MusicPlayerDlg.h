@@ -370,7 +370,6 @@ public:
     afx_msg void OnTranslateToTranditionalChinese();
     afx_msg void OnAlbumCoverSaveAs();
 protected:
-    afx_msg LRESULT OnPathSelected(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnConnotPlayWarning(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnEnChangeSearchEdit();
