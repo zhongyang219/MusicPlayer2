@@ -1034,6 +1034,8 @@ bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
 
     // 按照新文件夹设置
     m_path = path;
+    m_playlist_path.clear();
+    m_playlist_mode = false;
     m_sort_mode = SM_FILE;
     m_descending = false;
     m_contain_sub_folder = contain_sub_folder;
