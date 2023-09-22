@@ -6,7 +6,7 @@
 #include "HorizontalSplitter.h"
 
 // CSelectPlaylist 对话框
-#define WM_PLAYLIST_SELECTED (WM_USER+119)      //WPARA: 传递对话框窗口的指针；LPARA：-2:表示要播放默认的播放列表，>=0，表示要播放列表中指定序号的曲目
+// #define WM_PLAYLIST_SELECTED (WM_USER+119) 不再使用     //WPARA: 传递对话框窗口的指针；LPARA：-2:表示要播放默认的播放列表，>=0，表示要播放列表中指定序号的曲目
 
 class CSelectPlaylistDlg : public CMediaLibTabDlg
 {
@@ -23,15 +23,10 @@ public:
 
     // 歌曲属性更新后被调用
     virtual void RefreshSongList() override;
-
-public:
-    wstring GetSelPlaylistPath() const;
-    int GetTrack() const;
-    int GetPosition() const;
-    void AdjustColumnWidth();       //自动调整列表宽度
+    // 自动调整列表宽度
+    void AdjustColumnWidth();
     // 完全重新载入标签页数据
     void RefreshTabData();
-    bool IsLeftSelected() const;
 
 private:
     int m_row_selected{ -1 };       //左侧选中的播放列表的序号（不管是否处于搜索状态都为列表中“序号”一列的值）

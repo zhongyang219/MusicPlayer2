@@ -157,9 +157,8 @@ protected:
     CPlayerToolBar m_playlist_toolbar;
     CHorizontalSplitter m_splitter_ctrl;
 
-    bool m_no_lbtnup{ false };      //当它为true时，不响应WM_LBUTTONUP消息
     bool m_ignore_color_change{ false };    //当它为true时，不响应颜色变化，防止短时间内重复收到主题颜色变化的消息
-    enum { DELAY_TIMER_ID = 1200, INGORE_COLOR_CHANGE_TIMER_ID = 1201 };
+    enum { INGORE_COLOR_CHANGE_TIMER_ID = 1200 };
 
     CDevicesManager* devicesManager;
 
@@ -425,10 +424,6 @@ public:
     afx_msg void OnDockedPlaylist();
     afx_msg void OnFloatedPlaylist();
     afx_msg LRESULT OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam);
-    //    afx_msg void OnFileOpenPalylist();
-protected:
-    afx_msg LRESULT OnPlaylistSelected(WPARAM wParam, LPARAM lParam);
-public:
     afx_msg void OnPlaylistAddFile();
     afx_msg void OnRemoveFromPlaylist();
     afx_msg void OnEmptyPlaylist();

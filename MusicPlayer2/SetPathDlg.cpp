@@ -25,14 +25,10 @@ CSetPathDlg::~CSetPathDlg()
 
 void CSetPathDlg::QuickSearch(const wstring & key_word)
 {
-    // 多用只读引用将来重构RecentPath多线程轻松一些
-    const deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
-    m_path_list_info.clear();
     m_search_result.clear();
-    for (size_t i{}; i < recent_path.size(); ++i)
+    for (size_t i{}; i < m_path_list_info.size(); ++i)
     {
-        m_path_list_info.push_back(recent_path[i]);
-        if (CCommon::StringFindNoCase(recent_path[i].path, key_word) != wstring::npos)
+        if (CCommon::StringFindNoCase(m_path_list_info[i].path, key_word) != wstring::npos)
             m_search_result.push_back(i);
     }
 }
@@ -85,13 +81,14 @@ void CSetPathDlg::SetButtonsEnable()
 
 void CSetPathDlg::ShowPathList()
 {
+    // 这里的更新m_path_list_info操作本应有独立方法不过暂时还不必要，先放这里
+    m_path_list_info.clear();
+    const deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
+    std::copy(recent_path.begin(), recent_path.end(), std::back_inserter(m_path_list_info));
+
     m_path_list.EnableWindow(TRUE);
     if (!m_searched)        //显示所有项目
     {
-        // 这里的更新m_path_list_info操作本应有独立方法不过暂时还不必要，先放这里
-        m_path_list_info.clear();
-        const deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
-        std::copy(recent_path.begin(), recent_path.end(), std::back_inserter(m_path_list_info));
         m_path_list.DeleteAllItems();
         CString path_str;
         for (size_t i{}; i < m_path_list_info.size(); i++)
@@ -105,6 +102,9 @@ void CSetPathDlg::ShowPathList()
     }
     else        //只显示搜索结果的曲目
     {
+        // 进行搜索
+        QuickSearch(m_searched_str);
+        // 显示搜索结果
         if (m_search_result.empty())
         {
             m_path_list.DeleteAllItems();
@@ -380,7 +380,6 @@ void CSetPathDlg::OnDeletePath()
         deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
         auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == del_path; });
         recent_path.erase(iter);        // 删除选中的路径
-        m_searched = false;             // 删除后搜索索引可能越界，退出搜索状态
         ShowPathList();                 // 重新显示路径列表
         CRecentFolderAndPlaylist::Instance().Init();
     }
@@ -401,7 +400,6 @@ void CSetPathDlg::OnClearInvalidPath()
     if (MessageBox(CCommon::LoadText(IDS_CLEAR_PATH_INQUARY), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
         return;
     int cleard_cnt = CMusicPlayerCmdHelper::CleanUpRecentFolders();
-    m_searched = false; // 清理后搜索索引可能越界，退出搜索状态
     ShowPathList();     // 重新显示路径列表
     CRecentFolderAndPlaylist::Instance().Init();
     CString info;
@@ -437,8 +435,8 @@ void CSetPathDlg::OnEnChangeSearchEdit()
     // TODO:  在此添加控件通知处理程序代码
     CString key_word;
     m_search_edit.GetWindowText(key_word);
-    m_searched = (key_word.GetLength() != 0);
-    QuickSearch(wstring(key_word));
+    m_searched_str = key_word;
+    m_searched = !m_searched_str.empty();
     ShowPathList();
 
 }
@@ -497,7 +495,7 @@ void CSetPathDlg::OnContainSubFolder()
             {
                 PathInfo& it = *iter;
                 it.contain_sub_folder = !it.contain_sub_folder;
-                SetListRowData(m_list_selected, it);
+                ShowPathList();     // 重新显示路径列表
             }
         }
     }

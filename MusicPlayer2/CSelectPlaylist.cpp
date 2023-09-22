@@ -31,21 +31,6 @@ void CSelectPlaylistDlg::RefreshSongList()
     ShowSongList();
 }
 
-wstring CSelectPlaylistDlg::GetSelPlaylistPath() const
-{
-    return GetSelectedPlaylist().path;
-}
-
-int CSelectPlaylistDlg::GetTrack() const
-{
-    return GetSelectedPlaylist().track;
-}
-
-int CSelectPlaylistDlg::GetPosition() const
-{
-    return GetSelectedPlaylist().position;
-}
-
 void CSelectPlaylistDlg::AdjustColumnWidth()
 {
     vector<int> width;
@@ -58,11 +43,6 @@ void CSelectPlaylistDlg::RefreshTabData()
 {
     ShowPathList();
     ShowSongList();
-}
-
-bool CSelectPlaylistDlg::IsLeftSelected() const
-{
-    return m_left_selected;
 }
 
 void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
@@ -130,7 +110,7 @@ void CSelectPlaylistDlg::ShowSongList()
     m_song_list_ctrl.SetHightItem(-1);
     if (m_row_selected >= 0)
     {
-        wstring playlist_path = GetSelPlaylistPath();
+        wstring playlist_path = GetSelectedPlaylist().path;
         CPlaylistFile playlist_file;
         playlist_file.LoadFromFile(playlist_path);
         m_cur_song_list = playlist_file.GetPlaylist();
@@ -138,10 +118,7 @@ void CSelectPlaylistDlg::ShowSongList()
         int totla_time{};
         for (SongInfo& song : m_cur_song_list)
         {
-            if (!song.info_acquired || !song.ChannelInfoAcquired())
-            {
-                song.CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(song));
-            }
+            CSongDataManager::GetInstance().LoadSongInfo(song);     // 从媒体库加载歌曲属性
             CListCtrlEx::RowData row_data;
             row_data[COL_INDEX] = std::to_wstring(index + 1);
             row_data[COL_TITLE] = song.GetTitle();
@@ -331,7 +308,7 @@ void CSelectPlaylistDlg::CalculateColumeWidth(vector<int>& width)
     width.resize(5);
 
     width[2] = width[3] = rect.Width() / 8;
-    width[4] = rect.Width() / 6;
+    width[4] = rect.Width() / 5;
 
     width[0] = theApp.DPI(40);
     width[1] = rect.Width() - width[2] - width[3] - width[4] - width[0] - theApp.DPI(20) - 1;
@@ -513,23 +490,22 @@ void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 void CSelectPlaylistDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
-
     if (SelectedCanPlay())
     {
-        int index = -1;
-        if (!m_left_selected)
+        PlaylistInfo sel_playlist = GetSelectedPlaylist();
+        if (m_left_selected || m_right_selected_item < 0)    // 左侧选中或右侧选中无效则使用之前保存的信息播放选中播放列表，设置play为true，force为false
         {
-            index = m_right_selected_item;
+            CPlayer::GetInstance().SetPlaylist(sel_playlist.path, sel_playlist.track, sel_playlist.position, true, false);
         }
-        ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, (LPARAM)index);
-
+        else        // 否则播放m_right_selected_item指定曲目，设置play为true，force为true
+        {
+            CPlayer::GetInstance().SetPlaylist(sel_playlist.path, m_right_selected_item, 0, true, true);
+        }
         CTabDlg::OnOK();
-
         CWnd* pParent = GetParentWindow();
         if (pParent != nullptr)
             ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
-
 }
 
 
@@ -577,13 +553,7 @@ wstring CSelectPlaylistDlg::DoNewPlaylist()
 void CSelectPlaylistDlg::OnPlayPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, -1);
-
-    // 设置播放列表完成后请求关闭媒体库窗口
-    CTabDlg::OnOK();
-    CWnd* pParent = GetParentWindow();
-    if (pParent != nullptr)
-        ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+    OnOK();
 }
 
 
@@ -658,7 +628,8 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
         wstring playlist_path = CPlaylistMgr::Instance().m_recent_playlists[index].path;
         if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())      //如果删除的是正在播放的播放列表，则播放默认播放列表
         {
-            ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, -2);
+            auto& default_playlist = CPlaylistMgr::Instance().m_default_playlist;
+            CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
         }
         CPlaylistMgr::Instance().DeletePlaylist(playlist_path);
         CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
@@ -669,7 +640,8 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
     {
         if (CPlaylistMgr::Instance().m_cur_playlist_type == PT_TEMP)
         {
-            ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_SELECTED, (WPARAM)this, -2);
+            auto& default_playlist = CPlaylistMgr::Instance().m_default_playlist;
+            CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
         }
         CPlaylistMgr::Instance().m_temp_playlist.track_num = 0;
         wstring playlist_path{ CPlaylistMgr::Instance().m_temp_playlist.path };

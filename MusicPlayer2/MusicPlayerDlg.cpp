@@ -250,7 +250,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_FLOATED_PLAYLIST, &CMusicPlayerDlg::OnFloatedPlaylist)
     ON_MESSAGE(WM_FLOAT_PLAYLIST_CLOSED, &CMusicPlayerDlg::OnFloatPlaylistClosed)
     //    ON_COMMAND(ID_FILE_OPEN_PALYLIST, &CMusicPlayerDlg::OnFileOpenPalylist)
-    ON_MESSAGE(WM_PLAYLIST_SELECTED, &CMusicPlayerDlg::OnPlaylistSelected)
+    // ON_MESSAGE(WM_PLAYLIST_SELECTED, &CMusicPlayerDlg::OnPlaylistSelected)
     ON_COMMAND(ID_PLAYLIST_ADD_FILE, &CMusicPlayerDlg::OnPlaylistAddFile)
     ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveFromPlaylist)
     ON_COMMAND(ID_EMPTY_PLAYLIST, &CMusicPlayerDlg::OnEmptyPlaylist)
@@ -2666,12 +2666,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //每隔一秒保存一次统计的帧率
         theApp.m_fps = m_fps_cnt;
         m_fps_cnt = 0;
-    }
-
-    else if (nIDEvent == DELAY_TIMER_ID)
-    {
-        KillTimer(DELAY_TIMER_ID);
-        m_no_lbtnup = false;
     }
 
     else if (nIDEvent == INGORE_COLOR_CHANGE_TIMER_ID)
@@ -5322,62 +5316,6 @@ LRESULT CMusicPlayerDlg::OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam)
             m_float_playlist_pos = rect.TopLeft();
     }
 
-    return 0;
-}
-
-
-//void CMusicPlayerDlg::OnFileOpenPalylist()
-//{
-//    //设置过滤器
-//    CString szFilter = CCommon::LoadText(IDS_PLAYLIST_FILTER);
-//    //构造打开文件对话框
-//    CFileDialog fileDlg(TRUE, _T("playlist"), NULL, 0, szFilter, this);
-//    //显示打开文件对话框
-//    if (IDOK == fileDlg.DoModal())
-//    {
-//        CPlaylistFile playlist;
-//        playlist.LoadFromFile(wstring(fileDlg.GetPathName()));
-//        CPlayer::GetInstance().OpenFiles(playlist.GetPlaylist(), false);
-//    }
-//
-//}
-
-
-afx_msg LRESULT CMusicPlayerDlg::OnPlaylistSelected(WPARAM wParam, LPARAM lParam)
-{
-    CSelectPlaylistDlg* pPathDlg = (CSelectPlaylistDlg*)wParam;
-    int index = (int)lParam;        //媒体库播放列表界面右侧列表选中的曲目
-    if (pPathDlg != nullptr)
-    {
-        if (index == -2)      //当lParam为-2时，播放默认的播放列表
-        {
-            auto& default_playlist = CPlaylistMgr::Instance().m_default_playlist;
-            CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
-        }
-        else
-        {
-            int track{ pPathDlg->GetTrack() };      //该播放列表上次播放的曲目
-            int track_played{};
-            int position{ pPathDlg->GetPosition() };
-            bool continue_play{ !pPathDlg->IsLeftSelected() };
-            if (index < 0)          //如果右侧列表没有选中曲目，则播放的曲目为上次播放的曲目
-            {
-                track_played = track;
-            }
-            else        //否则，播放的曲目为右侧列表选中的曲目
-            {
-                track_played = index;
-                if (index != track)     //如果右侧列表选中的曲目不是上次播放的曲目，则忽略上次播放的位置，从头开始播放
-                {
-                    position = 0;
-                }
-            }
-            // index大于等于0时即此次播放为从右侧列表指定歌曲，设置force为true以忽略continue_when_switch_playlist设置
-            CPlayer::GetInstance().SetPlaylist(pPathDlg->GetSelPlaylistPath(), track_played, position, continue_play, index >= 0);
-        }
-        SetTimer(DELAY_TIMER_ID, 500, NULL);        //在媒体库对话框中选择了一个播放列表播放后，500毫秒内不响应WM_LBUTTONUP消息
-        m_no_lbtnup = true;
-    }
     return 0;
 }
 
