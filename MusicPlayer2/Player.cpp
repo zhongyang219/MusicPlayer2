@@ -103,16 +103,8 @@ void CPlayer::Create()
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
     m_controls.Init();
-    bool change_to_default_playlist{ !m_playlist_mode && m_recent_path.empty() };
-    for (size_t i{}; i < m_recent_path.size(); ++i)    // 清除最近播放文件夹列表中的无效项
-    {
-        if (!CAudioCommon::IsPathContainsAudioFile(m_recent_path[i].path, m_recent_path[i].contain_sub_folder) && !COSUPlayerHelper::IsOsuFolder(m_recent_path[i].path))
-        {
-            m_recent_path.erase(m_recent_path.begin() + i);
-            change_to_default_playlist |= (i == 0);
-            i--;
-        }
-    }
+    bool change_to_default_playlist{ !m_playlist_mode && (m_recent_path.empty() || (!COSUPlayerHelper::IsOsuFolder(m_recent_path.front().path) && !CAudioCommon::IsPathContainsAudioFile(m_recent_path.front().path, m_recent_path.front().contain_sub_folder))) };
+    // 如果文件夹模式且当前文件夹没有音频文件那么切换到默认播放列表，清理无效（空）文件夹会在启动时更新媒体库进行（如果启用remove_file_not_exist_when_update）
     if (change_to_default_playlist)
     {
         const PlaylistInfo& playlist_info = CPlaylistMgr::Instance().m_default_playlist;
