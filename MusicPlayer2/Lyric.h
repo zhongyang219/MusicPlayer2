@@ -134,8 +134,8 @@ public:
     // 保存歌词（将歌词偏移保存到每个时间标签中）
     void SaveLyric2();
 
-    // 如果歌词中有相同时间标签的歌词，则将第二行视作第一行的翻译进行合并（使用时必须确保歌词已经按时间标签排序）
-    void CombineSameTimeLyric();
+    // 先进行按时间排序，如果歌词中有相同时间标签的歌词，则将第二行视作第一行的翻译进行合并，参数为允许误差(ms)
+    void CombineSameTimeLyric(int error = 0);
     // 交换歌词文本和翻译
     void SwapTextAndTranslation();
     // 时间标签提前一句
