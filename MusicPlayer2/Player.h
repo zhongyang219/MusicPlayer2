@@ -56,6 +56,7 @@ public:
         bool play{};                            // 加载完播放列表后是否立即播放
         int play_index{};                       // 播放索引，播放列表模式下需要在cue解析时维持其指向
         int process_percent{};
+        wstring remove_list_path{};             // 进入初始化线程后通知主窗口移除此播放列表/文件夹
     };
     //初始化播放列表的工作线程函数
     static UINT IniPlaylistThreadFunc(LPVOID lpParam);
@@ -322,6 +323,9 @@ public:
     bool ReloadPlaylist(bool refresh_info = true);
     // 翻转是否包含子文件夹设置，如果当前为文件夹模式则直接重新加载播放列表（没能取得播放状态锁返回false）
     bool SetContainSubFolder();
+
+    // 移除当前播放列表（同时删除文件）/文件夹（从最近播放中移除）并切换到默认播放列表（没能取得播放状态锁返回false）
+    bool RemoveCurPlaylistOrFolder();
 
 #pragma endregion 列表初始化方法
 

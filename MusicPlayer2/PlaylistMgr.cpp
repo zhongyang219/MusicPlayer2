@@ -84,6 +84,11 @@ void CPlaylistMgr::AddNewPlaylist(const wstring& path)
 
 bool CPlaylistMgr::DeletePlaylist(const wstring& path)
 {
+    if (path == m_temp_playlist.path)
+    {
+        m_temp_playlist.track_num = 0;
+        return true;
+    }
     auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [path](const PlaylistInfo& item) {
         return item.path == path;
         });

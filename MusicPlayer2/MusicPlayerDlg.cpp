@@ -4529,6 +4529,26 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniStart(WPARAM wParam, LPARAM lParam
     m_play_error_cnt = 0;
     UpdatePlayPauseButton();
     DrawInfo(true);
+
+    // 移除wParam指示的播放列表/文件夹
+    wstring remove_list_path{ *((wstring*)wParam) };
+    if (!remove_list_path.empty())
+    {
+        if (CCommon::IsFolder(remove_list_path))
+        {
+            deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
+            auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == remove_list_path; });
+            if (iter != recent_path.end())
+            {
+                recent_path.erase(iter);
+            }
+        }
+        else if (CPlaylistFile::IsPlaylistFile(remove_list_path))
+        {
+            CPlaylistMgr::Instance().DeletePlaylist(remove_list_path);
+            CCommon::DeleteAFile(this->GetSafeHwnd(), remove_list_path);
+        }
+    }
     return 0;
 }
 

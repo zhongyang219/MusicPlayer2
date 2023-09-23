@@ -376,12 +376,19 @@ void CSetPathDlg::OnDeletePath()
     if (SelectValid())
     {
         wstring del_path = GetSelPath().path;
-        // 这里删除当前播放有问题，实际只会清除子文件夹bool，以后需要改为切到默认播放列表时删除
-        deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
-        auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == del_path; });
-        recent_path.erase(iter);        // 删除选中的路径
-        ShowPathList();                 // 重新显示路径列表
-        CRecentFolderAndPlaylist::Instance().Init();
+        // 如果是当前播放则使用CPlayer成员方法处理
+        if (!CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetCurrentDir2() == del_path)
+        {
+            CPlayer::GetInstance().RemoveCurPlaylistOrFolder();
+        }
+        else
+        {
+            deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
+            auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == del_path; });
+            recent_path.erase(iter);        // 删除选中的路径
+            ShowPathList();                 // 重新显示路径列表
+            CRecentFolderAndPlaylist::Instance().Init();
+        }
     }
 }
 

@@ -200,8 +200,9 @@ void CPlayer::IniPlayList(bool play, bool refresh_info)
 UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 {
     CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
-    SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_START, 0, 0);
     ThreadInfo* pInfo = (ThreadInfo*)lpParam;
+    wstring remove_list_path{ pInfo->remove_list_path };
+    SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_START, (WPARAM)&remove_list_path, 0);
 
     // 解析原始cue文件，对于m_playlist内已切分的分轨（is_cue == true）GetCueTracks不做任何处理
     // m_playlist内含原始cue文件时（文件夹模式）强制刷新才会生效，执行后仅file_path、track、is_cue可用
@@ -358,6 +359,9 @@ void CPlayer::IniPlaylistComplate()
 
     SaveRecentInfoToFiles();
 
+    // 移除文件夹后会切入默认播放列表，但此时实际上需要刷新媒体库文件夹/播放列表两个标签页
+    if (!m_thread_info.remove_list_path.empty() && CCommon::IsFolder(m_thread_info.remove_list_path))
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
     // 刷新媒体库标签页（需要在SaveRecentInfoToFiles()之后，GetPlayStatusMutex().unlock()之前进行）
     CMusicPlayerCmdHelper::RefreshMediaTabData(m_playlist_mode ? CMusicPlayerCmdHelper::ML_PLAYLIST : CMusicPlayerCmdHelper::ML_FOLDER);
 
@@ -1296,6 +1300,46 @@ bool CPlayer::SetContainSubFolder()
         return ReloadPlaylist(false);
     }
     return true;    // 播放列表模式返回true
+}
+
+bool CPlayer::RemoveCurPlaylistOrFolder()
+{
+    if (m_loading) return false;
+    if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return false;
+    m_loading = true;
+    IniPlayerCore();
+
+    SaveRecentInfoToFiles();
+
+    // 实现切换到播放列表模式时的同曲目播放保持
+    if (theApp.m_play_setting_data.continue_when_switch_playlist)
+    {
+        m_current_song_tmp = GetCurrentSongInfo();
+        m_current_song_position_tmp = GetCurrentPosition();
+        m_current_song_playing_tmp = IsPlaying();
+    }
+
+    MusicControl(Command::CLOSE);
+
+    // 在列表初始化线程中通知主窗口移除当前列表
+    if (m_playlist_mode)
+        m_thread_info.remove_list_path = m_playlist_path;
+    else
+        m_thread_info.remove_list_path = m_path;
+
+    const PlaylistInfo& def_playlist = CPlaylistMgr::Instance().m_default_playlist;
+
+    m_path.clear();
+    m_playlist_path = def_playlist.path;
+    m_playlist_mode = true;
+    m_sort_mode = SM_FILE;
+    m_descending = false;
+    m_contain_sub_folder = false;
+    m_index = def_playlist.track;
+    m_current_position.fromInt(def_playlist.position);
+
+    IniPlayList();
+    return true;
 }
 
 #pragma endregion 列表初始化方法

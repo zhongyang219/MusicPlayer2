@@ -623,31 +623,25 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
     // TODO: 在此添加命令处理程序代码
     int index{ m_row_selected - SPEC_PLAYLIST_NUM };
     int playlists_size{ static_cast<int>(CPlaylistMgr::Instance().m_recent_playlists.size()) };
-    if (index >= 0 && index < playlists_size)
-    {
-        wstring playlist_path = CPlaylistMgr::Instance().m_recent_playlists[index].path;
-        if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())      //如果删除的是正在播放的播放列表，则播放默认播放列表
-        {
-            auto& default_playlist = CPlaylistMgr::Instance().m_default_playlist;
-            CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
-        }
-        CPlaylistMgr::Instance().DeletePlaylist(playlist_path);
-        CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
-        ShowPathList();
-        CRecentFolderAndPlaylist::Instance().Init();
-    }
+    wstring del_path;
+    if (index >= 0 && index < playlists_size)  // 如果是用户播放列表
+        del_path = CPlaylistMgr::Instance().m_recent_playlists[index].path;
     else if (index == playlists_size)           // 删除的是临时播放列表
+        del_path = CPlaylistMgr::Instance().m_temp_playlist.path;
+    if (del_path.empty())
+        return;
+
+    // 如果是当前播放那么使用CPlayer成员方法处理
+    if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetPlaylistPath() == del_path)
     {
-        if (CPlaylistMgr::Instance().m_cur_playlist_type == PT_TEMP)
-        {
-            auto& default_playlist = CPlaylistMgr::Instance().m_default_playlist;
-            CPlayer::GetInstance().SetPlaylist(default_playlist.path, default_playlist.track, default_playlist.position);
-        }
-        CPlaylistMgr::Instance().m_temp_playlist.track_num = 0;
-        wstring playlist_path{ CPlaylistMgr::Instance().m_temp_playlist.path };
-        CCommon::DeleteAFile(this->GetSafeHwnd(), playlist_path);
-        ShowPathList();
+        CPlayer::GetInstance().RemoveCurPlaylistOrFolder();
+    }
+    else
+    {
+        CPlaylistMgr::Instance().DeletePlaylist(del_path);
+        CCommon::DeleteAFile(this->GetSafeHwnd(), del_path);
         CRecentFolderAndPlaylist::Instance().Init();
+        ShowPathList();
     }
 }
 
