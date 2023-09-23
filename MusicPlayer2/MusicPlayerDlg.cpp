@@ -869,8 +869,8 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy, int playlist_width)
         m_splitter_ctrl.ShowWindow(SW_SHOW);
         CRect rect_splitter;
         rect_splitter.bottom = cy;
-        rect_splitter.left = cx - playlist_width;
-        rect_splitter.right = cx - playlist_width + m_layout.margin;
+        rect_splitter.left = cx - playlist_width - 1;
+        rect_splitter.right = cx - playlist_width + m_layout.margin - 1;
         m_splitter_ctrl.MoveWindow(rect_splitter);
     }
     else
@@ -1109,7 +1109,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
             if (theApp.m_play_setting_data.show_playstate_icon && CPlayer::GetInstance().GetPlayingState2() == 1)
                 m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.pause.GetIcon(), L"");
             else
-                m_pTaskbar->SetOverlayIcon(m_hWnd, HICON(), L"");
+                m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
         }
 #endif
     }

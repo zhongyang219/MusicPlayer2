@@ -322,7 +322,7 @@ void CSetPathDlg::OnOK()
     if (SelectedCanPlay())
     {
         PathInfo path_info = GetSelPath();
-        CPlayer::GetInstance().SetPath(path_info, true);
+        CPlayer::GetInstance().SetPath(path_info);
         CTabDlg::OnOK();
         CWnd* pParent = GetParentWindow();
         if (pParent != nullptr)

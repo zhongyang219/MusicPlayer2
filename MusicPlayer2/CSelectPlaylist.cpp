@@ -493,9 +493,9 @@ void CSelectPlaylistDlg::OnOK()
     if (SelectedCanPlay())
     {
         PlaylistInfo sel_playlist = GetSelectedPlaylist();
-        if (m_left_selected || m_right_selected_item < 0)    // 左侧选中或右侧选中无效则使用之前保存的信息播放选中播放列表，设置play为true，force为false
+        if (m_left_selected || m_right_selected_item < 0)    // 左侧选中或右侧选中无效则使用之前保存的信息播放选中播放列表，设置play为false，force为false
         {
-            CPlayer::GetInstance().SetPlaylist(sel_playlist.path, sel_playlist.track, sel_playlist.position, true, false);
+            CPlayer::GetInstance().SetPlaylist(sel_playlist.path, sel_playlist.track, sel_playlist.position, false, false);
         }
         else        // 否则播放m_right_selected_item指定曲目，设置play为true，force为true
         {
