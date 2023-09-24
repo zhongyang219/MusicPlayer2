@@ -1901,7 +1901,10 @@ unsigned __int64 CCommon::GetCurTimeElapse()
     SYSTEMTIME sys_time;
     GetLocalTime(&sys_time);
     CTime cur_time(sys_time);
-    return cur_time.GetTime();
+    unsigned __int64 c_time = cur_time.GetTime();
+    static unsigned __int64 last_time{};
+    last_time = (last_time < c_time) ? c_time : (last_time + 1);
+    return last_time;
 }
 
 wstring CCommon::EncodeURIComponent(wstring uri) {
