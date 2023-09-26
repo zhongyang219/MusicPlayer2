@@ -73,7 +73,7 @@ public:
     int FixPlaylistPathError(const std::wstring& path);
 
 protected:
-    bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
+    void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 
     //判断一个音频文件的最后修改时间是否比上次获取到的最后修改时间新并更新修改时间
     static bool IsSongNewer(SongInfo& song_info);

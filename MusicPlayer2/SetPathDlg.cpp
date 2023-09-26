@@ -322,12 +322,14 @@ void CSetPathDlg::OnOK()
     if (SelectedCanPlay())
     {
         PathInfo path_info = GetSelPath();
-        CPlayer::GetInstance().SetPath(path_info);
-        CTabDlg::OnOK();
-        CWnd* pParent = GetParentWindow();
-        if (pParent != nullptr)
+        if (!CPlayer::GetInstance().SetPath(path_info))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
         {
-            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+            CTabDlg::OnOK();
+            CWnd* pParent = GetParentWindow();
+            if (pParent != nullptr)
+                ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
         }
     }
 }
@@ -353,12 +355,15 @@ void CSetPathDlg::OnBnClickedOpenFolder()
         folderPickerDlg.GetCheckButtonState(IDC_OPEN_CHECKBOX, checked);
         include_sub_dir = (checked != FALSE);
 #endif
-        CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir);
-        // “打开新路径”处理完成后向媒体库请求关闭对话框
-        CTabDlg::OnOK();
-        CWnd* pParent = GetParentWindow();
-        if (pParent != nullptr)
-            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+        if (!CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
+        {
+            CTabDlg::OnOK();
+            CWnd* pParent = GetParentWindow();
+            if (pParent != nullptr)
+                ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+        }
     }
 }
 
@@ -379,7 +384,8 @@ void CSetPathDlg::OnDeletePath()
         // 如果是当前播放则使用CPlayer成员方法处理
         if (!CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetCurrentDir2() == del_path)
         {
-            CPlayer::GetInstance().RemoveCurPlaylistOrFolder();
+            if (!CPlayer::GetInstance().RemoveCurPlaylistOrFolder())
+                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
         }
         else
         {
@@ -491,8 +497,8 @@ void CSetPathDlg::OnContainSubFolder()
         // 如果是当前播放则使用CPlayer成员方法更改（会启动播放列表初始化）不需要操作CPlayer::GetInstance().GetRecentPath()
         if (!CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetCurrentDir2() == sel_path)
         {
-            // 这个不一定成功（没取得锁），将来需要加个提示
-            CPlayer::GetInstance().SetContainSubFolder();
+            if (!CPlayer::GetInstance().SetContainSubFolder())
+                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
         }
         else
         {

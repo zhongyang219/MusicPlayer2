@@ -456,11 +456,14 @@ void CFolderExploreDlg::OnOK()
     if (m_left_selected)        //选中左侧树时，播放选中文件夹
     {
         wstring folder_path{ m_folder_explore_tree.GetItemPath(m_tree_item_selected) };
-        CPlayer::GetInstance().OpenFolder(folder_path, true, true);
-        CTabDlg::OnOK();
-        CWnd* pParent = GetParentWindow();
-        if (pParent != nullptr)
-            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+        if (!CPlayer::GetInstance().OpenFolder(folder_path, true, true))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            CTabDlg::OnOK();
+            CWnd* pParent = GetParentWindow();
+            if (pParent != nullptr)
+                ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+        }
     }
     else
     {

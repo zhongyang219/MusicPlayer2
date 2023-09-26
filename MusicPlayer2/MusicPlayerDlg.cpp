@@ -3052,7 +3052,8 @@ void CMusicPlayerDlg::OnFileOpen()
     CCommon::DoOpenFileDlg(filter, files, this);
     if (!files.empty())
     {
-        CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files);
+        if (!CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -3077,7 +3078,8 @@ void CMusicPlayerDlg::OnFileOpenFolder()
         folderPickerDlg.GetCheckButtonState(IDC_OPEN_CHECKBOX, checked);
         include_sub_dir = (checked != FALSE);
 #endif
-        CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir);
+        if (!CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -3087,20 +3089,16 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     vector<wstring> files;  //储存拖放到窗口的多个文件路径
     TCHAR file_path[MAX_PATH];
-    int drop_count = DragQueryFile(hDropInfo, -1, NULL, 0);     //取得被拖动文件的数目
+    int drop_count = DragQueryFileW(hDropInfo, -1, NULL, 0);     //取得被拖动文件的数目
     //获取第1个文件
     DragQueryFile(hDropInfo, 0, file_path, MAX_PATH);
     wstring file_path_wcs{ file_path };
     //if (file_path_wcs.size() > 4 && file_path_wcs[file_path_wcs.size() - 4] != L'.' && file_path_wcs[file_path_wcs.size() - 5] != L'.')
+    bool ok{};
     if (CCommon::IsFolder(file_path_wcs))
-    {
-        //file_path_wcs.push_back(L'\\');
-        CPlayer::GetInstance().OpenFolder(file_path_wcs);
-    }
+        ok = CPlayer::GetInstance().OpenFolder(file_path_wcs);
     else if (CPlaylistFile::IsPlaylistFile(file_path_wcs))
-    {
-        CPlayer::GetInstance().OpenPlaylistFile(file_path_wcs);
-    }
+        ok = CPlayer::GetInstance().OpenPlaylistFile(file_path_wcs);
     else
     {
         for (int i{}; i < drop_count; i++)
@@ -3113,15 +3111,17 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
         {
             if (CPlayer::GetInstance().IsPlaylistMode())
             {
-                if (!CPlayer::GetInstance().AddFilesToPlaylist(files))
+                int rtn = CPlayer::GetInstance().AddFilesToPlaylist(files);
+                ok = (rtn != -1);   // 返回值不是-1说明没有遇到取得锁失败的问题
+                if (rtn == 0)
                     MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
             }
             else
-            {
-                CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files, false);
-            }
+                ok = CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files, false);
         }
     }
+    if (!ok)
+        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
 
     CMainDialogBase::OnDropFiles(hDropInfo);
 }
@@ -3290,7 +3290,8 @@ void CMusicPlayerDlg::OnOptionSettings()
 void CMusicPlayerDlg::OnReloadPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().ReloadPlaylist();
+    if (!CPlayer::GetInstance().ReloadPlaylist())
+        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
 
@@ -3450,14 +3451,16 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                 {
                     if (item.playlist_info != nullptr)
                     {
-                        CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position);
+                        if (!CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position))
+                            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
                     }
                 }
                 else
                 {
                     if (item.folder_info != nullptr)
                     {
-                        CPlayer::GetInstance().SetPath(*item.folder_info);
+                        if (!CPlayer::GetInstance().SetPath(*item.folder_info))
+                            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
                     }
                 }
             }
@@ -5352,8 +5355,11 @@ void CMusicPlayerDlg::OnPlaylistAddFile()
     CCommon::DoOpenFileDlg(filter, files, this);
     if (!files.empty())
     {
-        if (!CPlayer::GetInstance().AddFilesToPlaylist(files))
+        int rtn = CPlayer::GetInstance().AddFilesToPlaylist(files);
+        if (rtn == 0)
             MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        else if(rtn == -1)
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -5523,8 +5529,11 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
         {
             CAudioCommon::GetAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list, MAX_SONG_NUM, include_sub_dir);
         }
-        if (!CPlayer::GetInstance().AddFilesToPlaylist(file_list))
+        int rtn = CPlayer::GetInstance().AddFilesToPlaylist(file_list);
+        if (rtn == 0)
             MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        else if (rtn == -1)
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
 
     }
 }
@@ -5635,7 +5644,8 @@ void CMusicPlayerDlg::OnFileOpenUrl()
         }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
-        CPlayer::GetInstance().OpenFilesInDefaultPlaylist(vecUrl);
+        if (!CPlayer::GetInstance().OpenFilesInDefaultPlaylist(vecUrl))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -5643,6 +5653,9 @@ void CMusicPlayerDlg::OnFileOpenUrl()
 void CMusicPlayerDlg::OnPlaylistAddUrl()
 {
     // TODO: 在此添加命令处理程序代码
+    if (!CPlayer::GetInstance().IsPlaylistMode())
+        return;
+
     CInputDlg input_dlg;
     input_dlg.SetTitle(CCommon::LoadText(IDS_ADD_URL));
     input_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_URL_TIP));
@@ -5656,8 +5669,11 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
         }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
-        if (!CPlayer::GetInstance().AddFilesToPlaylist(vecUrl))
+        int rtn = CPlayer::GetInstance().AddFilesToPlaylist(vecUrl);
+        if (rtn == 0)
             MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        else if (rtn == -1)
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -5915,7 +5931,8 @@ void CMusicPlayerDlg::OnFileOpenPlaylist()
     if (IDOK == fileDlg.DoModal())
     {
         wstring file_path{ fileDlg.GetPathName() };
-        CPlayer::GetInstance().OpenPlaylistFile(file_path);
+        if (!CPlayer::GetInstance().OpenPlaylistFile(file_path))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
 
 }
@@ -6164,7 +6181,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnMainWindowActivated(WPARAM wParam, LPARAM lPa
 void CMusicPlayerDlg::OnContainSubFolder()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().SetContainSubFolder();
+    if (!CPlayer::GetInstance().SetContainSubFolder())
+        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
 

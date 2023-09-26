@@ -3936,6 +3936,7 @@ BEGIN
     IDS_ARTIST_SPLIT_EXT_TIP_INFO "添加所有名称本身含有“/;&&、”的艺术家作为例外，避免程序误识别。"
     IDS_FILES_TOO_SHORT     "过短的文件"
     IDS_FILES_NON_MAIN_IN_OSU "osu! 文件夹中的非主要文件"
+    IDS_WAIT_AND_RETRY      "请等待当前操作完成后重试。"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -7299,6 +7300,7 @@ BEGIN
                             "Add all artists whose names contain ""/;&&、"" as exceptions to prevent inadvertent recognition errors."
     IDS_FILES_TOO_SHORT     "Too short files"
     IDS_FILES_NON_MAIN_IN_OSU "Non-main files in the osu! folder"
+    IDS_WAIT_AND_RETRY      "Please wait and try again after the current operation is completed."
 END
 
 #endif    // 英语(美国) resources

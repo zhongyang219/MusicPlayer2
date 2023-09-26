@@ -801,6 +801,7 @@
 #define IDS_ARTIST_SPLIT_EXT_TIP_INFO   603
 #define IDS_FILES_TOO_SHORT             604
 #define IDS_FILES_NON_MAIN_IN_OSU       605
+#define IDS_WAIT_AND_RETRY              606
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002

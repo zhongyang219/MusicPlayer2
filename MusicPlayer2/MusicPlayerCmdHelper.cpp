@@ -126,8 +126,6 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         std::vector<SongInfo> selected_item_path;
         get_song_list(selected_item_path);
 
-        CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
-
         if (command == ID_ADD_TO_OTHER_PLAYLIST)
         {
             CAddToPlaylistDlg dlg;
@@ -136,23 +134,19 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 wstring playlist_path = theApp.m_playlist_dir + dlg.GetPlaylistSelected().GetString() + PLAYLIST_EXTENSION;
                 if (CCommon::FileExist(playlist_path))
                 {
-                    if (!AddToPlaylist(selected_item_path, playlist_path))
-                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
-
+                    AddToPlaylist(selected_item_path, playlist_path);
                 }
             }
         }
         else if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //添加到默认播放列表
         {
             std::wstring default_playlist_path = CPlaylistMgr::Instance().m_default_playlist.path;
-            if (!AddToPlaylist(selected_item_path, default_playlist_path))
-                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+            AddToPlaylist(selected_item_path, default_playlist_path);
         }
         else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
         {
             std::wstring favourite_playlist_path = CPlaylistMgr::Instance().m_favourite_playlist.path;
-            if (!AddToPlaylist(selected_item_path, favourite_playlist_path))
-                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+            AddToPlaylist(selected_item_path, favourite_playlist_path);
 
             //添加到“我喜欢”播放列表后，为添加的项目设置favourite标记
             for (const auto& item : selected_item_path)
@@ -183,8 +177,7 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 wstring playlist_path = theApp.m_playlist_dir + menu_string.GetString() + PLAYLIST_EXTENSION;
                 if (CCommon::FileExist(playlist_path))
                 {
-                    if (!AddToPlaylist(selected_item_path, playlist_path))
-                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+                    AddToPlaylist(selected_item_path, playlist_path);
                 }
                 else
                 {
@@ -758,22 +751,25 @@ int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
     return fixed_count;
 }
 
-bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
+void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
 {
+    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (CPlayer::GetInstance().IsPlaylistMode() && playlist_path == CPlayer::GetInstance().GetPlaylistPath())
     {
-        return CPlayer::GetInstance().AddSongsToPlaylist(songs);
+        int rtn = CPlayer::GetInstance().AddSongsToPlaylist(songs);
+        if (rtn == 0)
+            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        else if (rtn == -1)
+            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
     else
     {
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
         if (playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.insert_begin_of_playlist))
-        {
             playlist.SaveToFile(playlist_path);
-            return true;
-        }
-        return false;
+        else
+            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 

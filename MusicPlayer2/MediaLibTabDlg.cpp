@@ -83,19 +83,20 @@ void CMediaLibTabDlg::OnOK()
     GetSongsSelected(songs);
     if (!songs.empty())
     {
+        bool ok{};
         if (songs.size() > 1 || CFilePathHelper(songs[0].file_path).GetFileExtension() == L"cue")   // 为兼容可存在.cue文件的旧媒体库保留
-        {
-            CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
-        }
+            ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
+        else
+            ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(GetSongList(), GetItemSelected());
+        if (!ok)
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
         else
         {
-            CPlayer::GetInstance().OpenSongsInTempPlaylist(GetSongList(), GetItemSelected());
+            CTabDlg::OnOK();
+            CWnd* pParent = GetParentWindow();
+            if (pParent != nullptr)
+                ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
         }
-
-        CTabDlg::OnOK();
-        CWnd* pParent = GetParentWindow();
-        if (pParent != nullptr)
-            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 }
 
@@ -166,8 +167,10 @@ void CMediaLibTabDlg::OnPlayItemInFolderMode()
     int sel_item{ GetItemSelected() };
     if (sel_item >= 0 && sel_item < static_cast<int>(GetSongList().size()))
     {
-        CPlayer::GetInstance().OpenASongInFolderMode(GetSongList()[sel_item], true);
-        OnCancel();
+        if (!CPlayer::GetInstance().OpenASongInFolderMode(GetSongList()[sel_item], true))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
+            OnCancel();
     }
 }
 
@@ -186,8 +189,10 @@ void CMediaLibTabDlg::OnAddToNewPalylistAndPlay()
     wstring playlist_path;
     if (_OnAddToNewPlaylist(playlist_path))
     {
-        CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true);
-        OnCancel();
+        if (!CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
+            OnCancel();
     }
 }
 

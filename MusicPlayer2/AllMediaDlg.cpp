@@ -278,19 +278,20 @@ void CAllMediaDlg::OnOK()
     GetSongsSelected(songs);
     if (!songs.empty())
     {
+        bool ok{};
         if (songs.size() == 1)
-        {
-            CPlayer::GetInstance().OpenSongsInDefaultPlaylist(songs);
-        }
+            ok = CPlayer::GetInstance().OpenSongsInDefaultPlaylist(songs);
+        else
+            ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
+        if (!ok)
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
         else
         {
-            CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
+            CTabDlg::OnOK();
+            CWnd* pParent = GetParentWindow();
+            if (pParent != nullptr)
+                ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
         }
-
-        CTabDlg::OnOK();
-        CWnd* pParent = GetParentWindow();
-        if (pParent != nullptr)
-            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 }
 

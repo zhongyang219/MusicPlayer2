@@ -281,11 +281,14 @@ private:
 
     // 更新并保存最近播放文件夹/播放列表到文件，PlayTrack不需要保存playlist故设置参数控制
     void SaveRecentInfoToFiles(bool save_playlist = true);
+    // 启动列表初始化方法前的共有操作
+    bool BeforeIniPlayList(bool continue_play = false, bool force_continue_play = false);
 
 public:
-    // 以下十个方法调用后时间上直到IniPlaylistComplate的最后unlock为止
+    // 以下方法调用后时间上直到IniPlaylistComplate的最后unlock为止
     // 都是处于与IniPlaylistThreadFunc/IniPlaylistComplate/CMusicPlayerDlg::OnPlaylistIniComplate的数据竞争状态
-    // 建议改在调用以下方法之前或IniPlaylistComplate中进行需要的操作，代替紧接着调用与上述方法竞争数据的方法
+    // 这些方法已经尽量包办了所有需要的操作，调用方请尽快返回
+    // 返回false（addtoplaylist返回-1）时调用方需要放弃并提示用户重试，初始化流程需要主线程参与故返回false时等待无意义
 
 #pragma region 列表初始化方法
 
@@ -308,16 +311,16 @@ public:
     // 向默认播放列表添加并打开多个歌曲，play用来设置是否立即播放（没能取得播放状态锁返回false）
     bool OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool play = true);
     // 打开多个歌曲并覆盖临时播放列表，play用来设置是否立即播放
-    void OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_index = 0, bool play = true);
+    bool OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_index = 0, bool play = true);
     // 切换到此歌曲音频文件目录的文件夹模式并播放此歌曲
-    void OpenASongInFolderMode(const SongInfo& song, bool play = false);
+    bool OpenASongInFolderMode(const SongInfo& song, bool play = false);
 
-    // 向当前播放列表添加文件，仅在播放列表模式可用，如果一个都没有添加，则返回false，否则返回true
+    // 向当前播放列表添加文件，仅在播放列表模式可用，返回成功添加的数量（拒绝重复曲目）
     // 由于cue解析问题，请在判断需要“添加歌曲”而不是“添加文件”时尽量使用CPlayer::AddSongs代替此方法而不是使用path构建SongInfo
-    // files内含有cue原始文件时返回值可能不正确（处理在线程函数，无法及时返回是否添加，初始化线程结束后有保存操作，不要另外执行保存）
-    bool AddFilesToPlaylist(const vector<wstring>& files);
-    // 向当前播放列表添加歌曲，仅在播放列表模式可用，如果一个都没有添加，则返回false，否则返回true
-    bool AddSongsToPlaylist(const vector<SongInfo>& songs);
+    // files内含有cue原始文件时返回值可能不正确（处理在线程函数，无法及时得知是否添加）
+    int AddFilesToPlaylist(const vector<wstring>& files);
+    // 向当前播放列表添加歌曲，仅在播放列表模式可用，返回成功添加的数量（拒绝重复曲目）
+    int AddSongsToPlaylist(const vector<SongInfo>& songs);
 
     // 重新载入播放列表（没能取得播放状态锁返回false）
     bool ReloadPlaylist(bool refresh_info = true);

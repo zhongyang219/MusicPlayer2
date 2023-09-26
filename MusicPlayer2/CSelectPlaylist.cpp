@@ -492,19 +492,21 @@ void CSelectPlaylistDlg::OnOK()
     // TODO: 在此添加专用代码和/或调用基类
     if (SelectedCanPlay())
     {
+        bool ok{};
         PlaylistInfo sel_playlist = GetSelectedPlaylist();
         if (m_left_selected || m_right_selected_item < 0)    // 左侧选中或右侧选中无效则使用之前保存的信息播放选中播放列表，设置play为false，force为false
-        {
-            CPlayer::GetInstance().SetPlaylist(sel_playlist.path, sel_playlist.track, sel_playlist.position, false, false);
-        }
+            ok = CPlayer::GetInstance().SetPlaylist(sel_playlist.path, sel_playlist.track, sel_playlist.position, false, false);
         else        // 否则播放m_right_selected_item指定曲目，设置play为true，force为true
+            ok = CPlayer::GetInstance().SetPlaylist(sel_playlist.path, m_right_selected_item, 0, true, true);
+        if (!ok)
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
         {
-            CPlayer::GetInstance().SetPlaylist(sel_playlist.path, m_right_selected_item, 0, true, true);
+            CTabDlg::OnOK();
+            CWnd* pParent = GetParentWindow();
+            if (pParent != nullptr)
+                ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
         }
-        CTabDlg::OnOK();
-        CWnd* pParent = GetParentWindow();
-        if (pParent != nullptr)
-            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 }
 
@@ -634,7 +636,8 @@ void CSelectPlaylistDlg::OnDeletePlaylist()
     // 如果是当前播放那么使用CPlayer成员方法处理
     if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetPlaylistPath() == del_path)
     {
-        CPlayer::GetInstance().RemoveCurPlaylistOrFolder();
+        if (!CPlayer::GetInstance().RemoveCurPlaylistOrFolder())
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
     else
     {
