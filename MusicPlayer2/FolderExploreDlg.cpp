@@ -210,7 +210,6 @@ BEGIN_MESSAGE_MAP(CFolderExploreDlg, CMediaLibTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMDblclkSongList)
     ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CFolderExploreDlg::OnEnChangeMfceditbrowse1)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFolderExploreDlg::OnSearchEditBtnClicked)
-    ON_COMMAND(ID_DELETE_FROM_DISK, &CFolderExploreDlg::OnDeleteFromDisk)
 END_MESSAGE_MAP()
 
 
@@ -412,15 +411,6 @@ afx_msg LRESULT CFolderExploreDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM 
         m_search_edit.SetWindowText(_T(""));
     }
     return 0;
-}
-
-
-void CFolderExploreDlg::OnInitMenu(CMenu* pMenu)
-{
-    CMediaLibTabDlg::OnInitMenu(pMenu);
-
-    // TODO: 在此处添加消息处理程序代码
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);
 }
 
 

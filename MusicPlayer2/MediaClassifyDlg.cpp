@@ -409,7 +409,6 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CMediaLibTabDlg)
     ON_NOTIFY(HDN_ITEMCLICK, 0, &CMediaClassifyDlg::OnHdnItemclickSongList)
     ON_WM_SIZE()
     ON_WM_DESTROY()
-    ON_COMMAND(ID_DELETE_FROM_DISK, &CMediaClassifyDlg::OnDeleteFromDisk)
 END_MESSAGE_MAP()
 
 

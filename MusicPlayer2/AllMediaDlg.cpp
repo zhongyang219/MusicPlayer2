@@ -302,7 +302,6 @@ BEGIN_MESSAGE_MAP(CAllMediaDlg, CMediaLibTabDlg)
     ON_NOTIFY(NM_RCLICK, IDC_SONG_LIST, &CAllMediaDlg::OnNMRClickSongList)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CAllMediaDlg::OnNMDblclkSongList)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CAllMediaDlg::OnSearchEditBtnClicked)
-    ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 

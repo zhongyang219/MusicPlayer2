@@ -175,13 +175,9 @@ void CSetPathDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CSetPathDlg, CTabDlg)
-//  ON_LBN_SELCHANGE(IDC_LIST1, &CSetPathDlg::OnLbnSelchangeList1)
-    ON_WM_DESTROY()
-    //ON_BN_CLICKED(IDC_DELETE_PATH_BUTTON, &CSetPathDlg::OnBnClickedDeletePathButton)
     ON_NOTIFY(NM_CLICK, IDC_PATH_LIST, &CSetPathDlg::OnNMClickPathList)
     ON_NOTIFY(NM_RCLICK, IDC_PATH_LIST, &CSetPathDlg::OnNMRClickPathList)
     ON_NOTIFY(NM_DBLCLK, IDC_PATH_LIST, &CSetPathDlg::OnNMDblclkPathList)
-    ON_WM_GETMINMAXINFO()
     ON_WM_SIZE()
     ON_BN_CLICKED(IDC_OPEN_FOLDER, &CSetPathDlg::OnBnClickedOpenFolder)
     ON_COMMAND(ID_PLAY_PATH, &CSetPathDlg::OnPlayPath)
@@ -221,12 +217,6 @@ BOOL CSetPathDlg::OnInitDialog()
     m_path_list.InsertColumn(6, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width[6]);
 
     m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
-
-    //获取初始时窗口的大小
-    CRect rect;
-    GetWindowRect(rect);
-    m_min_size.cx = rect.Width();
-    m_min_size.cy = rect.Height();
 
     ////初始化提示信息
     //m_Mytip.Create(this, TTS_ALWAYSTIP);
@@ -276,17 +266,6 @@ void CSetPathDlg::OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult)
     OnOK();
 
     *pResult = 0;
-}
-
-
-void CSetPathDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-    // TODO: 在此添加消息处理程序代码和/或调用默认值
-    //限制窗口最小大小
-    lpMMI->ptMinTrackSize.x = m_min_size.cx;        //设置最小宽度
-    lpMMI->ptMinTrackSize.y = m_min_size.cy;        //设置最小高度
-
-    CTabDlg::OnGetMinMaxInfo(lpMMI);
 }
 
 

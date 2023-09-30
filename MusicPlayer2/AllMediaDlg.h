@@ -64,8 +64,6 @@ protected:
     DialogType m_type{};
 
 protected:
-    virtual void RefreshSongList() override;        //刷新选中行的信息
-    virtual void OnTabEntered() override;
     void InitListData();
     void SetRowData(CListCtrlEx::RowData& row_data, const SongInfo& song);
     void UpdateListIndex();
@@ -74,18 +72,21 @@ protected:
     void SongListClicked(int index);
     void SetButtonsEnable(bool enable);
 
+    virtual void OnTabEntered() override;
+
     virtual const vector<SongInfo>& GetSongList() const override;
     virtual int GetItemSelected() const override;
     virtual const vector<int>& GetItemsSelected() const override;
+    virtual void RefreshSongList() override;        //刷新选中行的信息
     virtual void AfterDeleteFromDisk(const std::vector<SongInfo>& files) override;
     virtual wstring GetSelectedString() const override;
 
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-    virtual void OnOK() override;
 
     DECLARE_MESSAGE_MAP()
 public:
     virtual BOOL OnInitDialog();
+    virtual void OnOK();
     afx_msg void OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnEnChangeSearchEdit();
     afx_msg void OnNMClickSongList(NMHDR *pNMHDR, LRESULT *pResult);

@@ -38,7 +38,6 @@ protected:
 
     CEdit m_path_name;
     CSearchEditCtrl m_search_edit;
-    CSize m_min_size;                   // 窗口的最小大小
 
     // 判断选择是否有效
     bool SelectValid() const;
@@ -65,7 +64,6 @@ public:
     afx_msg void OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult);
-    afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
     afx_msg void OnSize(UINT nType, int cx, int cy);
     virtual void OnOK();
     afx_msg void OnBnClickedOpenFolder();

@@ -30,6 +30,8 @@ protected:
     // _OnAddToNewPlaylist以此方法获取建议的新播放列表名称
     virtual wstring GetNewPlaylistName() const { return L""; };
 
+    DECLARE_MESSAGE_MAP()
+
 private:
     // 执行添加到新建播放列表命令，成功返回true，playlist_path用于接收新播放列表的路径
     bool _OnAddToNewPlaylist(std::wstring& playlist_path);
@@ -44,8 +46,6 @@ public:
     virtual void OnOK();
     virtual void OnCancel();
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-
-    DECLARE_MESSAGE_MAP()
 
     afx_msg void OnInitMenu(CMenu* pMenu);
     afx_msg void OnPlayItem();

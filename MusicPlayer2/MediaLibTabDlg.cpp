@@ -4,6 +4,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
 #include "SongDataManager.h"
+#include "COSUPlayerHelper.h"
 
 
 IMPLEMENT_DYNAMIC(CMediaLibTabDlg, CTabDlg)
@@ -133,14 +134,18 @@ void CMediaLibTabDlg::OnInitMenu(CMenu* pMenu)
 {
     CTabDlg::OnInitMenu(pMenu);
 
-    // TODO: 在此处添加消息处理程序代码    vector<SongInfo> songs;
+    // TODO: 在此处添加消息处理程序代码
+    // 此处设置m_media_lib_popup_menu左侧菜单和右侧菜单的状态
     vector<SongInfo> songs;
     GetSongsSelected(songs);
     bool select_all_in_playing_list = CPlayer::GetInstance().IsSongsInPlayList(songs);
+    // 选中歌曲全部为cue或osu!文件时禁用从磁盘删除菜单项
+    bool can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
+        std::find_if(songs.begin(), songs.end(), [&](const SongInfo& song_info) { return song_info.is_cue || COSUPlayerHelper::IsOsuFile(song_info.file_path); }) != songs.end();
 
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);
+    pMenu->SetDefaultItem(ID_PLAY_ITEM);    // 左右菜单都有这一项
     pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (select_all_in_playing_list ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (theApp.m_media_lib_setting_data.disable_delete_from_disk ? MF_GRAYED : MF_ENABLED));
+    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
 }
 
 

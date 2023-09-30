@@ -10,6 +10,7 @@
 #include "Playlist.h"
 #include "AddToPlaylistDlg.h"
 #include "SongDataManager.h"
+#include "COSUPlayerHelper.h"
 
 
 // CFindDlg 对话框
@@ -605,10 +606,13 @@ void CFindDlg::OnInitMenu(CMenu* pMenu)
     vector<SongInfo> songs;
     GetSongsSelected(songs);
     bool select_all_in_playing_list = CPlayer::GetInstance().IsSongsInPlayList(songs);
+    // 选中歌曲全部为cue或osu!文件时禁用从磁盘删除菜单项
+    bool can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
+        std::find_if(songs.begin(), songs.end(), [&](const SongInfo& song_info) { return song_info.is_cue || COSUPlayerHelper::IsOsuFile(song_info.file_path); }) != songs.end();
 
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
     pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (select_all_in_playing_list ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (!theApp.m_media_lib_setting_data.disable_delete_from_disk ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
 }
 
 
