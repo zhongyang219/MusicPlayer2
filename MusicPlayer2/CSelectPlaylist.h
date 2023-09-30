@@ -21,8 +21,6 @@ public:
     enum { IDD = IDD_SELECT_PLAYLIST_DIALOG };
 #endif
 
-    // 歌曲属性更新后被调用
-    virtual void RefreshSongList() override;
     // 自动调整列表宽度
     void AdjustColumnWidth();
     // 完全重新载入标签页数据
@@ -68,38 +66,51 @@ private:
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-    void QuickSearch(const wstring& key_words);         //根据关键字执行快速查找m_search_result中
-    int GetPlayingItem();
+
     virtual void OnTabEntered() override;
-    void ShowSongList();
-
-    void LeftListClicked(int index);
-    void SongListClicked(int index);
-
-    void SetLeftListSelected(int index);
 
     virtual const vector<SongInfo>& GetSongList() const override;
     virtual int GetItemSelected() const override;
     virtual const vector<int>& GetItemsSelected() const override;
+    virtual void RefreshSongList() override;
     virtual void AfterDeleteFromDisk(const std::vector<SongInfo>& files) override;
     virtual wstring GetSelectedString() const override;
 
     DECLARE_MESSAGE_MAP()
 
-public:
-    virtual BOOL OnInitDialog();
-
 private:
+    // 根据关键字执行快速查找（更新m_search_result）
+    void QuickSearch(const wstring& key_words);
+    // 播放列表模式下在m_playlist_ctrl_data中查找当前播放的播放列表索引，否则返回-1
+    int GetPlayingItem();
+    // 左侧列表选中时在右侧列表显示其内容并更新此列表曲目数/总时长
+    void ShowSongList();
+    // 左侧列表点击时更新选中状态（参数为m_playlist_ctrl索引）
+    void LeftListClicked(int index);
+    // 右侧列表点击时更新选中状态（参数为m_song_list_ctrl索引）
+    void SongListClicked(int index);
+    // 设置左侧列表m_playlist_ctrl索引为index的项选中并高亮
+    void SetLeftListSelected(int index);
+    // 计算左侧列表列宽
     void CalculateColumeWidth(vector<int>& width);
+    // 更新m_playlist_ctrl_data并显示，搜索状态下搜索并显示
     void ShowPathList();
+    // 更新m_playlist_ctrl索引为index的除“序号”列以外的一行显示
     void SetListRowData(int index, const PlaylistInfo& playlist_info);
+    // 当前左侧列表选中有效
     bool LeftSelectValid() const;
+    // 获取左侧列表当前选中项对应PlaylistInfo，无效时返回空对象
     PlaylistInfo GetSelectedPlaylist() const;
+    // 向媒体库窗口发送消息更新按钮状态
     void SetButtonsEnable();
+    // 判断当前选中是否可播放
     bool SelectedCanPlay() const;
-    wstring DoNewPlaylist();        //执行“新建播放列表”操作，返回新播放列表的路径
+    // 执行“新建播放列表”操作，返回新播放列表的路径
+    wstring DoNewPlaylist();
 
 public:
+
+    virtual BOOL OnInitDialog();
     afx_msg void OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult);
     virtual void OnOK();
     afx_msg void OnBnClickedNewPlaylist();

@@ -53,7 +53,7 @@ bool CMediaLibTabDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
         GetSongsSelected(song_list);
     };
     CMusicPlayerCmdHelper cmd_helper(this);
-    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, GetNewPlaylistName());
 }
 
 UINT CMediaLibTabDlg::ViewOnlineThreadFunc(LPVOID lpParam)

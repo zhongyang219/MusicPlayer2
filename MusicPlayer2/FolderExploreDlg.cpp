@@ -139,19 +139,13 @@ void CFolderExploreDlg::SetButtonsEnable(bool enable)
     ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
 }
 
-bool CFolderExploreDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
+wstring CFolderExploreDlg::GetNewPlaylistName() const
 {
     std::wstring default_name;
     //如果选中了左侧列表，则添加到新建播放列表时名称自动填上选中项的名称
     default_name = m_folder_explore_tree.GetItemText(m_tree_item_selected);
     CCommon::FileNameNormalize(default_name);
-
-    auto getSongList = [&](std::vector<SongInfo>& song_list)
-    {
-        GetSongsSelected(song_list);
-    };
-    CMusicPlayerCmdHelper cmd_helper(this);
-    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, default_name);
+    return default_name;
 }
 
 void CFolderExploreDlg::OnTabEntered()
@@ -169,26 +163,6 @@ void CFolderExploreDlg::OnTabEntered()
     else
         play_enable = (!m_right_selected_items.empty());
     SetButtonsEnable(play_enable);
-}
-
-UINT CFolderExploreDlg::ViewOnlineThreadFunc(LPVOID lpParam)
-{
-    CFolderExploreDlg* pThis = (CFolderExploreDlg*)(lpParam);
-    if (pThis == nullptr)
-        return 0;
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
-    //此命令用于跳转到歌曲对应的网易云音乐的在线页面
-    if (pThis->m_right_selected_item >= 0 && pThis->m_right_selected_item < static_cast<int>(pThis->m_right_items.size()))
-    {
-        SongInfo sel_song = pThis->m_right_items[pThis->m_right_selected_item];
-        if (CCommon::FileExist(sel_song.file_path))
-        {
-            CMusicPlayerCmdHelper cmd_helper(pThis);
-            cmd_helper.VeiwOnline(sel_song);
-        }
-    }
-    return 0;
-
 }
 
 const vector<SongInfo>& CFolderExploreDlg::GetSongList() const

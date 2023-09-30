@@ -314,19 +314,14 @@ void CMediaClassifyDlg::OnTabEntered()
     }
 }
 
-bool CMediaClassifyDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
+wstring CMediaClassifyDlg::GetNewPlaylistName() const
 {
     std::wstring default_name;
     //如果选中了左侧列表，则添加到新建播放列表时名称自动填上选中项的名称
     if (m_classify_selected != STR_OTHER_CLASSIFY_TYPE)
         default_name = m_classify_selected;
-
-    auto getSongList = [&](std::vector<SongInfo>& song_list)
-    {
-        GetSongsSelected(song_list);
-    };
-    CMusicPlayerCmdHelper cmd_helper(this);
-    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, default_name);
+    CCommon::FileNameNormalize(default_name);
+    return default_name;
 }
 
 void CMediaClassifyDlg::CalculateClassifyListColumeWidth(std::vector<int>& width)
