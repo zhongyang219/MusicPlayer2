@@ -34,7 +34,7 @@ protected:
 
     CListCtrlEx m_path_list;            // 列表对象，数据加载自m_path_list_info，搜索状态下经过m_search_result筛选
     vector<PathInfo> m_path_list_info;  // 更新时复制自recent_path，因为无法确认recent_path修改时总能通知此窗口故使用复制保证与m_path_list的同步
-    size_t m_list_selected{};           // 选中的列表数据索引（搜索状态下不是m_path_list_info的索引）
+    int m_list_selected{};              // 选中的列表数据索引（搜索状态下不是m_path_list_info的索引）
 
     CEdit m_path_name;
     CSearchEditCtrl m_search_edit;

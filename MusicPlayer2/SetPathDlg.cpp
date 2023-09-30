@@ -49,10 +49,10 @@ void CSetPathDlg::RefreshTabData()
 
 bool CSetPathDlg::SelectValid() const
 {
-    size_t index{ m_list_selected };
-    if (m_searched && index >= 0 && index < m_search_result.size())
+    int index{ m_list_selected };
+    if (m_searched && index >= 0 && index < static_cast<int>(m_search_result.size()))
         index = m_search_result[index];
-    return index >= 0 && index < m_path_list_info.size();
+    return index >= 0 && index < static_cast<int>(m_path_list_info.size());
 }
 
 PathInfo CSetPathDlg::GetSelPath() const
@@ -87,16 +87,12 @@ void CSetPathDlg::ShowPathList()
     std::copy(recent_path.begin(), recent_path.end(), std::back_inserter(m_path_list_info));
 
     m_path_list.EnableWindow(TRUE);
+    m_path_list.DeleteAllItems();
     if (!m_searched)        //显示所有项目
     {
-        m_path_list.DeleteAllItems();
-        CString path_str;
-        for (size_t i{}; i < m_path_list_info.size(); i++)
+        for (size_t i{}; i < m_path_list_info.size(); ++i)
         {
-            CString str;
-            str.Format(_T("%d"), i + 1);
-            m_path_list.InsertItem(i, str);
-
+            m_path_list.InsertItem(i, std::to_wstring(i + 1).c_str());
             SetListRowData(i, m_path_list_info[i]);
         }
     }
@@ -107,31 +103,17 @@ void CSetPathDlg::ShowPathList()
         // 显示搜索结果
         if (m_search_result.empty())
         {
-            m_path_list.DeleteAllItems();
             m_path_list.InsertItem(0, _T(""));
             m_path_list.SetItemText(0, 1, CCommon::LoadText(IDS_NO_RESULT_TO_SHOW));
             m_path_list.EnableWindow(FALSE);
             return;
         }
-
-        int item_num_before = m_path_list.GetItemCount();
-        int item_num_after = m_search_result.size();
-        //如果当前列表中项目的数量小于原来的，则直接清空原来列表中所有的项目，重新添加
-        if (item_num_after < item_num_before)
+        int index{};
+        for (size_t i : m_search_result)
         {
-            m_path_list.DeleteAllItems();
-            item_num_before = 0;
-        }
-        CString str;
-        for (int i{}; i < item_num_after; i++)
-        {
-            str.Format(_T("%u"), m_search_result[i] + 1);
-            if (i >= item_num_before)   //如果当前列表中的项目数量大于之前的数量，则需要在不够时插入新的项目
-            {
-                m_path_list.InsertItem(i, str);
-            }
-            m_path_list.SetItemText(i, 0, str);     // 设置序号
-            SetListRowData(i, m_path_list_info[m_search_result[i]]);
+            m_path_list.InsertItem(index, std::to_wstring(i + 1).c_str());
+            SetListRowData(index, m_path_list_info[i]);
+            ++index;
         }
     }
 }
@@ -431,9 +413,7 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_DELETE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_BROWSE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-    bool contain_sub_folder{false};
-    if (select_valid)
-        contain_sub_folder = GetSelPath().contain_sub_folder;
+    bool contain_sub_folder{ select_valid && GetSelPath().contain_sub_folder };
     pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (contain_sub_folder ? MF_CHECKED : MF_UNCHECKED));
 }
 
@@ -506,8 +486,7 @@ void CSetPathDlg::OnContainSubFolder()
             auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == sel_path; });
             if (iter != recent_path.end())
             {
-                PathInfo& it = *iter;
-                it.contain_sub_folder = !it.contain_sub_folder;
+                iter->contain_sub_folder = !iter->contain_sub_folder;
                 ShowPathList();     // 重新显示路径列表
             }
         }
