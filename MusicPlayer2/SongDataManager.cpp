@@ -313,6 +313,30 @@ void CSongDataManager::LoadSongInfo(SongInfo& song_info)
     }
 }
 
+void CSongDataManager::LoadSongsInfo(vector<SongInfo>& songs_info)
+{
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
+    for (SongInfo& song_info : songs_info)
+    {
+        auto iter = m_song_data.find(song_info);
+        if (iter != m_song_data.end())
+        {
+            const SongInfo& temp = iter->second;
+            song_info.CopyAudioTag(temp);
+            song_info.cue_file_path = temp.cue_file_path;
+            song_info.start_pos = temp.start_pos;
+            song_info.end_pos = temp.end_pos;
+            song_info.bitrate = temp.bitrate;
+            song_info.song_id = temp.song_id;
+            song_info.info_acquired = temp.info_acquired;// 以后会更改为仅媒体库内使用，之后删掉这行
+            song_info.modified_time = temp.modified_time;
+            song_info.freq = temp.freq;
+            song_info.channels = temp.channels;
+            song_info.bits = temp.bits;
+        }
+    }
+}
+
 SongInfo CSongDataManager::GetSongInfo(const SongDataMapKey& key)
 {
     std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);

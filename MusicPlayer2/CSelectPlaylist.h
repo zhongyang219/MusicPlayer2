@@ -29,16 +29,16 @@ public:
     void RefreshTabData();
 
 private:
-    int m_row_selected{ -1 };       //左侧选中的播放列表的序号（不管是否处于搜索状态都为列表中“序号”一列的值）
-    int m_left_selected_index{ -1 };    //左侧列表选中行在列表中的索引（如果处于搜索状态，为列表选中项实际的索引）
-    //CMenu m_menu;
-    CSearchEditCtrl m_search_edit;
-    vector<int> m_search_result;                //储存快速搜索结果的歌曲序号
-    bool m_searched{ false };                   //是否处于搜索状态
 
-    bool m_left_selected{};                     //最后一次选中的是左侧还是右侧
-    int m_right_selected_item{ -1 };            //右侧列表选中的项目的序号
-    std::vector<int> m_right_selected_items;    //右侧列表多选选中的项目的序号
+    bool m_searched{ false };                   // 是否处于搜索状态
+    wstring m_searcher_str;                     // 搜索字符串
+    vector<size_t> m_search_result;             // 储存快速搜索结果的歌曲序号(筛选m_playlist_ctrl_data放入m_playlist_ctrl)
+    CSearchEditCtrl m_search_edit;
+
+    bool m_left_selected{ false };              // 最后一次选中的是左侧还是右侧
+    int m_left_selected_item{ -1 };             // 左侧选中的播放列表项目的索引（搜索状态下不是m_playlist_ctrl_data的索引）
+    int m_right_selected_item{ -1 };            // 右侧列表选中的项目的索引
+    std::vector<int> m_right_selected_items;    // 右侧列表多选选中的项目的索引
     wstring m_selected_string;
 
     enum
@@ -59,6 +59,7 @@ private:
         COL_MAX
     };
 
+    vector<PlaylistInfo> m_playlist_ctrl_data;  // 与CPlaylistMgr数据同步（含有特殊播放列表）
     CListCtrlEx m_playlist_ctrl;
     CListCtrlEx m_song_list_ctrl;
     CListCtrlEx::ListData m_list_data;  //右侧列表数据
@@ -76,7 +77,6 @@ protected:
     void SongListClicked(int index);
 
     void SetLeftListSelected(int index);
-    void UpdatePlaylistInfo(const std::wstring playlist_path, int song_num, int totla_time);
 
     virtual const vector<SongInfo>& GetSongList() const override;
     virtual int GetItemSelected() const override;
@@ -93,7 +93,7 @@ private:
     void CalculateColumeWidth(vector<int>& width);
     void ShowPathList();
     void SetListRowData(int index, const PlaylistInfo& playlist_info);
-    bool SelectValid() const;
+    bool LeftSelectValid() const;
     PlaylistInfo GetSelectedPlaylist() const;
     void SetButtonsEnable();
     bool SelectedCanPlay() const;

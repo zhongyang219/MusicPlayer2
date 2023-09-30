@@ -363,3 +363,22 @@ PlaylistType CPlaylistMgr::GetPlaylistType(const wstring& path) const
     else
         return PT_USER;
 }
+
+void CPlaylistMgr::RenamePlaylist(const wstring& old_path, const wstring& new_path)
+{
+    auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(),
+        [&](const PlaylistInfo& playlist_info) { return playlist_info.path == old_path; });
+    if (iter != m_recent_playlists.end())
+        iter->path = new_path;
+}
+
+void CPlaylistMgr::GetAllPlaylistInfo(vector<PlaylistInfo>& playlists_info)
+{
+    playlists_info.clear();
+    playlists_info.push_back(CPlaylistMgr::Instance().m_default_playlist);
+    playlists_info.push_back(CPlaylistMgr::Instance().m_favourite_playlist);
+    std::copy(m_recent_playlists.begin(), m_recent_playlists.end(), std::back_inserter(playlists_info));
+    // 只有当列表中有歌曲时才显示临时播放列表
+    if (CPlaylistMgr::Instance().m_temp_playlist.track_num > 0)
+        playlists_info.push_back(CPlaylistMgr::Instance().m_temp_playlist);
+}

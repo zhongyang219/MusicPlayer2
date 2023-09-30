@@ -131,9 +131,9 @@ void CPlaylistFile::FromSongList(const vector<SongInfo>& song_list)
     m_playlist = song_list;
 }
 
-void CPlaylistFile::ToSongList(vector<SongInfo>& song_list)
+void CPlaylistFile::MoveToSongList(vector<SongInfo>& song_list)
 {
-    song_list.insert(song_list.end(), m_playlist.begin(), m_playlist.end());
+    song_list = std::move(m_playlist);
 }
 
 bool CPlaylistFile::IsSongInPlaylist(const SongInfo& song)

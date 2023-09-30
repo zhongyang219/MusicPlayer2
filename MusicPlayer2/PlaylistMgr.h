@@ -40,6 +40,11 @@ public:
     PlaylistInfo GetCurrentPlaylistInfo() const;
     PlaylistType GetPlaylistType(const wstring& path) const;
 
+    // 重命名播放列表后以此更新m_recent_playlists
+    void RenamePlaylist(const wstring& old_path, const wstring& new_path);
+    // CSelectPlaylistDlg使用此方法获取/更新显示数据
+    void GetAllPlaylistInfo(vector<PlaylistInfo>& playlists_info);
+
 private:
     CPlaylistMgr();
 

@@ -58,6 +58,7 @@ public:
     void SaveSongInfo(const SongInfo& song_info);
     // 从媒体库加载信息更新到播放列表项目
     void LoadSongInfo(SongInfo& song_info);
+    void LoadSongsInfo(vector<SongInfo>& song_info);
 
     SongInfo GetSongInfo(const SongDataMapKey& key);
     // 获取一个媒体库歌曲信息（不存在会返回和参数song一致的SongInfo）

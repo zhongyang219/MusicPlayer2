@@ -164,7 +164,7 @@ void CPlayer::IniPlayList(bool play, bool refresh_info)
         CPlaylistMgr::Instance().UpdateCurrentPlaylistType(m_playlist_path);
         CPlaylistFile playlist;
         playlist.LoadFromFile(m_playlist_path);
-        playlist.ToSongList(m_playlist);
+        playlist.MoveToSongList(m_playlist);
     }
     else
     {
