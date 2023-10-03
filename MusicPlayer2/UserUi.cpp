@@ -392,11 +392,15 @@ bool CUserUi::MouseWheel(int delta, CPoint point)
         IterateAllElements([&](UiElement::Element* element) ->bool
         {
             UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
-            if (stack_element != nullptr && stack_element->scroll_to_switch)
+            if (stack_element != nullptr)
             {
-                stack_element->SwitchDisplay(delta > 0);
-                rtn = true;
-                return true;
+                //如果鼠标指向指示器，或者指定了scroll_to_switch属性时鼠标指向stackElement区域，通过鼠标滚轮切换显示
+                if ((stack_element->show_indicator && stack_element->indicator.rect.PtInRect(point)) || (stack_element->scroll_to_switch && stack_element->GetRect().PtInRect(point)))
+                {
+                    stack_element->SwitchDisplay(delta > 0);
+                    rtn = true;
+                    return true;
+                }
             }
             return false;
         });
