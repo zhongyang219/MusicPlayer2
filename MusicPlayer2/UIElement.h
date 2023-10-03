@@ -80,10 +80,11 @@ namespace UiElement
     {
     public:
         void SetCurrentElement(int index);
-        void SwitchDisplay();
+        void SwitchDisplay(bool previous = false);
         virtual void Draw() override;
-        bool ckick_to_switch{};     //鼠标点击时切换
+        bool click_to_switch{};     //鼠标点击时切换
         bool hover_to_switch{};     //鼠标指向时切换
+        bool scroll_to_switch{};	//鼠标滚轮切换
         bool show_indicator{};
         int indicator_offset{};
         bool mouse_hover{};
