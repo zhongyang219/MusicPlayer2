@@ -211,9 +211,14 @@
         <xs:documentation>堆叠元素，可包含多个子元素，其所有子元素中只显示其中一个。</xs:documentation>
       </xs:annotation>
       <xs:group ref="elements"></xs:group>
-      <xs:attribute name="ckick_to_switch" type="xs:boolean">
+      <xs:attribute name="click_to_switch" type="xs:boolean">
         <xs:annotation>
           <xs:documentation>如果为true，则可以通过单击切换显示。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="scroll_to_switch" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>如果为true，则可以通过鼠标滚轮切换显示。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attribute name="hover_to_switch" type="xs:boolean">

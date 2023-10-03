@@ -520,11 +520,20 @@ void UiElement::StackElement::SetCurrentElement(int index)
         index = 0;
 }
 
-void UiElement::StackElement::SwitchDisplay()
+void UiElement::StackElement::SwitchDisplay(bool previous)
 {
-    cur_index++;
-    if (cur_index >= static_cast<int>(childLst.size()))
-        cur_index = 0;
+    if (previous)
+    {
+        cur_index--;
+        if (cur_index < 0)
+            cur_index = static_cast<int>(childLst.size()) - 1;
+    }
+    else
+    {
+        cur_index++;
+        if (cur_index >= static_cast<int>(childLst.size()))
+            cur_index = 0;
+    }
 }
 
 void UiElement::StackElement::Draw()

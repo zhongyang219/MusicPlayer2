@@ -225,7 +225,7 @@ bool CUserUi::LButtonUp(CPoint point)
                 stack_element->indicator.pressed = false;
 
                 if ((pressed && stack_element->indicator.rect.PtInRect(point) && stack_element->indicator.enable)
-                    || (stack_element->ckick_to_switch && stack_element->GetRect().PtInRect(point)))
+                    || (stack_element->click_to_switch && stack_element->GetRect().PtInRect(point)))
                 {
                     m_draw_data.lyric_rect.SetRectEmpty();
                     stack_element->SwitchDisplay();
@@ -385,6 +385,22 @@ bool CUserUi::MouseWheel(int delta, CPoint point)
         }
         return false;
     });
+
+    if (!rtn)
+    {
+        //遍历stackElement元素
+        IterateAllElements([&](UiElement::Element* element) ->bool
+        {
+            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
+            if (stack_element != nullptr && stack_element->scroll_to_switch)
+            {
+                stack_element->SwitchDisplay(delta > 0);
+                rtn = true;
+                return true;
+            }
+            return false;
+        });
+    }
 
     if (rtn)
         return true;
@@ -679,12 +695,15 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
             if (stack_element != nullptr)
             {
-                std::string str_click_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "ckick_to_switch");
+                std::string str_click_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "click_to_switch");
                 if (!str_click_to_switch.empty())
-                    stack_element->ckick_to_switch = CTinyXml2Helper::StringToBool(str_click_to_switch.c_str());
+                    stack_element->click_to_switch = CTinyXml2Helper::StringToBool(str_click_to_switch.c_str());
                 std::string str_hover_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "hover_to_switch");
                 if (!str_hover_to_switch.empty())
                     stack_element->hover_to_switch = CTinyXml2Helper::StringToBool(str_hover_to_switch.c_str());
+                std::string str_scroll_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "scroll_to_switch");
+                if (!str_scroll_to_switch.empty())
+                    stack_element->scroll_to_switch = CTinyXml2Helper::StringToBool(str_scroll_to_switch.c_str());
                 std::string str_show_indicator = CTinyXml2Helper::ElementAttribute(xml_node, "show_indicator");
                 if (!str_show_indicator.empty())
                     stack_element->show_indicator = CTinyXml2Helper::StringToBool(str_show_indicator.c_str());
