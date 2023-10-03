@@ -16,7 +16,7 @@
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)         // 播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)      // 播放列表加载完成消息
-#define WM_SET_TITLE (WM_USER+106)                  // 设置窗口标题的消息
+#define WM_AFTER_SET_TRACK (WM_USER+106)            // 通知主窗口更新显示的消息
 #define WM_CONNOT_PLAY_WARNING (WM_USER+108)        // 无法播放文件时弹出警告提示框的消息
 #define WM_MUSIC_STREAM_OPENED (WM_USER+109)        // 当音频文件打开时的消息
 #define WM_POST_MUSIC_STREAM_OPENED (WM_USER+129)   // 当音频文件打开前的消息
@@ -270,8 +270,9 @@ public:
     //判断当前是否正在播放
     bool IsPlaying() const;
 
-    //播放指定序号的歌曲，如果是播放结束自动播放下一曲，则auto_next为true，play为false时只打开不播放
-    bool PlayTrack(int song_track, bool auto_next = false, bool play = true);
+    // 播放指定序号的歌曲，如果是播放结束自动播放下一曲（主定时器），则auto_next为true（其他情况不能为true）
+    // auto_next为false时返回false说明没能取得播放状态锁，应当给出稍后再试的提示
+    bool PlayTrack(int song_track, bool auto_next = false);
     // 设置指定序号歌曲为下一首播放的歌曲，无效的index会被忽略
     bool PlayAfterCurrentTrack(const std::vector<int>& tracks_to_play);
     // 设置指定SongInfo为下一首播放的歌曲，不存在于m_playlist的条目会被忽略
@@ -349,8 +350,8 @@ public:
     bool IsError() const;
     std::wstring GetErrorInfo();
 
-    //设置窗口标题（向主窗口发送消息）
-    void SetTitle() const;
+    // 通知主窗口当前播放歌曲改变需要更新显示（向主窗口发送消息）（原SetTitle）
+    void AfterSetTrack() const;
 
     //保存配置到ini文件
     void SaveConfig() const;

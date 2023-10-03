@@ -200,7 +200,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_WM_LBUTTONUP()
     ON_WM_CTLCOLOR()
     ON_MESSAGE(WM_PLAYLIST_INI_COMPLATE, &CMusicPlayerDlg::OnPlaylistIniComplate)
-    ON_MESSAGE(WM_SET_TITLE, &CMusicPlayerDlg::OnSetTitle)
+    ON_MESSAGE(WM_AFTER_SET_TRACK, &CMusicPlayerDlg::OnAfterSetTrack)
     ON_COMMAND(ID_EQUALIZER, &CMusicPlayerDlg::OnEqualizer)
     ON_COMMAND(ID_EXPLORE_ONLINE, &CMusicPlayerDlg::OnExploreOnline)
     ON_MESSAGE(WM_PLAYLIST_INI_START, &CMusicPlayerDlg::OnPlaylistIniStart)
@@ -1235,8 +1235,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     if (reload_sf2 || output_device_changed || player_core_changed || need_restart_player)
     {
         CPlayer::GetInstance().ReIniPlayerCore(true);
-        UpdatePlayPauseButton();
-        OnSetTitle(0, 0);
+        OnAfterSetTrack(0, 0);
     } else {
         if (CPlayer::GetInstance().IsFfmpegCore()) {
             CFfmpegCore* core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
@@ -2585,16 +2584,17 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                     m_play_error_cnt++;
                 else
                     m_play_error_cnt = 0;
-                //当前正在编辑歌词，或顺序播放模式下列表中的歌曲播放完毕时（PlayTrack函数会返回false），播放完当前歌曲就停止播放
-                if ((m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist) || !CPlayer::GetInstance().PlayTrack(NEXT, true))
+                // 如果当前正在编辑歌词，播放完当前歌曲就停止播放，否则使用CPlayer::PlayTrack进行播放下一曲处理（播放完毕时PlayTrack会进行停止）
+                if (m_pLyricEdit != nullptr && m_pLyricEdit->m_dlg_exist)
                 {
                     CPlayer::GetInstance().MusicControl(Command::STOP);     //停止播放
-                    //ShowTime();
                     if (theApp.m_lyric_setting_data.cortana_info_enable)
                         m_cortana_lyric.ResetCortanaText();
+                    SwitchTrack();
+                    UpdatePlayPauseButton();
                 }
-                SwitchTrack();
-                UpdatePlayPauseButton();
+                else
+                    CPlayer::GetInstance().PlayTrack(NEXT, true);
             }
             if (CPlayer::GetInstance().IsPlaying() && (theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError()))
             {
@@ -2824,28 +2824,16 @@ void CMusicPlayerDlg::OnStop()
 void CMusicPlayerDlg::OnPrevious()
 {
     // TODO: 在此添加命令处理程序代码
-    if (CPlayer::GetInstance().m_loading) return;
-    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
-
-    CPlayer::GetInstance().PlayTrack(PREVIOUS);
-    SwitchTrack();
-    UpdatePlayPauseButton();
-
-    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
+    if (!CPlayer::GetInstance().PlayTrack(PREVIOUS))
+        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
 
 void CMusicPlayerDlg::OnNext()
 {
     // TODO: 在此添加命令处理程序代码
-    if (CPlayer::GetInstance().m_loading) return;
-    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
-
-    CPlayer::GetInstance().PlayTrack(NEXT);
-    SwitchTrack();
-    UpdatePlayPauseButton();
-
-    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
+    if (!CPlayer::GetInstance().PlayTrack(NEXT))
+        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
 
@@ -2900,16 +2888,8 @@ void CMusicPlayerDlg::OnSetPath()
 void CMusicPlayerDlg::OnFind()
 {
     // TODO: 在此添加命令处理程序代码
-    if (m_findDlg.DoModal() == IDOK)
-    {
-        if (m_findDlg.IsFindCurrentPlaylist())
-        {
-            SwitchTrack();
-            UpdatePlayPauseButton();
-        }
-    }
+    m_findDlg.DoModal();
 }
-
 
 void CMusicPlayerDlg::OnExplorePath()
 {
@@ -3262,12 +3242,8 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
     }
 
     if (song_index < 0) return;
-    if (CPlayer::GetInstance().m_loading) return;
-    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
-    CPlayer::GetInstance().PlayTrack(song_index);
-    SwitchTrack();
-    UpdatePlayPauseButton();
-    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
+    if (!CPlayer::GetInstance().PlayTrack(song_index))
+        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
 
     *pResult = 0;
 }
@@ -3326,12 +3302,8 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 void CMusicPlayerDlg::OnPlayItem()
 {
     // TODO: 在此添加命令处理程序代码
-    if (CPlayer::GetInstance().m_loading) return;
-    if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
-    CPlayer::GetInstance().PlayTrack(m_item_selected);
-    SwitchTrack();
-    UpdatePlayPauseButton();
-    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
+    if (!CPlayer::GetInstance().PlayTrack(m_item_selected))
+        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
 
@@ -4234,7 +4206,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 }
 
 
-afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
+afx_msg LRESULT CMusicPlayerDlg::OnAfterSetTrack(WPARAM wParam, LPARAM lParam)
 {
     CString title;
     title = CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str();
@@ -4272,6 +4244,9 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetTitle(WPARAM wParam, LPARAM lParam)
     if (title.GetLength() > title_length)
         title = title.Left(title_length);
     m_notify_icon.SetIconToolTip(title + title_suffix);
+
+    SwitchTrack();
+    UpdatePlayPauseButton();
 
     return 0;
 }

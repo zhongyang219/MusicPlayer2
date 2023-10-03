@@ -128,11 +128,6 @@ void CFindDlg::LoadConfig()
     m_find_current_playlist = ((m_find_option_data >> 4) % 2 != 0);
 }
 
-bool CFindDlg::IsFindCurrentPlaylist() const
-{
-    return m_result_in_current_playlist;
-}
-
 void CFindDlg::GetSongsSelected(vector<SongInfo>& songs) const
 {
     songs.clear();
@@ -280,7 +275,6 @@ void CFindDlg::OnBnClickedFindButton()
         else
             SetDlgItemText(IDC_FIND_RESULT_STATIC, CCommon::LoadText(IDS_NO_RESULT));
         ShowFindInfo();
-        m_result_in_current_playlist = m_find_current_playlist;
     }
 }
 
@@ -555,12 +549,8 @@ void CFindDlg::OnOK()
     int selected_track = CPlayer::GetInstance().IsSongInPlayList(m_find_result[m_item_selected]);
     if (selected_track != -1)      //如果查找结果是当前播放列表中的曲目，则在当前播放列表中查找选中的曲目，并播放
     {
-        if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
-        {
-            CPlayer::GetInstance().PlayTrack(selected_track);
-            CPlayer::GetInstance().GetPlayStatusMutex().unlock();
-            m_result_in_current_playlist = true;    // 主窗口检查此变量为true时调用SwitchTrack();UpdatePlayPauseButton();
-        }
+        if (!CPlayer::GetInstance().PlayTrack(selected_track))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
     else
     {
@@ -575,8 +565,6 @@ void CFindDlg::OnOK()
                 ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
             if (!ok)
                 MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
-            else
-                m_result_in_current_playlist = false;
         }
     }
 

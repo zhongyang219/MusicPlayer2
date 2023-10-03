@@ -19,8 +19,6 @@ public:
 
     //wstring m_config_path;
 
-    //int GetSelectedTrack() const;
-    bool IsFindCurrentPlaylist() const;
     // 根据多选索引m_find_result从m_find_result查找歌曲放入songs
     void GetSongsSelected(vector<SongInfo>& songs) const;
     void SaveConfig();
@@ -55,7 +53,6 @@ protected:
     CButton m_find_album_check;
 
     bool m_find_current_playlist{ true };       //如果查找范围为当前播放列表（设置情况），则为true，如果是所有播放列表，则为false
-    bool m_result_in_current_playlist{ true };  //查找结果是否为当前播放列表（结果情况）
     bool m_find_file{ true };
     bool m_find_title{ true };
     bool m_find_artist{ true };

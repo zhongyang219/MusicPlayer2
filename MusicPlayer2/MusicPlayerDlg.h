@@ -357,7 +357,7 @@ public:
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 protected:
     afx_msg LRESULT OnPlaylistIniComplate(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnSetTitle(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnAfterSetTrack(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnEqualizer();
     afx_msg void OnExploreOnline();
