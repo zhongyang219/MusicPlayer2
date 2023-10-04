@@ -249,10 +249,24 @@ struct SongInfo
         return artist.empty() ? default_artist : artist;
     }
 
-    //获取艺术家列表（可能存在多个艺术家）
-    void GetArtistList(vector<wstring>& artist_list) const
+    // 获取艺术家列表（可能存在多个艺术家），参数传入theApp.m_media_lib_setting_data.artist_split_ext设置
+    void GetArtistList(vector<wstring>& artist_list, const vector<wstring>& artist_split_ext) const
     {
-        CCommon::StringSplitWithMulitChars(artist, L"/;&、", artist_list, true);
+        wstring artist_{ artist };
+        vector<wstring> tmp;
+        for (const wstring& str : artist_split_ext)
+        {
+            size_t index{ artist_.find(str) };
+            // 这里有点问题，如果有artist是“222/77”那么会出现“22/7”与“27”，但处理有些繁琐不做了
+            if (index != wstring::npos)
+            {
+                artist_ = artist_.substr(0, index) + artist_.substr(index + str.size());
+                tmp.push_back(str);
+            }
+        }
+        CCommon::StringSplitWithMulitChars(artist_, L"/;&、", artist_list);
+        if (!tmp.empty())
+            artist_list.insert(artist_list.begin(), tmp.begin(), tmp.end());
     }
 
     wstring GetAlbum() const

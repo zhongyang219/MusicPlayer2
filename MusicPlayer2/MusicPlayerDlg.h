@@ -34,6 +34,7 @@
 #include "CDevicesManager.h"
 #include "MenuEditCtrl.h"
 #include "HorizontalSplitter.h"
+#include "powrprof.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -90,6 +91,8 @@ protected:
     HACCEL m_hAccel{};
 
     wstring m_cmdLine;	//命令行参数
+    std::mutex m_cmd_open_files_mutx;   // 保护m_cmd_open_files的线程同步对象
+    vector<wstring> m_cmd_open_files;   // 来自命令行/copy_data的待打开文件队列
 
     CDC* m_pUiDC;				//当前窗口的DC
     std::vector<std::shared_ptr<CPlayerUIBase>> m_ui_list;      //保存每个界面类的指针
@@ -154,11 +157,13 @@ protected:
     CPlayerToolBar m_playlist_toolbar;
     CHorizontalSplitter m_splitter_ctrl;
 
-    bool m_no_lbtnup{ false };      //当它为true时，不响应WM_LBUTTONUP消息
     bool m_ignore_color_change{ false };    //当它为true时，不响应颜色变化，防止短时间内重复收到主题颜色变化的消息
-    enum { DELAY_TIMER_ID = 1200, INGORE_COLOR_CHANGE_TIMER_ID = 1201 };
+    enum { INGORE_COLOR_CHANGE_TIMER_ID = 1200 };
 
     CDevicesManager* devicesManager;
+
+    static DEVICE_NOTIFY_CALLBACK_ROUTINE DeviceNotifyCallbackRoutine;
+    HPOWERNOTIFY RegistrationHandle;
 
     // 来自https://www.jianshu.com/p/9d4b68cdbd99
     struct Monitors
@@ -352,7 +357,7 @@ public:
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 protected:
     afx_msg LRESULT OnPlaylistIniComplate(WPARAM wParam, LPARAM lParam);
-    afx_msg LRESULT OnSetTitle(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnAfterSetTrack(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnEqualizer();
     afx_msg void OnExploreOnline();
@@ -364,7 +369,6 @@ public:
     afx_msg void OnTranslateToTranditionalChinese();
     afx_msg void OnAlbumCoverSaveAs();
 protected:
-    afx_msg LRESULT OnPathSelected(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnConnotPlayWarning(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnEnChangeSearchEdit();
@@ -420,10 +424,6 @@ public:
     afx_msg void OnDockedPlaylist();
     afx_msg void OnFloatedPlaylist();
     afx_msg LRESULT OnFloatPlaylistClosed(WPARAM wParam, LPARAM lParam);
-    //    afx_msg void OnFileOpenPalylist();
-protected:
-    afx_msg LRESULT OnPlaylistSelected(WPARAM wParam, LPARAM lParam);
-public:
     afx_msg void OnPlaylistAddFile();
     afx_msg void OnRemoveFromPlaylist();
     afx_msg void OnEmptyPlaylist();
@@ -519,7 +519,7 @@ public:
     afx_msg void OnUseStandardTitleBar();
     void ApplyShowStandardTitlebar();
 protected:
-    afx_msg LRESULT OnDefaultMultimediaDeviceChanged(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnReInitBassContinuePlay(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnDisplaychange(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnWindowPosChanging(WINDOWPOS* lpwndpos);
@@ -537,4 +537,7 @@ protected:
 public:
     afx_msg void OnPlayAsNext();
     afx_msg void OnPlaylistFixPathError();
+    afx_msg UINT OnPowerBroadcast(UINT nPowerEvent, LPARAM nEventData);
+protected:
+    afx_msg LRESULT OnSetUiForceFreshFlag(WPARAM wParam, LPARAM lParam);
 };

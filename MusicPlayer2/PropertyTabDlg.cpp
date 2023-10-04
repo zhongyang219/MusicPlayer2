@@ -480,6 +480,7 @@ int CPropertyTabDlg::SaveModified()
 
     song_info.Normalize();
 
+    // 调用SaveModified的属性主窗口已进行ReOpen操作，此时程序没有打开任何歌曲
     if (m_batch_edit)
     {
         int saved_count{};
@@ -499,7 +500,6 @@ int CPropertyTabDlg::SaveModified()
             {
                 cur_song.track = static_cast<BYTE>(_wtoi(str_track));
             }
-            CPlayer::ReOpen reopen(cur_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));       //如果保存的是正在播放的曲目，则保存前需要关闭，保存后重新打开
             CAudioTag audio_tag(cur_song);
             if (audio_tag.WriteAudioTag())
             {
@@ -517,8 +517,6 @@ int CPropertyTabDlg::SaveModified()
     }
     else
     {
-        //如果保存的是正在播放的曲目，并且不是cue音轨，则保存前需要关闭，保存后重新打开（cue保存时不操作音频文件，因此不需要关闭再打开）
-        CPlayer::ReOpen reopen(!song_info.is_cue && song_info.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
         CAudioTag audio_tag(song_info);
         bool saved = audio_tag.WriteAudioTag();
         if (saved)

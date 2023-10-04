@@ -23,7 +23,8 @@ void CRecentFolderAndPlaylist::Init()
     //添加最近播放播放列表
     m_list.emplace_back(&recent_playlist.m_default_playlist);
     m_list.emplace_back(&recent_playlist.m_favourite_playlist);
-    m_list.emplace_back(&recent_playlist.m_temp_playlist);
+    if (recent_playlist.m_temp_playlist.track_num > 0)          // 忽略没有文件的临时播放列表
+        m_list.emplace_back(&recent_playlist.m_temp_playlist);
     for (auto& item : recent_playlist.m_recent_playlists)
         m_list.emplace_back(&item);
 
@@ -37,7 +38,8 @@ void CRecentFolderAndPlaylist::Init()
             return item1.LastPlayedTime() > item2.LastPlayedTime();
         });
     //向主窗口发送通知
-    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, 0, 0);
+    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, 0, 0);  // 重新初始化快捷菜单
+    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_INIT_ADD_TO_MENU, 0, 0);   // 重新初始化右键菜单中的“添加到播放列表”子菜单
 }
 
 const std::vector<CRecentFolderAndPlaylist::Item>& CRecentFolderAndPlaylist::GetItemList() const

@@ -285,8 +285,8 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag
         BASS_CHANNELINFO info{};
         BASS_ChannelGetInfo(hStream, &info);
         song_info.freq = info.freq;
-        song_info.bits = info.origres;
-        song_info.channels = info.chans;
+        song_info.bits = static_cast<BYTE>(info.origres);
+        song_info.channels = static_cast<BYTE>(info.chans);
     }
     if(flag&AF_TAG_INFO)
     {

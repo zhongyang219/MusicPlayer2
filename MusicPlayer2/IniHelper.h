@@ -40,8 +40,5 @@ protected:
 
 	void _WriteString(const wchar_t* AppName, const wchar_t* KeyName, const wstring& str);
 	wstring _GetString(const wchar_t* AppName, const wchar_t* KeyName, const wchar_t* default_str) const;
-
-    static wstring MergeStringList(const vector<wstring>& values);
-    static void SplitStringList(vector<wstring>& values, wstring str_value);
 };
 

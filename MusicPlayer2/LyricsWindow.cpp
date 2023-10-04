@@ -375,22 +375,31 @@ void CLyricsWindow::DrawLyricsDoubleLine(Gdiplus::Graphics* pGraphics)
     Gdiplus::RectF nextBoundingBox;
     pGraphics->MeasureString(m_strNextLyric, -1, m_pFont, layoutRect, m_pTextFormat, &nextBoundingBox, 0, 0);
     nextBoundingBox.Width += 1; //测量到的文本宽度加1，以防止出现使用某些字体时，最后一个字符无法显示的问题
-    //计算歌词画出的位置
-    Gdiplus::RectF dstRect;		//文字的矩形
-    Gdiplus::RectF nextRect;	//下一句文本的矩形
-
-    dstRect = Gdiplus::RectF(0, m_toobar_height + (lyricHeight / 2 - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height);
-    nextRect = Gdiplus::RectF(m_nWidth - nextBoundingBox.Width, dstRect.Y + lyricHeight / 2, nextBoundingBox.Width, nextBoundingBox.Height);
-
-    if (bSwap)
+    // 计算歌词画出的位置
+    Gdiplus::RectF dstRect{0, m_toobar_height + (lyricHeight / 2 - boundingBox.Height) / 2, boundingBox.Width, boundingBox.Height};
+    Gdiplus::RectF nextRect{0, dstRect.Y + lyricHeight / 2, nextBoundingBox.Width, nextBoundingBox.Height};
+    if (bSwap) std::swap(dstRect.Y, nextRect.Y);
+    switch (m_alignment)
     {
-        std::swap(dstRect.Y, nextRect.Y);
-        nextRect.X = 0;
+    case Alignment::RIGHT:
         dstRect.X = m_nWidth - dstRect.Width;
+        nextRect.X = m_nWidth - nextRect.Width;
+        break;
+    case Alignment::AUTO:
+        if (bSwap)
+            dstRect.X = m_nWidth - dstRect.Width;
+        else
+            nextRect.X = m_nWidth - nextRect.Width;
+        break;
+    case Alignment::CENTER:
+        dstRect.X = (m_nWidth - dstRect.Width) / 2.0f;
+        nextRect.X = (m_nWidth - nextRect.Width) / 2.0f;
+        break;
+    default:
+        break;
     }
-
-    DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true, false, true);			// 当前歌词，不是翻译，显示高亮
-    DrawLyricText(pGraphics, m_strNextLyric, nextRect, false, false, false);	// 下一句歌词，不是翻译，不显示高亮
+    DrawLyricText(pGraphics, m_lpszLyrics, dstRect, true, false, true);	        // 当前歌词，不是翻译，显示高亮
+    DrawLyricText(pGraphics, m_strNextLyric, nextRect, false, false, false);   // 下一句歌词，不是翻译，不显示高亮
 }
 
 //绘制高亮歌词

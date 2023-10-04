@@ -21,18 +21,18 @@ public:
 #endif
 
 public:
-    CSetPathDlg m_path_dlg;
-    CSelectPlaylistDlg m_playlist_dlg;
-    CMediaClassifyDlg m_artist_dlg{ CMediaClassifier::CT_ARTIST };
-    CMediaClassifyDlg m_album_dlg{ CMediaClassifier::CT_ALBUM };
-    CMediaClassifyDlg m_genre_dlg{ CMediaClassifier::CT_GENRE };
-    CMediaClassifyDlg m_year_dlg{ CMediaClassifier::CT_YEAR };
-    CMediaClassifyDlg m_type_dlg{ CMediaClassifier::CT_TYPE };
-    CMediaClassifyDlg m_bitrate_dlg{ CMediaClassifier::CT_BITRATE };
-    CMediaClassifyDlg m_rating_dlg{ CMediaClassifier::CT_RATING };
-    CAllMediaDlg m_all_media_dlg{ CAllMediaDlg::DT_ALL_MEDIA };
-    CAllMediaDlg m_recent_media_dlg{ CAllMediaDlg::DT_RECENT_MEDIA };
-    CFolderExploreDlg m_folder_explore_dlg;
+    CSetPathDlg* m_path_dlg{};
+    CSelectPlaylistDlg* m_playlist_dlg{};
+    CMediaClassifyDlg* m_artist_dlg{};
+    CMediaClassifyDlg* m_album_dlg{};
+    CMediaClassifyDlg* m_genre_dlg{};
+    CMediaClassifyDlg* m_year_dlg{};
+    CMediaClassifyDlg* m_type_dlg{};
+    CMediaClassifyDlg* m_bitrate_dlg{};
+    CMediaClassifyDlg* m_rating_dlg{};
+    CAllMediaDlg* m_all_media_dlg{};
+    CAllMediaDlg* m_recent_media_dlg{};
+    CFolderExploreDlg* m_folder_explore_dlg{};
 
     void SetCurTab(int tab);
 
@@ -62,13 +62,14 @@ public:
     virtual BOOL OnInitDialog();
     afx_msg void OnBnClickedPlaySelected();
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
-    virtual void OnCancel();
 protected:
     afx_msg LRESULT OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-    virtual void OnOK();
     afx_msg void OnBnClickedMediaLibSettingsBtn();
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnBnClickedStatisticsInfoButton();
+    afx_msg void OnDestroy();
+    virtual void OnOK();
+    virtual void OnCancel();
 };

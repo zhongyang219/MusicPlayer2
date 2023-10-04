@@ -177,7 +177,6 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_ALBUM_COVER_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck)
     ON_BN_CLICKED(IDC_SHOW_SPECTRUM_CHECK, &CAppearanceSettingDlg::OnBnClickedShowSpectrumCheck)
     ON_BN_CLICKED(IDC_USE_OUT_IMAGE_CHECK, &CAppearanceSettingDlg::OnBnClickedUseOutImageCheck)
-    ON_EN_CHANGE(IDC_DEFAULT_COVER_NAME_EDIT, &CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit)
     ON_BN_CLICKED(IDC_BACKGROUND_GAUSS_BLUR_CHECK, &CAppearanceSettingDlg::OnBnClickedBackgroundGaussBlurCheck)
     ON_BN_CLICKED(IDC_LYRIC_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedLyricBackgroundCheck)
     ON_BN_CLICKED(IDC_DARK_MODE_CHECK, &CAppearanceSettingDlg::OnBnClickedDarkModeCheck)
@@ -268,10 +267,10 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_toolTip.AddTool(&m_album_cover_name_edit, CCommon::LoadText(IDS_DEFAULT_COVER_NAME_TIP_INFO));
     m_toolTip.AddTool(&m_album_cover_path_edit, CCommon::LoadText(IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO));
 
-    SetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L',').c_str());
+    m_album_cover_name_edit.SetWindowTextW(CCommon::StringMerge(m_data.default_album_name, L',').c_str());
     m_album_cover_name_edit.SetEditBrowseMode(CBrowseEdit::EditBrowseMode::LIST);
     m_album_cover_name_edit.SetPopupDlgTitle(CCommon::LoadText(IDS_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME));
-    SetDlgItemText(IDC_ALBUM_COVER_PATH_EDIT, theApp.m_app_setting_data.album_cover_path.c_str());
+    m_album_cover_path_edit.SetWindowTextW(m_data.album_cover_path.c_str());
 
     m_enable_background_chk.SetCheck(m_data.enable_background);
     m_album_cover_as_background_chk.SetCheck(m_data.album_cover_as_background);
@@ -572,20 +571,6 @@ void CAppearanceSettingDlg::OnBnClickedUseOutImageCheck()
 }
 
 
-void CAppearanceSettingDlg::OnEnChangeDefaultCoverNameEdit()
-{
-    // TODO:  如果该控件是 RICHEDIT 控件，它将不
-    // 发送此通知，除非重写 CTabDlg::OnInitDialog()
-    // 函数并调用 CRichEditCtrl().SetEventMask()，
-    // 同时将 ENM_CHANGE 标志“或”运算到掩码中。
-
-    // TODO:  在此添加控件通知处理程序代码
-    //CString temp;
-    //GetDlgItemText(IDC_DEFAULT_COVER_NAME_EDIT, temp);
-    //m_data.default_album_name = temp;
-}
-
-
 void CAppearanceSettingDlg::OnBnClickedBackgroundGaussBlurCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
@@ -772,7 +757,7 @@ afx_msg LRESULT CAppearanceSettingDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM
     else if (pEdit == &m_album_cover_path_edit)
     {
         CString str;
-        m_album_cover_path_edit.GetWindowText(str);
+        m_album_cover_path_edit.GetWindowTextW(str);
         m_data.album_cover_path = str.GetString();
     }
     return 0;

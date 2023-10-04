@@ -266,6 +266,10 @@ BOOL CMiniModeDlg::OnInitDialog()
     CDialogEx::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
+
+    // 设置mini窗口为工具窗口使其不在多任务切换界面显示并可跨虚拟桌面
+    SetWindowLongW(m_hWnd, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+
     m_playlist_ctrl.SetFont(theApp.m_pMainWnd->GetFont());
 
     m_pDC = GetDC();

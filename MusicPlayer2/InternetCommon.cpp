@@ -92,12 +92,12 @@ int CInternetCommon::HttpPost(const wstring& str_url, wstring& result) {
     return HttpPost(str_url, result, body, headers);
 }
 
-int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, wstring& body, wstring& headers, bool custom_ua) {
-    auto& tmp = CCommon::UnicodeToStr(body, CodeType::UTF8_NO_BOM);
+int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, const wstring& body, wstring& headers, bool custom_ua) {
+    const auto& tmp = CCommon::UnicodeToStr(body, CodeType::UTF8_NO_BOM);
     return HttpPost(str_url, result, tmp, headers, custom_ua);
 }
 
-int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, string& body, wstring& headers, bool custom_ua)
+int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, const string& body, wstring& headers, bool custom_ua)
 {
     wstring log_info;
     log_info = L"http post: " + str_url;
@@ -352,8 +352,8 @@ double CInternetCommon::StringSimilarDegree_LD(const wstring & srcString, const 
 	//if (n == 0 || m == 0) return 0.0;	//如果其中一个字符串长度为0，则相似度为0
 
 	// Step 2，给表的第1行和第1列填入数字
-	for (int i = 0; i <= n; d[i][0] = i++);
-	for (int j = 0; j <= m; d[0][j] = j++);
+	for (int i{}; i <= n; ++i) d[i][0] = i;
+	for (int j{}; j <= m; ++j) d[0][j] = j;
 	// Step 3
 	for (int i = 1; i <= n; i++)
 	{

@@ -170,23 +170,20 @@ void CCortanaLyric::DrawInfo()
                 const bool ignore_blank{ theApp.m_lyric_setting_data.donot_show_blank_lines };
 			    Time time{ CPlayer::GetInstance().GetCurrentPosition() };
                 int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, ignore_blank, karaoke, [this](const wstring& str) { return m_draw.GetTextExtent(str.c_str()).cx; }) };
-                CLyrics::Lyric& lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, ignore_blank, karaoke) };
+                CLyrics::Lyric lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, ignore_blank, karaoke) };
                 bool no_lyric{ false };
                 //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
                 no_lyric = (lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - lyric.time_start > 20000) || progress >= 1000;
 
                 if (!CPlayer::GetInstance().m_Lyrics.IsEmpty() && !no_lyric && theApp.m_lyric_setting_data.cortana_show_lyric)		//有歌词时显示歌词
                 {
-				    if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
-				    {
-					    m_draw.DrawLyricTextMultiLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_align);
-				    }
-				    else
-				    {
-					    m_draw.DrawLyricTextSingleLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_double_line, theApp.m_lyric_setting_data.cortana_lyric_align);
-				    }
+                    static int flag{};
+                    if (m_draw.IsDrawMultiLine(m_cortana_rect.Height()))
+                        m_draw.DrawLyricTextMultiLine(TextRect(), theApp.m_lyric_setting_data.cortana_lyric_align);
+                    else
+                        m_draw.DrawLyricTextSingleLine(TextRect(), flag, theApp.m_lyric_setting_data.cortana_lyric_double_line, theApp.m_lyric_setting_data.cortana_lyric_align);
                 }
-                else			//没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
+                else            //没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
                 {
                     static int index{};
                     static wstring song_name{};

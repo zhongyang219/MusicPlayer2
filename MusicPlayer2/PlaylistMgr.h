@@ -30,14 +30,20 @@ public:
     void EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time);
     void AddNewPlaylist(const wstring& path);
     bool DeletePlaylist(const wstring& path);
-    void UpdateCurrentPlaylist(int track, int pos, int track_num, int total_time);
+    void UpdateCurrentPlaylistType(const wstring& path);
     void UpdatePlaylistInfo(PlaylistInfo playlist_info);
 
     void SavePlaylistData();
     void LoadPlaylistData();
 
     PlaylistInfo FindPlaylistInfo(const wstring& str) const;
+    PlaylistInfo GetCurrentPlaylistInfo() const;
     PlaylistType GetPlaylistType(const wstring& path) const;
+
+    // 重命名播放列表后以此更新m_recent_playlists
+    void RenamePlaylist(const wstring& old_path, const wstring& new_path);
+    // CSelectPlaylistDlg使用此方法获取/更新显示数据
+    void GetAllPlaylistInfo(vector<PlaylistInfo>& playlists_info);
 
 private:
     CPlaylistMgr();

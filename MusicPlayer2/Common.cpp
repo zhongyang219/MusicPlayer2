@@ -210,7 +210,7 @@ void CCommon::StringSplit(const wstring& str, const wstring& div_str, vector<wst
     }
 }
 
-void CCommon::StringSplitWithMulitChars(const wstring& str, const wchar_t* div_ch, vector<wstring>& results, bool skip_empty /*= true*/)
+void CCommon::StringSplitWithMulitChars(const wstring& str, const wstring& div_ch, vector<wstring>& results, bool skip_empty /*= true*/)
 {
     results.clear();
     size_t split_index = -1;
@@ -276,6 +276,36 @@ wstring CCommon::StringMerge(const vector<wstring>& strings, wchar_t div_ch)
     if (!strings.empty())
         result.pop_back();
     return result;
+}
+
+wstring CCommon::MergeStringList(const vector<wstring>& values)
+{
+    wstring str_merge;
+    int index = 0;
+    // 在每个字符串前后加上引号，再将它们用逗号连接起来
+    for (wstring str : values)
+    {
+        StringNormalize(str);
+        if (str.empty()) continue;
+        if (index > 0)
+            str_merge.push_back(L',');
+        str_merge.push_back(L'\"');
+        str_merge += str;
+        str_merge.push_back(L'\"');
+        index++;
+    }
+    return str_merge;
+}
+
+void CCommon::SplitStringList(vector<wstring>& values, const wstring& str_value)
+{
+    CCommon::StringSplit(str_value, L"\",\"", values);
+    if (!values.empty())
+    {
+        // 结果中第一项前面和最后一项的后面各还有一个引号，将它们删除
+        values.front() = values.front().substr(1);
+        values.back().pop_back();
+    }
 }
 
 wstring CCommon::TranslateToSimplifiedChinese(const wstring& str)
@@ -344,7 +374,7 @@ size_t CCommon::GetFileSize(const wstring& file_name)
     file.seekg(0, std::ios::end);
     m = file.tellg();
     file.close();
-    return m - l;
+    return static_cast<size_t>(m - l);
 }
 
 wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_utf8)
@@ -898,12 +928,18 @@ void CCommon::WriteLog(const wchar_t* path, const wstring& content)
         cur_time.wHour, cur_time.wMinute, cur_time.wSecond, cur_time.wMilliseconds);
     ofstream out_put{ path, std::ios::app };
     out_put << buff << CCommon::UnicodeToStr(content, CodeType::UTF8_NO_BOM) << std::endl;
+    out_put.close();    // 这里需要显式关闭以避免被不同线程连续调用时丢失内容（不过还是不能承受并发，多线程并发时请自行加锁
 }
 
-wstring CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& files)
+void CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& files)
 {
+    // 解析命令行参数中的文件/文件夹路径放入files
+    // files 中能够接受音频文件路径/播放列表文件路径/文件夹路径随意乱序出现
+    // files 中无法被识别为“播放列表文件路径”“文件夹路径”的项目会被直接加入默认播放列表
+    // TODO: 这里可能需要添加以下功能，我没有其他windows版本的经验，不确定这里怎样改
+    //       文件/文件夹存在判断；路径通配符展开；相对路径转换绝对路径；支持不在同一文件夹下的多个文件路径
     files.clear();
-    if (cmd_line.empty()) return wstring();
+    if (cmd_line.empty()) return;
     wstring path;
     //先找出字符串中的文件夹路径，从命令行参数传递过来的文件肯定都是同一个文件夹下的
     if (cmd_line[0] == L'\"')		//如果第一个文件用双引号包含起来
@@ -921,13 +957,7 @@ wstring CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& f
         files.push_back(cmd_line.substr(0, index1));
     }
     int path_size = path.size();
-    if (path_size < 2) return wstring();
-    if (IsFolder(files[0]))
-        //if (files[0].size() > 4 && files[0][files[0].size() - 4] != L'.' && files[0][files[0].size() - 5] != L'.')
-    {
-        //如果第1个文件不是文件而是文件夹，则返直接回该文件夹的路径
-        return files[0];
-    }
+    if (path_size < 2) return;
     int index{};
     while (true)
     {
@@ -944,7 +974,7 @@ wstring CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& f
             files.push_back(cmd_line.substr(index, index1 - index));
         }
     }
-    return wstring();
+    return;
     //CString out_info;
     //out_info += _T("命令行参数：");
     //out_info += cmd_line.c_str();
@@ -1587,7 +1617,7 @@ bool CCommon::GetFileContent(const wchar_t* file_path, string& contents_buff, si
         return false;
     //获取文件长度
     file.seekg(0, file.end);
-    size_t length = file.tellg();
+    unsigned int length{ static_cast<unsigned int>(file.tellg()) };
     file.seekg(0, file.beg);
 
     char* buff = new char[length];
@@ -1608,7 +1638,7 @@ const char* CCommon::GetFileContent(const wchar_t* file_path, size_t& length)
         return nullptr;
     //获取文件长度
     file.seekg(0, file.end);
-    length = file.tellg();
+    length = static_cast<size_t>(file.tellg());
     file.seekg(0, file.beg);
 
     char* buff = new char[length];
@@ -1806,11 +1836,10 @@ string CCommon::GetPngImageResourceData(UINT id)
 int CCommon::Random(int min, int max)
 {
     std::random_device rd;
-    std::default_random_engine engine{ rd() };
-    std::uniform_int_distribution<> dis{ min, max - 1 };
-    auto dice = std::bind(dis, engine);
-    int _rand = dice();
-    return _rand;
+    std::mt19937 engine(rd());
+    std::uniform_int_distribution<int> dis(min, max - 1);
+    int dis_{ dis(engine) };
+    return dis_;
 }
 
 CString CCommon::GetDesktopBackgroundPath()
@@ -1872,7 +1901,10 @@ unsigned __int64 CCommon::GetCurTimeElapse()
     SYSTEMTIME sys_time;
     GetLocalTime(&sys_time);
     CTime cur_time(sys_time);
-    return cur_time.GetTime();
+    unsigned __int64 c_time = cur_time.GetTime();
+    static unsigned __int64 last_time{};
+    last_time = (last_time < c_time) ? c_time : (last_time + 1);
+    return last_time;
 }
 
 wstring CCommon::EncodeURIComponent(wstring uri) {

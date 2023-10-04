@@ -71,7 +71,7 @@ bool CMediaClassifyDlg::SetLeftListSel(const wstring& item)
             if (m_type == CMediaClassifier::CT_ARTIST)
             {
                 vector<wstring> artist_list;
-                song.GetArtistList(artist_list);
+                song.GetArtistList(artist_list, theApp.m_media_lib_setting_data.artist_split_ext);
                 if (CCommon::IsItemInVector(artist_list, item))
                 {
                     other_index = i;
@@ -314,19 +314,14 @@ void CMediaClassifyDlg::OnTabEntered()
     }
 }
 
-bool CMediaClassifyDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
+wstring CMediaClassifyDlg::GetNewPlaylistName() const
 {
     std::wstring default_name;
     //如果选中了左侧列表，则添加到新建播放列表时名称自动填上选中项的名称
     if (m_classify_selected != STR_OTHER_CLASSIFY_TYPE)
         default_name = m_classify_selected;
-
-    auto getSongList = [&](std::vector<SongInfo>& song_list)
-    {
-        GetSongsSelected(song_list);
-    };
-    CMusicPlayerCmdHelper cmd_helper(this);
-    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, default_name);
+    CCommon::FileNameNormalize(default_name);
+    return default_name;
 }
 
 void CMediaClassifyDlg::CalculateClassifyListColumeWidth(std::vector<int>& width)
@@ -348,7 +343,7 @@ void CMediaClassifyDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
         auto& media_list{ m_searched ? m_search_result : m_classifer.GetMeidaList() };
         for (int index : m_left_selected_items)
         {
-            wstring str_selected = GetClassifyListSelectedString(index);
+            wstring str_selected{ GetClassifyListSelectedString(index) };
             auto iter = media_list.find(str_selected);
             if (iter != media_list.end())
             {
@@ -414,7 +409,6 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CMediaLibTabDlg)
     ON_NOTIFY(HDN_ITEMCLICK, 0, &CMediaClassifyDlg::OnHdnItemclickSongList)
     ON_WM_SIZE()
     ON_WM_DESTROY()
-    ON_COMMAND(ID_DELETE_FROM_DISK, &CMediaClassifyDlg::OnDeleteFromDisk)
 END_MESSAGE_MAP()
 
 

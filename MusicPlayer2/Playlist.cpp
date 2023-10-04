@@ -48,7 +48,7 @@ void CPlaylistFile::LoadFromFile(const wstring & file_path)
         std::getline(stream, current_line);
         DisposePlaylistFileLine(current_line, utf8);
     }
-
+    stream.close();
 }
 
 void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
@@ -58,6 +58,7 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
     {
         for (const auto& item : m_playlist)
         {
+            if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             stream << CCommon::UnicodeToStr(item.file_path, CodeType::UTF8_NO_BOM);
             if (item.is_cue)
             {
@@ -81,6 +82,7 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
         std::set<std::wstring> saved_cue_path;      //已经保存过的cue文件的路径
         for (const auto& item : m_playlist)
         {
+            if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             if (item.is_cue)
             {
                 //如果播放列表中的项目是cue，且该cue文件没有保存过，则将其保存
@@ -101,6 +103,7 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
             }
         }
     }
+    stream.close();
 }
 
 const vector<SongInfo>& CPlaylistFile::GetPlaylist() const
@@ -108,20 +111,18 @@ const vector<SongInfo>& CPlaylistFile::GetPlaylist() const
     return m_playlist;
 }
 
-bool CPlaylistFile::AddSongsToPlaylist(const vector<SongInfo>& songs, bool ignore_exist)
+int CPlaylistFile::AddSongsToPlaylist(const vector<SongInfo>& songs, bool insert_begin)
 {
-    bool added{ false };
+    int added{};
     for (const auto& file : songs)
     {
-        if (ignore_exist && CCommon::IsItemInVector(m_playlist, [&](const SongInfo& song) {
-            return song.IsSameSong(file);
-        }))
-        {
+        if (CCommon::IsItemInVector(m_playlist, [&](const SongInfo& song) { return song.IsSameSong(file); }))
             continue;
-        }
         m_playlist.push_back(file);
-        added = true;
+        ++added;
     }
+    if (insert_begin)   // 使用循环旋转将新增条目移动到开头而不是直接插入到开头，可对参数songs去重
+        std::rotate(m_playlist.rbegin(), m_playlist.rbegin() + added, m_playlist.rend());
     return added;
 }
 
@@ -130,12 +131,9 @@ void CPlaylistFile::FromSongList(const vector<SongInfo>& song_list)
     m_playlist = song_list;
 }
 
-void CPlaylistFile::ToSongList(vector<SongInfo>& song_list)
+void CPlaylistFile::MoveToSongList(vector<SongInfo>& song_list)
 {
-    for (const auto& item : m_playlist)
-    {
-        song_list.push_back(item);
-    }
+    song_list = std::move(m_playlist);
 }
 
 bool CPlaylistFile::IsSongInPlaylist(const SongInfo& song)

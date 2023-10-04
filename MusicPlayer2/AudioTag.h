@@ -19,7 +19,7 @@ public:
     //file_name: 指定保存的专辑封面的文件名，如果为nullptr，则使用默认的文件名
     //file_size: 用来接收获取到的专辑封面文件大小
     //返回值：专辑封面的保存路径
-    wstring GetAlbumCover(int& image_type, wchar_t* file_name = nullptr, size_t* file_size = nullptr);
+    wstring GetAlbumCover(int& image_type, const wchar_t* file_name = nullptr, size_t* file_size = nullptr);
 
     //获取音频的内嵌歌词
     wstring GetAudioLyric();

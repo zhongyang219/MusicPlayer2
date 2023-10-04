@@ -5,6 +5,7 @@
 #include "PlayerToolBar.h"
 #include "SearchEditCtrl.h"
 #include "MenuEditCtrl.h"
+#include "HorizontalSplitter.h"
 
 #define WM_FLOAT_PLAYLIST_CLOSED (WM_USER+118)
 
@@ -44,6 +45,7 @@ private:
     CSearchEditCtrl m_search_edit;
     //CButton m_clear_search_button;
     CPlayerToolBar m_playlist_toolbar;
+    CHorizontalSplitter m_splitter_ctrl;
 
     SLayoutData m_layout;		//窗口布局的固定数据
 

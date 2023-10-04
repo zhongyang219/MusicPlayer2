@@ -1,10 +1,10 @@
-#pragma once
-//À´×Ô https://blog.csdn.net/mary288267/article/details/123483656
+ï»¿#pragma once
+//æ¥è‡ª https://blog.csdn.net/mary288267/article/details/123483656
 
 // CHorizontalSpliter
 
-//ÓÃÓÚÏìÓ¦²¼¾Ö±ä»¯µÄ»Øµ÷º¯Êı£¬µ÷ÓÃRegAdjustLayoutCallBackÒÔ×¢²á´Ë»Øµ÷º¯Êı
-//rect ·Ö¸îÌõµÄ¾ØĞÎÇøÓò
+//ç”¨äºå“åº”å¸ƒå±€å˜åŒ–çš„å›è°ƒå‡½æ•°ï¼Œè°ƒç”¨RegAdjustLayoutCallBackä»¥æ³¨å†Œæ­¤å›è°ƒå‡½æ•°
+//rect åˆ†å‰²æ¡çš„çŸ©å½¢åŒºåŸŸ
 typedef void(*pfAdjustLayout)(CRect rect);
 
 class CHorizontalSplitter : public CStatic
@@ -15,24 +15,24 @@ public:
 	CHorizontalSplitter();
 	virtual ~CHorizontalSplitter();
 
-    //ÉèÖÃÒÆ¶¯·Ö¸îÌõ¹ı³ÌÖĞ¶Ô»°¿òÁ½²àµÄ×îĞ¡¾àÀë
+    //è®¾ç½®ç§»åŠ¨åˆ†å‰²æ¡è¿‡ç¨‹ä¸­å¯¹è¯æ¡†ä¸¤ä¾§çš„æœ€å°è·ç¦»
     void SetMinWidth(int left, int right);
-    //·Ö¸îÌõ×ó²àµÄ¿Ø¼şID
+    //åˆ†å‰²æ¡å·¦ä¾§çš„æ§ä»¶ID
     BOOL AttachCtrlAsLeftPane(DWORD idCtrl);
-    //·Ö¸îÌõÓÒ²àµÄ¿Ø¼şID
+    //åˆ†å‰²æ¡å³ä¾§çš„æ§ä»¶ID
     BOOL AttachCtrlAsRightPane(DWORD idCtrl);
-    //²ğÀë·Ö¸îÌõ×óÓÒÁ½²àµÄ¿Ø¼ş
+    //æ‹†ç¦»åˆ†å‰²æ¡å·¦å³ä¸¤ä¾§çš„æ§ä»¶
     BOOL DetachAllPanes();
-    //¸ù¾İ·Ö¸îÌõÎ»ÖÃ£¬µ÷Õû¶Ô»°¿òÉÏËùÓĞ¿Ø¼şÎ»ÖÃ
+    //æ ¹æ®åˆ†å‰²æ¡ä½ç½®ï¼Œè°ƒæ•´å¯¹è¯æ¡†ä¸Šæ‰€æœ‰æ§ä»¶ä½ç½®
     void AdjustLayout();
 
-    //×¢²áÏìÓ¦²¼¾Ö±ä»¯µÄ»Øµ÷º¯Êı¡£Èç¹ûµ÷ÓÃÁË´Ëº¯Êı£¬Ôò·Ö¸îÌõÎ»ÖÃ¸Ä±äÊ±£¬·Ö¸îÌõÁ½²àµÄ¿Ø¼ş´óĞ¡½«²»ÔÙ×Ô¶¯µ÷Õû£¬
-    //¶øÊÇµ÷ÓÃ×¢²áµÄ»Øµ÷º¯Êı£¬ÓÉ»Øµ÷º¯Êı´¦ÀíÁ½²à¿Ø¼şµÄµ÷Õû¡£
-    //Í¨¹ı´Ëº¯Êı×¢²áÏìÓ¦²¼¾Ö±ä»¯µÄ»Øµ÷º¯Êıºó£¬½«²»ÔÙĞèÒªµ÷ÓÃAttachCtrlAsLeftPaneºÍAttachCtrlAsRightPaneº¯Êı¡£
+    //æ³¨å†Œå“åº”å¸ƒå±€å˜åŒ–çš„å›è°ƒå‡½æ•°ã€‚å¦‚æœè°ƒç”¨äº†æ­¤å‡½æ•°ï¼Œåˆ™åˆ†å‰²æ¡ä½ç½®æ”¹å˜æ—¶ï¼Œåˆ†å‰²æ¡ä¸¤ä¾§çš„æ§ä»¶å¤§å°å°†ä¸å†è‡ªåŠ¨è°ƒæ•´ï¼Œ
+    //è€Œæ˜¯è°ƒç”¨æ³¨å†Œçš„å›è°ƒå‡½æ•°ï¼Œç”±å›è°ƒå‡½æ•°å¤„ç†ä¸¤ä¾§æ§ä»¶çš„è°ƒæ•´ã€‚
+    //é€šè¿‡æ­¤å‡½æ•°æ³¨å†Œå“åº”å¸ƒå±€å˜åŒ–çš„å›è°ƒå‡½æ•°åï¼Œå°†ä¸å†éœ€è¦è°ƒç”¨AttachCtrlAsLeftPaneå’ŒAttachCtrlAsRightPaneå‡½æ•°ã€‚
     void RegAdjustLayoutCallBack(pfAdjustLayout pFunc);
 
 protected:
-    //·Ö¸îÌõ¿ÉÒÔÒÆ¶¯µÄ·¶Î§
+    //åˆ†å‰²æ¡å¯ä»¥ç§»åŠ¨çš„èŒƒå›´
     BOOL GetMouseClipRect(LPRECT rcClip, CPoint point);
     afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
     afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

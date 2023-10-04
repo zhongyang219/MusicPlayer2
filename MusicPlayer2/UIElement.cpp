@@ -616,7 +616,7 @@ void UiElement::Rectangle::Draw()
 void UiElement::Button::Draw()
 {
     CalculateRect();
-    IconRes& icon{ ui->GetBtnIcon(key, big_icon) };
+    const IconRes& icon{ ui->GetBtnIcon(key, big_icon) };
     switch (key)
     {
     case CPlayerUIBase::BTN_TRANSLATE:

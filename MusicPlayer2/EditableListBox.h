@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "CListBoxEnhanced.h"
 
 class CEditableListBox :
@@ -9,7 +9,7 @@ public:
     CEditableListBox();
     ~CEditableListBox();
 
-    void Edit(int row);			//±à¼­Ö¸¶¨ÐÐ
+    void Edit(int row);			//ç¼–è¾‘æŒ‡å®šè¡Œ
 
 protected:
     CEdit m_item_edit;

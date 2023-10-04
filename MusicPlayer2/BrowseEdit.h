@@ -19,7 +19,8 @@ public:
     {
         NONE,
         RENAME,     //重命名模式
-        LIST        //编辑列表模式
+        LIST,       //编辑列表模式 aa,bb,cc
+        LIST2       //编辑列表模式 "aa","bb","cc"
     };
 
     virtual void OnDrawBrowseButton(CDC* pDC, CRect rect, BOOL bIsButtonPressed, BOOL bIsButtonHot) override;

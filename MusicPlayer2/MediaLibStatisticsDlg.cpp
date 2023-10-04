@@ -77,23 +77,28 @@ BOOL CMediaLibStatisticsDlg::OnInitDialog()
     std::set<std::wstring, StringComparerNoCase> album_set;
     std::set<std::wstring, StringComparerNoCase> genre_set;
     int played_num{};
-    for (const auto& item : CSongDataManager::GetInstance().GetSongData())
-    {
-        //处理多个艺术家情况
-        std::vector<std::wstring> artist_list;
-        item.second.GetArtistList(artist_list);
-        for (const auto& artist : artist_list)
-            artist_set.emplace(artist);
+    size_t total_size{};
+    CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map)
+        {
+            for (const auto& item : song_data_map)
+            {
+                //处理多个艺术家情况
+                std::vector<std::wstring> artist_list;
+                item.second.GetArtistList(artist_list, theApp.m_media_lib_setting_data.artist_split_ext);
+                for (const auto& artist : artist_list)
+                    artist_set.emplace(artist);
 
-        album_set.emplace(item.second.album);
-        genre_set.emplace(item.second.genre);
-        if (item.second.last_played_time > 0)
-            played_num++;
-    }
+                album_set.emplace(item.second.album);
+                genre_set.emplace(item.second.genre);
+                if (item.second.last_played_time > 0)
+                    played_num++;
+            }
+            total_size = song_data_map.size();
+        });
     m_list_ctrl.SetItemText(RI_ARTIST, 1, std::to_wstring(artist_set.size()).c_str());
     m_list_ctrl.SetItemText(RI_ALBUM, 1, std::to_wstring(album_set.size()).c_str());
     m_list_ctrl.SetItemText(RI_GENRE, 1, std::to_wstring(genre_set.size()).c_str());
-    m_list_ctrl.SetItemText(RI_TOTAL, 1, std::to_wstring(CSongDataManager::GetInstance().GetSongData().size()).c_str());
+    m_list_ctrl.SetItemText(RI_TOTAL, 1, std::to_wstring(total_size).c_str());
     m_list_ctrl.SetItemText(RI_PLAYED, 1, std::to_wstring(played_num).c_str());
 
     return TRUE;  // return TRUE unless you set the focus to a control

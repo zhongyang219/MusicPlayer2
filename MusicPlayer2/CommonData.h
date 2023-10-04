@@ -184,7 +184,7 @@ struct DesktopLyricSettingData		//桌面歌词设置
     bool hide_lyric_window_when_paused{ false };	//暂停时隐藏歌词窗口
     bool lyric_background_penetrate{ false };
     bool show_unlock_when_locked{ true };           //桌面歌词锁定时显示解锁图标
-    Alignment lyric_align{ Alignment::CENTER }; //歌词的对齐方式
+    Alignment lyric_align{ Alignment::AUTO };   //歌词的对齐方式
 };
 
 struct LyricSettingData
@@ -209,7 +209,7 @@ struct LyricSettingData
 
     FontInfo lyric_font;						//歌词字体
     int lyric_line_space{ 2 };					//歌词的行间距
-    Alignment lyric_align{ Alignment::CENTER }; //歌词的对齐方式
+    Alignment lyric_align{ Alignment::AUTO };   //歌词的对齐方式
 
     bool cortana_info_enable{};				    //是否允许在Cortana的搜索框中显示信息
     bool cortana_show_lyric{ true };            //是否在Cortana搜索框中显示歌词
@@ -222,7 +222,7 @@ struct LyricSettingData
     bool cortana_lyric_keep_display{ false };	//搜索框歌词是否在暂停时保持显示
     bool cortana_show_spectrum{ false };		//是否在搜索框显示频谱
     bool cortana_opaque{ false };				//搜索框不透明
-    Alignment cortana_lyric_align{ Alignment::CENTER };               //搜索框歌词对齐方式
+    Alignment cortana_lyric_align{ Alignment::AUTO };           //搜索框歌词对齐方式
     bool show_default_album_icon_in_search_box{ false };      //没有歌词时搜索框显示黑色胶片图标
     COLORREF cortana_transparent_color{};
 
@@ -354,14 +354,17 @@ enum MediaLibDisplayItem
 struct MediaLibSettingData
 {
     vector<wstring> media_folders;      //媒体库文件夹浏览中显示的文件夹
+    vector<wstring> artist_split_ext;   // 艺术家分割例外，设置名字本身含有分隔符（/;&、）的艺术家（22/7）
     bool hide_only_one_classification;  //媒体库中将只有一项的分类归到其他类中
     bool disable_delete_from_disk;      //禁用从磁盘删除
     bool show_tree_tool_tips;           //树控件显示鼠标提示
     bool update_media_lib_when_start_up;    //启动时自动更新媒体库
+    bool ignore_too_short_when_update;      // 自动更新/刷新媒体库时忽略时长低于阈值的文件（不影响手动加入）
+    int file_too_short_sec;                 // 音频低时长阈值（清理媒体库功能也使用这个设置）
     bool remove_file_not_exist_when_update{};   //更新媒体库时移除不存在的音频文件
     bool disable_drag_sort;				//禁止通过拖放排序
     DisplayFormat display_format{};		//播放列表中项目的显示样式
-    bool ignore_songs_already_in_playlist{ true };  //向播放列表中添加曲目时忽略已存在的曲目
+    bool insert_begin_of_playlist{ false };         // 向播放列表添加歌曲时插入开头而不是追加到末尾
     bool show_playlist_tooltip{};         //显示播放列表工具提示
     bool float_playlist_follow_main_wnd{};  //浮动播放列表跟随主窗口
     int playlist_item_height{ 24 };

@@ -18,15 +18,17 @@ public:
     CUIDrawer(UIColors& colors);
     ~CUIDrawer();
 
-    void DrawLryicCommon(CRect rect, Alignment align = Alignment::CENTER);
+    void DrawLryicCommon(CRect rect, Alignment align = Alignment::AUTO);
 
     int GetLyricTextHeight() const;
     virtual void Create(CDC* pDC, CWnd* pMainWnd /* = nullptr */) override;
     bool IsDrawMultiLine(int height) const;			//根据一个高度判断是否绘制多行歌词
     void SetForCortanaLyric(bool for_cortana_lyric = true);
 
-    void DrawLyricTextMultiLine(CRect rect, Alignment align = Alignment::CENTER);
-    void DrawLyricTextSingleLine(CRect rect, bool double_line = true, Alignment align = Alignment::CENTER);
+    // 调用绘制多行滚动歌词
+    void DrawLyricTextMultiLine(CRect rect, Alignment align = Alignment::AUTO);
+    // 调用以自适应绘制单双行歌词，需要提供静态变量flag以记忆双行切换状态
+    void DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line = true, Alignment align = Alignment::AUTO);
 
     //绘制频谱分析
     //rect：频谱的矩形区域
@@ -48,7 +50,8 @@ public:
 private:
     CFont* SetLyricFont();
     CFont* SetLyricFontTranslated();
-    void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, int progress, bool switch_flag, int fade_percent = 100);
+    // 实际绘制双行歌词
+    void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, Alignment align, int progress, bool switch_flag, int fade_percent = 100);
 
 private:
     UIColors& m_colors;

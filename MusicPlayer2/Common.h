@@ -128,7 +128,7 @@ public:
     //str: 原始字符串
     //div_ch: 字符串中任意一个字符作为分割字符
     //result: 接收分割后的结果
-    static void StringSplitWithMulitChars(const wstring& str, const wchar_t* div_ch, vector<wstring>& results, bool skip_empty = true);
+    static void StringSplitWithMulitChars(const wstring& str, const wstring& div_ch, vector<wstring>& results, bool skip_empty = true);
 
     //使用指定的分割符分割字符串，将按每个分割符中的顺序分割字符串，每个分割符只用一次
     //str: 原始字符串
@@ -139,6 +139,11 @@ public:
     //将若干个字符串合并成一个字符串
     //div_ch: 用于分割的字符
     static wstring StringMerge(const vector<wstring>& strings, wchar_t div_ch);
+
+    // 合并字符串，"aa","bb","cc"模式，skip_empty，trim
+    static wstring MergeStringList(const vector<wstring>& values);
+    // 分割字符串，"aa","bb","cc"模式，skip_empty，trim
+    static void SplitStringList(vector<wstring>& values, const wstring& str_value);
 
     //中文繁简转换
     static wstring TranslateToSimplifiedChinese(const wstring& str);
@@ -258,8 +263,8 @@ public:
     //写入日志
     static void WriteLog(const wchar_t* path, const wstring& content);
 
-    //将通过命令行参数传递过来的多个文件路径拆分，并保存到file容器里，如果参数传递过来的第一个文件不是文件而是文件夹，则返回文件夹路径，否则，返回空字符串
-    static wstring DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& files);
+    // 将通过命令行参数传递过来的多个文件路径拆分，并保存到file容器里
+    static void DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& files);
 
     //解析命令行参数中的命令
     static bool GetCmdLineCommand(const wstring& cmd_line, int& command);
@@ -481,7 +486,7 @@ public:
 
     // https://stackoverflow.com/questions/17074324
     template <typename T, typename Compare>
-    static std::vector<std::size_t> sort_permutation(const std::vector<T>& vec, Compare& compare);
+    static std::vector<std::size_t> sort_permutation(const std::vector<T>& vec, Compare compare);
 
     template <typename T>
     static std::vector<T> apply_permutation(const std::vector<T>& vec, const std::vector<std::size_t>& p);
@@ -639,12 +644,12 @@ inline void CCommon::DeleteModelessDialog(T*& dlg)
 }
 
 template <typename T, typename Compare>
-inline std::vector<std::size_t> CCommon::sort_permutation(const std::vector<T>& vec, Compare& compare)
+inline std::vector<std::size_t> CCommon::sort_permutation(const std::vector<T>& vec, Compare compare)
 {
     std::vector<std::size_t> p(vec.size());
     std::iota(p.begin(), p.end(), 0);
     std::sort(p.begin(), p.end(),
-        [&](std::size_t i, std::size_t j) { return compare(vec[i], vec[j]); });
+        [&](std::size_t i, std::size_t j) { return compare(std::cref(vec[i]), std::cref(vec[j])); });
     return p;
 }
 

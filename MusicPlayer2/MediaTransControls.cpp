@@ -115,7 +115,10 @@ bool MediaTransControls::Init() {
                 HRESULT ret;
                 ABI::Windows::Foundation::TimeSpan time;
                 if ((ret = pArgs->get_RequestedPlaybackPosition(&time)) == S_OK) {
-                    CPlayer::GetInstance().SeekTo((int)(time.Duration / 10000));
+                    if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) {
+                        CPlayer::GetInstance().SeekTo(static_cast<int>(time.Duration / 10000));
+                        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
+                    }
                 }
                 return S_OK;
             });
@@ -288,7 +291,7 @@ void MediaTransControls::UpdateControlsMetadata(const SongInfo song)
 {
     if (m_enabled && updater && music) {
         updater->put_Type(MediaPlaybackType_Music);
-        UpdateTitle(song.IsTitleEmpty() ? song.GetFileName() : song.GetTitle());
+        UpdateTitle((!song.IsTitleEmpty() || song.file_path.empty()) ? song.GetTitle() : song.GetFileName());
         UpdateArtist(song.GetArtist());
         UpdateAlbumTitle(song.GetAlbum());
         UpdateTrackNumber(song.track);

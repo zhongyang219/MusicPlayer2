@@ -92,7 +92,7 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
             return false;
         }
         //添加空的播放列表
-        CPlayer::GetInstance().GetRecentPlaylist().AddNewPlaylist(playlist_path);
+        CPlaylistMgr::Instance().AddNewPlaylist(playlist_path);
 
         //获取选中的曲目的路径
         std::vector<SongInfo> selected_item_path;
@@ -102,14 +102,14 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
 
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
-        if (!playlist.AddSongsToPlaylist(selected_item_path, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
+        if (!playlist.AddSongsToPlaylist(selected_item_path, theApp.m_media_lib_setting_data.insert_begin_of_playlist)) // 这里由于是空列表所以实际上设置无效不过仍然传递设置
         {
             pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
             return false;
         }
         playlist.SaveToFile(playlist_path);
+        // 此方法需要自行更新“添加到播放列表”菜单和媒体库标签页
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
-
         RefreshMediaTabData(ML_PLAYLIST);
 
         return true;
@@ -126,8 +126,6 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         std::vector<SongInfo> selected_item_path;
         get_song_list(selected_item_path);
 
-        CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
-
         if (command == ID_ADD_TO_OTHER_PLAYLIST)
         {
             CAddToPlaylistDlg dlg;
@@ -136,23 +134,19 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 wstring playlist_path = theApp.m_playlist_dir + dlg.GetPlaylistSelected().GetString() + PLAYLIST_EXTENSION;
                 if (CCommon::FileExist(playlist_path))
                 {
-                    if (!AddToPlaylist(selected_item_path, playlist_path))
-                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
-
+                    AddToPlaylist(selected_item_path, playlist_path);
                 }
             }
         }
         else if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //添加到默认播放列表
         {
-            std::wstring default_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_default_playlist.path;
-            if (!AddToPlaylist(selected_item_path, default_playlist_path))
-                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+            std::wstring default_playlist_path = CPlaylistMgr::Instance().m_default_playlist.path;
+            AddToPlaylist(selected_item_path, default_playlist_path);
         }
         else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
         {
-            std::wstring favourite_playlist_path = CPlayer::GetInstance().GetRecentPlaylist().m_favourite_playlist.path;
-            if (!AddToPlaylist(selected_item_path, favourite_playlist_path))
-                pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+            std::wstring favourite_playlist_path = CPlaylistMgr::Instance().m_favourite_playlist.path;
+            AddToPlaylist(selected_item_path, favourite_playlist_path);
 
             //添加到“我喜欢”播放列表后，为添加的项目设置favourite标记
             for (const auto& item : selected_item_path)
@@ -183,8 +177,7 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 wstring playlist_path = theApp.m_playlist_dir + menu_string.GetString() + PLAYLIST_EXTENSION;
                 if (CCommon::FileExist(playlist_path))
                 {
-                    if (!AddToPlaylist(selected_item_path, playlist_path))
-                        pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+                    AddToPlaylist(selected_item_path, playlist_path);
                 }
                 else
                 {
@@ -220,8 +213,10 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
     //如何要删除的文件是正在播放的文件，则先停止播放
     if (CCommon::IsItemInVector(delected_files, current_file))
     {
+        CPlayer::GetInstance().GetPlayStatusMutex().lock();
         CPlayer::GetInstance().MusicControl(Command::STOP);
         CPlayer::GetInstance().MusicControl(Command::CLOSE);
+        CPlayer::GetInstance().GetPlayStatusMutex().unlock();
     }
     int rtn{};
     rtn = CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);
@@ -532,13 +527,20 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     //获取所有音频文件的路径
     for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
     {
-        CAudioCommon::GetAudioFiles(item, all_media_songs, 50000, true);
+        // 这里还是特殊处理比较好，避免自动加入大量无关文件（比如配的视频等等）
+        if (!COSUPlayerHelper::IsOsuFolder(item))
+            CAudioCommon::GetAudioFiles(item, all_media_songs, 50000, true);
+        else
+            COSUPlayerHelper::GetOSUAudioFiles(item, all_media_songs);
     }
     int index = 0;
     // 解析并移除cue文件及其关联的音频文件，并将分割后的音轨插入
     // refresh为true时会强制更新cue的时长与标签（直接更新到媒体库）
     CAudioCommon::GetCueTracks(all_media_songs, CPlayer::GetInstance().GetPlayerCore(), index, refresh);
 
+    // 根据设置阻止非cue的过短文件被自动加入媒体库（这也会阻止获取时长失败的一般文件）（手动仍然可以）
+    bool ignore_too_short_when_update{ theApp.m_media_lib_setting_data.ignore_too_short_when_update };
+    int file_too_short_ms{ theApp.m_media_lib_setting_data.file_too_short_sec * 1000 };
     theApp.m_media_update_para.total_num = all_media_songs.size();   //保存音频总数
     //std::unordered_map<wstring, SongInfo> new_songs_map;
     for (const auto& song : all_media_songs)
@@ -561,6 +563,8 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
             IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
             if (pPlayerCore != nullptr)
                 pPlayerCore->GetAudioInfo(song_info.file_path.c_str(), song_info, flag);
+            if (ignore_too_short_when_update && !song_info.is_cue && song_info.length().toInt() < file_too_short_ms)
+                continue;
             if (is_osu_file)
                 COSUPlayerHelper::GetOSUAudioTitleArtist(song_info);
 
@@ -600,17 +604,6 @@ int CMusicPlayerCmdHelper::CleanUpRecentFolders()
         }
     }
     return cleard_cnt;
-}
-
-bool CMusicPlayerCmdHelper::Rename(SongInfo& song, const wstring& new_name)
-{
-    CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
-    wstring new_file_path = CCommon::FileRename(song.file_path, new_name);
-    if (new_file_path.empty())
-        return false;
-    CSongDataManager::GetInstance().ChangeFilePath(song.file_path, new_file_path);
-    song.file_path = new_file_path;
-    return true;
 }
 
 void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_show)
@@ -653,22 +646,22 @@ void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_sho
     }
 }
 
-void CMusicPlayerCmdHelper::RefreshMediaTabData(enum eMediaLibTab tab_index)
+void CMusicPlayerCmdHelper::RefreshMediaTabData(eMediaLibTab tab_index)
 {
     CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (pPlayerDlg != nullptr && pPlayerDlg->m_pMediaLibDlg != nullptr && IsWindow(pPlayerDlg->m_pMediaLibDlg->GetSafeHwnd()))
     {
         if (tab_index == ML_FOLDER)
-            pPlayerDlg->m_pMediaLibDlg->m_path_dlg.RefreshTabData();         // 刷新媒体库文件夹列表
+            pPlayerDlg->m_pMediaLibDlg->m_path_dlg->RefreshTabData();         // 刷新媒体库文件夹列表
         else if(tab_index == ML_PLAYLIST)
-            pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg.RefreshTabData();    // 刷新媒体库播放列表列表
+            pPlayerDlg->m_pMediaLibDlg->m_playlist_dlg->RefreshTabData();    // 刷新媒体库播放列表列表
     }
 }
 
 void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
 {
     vector<wstring> artist_list;
-    song_info.GetArtistList(artist_list);     //获取艺术家（可能有多个）
+    song_info.GetArtistList(artist_list, theApp.m_media_lib_setting_data.artist_split_ext);     // 获取艺术家（可能有多个）
     wstring artist;
     if (artist_list.empty())
     {
@@ -747,22 +740,25 @@ int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
     return fixed_count;
 }
 
-bool CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
+void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
 {
+    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (CPlayer::GetInstance().IsPlaylistMode() && playlist_path == CPlayer::GetInstance().GetPlaylistPath())
     {
-        return CPlayer::GetInstance().AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist);
+        int rtn = CPlayer::GetInstance().AddSongsToPlaylist(songs);
+        if (rtn == 0)
+            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        else if (rtn == -1)
+            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
     else
     {
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
-        if (playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.ignore_songs_already_in_playlist))
-        {
+        if (playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.insert_begin_of_playlist))
             playlist.SaveToFile(playlist_path);
-            return true;
-        }
-        return false;
+        else
+            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 

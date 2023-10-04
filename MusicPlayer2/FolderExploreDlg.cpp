@@ -91,7 +91,7 @@ void CFolderExploreDlg::ShowSongList()
     m_right_items.clear();
     for (const auto& file : files)
     {
-        SongInfo& song = CSongDataManager::GetInstance().GetSongInfo3(file);
+        const SongInfo& song{ CSongDataManager::GetInstance().GetSongInfo3(file) };
         m_right_items.push_back(song);
     }
 
@@ -113,7 +113,7 @@ void CFolderExploreDlg::ShowSongList()
 void CFolderExploreDlg::FolderTreeClicked(HTREEITEM hItem)
 {
     m_left_selected = true;
-    wstring folder_path_selected = m_folder_explore_tree.GetItemPath(hItem);
+    wstring folder_path_selected{ m_folder_explore_tree.GetItemPath(hItem) };
     if (folder_path_selected != m_folder_path_selected)
     {
         m_folder_path_selected = folder_path_selected;
@@ -139,19 +139,13 @@ void CFolderExploreDlg::SetButtonsEnable(bool enable)
     ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
 }
 
-bool CFolderExploreDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
+wstring CFolderExploreDlg::GetNewPlaylistName() const
 {
     std::wstring default_name;
     //如果选中了左侧列表，则添加到新建播放列表时名称自动填上选中项的名称
     default_name = m_folder_explore_tree.GetItemText(m_tree_item_selected);
     CCommon::FileNameNormalize(default_name);
-
-    auto getSongList = [&](std::vector<SongInfo>& song_list)
-    {
-        GetSongsSelected(song_list);
-    };
-    CMusicPlayerCmdHelper cmd_helper(this);
-    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, default_name);
+    return default_name;
 }
 
 void CFolderExploreDlg::OnTabEntered()
@@ -169,26 +163,6 @@ void CFolderExploreDlg::OnTabEntered()
     else
         play_enable = (!m_right_selected_items.empty());
     SetButtonsEnable(play_enable);
-}
-
-UINT CFolderExploreDlg::ViewOnlineThreadFunc(LPVOID lpParam)
-{
-    CFolderExploreDlg* pThis = (CFolderExploreDlg*)(lpParam);
-    if (pThis == nullptr)
-        return 0;
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
-    //此命令用于跳转到歌曲对应的网易云音乐的在线页面
-    if (pThis->m_right_selected_item >= 0 && pThis->m_right_selected_item < static_cast<int>(pThis->m_right_items.size()))
-    {
-        SongInfo sel_song = pThis->m_right_items[pThis->m_right_selected_item];
-        if (CCommon::FileExist(sel_song.file_path))
-        {
-            CMusicPlayerCmdHelper cmd_helper(pThis);
-            cmd_helper.VeiwOnline(sel_song);
-        }
-    }
-    return 0;
-
 }
 
 const vector<SongInfo>& CFolderExploreDlg::GetSongList() const
@@ -236,7 +210,6 @@ BEGIN_MESSAGE_MAP(CFolderExploreDlg, CMediaLibTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMDblclkSongList)
     ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CFolderExploreDlg::OnEnChangeMfceditbrowse1)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFolderExploreDlg::OnSearchEditBtnClicked)
-    ON_COMMAND(ID_DELETE_FROM_DISK, &CFolderExploreDlg::OnDeleteFromDisk)
 END_MESSAGE_MAP()
 
 
@@ -441,26 +414,20 @@ afx_msg LRESULT CFolderExploreDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM 
 }
 
 
-void CFolderExploreDlg::OnInitMenu(CMenu* pMenu)
-{
-    CMediaLibTabDlg::OnInitMenu(pMenu);
-
-    // TODO: 在此处添加消息处理程序代码
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);
-}
-
-
 void CFolderExploreDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
     if (m_left_selected)        //选中左侧树时，播放选中文件夹
     {
-        wstring folder_path = m_folder_explore_tree.GetItemPath(m_tree_item_selected);
-        CPlayer::GetInstance().OpenFolder(folder_path, true, true);
-        CTabDlg::OnOK();
-        CWnd* pParent = GetParentWindow();
-        if (pParent != nullptr)
-            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+        wstring folder_path{ m_folder_explore_tree.GetItemPath(m_tree_item_selected) };
+        if (!CPlayer::GetInstance().OpenFolder(folder_path, true, true))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            CTabDlg::OnOK();
+            CWnd* pParent = GetParentWindow();
+            if (pParent != nullptr)
+                ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
+        }
     }
     else
     {

@@ -59,7 +59,7 @@ void CTabCtrlEx::SetCurTab(int index)
 
 CWnd* CTabCtrlEx::GetCurrentTab()
 {
-    int cur_tab_index = GetCurSel();
+    size_t cur_tab_index = GetCurSel();
     if (cur_tab_index >= 0 && cur_tab_index < m_tab_list.size())
     {
         return m_tab_list[cur_tab_index];

@@ -196,7 +196,7 @@ void CAudioTag::GetAudioTagPropertyMap(std::map<wstring, wstring>& property_map)
     }
 }
 
-wstring CAudioTag::GetAlbumCover(int& image_type, wchar_t* file_name, size_t* file_size)
+wstring CAudioTag::GetAlbumCover(int& image_type, const wchar_t* file_name, size_t* file_size)
 {
     image_type = -1;
     string image_contents;

@@ -15,7 +15,7 @@ CSpectralDataHelper::CSpectralDataHelper()
 
     for (int i{ LINEAR_SAMPLE_COUNT }; i < FFT_SAMPLE; i++)
     {
-        int m = std::log(i) / std::log(FFT_SAMPLE) * SPECTRUM_COL;
+        int m = static_cast<int>(std::log(i) / std::log(FFT_SAMPLE) * SPECTRUM_COL);
         if (m >= 0 && m < SPECTRUM_COL)
         {
             spectrum_map[i] = m;

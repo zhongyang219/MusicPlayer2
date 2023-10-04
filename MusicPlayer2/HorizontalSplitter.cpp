@@ -243,7 +243,8 @@ void CHorizontalSplitter::OnPaint()
     
     CRect rect;
     ::GetClientRect(m_hWnd, rect);
-    dc.FillSolidRect(rect, GetSysColor(COLOR_3DFACE));
+    // dc.FillSolidRect(rect, GetSysColor(COLOR_3DFACE));
+    dc.FillSolidRect(rect, GetSysColor(COLOR_WINDOW));  // 改为使用窗口背景色（白色）
 }
 
 

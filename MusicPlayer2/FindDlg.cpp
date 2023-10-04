@@ -10,6 +10,7 @@
 #include "Playlist.h"
 #include "AddToPlaylistDlg.h"
 #include "SongDataManager.h"
+#include "COSUPlayerHelper.h"
 
 
 // CFindDlg 对话框
@@ -127,11 +128,6 @@ void CFindDlg::LoadConfig()
     m_find_current_playlist = ((m_find_option_data >> 4) % 2 != 0);
 }
 
-bool CFindDlg::IsFindCurrentPlaylist() const
-{
-    return m_result_in_current_playlist;
-}
-
 void CFindDlg::GetSongsSelected(vector<SongInfo>& songs) const
 {
     songs.clear();
@@ -164,6 +160,7 @@ BEGIN_MESSAGE_MAP(CFindDlg, CBaseDialog)
     ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CFindDlg::OnAddToNewPalylistAndPlay)
     ON_WM_INITMENU()
     ON_COMMAND(ID_DELETE_FROM_DISK, &CFindDlg::OnDeleteFromDisk)
+    ON_COMMAND(ID_PLAY_AS_NEXT, &CFindDlg::OnPlayAsNext)
 END_MESSAGE_MAP()
 
 
@@ -208,28 +205,28 @@ void CFindDlg::OnBnClickedFindButton()
         bool find_flag;
         if (m_find_current_playlist)        //查找当前播放列表时，在m_playlist窗口中查找
         {
-            for (size_t i{ 0 }; i < CPlayer::GetInstance().GetSongNum(); i++)
+            for (int i{ 0 }; i < CPlayer::GetInstance().GetSongNum(); i++)
             {
                 find_flag = false;
                 if (m_find_file && !find_flag)
                 {
                     index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].GetFileName(), m_key_word);
-                    if (index != string::npos) find_flag = true;
+                    if (index != wstring::npos) find_flag = true;
                 }
                 if (m_find_title && !find_flag)
                 {
                     index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].title, m_key_word);
-                    if (index != string::npos) find_flag = true;
+                    if (index != wstring::npos) find_flag = true;
                 }
                 if (m_find_artist && !find_flag)
                 {
                     index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].artist, m_key_word);
-                    if (index != string::npos) find_flag = true;
+                    if (index != wstring::npos) find_flag = true;
                 }
                 if (m_find_album && !find_flag)
                 {
                     index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].album, m_key_word);
-                    if (index != string::npos) find_flag = true;
+                    if (index != wstring::npos) find_flag = true;
                 }
                 if (find_flag)
                 {
@@ -237,39 +234,39 @@ void CFindDlg::OnBnClickedFindButton()
                 }
             }
         }
-        else        //查找所有播放列表时，在theApp.m_song_data窗口中查找
+        else        // 查找所有播放列表时，在SongDataMap中查找
         {
-            for (const auto& item : CSongDataManager::GetInstance().GetSongData())
-            {
-                find_flag = false;
-                if (m_find_file && !find_flag)
+            CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map)
                 {
-                    wstring file_name = CFilePathHelper(item.first.path).GetFileName();
-                    index = CCommon::StringFindNoCase(file_name, m_key_word);
-                    if (index != string::npos) find_flag = true;
-                }
-                if (m_find_title && !find_flag)
-                {
-                    index = CCommon::StringFindNoCase(item.second.title, m_key_word);
-                    if (index != string::npos) find_flag = true;
-                }
-                if (m_find_artist && !find_flag)
-                {
-                    index = CCommon::StringFindNoCase(item.second.artist, m_key_word);
-                    if (index != string::npos) find_flag = true;
-                }
-                if (m_find_album && !find_flag)
-                {
-                    index = CCommon::StringFindNoCase(item.second.album, m_key_word);
-                    if (index != string::npos) find_flag = true;
-                }
-                if (find_flag)
-                {
-                    SongInfo song = item.second;
-                    song.file_path = item.first.path;
-                    m_find_result.push_back(song);      //如果找到了，就保存结果
-                }
-            }
+                    for (const auto& item : song_data_map)
+                    {
+                        find_flag = false;
+                        if (m_find_file && !find_flag)
+                        {
+                            index = CCommon::StringFindNoCase(item.second.GetFileName(), m_key_word);
+                            if (index != wstring::npos) find_flag = true;
+                        }
+                        if (m_find_title && !find_flag)
+                        {
+                            index = CCommon::StringFindNoCase(item.second.title, m_key_word);
+                            if (index != wstring::npos) find_flag = true;
+                        }
+                        if (m_find_artist && !find_flag)
+                        {
+                            index = CCommon::StringFindNoCase(item.second.artist, m_key_word);
+                            if (index != wstring::npos) find_flag = true;
+                        }
+                        if (m_find_album && !find_flag)
+                        {
+                            index = CCommon::StringFindNoCase(item.second.album, m_key_word);
+                            if (index != wstring::npos) find_flag = true;
+                        }
+                        if (find_flag)
+                        {
+                            m_find_result.push_back(item.second);      //如果找到了，就保存结果
+                        }
+                    }
+                });
         }
         // 显示查找结果
         ShowFindResult();
@@ -278,7 +275,6 @@ void CFindDlg::OnBnClickedFindButton()
         else
             SetDlgItemText(IDC_FIND_RESULT_STATIC, CCommon::LoadText(IDS_NO_RESULT));
         ShowFindInfo();
-        m_result_in_current_playlist = m_find_current_playlist;
     }
 }
 
@@ -472,8 +468,7 @@ void CFindDlg::OnNMRClickFindList(NMHDR* pNMHDR, LRESULT* pResult)
     m_find_result_list.GetItemSelected(m_items_selected);
     GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
 
-    if (m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
-        || !m_find_current_playlist && (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size())))
+    if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
     {
         //获取鼠标点击处的文本
         int sub_item;
@@ -501,8 +496,10 @@ void CFindDlg::OnPlayItemInFolderMode()
     // TODO: 在此添加命令处理程序代码
     if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
     {
-        CPlayer::GetInstance().OpenASongInFolderMode(m_find_result[m_item_selected], true);
-        OnCancel();
+        if (!CPlayer::GetInstance().OpenASongInFolderMode(m_find_result[m_item_selected], true))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
+            OnCancel();
     }
 
 }
@@ -547,20 +544,13 @@ void CFindDlg::OnItemProperty()
 void CFindDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
+    if (m_item_selected < 0 || m_item_selected >= static_cast<int>(m_find_result.size())) return;
 
-    SongInfo song_selected;
-    if (m_item_selected < 0 || m_item_selected >= static_cast<int>(m_find_result.size()))
-        return;
-    song_selected = m_find_result[m_item_selected];
-    auto iter = std::find_if(CPlayer::GetInstance().GetPlayList().begin(), CPlayer::GetInstance().GetPlayList().end(), [&](const SongInfo& song)
-        {
-            return song.IsSameSong(song_selected);
-        });
-    if (iter != CPlayer::GetInstance().GetPlayList().end())      //如果查找结果是当前播放列表中的曲目，则在当前播放列表中查找选中的曲目，并播放
+    int selected_track = CPlayer::GetInstance().IsSongInPlayList(m_find_result[m_item_selected]);
+    if (selected_track != -1)      //如果查找结果是当前播放列表中的曲目，则在当前播放列表中查找选中的曲目，并播放
     {
-        int selected_track = iter - CPlayer::GetInstance().GetPlayList().begin();
-        CPlayer::GetInstance().PlayTrack(selected_track);
-        m_result_in_current_playlist = true;
+        if (!CPlayer::GetInstance().PlayTrack(selected_track))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
     else
     {
@@ -568,12 +558,14 @@ void CFindDlg::OnOK()
         GetSongsSelected(songs);
         if (!songs.empty())
         {
+            bool ok{};
             if (songs.size() == 1)
-                CPlayer::GetInstance().OpenSongsInDefaultPlaylist(songs);
+                ok = CPlayer::GetInstance().OpenSongsInDefaultPlaylist(songs);
             else
-                CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
+                ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
+            if (!ok)
+                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
         }
-        m_result_in_current_playlist = false;
     }
 
     CBaseDialog::OnOK();
@@ -586,9 +578,10 @@ void CFindDlg::OnAddToNewPalylistAndPlay()
     wstring playlist_path;
     if (_OnAddToNewPlaylist(playlist_path))
     {
-        CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, false, true);
-        CPlayer::GetInstance().SaveRecentPath();
-        OnCancel();
+        if (!CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
+            OnCancel();
     }
 }
 
@@ -598,7 +591,16 @@ void CFindDlg::OnInitMenu(CMenu* pMenu)
     CBaseDialog::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
+    vector<SongInfo> songs;
+    GetSongsSelected(songs);
+    bool select_all_in_playing_list = CPlayer::GetInstance().IsSongsInPlayList(songs);
+    // 选中歌曲全部为cue或osu!文件时禁用从磁盘删除菜单项
+    bool can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
+        std::find_if(songs.begin(), songs.end(), [&](const SongInfo& song_info) { return song_info.is_cue || COSUPlayerHelper::IsOsuFile(song_info.file_path); }) != songs.end();
+
     pMenu->SetDefaultItem(ID_PLAY_ITEM);
+    pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (select_all_in_playing_list ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
 }
 
 
@@ -640,4 +642,14 @@ void CFindDlg::OnDeleteFromDisk()
         m_find_result.erase(iter_removed, m_find_result.end());
         ShowFindResult();
     }
+}
+
+
+void CFindDlg::OnPlayAsNext()
+{
+    // TODO: 在此添加命令处理程序代码
+    vector<SongInfo> songs;
+    GetSongsSelected(songs);
+    CPlayer::GetInstance().PlayAfterCurrentTrack(songs);
+    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_SET_UI_FORCE_FRESH_FLAG, 0, 0);  // 主动触发更新状态栏显示
 }

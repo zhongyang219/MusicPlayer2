@@ -109,7 +109,7 @@ public:
         auto code = attr->IntValue();
         if (code) {
             theApp.WriteLog(L"Last fm: Some data was ignored.");
-            auto& msg = ele->GetText() ? CCommon::StrToUnicode(ele->GetText(), CodeType::UTF8) : L"";
+            const auto& msg = ele->GetText() ? CCommon::StrToUnicode(ele->GetText(), CodeType::UTF8) : L"";
             theApp.WriteLog(msg);
         }
     }
@@ -473,7 +473,7 @@ bool LastFM::IsPushed() {
 }
 
 bool LastFM::IsScrobbeable() {
-    return ar.cached_tracks.size() >= theApp.m_media_lib_setting_data.lastfm_auto_scrobble_min;
+    return static_cast<int>(ar.cached_tracks.size()) >= theApp.m_media_lib_setting_data.lastfm_auto_scrobble_min;
 }
 
 bool LastFM::CurrentTrackScrobbleable() {

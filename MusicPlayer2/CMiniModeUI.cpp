@@ -175,7 +175,7 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
         const bool karaoke{ theApp.m_lyric_setting_data.lyric_karaoke_disp };
         const bool ignore_blank{ theApp.m_lyric_setting_data.donot_show_blank_lines };
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
-        CLyrics::Lyric& current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, ignore_blank, karaoke) };   // 获取当歌词
+        CLyrics::Lyric current_lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, ignore_blank, karaoke) };   // 获取当歌词
         int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, ignore_blank, karaoke, [this](const wstring& str) { return m_draw.GetTextExtent(str.c_str()).cx; }) }; // 获取当前歌词进度（范围为0~1000）
         bool no_lyric{ false };
         //如果当前一句歌词为空，且持续了超过了20秒，则不显示歌词
@@ -249,7 +249,11 @@ bool CMiniModeUI::LButtonUp(CPoint point)
             {
                 int ckick_pos = point.x - btn.second.rect.left;
                 double progress = static_cast<double>(ckick_pos) / btn.second.rect.Width();
-                CPlayer::GetInstance().SeekTo(progress);
+                if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
+                {
+                    CPlayer::GetInstance().SeekTo(progress);
+                    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
+                }
             }
             break;
             }

@@ -29,13 +29,38 @@ void CPlaylistMgr::Init()
 
 void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time)
 {
-    if (path == m_default_playlist.path || path == m_favourite_playlist.path || path == m_temp_playlist.path)
+    if (path == m_default_playlist.path)
+    {
+        m_default_playlist.position = pos;
+        m_default_playlist.track = track;
+        m_default_playlist.track_num = track_num;
+        m_default_playlist.total_time = total_time;
+        m_default_playlist.last_played_time = last_played_time;
         return;
+    }
+    else if (path == m_favourite_playlist.path)
+    {
+        m_favourite_playlist.position = pos;
+        m_favourite_playlist.track = track;
+        m_favourite_playlist.track_num = track_num;
+        m_favourite_playlist.total_time = total_time;
+        m_favourite_playlist.last_played_time = last_played_time;
+        return;
+    }
+    else if (path == m_temp_playlist.path)
+    {
+        m_temp_playlist.position = pos;
+        m_temp_playlist.track = track;
+        m_temp_playlist.track_num = track_num;
+        m_temp_playlist.total_time = total_time;
+        m_temp_playlist.last_played_time = last_played_time;
+        return;
+    }
 
     for (size_t i{ 0 }; i < m_recent_playlists.size(); i++)
     {
         if (path == m_recent_playlists[i].path)
-            m_recent_playlists.erase(m_recent_playlists.begin() + i);		//如果当前路径已经在最近路径中，就把它最近路径中删除
+            m_recent_playlists.erase(m_recent_playlists.begin() + i);   // 如果当前路径已经在最近路径中，就把它最近路径中删除
     }
     PlaylistInfo playlist_info;
     playlist_info.path = path;
@@ -44,7 +69,7 @@ void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int 
     playlist_info.track_num = track_num;
     playlist_info.total_time = total_time;
     playlist_info.last_played_time = last_played_time;
-    m_recent_playlists.push_front(playlist_info);		//当前路径插入到m_recent_playlists的前面
+    m_recent_playlists.push_front(playlist_info);                       // 当前路径插入到m_recent_playlists的前面
 }
 
 void CPlaylistMgr::AddNewPlaylist(const wstring& path)
@@ -59,6 +84,11 @@ void CPlaylistMgr::AddNewPlaylist(const wstring& path)
 
 bool CPlaylistMgr::DeletePlaylist(const wstring& path)
 {
+    if (path == m_temp_playlist.path)
+    {
+        m_temp_playlist.track_num = 0;
+        return true;
+    }
     auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [path](const PlaylistInfo& item) {
         return item.path == path;
         });
@@ -74,44 +104,10 @@ bool CPlaylistMgr::DeletePlaylist(const wstring& path)
     }
 }
 
-void CPlaylistMgr::UpdateCurrentPlaylist(int track, int pos, int track_num, int total_time)
+void CPlaylistMgr::UpdateCurrentPlaylistType(const wstring& path)
 {
-    if (m_cur_playlist_type == PT_DEFAULT)
-    {
-        m_default_playlist.track = track;
-        m_default_playlist.position = pos;
-        m_default_playlist.track_num = track_num;
-        m_default_playlist.total_time = total_time;
-    }
-    else if (m_cur_playlist_type == PT_FAVOURITE)
-    {
-        m_favourite_playlist.track = track;
-        m_favourite_playlist.position = pos;
-        m_favourite_playlist.track_num = track_num;
-        m_favourite_playlist.total_time = total_time;
-    }
-    else if (m_cur_playlist_type == PT_TEMP)
-    {
-        m_temp_playlist.track = track;
-        m_temp_playlist.position = pos;
-        m_temp_playlist.track_num = track_num;
-        m_temp_playlist.total_time = total_time;
-    }
-    else
-    {
-        wstring current_playlist_path = CPlayer::GetInstance().GetPlaylistPath();
-        auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [current_playlist_path](const PlaylistInfo& playlist_info)
-            {
-                return playlist_info.path == current_playlist_path;
-            });
-        if (iter != m_recent_playlists.end())
-        {
-            iter->track = track;
-            iter->position = pos;
-            iter->track_num = track_num;
-            iter->total_time = total_time;
-        }
-    }
+    if (path.empty()) return;
+    m_cur_playlist_type = GetPlaylistType(path);
 }
 
 void CPlaylistMgr::UpdatePlaylistInfo(PlaylistInfo playlist_info)
@@ -342,6 +338,20 @@ PlaylistInfo CPlaylistMgr::FindPlaylistInfo(const wstring& str) const
     }
 }
 
+PlaylistInfo CPlaylistMgr::GetCurrentPlaylistInfo() const
+{
+    if (m_cur_playlist_type == PT_DEFAULT)
+        return m_default_playlist;
+    else if (m_cur_playlist_type == PT_FAVOURITE)
+        return m_favourite_playlist;
+    else if (m_cur_playlist_type == PT_TEMP)
+        return m_temp_playlist;
+    else if (m_recent_playlists.empty())    // m_recent_playlists为空时返回默认播放列表)
+        return m_default_playlist;
+    else
+        return m_recent_playlists.front();
+}
+
 PlaylistType CPlaylistMgr::GetPlaylistType(const wstring& path) const
 {
     if (path == m_default_playlist.path)
@@ -352,4 +362,23 @@ PlaylistType CPlaylistMgr::GetPlaylistType(const wstring& path) const
         return PT_TEMP;
     else
         return PT_USER;
+}
+
+void CPlaylistMgr::RenamePlaylist(const wstring& old_path, const wstring& new_path)
+{
+    auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(),
+        [&](const PlaylistInfo& playlist_info) { return playlist_info.path == old_path; });
+    if (iter != m_recent_playlists.end())
+        iter->path = new_path;
+}
+
+void CPlaylistMgr::GetAllPlaylistInfo(vector<PlaylistInfo>& playlists_info)
+{
+    playlists_info.clear();
+    playlists_info.push_back(CPlaylistMgr::Instance().m_default_playlist);
+    playlists_info.push_back(CPlaylistMgr::Instance().m_favourite_playlist);
+    std::copy(m_recent_playlists.begin(), m_recent_playlists.end(), std::back_inserter(playlists_info));
+    // 只有当列表中有歌曲时才显示临时播放列表
+    if (CPlaylistMgr::Instance().m_temp_playlist.track_num > 0)
+        playlists_info.push_back(CPlaylistMgr::Instance().m_temp_playlist);
 }

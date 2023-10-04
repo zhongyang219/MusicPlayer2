@@ -2,87 +2,79 @@
 #include "afxwin.h"
 #include "Common.h"
 #include "AudioCommon.h"
-#include "afxcmn.h"
 #include "ListCtrlEx.h"
 #include "TabDlg.h"
 #include "SearchEditCtrl.h"
 
 // CSetPathDlg 对话框
-#define WM_PATH_SELECTED (WM_USER+107)
+// #define WM_PATH_SELECTED (WM_USER+107) 不再使用
 
 class CSetPathDlg : public CTabDlg
 {
-	DECLARE_DYNAMIC(CSetPathDlg)
+    DECLARE_DYNAMIC(CSetPathDlg)
 
 public:
-	CSetPathDlg(CWnd* pParent = NULL);   // 标准构造函数
-	virtual ~CSetPathDlg();
+    CSetPathDlg(CWnd* pParent = NULL);   // 标准构造函数
+    virtual ~CSetPathDlg();
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_SET_PATH_DIALOG };
+    enum { IDD = IDD_SET_PATH_DIALOG };
 #endif
 
 public:
-	void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找m_search_result中
+    void QuickSearch(const wstring& key_words);     //根据关键字执行快速查找（更新m_search_result）
     void AdjustColumnWidth();                       //自动调整列表宽度
     void RefreshTabData();                          //刷新标签页数据
 
 protected:
-	deque<PathInfo>& m_recent_path;		//最近打开过的路径
-	int m_path_selected{};		//选择的路径
+    bool m_searched{ false };           // 是否处于搜索状态
+    wstring m_searched_str;
+    vector<size_t> m_search_result;     // 储存快速搜索结果的歌曲序号
 
-	CEdit m_path_name;
-	CListCtrlEx m_path_list;
-	//CMenu m_menu;
-	CSearchEditCtrl m_search_edit;
-	//CToolTipCtrl m_Mytip;
+    CListCtrlEx m_path_list;            // 列表对象，数据加载自m_path_list_info，搜索状态下经过m_search_result筛选
+    vector<PathInfo> m_path_list_info;  // 更新时复制自recent_path，因为无法确认recent_path修改时总能通知此窗口故使用复制保证与m_path_list的同步
+    int m_list_selected{};              // 选中的列表数据索引（搜索状态下不是m_path_list_info的索引）
 
-	CSize m_min_size;		//窗口的最小大小
+    CEdit m_path_name;
+    CSearchEditCtrl m_search_edit;
 
-	vector<int> m_search_result;			//储存快速搜索结果的歌曲序号
-	bool m_searched{ false };				//是否处理搜索状态
-    bool m_folder_selected{ false };
-    bool m_current_folder_contain_sub_folder{ false };      //初始时正在播放的文件夹是否包含子文件夹
-
-protected:
-	void ShowPathList();
-	void SetButtonsEnable(bool enable);
-	void CalculateColumeWidth(vector<int>& width);
-	void SetListRowData(int index, const PathInfo& path_info);
-	bool IsSelectedPlayEnable() const;			//判断选中路径是否可以播放
+    // 判断选择是否有效
+    bool SelectValid() const;
+    // 获取选择的路径
+    PathInfo GetSelPath() const;
+    // 返回当前选中GetSelPath()是否能够播放
+    bool SelectedCanPlay() const;
+    // 判断并设置“播放选中”按钮状态
+    void SetButtonsEnable();
+    // 更新m_path_list_info和m_path_list，搜索状态下请确保m_search_result不越界
+    void ShowPathList();
+    // 计算列宽
+    void CalculateColumeWidth(vector<int>& width);
+    void SetListRowData(int index, const PathInfo& path_info);
     virtual void OnTabEntered() override;
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
-    PathInfo GetSelPath() const;		//获取选择的路径
-	//int GetTrack() const;
-	//int GetPosition() const;
-	//SortMode GetSortMode() const;
-	bool SelectValid() const;		//判断选择是否有效
-
-	virtual BOOL OnInitDialog();
-	afx_msg void OnDestroy();
-	//afx_msg void OnBnClickedDeletePathButton();
-	//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	//virtual void OnCancel();
-	virtual void OnOK();
-	afx_msg void OnBnClickedOpenFolder();
-	afx_msg void OnPlayPath();
-	afx_msg void OnDeletePath();
-	afx_msg void OnBrowsePath();
-	afx_msg void OnClearInvalidPath();
-	afx_msg void OnInitMenu(CMenu* pMenu);
-	afx_msg void OnEnChangeSearchEdit();
-	//afx_msg void OnBnClickedClearButton();
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+    virtual BOOL OnInitDialog();
+    //afx_msg void OnBnClickedDeletePathButton();
+    //virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnSize(UINT nType, int cx, int cy);
+    virtual void OnOK();
+    afx_msg void OnBnClickedOpenFolder();
+    afx_msg void OnPlayPath();
+    afx_msg void OnDeletePath();
+    afx_msg void OnBrowsePath();
+    afx_msg void OnClearInvalidPath();
+    afx_msg void OnInitMenu(CMenu* pMenu);
+    afx_msg void OnEnChangeSearchEdit();
+    //afx_msg void OnBnClickedClearButton();
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 public:

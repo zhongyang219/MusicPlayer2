@@ -1153,73 +1153,79 @@ BEGIN
     CONTROL         "",IDC_HSPLITER_STATIC,"Static",SS_BLACKFRAME,111,19,3,136
 END
 
-IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 245, 542
+IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 243, 567
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
-    GROUPBOX        "媒体库目录",IDC_STATIC,6,74,232,66
-    CONTROL         "",IDC_DIR_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,86,156,47
-    PUSHBUTTON      "添加(&A)...",IDC_ADD_BUTTON,176,90,50,14
-    PUSHBUTTON      "删除(&D)",IDC_DELETE_BUTTON,176,108,50,14
-    GROUPBOX        "媒体库选项",IDC_STATIC,6,5,232,62
+    GROUPBOX        "媒体库目录",IDC_STATIC,6,103,230,66
+    CONTROL         "",IDC_DIR_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,115,156,47
+    PUSHBUTTON      "添加(&A)...",IDC_ADD_BUTTON,176,119,50,14
+    PUSHBUTTON      "删除(&D)",IDC_DELETE_BUTTON,176,137,50,14
+    GROUPBOX        "媒体库选项",IDC_STATIC,6,5,230,92
     CONTROL         "将只有一项的分类归到其他类中",IDC_CLASSIFY_OTHER_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,18,133,10
-    CONTROL         "启动时自动更新媒体库",IDC_UPDATE_MEDIA_LIB_CHK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,29,132,10
-    LTEXT           "当前数据文件大小：",IDC_SIZE_STATIC,14,338,178,8
-    PUSHBUTTON      "清理(&C)...",IDC_CLEAN_DATA_FILE_BUTTON,14,350,53,14
-    GROUPBOX        "清理媒体库",IDC_STATIC,6,326,232,43
-    PUSHBUTTON      "清空最近播放曲目列表(&R)...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,13,300,95,14
-    GROUPBOX        "最近播放",IDC_STATIC,6,274,232,45
-    GROUPBOX        "播放列表",IDC_STATIC,6,191,232,76
-    CONTROL         "禁用播放列表拖放排序",IDC_DISABLE_DRAGE_SORT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,202,89,10
-    LTEXT           "播放列表显示方式：",IDC_STATIC,107,203,64,8
-    COMBOBOX        IDC_PLAYLIST_DISPLAY_MODE_OMBO,173,201,59,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "最近播放显示范围：",IDC_STATIC,14,286,66,8
-    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,85,284,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "禁止向播放列表中添加已存在的曲目",IDC_IGNORE_EXIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,215,175,10
-    GROUPBOX        "在媒体库中显示的项目",IDC_STATIC,6,146,232,39
-    CONTROL         "艺术家",IDC_ARTIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,158,36,10
-    CONTROL         "唱片集",IDC_ALBUM_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,55,157,36,10
-    CONTROL         "流派",IDC_GENRE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,99,157,29,10
-    CONTROL         "年份",IDC_YEAR_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,143,157,29,10
-    CONTROL         "文件类型",IDC_FILE_TYPE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,187,157,43,10
-    CONTROL         "比特率",IDC_BITRATE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,171,36,10
-    CONTROL         "所有曲目",IDC_ALL_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,99,170,43,10
-    CONTROL         "最近播放",IDC_RECENT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,143,170,43,10
-    CONTROL         "文件夹浏览",IDC_FOLDER_EXPLORE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,187,170,49,10
-    CONTROL         "分级",IDC_RATING_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,55,170,29,10
-    GROUPBOX        "标签读写",IDC_STATIC,6,376,232,32
-    LTEXT           "ID3v2写入类型：",IDC_STATIC,14,390,61,8
-    COMBOBOX        IDC_ID3V2_TYPE_COMBO,74,389,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "启动时自动更新媒体库",IDC_UPDATE_MEDIA_LIB_CHK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,29,95,10
+    LTEXT           "当前数据文件大小：",IDC_SIZE_STATIC,14,365,178,8
+    PUSHBUTTON      "清理(&C)...",IDC_CLEAN_DATA_FILE_BUTTON,14,377,53,14
+    GROUPBOX        "清理媒体库",IDC_STATIC,6,353,230,43
+    PUSHBUTTON      "清空最近播放曲目列表(&R)...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,13,328,95,14
+    GROUPBOX        "最近播放",IDC_STATIC,6,302,230,45
+    GROUPBOX        "播放列表",IDC_STATIC,6,219,230,76
+    CONTROL         "禁用播放列表拖放排序",IDC_DISABLE_DRAGE_SORT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,230,89,10
+    LTEXT           "播放列表显示方式：",IDC_STATIC,107,231,64,8
+    COMBOBOX        IDC_PLAYLIST_DISPLAY_MODE_OMBO,173,229,59,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "最近播放显示范围：",IDC_STATIC,14,314,66,8
+    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,85,312,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "向播放列表添加曲目时插入列表开头而不是追加到末尾",IDC_INSERT_BEGIN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,243,182,10
+    GROUPBOX        "在媒体库中显示的项目",IDC_STATIC,6,175,230,39
+    CONTROL         "艺术家",IDC_ARTIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,187,36,10
+    CONTROL         "唱片集",IDC_ALBUM_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,55,186,36,10
+    CONTROL         "流派",IDC_GENRE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,99,186,29,10
+    CONTROL         "年份",IDC_YEAR_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,143,186,29,10
+    CONTROL         "文件类型",IDC_FILE_TYPE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,187,186,43,10
+    CONTROL         "比特率",IDC_BITRATE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,200,36,10
+    CONTROL         "所有曲目",IDC_ALL_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,99,199,43,10
+    CONTROL         "最近播放",IDC_RECENT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,143,199,43,10
+    CONTROL         "文件夹浏览",IDC_FOLDER_EXPLORE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,187,199,49,10
+    CONTROL         "分级",IDC_RATING_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,55,199,29,10
+    GROUPBOX        "标签读写",IDC_STATIC,6,403,230,32
+    LTEXT           "ID3v2写入类型：",IDC_STATIC,14,417,61,8
+    COMBOBOX        IDC_ID3V2_TYPE_COMBO,74,416,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "刷新媒体库(&R)",IDC_REFRESH_MEDIA_LIB_BUTTON,153,20,59,14
-    CONTROL         "禁用从磁盘删除",IDC_DISABLE_DELETE_FROM_DISK_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,53,118,10
-    CONTROL         "显示播放列表鼠标提示",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,227,87,10
+    CONTROL         "禁用从磁盘删除",IDC_DISABLE_DELETE_FROM_DISK_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,63,73,10
+    CONTROL         "显示播放列表鼠标提示",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,255,87,10
     CONTROL         "浮动播放列表跟随主窗口",IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,239,159,10
-    LTEXT           "播放列表项目高度：",IDC_STATIC,14,253,66,8
-    EDITTEXT        IDC_PLAYLIST_ITEM_HEIGHT_EDIT,81,251,34,12,ES_AUTOHSCROLL
-    LTEXT           "像素",IDC_STATIC,117,253,26,8
-    GROUPBOX        "Last.fm",IDC_STATIC,6,415,232,118
-    CONTROL         "启用 last.fm 相关功能",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,426,80,10
-    LTEXT           "当前状态：",IDC_STATIC,14,439,34,8
-    LTEXT           "状态",IDC_LASTFM_STATUS,46,439,124,8
-    PUSHBUTTON      "登录",IDC_LASTFM_LOGIN,177,435,50,14,WS_DISABLED
-    LTEXT           "当播放进度满足以下所有条件时将记录计入缓存：",IDC_STATIC,14,452,207,8
-    LTEXT           "至少播放歌曲的",IDC_STATIC,14,464,52,8
-    EDITTEXT        IDC_LASTFM_LEAST_PERDUR,66,463,29,12,ES_AUTOHSCROLL
-    LTEXT           "% 并至少播放",IDC_STATIC,98,464,46,8
-    EDITTEXT        IDC_LASTFM_LEAST_DUR,144,463,29,12,ES_AUTOHSCROLL
-    LTEXT           "秒。",IDC_STATIC,175,465,18,8
-    CONTROL         "当缓存中的记录数超过",IDC_LASTFM_AUTO_SCROBBLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,479,80,10
-    EDITTEXT        IDC_LASTFM_AUTO_SCROBBLE_MIN,94,478,29,12,ES_AUTOHSCROLL
-    LTEXT           "条时，自动上传缓存。",IDC_STATIC,126,480,97,8
-    LTEXT           "缓存状态：",IDC_STATIC,14,493,34,8
-    LTEXT           "X条记录",IDC_LASTFM_CACHE_STATUS,46,493,123,8
-    PUSHBUTTON      "上传缓存",IDC_LASTFM_UPLOAD_CACHE,177,492,50,14,WS_DISABLED
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,267,159,10
+    LTEXT           "播放列表项目高度：",IDC_STATIC,14,281,66,8
+    EDITTEXT        IDC_PLAYLIST_ITEM_HEIGHT_EDIT,81,279,34,12,ES_AUTOHSCROLL
+    LTEXT           "像素",IDC_STATIC,117,281,26,8
+    GROUPBOX        "Last.fm",IDC_STATIC,6,442,230,118
+    CONTROL         "启用 last.fm 相关功能",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,453,80,10
+    LTEXT           "当前状态：",IDC_STATIC,14,466,34,8
+    LTEXT           "状态",IDC_LASTFM_STATUS,46,466,124,8
+    PUSHBUTTON      "登录",IDC_LASTFM_LOGIN,177,462,50,14,WS_DISABLED
+    LTEXT           "当播放进度满足以下所有条件时将记录计入缓存：",IDC_STATIC,14,479,207,8
+    LTEXT           "至少播放歌曲的",IDC_STATIC,14,491,52,8
+    EDITTEXT        IDC_LASTFM_LEAST_PERDUR,66,490,29,12,ES_AUTOHSCROLL
+    LTEXT           "% 并至少播放",IDC_STATIC,98,491,46,8
+    EDITTEXT        IDC_LASTFM_LEAST_DUR,144,490,29,12,ES_AUTOHSCROLL
+    LTEXT           "秒。",IDC_STATIC,175,492,18,8
+    CONTROL         "当缓存中的记录数超过",IDC_LASTFM_AUTO_SCROBBLE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,506,80,10
+    EDITTEXT        IDC_LASTFM_AUTO_SCROBBLE_MIN,94,505,29,12,ES_AUTOHSCROLL
+    LTEXT           "条时，自动上传缓存。",IDC_STATIC,126,507,97,8
+    LTEXT           "缓存状态：",IDC_STATIC,14,520,34,8
+    LTEXT           "X条记录",IDC_LASTFM_CACHE_STATUS,46,520,123,8
+    PUSHBUTTON      "上传缓存",IDC_LASTFM_UPLOAD_CACHE,177,519,50,14,WS_DISABLED
     CONTROL         "使用 HTTPS 与 last.fm 服务器通信",IDC_LASTFM_ENABLE_HTTPS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,505,116,10
-    CONTROL         "上传当前播放歌曲",IDC_LASTFM_ENABLE_NOWPLAYING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,518,67,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,532,116,10
+    CONTROL         "上传当前播放歌曲",IDC_LASTFM_ENABLE_NOWPLAYING,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,545,67,10
     CONTROL         "更新媒体库时移除不存在的音频文件",IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,41,147,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,51,147,10
+    CONTROL         "",IDC_ARTIST_SPLIT_EXT_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,69,78,157,11
+    LTEXT           "艺术家识别例外：",IDC_STATIC,14,79,54,8
+    CONTROL         "更新媒体库时忽略时长低于阈值的文件",IDC_IGNORE_TOO_SHORT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,40,132,10
+    LTEXT           "音频文件低时长阈值：",IDC_STATIC,122,64,73,8
+    LTEXT           "秒",IDC_STATIC,217,64,8,8
+    EDITTEXT        IDC_FILE_TOO_SHORT_SEC_EDIT,187,62,27,12,ES_AUTOHSCROLL
 END
 
 IDD_ADD_TO_PLAYLIST_DIALOG DIALOGEX 0, 0, 186, 152
@@ -1703,10 +1709,10 @@ BEGIN
     IDD_MEDIA_LIB_SETTING_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 6
-        RIGHTMARGIN, 238
+        RIGHTMARGIN, 236
         VERTGUIDE, 14
         TOPMARGIN, 5
-        BOTTOMMARGIN, 538
+        BOTTOMMARGIN, 563
     END
 
     IDD_ADD_TO_PLAYLIST_DIALOG, DIALOG
@@ -2456,7 +2462,7 @@ BEGIN
     POPUP "菜单"
     BEGIN
         MENUITEM "播放(&P)",                      ID_PLAY_ITEM
-        MENUITEM "下一首播放",                       ID_PLAY_AS_NEXT
+        MENUITEM "下一首播放(&N)",                   ID_PLAY_AS_NEXT
         MENUITEM SEPARATOR
         MENUITEM "在线查看(&O)",                    ID_EXPLORE_ONLINE
         MENUITEM "转换格式(&F)...",                 ID_FORMAT_CONVERT
@@ -2487,12 +2493,12 @@ BEGIN
         MENUITEM "移动文件到(&M)...",                ID_MOVE_FILE_TO
         MENUITEM SEPARATOR
         MENUITEM "上移(&U)",                      ID_MOVE_PLAYLIST_ITEM_UP
-        MENUITEM "下移(&N)",                      ID_MOVE_PLAYLIST_ITEM_DOWN
+        MENUITEM "下移(&W)",                      ID_MOVE_PLAYLIST_ITEM_DOWN
         MENUITEM SEPARATOR
         MENUITEM "查看艺术家(&I)...",                ID_PLAYLIST_VIEW_ARTIST
         MENUITEM "查看唱片集(&V)...",                ID_PLAYLIST_VIEW_ALBUM
         MENUITEM SEPARATOR
-        MENUITEM "重命名(&N)...",                  ID_RENAME
+        MENUITEM "重命名(&E)...",                  ID_RENAME
         MENUITEM "打开文件位置(&B)",                  ID_EXPLORE_TRACK
         MENUITEM "属性(&Y)...",                   ID_ITEM_PROPERTY
     END
@@ -2912,7 +2918,7 @@ BEGIN
         MENUITEM "移动文件到(&M)...",                ID_MOVE_FILE_TO
         MENUITEM SEPARATOR
         MENUITEM "上移(&U)",                      ID_MOVE_PLAYLIST_ITEM_UP
-        MENUITEM "下移(&N)",                      ID_MOVE_PLAYLIST_ITEM_DOWN
+        MENUITEM "下移(&W)",                      ID_MOVE_PLAYLIST_ITEM_DOWN
         MENUITEM SEPARATOR
         MENUITEM "全部选择(&A)",                    ID_PLAYLIST_SELECT_ALL
         MENUITEM "全部取消(&L)",                    ID_PLAYLIST_SELECT_NONE
@@ -2944,6 +2950,7 @@ BEGIN
     POPUP "右侧菜单"
     BEGIN
         MENUITEM "播放(&P)",                      ID_PLAY_ITEM
+        MENUITEM "下一首播放(&N)",                   ID_PLAY_AS_NEXT
         MENUITEM "在文件夹模式中播放(&D)",               ID_PLAY_ITEM_IN_FOLDER_MODE
         MENUITEM SEPARATOR
         POPUP "添加到播放列表(&T)"
@@ -3179,6 +3186,15 @@ END
 IDD_ADD_TO_PLAYLIST_DIALOG DLGINIT
 BEGIN
     IDC_SEARCH_EDIT, 0x37c, 42, 0
+0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
+0x3e65, 0x3c33, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
+0x4d5f, 0x646f, 0x3e65, 
+    0
+END
+
+IDD_MEDIA_LIB_SETTING_DIALOG DLGINIT
+BEGIN
+    IDC_ARTIST_SPLIT_EXT_EDIT, 0x37c, 42, 0
 0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
 0x3e65, 0x3c33, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
 0x4d5f, 0x646f, 0x3e65, 
@@ -3915,6 +3931,12 @@ BEGIN
     IDS_SIMPLE_UI           "简洁UI"
     IDS_GROOVE_MUSIC_STYLE  "Groove音乐风格"
     IDS_DEFAULT_UI          "默认界面"
+    IDS_ALIGN_AUTO          "自动"
+    IDS_SET_MULTI_ARTIST_SPLIT_EXT "设置多个艺术家识别例外"
+    IDS_ARTIST_SPLIT_EXT_TIP_INFO "添加所有名称本身含有“/;&&、”的艺术家作为例外，避免程序误识别。"
+    IDS_FILES_TOO_SHORT     "过短的文件"
+    IDS_FILES_NON_MAIN_IN_OSU "osu! 文件夹中的非主要文件"
+    IDS_WAIT_AND_RETRY      "请等待当前操作完成后重试。"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -4712,78 +4734,87 @@ BEGIN
     CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,7,7,172,12
 END
 
-IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 337, 541
+IDD_MEDIA_LIB_SETTING_DIALOG DIALOGEX 0, 0, 342, 573
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
-    GROUPBOX        "Media Library Directory",IDC_STATIC,6,75,324,66
-    CONTROL         "",IDC_DIR_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,87,228,47
-    PUSHBUTTON      "&Add...",IDC_ADD_BUTTON,251,91,50,14
-    PUSHBUTTON      "&Delete",IDC_DELETE_BUTTON,251,109,50,14
-    GROUPBOX        "Media Library Options",IDC_STATIC,6,4,324,65
+    GROUPBOX        "Media Library Directory",IDC_STATIC,6,108,329,66
+    CONTROL         "",IDC_DIR_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,120,228,47
+    PUSHBUTTON      "&Add...",IDC_ADD_BUTTON,251,124,50,14
+    PUSHBUTTON      "&Delete",IDC_DELETE_BUTTON,251,142,50,14
+    GROUPBOX        "Media Library Options",IDC_STATIC,6,4,329,98
     CONTROL         "Classify only-one items into others",IDC_CLASSIFY_OTHER_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,18,187,10
     CONTROL         "Automatically update media library on startup",IDC_UPDATE_MEDIA_LIB_CHK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,30,185,10
-    LTEXT           "Current data file size:",IDC_SIZE_STATIC,14,339,297,8
-    PUSHBUTTON      "&Clean up...",IDC_CLEAN_DATA_FILE_BUTTON,14,350,59,14
-    GROUPBOX        "Clean up the media library",IDC_STATIC,6,328,324,40
-    PUSHBUTTON      "Clear recently played tracks list...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,14,304,123,14
-    GROUPBOX        "Recently played",IDC_STATIC,6,278,324,45
-    GROUPBOX        "Playlist",IDC_STATIC,6,191,324,82
+    LTEXT           "Current data file size:",IDC_SIZE_STATIC,14,376,297,8
+    PUSHBUTTON      "&Clean up...",IDC_CLEAN_DATA_FILE_BUTTON,14,387,59,14
+    GROUPBOX        "Clean up the media library",IDC_STATIC,6,365,329,40
+    PUSHBUTTON      "Clear recently played tracks list...",IDC_CLEAR_RECENT_PLAYED_LIST_BTN,14,341,123,14
+    GROUPBOX        "Recently played",IDC_STATIC,6,315,329,45
+    GROUPBOX        "Playlist",IDC_STATIC,6,226,329,82
     CONTROL         "Disable drag and drop sorting of playlist",IDC_DISABLE_DRAGE_SORT_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,202,149,11
-    LTEXT           "Playlist Display Mode:",IDC_STATIC,14,217,80,9
-    COMBOBOX        IDC_PLAYLIST_DISPLAY_MODE_OMBO,96,215,133,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Recently played display range:",IDC_STATIC,16,291,113,8
-    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,131,289,125,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Prohibit adding existing tracks to the playlist",IDC_IGNORE_EXIST_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,230,216,10
-    GROUPBOX        "Items displayed in the media library",IDC_STATIC,7,146,323,39
-    CONTROL         "Artist",IDC_ARTIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,158,41,10
-    CONTROL         "Album",IDC_ALBUM_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,158,41,10
-    CONTROL         "Genre",IDC_GENRE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,111,158,39,10
-    CONTROL         "Year",IDC_YEAR_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,167,158,33,10
-    CONTROL         "File type",IDC_FILE_TYPE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,238,158,49,10
-    CONTROL         "Bitrate",IDC_BITRATE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,171,41,10
-    CONTROL         "All tracks",IDC_ALL_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,111,171,49,10
-    CONTROL         "Recently played",IDC_RECENT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,167,171,69,10
-    CONTROL         "Folder explore",IDC_FOLDER_EXPLORE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,238,171,73,10
-    CONTROL         "Rating",IDC_RATING_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,171,33,10
-    GROUPBOX        "Music tag reading and writing",IDC_STATIC,7,373,323,30
-    LTEXT           "ID3v2 write type:",IDC_STATIC,15,386,66,9
-    COMBOBOX        IDC_ID3V2_TYPE_COMBO,80,385,52,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "&Refresh media library",IDC_REFRESH_MEDIA_LIB_BUTTON,206,20,85,13
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,237,149,11
+    LTEXT           "Playlist Display Mode:",IDC_STATIC,14,252,80,9
+    COMBOBOX        IDC_PLAYLIST_DISPLAY_MODE_OMBO,96,250,133,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Recently played display range:",IDC_STATIC,16,328,113,8
+    COMBOBOX        IDC_RECENT_PLAYED_RANGE_OMBO,131,326,125,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Insert at the beginning of the playlist instead of appending to the end",IDC_INSERT_BEGIN_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,265,263,10
+    GROUPBOX        "Items displayed in the media library",IDC_STATIC,6,180,329,39
+    CONTROL         "Artist",IDC_ARTIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,192,41,10
+    CONTROL         "Album",IDC_ALBUM_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,192,41,10
+    CONTROL         "Genre",IDC_GENRE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,111,192,39,10
+    CONTROL         "Year",IDC_YEAR_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,167,192,33,10
+    CONTROL         "File type",IDC_FILE_TYPE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,238,192,49,10
+    CONTROL         "Bitrate",IDC_BITRATE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,205,41,10
+    CONTROL         "All tracks",IDC_ALL_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,111,205,49,10
+    CONTROL         "Recently played",IDC_RECENT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,167,205,69,10
+    CONTROL         "Folder explore",IDC_FOLDER_EXPLORE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,238,205,73,10
+    CONTROL         "Rating",IDC_RATING_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,205,33,10
+    GROUPBOX        "Music tag reading and writing",IDC_STATIC,6,412,329,30
+    LTEXT           "ID3v2 write type:",IDC_STATIC,15,425,66,9
+    COMBOBOX        IDC_ID3V2_TYPE_COMBO,80,424,52,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Refresh media library",IDC_REFRESH_MEDIA_LIB_BUTTON,218,20,85,13
     CONTROL         "Disable delete from disk",IDC_DISABLE_DELETE_FROM_DISK_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,54,128,9
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,66,128,9
     CONTROL         "Show playlist tool tip",IDC_SHOW_PLAYLIST_TOOLTIP_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,243,167,9
-    GROUPBOX        "Last.fm",IDC_STATIC,6,409,324,119
-    CONTROL         "Enable last.fm support",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,418,87,10
-    LTEXT           "Current status: ",IDC_STATIC,14,431,49,8
-    LTEXT           "Status",IDC_LASTFM_STATUS,65,431,190,8
-    PUSHBUTTON      "Log in",IDC_LASTFM_LOGIN,264,427,50,14,WS_DISABLED
-    LTEXT           "Cache scrobble when following conditions are meeted:",IDC_STATIC,14,443,289,8
-    LTEXT           "Played",IDC_STATIC,14,456,28,8
-    EDITTEXT        IDC_LASTFM_LEAST_PERDUR,44,455,30,12,ES_AUTOHSCROLL
-    LTEXT           "% of the song and",IDC_STATIC,78,456,64,8
-    EDITTEXT        IDC_LASTFM_LEAST_DUR,142,455,30,12,ES_AUTOHSCROLL
-    LTEXT           "Seconds.",IDC_STATIC,176,456,34,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,278,136,9
+    GROUPBOX        "Last.fm",IDC_STATIC,6,447,329,119
+    CONTROL         "Enable last.fm support",IDC_ENABLE_LASTFM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,456,87,10
+    LTEXT           "Current status: ",IDC_STATIC,14,469,49,8
+    LTEXT           "Status",IDC_LASTFM_STATUS,65,469,190,8
+    PUSHBUTTON      "Log in",IDC_LASTFM_LOGIN,264,465,50,14,WS_DISABLED
+    LTEXT           "Cache scrobble when following conditions are meeted:",IDC_STATIC,14,481,289,8
+    LTEXT           "Played",IDC_STATIC,14,494,28,8
+    EDITTEXT        IDC_LASTFM_LEAST_PERDUR,44,493,30,12,ES_AUTOHSCROLL
+    LTEXT           "% of the song and",IDC_STATIC,78,494,64,8
+    EDITTEXT        IDC_LASTFM_LEAST_DUR,142,493,30,12,ES_AUTOHSCROLL
+    LTEXT           "Seconds.",IDC_STATIC,176,494,34,8
     CONTROL         "Upload scrobbles in cache if the number of cached scrobbles is greater than ",IDC_LASTFM_AUTO_SCROBBLE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,469,267,10
-    EDITTEXT        IDC_LASTFM_AUTO_SCROBBLE_MIN,281,469,30,12,ES_AUTOHSCROLL
-    LTEXT           "Cache status:",IDC_STATIC,14,485,42,8
-    LTEXT           "X scrobbles",IDC_LASTFM_CACHE_STATUS,58,485,196,8
-    PUSHBUTTON      "Upload cache",IDC_LASTFM_UPLOAD_CACHE,264,484,50,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,507,267,10
+    EDITTEXT        IDC_LASTFM_AUTO_SCROBBLE_MIN,281,507,30,12,ES_AUTOHSCROLL
+    LTEXT           "Cache status:",IDC_STATIC,14,523,42,8
+    LTEXT           "X scrobbles",IDC_LASTFM_CACHE_STATUS,58,523,196,8
+    PUSHBUTTON      "Upload cache",IDC_LASTFM_UPLOAD_CACHE,264,522,50,14
     CONTROL         "Use HTTPS when communicating with the last.fm server.",IDC_LASTFM_ENABLE_HTTPS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,498,263,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,536,263,10
     CONTROL         "Upload now playing track",IDC_LASTFM_ENABLE_NOWPLAYING,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,511,97,10
-    LTEXT           "Playlist item height:",IDC_STATIC,14,258,83,8
-    EDITTEXT        IDC_PLAYLIST_ITEM_HEIGHT_EDIT,97,256,39,12,ES_AUTOHSCROLL
-    LTEXT           "pixel",IDC_STATIC,138,258,30,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,549,97,10
+    LTEXT           "Playlist item height:",IDC_STATIC,14,293,83,8
+    EDITTEXT        IDC_PLAYLIST_ITEM_HEIGHT_EDIT,97,291,39,12,ES_AUTOHSCROLL
+    LTEXT           "pixel",IDC_STATIC,138,293,30,8
     CONTROL         "Remove non-existing audio files when updating media library",IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,42,244,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,54,244,10
+    LTEXT           "Artist Recognition Exception:",IDC_STATIC,16,81,99,8
+    CONTROL         "",IDC_ARTIST_SPLIT_EXT_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,117,80,203,11
+    CONTROL         "Ignore audio files with durations below the threshold when updating the media library",IDC_IGNORE_TOO_SHORT_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,42,301,10
+    LTEXT           "Audio file low duration threshold:",IDC_STATIC,135,66,113,8
+    LTEXT           "seconds",IDC_STATIC,291,66,28,8
+    EDITTEXT        IDC_FILE_TOO_SHORT_SEC_EDIT,248,64,40,12,ES_AUTOHSCROLL
+    CONTROL         "Floating playlist follows main window",IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,172,278,145,10
 END
 
 IDD_LYRIC_RELATE_DIALOG DIALOGEX 0, 0, 329, 178
@@ -5174,10 +5205,10 @@ BEGIN
     IDD_MEDIA_LIB_SETTING_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 6
-        RIGHTMARGIN, 330
+        RIGHTMARGIN, 335
         VERTGUIDE, 14
         TOPMARGIN, 4
-        BOTTOMMARGIN, 537
+        BOTTOMMARGIN, 569
     END
 
     IDD_LYRIC_RELATE_DIALOG, DIALOG
@@ -6139,7 +6170,7 @@ BEGIN
     POPUP "Menu"
     BEGIN
         MENUITEM "&Play",                       ID_PLAY_ITEM
-        MENUITEM "Play After Current Song",     ID_PLAY_AS_NEXT
+        MENUITEM "Play &Next",                  ID_PLAY_AS_NEXT
         MENUITEM SEPARATOR
         MENUITEM "View &Online",                ID_EXPLORE_ONLINE
         MENUITEM "&Format Convert...",          ID_FORMAT_CONVERT
@@ -6170,7 +6201,7 @@ BEGIN
         MENUITEM "&Move File to...",            ID_MOVE_FILE_TO
         MENUITEM SEPARATOR
         MENUITEM "Move &Up",                    ID_MOVE_PLAYLIST_ITEM_UP
-        MENUITEM "Move Dow&n",                  ID_MOVE_PLAYLIST_ITEM_DOWN
+        MENUITEM "Move Do&wn",                  ID_MOVE_PLAYLIST_ITEM_DOWN
         MENUITEM SEPARATOR
         MENUITEM "View Art&ist...",             ID_PLAYLIST_VIEW_ARTIST
         MENUITEM "View Al&bum...",              ID_PLAYLIST_VIEW_ALBUM
@@ -6365,7 +6396,7 @@ BEGIN
         MENUITEM "&Move File to...",            ID_MOVE_FILE_TO
         MENUITEM SEPARATOR
         MENUITEM "Move &Up",                    ID_MOVE_PLAYLIST_ITEM_UP
-        MENUITEM "Move Dow&n",                  ID_MOVE_PLAYLIST_ITEM_DOWN
+        MENUITEM "Move Do&wn",                  ID_MOVE_PLAYLIST_ITEM_DOWN
         MENUITEM SEPARATOR
         MENUITEM "Select &All",                 ID_PLAYLIST_SELECT_ALL
         MENUITEM "Select N&one",                ID_PLAYLIST_SELECT_NONE
@@ -6397,6 +6428,7 @@ BEGIN
     POPUP "右侧菜单"
     BEGIN
         MENUITEM "&Play",                       ID_PLAY_ITEM
+        MENUITEM "Play &Next",                  ID_PLAY_AS_NEXT
         MENUITEM "Play in Folder Mode",         ID_PLAY_ITEM_IN_FOLDER_MODE
         MENUITEM SEPARATOR
         POPUP "Add to Playlis&t"
@@ -6550,6 +6582,15 @@ END
 IDD_ADD_TO_PLAYLIST_DIALOG DLGINIT
 BEGIN
     IDC_SEARCH_EDIT, 0x37c, 42, 0
+0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
+0x3e65, 0x3c33, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
+0x4d5f, 0x646f, 0x3e65, 
+    0
+END
+
+IDD_MEDIA_LIB_SETTING_DIALOG DLGINIT
+BEGIN
+    IDC_ARTIST_SPLIT_EXT_EDIT, 0x37c, 42, 0
 0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
 0x3e65, 0x3c33, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
 0x4d5f, 0x646f, 0x3e65, 
@@ -7252,6 +7293,14 @@ BEGIN
     IDS_SIMPLE_UI           "Simple UI"
     IDS_GROOVE_MUSIC_STYLE  "Groove Style"
     IDS_DEFAULT_UI          "Default UI"
+    IDS_ALIGN_AUTO          "Auto"
+    IDS_SET_MULTI_ARTIST_SPLIT_EXT 
+                            "Set multiple artist recognition exceptions"
+    IDS_ARTIST_SPLIT_EXT_TIP_INFO 
+                            "Add all artists whose names contain ""/;&&、"" as exceptions to prevent inadvertent recognition errors."
+    IDS_FILES_TOO_SHORT     "Too short files"
+    IDS_FILES_NON_MAIN_IN_OSU "Non-main files in the osu! folder"
+    IDS_WAIT_AND_RETRY      "Please wait and try again after the current operation is completed."
 END
 
 #endif    // 英语(美国) resources

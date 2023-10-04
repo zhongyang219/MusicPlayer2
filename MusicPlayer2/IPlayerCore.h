@@ -34,8 +34,8 @@ enum PlayingState       //正在播放标志
     PS_PLAYING          //正在播放
 };
 
-#define MAX_PLAY_SPEED 4
-#define MIN_PLAY_SPEED 0.1
+#define MAX_PLAY_SPEED 4.0f
+#define MIN_PLAY_SPEED 0.1f
 
 //MP3编码参数
 struct MP3EncodePara

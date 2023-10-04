@@ -54,8 +54,8 @@ HRESULT STDMETHODCALLTYPE CMMNotificationClient::OnDefaultDeviceChanged(
     EDataFlow flow, ERole role,
     LPCWSTR pwstrDeviceId)
 {
-    char* pszFlow = "?????";
-    char* pszRole = "?????";
+    const char* pszFlow = "?????";
+    const char* pszRole = "?????";
 
     switch (flow)
     {
@@ -107,7 +107,7 @@ HRESULT STDMETHODCALLTYPE CMMNotificationClient::OnDeviceStateChanged(
     LPCWSTR pwstrDeviceId,
     DWORD dwNewState)
 {
-    char* pszState = "?????";
+    const char* pszState = "?????";
 
     switch (dwNewState)
     {

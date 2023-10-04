@@ -45,8 +45,6 @@ public:
     // 清除最近播放文件夹中的无效条目
     static int CleanUpRecentFolders();
 
-    static bool Rename(SongInfo& song, const wstring& new_name);
-
     enum eMediaLibTab
     {
         ML_FOLDER = 0,
@@ -61,7 +59,7 @@ public:
     void ShowMediaLib(int cur_tab = -1, int tab_force_show = 0);
 
     //刷新媒体库指定标签页，0刷新文件夹，1刷新播放列表
-    static void RefreshMediaTabData(enum eMediaLibTab tab);
+    static void RefreshMediaTabData(eMediaLibTab tab);
 
     //查看艺术家
     void OnViewArtist(const SongInfo& song_info);
@@ -73,7 +71,7 @@ public:
     int FixPlaylistPathError(const std::wstring& path);
 
 protected:
-    bool AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
+    void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 
     //判断一个音频文件的最后修改时间是否比上次获取到的最后修改时间新并更新修改时间
     static bool IsSongNewer(SongInfo& song_info);

@@ -27,117 +27,110 @@ CMediaClassifier::MediaList& CMediaClassifier::GetMeidaList()
 void CMediaClassifier::ClassifyMedia()
 {
     m_media_list.clear();
-    for (const auto& song_info : CSongDataManager::GetInstance().GetSongData())
-    {
-        if (song_info.first.path.empty())
-            continue;
-
-        std::vector<std::wstring> item_names;
-        switch (m_type)
+    CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map)
         {
-        case CMediaClassifier::CT_ARTIST:
-            song_info.second.GetArtistList(item_names);      //有的歌曲可能有多个艺术家，将解析到的艺术家保存到vector里
-            for (auto& item_name : item_names)
-                CCommon::StringNormalize(item_name);
-            if (item_names.empty() || (item_names.size() == 1 && item_names[0] == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()))
+            for (const auto& song_info : song_data_map)
             {
-                item_names.clear();
-                item_names.push_back(std::wstring());
-            }
-            break;
-        case CMediaClassifier::CT_ALBUM:
-        {
-            wstring str_album = song_info.second.album;
-            if (str_album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
-                str_album.clear();
-            item_names.push_back(str_album);
-        }
-        break;
-        case CMediaClassifier::CT_GENRE:
-        {
-            wstring str_genre = song_info.second.genre;
-            if (str_genre == CCommon::LoadText(IDS_DEFAULT_GENRE).GetString())
-                str_genre.clear();
-            item_names.push_back(str_genre);
-        }
-        break;
-        case CMediaClassifier::CT_YEAR:
-        {
-            wstring str_year = song_info.second.get_year();
-            if (str_year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
-                str_year.clear();
-            if (str_year.size() > 4)
-                str_year.resize(4);
-            item_names.push_back(str_year);
-        }
-        break;
-        case CMediaClassifier::CT_TYPE:
-        {
-            wstring str_type = CFilePathHelper(song_info.first.path).GetFileExtension();
-            item_names.push_back(str_type);
-        }
-        break;
-        case CMediaClassifier::CT_BITRATE:
-        {
-            wstring str_type;
-            if (song_info.second.bitrate == 0)
-                str_type = L"-";
-            else if (song_info.second.bitrate < 32)
-                str_type = L"<32";
-            else if (song_info.second.bitrate < 64)
-                str_type = L"32+";
-            else if (song_info.second.bitrate < 128)
-                str_type = L"64+";
-            else if (song_info.second.bitrate < 192)
-                str_type = L"128+";
-            else if (song_info.second.bitrate < 300)
-                str_type = L"192+";
-            else if (song_info.second.bitrate < 512)
-                str_type = L"300+";
-            else if (song_info.second.bitrate < 1024)
-                str_type = L"512+";
-            else
-                str_type = L"1024+";
-            item_names.push_back(str_type);
-        }
-        break;
-        case CT_RATING:
-        {
-            wstring str_type;
-            if (song_info.second.rating >= 1 && song_info.second.rating <= 5)
-                str_type = std::to_wstring(song_info.second.rating);
-            else
-                str_type = CCommon::LoadText(IDS_UNRATED).GetString();
-            item_names.push_back(str_type);
-            break;
-        }
-        default:
-            break;
-        }
+                std::vector<std::wstring> item_names;
+                switch (m_type)
+                {
+                case CMediaClassifier::CT_ARTIST:
+                    song_info.second.GetArtistList(item_names, theApp.m_media_lib_setting_data.artist_split_ext);   // 有的歌曲可能有多个艺术家，将解析到的艺术家保存到vector里
+                    for (auto& item_name : item_names)
+                        CCommon::StringNormalize(item_name);
+                    if (item_names.empty() || (item_names.size() == 1 && item_names[0] == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()))
+                    {
+                        item_names.clear();
+                        item_names.push_back(std::wstring());
+                    }
+                    break;
+                case CMediaClassifier::CT_ALBUM:
+                {
+                    wstring str_album = song_info.second.album;
+                    if (str_album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
+                        str_album.clear();
+                    item_names.push_back(str_album);
+                }
+                break;
+                case CMediaClassifier::CT_GENRE:
+                {
+                    wstring str_genre = song_info.second.genre;
+                    if (str_genre == CCommon::LoadText(IDS_DEFAULT_GENRE).GetString())
+                        str_genre.clear();
+                    item_names.push_back(str_genre);
+                }
+                break;
+                case CMediaClassifier::CT_YEAR:
+                {
+                    wstring str_year = song_info.second.get_year();
+                    if (str_year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
+                        str_year.clear();
+                    if (str_year.size() > 4)
+                        str_year.resize(4);
+                    item_names.push_back(str_year);
+                }
+                break;
+                case CMediaClassifier::CT_TYPE:
+                {
+                    wstring str_type = CFilePathHelper(song_info.first.path).GetFileExtension();
+                    item_names.push_back(str_type);
+                }
+                break;
+                case CMediaClassifier::CT_BITRATE:
+                {
+                    wstring str_type;
+                    if (song_info.second.bitrate == 0)
+                        str_type = L"-";
+                    else if (song_info.second.bitrate < 32)
+                        str_type = L"<32";
+                    else if (song_info.second.bitrate < 64)
+                        str_type = L"32+";
+                    else if (song_info.second.bitrate < 128)
+                        str_type = L"64+";
+                    else if (song_info.second.bitrate < 192)
+                        str_type = L"128+";
+                    else if (song_info.second.bitrate < 300)
+                        str_type = L"192+";
+                    else if (song_info.second.bitrate < 512)
+                        str_type = L"300+";
+                    else if (song_info.second.bitrate < 1024)
+                        str_type = L"512+";
+                    else
+                        str_type = L"1024+";
+                    item_names.push_back(str_type);
+                }
+                break;
+                case CT_RATING:
+                {
+                    wstring str_type;
+                    if (song_info.second.rating >= 1 && song_info.second.rating <= 5)
+                        str_type = std::to_wstring(song_info.second.rating);
+                    else
+                        str_type = CCommon::LoadText(IDS_UNRATED).GetString();
+                    item_names.push_back(str_type);
+                    break;
+                }
+                default:
+                    break;
+                }
 
-        for (const auto& item_name : item_names)
-        {
-            auto iter = m_media_list.find(item_name);
-            if (iter != m_media_list.end())
-            {
-                iter->second.push_back(song_info.second);
-                iter->second.back().file_path = song_info.first.path;
+                for (const auto& item_name : item_names)
+                {
+                    auto iter = m_media_list.find(item_name);
+                    if (iter != m_media_list.end())
+                        iter->second.push_back(song_info.second);
+                    else
+                        m_media_list[item_name].push_back(song_info.second);
+                }
             }
-            else
-            {
-                m_media_list[item_name].push_back(song_info.second);
-                m_media_list[item_name].back().file_path = song_info.first.path;
-            }
-        }
-
-    }
+        });
 
     std::vector<SongInfo> other_list;
 
     //查找只有一个项目的分类，将其归到“其他”类里
     if (m_hide_only_one_classification && (m_type == CT_ARTIST || m_type == CT_ALBUM || m_type == CT_GENRE))
     {
-        for (auto& iter = m_media_list.begin(); iter != m_media_list.end();)
+        for (auto iter{ m_media_list.begin() }; iter != m_media_list.end();)
         {
             if (iter->second.size() == 1)
             {
@@ -170,7 +163,7 @@ void CMediaClassifier::ClassifyMedia()
     //将年份不是4位数字的归到“其他”类里
     if (m_type == CT_YEAR)
     {
-        for (auto& iter = m_media_list.begin(); iter != m_media_list.end();)
+        for (auto iter{ m_media_list.begin() }; iter != m_media_list.end();)
         {
             if (!iter->first.empty() && !IsStringYear(iter->first))     //如果年份不是4位数字，则添加到其他列表里
             {

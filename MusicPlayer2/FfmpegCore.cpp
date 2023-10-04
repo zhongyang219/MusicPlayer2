@@ -141,7 +141,7 @@ void CFfmpegCore::Open(const wchar_t* file_path) {
     }
     if (file_path) recent_file = file_path;
     const wchar_t* device = nullptr;
-    if (theApp.m_play_setting_data.device_selected < theApp.m_output_devices.size() && theApp.m_play_setting_data.device_selected) {
+    if (theApp.m_play_setting_data.device_selected < static_cast<int>(theApp.m_output_devices.size()) && theApp.m_play_setting_data.device_selected) {
         device = theApp.m_output_devices[theApp.m_play_setting_data.device_selected].name.c_str();
     }
     if (!settings) settings = ffmpeg_core_init_settings();
@@ -211,13 +211,13 @@ bool CFfmpegCore::SongIsOver() {
 
 int CFfmpegCore::GetCurPosition() {
     if (IsSucceed() && handle) {
-        return ffmpeg_core_get_cur_position(handle) / 1000;
+        return static_cast<int>(ffmpeg_core_get_cur_position(handle) / 1000);
     } else return 0;
 }
 
 int CFfmpegCore::GetSongLength() {
     if (IsSucceed() && handle) {
-        return ffmpeg_core_get_song_length(handle) / 1000;
+        return static_cast<int>(ffmpeg_core_get_song_length(handle) / 1000);
     } else return 0;
 }
 
@@ -239,7 +239,7 @@ void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
         song_info.channels = ffmpeg_core_get_channels(handle);
     }
     if (flag & AF_BITRATE) {
-        song_info.bitrate = ffmpeg_core_get_bitrate(handle) / 1000;
+        song_info.bitrate = static_cast<short>(ffmpeg_core_get_bitrate(handle) / 1000);
     }
     if (flag & AF_TAG_INFO) {
         CAudioTag audio_tag(song_info);
@@ -261,14 +261,14 @@ void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, in
     MusicInfoHandle* h = nullptr;
     int re = ffmpeg_core_info_open(file_path, &h);
     if (re || !h) return;
-    if (flag & AF_LENGTH) song_info.setLength(ffmpeg_core_info_get_song_length(h) / 1000);
+    if (flag & AF_LENGTH) song_info.setLength(static_cast<int>(ffmpeg_core_info_get_song_length(h) / 1000));
     if (flag & AF_CHANNEL_INFO) {
         song_info.freq = ffmpeg_core_info_get_freq(h);
         song_info.bits = ffmpeg_core_info_get_bits(h);
         song_info.channels = ffmpeg_core_info_get_channels(h);
     }
     if (flag & AF_BITRATE) {
-        song_info.bitrate = ffmpeg_core_info_get_bitrate(h) / 1000;
+        song_info.bitrate = static_cast<short>(ffmpeg_core_info_get_bitrate(h) / 1000);
     }
     if (flag & AF_TAG_INFO) {
         if (song_info.file_path.empty())

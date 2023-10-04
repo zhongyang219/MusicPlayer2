@@ -63,7 +63,6 @@ protected:
     CHorizontalSplitter m_splitter_ctrl;
 
 protected:
-    virtual void RefreshSongList() override;
     void ShowClassifyList();
     void ShowSongList();
     CString GetClassifyListSelectedString(int index) const;
@@ -74,17 +73,19 @@ protected:
     void QuickSearch(const wstring& key_word);      //根据关键字执行快速查找，将结果保存在m_search_result中
     void SetButtonsEnable();
     void SetButtonsEnable(bool enable);
-    virtual void OnTabEntered() override;
-    virtual bool _OnAddToNewPlaylist(std::wstring& playlist_path) override;       //执行添加到新建播放列表命令，成功返回true，playlist_path用于接收新播放列表的路径
 
     void CalculateClassifyListColumeWidth(std::vector<int>& width);
+
+    virtual void OnTabEntered() override;
 
     virtual void GetSongsSelected(std::vector<SongInfo>& song_list) const override;
     virtual const vector<SongInfo>& GetSongList() const override;
     virtual int GetItemSelected() const override;
     virtual const vector<int>& GetItemsSelected() const override;
+    virtual void RefreshSongList() override;
     virtual void AfterDeleteFromDisk(const std::vector<SongInfo>& files) override;
     virtual wstring GetSelectedString() const override;
+    virtual wstring GetNewPlaylistName() const override;
 
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

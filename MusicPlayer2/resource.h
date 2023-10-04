@@ -796,6 +796,12 @@
 #define IDS_SIMPLE_UI                   598
 #define IDS_GROOVE_MUSIC_STYLE          599
 #define IDS_DEFAULT_UI                  600
+#define IDS_ALIGN_AUTO                  601
+#define IDS_SET_MULTI_ARTIST_SPLIT_EXT  602
+#define IDS_ARTIST_SPLIT_EXT_TIP_INFO   603
+#define IDS_FILES_TOO_SHORT             604
+#define IDS_FILES_NON_MAIN_IN_OSU       605
+#define IDS_WAIT_AND_RETRY              606
 #define IDC_STATIC_PATH                 1001
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
@@ -995,6 +1001,7 @@
 #define IDC_LYRIC_PATH_EDIT2            1065
 #define IDC_ARTIST_EDIT1                1065
 #define IDC_VBR_QUA_EDIT                1065
+#define IDC_FILE_TOO_SHORT_SEC_EDIT     1065
 #define IDC_SPIN1                       1066
 #define IDC_SIZE_STATIC                 1067
 #define IDC_TITLE_EDIT1                 1069
@@ -1052,7 +1059,7 @@
 #define IDC_MIDI_USE_INNER_LYRIC_CHECK  1095
 #define IDC_SOUND_FADE_CHECK            1095
 #define IDC_CHANGE_FREQ_CHECK           1095
-#define IDC_IGNORE_EXIST_CHECK          1095
+#define IDC_INSERT_BEGIN_CHECK          1095
 #define IDC_BUTTON3                     1096
 #define IDC_START_CONVERT_BUTTON        1096
 #define IDC_BACKGROUND_TRANSPARENCY_STATIC2 1096
@@ -1232,6 +1239,8 @@
 #define IDC_FFMPEG_MAX_WAIT_TIME        1224
 #define IDC_ACKNOWLEDGEMENT_SYSLINK     1225
 #define IDC_HSPLITER_STATIC             1226
+#define IDC_ARTIST_SPLIT_EXT_EDIT       1227
+#define IDC_IGNORE_TOO_SHORT_CHECK      1228
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_OPEN                         32773
@@ -1687,7 +1696,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        591
 #define _APS_NEXT_COMMAND_VALUE         33464
-#define _APS_NEXT_CONTROL_VALUE         1227
+#define _APS_NEXT_CONTROL_VALUE         1229
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

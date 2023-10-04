@@ -1,10 +1,11 @@
 ﻿//这个类用于定义用于绘图的函数
 #pragma once
 
-enum class Alignment	//对齐方式
+enum class Alignment    //对齐方式
 {
     LEFT,
     RIGHT,
+    AUTO,   // 用于歌词对齐选项，原来的居中，支持卡拉OK显示
     CENTER
 };
 
@@ -77,7 +78,7 @@ public:
     //color1: 分割位置左边的文本颜色
     //color2: 分割位置右边的文本颜色
     //split: 颜色分割位置，取值为0~1000（用于歌词动态显示）
-    //center: 文本是否居中
+    //align: 文本对齐方式
     //no_clip_area: 如果为true，则不在输出文字时限制绘图区域
     void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, Alignment align = Alignment::LEFT, bool no_clip_area = false);
 
@@ -86,7 +87,7 @@ public:
     //lpszString: 要绘制的文本
     //color: 文本的颜色
     //pixel: 此函数调用一次滚动的像素值，值越小滚动越慢
-    //center: 文本是否居中
+    //center: true时文本居中，false时左对齐
     //scroll_info: 用来保存一些当前文本滚动的状态信息
     //reset: 如果reset为true，则重置scroll_info，并滚动到初始位置
     void DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color, double pixel, bool center, ScrollInfo& scroll_info, bool reset = false, bool no_clip_area = false);

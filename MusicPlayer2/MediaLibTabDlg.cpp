@@ -4,6 +4,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
 #include "SongDataManager.h"
+#include "COSUPlayerHelper.h"
 
 
 IMPLEMENT_DYNAMIC(CMediaLibTabDlg, CTabDlg)
@@ -30,6 +31,7 @@ BEGIN_MESSAGE_MAP(CMediaLibTabDlg, CTabDlg)
     ON_COMMAND(ID_DELETE_FROM_DISK, &CMediaLibTabDlg::OnDeleteFromDisk)
     ON_COMMAND(ID_ITEM_PROPERTY, &CMediaLibTabDlg::OnItemProperty)
     ON_COMMAND(ID_COPY_TEXT, &CMediaLibTabDlg::OnCopyText)
+    ON_COMMAND(ID_PLAY_AS_NEXT, &CMediaLibTabDlg::OnPlayAsNext)
 END_MESSAGE_MAP()
 
 
@@ -39,7 +41,7 @@ void CMediaLibTabDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
     const vector<SongInfo>& o_song_list{ GetSongList() };
     for (int index : GetItemsSelected())
     {
-        if (index < 0 || index > o_song_list.size())
+        if (index < 0 || index > static_cast<int>(o_song_list.size()))
             continue;
         song_list.push_back(o_song_list[index]);
     }
@@ -52,7 +54,7 @@ bool CMediaLibTabDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
         GetSongsSelected(song_list);
     };
     CMusicPlayerCmdHelper cmd_helper(this);
-    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+    return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, GetNewPlaylistName());
 }
 
 UINT CMediaLibTabDlg::ViewOnlineThreadFunc(LPVOID lpParam)
@@ -82,19 +84,20 @@ void CMediaLibTabDlg::OnOK()
     GetSongsSelected(songs);
     if (!songs.empty())
     {
+        bool ok{};
         if (songs.size() > 1 || CFilePathHelper(songs[0].file_path).GetFileExtension() == L"cue")   // 为兼容可存在.cue文件的旧媒体库保留
-        {
-            CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
-        }
+            ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
+        else
+            ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(GetSongList(), GetItemSelected());
+        if (!ok)
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
         else
         {
-            CPlayer::GetInstance().OpenSongsInTempPlaylist(GetSongList(), GetItemSelected());
+            CTabDlg::OnOK();
+            CWnd* pParent = GetParentWindow();
+            if (pParent != nullptr)
+                ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
         }
-
-        CTabDlg::OnOK();
-        CWnd* pParent = GetParentWindow();
-        if (pParent != nullptr)
-            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 }
 
@@ -107,7 +110,7 @@ void CMediaLibTabDlg::OnCancel()
 
     CWnd* pParent = GetParentWindow();
     if (pParent != nullptr)
-        ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
+        ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
 }
 
 
@@ -132,8 +135,17 @@ void CMediaLibTabDlg::OnInitMenu(CMenu* pMenu)
     CTabDlg::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);
-    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (theApp.m_media_lib_setting_data.disable_delete_from_disk ? MF_GRAYED : MF_ENABLED));
+    // 此处设置m_media_lib_popup_menu左侧菜单和右侧菜单的状态
+    vector<SongInfo> songs;
+    GetSongsSelected(songs);
+    bool select_all_in_playing_list = CPlayer::GetInstance().IsSongsInPlayList(songs);
+    // 选中歌曲全部为cue或osu!文件时禁用从磁盘删除菜单项
+    bool can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
+        std::find_if(songs.begin(), songs.end(), [&](const SongInfo& song_info) { return song_info.is_cue || COSUPlayerHelper::IsOsuFile(song_info.file_path); }) != songs.end();
+
+    pMenu->SetDefaultItem(ID_PLAY_ITEM);    // 左右菜单都有这一项
+    pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (select_all_in_playing_list ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
 }
 
 
@@ -144,14 +156,26 @@ void CMediaLibTabDlg::OnPlayItem()
 }
 
 
+void CMediaLibTabDlg::OnPlayAsNext()
+{
+    // TODO: 在此添加命令处理程序代码
+    vector<SongInfo> songs;
+    GetSongsSelected(songs);
+    CPlayer::GetInstance().PlayAfterCurrentTrack(songs);
+    ::SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_SET_UI_FORCE_FRESH_FLAG, 0, 0);
+}
+
+
 void CMediaLibTabDlg::OnPlayItemInFolderMode()
 {
     // TODO: 在此添加命令处理程序代码
     int sel_item{ GetItemSelected() };
     if (sel_item >= 0 && sel_item < static_cast<int>(GetSongList().size()))
     {
-        CPlayer::GetInstance().OpenASongInFolderMode(GetSongList()[sel_item], true);
-        OnCancel();
+        if (!CPlayer::GetInstance().OpenASongInFolderMode(GetSongList()[sel_item], true))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
+            OnCancel();
     }
 }
 
@@ -170,9 +194,10 @@ void CMediaLibTabDlg::OnAddToNewPalylistAndPlay()
     wstring playlist_path;
     if (_OnAddToNewPlaylist(playlist_path))
     {
-        CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, false, true);
-        CPlayer::GetInstance().SaveRecentPath();
-        OnCancel();
+        if (!CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true))
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
+            OnCancel();
     }
 }
 
