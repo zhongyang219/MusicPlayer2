@@ -1236,7 +1236,7 @@ bool CPlayer::ReloadPlaylist(bool refresh_info)
     m_index = 0;
     m_current_position.fromInt(0);
 
-    IniPlayList(false, true);
+    IniPlayList(false, refresh_info);
     return true;
 }
 
