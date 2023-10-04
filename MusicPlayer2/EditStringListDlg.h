@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CListBoxEnhanced.h"
+#include "EditableListBox.h"
 #include "BaseDialog.h"
 
 // CEditStringListDlg 对话框
@@ -21,27 +21,17 @@ public:
 #endif
 
 private:
-    CListBoxEnhanced m_list_ctrl;
+    CEditableListBox m_list_ctrl;
     CString m_title;
     vector<wstring>& m_items;
     HICON m_icon{};
-    CEdit m_item_edit;
-    int m_edit_row{};
-    bool m_editing{};
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
 
-    afx_msg void OnEnKillfocusEdit1();
-    afx_msg void OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult);
-    afx_msg void OnLvnBeginScrollList1(NMHDR* pNMHDR, LRESULT* pResult);
-
     virtual CString GetDialogName() const override;
-
-    void Edit(int row);     //编辑指定行
-    void EndEdit();         //结束编辑
 
 public:
     virtual BOOL OnInitDialog();

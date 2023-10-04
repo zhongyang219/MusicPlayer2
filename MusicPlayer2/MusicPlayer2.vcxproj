@@ -257,6 +257,7 @@
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
     <ClInclude Include="CueFile.h" />
+    <ClInclude Include="EditableListBox.h" />
     <ClInclude Include="EditStringListDlg.h" />
     <ClInclude Include="FfmpegCore.h" />
     <ClInclude Include="FlacEncodeCfgDlg.h" />
@@ -413,6 +414,7 @@
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />
     <ClCompile Include="CueFile.cpp" />
+    <ClCompile Include="EditableListBox.cpp" />
     <ClCompile Include="EditStringListDlg.cpp" />
     <ClCompile Include="FfmpegCore.cpp" />
     <ClCompile Include="FlacEncodeCfgDlg.cpp" />
