@@ -156,18 +156,24 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
     IPropertyTabDlg* cur_tab = dynamic_cast<IPropertyTabDlg*>(m_tab_ctrl.GetCurrentTab());
     if (cur_tab != nullptr)
     {
-        int saved_num = cur_tab->SaveModified();
-        m_modified = true;
-        if (m_batch_edit)
+        CPlayer::ReOpen reopen(true);   // ReOpen需要在IsLockSuccess失败时撤销操作所以改在这里，但这里判断是否为修改当前播放有点困难所以总是先关闭
+        if (reopen.IsLockSuccess())
         {
-            CString info = CCommon::LoadTextFormat(IDS_TAG_BATCH_EDIT_INFO, { saved_num });
-            MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
+            int saved_num = cur_tab->SaveModified();
+            m_modified = true;
+            if (m_batch_edit)
+            {
+                CString info = CCommon::LoadTextFormat(IDS_TAG_BATCH_EDIT_INFO, { saved_num });
+                MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
+            }
+            else
+            {
+                if (saved_num == 0)
+                    MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+            }
         }
         else
-        {
-            if (saved_num == 0)
-                MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
-        }
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 

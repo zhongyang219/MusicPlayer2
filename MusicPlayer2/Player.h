@@ -398,7 +398,6 @@ public:
     bool AlbumCoverExist();
     wstring GetAlbumCoverPath() const { return m_album_cover_path; }
     int GetAlbumCoverType() const { return m_album_cover_type; }
-    bool DeleteAlbumCover();
 
 private:
     // 下方播放列表移除歌曲方法中的共有部分
@@ -527,16 +526,18 @@ private:
     void MediaTransControlsLoadThumbnailDefaultImage();
 
 public:
-    //用于在执行某些操作时，播放器需要关闭当前播放的歌曲，操作完成后再次打开
-    //当reopen为true时，在构造函数中关闭，析构时再次打开
+    // 用于在执行某些操作时，播放器需要关闭当前播放的歌曲，操作完成后再次打开
+    // 当reopen为true时，在构造函数中关闭，析构时再次打开
+    // 使用后需要先检查IsLockSuccess，如果返回false（极小概率）那么此次操作应当放弃并让出主线程，在主线程等待会死锁
     struct ReOpen
     {
     public:
         ReOpen(bool reopen)
             : m_reopen{ reopen }
         {
-            if (reopen)
+            if (m_reopen && !m_instance.m_loading && m_instance.GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
             {
+                lock_success = true;
                 current_position = m_instance.GetCurrentPosition();
                 is_playing = m_instance.IsPlaying();
                 current_song = m_instance.GetCurrentSongInfo();
@@ -546,18 +547,22 @@ public:
 
         ~ReOpen()
         {
-            if (m_reopen/* && current_song.IsSameSong(m_instance.GetCurrentSongInfo())*/)
+            if (lock_success)
             {
                 m_instance.MusicControl(Command::OPEN);
                 m_instance.SeekTo(current_position);
                 if (is_playing)
                     m_instance.MusicControl(Command::PLAY);
+                m_instance.GetPlayStatusMutex().unlock();
             }
         }
+        // 返回true说明此次取得锁成功或没有进行“reopen”操作，返回false时应放弃此次操作（主线程）
+        bool IsLockSuccess() { return !m_reopen || lock_success; }
     private:
         int current_position{};
         SongInfo current_song;
         bool is_playing{};
         bool m_reopen{};
+        bool lock_success{};
     };
 };

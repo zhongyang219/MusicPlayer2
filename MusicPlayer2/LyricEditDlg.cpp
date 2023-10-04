@@ -96,11 +96,16 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
     if (m_inner_lyric && lyric_write_support)
     {
         //写入内嵌歌词
-        bool saved{};
+        bool saved{ false };
         SongInfo song_info{ song };
-        CAudioTag audio_tag(song_info);
         CPlayer::ReOpen reopen(true);
-        saved = audio_tag.WriteAudioLyric(m_lyric_string);
+        if (reopen.IsLockSuccess())
+        {
+            CAudioTag audio_tag(song_info);
+            saved = audio_tag.WriteAudioLyric(m_lyric_string);
+        }
+        else
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
         if (saved)
         {
             m_modified = false;

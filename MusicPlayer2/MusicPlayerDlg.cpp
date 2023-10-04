@@ -4692,16 +4692,38 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
 {
     // TODO: 在此添加命令处理程序代码
     CString str_info;
-    if (CPlayer::GetInstance().IsInnerCover())
+    bool is_inner_cover{ CPlayer::GetInstance().IsInnerCover() };
+    if (is_inner_cover)
         str_info = CCommon::LoadText(IDS_DELETE_INNER_ALBUM_COVER_INQUERY);
     else
         str_info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { CPlayer::GetInstance().GetAlbumCoverPath() });
     if (MessageBox(str_info, NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
-        if (CPlayer::GetInstance().DeleteAlbumCover())
+        bool result{ false };
+        //内嵌专辑封面，从音频文件中删除
+        if (is_inner_cover)
+        {
+            CPlayer::ReOpen reopen(true);
+            if (reopen.IsLockSuccess())
+            {
+                CAudioTag audio_tag(CPlayer::GetInstance().GetCurrentSongInfo2());
+                result = audio_tag.WriteAlbumCover(wstring());
+            }
+            else
+                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        }
+        //外部专辑封面，删除专辑封面文件
+        else
+        {
+            result = (CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), CPlayer::GetInstance().GetAlbumCoverPath().c_str()) == ERROR_SUCCESS);
+            CPlayer::GetInstance().SearchAlbumCover();      // 重新获取专辑封面（代替原来的m_album_cover.Destroy();）
+            CPlayer::GetInstance().AlbumCoverGaussBlur();
+        }
+
+        if (result)
         {
             SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(CPlayer::GetInstance().GetCurrentSongInfo()) };
-            song_info.SetNoOnlineAlbumCover(true);
+            song_info.SetNoOnlineAlbumCover(true);  // 此歌曲封面经过手动操作，设置标志位不进行自动下载封面
             CSongDataManager::GetInstance().AddItem(song_info);
         }
         else
@@ -6230,9 +6252,19 @@ void CMusicPlayerDlg::OnRename()
                 if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path))
                 {
                     wstring new_name = CPropertyDlgHelper::FileNameFromTag(dlg.GetFormularSelected(), song);
-                    CMusicPlayerCmdHelper helper;
-                    if (helper.Rename(song, new_name))
-                        count++;
+                    CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
+                    if (reopen.IsLockSuccess())     // 这个一般来说是绝对成功的不过确实存在失败的情况
+                    {
+                        wstring new_file_path = CCommon::FileRename(song.file_path, new_name);
+                        if (!new_file_path.empty())
+                        {
+                            CSongDataManager::GetInstance().ChangeFilePath(song.file_path, new_file_path);
+                            song.file_path = new_file_path;
+                            ++count;
+                        }
+                    }
+                    else
+                        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
                 }
                 else
                 {
@@ -6269,9 +6301,13 @@ void CMusicPlayerDlg::OnEmbedLyricToAudioFile()
         if (!lyric_contents.empty())
         {
             CPlayer::ReOpen reopen(true);
-            CAudioTag audio_tag(cur_song);
-            failed = !audio_tag.WriteAudioLyric(lyric_contents);
-            //CPlayer::GetInstance().IniLyrics();
+            if (reopen.IsLockSuccess())
+            {
+                CAudioTag audio_tag(cur_song);
+                failed = !audio_tag.WriteAudioLyric(lyric_contents);
+            }
+            else
+                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
         }
         if (failed)
         {
@@ -6292,9 +6328,13 @@ void CMusicPlayerDlg::OnDeleteLyricFromAudioFile()
     if (lyric_delete_enable)
     {
         CPlayer::ReOpen reopen(true);
-        CAudioTag audio_tag(cur_song);
-        failed = !audio_tag.WriteAudioLyric(wstring());
-        //CPlayer::GetInstance().IniLyrics();
+        if (reopen.IsLockSuccess())
+        {
+            CAudioTag audio_tag(cur_song);
+            failed = !audio_tag.WriteAudioLyric(wstring());
+        }
+        else
+            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
     }
     if (failed)
     {

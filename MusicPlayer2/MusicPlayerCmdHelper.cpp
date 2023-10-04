@@ -606,17 +606,6 @@ int CMusicPlayerCmdHelper::CleanUpRecentFolders()
     return cleard_cnt;
 }
 
-bool CMusicPlayerCmdHelper::Rename(SongInfo& song, const wstring& new_name)
-{
-    CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
-    wstring new_file_path = CCommon::FileRename(song.file_path, new_name);
-    if (new_file_path.empty())
-        return false;
-    CSongDataManager::GetInstance().ChangeFilePath(song.file_path, new_file_path);
-    song.file_path = new_file_path;
-    return true;
-}
-
 void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_show)
 {
     CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();

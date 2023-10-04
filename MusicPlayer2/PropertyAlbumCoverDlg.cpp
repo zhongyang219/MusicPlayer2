@@ -60,8 +60,7 @@ int CPropertyAlbumCoverDlg::SaveModified()
         CWaitCursor wait_cursor;
         int current_position{};
         bool is_playing{};
-        //如果当前修改的是正在播放的文件，则先关闭，保存后再打开
-        CPlayer::ReOpen reopen(IsCurrentSong());
+        // 调用SaveModified的属性主窗口已进行ReOpen操作，此时程序没有打开任何歌曲
 
         int saved_count{};
         if (m_cover_changed)

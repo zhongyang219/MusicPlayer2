@@ -1622,27 +1622,6 @@ bool CPlayer::AlbumCoverExist()
         return !m_album_cover.IsNull();
 }
 
-bool CPlayer::DeleteAlbumCover()
-{
-    bool result{ true };
-    //内嵌专辑封面，从音频文件中删除
-    if (m_inner_cover)
-    {
-        ReOpen reopen(true);
-        CAudioTag audio_tag(GetCurrentSongInfo2());
-        result = audio_tag.WriteAlbumCover(wstring());
-    }
-    //外部专辑封面，删除专辑封面文件
-    else
-    {
-        if (CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_album_cover_path.c_str()) == 0)
-            m_album_cover.Destroy();
-        else
-            result = false;
-    }
-    return result;
-}
-
 void CPlayer::AfterRemoveSong(bool is_current)
 {
     if (is_current)

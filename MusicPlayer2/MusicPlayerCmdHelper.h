@@ -45,8 +45,6 @@ public:
     // 清除最近播放文件夹中的无效条目
     static int CleanUpRecentFolders();
 
-    static bool Rename(SongInfo& song, const wstring& new_name);
-
     enum eMediaLibTab
     {
         ML_FOLDER = 0,
