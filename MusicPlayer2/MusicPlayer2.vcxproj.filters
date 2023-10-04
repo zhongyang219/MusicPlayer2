@@ -381,6 +381,9 @@
     <Filter Include="派生的控件类\HorizontalSplitter">
       <UniqueIdentifier>{d878d4fa-d8e9-4877-a938-c3aa575f527d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\EditableListBox">
+      <UniqueIdentifier>{1dbd76ed-58fd-47e0-9639-4519ba00fbd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -853,6 +856,9 @@
     <ClInclude Include="HorizontalSplitter.h">
       <Filter>派生的控件类\HorizontalSplitter</Filter>
     </ClInclude>
+    <ClInclude Include="EditableListBox.h">
+      <Filter>派生的控件类\EditableListBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1289,6 +1295,9 @@
     </ClCompile>
     <ClCompile Include="HorizontalSplitter.cpp">
       <Filter>派生的控件类\HorizontalSplitter</Filter>
+    </ClCompile>
+    <ClCompile Include="EditableListBox.cpp">
+      <Filter>派生的控件类\EditableListBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
