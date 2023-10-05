@@ -281,6 +281,15 @@ namespace UiElement
     public:
         virtual void Draw() override;
     };
+
+    class ClassicalControlBar : public Element
+    {
+    public:
+        virtual void Draw() override;
+
+    public:
+        bool show_switch_display_btn{};
+    };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

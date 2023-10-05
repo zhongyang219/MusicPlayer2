@@ -52,16 +52,7 @@
       <rectangle height="24" margin="4" margin-bottom="0">
         <toolbar show_translate_btn="true"/>
       </rectangle>
-      <horizontalLayout height="36" margin="4">
-        <button key="stop" bigIcon="true" width="36" height="36"/>
-        <button key="previous" bigIcon="true" width="36" height="36"/>
-        <button key="playPause" bigIcon="true" width="36" height="36"/>
-        <button key="next" bigIcon="true" width="36" height="36"/>
-        <progressBar height="16" show_play_time="true" margin-left="4" margin-right="4" play_time_both_side="false" />
-        <button key="favorite" width="24" height="24"/>
-        <button key="mediaLib" width="24" height="24"/>
-        <button key="showPlaylist" width="24" height="24"/>
-      </horizontalLayout>
+      <classicalControlBar margin="4"/>
     </verticalLayout>
   </ui>
   
@@ -70,7 +61,7 @@
       <verticalLayout margin="4" margin-bottom="0">
         <trackInfo height="20"/>
         <text type="format" style="scroll" height="20"/>
-        <stackElement ckick_to_switch="false" show_indicator="true" margin-bottom="4">
+        <stackElement click_to_switch="false" show_indicator="true" margin-bottom="4">
           <verticalLayout margin-bottom="4">
             <albumCover square="true" height="70%" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
@@ -97,16 +88,7 @@
       <rectangle height="24" margin="4" margin-bottom="0">
         <toolbar show_translate_btn="true"/>
       </rectangle>
-      <horizontalLayout height="36" margin="4">
-        <button key="stop" bigIcon="true" width="36" height="36"/>
-        <button key="previous" bigIcon="true" width="36" height="36"/>
-        <button key="playPause" bigIcon="true" width="36" height="36"/>
-        <button key="next" bigIcon="true" width="36" height="36"/>
-        <progressBar height="16" show_play_time="true" margin-left="4" margin-right="4" play_time_both_side="false"/>
-        <button key="favorite" width="24" height="24"/>
-        <button key="mediaLib" width="24" height="24"/>
-        <button key="showPlaylist" width="24" height="24"/>
-      </horizontalLayout>
+      <classicalControlBar margin="4"/>
     </verticalLayout>
   </ui>
 
@@ -141,18 +123,8 @@
       <rectangle height="24" margin="4" margin-bottom="0">
         <toolbar show_translate_btn="true"/>
       </rectangle>
-      <progressBar height="16" show_play_time="true" margin="4" margin-bottom="0" play_time_both_side="true" />
-      <horizontalLayout height="32" margin-bottom="4">
-        <button key="stop" bigIcon="true" width="36" height="36"/>
-        <button key="previous" bigIcon="true" width="36" height="36"/>
-        <button key="playPause" bigIcon="true" width="36" height="36"/>
-        <button key="next" bigIcon="true" width="36" height="36"/>
-        <placeHolder/>
-        <button key="favorite" width="24" height="24"/>
-        <button key="mediaLib" width="24" height="24"/>
-        <button key="showPlaylist" width="24" height="24"/>
-      </horizontalLayout>
-    </verticalLayout>
+      <classicalControlBar margin-top="4"/>
+      </verticalLayout>
 
   </ui>
 

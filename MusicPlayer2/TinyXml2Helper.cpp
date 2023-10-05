@@ -70,3 +70,17 @@ bool CTinyXml2Helper::StringToBool(const char* str)
     return (!str_text.empty() && (str_text == "true" || str_text == "1"));
 }
 
+void CTinyXml2Helper::GetElementAttributeBool(tinyxml2::XMLElement* ele, const char* attr, bool& value)
+{
+    std::string str_attr = CTinyXml2Helper::ElementAttribute(ele, attr);
+    if (!str_attr.empty())
+        value = CTinyXml2Helper::StringToBool(str_attr.c_str());
+}
+
+void CTinyXml2Helper::GetElementAttributeInt(tinyxml2::XMLElement* ele, const char* attr, int& value)
+{
+    std::string str_attr = CTinyXml2Helper::ElementAttribute(ele, attr);
+    if (!str_attr.empty())
+        value = atoi(str_attr.c_str());
+}
+

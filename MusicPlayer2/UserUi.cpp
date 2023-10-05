@@ -699,21 +699,11 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
             if (stack_element != nullptr)
             {
-                std::string str_click_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "click_to_switch");
-                if (!str_click_to_switch.empty())
-                    stack_element->click_to_switch = CTinyXml2Helper::StringToBool(str_click_to_switch.c_str());
-                std::string str_hover_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "hover_to_switch");
-                if (!str_hover_to_switch.empty())
-                    stack_element->hover_to_switch = CTinyXml2Helper::StringToBool(str_hover_to_switch.c_str());
-                std::string str_scroll_to_switch = CTinyXml2Helper::ElementAttribute(xml_node, "scroll_to_switch");
-                if (!str_scroll_to_switch.empty())
-                    stack_element->scroll_to_switch = CTinyXml2Helper::StringToBool(str_scroll_to_switch.c_str());
-                std::string str_show_indicator = CTinyXml2Helper::ElementAttribute(xml_node, "show_indicator");
-                if (!str_show_indicator.empty())
-                    stack_element->show_indicator = CTinyXml2Helper::StringToBool(str_show_indicator.c_str());
-                std::string str_indicator_offset = CTinyXml2Helper::ElementAttribute(xml_node, "indicator_offset");
-                if (!str_indicator_offset.empty())
-                    stack_element->indicator_offset = atoi(str_indicator_offset.c_str());
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "click_to_switch", stack_element->click_to_switch);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "hover_to_switch", stack_element->hover_to_switch);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "scroll_to_switch", stack_element->scroll_to_switch);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_indicator", stack_element->show_indicator);
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "indicator_offset", stack_element->indicator_offset);
             }
         }
         //播放列表
@@ -725,6 +715,15 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 int item_height = atoi(CTinyXml2Helper::ElementAttribute(xml_node, "item_height"));
                 if (item_height > 0)
                     playlist->item_height = item_height;
+            }
+        }
+        //播放控制栏
+        else if (item_name == "classicalControlBar")
+        {
+            UiElement::ClassicalControlBar* classicalControlBar = dynamic_cast<UiElement::ClassicalControlBar*>(element.get());
+            if (classicalControlBar != nullptr)
+            {
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_switch_display_btn", classicalControlBar->show_switch_display_btn);
             }
         }
 

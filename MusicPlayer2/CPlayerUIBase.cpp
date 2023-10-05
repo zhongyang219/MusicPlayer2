@@ -1678,7 +1678,7 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
     }
 }
 
-void CPlayerUIBase::DrawControlBar(CRect rect)
+void CPlayerUIBase::DrawControlBar(CRect rect, bool draw_switch_display_btn)
 {
     bool progress_on_top = rect.Width() < m_progress_on_top_threshold;
     const int progress_height = DPI(4);
@@ -1722,6 +1722,12 @@ void CPlayerUIBase::DrawControlBar(CRect rect)
     rc_btn.MoveToX(rc_btn.left - btn_side);
     m_buttons[BTN_SELECT_FOLDER].enable = !CPlayer::GetInstance().m_loading;
     DrawControlBarBtn(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
+
+    if (draw_switch_display_btn)
+    {
+        rc_btn.MoveToX(rc_btn.left - btn_side);
+        DrawControlBarBtn(rc_btn, m_buttons[BTN_SWITCH_DISPLAY], theApp.m_icon_set.switch_display);
+    }
 
     rc_btn.MoveToX(rc_btn.left - btn_side);
     if (CPlayer::GetInstance().IsFavourite())

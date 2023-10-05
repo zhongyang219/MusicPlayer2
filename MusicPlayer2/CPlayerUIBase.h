@@ -23,6 +23,7 @@ namespace UiElement
     class StackElement;
     class Playlist;
     class PlaylistIndicator;
+    class ClassicalControlBar;
 }
 
 struct SLayoutData
@@ -67,6 +68,7 @@ public:
     friend class UiElement::StackElement;
     friend class UiElement::Playlist;
     friend class UiElement::PlaylistIndicator;
+    friend class UiElement::ClassicalControlBar;
 
 public:
     void Init(CDC* pDC) override;
@@ -208,7 +210,7 @@ protected:
     void DrawToolBarWithoutBackground(CRect rect, bool draw_translate_button);
     void DrawBeatIndicator(CRect rect);
     void DrawVolumnAdjBtn();
-    void DrawControlBar(CRect rect);
+    void DrawControlBar(CRect rect, bool draw_switch_display_btn = false);
     void DrawProgressBar(CRect rect, bool play_time_both_side = false);               //绘制进度条（包含时间）。play_time_both_side如果为true，则播放时间显示的进度条的两侧，否则显示在进度条的右侧
     void DrawProgess(CRect rect);                   //绘制进度条
     void DrawTranslateButton(CRect rect);

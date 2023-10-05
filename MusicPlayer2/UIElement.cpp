@@ -1179,6 +1179,19 @@ void UiElement::PlaylistIndicator::Draw()
     Element::Draw();
 }
 
+void UiElement::ClassicalControlBar::Draw()
+{
+    if (rect.Width() < ui->m_progress_on_top_threshold)
+        max_height.FromString("56");
+    else
+        max_height.FromString("36");
+    CalculateRect();
+
+    ui->DrawControlBar(rect, show_switch_display_btn);
+    ui->ResetDrawArea();
+    Element::Draw();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name, CPlayerUIBase* ui)
@@ -1224,6 +1237,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = new UiElement::Playlist();
     else if (name == "playlistIndicator")
         element = new UiElement::PlaylistIndicator();
+    else if (name == "classicalControlBar")
+        element = new UiElement::ClassicalControlBar();
     else if (name == "ui" || name == "root" || name == "placeHolder")
         element = new UiElement::Element();
 

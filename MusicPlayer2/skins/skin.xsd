@@ -129,7 +129,8 @@
                 <xs:element name="placeHolder" type="placeHolderType"></xs:element>
                 <xs:element name="playlist" type="playlistType"></xs:element>
                 <xs:element name="playlistIndicator" type="playlistIndicatorType"></xs:element>
-            </xs:choice>
+				<xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
+			</xs:choice>
         </xs:sequence>
     </xs:group>
     <xs:element name="root"><!--定义root元素信息-->
@@ -712,6 +713,18 @@
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="classicalControlBarType">
+        <xs:annotation>
+            <xs:documentation>一个由包含进度条，以及停止、上一曲、播放/暂停、下一曲、收藏、媒体库、播放列表按钮的播放控制栏。</xs:documentation>
+        </xs:annotation>
+        <xs:group ref="elements"></xs:group>
+		<xs:attribute name="show_switch_display_btn" type="xs:boolean" default="false">
+			<xs:annotation>
+				<xs:documentation>是否显示“切换界面”按钮。</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="placeHolderType">
       <xs:annotation>
