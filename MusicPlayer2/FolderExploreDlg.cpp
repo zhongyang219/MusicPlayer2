@@ -422,6 +422,7 @@ void CFolderExploreDlg::OnOK()
         wstring folder_path{ m_folder_explore_tree.GetItemPath(m_tree_item_selected) };
         if (!CPlayer::GetInstance().OpenFolder(folder_path, true, true))
             MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        else
         {
             CTabDlg::OnOK();
             CWnd* pParent = GetParentWindow();
