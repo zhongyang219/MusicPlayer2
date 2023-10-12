@@ -54,6 +54,7 @@ public:
     {
         bool refresh_info{};
         bool play{};                            // 加载完播放列表后是否立即播放
+        bool playlist_mode{};                   // 是否为播放列表模式
         int play_index{};                       // 播放索引，播放列表模式下需要在cue解析时维持其指向
         int process_percent{};
         wstring remove_list_path{};             // 进入初始化线程后通知主窗口移除此播放列表/文件夹

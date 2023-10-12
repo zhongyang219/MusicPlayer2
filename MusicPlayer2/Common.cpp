@@ -39,11 +39,16 @@ CCommon::~CCommon()
 //	std::sort(files.begin(), files.end());		//对容器里的文件按名称排序
 //}
 
-bool CCommon::FileExist(const wstring& file)
+bool CCommon::FileExist(const wstring& file, bool is_case_sensitive)
 {
-    if (file == L"." || file == L"..")
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFileW(file.c_str(), &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE)  // 没有找到说明不区分大小写也没有匹配文件
         return false;
-    return (PathFileExists(file.c_str()) != 0);
+    FindClose(hFind);
+    if (is_case_sensitive)              // 如果需要区分大小写那么重新严格比较
+        return CFilePathHelper(file).GetFileName() == findFileData.cFileName;
+    return true;
 }
 
 bool CCommon::FolderExist(const wstring& file)
@@ -60,14 +65,15 @@ bool CCommon::IsFolder(const wstring& path)
 
 unsigned __int64 CCommon::GetFileLastModified(const wstring& file_path)
 {
-    WIN32_FIND_DATA ffd;
-    HANDLE hFind = FindFirstFile(file_path.c_str(), &ffd);
-    FindClose(hFind);
-    unsigned __int64 last_modified_time{};
-    last_modified_time = ffd.ftLastWriteTime.dwLowDateTime;
-    unsigned __int64 hight_date_time = ffd.ftLastWriteTime.dwHighDateTime;
-    last_modified_time |= (hight_date_time << 32);
-    return last_modified_time;
+    // 使用GetFileAttributesEx，耗时大约为FindFirstFile的2/3
+    ULARGE_INTEGER last_modified_time{};
+    WIN32_FILE_ATTRIBUTE_DATA file_attributes;
+    if (GetFileAttributesEx(file_path.c_str(), GetFileExInfoStandard, &file_attributes))
+    {
+        last_modified_time.HighPart = file_attributes.ftLastWriteTime.dwHighDateTime;
+        last_modified_time.LowPart = file_attributes.ftLastWriteTime.dwLowDateTime;
+    }
+    return last_modified_time.QuadPart;
 }
 
 bool CCommon::IsFileHidden(const wstring& file_path)

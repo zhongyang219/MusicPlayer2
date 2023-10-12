@@ -210,13 +210,14 @@ void CMciCore::GetAudioInfo(SongInfo & song_info, int flag)
     if (m_success)
     {
         if (flag&AF_LENGTH)
-            song_info.setLength(GetMciSongLength(song_info.file_path));
+            song_info.end_pos.fromInt(GetMciSongLength(song_info.file_path));
         if (flag&AF_BITRATE)
             song_info.bitrate = GetMciBitrate(song_info.file_path);
         if (flag&AF_TAG_INFO)
         {
             CAudioTag audio_tag(song_info);
             audio_tag.GetAudioTag();
+            audio_tag.GetAudioRating();
         }
     }
 
@@ -231,7 +232,7 @@ void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int
         {
             wchar_t buff[16];
             m_error_code = mciSendStringW((L"status \"" + wstring(file_path) + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
-            song_info.setLength(_wtoi(buff));
+            song_info.end_pos.fromInt(_wtoi(buff));
         }
         if (flag&AF_BITRATE)
             song_info.bitrate = GetMciBitrate(file_path);
@@ -239,6 +240,7 @@ void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int
         {
             CAudioTag audio_tag(song_info);
             audio_tag.GetAudioTag();
+            audio_tag.GetAudioRating();
         }
 
         m_error_code = mciSendStringW((L"close \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);

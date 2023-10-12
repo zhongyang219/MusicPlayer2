@@ -190,11 +190,9 @@ struct SongInfo
     void CopySongInfo(const SongInfo& song_info)
     {
         CopyAudioTag(song_info);
-        //lengh = song_info.lengh;   // 计划移除
         start_pos = song_info.start_pos;
         end_pos = song_info.end_pos;
         bitrate = song_info.bitrate;
-        //listen_time = song_info.listen_time;
         song_id = song_info.song_id;
         is_favourite = song_info.is_favourite;
         info_acquired = song_info.info_acquired;
@@ -316,11 +314,6 @@ struct SongInfo
         return Time(end_pos - start_pos);
     }
 
-    void setLength(Time length)
-    {
-        end_pos = start_pos + length.toInt();
-    }
-
     void Normalize()
     {
         if (title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())
@@ -361,10 +354,5 @@ struct SongInfo
     bool IsEmpty() const
     {
         return file_path.empty() && title.empty() && artist.empty() && album.empty() && comment.empty() && genre.empty() && year == 0 && length().isZero();
-    }
-
-    bool IsLastTrack() const
-    {
-        return track == total_tracks;
     }
 };

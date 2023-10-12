@@ -59,8 +59,8 @@ public:
     CCommon();
     ~CCommon();
 
-    //判断文件是否存在
-    static bool FileExist(const wstring& file);
+    // 判断文件是否存在，file为文件绝对路径，is_case_sensitive为true时对文件名区分大小写（路径仍然不区分）
+    static bool FileExist(const wstring& file, bool is_case_sensitive = false);
 
     //判断文件夹是否存在
     static bool FolderExist(const wstring& file);

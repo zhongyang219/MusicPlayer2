@@ -109,8 +109,11 @@ public:
     virtual int GetCurPosition() = 0;               //获取当前播放进度，单位为毫秒
     virtual int GetSongLength() = 0;                //获取歌曲长度，单位为毫秒
     virtual void SetCurPosition(int position) = 0;  //设置播放进度，单位为毫秒
-    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) = 0;        //获取打开的音频的长度、比特率和标签信息，flag用于指定获取哪些信息
-    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) = 0;        //获取指定音频文件的长度、比特率和标签信息
+    // 获取打开的音频的长度、比特率和标签信息，flag用于指定获取哪些信息
+    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO | AF_CHANNEL_INFO) = 0;
+    // 获取file_path属性写入song_info，flag用于指定获取哪些信息（需要支持并发且不影响当前播放）
+    // AF_LENGTH读取文件时长直接写入end_pos，AF_BITRATE读取比特率，AF_TAG_INFO读取标签/分级，AF_CHANNEL_INFO读取采样率/位深度/通道数
+    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO | AF_CHANNEL_INFO) = 0;
 
     /**
      * @brief   音频编码的回调函数

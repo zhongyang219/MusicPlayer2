@@ -4197,7 +4197,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
         static bool first_init{ true };
         if (first_init)
         {
-            theApp.StartUpdateMediaLib(true);
+            theApp.StartUpdateMediaLib(false);
             first_init = false;
         }
     }

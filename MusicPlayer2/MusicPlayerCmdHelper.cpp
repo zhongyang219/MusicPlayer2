@@ -529,58 +529,13 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
     {
         // 这里还是特殊处理比较好，避免自动加入大量无关文件（比如配的视频等等）
         if (!COSUPlayerHelper::IsOsuFolder(item))
-            CAudioCommon::GetAudioFiles(item, all_media_songs, 50000, true);
+            CAudioCommon::GetAudioFiles(item, all_media_songs, MAX_SONG_NUM, true);
         else
             COSUPlayerHelper::GetOSUAudioFiles(item, all_media_songs);
     }
-    int index = 0;
-    // 解析并移除cue文件及其关联的音频文件，并将分割后的音轨插入
-    // refresh为true时会强制更新cue的时长与标签（直接更新到媒体库）
-    CAudioCommon::GetCueTracks(all_media_songs, CPlayer::GetInstance().GetPlayerCore(), index, refresh);
-
-    // 根据设置阻止非cue的过短文件被自动加入媒体库（这也会阻止获取时长失败的一般文件）（手动仍然可以）
-    bool ignore_too_short_when_update{ theApp.m_media_lib_setting_data.ignore_too_short_when_update };
-    int file_too_short_ms{ theApp.m_media_lib_setting_data.file_too_short_sec * 1000 };
-    theApp.m_media_update_para.total_num = all_media_songs.size();   //保存音频总数
-    //std::unordered_map<wstring, SongInfo> new_songs_map;
-    for (const auto& song : all_media_songs)
-    {
-        if (theApp.m_media_update_para.thread_exit)
-            break;
-
-        if (song.file_path.empty()) continue;
-        SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
-        // 判断是否重新获取歌曲信息
-        bool get_song_info{ (song_info.modified_time == 0 || refresh) && IsSongNewer(song_info) };  // 未获取过修改时间或要求刷新时通过IsSongNewer确认并更新文件修改时间
-        if (get_song_info || !song_info.info_acquired || !song_info.ChannelInfoAcquired())          // 如果判断需要获取元数据就获取尽量多的项目
-        {
-            bool is_osu_file{ COSUPlayerHelper::IsOsuFile(song_info.file_path) };
-            int flag = AF_BITRATE | AF_CHANNEL_INFO;
-            if (!song_info.is_cue)
-                flag |= AF_LENGTH;
-            if (!is_osu_file && !song_info.is_cue)
-                flag |= AF_TAG_INFO;
-            IPlayerCore* pPlayerCore = CPlayer::GetInstance().GetPlayerCore();
-            if (pPlayerCore != nullptr)
-                pPlayerCore->GetAudioInfo(song_info.file_path.c_str(), song_info, flag);
-            if (ignore_too_short_when_update && !song_info.is_cue && song_info.length().toInt() < file_too_short_ms)
-                continue;
-            if (is_osu_file)
-                COSUPlayerHelper::GetOSUAudioTitleArtist(song_info);
-
-            song_info.info_acquired = true;
-            song_info.SetChannelInfoAcquired(true);
-
-            if (!song_info.is_cue && !is_osu_file)
-            {
-                // 从文件获取分级信息，仅限支持的文件
-                CAudioTag audio_tag(song_info);
-                audio_tag.GetAudioRating();
-            }
-            CSongDataManager::GetInstance().AddItem(song_info);
-            theApp.m_media_update_para.num_added++;
-        }
-    }
+    theApp.m_media_update_para.total_num = all_media_songs.size();   //保存音频总数(由于cue/忽略短文件的存在，num_added可能大幅超过或少于total_num)
+    int process_percent{};
+    CAudioCommon::GetAudioInfo(all_media_songs, theApp.m_media_update_para.num_added, theApp.m_media_update_para.thread_exit, process_percent, refresh, theApp.m_media_lib_setting_data.ignore_too_short_when_update);
 
     return theApp.m_media_update_para.num_added;
 }

@@ -232,7 +232,7 @@ void CFfmpegCore::SetCurPosition(int position) {
 
 void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
     if (!handle || !IsSucceed()) return;
-    if (flag & AF_LENGTH) song_info.setLength(GetSongLength());
+    if (flag & AF_LENGTH) song_info.end_pos.fromInt(GetSongLength());
     if (flag & AF_CHANNEL_INFO) {
         song_info.freq = ffmpeg_core_get_freq(handle);
         song_info.bits = ffmpeg_core_get_bits(handle);
@@ -243,6 +243,7 @@ void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
     }
     if (flag & AF_TAG_INFO) {
         CAudioTag audio_tag(song_info);
+        audio_tag.GetAudioRating();
         if (!audio_tag.GetAudioTag())       //如果taglib获取信息失败，则使用ffmpeg获取标签信息
         {
             song_info.title = GetTitle();
@@ -261,7 +262,7 @@ void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, in
     MusicInfoHandle* h = nullptr;
     int re = ffmpeg_core_info_open(file_path, &h);
     if (re || !h) return;
-    if (flag & AF_LENGTH) song_info.setLength(static_cast<int>(ffmpeg_core_info_get_song_length(h) / 1000));
+    if (flag & AF_LENGTH) song_info.end_pos.fromInt(static_cast<int>(ffmpeg_core_info_get_song_length(h) / 1000));
     if (flag & AF_CHANNEL_INFO) {
         song_info.freq = ffmpeg_core_info_get_freq(h);
         song_info.bits = ffmpeg_core_info_get_bits(h);
@@ -274,6 +275,7 @@ void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, in
         if (song_info.file_path.empty())
             song_info.file_path = file_path;
         CAudioTag audio_tag(song_info);
+        audio_tag.GetAudioRating();
         if (!audio_tag.GetAudioTag())       //如果taglib获取信息失败，则使用ffmpeg获取标签信息
         {
             song_info.title = GetTitle(h);

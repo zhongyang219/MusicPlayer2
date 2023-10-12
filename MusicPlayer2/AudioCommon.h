@@ -5,7 +5,6 @@
 #include "FilePathHelper.h"
 #include "Resource.h"
 #include "SongInfo.h"
-#include "IPlayerCore.h"
 #include <functional>
 
 //音频文件类型
@@ -124,11 +123,11 @@ public:
     //查找path目录下的所有歌词文件，并将文件名保存到files容器中
     static void GetLyricFiles(wstring path, vector<wstring>& files);
 
-    // 处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中，同时维护播放索引位置
-    // 返回files内仅file_path,track,is_cue是保证正确的，其他项目均不可靠
-    // 获取到的标签、时长信息已写入媒体库，调用后请从媒体库重新读取
-    // refresh_info为true时对媒体库内已存在项目重新获取标签、时长（仅文件夹模式有效）
-    static void GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index, bool refresh_info);
+    // 处理files内所有cue相关条目的获取信息/拆分/移除关联音频，更新信息到媒体库，仅维护files到可转换SongDataMapKey的程度
+    static void GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, bool force_refresh);
+    // 处理files内所有条目的获取信息，更新到媒体库（内部调用GetCueTracks），仅维护files到可转换SongDataMapKey的程度
+    // ignore_short为true时不保存短歌曲到媒体库且会移除files中的短歌曲（不包含cue）
+    static void GetAudioInfo(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, int& process_percent, bool force_refresh, bool ignore_short = false);
 
     //获得标准流派信息
     static wstring GetGenre(BYTE genre);
@@ -176,6 +175,6 @@ public:
     static vector<wstring> m_all_surpported_extensions;		//全部支持的文件格式扩展名
 
 protected:
-    //获取音频文件的内嵌cue文件，并将每段分轨作为一个曲目添加到files容器中
-    static void GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index, bool refresh_info);
+    // 寻找并修复音频路径不正确的cue track，并移除未能找到音频路径的条目，参数是一个cue的文件解析结果
+    static void FixErrorCueAudioPath(vector<SongInfo>& files);
 };
