@@ -2014,7 +2014,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     {
         CString info = CCommon::LoadTextFormat(IDS_UPDATING_MEDIA_LIB_INFO, { theApp.m_media_update_para.num_added });
         CString str;
-        str.Format(_T(" %d%%"), theApp.m_media_update_para.num_added * 100 / theApp.m_media_update_para.total_num);
+        str.Format(_T(" %d%%"), theApp.m_media_update_para.process_percent);
         info += str;
         static CDrawCommon::ScrollInfo scroll_info2;
         m_draw.DrawScrollText(rect, info, m_colors.color_text, GetScrollTextPixel(), false, scroll_info2, reset);

@@ -533,9 +533,8 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
         else
             COSUPlayerHelper::GetOSUAudioFiles(item, all_media_songs);
     }
-    theApp.m_media_update_para.total_num = all_media_songs.size();   //保存音频总数(由于cue/忽略短文件的存在，num_added可能大幅超过或少于total_num)
-    int process_percent{};
-    CAudioCommon::GetAudioInfo(all_media_songs, theApp.m_media_update_para.num_added, theApp.m_media_update_para.thread_exit, process_percent, refresh, theApp.m_media_lib_setting_data.ignore_too_short_when_update);
+
+    CAudioCommon::GetAudioInfo(all_media_songs, theApp.m_media_update_para.num_added, theApp.m_media_update_para.thread_exit, theApp.m_media_update_para.process_percent, refresh, theApp.m_media_lib_setting_data.ignore_too_short_when_update);
 
     return theApp.m_media_update_para.num_added;
 }

@@ -661,6 +661,6 @@ private:
 struct MediaUpdateThreadPara
 {
     int num_added{};                       //更新媒体库时新增（包括更新）的音频文件数量
-    int total_num{};
+    int process_percent{};                  // 更新媒体库进度%
     bool thread_exit{};             //如果为true，则线程应该退出
 };
