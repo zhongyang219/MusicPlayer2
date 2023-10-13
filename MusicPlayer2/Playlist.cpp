@@ -53,18 +53,25 @@ void CPlaylistFile::LoadFromFile(const wstring & file_path)
     stream.close();
 }
 
-void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
+void CPlaylistFile::SaveToFile(const wstring& file_path, Type type) const
+{
+    SavePlaylistToFile(m_playlist, file_path, type);
+}
+
+void CPlaylistFile::SavePlaylistToFile(const vector<SongInfo>& song_list, const wstring& file_path, Type type)
 {
     ofstream stream{ file_path };
-    if(type == PL_PLAYLIST)
+    if (!stream.is_open())
+        return;
+    if (type == PL_PLAYLIST)
     {
-        for (const auto& item : m_playlist)
+        for (const auto& item : song_list)
         {
             if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             stream << CCommon::UnicodeToStr(item.file_path, CodeType::UTF8_NO_BOM);
             if (item.is_cue)
             {
-                // 出于向后兼容考虑必要这行代码，当m_playlist来自LoadFromFile加载的不记录cue_file_path的播放列表时item需要从媒体库加载cue_file_path
+                // 出于向后兼容考虑必要这行代码，当song_list来自LoadFromFile加载的不记录cue_file_path的播放列表时item需要从媒体库加载cue_file_path
                 SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(item); // 从媒体库载入数据，媒体库不存在的话会原样返回item
                 CString buff;
                 buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d|%s|%s|%s|%s", song.is_cue, song.start_pos.toInt(), song.end_pos.toInt(),
@@ -72,10 +79,10 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
                     song.track, song.bitrate,
                     DeleteInvalidCh(song.genre).c_str(), DeleteInvalidCh(song.get_year()).c_str(), DeleteInvalidCh(song.comment).c_str(),
                     song.cue_file_path.c_str()
-                    );
+                );
                 stream << CCommon::UnicodeToStr(buff.GetString(), CodeType::UTF8_NO_BOM);
             }
-            stream << std::endl;
+            stream << "\n"; // 使用std::endl会触发flush影响效率
         }
     }
     else if (type == PL_M3U || type == PL_M3U8)
@@ -84,20 +91,20 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
         if (type == PL_M3U8)
             code_type = CodeType::UTF8_NO_BOM;
 
-        stream << "#EXTM3U" << std::endl;
+        stream << "#EXTM3U" << '\n';
         std::set<std::wstring> saved_cue_path;      //已经保存过的cue文件的路径
-        for (const auto& item : m_playlist)
+        for (const auto& item : song_list)
         {
             if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
-            // m_playlist可能来自LoadFromFile含有信息不足，此处先从媒体库载入最新数据，媒体库不存在的话会原样返回item
+            // song_list可能来自LoadFromFile含有信息不足，此处先从媒体库载入最新数据，媒体库不存在的话会原样返回item
             SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(item);
             if (song.is_cue)
             {
                 //如果播放列表中的项目是cue，且该cue文件没有保存过，则将其保存
                 if (!song.cue_file_path.empty() && saved_cue_path.find(song.cue_file_path) == saved_cue_path.end())
                 {
-                    stream << "#" << std::endl;
-                    stream << CCommon::UnicodeToStr(song.cue_file_path, code_type) << std::endl;
+                    stream << "#" << '\n';
+                    stream << CCommon::UnicodeToStr(song.cue_file_path, code_type) << '\n';
                     saved_cue_path.insert(song.cue_file_path);
                 }
             }
@@ -105,8 +112,8 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
             {
                 CString buff;
                 buff.Format(_T("#EXTINF:%d,%s - %s"), song.length().toInt() / 1000, song.GetArtist().c_str(), song.GetTitle().c_str());
-                stream << CCommon::UnicodeToStr(buff.GetString(), code_type) << std::endl;
-                stream << CCommon::UnicodeToStr(song.file_path, code_type) << std::endl;
+                stream << CCommon::UnicodeToStr(buff.GetString(), code_type) << '\n';
+                stream << CCommon::UnicodeToStr(song.file_path, code_type) << '\n';
             }
         }
     }
@@ -131,11 +138,6 @@ int CPlaylistFile::AddSongsToPlaylist(const vector<SongInfo>& songs, bool insert
     if (insert_begin)   // 使用循环旋转将新增条目移动到开头而不是直接插入到开头，可对参数songs去重
         std::rotate(m_playlist.rbegin(), m_playlist.rbegin() + added, m_playlist.rend());
     return added;
-}
-
-void CPlaylistFile::FromSongList(const vector<SongInfo>& song_list)
-{
-    m_playlist = song_list;
 }
 
 void CPlaylistFile::MoveToSongList(vector<SongInfo>& song_list)

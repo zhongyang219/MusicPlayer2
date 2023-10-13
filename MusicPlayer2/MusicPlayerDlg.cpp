@@ -5898,8 +5898,6 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
     CFileDialog fileDlg(FALSE, _T("m3u"), playlist_name.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CCommon::LoadText(IDS_SAVE_PLAYLIST_FILTER), this);
     if (IDOK == fileDlg.DoModal())
     {
-        CPlaylistFile playlist;
-        playlist.FromSongList(CPlayer::GetInstance().GetPlayList());        //获取当前播放列表
         //将当前播放列表保存到文件
         wstring file_path{ fileDlg.GetPathName() };
         wstring file_extension{ fileDlg.GetFileExt() };
@@ -5911,7 +5909,7 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
             file_type = CPlaylistFile::PL_M3U;
         else if (file_extension == L".m3u8")
             file_type = CPlaylistFile::PL_M3U8;
-        playlist.SaveToFile(file_path, file_type);
+        CPlaylistFile::SavePlaylistToFile(CPlayer::GetInstance().GetPlayList(), file_path, file_type);
     }
 
 }

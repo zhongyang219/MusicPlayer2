@@ -68,6 +68,9 @@ public:
     //判断是否是文件夹
     static bool IsFolder(const wstring& path);
 
+    // 判断文件是否存在，file为文件绝对路径，如果存在会更正文件名大小写到与实际文件一致
+    static bool CheckAndFixFile(wstring& file);
+
     static unsigned __int64 GetFileLastModified(const wstring& file_path);
 
     //判断文件是否隐藏

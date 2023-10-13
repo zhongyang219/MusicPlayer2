@@ -63,6 +63,18 @@ bool CCommon::IsFolder(const wstring& path)
     return (dwAttrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
+bool CCommon::CheckAndFixFile(wstring& file)
+{
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFileW(file.c_str(), &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE)
+        return false;
+    FindClose(hFind);
+    CFilePathHelper file_path(file);
+    file = file_path.GetDir() + findFileData.cFileName;  // 修正file的文件名大小写到与文件一致
+    return true;
+}
+
 unsigned __int64 CCommon::GetFileLastModified(const wstring& file_path)
 {
     // 使用GetFileAttributesEx，耗时大约为FindFirstFile的2/3

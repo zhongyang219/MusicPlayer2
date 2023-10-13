@@ -658,9 +658,10 @@ void CMusicPlayerCmdHelper::OnViewAlbum(const SongInfo& song_info)
 
 int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
 {
+    vector<SongInfo> song_list;
     CPlaylistFile playlist_file;
     playlist_file.LoadFromFile(path);
-    vector<SongInfo> song_list{ playlist_file.GetPlaylist() };
+    playlist_file.MoveToSongList(song_list);    // move后playlist_file对象不再可用
     int fixed_count{};
     for (auto& song : song_list)
     {
@@ -683,8 +684,7 @@ int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
     if (fixed_count > 0)
     {
         //保存播放列表到文件
-        playlist_file.FromSongList(song_list);
-        playlist_file.SaveToFile(path);
+        CPlaylistFile::SavePlaylistToFile(song_list, path);
 
         //如果处理的是正在播放的播放列表
         if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetPlaylistPath() == path)

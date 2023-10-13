@@ -199,7 +199,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     // 播放列表模式下且play_index有效时重新查找play_index指向曲目，文件夹模式下play_index本就描述初始化完成的播放列表故无须改动
     SongInfo cur_song;
     vector<SongInfo>& play_list = GetInstance().m_playlist;
-    if (pInfo->playlist_mode && pInfo->play_index >= 0 && pInfo->play_index < play_list.size())
+    if (pInfo->playlist_mode && pInfo->play_index >= 0 && pInfo->play_index < static_cast<int>(play_list.size()))
         cur_song = play_list[pInfo->play_index];
  
     bool exit_flag{};
@@ -1116,9 +1116,7 @@ bool CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_in
     m_current_position.fromInt(0);
 
     // 向播放列表文件覆写songs
-    CPlaylistFile playlist;
-    playlist.FromSongList(songs);
-    playlist.SaveToFile(m_playlist_path);
+    CPlaylistFile::SavePlaylistToFile(songs, m_playlist_path);
 
     IniPlayList(play);
     return true;
@@ -2323,11 +2321,7 @@ void CPlayer::LoadRecentPath()
 void CPlayer::SaveCurrentPlaylist()
 {
     if (m_playlist_mode)
-    {
-        CPlaylistFile playlist;
-        playlist.FromSongList(m_playlist);
-        playlist.SaveToFile(m_playlist_path);
-    }
+        CPlaylistFile::SavePlaylistToFile(m_playlist, m_playlist_path);
 }
 
 //void CPlayer::SetFXHandle()
