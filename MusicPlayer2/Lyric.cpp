@@ -305,13 +305,29 @@ void CLyrics::DisposeKsc()
             wstring lyric_raw{ str.substr(index + 1, index2 - index - 1) };
             if (lyric_raw.find_first_of(L"[]") != wstring::npos)
             {
+                bool flag{};    // 指示当前在[]中不必分割
                 for (size_t i{}; i < lyric_raw.size(); ++i)
                 {
-                    if (lyric_raw[i] == L']')
+                    if (lyric_raw[i] == L'[')
+                    {
+                        if (i != 0)
+                            lyric.split.push_back(lyric.text.size());
+                        flag = true;
+                    }
+                    else if (lyric_raw[i] == L']')
+                    {
                         lyric.split.push_back(lyric.text.size());
-                    else if (lyric_raw[i] != L'[')
+                        flag = false;
+                    }
+                    else
+                    {
                         lyric.text += lyric_raw[i];
+                        if(!flag)
+                            lyric.split.push_back(lyric.text.size());
+                    }
                 }
+                auto new_end = std::unique(lyric.split.begin(), lyric.split.end());
+                lyric.split.erase(new_end, lyric.split.end());
             }
             else
             {
