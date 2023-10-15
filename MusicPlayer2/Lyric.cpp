@@ -178,12 +178,21 @@ void CLyrics::DisposeLrc()
 
         Time t{};
         int pos_start{}, pos_end{};
-        if (ParseLyricTimeTag(str, t, pos_start, pos_end))      // 查找首个时间标签，存在时间标签的行才被视为歌词（扩展lrc需要首个时间标签来将字标签转换为word_time）
+        wchar_t bracket_left{ L'[' }, bracket_right{ L']' };
+        if (ParseLyricTimeTag(str, t, pos_start, pos_end, L'<', L'>'))
+        {
+            // 如果发现存在尖括号时间标签那么按ESLyric 0.5.x解析，丢弃首个[]时间标签
+            bracket_left = L'<';
+            bracket_right = L'>';
+        }
+        t.fromInt(0);   // 重置搜索状态
+        pos_start = pos_end = 0;
+        if (ParseLyricTimeTag(str, t, pos_start, pos_end, bracket_left, bracket_right))      // 查找首个时间标签，存在时间标签的行才被视为歌词（扩展lrc需要首个时间标签来将字标签转换为word_time）
         {
             // 解析歌词行
             wstring time_str, text_str;
-            index = str.find_first_not_of(L"[:.]0123456789-", pos_end); // 用来分离行起始时间标签（可能是连续的压缩时间标签）
-            index = str.rfind(L"]", index) + 1;                         // 避免截取到歌词开头的数字
+            index = str.find_first_not_of(L"[]<>:.0123456789-", pos_end); // 用来分离行起始时间标签（可能是连续的压缩时间标签）
+            index = str.rfind(bracket_right, index) + 1;                         // 避免截取到歌词开头的数字
             if (index != wstring::npos)
             {
                 time_str = str.substr(0, index);
@@ -203,13 +212,13 @@ void CLyrics::DisposeLrc()
                 }
                 index = index2 = 0;
                 Time time_w, time_w_;
-                if (ParseLyricTimeTag(text_str, time_w_, index, index2))    // 歌词文本内含有时间标签说明是扩展lrc
+                if (ParseLyricTimeTag(text_str, time_w_, index, index2, bracket_left, bracket_right))    // 歌词文本内含有时间标签说明是扩展lrc
                 {
                     lyric.text = text_str.substr(0, index);
                     lyric.split.push_back(lyric.text.size());
                     lyric.word_time.push_back(time_w_ - t);
                     int last_pos_end = index2;
-                    while (ParseLyricTimeTag(text_str, time_w, index, index2))
+                    while (ParseLyricTimeTag(text_str, time_w, index, index2, bracket_left, bracket_right))
                     {
                         lyric.text += text_str.substr(last_pos_end, index - last_pos_end);
                         lyric.split.push_back(lyric.text.size());
@@ -225,7 +234,7 @@ void CLyrics::DisposeLrc()
             {
                 lyric.time_start_raw = t.toInt();
                 m_lyrics.push_back(lyric);
-            } while (ParseLyricTimeTag(time_str, t, pos_start, pos_end));   // 压缩lrc在此展开
+            } while (ParseLyricTimeTag(time_str, t, pos_start, pos_end, L'[', L']'));   // 压缩lrc在此展开(压缩lrc只能是方括号)
         }
     }
     // CombineSameTimeLyric()这行应当移动到DisposeLrcNetease()里面，但会影响早期下载的歌词的兼容性。虽然此方法已支持参数但不应在此设置默认合并误差
