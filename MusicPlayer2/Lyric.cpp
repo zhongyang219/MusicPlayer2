@@ -299,10 +299,14 @@ void CLyrics::DisposeKsc()
             lyric.time_start_raw = time.toInt();
             if (!ParseLyricTimeTag(str, time, index, index2, L'\'', L'\'')) continue;
             lyric.time_span_raw = time.toInt() - lyric.time_start_raw;
-            index = str.find(L"\'", index2);
-            index2 = str.find(L"\'", index + 1);
+            index = str.find(L"\'", index2);                    // 查找歌词开始单引号
+            index2 = str.rfind(L"]");                           // 查找歌词最后的"]"
+            if (index2 == wstring::npos || index2 <= index)     // 如果歌词中没有"]"
+                index2 = index + 1;                             // 则从歌词开始单引号处查找歌词结束单引号
+            index2 = str.find(L"\'", index2);                   // 查找歌词结束单引号
             if (index == wstring::npos || index2 == wstring::npos || index2 - index < 1) continue;
             wstring lyric_raw{ str.substr(index + 1, index2 - index - 1) };
+            CCommon::StringReplace(lyric_raw, L"\'\'", L"\'");  // 解除歌词中的单引号转义
             if (lyric_raw.find_first_of(L"[]") != wstring::npos)
             {
                 bool flag{};    // 指示当前在[]中不必分割
@@ -685,18 +689,21 @@ wstring CLyrics::GetLyricsString2() const
             swprintf_s(time_buff, L"%.2d:%.2d.%.3d", a_time.min, a_time.sec, a_time.msec);
             lyric_string += time_buff;
             lyric_string += L"', '";
-            bool remove_bracket{ true };
             wstring text{};
             for (size_t i{}; i < a_lyric.split.size(); ++i)
             {
+                wstring word;
                 if (i == 0)
-                    text += L"[" + a_lyric.text.substr(0, a_lyric.split[i]) + L"]";
+                    word = a_lyric.text.substr(0, a_lyric.split[i]);
                 else
-                    text += L"[" + a_lyric.text.substr(a_lyric.split[i - 1], a_lyric.split[i] - a_lyric.split[i - 1]) + L"]";
-                if (a_lyric.split[i] != i + 1)
-                    remove_bracket = false;
+                    word = a_lyric.text.substr(a_lyric.split[i - 1], a_lyric.split[i] - a_lyric.split[i - 1]);
+                if (word.size() == 1 && word[0] > 127)
+                    text += word;
+                else
+                    text += L'[' + word + L']';
             }
-            lyric_string += remove_bracket ? a_lyric.text : text;
+            CCommon::StringReplace(text, L"\'", L"\'\'");   // 转义单引号
+            lyric_string += text;
             lyric_string += L"', '";
             for (size_t i{}; i < a_lyric.word_time.size(); ++i)
             {
