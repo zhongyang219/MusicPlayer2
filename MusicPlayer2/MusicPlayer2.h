@@ -130,8 +130,8 @@ public:
     //void StartClassifySongData();
 
     //开启一个后台线程并更新媒体库
-    //refresh: 如果为true，则会自动更新所有最近修改时间比上次获取时新的文件的信息
-    void StartUpdateMediaLib(bool refresh = false);
+    // refresh_mode: 指示此次的更新级别
+    void StartUpdateMediaLib(MediaLibRefreshMode refresh_mode);
     bool IsMeidaLibUpdating() const { return m_media_lib_updating; }
     bool IsCheckingForUpdate() const { return m_checking_update; }      //是否正在检查更新
 

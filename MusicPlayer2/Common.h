@@ -71,7 +71,7 @@ public:
     // 判断文件是否存在，file为文件绝对路径，如果存在会更正文件名大小写到与实际文件一致
     static bool CheckAndFixFile(wstring& file);
 
-    static unsigned __int64 GetFileLastModified(const wstring& file_path);
+    static bool GetFileLastModified(const wstring& file_path, unsigned __int64& modified_time);
 
     //判断文件是否隐藏
     static bool IsFileHidden(const wstring& file_path);

@@ -4,6 +4,7 @@
 #include "DrawCommon.h"
 #include "Common.h"
 #include "resource.h"
+#include "AudioCommon.h"
 
 namespace CONSTVAL
 {
@@ -663,4 +664,5 @@ struct MediaUpdateThreadPara
     int num_added{};                       //更新媒体库时新增（包括更新）的音频文件数量
     int process_percent{};                  // 更新媒体库进度%
     bool thread_exit{};             //如果为true，则线程应该退出
+    MediaLibRefreshMode refresh_mode;       // 指示当前媒体库更新线程的刷新模式
 };

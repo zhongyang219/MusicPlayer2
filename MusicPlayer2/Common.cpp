@@ -75,17 +75,19 @@ bool CCommon::CheckAndFixFile(wstring& file)
     return true;
 }
 
-unsigned __int64 CCommon::GetFileLastModified(const wstring& file_path)
+bool CCommon::GetFileLastModified(const wstring& file_path, unsigned __int64& modified_time)
 {
     // 使用GetFileAttributesEx，耗时大约为FindFirstFile的2/3
-    ULARGE_INTEGER last_modified_time{};
     WIN32_FILE_ATTRIBUTE_DATA file_attributes;
     if (GetFileAttributesEx(file_path.c_str(), GetFileExInfoStandard, &file_attributes))
     {
+        ULARGE_INTEGER last_modified_time{};
         last_modified_time.HighPart = file_attributes.ftLastWriteTime.dwHighDateTime;
         last_modified_time.LowPart = file_attributes.ftLastWriteTime.dwLowDateTime;
+        modified_time = last_modified_time.QuadPart;
+        return true;
     }
-    return last_modified_time.QuadPart;
+    return false;
 }
 
 bool CCommon::IsFileHidden(const wstring& file_path)

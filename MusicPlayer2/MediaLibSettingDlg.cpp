@@ -431,7 +431,7 @@ void CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton()
     }
     else
     {
-        theApp.StartUpdateMediaLib(true);
+        theApp.StartUpdateMediaLib(MR_FOECE_FULL);  // 刷新媒体库按钮改为强制重新获取所有元数据
     }
 }
 

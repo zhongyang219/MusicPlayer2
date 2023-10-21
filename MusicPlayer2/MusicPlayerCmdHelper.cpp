@@ -517,12 +517,11 @@ bool CMusicPlayerCmdHelper::OnRating(const SongInfo& song, DWORD command)
     return true;
 }
 
-int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
+int CMusicPlayerCmdHelper::UpdateMediaLib()
 {
     if (CPlayer::GetInstance().IsMciCore())
         return 0;
 
-    theApp.m_media_update_para.num_added = 0;
     vector<SongInfo> all_media_songs;
     //获取所有音频文件的路径
     for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
@@ -534,7 +533,13 @@ int CMusicPlayerCmdHelper::UpdateMediaLib(bool refresh)
             COSUPlayerHelper::GetOSUAudioFiles(item, all_media_songs);
     }
 
-    CAudioCommon::GetAudioInfo(all_media_songs, theApp.m_media_update_para.num_added, theApp.m_media_update_para.thread_exit, theApp.m_media_update_para.process_percent, refresh, theApp.m_media_lib_setting_data.ignore_too_short_when_update);
+    CAudioCommon::GetAudioInfo(all_media_songs,
+        theApp.m_media_update_para.num_added,
+        theApp.m_media_update_para.thread_exit,
+        theApp.m_media_update_para.process_percent,
+        theApp.m_media_update_para.refresh_mode,
+        theApp.m_media_lib_setting_data.ignore_too_short_when_update
+    );
 
     return theApp.m_media_update_para.num_added;
 }
@@ -688,7 +693,7 @@ int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
         //如果处理的是正在播放的播放列表
         if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetPlaylistPath() == path)
         {
-            CPlayer::GetInstance().ReloadPlaylist(false);
+            CPlayer::GetInstance().ReloadPlaylist(MR_MIN_REQUIRED);
         }
     }
     return fixed_count;
@@ -714,17 +719,6 @@ void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, co
         else
             pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
     }
-}
-
-bool CMusicPlayerCmdHelper::IsSongNewer(SongInfo& song_info)
-{
-    if (!CCommon::FileExist(song_info.file_path))
-        return false;
-
-    unsigned __int64 last_modified = CCommon::GetFileLastModified(song_info.file_path);
-    bool is_newer = (last_modified > song_info.modified_time);
-    song_info.modified_time = last_modified;
-    return is_newer;
 }
 
 CWnd* CMusicPlayerCmdHelper::GetOwner()

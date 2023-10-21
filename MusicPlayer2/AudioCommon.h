@@ -86,6 +86,14 @@ enum RepeatMode
     RM_MAX
 };
 
+// 读取音频文件元数据方法GetAudioInfo和GetCueTracks的刷新级别
+enum MediaLibRefreshMode
+{
+    MR_MIN_REQUIRED,        // 仅获取不存在于媒体库的条目(最小化文件读取，最快但不保证最新)
+    MR_FILE_MODIFICATION,   // 重新获取修改时间与媒体库记录不同的条目(需要读取修改时间略耗时)
+    MR_FOECE_FULL           // 强制重新获取所有条目
+};
+
 
 struct SupportedFormat		//一种支持的音频文件格式
 {
@@ -124,10 +132,10 @@ public:
     static void GetLyricFiles(wstring path, vector<wstring>& files);
 
     // 处理files内所有cue相关条目的获取信息/拆分/移除关联音频，更新信息到媒体库，仅维护files到可转换SongDataMapKey的程度
-    static void GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, bool force_refresh);
+    static void GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, MediaLibRefreshMode refresh_mode);
     // 处理files内所有条目的获取信息，更新到媒体库（内部调用GetCueTracks），仅维护files到可转换SongDataMapKey的程度
     // ignore_short为true时不保存短歌曲到媒体库且会移除files中的短歌曲（不包含cue）
-    static void GetAudioInfo(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, int& process_percent, bool force_refresh, bool ignore_short = false);
+    static void GetAudioInfo(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, int& process_percent, MediaLibRefreshMode refresh_mode, bool ignore_short = false);
 
     //获得标准流派信息
     static wstring GetGenre(BYTE genre);

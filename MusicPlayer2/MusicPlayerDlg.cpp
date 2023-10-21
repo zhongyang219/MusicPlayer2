@@ -3266,7 +3266,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 void CMusicPlayerDlg::OnReloadPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    if (!CPlayer::GetInstance().ReloadPlaylist())
+    if (!CPlayer::GetInstance().ReloadPlaylist(MR_FOECE_FULL))  // 强制重新获取全部音频元数据
         MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
@@ -4197,7 +4197,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
         static bool first_init{ true };
         if (first_init)
         {
-            theApp.StartUpdateMediaLib(false);
+            theApp.StartUpdateMediaLib(MR_FILE_MODIFICATION);   // 获取不存在的项目以及更新修改时间变化的项目
             first_init = false;
         }
     }

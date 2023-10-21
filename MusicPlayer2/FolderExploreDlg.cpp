@@ -97,7 +97,7 @@ void CFolderExploreDlg::ShowSongList()
     int update_cnt{};
     // 这里仍然使用GetCueTracks而不是GetAudioInfo是因为后者涉及忽略短文件设置，实际执行的OpenFolder无视设置加入短文件
     // 我希望此处预览(至少数量上)与OpenFolder结果一致，但不希望只为看一下(预览)就把无关(短)文件加入媒体库
-    CAudioCommon::GetCueTracks(m_right_items, update_cnt, exit_flag, false);
+    CAudioCommon::GetCueTracks(m_right_items, update_cnt, exit_flag, MR_MIN_REQUIRED);
     // 加载歌曲信息
     CSongDataManager::GetInstance().LoadSongsInfo(m_right_items);
 

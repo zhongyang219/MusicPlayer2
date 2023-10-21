@@ -155,7 +155,7 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
     OpenPlaylistFile(playlist_path_);
 }
 
-void CPlayer::IniPlayList(bool play, bool refresh_info)
+void CPlayer::IniPlayList(bool play, MediaLibRefreshMode refresh_mode)
 {
     m_no_use = SongInfo{};  // 安全起见，防止意外写入被应用
     m_playlist.clear();
@@ -176,7 +176,7 @@ void CPlayer::IniPlayList(bool play, bool refresh_info)
             CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM, m_contain_sub_folder);
     }
 
-    m_thread_info.refresh_info = refresh_info;
+    m_thread_info.refresh_mode = refresh_mode;
     m_thread_info.play = play;
     m_thread_info.playlist_mode = m_playlist_mode;
     m_thread_info.play_index = m_index;
@@ -201,11 +201,12 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     vector<SongInfo>& play_list = GetInstance().m_playlist;
     if (pInfo->playlist_mode && pInfo->play_index >= 0 && pInfo->play_index < static_cast<int>(play_list.size()))
         cur_song = play_list[pInfo->play_index];
- 
+
     bool exit_flag{};
     int update_cnt{};
     // 解析cue并更新所有曲目到媒体库，执行后仅file_path、track、is_cue可用
-    CAudioCommon::GetAudioInfo(play_list, update_cnt, exit_flag, pInfo->process_percent, pInfo->refresh_info);
+    // 此处不应设置ignore_short为true，因为现在正在初始化播放列表，如果读取到短文件却不保存有可能导致列表每次打开耗时都很长
+    CAudioCommon::GetAudioInfo(play_list, update_cnt, exit_flag, pInfo->process_percent, pInfo->refresh_mode);
     // 将媒体库内信息更新到播放列表
     CSongDataManager::GetInstance().LoadSongsInfo(play_list);
 
@@ -1189,7 +1190,7 @@ int CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs)
     return added;
 }
 
-bool CPlayer::ReloadPlaylist(bool refresh_info)
+bool CPlayer::ReloadPlaylist(MediaLibRefreshMode refresh_mode)
 {
     if (!BeforeIniPlayList(true, true))
         return false;
@@ -1197,7 +1198,7 @@ bool CPlayer::ReloadPlaylist(bool refresh_info)
     m_index = 0;
     m_current_position.fromInt(0);
 
-    IniPlayList(false, refresh_info);
+    IniPlayList(false, refresh_mode);
     return true;
 }
 
@@ -1206,7 +1207,7 @@ bool CPlayer::SetContainSubFolder()
     if (!IsPlaylistMode())
     {
         m_contain_sub_folder = !m_contain_sub_folder;
-        if (ReloadPlaylist(false))
+        if (ReloadPlaylist(MR_MIN_REQUIRED))
             return true;
         else
         {
