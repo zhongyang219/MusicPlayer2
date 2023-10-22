@@ -404,7 +404,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
             unsigned __int64 modified_time_audio{};
             CCommon::GetFileLastModified(song.file_path, modified_time_audio);  // 不检查音轨是否存在
             modified_time_audio += modified_time_cue;       // cue条目使用cue文件与音频文件的修改时间和作为修改时间
-            need_get_info |= (modified_time_audio == song.modified_time);
+            need_get_info |= (modified_time_audio != song.modified_time);
             song.modified_time = modified_time_audio;
         }
         if (!need_get_info)
@@ -425,19 +425,16 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
             bool info_succeed{ song.end_pos.toInt() != 0 };
             for (SongInfo& a : track_from_text)     // 这个遍历也包括song自身
             {
-                if (a.file_path != song.file_path)
+                if (a.file_path != song.file_path)  // 与song共有FILE的条目应当从song取得其他信息
                     continue;
-                a.modified_time = song.modified_time;
-                // 与song共有FILE的条目应当从song取得其他信息
-                if (info_succeed)   // 获取时长成功则更新此FILE的所有条目的比特率和通道信息
-                {
-                    a.bitrate = song.bitrate;
-                    a.freq = song.freq;
-                    a.bits = song.bits;
-                    a.channels = song.channels;
-                }
-                else                // 获取时长失败则标记此FILE下所有音轨(包括song)为无效条目
+                if (!info_succeed)      // 获取时长失败则标记此FILE下所有音轨(包括song)为无效条目
                     a.end_pos = a.start_pos;
+                // FILE可能在此次更新中由支持的文件变为不支持的文件所以即使获取时长失败以下项目也总是更新
+                a.modified_time = song.modified_time;
+                a.bitrate = song.bitrate;
+                a.freq = song.freq;
+                a.bits = song.bits;
+                a.channels = song.channels;
             }
         }
         update_cnt += track_from_text.size();   // cue文件有不同语言版本时这里会反复刷写，这会导致update_cnt大于实际更新数
@@ -494,7 +491,7 @@ void CAudioCommon::GetAudioInfo(vector<SongInfo>& files, int& update_cnt, bool& 
         unsigned __int64 modified_time{};
         if (!CCommon::GetFileLastModified(song_info.file_path, modified_time))  // 跳过当前不存在的文件
             continue;
-        if (refresh_mode != MR_FOECE_FULL && song_info.modified_time == modified_time)
+        if (refresh_mode != MR_FOECE_FULL && song_info.modified_time == modified_time && !need_get_info)
             continue;
         song_info.modified_time = modified_time;
 

@@ -302,11 +302,14 @@ struct SongInfo
     }
 
     bool IsSameSong(const SongInfo& song) const
-    {
-        if (!is_cue && !song.is_cue)
-            return file_path == song.file_path;
-        else
-            return file_path == song.file_path && track == song.track;
+    {   // 存在file_path和track相同但is_cue不同的情况(分立曲目被播放后又打开一个描述这些歌曲的cue)，此时返回false
+        if (is_cue != song.is_cue)
+            return false;
+        if (file_path != song.file_path)
+            return false;
+        if (is_cue && track != song.track)
+            return false;
+        return true;
     }
 
     Time length() const

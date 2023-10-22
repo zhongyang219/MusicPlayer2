@@ -26,7 +26,7 @@ bool COSUPlayerHelper::IsOsuFolder(const std::wstring & strPath)
     wstring parent_dir = path_helper.GetParentDir();
 
     //判断一个文件是否为osu的Songs目录：它的父级目录有osu!.exe文件且文件夹是Songs
-    return CCommon::FileExist(parent_dir + L"osu!.exe") && folder_path.substr(folder_path.size() - 6, 5) == L"Songs";
+    return folder_path.substr(folder_path.size() - 6, 5) == L"Songs" && CCommon::FileExist(parent_dir + L"osu!.exe");
 }
 
 bool COSUPlayerHelper::IsOsuFile(const std::wstring& strPath)
