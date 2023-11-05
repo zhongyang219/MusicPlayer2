@@ -386,6 +386,8 @@ template<class T>
 static void WriteOtherProperties(const SongInfo& song_info, T& file)
 {
     TagLib::PropertyMap properties = file.properties();
+    properties["ALBUMARTIST"].clear();
+    properties["DISCNUMBER"].clear();
     if (!song_info.album_artist.empty())
         properties["ALBUMARTIST"].append(song_info.album_artist);
     if (song_info.disc_num != 0)
