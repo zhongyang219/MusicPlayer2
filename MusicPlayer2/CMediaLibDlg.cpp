@@ -115,82 +115,82 @@ BOOL CMediaLibDlg::OnInitDialog()
     //文件夹
     m_path_dlg->Create(IDD_SET_PATH_DIALOG);
     ImageList.Add(theApp.m_icon_set.select_folder.GetIcon(true));
-    m_tab_ctrl.AddWindow(m_path_dlg, CCommon::LoadText(IDS_FOLDER));
+    m_tab_ctrl.AddWindow(m_path_dlg, theApp.m_str_table.LoadText(L"TXT_FOLDER").c_str());
 
     //播放列表
     m_playlist_dlg->Create(IDD_SELECT_PLAYLIST_DIALOG);
     ImageList.Add(theApp.m_icon_set.show_playlist.GetIcon(true));
-    m_tab_ctrl.AddWindow(m_playlist_dlg, CCommon::LoadText(IDS_PLAYLIST));
+    m_tab_ctrl.AddWindow(m_playlist_dlg, theApp.m_str_table.LoadText(L"TXT_PLAYLIST").c_str());
 
     //艺术家
     if ((theApp.m_media_lib_setting_data.display_item & MLDI_ARTIST) || (m_tab_show_force & MLDI_ARTIST))
     {
         m_artist_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.artist.GetIcon(true));
-        m_tab_ctrl.AddWindow(m_artist_dlg, CCommon::LoadText(IDS_ARTIST));
+        m_tab_ctrl.AddWindow(m_artist_dlg, theApp.m_str_table.LoadText(L"TXT_ARTIST").c_str());
     }
     //唱片集
     if ((theApp.m_media_lib_setting_data.display_item & MLDI_ALBUM) || (m_tab_show_force & MLDI_ALBUM))
     {
         m_album_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.album.GetIcon(true));
-        m_tab_ctrl.AddWindow(m_album_dlg, CCommon::LoadText(IDS_ALBUM));
+        m_tab_ctrl.AddWindow(m_album_dlg, theApp.m_str_table.LoadText(L"TXT_ALBUM").c_str());
     }
     //流派
     if (theApp.m_media_lib_setting_data.display_item & MLDI_GENRE)
     {
         m_genre_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.genre.GetIcon(true));
-        m_tab_ctrl.AddWindow(m_genre_dlg, CCommon::LoadText(IDS_GENRE));
+        m_tab_ctrl.AddWindow(m_genre_dlg, theApp.m_str_table.LoadText(L"TXT_GENRE").c_str());
     }
     //年份
     if (theApp.m_media_lib_setting_data.display_item & MLDI_YEAR)
     {
         m_year_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.year.GetIcon(true));
-        m_tab_ctrl.AddWindow(m_year_dlg, CCommon::LoadText(IDS_YEAR));
+        m_tab_ctrl.AddWindow(m_year_dlg, theApp.m_str_table.LoadText(L"TXT_YEAR").c_str());
     }
     //类型
     if (theApp.m_media_lib_setting_data.display_item & MLDI_TYPE)
     {
         m_type_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.file_relate);
-        m_tab_ctrl.AddWindow(m_type_dlg, CCommon::LoadText(IDS_FILE_TYPE));
+        m_tab_ctrl.AddWindow(m_type_dlg, theApp.m_str_table.LoadText(L"TXT_FILE_TYPE").c_str());
     }
     //比特率
     if (theApp.m_media_lib_setting_data.display_item & MLDI_BITRATE)
     {
         m_bitrate_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.bitrate);
-        m_tab_ctrl.AddWindow(m_bitrate_dlg, CCommon::LoadText(IDS_BITRATE));
+        m_tab_ctrl.AddWindow(m_bitrate_dlg, theApp.m_str_table.LoadText(L"TXT_BITRATE").c_str());
     }
     //分级
     if (theApp.m_media_lib_setting_data.display_item & MLDI_RATING)
     {
         m_rating_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         ImageList.Add(theApp.m_icon_set.star);
-        m_tab_ctrl.AddWindow(m_rating_dlg, CCommon::LoadText(IDS_RATING));
+        m_tab_ctrl.AddWindow(m_rating_dlg, theApp.m_str_table.LoadText(L"TXT_RATING").c_str());
     }
     //所有曲目
     if (theApp.m_media_lib_setting_data.display_item & MLDI_ALL)
     {
         m_all_media_dlg->Create(IDD_ALL_MEDIA_DIALOG);
         ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
-        m_tab_ctrl.AddWindow(m_all_media_dlg, CCommon::LoadText(IDS_ALL_TRACKS));
+        m_tab_ctrl.AddWindow(m_all_media_dlg, theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS").c_str());
     }
     //最近播放
     if (theApp.m_media_lib_setting_data.display_item & MLDI_RECENT)
     {
         m_recent_media_dlg->Create(IDD_ALL_MEDIA_DIALOG);
         ImageList.Add(theApp.m_icon_set.recent_songs.GetIcon(true));
-        m_tab_ctrl.AddWindow(m_recent_media_dlg, CCommon::LoadText(IDS_RECENT_PLAYED));
+        m_tab_ctrl.AddWindow(m_recent_media_dlg, theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED").c_str());
     }
     //文件夹浏览
     if (theApp.m_media_lib_setting_data.display_item & MLDI_FOLDER_EXPLORE)
     {
         m_folder_explore_dlg->Create(IDD_FOLDER_EXPLORE_DIALOG);
         ImageList.Add(theApp.m_icon_set.folder_explore.GetIcon(true));
-        m_tab_ctrl.AddWindow(m_folder_explore_dlg, CCommon::LoadText(IDS_FOLDER_EXPLORE));
+        m_tab_ctrl.AddWindow(m_folder_explore_dlg, theApp.m_str_table.LoadText(L"TXT_FOLDER_EXPLORE").c_str());
     }
 
     m_tab_ctrl.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));

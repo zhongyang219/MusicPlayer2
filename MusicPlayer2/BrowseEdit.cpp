@@ -5,7 +5,7 @@
 #include "BrowseEdit.h"
 #include "MusicPlayer2.h"
 #include "DrawCommon.h"
-#include "TagFromFileNameDlg.h"
+#include "TagModeSelectDlg.h"
 #include "EditStringListDlg.h"
 
 // CBrowseEdit
@@ -72,7 +72,7 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
     COLORREF text_color = CColorConvert::m_gray_color.dark4;
     if (!IsWindowEnabled())
         text_color = CColorConvert::m_gray_color.dark1;
-    drawer.DrawWindowText(rc_text, m_btn_str, text_color, Alignment::CENTER, true);
+    drawer.DrawWindowText(rc_text, m_btn_str.c_str(), text_color, Alignment::CENTER, true);
 }
 
 
@@ -85,28 +85,21 @@ void CBrowseEdit::OnChangeLayout()
     CDrawCommon drawer;
     drawer.Create(m_pDC, this);
     if (m_Mode == BrowseMode_Default)
-    {
-        //if (m_browse_mode == EditBrowseMode::RENAME)
-        m_btn_str = CCommon::LoadText(IDS_EDIT, _T("..."));
-        //else
-        //    m_btn_str = _T("");
-    }
+        m_btn_str = theApp.m_str_table.LoadText(L"TXT_BROWSE_EDIT_EDIT");
     else
-    {
-        m_btn_str = CCommon::LoadText(IDS_BROWSE, _T("..."));
-    }
+        m_btn_str = theApp.m_str_table.LoadText(L"TXT_BROWSE_EDIT_BROWSE");
 
     //如果编辑框的宽度小于一定值，则不显示按钮后面的文本
     CRect rect_client;
     GetClientRect(rect_client);
     if (rect_client.Width() < theApp.DPI(120))
     {
-        m_btn_str = _T("");
+        m_btn_str = L"";
         btn_width = theApp.DPI(24);
     }
     else
     {
-        btn_width = drawer.GetTextExtent(m_btn_str).cx + theApp.DPI(28);
+        btn_width = drawer.GetTextExtent(m_btn_str.c_str()).cx + theApp.DPI(28);
     }
     m_nBrowseButtonWidth = max(btn_width, m_sizeImage.cx + 8);
 
@@ -207,10 +200,14 @@ void CBrowseEdit::OnBrowse()
         {
             CString strFile;
             GetWindowText(strFile);
+            wstring title_str;
+            if (m_poopup_dlg_title.IsEmpty())
+                title_str = theApp.m_str_table.LoadText(L"TITLE_TAG_SEL_SET_FILENAME_FORM");
+            else
+                title_str = m_poopup_dlg_title.GetString();
 
-            CTagFromFileNameDlg dlg;
+            CTagModeSelectDlg dlg(title_str, false);
             dlg.SetInitInsertFormular(strFile.GetString());
-            dlg.SetDialogTitle(m_poopup_dlg_title.IsEmpty() ? CCommon::LoadText(IDS_SET_FILENAME_FORM) : m_poopup_dlg_title);
 
             if (dlg.DoModal() == IDOK && strFile != dlg.GetFormularSelected().c_str())
             {
@@ -287,9 +284,9 @@ void CBrowseEdit::SetEditBrowseMode(EditBrowseMode browse_mode)
     EnableBrowseButton(TRUE);       //将基类的编辑模式改成BrowseMode_Default
 }
 
-void CBrowseEdit::SetPopupDlgTitle(const CString& popup_dlg_title)
+void CBrowseEdit::SetPopupDlgTitle(const wstring& popup_dlg_title)
 {
-    m_poopup_dlg_title = popup_dlg_title;
+    m_poopup_dlg_title = popup_dlg_title.c_str();
 }
 
 IconRes& CBrowseEdit::GetIcon()

@@ -6,7 +6,6 @@
 #include "Resource.h"
 #include "SongInfo.h"
 #include "IPlayerCore.h"
-#include <functional>
 
 //音频文件类型
 enum AudioType
@@ -153,11 +152,6 @@ public:
 
     //将音轨序号转换成数字
     static CString TrackToString(BYTE track);
-
-    //清除歌曲信息中的<>内的默认字符串
-    static void ClearDefaultTagStr(SongInfo& song_info);
-
-    static wstring GetFileDlgFilter();
 
     //返回一个SupportedFormat
     //exts: 格式的扩展名，多个扩展名用空格分隔

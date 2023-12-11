@@ -7,7 +7,7 @@
 #include "IniHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "MessageDlg.h"
-#include "PropertyDlgHelper.h"
+#include "TagModeSelectDlg.h"
 #include "TagLibHelper.h"
 #include "Player.h"
 #include "CueFile.h"
@@ -52,8 +52,6 @@ void CTest::Test()
 
     //TestCueSave();
     TestFilePathHelper();
-    TestReplaceStringRes();
-    SaveAllStringRes(101, 600);
 }
 
 void CTest::TestStringMatch()
@@ -204,13 +202,11 @@ void CTest::TestCrashDlg()
 {
     //显示错误信息对话框
     CMessageDlg dlg;
-    dlg.SetWindowTitle(CCommon::LoadText(IDS_ERROR1));
-    dlg.SetInfoText(CCommon::LoadText(IDS_ERROR_MESSAGE));
+    dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_CRASH_REPOART").c_str());
+    dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_CRASH_REPOART_ERROR_MESSAGE").c_str());
 
-    CString info = CCommon::LoadTextFormat(IDS_CRASH_INFO, {});
-    info += _T("\r\n");
-    info += theApp.GetSystemInfoString();
-    dlg.SetMessageText(info);
+    wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_CRASH_REPOART_CRASH_INFO", { L"<dmp file path>", theApp.GetSystemInfoString() });
+    dlg.SetMessageText(info.c_str());
 
     //设置图标
     HICON hIcon;
@@ -224,7 +220,7 @@ void CTest::TestCrashDlg()
 void CTest::TestTagParse()
 {
     SongInfo song;
-    CPropertyDlgHelper::GetTagFromFileName(L"666-744FFFF23", FORMULAR_YEAR L"-" FORMULAR_ARTIST L"FFFF" FORMULAR_TITLE, song);
+    CTagModeSelectDlg::GetTagFromFileName(FORMULAR_YEAR L"-" FORMULAR_ARTIST L"FFFF" FORMULAR_TITLE, L"666-744FFFF23", song);
 
     int a = 0;
 }
@@ -262,22 +258,4 @@ void CTest::TestFilePathHelper()
     ASSERT(file_name_whthout_extension == L"efg");
     ASSERT(file_dir == L"C:\\abc.d\\");
     ASSERT(folder_name == L"abc.d");
-}
-
-void CTest::TestReplaceStringRes()
-{
-    wstring str{ L"abc%(118)eee%(263)" };
-    CCommon::ReplaceUiStringRes(str);
-    ASSERT(str == L"abc播放eee自动重命名");
-}
-
-void CTest::SaveAllStringRes(int min_id, int max_id)
-{
-    std::ofstream stream(L"string_res.csv");
-    for (int i = min_id; i <= max_id; i++)
-    {
-        CString str = CCommon::LoadText(i);
-        CCommon::StringCsvNormalize(str);
-        stream << i << ',' << CCommon::UnicodeToStr(str.GetString(), CodeType::ANSI) << std::endl;
-    }
 }

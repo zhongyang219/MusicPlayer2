@@ -60,9 +60,8 @@ void CFindDlg::ShowFindResult()
 
 void CFindDlg::ShowFindInfo()
 {
-    CString str;
-    str = CCommon::LoadTextFormat(IDS_FIND_DLG_INFO, { m_key_word, m_find_result.size() });
-    SetDlgItemText(IDC_FIND_INFO_STATIC, str);
+    wstring str = theApp.m_str_table.LoadTextFormat(L"TXT_FIND_RESULT_INFO", { m_key_word, m_find_result.size() });
+    SetDlgItemText(IDC_FIND_INFO_STATIC, str.c_str());
     ShowDlgCtrl(IDC_FIND_INFO_STATIC, !m_key_word.empty());
 }
 
@@ -81,7 +80,7 @@ UINT CFindDlg::ViewOnlineThreadFunc(LPVOID lpParam)
     CFindDlg* pThis = (CFindDlg*)(lpParam);
     if (pThis == nullptr)
         return 0;
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     //此命令用于跳转到歌曲对应的网易云音乐的在线页面
     SongInfo song{ pThis->m_find_result[pThis->m_item_selected] };
     if (CCommon::FileExist(song.file_path))
@@ -271,9 +270,9 @@ void CFindDlg::OnBnClickedFindButton()
         // 显示查找结果
         ShowFindResult();
         if (!m_find_result.empty())
-            SetDlgItemText(IDC_FIND_RESULT_STATIC, CCommon::LoadText(IDS_FIND_RESULT, _T(": ")));
+            SetDlgItemText(IDC_FIND_RESULT_STATIC, theApp.m_str_table.LoadText(L"TXT_FIND_RESULT_CURRENT").c_str());
         else
-            SetDlgItemText(IDC_FIND_RESULT_STATIC, CCommon::LoadText(IDS_NO_RESULT));
+            SetDlgItemText(IDC_FIND_RESULT_STATIC, theApp.m_str_table.LoadText(L"TXT_FIND_RESULT_NONE").c_str());
         ShowFindInfo();
     }
 }
@@ -310,12 +309,12 @@ BOOL CFindDlg::OnInitDialog()
     width0 = theApp.DPI(40);
     width2 = (list_width - width0) / 5;
     width1 = list_width - width0 - width2 * 4;
-    m_find_result_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);     //插入第0列
-    m_find_result_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, width1);      //插入第1列
-    m_find_result_list.InsertColumn(2, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width2);      //插入第2列
-    m_find_result_list.InsertColumn(3, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);     //插入第3列
-    m_find_result_list.InsertColumn(4, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width2);      //插入第4列
-    m_find_result_list.InsertColumn(5, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, width2);      //插入第5列
+    m_find_result_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, width0);
+    m_find_result_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_FILE_NAME").c_str(), LVCFMT_LEFT, width1);
+    m_find_result_list.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_TITLE").c_str(), LVCFMT_LEFT, width2);
+    m_find_result_list.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_ARTIST").c_str(), LVCFMT_LEFT, width2);
+    m_find_result_list.InsertColumn(4, theApp.m_str_table.LoadText(L"TXT_ALBUM").c_str(), LVCFMT_LEFT, width2);
+    m_find_result_list.InsertColumn(5, theApp.m_str_table.LoadText(L"TXT_FILE_PATH").c_str(), LVCFMT_LEFT, width2);
 
     ShowFindResult();   //显示（上一次的）查找结果
     ShowFindInfo();
@@ -487,7 +486,7 @@ void CFindDlg::OnCopyText()
 {
     // TODO: 在此添加命令处理程序代码
     if (!CCommon::CopyStringToClipboard(wstring(m_selected_string)))
-        MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
+        MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
 }
 
 
@@ -497,7 +496,10 @@ void CFindDlg::OnPlayItemInFolderMode()
     if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
     {
         if (!CPlayer::GetInstance().OpenASongInFolderMode(m_find_result[m_item_selected], true))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
             OnCancel();
     }
@@ -550,7 +552,10 @@ void CFindDlg::OnOK()
     if (selected_track != -1)      //如果查找结果是当前播放列表中的曲目，则在当前播放列表中查找选中的曲目，并播放
     {
         if (!CPlayer::GetInstance().PlayTrack(selected_track))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
     else
     {
@@ -564,7 +569,10 @@ void CFindDlg::OnOK()
             else
                 ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
             if (!ok)
-                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            }
         }
     }
 
@@ -579,7 +587,10 @@ void CFindDlg::OnAddToNewPalylistAndPlay()
     if (_OnAddToNewPlaylist(playlist_path))
     {
         if (!CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
             OnCancel();
     }

@@ -116,14 +116,15 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
             }
         ) };
         // TRACE("progress %d\n", progress);
+        static const wstring& empty_lyric = theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE_2");
         if (is_lyric_empty)
-            lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+            lyric.text = empty_lyric;
 
         if (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
             CLyrics::Lyric next_lyric{ now_lyrics.GetLyric(time, true, ignore_blank, karaoke) };
             if (next_lyric.text.empty())
-                next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+                next_lyric.text = empty_lyric;
             SetNextLyric(next_lyric.text.c_str());
         }
 
@@ -439,22 +440,30 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
 
 void CDesktopLyric::AddToolTips()
 {
-    AddMouseToolTip(BTN_APP, CCommon::LoadText(IDS_MAIN_MENU));
-    AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
-    AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
-    AddMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY_PAUSE));
-    AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
-    AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
-    AddMouseToolTip(BTN_LYRIC_FORWARD, CCommon::LoadText(IDS_LYRIC_FORWARD));
-    AddMouseToolTip(BTN_LYRIC_DELAY, CCommon::LoadText(IDS_LYRIC_DELAY));
-    AddMouseToolTip(BTN_DEFAULT_STYLE, CCommon::LoadText(IDS_DEFAULT_STYLE));
-    AddMouseToolTip(BTN_DOUBLE_LINE, CCommon::LoadText(IDS_LYRIC_DOUBLE_LINE));
-    AddMouseToolTip(BTN_BACKGROUND_PENETRATE, CCommon::LoadText(IDS_LYRIC_BACKGROUND_PENETRATE));
+    wstring tip_str;
+    AddMouseToolTip(BTN_APP, theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAIN_MENU").c_str());
+    AddMouseToolTip(BTN_STOP, theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP").c_str());
+    AddMouseToolTip(BTN_PREVIOUS, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS").c_str());
+    AddMouseToolTip(BTN_PLAY_PAUSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_PAUSE").c_str());
+    AddMouseToolTip(BTN_NEXT, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS").c_str());
+    AddMouseToolTip(BTN_SETTING, theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING").c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_FORWARD");
+    AddMouseToolTip(BTN_LYRIC_FORWARD, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_DELAY");
+    AddMouseToolTip(BTN_LYRIC_DELAY, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_DEFAULT_STYLE");
+    AddMouseToolTip(BTN_DEFAULT_STYLE, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_DOUBLE_LINE");
+    AddMouseToolTip(BTN_DOUBLE_LINE, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_BACKGROUND_PENETRATE");
+    AddMouseToolTip(BTN_BACKGROUND_PENETRATE, tip_str.c_str());
     if (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric)
-        AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_ULOCK_DESKTOP_LYRIC));
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_UNLOCK");
     else
-        AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_LOCK_DESKTOP_LYRIC));
-    AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE_DESKTOP_LYRIC));
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_LOCK");
+    AddMouseToolTip(BTN_LOCK, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_CLOSE");
+    AddMouseToolTip(BTN_CLOSE, tip_str.c_str());
 
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 }

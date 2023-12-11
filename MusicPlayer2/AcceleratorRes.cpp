@@ -2,6 +2,7 @@
 #include "AcceleratorRes.h"
 #include "resource.h"
 #include "Common.h"
+#include "MusicPlayer2.h"
 
 CAcceleratorRes::CAcceleratorRes()
 {
@@ -143,19 +144,19 @@ std::wstring CAcceleratorRes::Key::ToString() const
     }
     else if (key == VK_LEFT)
     {
-        str += CCommon::LoadText(IDS_SHORCUT_LEFT).GetString();
+        str += theApp.m_str_table.LoadText(L"TXT_SHORCUT_LEFT");
     }
     else if (key == VK_RIGHT)
     {
-        str += CCommon::LoadText(IDS_SHOTCUT_RIGHT).GetString();
+        str += theApp.m_str_table.LoadText(L"TXT_SHOTCUT_RIGHT");
     }
     else if (key == VK_UP)
     {
-        str += CCommon::LoadText(IDS_SHOTCUT_UP).GetString();
+        str += theApp.m_str_table.LoadText(L"TXT_SHOTCUT_UP");
     }
     else if (key == VK_DOWN)
     {
-        str += CCommon::LoadText(IDS_SHOTCUT_DOWN).GetString();
+        str += theApp.m_str_table.LoadText(L"TXT_SHOTCUT_DOWN");
     }
     else if (key >= VK_F1 && key <= VK_F24)
     {
@@ -176,7 +177,7 @@ std::wstring CAcceleratorRes::Key::ToString() const
     }
     else if (key == VK_SPACE)
     {
-        str += CCommon::LoadText(IDS_SPACE).GetString();
+        str += theApp.m_str_table.LoadText(L"TXT_SHOTCUT_SPACE");
     }
     else if (key == VK_OEM_MINUS)
     {

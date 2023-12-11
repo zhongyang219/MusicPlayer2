@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Lyric.h"
 #include "FilePathHelper.h"
+#include "MusicPlayer2.h"
 
 const vector<wstring> CLyrics::m_surpported_lyric{ L"lrc", L"ksc" };
 
@@ -475,15 +476,16 @@ CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool ignore_blank, boo
     if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不添加进度符号
         return GetLyric(now_index);
     CLyrics::Lyric lyric = GetLyric(now_index);
+    const static wstring mark = theApp.m_str_table.LoadText(L"UI_LYRIC_MUSIC_SYMBOL") + L' ';
     if(!lyric.text.empty())                                     // 只对非空歌词添加，应对以多行空行结尾的歌词
-        lyric.text = L"♪♪♪ " + lyric.text;
+        lyric.text = mark + lyric.text;
     return lyric;
 }
 
 int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std::function<int(const wstring&)> measure) const
 {
     if (m_lyrics.empty()) return 0;
-    const wstring mark{ L"♪♪♪" };
+    const static wstring mark = theApp.m_str_table.LoadText(L"UI_LYRIC_MUSIC_SYMBOL");
 
     int lyric_current_time{};       // 当前所处匀速段已进行时间
     int lyric_last_time{};          // 当前所处匀速段总时常

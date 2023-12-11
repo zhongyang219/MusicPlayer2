@@ -1045,7 +1045,7 @@ FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
     LTEXT           "当前文件夹:",IDC_PATH_STATIC,188,2,43,12,SS_CENTERIMAGE | WS_TABSTOP
     CONTROL         "",IDC_PLAYLIST_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,185,39,182,202
-    PUSHBUTTON      "媒体库(&L)...",ID_SET_PATH,316,0,51,14
+    PUSHBUTTON      "媒体库(&L)...",ID_MEDIA_LIB,316,0,51,14
     LTEXT           "工具栏",IDC_PLAYLIST_TOOLBAR,185,29,182,8
     CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,188,15,178,12
     LTEXT           "UI Static",IDC_UI_STATIC,2,0,96,53
@@ -1300,7 +1300,7 @@ BEGIN
     CONTROL         "显示外部专辑封面(&O)",IDC_SHOW_OUT_ALBUM_COVER_CHK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,127,10
 END
 
-IDD_TAG_FROM_FILE_NAME_DIALOG DIALOGEX 0, 0, 191, 134
+IDD_TAG_MODE_SELECT_DIALOG DIALOGEX 0, 0, 191, 134
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "从文件名获取标签"
 FONT 9, "微软雅黑", 400, 0, 0x0
@@ -1763,7 +1763,7 @@ BEGIN
         BOTTOMMARGIN, 124
     END
 
-    IDD_TAG_FROM_FILE_NAME_DIALOG, DIALOG
+    IDD_TAG_MODE_SELECT_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 184
@@ -2237,7 +2237,7 @@ BEGIN
     0, 100, 0, 0
 END
 
-IDD_TAG_FROM_FILE_NAME_DIALOG AFX_DIALOG_LAYOUT
+IDD_TAG_MODE_SELECT_DIALOG AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -2411,7 +2411,7 @@ BEGIN
     END
     POPUP "工具(&T)"
     BEGIN
-        MENUITEM "媒体库(&M)...",                  ID_SET_PATH
+        MENUITEM "媒体库(&M)...",                  ID_MEDIA_LIB
         MENUITEM "查找歌曲(&F)...",                 ID_FIND
         MENUITEM "打开文件位置(&B)",                  ID_EXPLORE_PATH
         MENUITEM "曲目信息(&I)...",                 ID_SONG_INFO
@@ -2531,7 +2531,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "添加到我喜欢的音乐(&A)",               ID_ADD_REMOVE_FROM_FAVOURITE
         MENUITEM SEPARATOR
-        MENUITEM "媒体库(&T)...",                  ID_SET_PATH
+        MENUITEM "媒体库(&T)...",                  ID_MEDIA_LIB
         MENUITEM "查找歌曲(&F)...",                 ID_FIND
         MENUITEM "打开文件位置(&B)",                  ID_EXPLORE_PATH
         MENUITEM "音效设定(&E)...",                 ID_EQUALIZER
@@ -2696,7 +2696,7 @@ BEGIN
             MENUITEM "未分级(&U)",                     ID_RATING_NONE
         END
         MENUITEM SEPARATOR
-        MENUITEM "媒体库(&T)...",                  ID_SET_PATH
+        MENUITEM "媒体库(&T)...",                  ID_MEDIA_LIB
         MENUITEM "查找歌曲(&F)...",                 ID_FIND
         MENUITEM "打开文件位置(&X)",                  ID_EXPLORE_PATH
         MENUITEM "音效设定(&E)...",                 ID_EQUALIZER
@@ -3003,18 +3003,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// TEXT
-//
-
-IDR_TEXT1               TEXT                    "Help.txt"
-
-IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement.txt"
-
-IDR_COMPILE_TIME        TEXT                    "compile_time.txt"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Bitmap
 //
 
@@ -3256,7 +3244,7 @@ BEGIN
     "S",            ID_SAVE_MODIFIED_LYRIC, VIRTKEY, CONTROL, NOINVERT
     "A",            ID_SET_A_POINT,         VIRTKEY, SHIFT, CONTROL, NOINVERT
     "B",            ID_SET_B_POINT,         VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "T",            ID_SET_PATH,            VIRTKEY, CONTROL, NOINVERT
+    "T",            ID_MEDIA_LIB,           VIRTKEY, CONTROL, NOINVERT
     "Y",            ID_SHOW_DESKTOP_LYRIC,  VIRTKEY, CONTROL, NOINVERT
     "L",            ID_SHOW_PLAYLIST,       VIRTKEY, CONTROL, NOINVERT
     VK_OEM_MINUS,   ID_SLOW_DOWN,           VIRTKEY, CONTROL, NOINVERT
@@ -3276,667 +3264,6 @@ BEGIN
     "9",            ID_SWITCH_UI_9,         VIRTKEY, CONTROL, NOINVERT
     VK_DOWN,        ID_VOLUME_DOWN,         VIRTKEY, NOINVERT
     VK_UP,          ID_VOLUME_UP,           VIRTKEY, NOINVERT
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
-
-STRINGTABLE
-BEGIN
-    IDS_ABOUTBOX            "关于 MusicPlayer2(&A)..."
-    IDS_STRING102           "警告：当前选择字体大小过大，可能会导致控制台窗口信息无法完全显示！"
-    IDS_STRING103           "要保存的内容含有Unicode字符，如果以ANSI格式保存，这些字符将会丢失。如果要保留这些字符，请选择保存为UTF-8格式。确实要保存吗？"
-    IDS_LYRIC_FOLDER_NOT_EXIST "歌词文件夹不存在，请重新设置歌词文件夹！"
-    IDS_BASS_VERSION_WARNING 
-                            "bass.dll文件版本不匹配，版本为<%1%>.<%2%>，期望的版本为<%3%>.<%4%>。不匹配的版本可能会导致播放异常，仍要继续吗？"
-    IDS_CHECK_UPDATA_FAILED "检查更新失败，请检查你的网络连接！"
-    IDS_CHECK_UPDATA_ERROR  "检查更新出错，从远程获取到了错误的信息，请联系作者！"
-    IDS_UPDATE_AVLIABLE     "检测到新版本 V<%1%>，是否前往更新？"
-    IDS_UPDATE_AVLIABLE2    "检测到新版本 V<%1%>，更新内容：\r\n<%2%>\r\n是否前往更新？"
-    IDS_ALREADY_UPDATED     "当前已经是最新版本。"
-    IDS_RESTART_EXIT        "程序已被Windows的RestartManager重启，重启参数：<%1%>，程序已退出。"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_SERIALIZE_ERROR     "读取数据文件“<%1%>”时发生了序列化异常，异常类型：CArchiveException，m_cause = <%2%>。可能是数据文件被损坏或版本不匹配造成的。"
-    IDS_SEND_EMAIL_TO_ATHOUR "向作者发送电子邮件"
-    IDS_GOTO_GITHUB         "转到此项目在GitHub上的页面"
-    IDS_DONATE_ATHOUR       "捐助作者"
-    IDS_LANGUAGE_CODE       "2"
-    IDS_DEFAULT_FONT        "微软雅黑"
-    IDS_PLAY                "播放"
-    IDS_PAUSE               "暂停"
-    IDS_PREVIOUS            "上一曲"
-    IDS_NEXT                "下一曲"
-    IDS_PLAY2               "播放(&P)"
-    IDS_PAUSE2              "暂停(&P)"
-    IDS_CREATE_SHORTCUT_INFO "你可能是第一次运行此程序，是否要在桌面上创建程序的快捷方式？"
-    IDS_SHORTCUT_CREATED    "已经在“<%1%>”路径下创建了程序的快捷方式。"
-    IDS_SHORTCUT_CREAT_FAILED "快捷方式创建失败！"
-    IDS_MINI_MODE           "迷你模式"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_MINI_MODE2          "迷你模式(&I)"
-    IDS_SELECT_RENENT_FOLDER "选择最近播放过的文件夹"
-    IDS_PLAY_TIME           "播放时间"
-    IDS_CLEAR_SEARCH_RESULT "清除搜索结果"
-    IDS_INPUT_KEY_WORD      "键入要搜索的关键词"
-    IDS_SEARCH_HERE         "在此处键入搜索(F)"
-    IDS_NOW_PLAYING         "正在播放"
-    IDS_CONNOT_FIND_FILE    "找不到文件“<%1%>”！可能已经被移动或删除。"
-    IDS_ALL_SUPPORTED_FORMAT "所有支持的音频格式"
-    IDS_ALL_FILES           "所有文件"
-    IDS_OPEN_FOLDER_INFO    "请选择一个文件夹，文件夹里的所有音频文件都将添加到播放列表。"
-    IDS_DELETE_FILE_INQUARY "确实要删除选中的 <%1%> 首歌曲吗？"
-    IDS_CONNOT_DELETE_FILE  "无法删除文件！"
-    IDS_COPY_CLIPBOARD_FAILED "复制到剪贴板失败！"
-    IDS_ALL_LRYIC_COPIED    "已复制全部歌词到剪贴板。"
-    IDS_DEBUG_MODE          "(DEBUG模式)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_NO_MIDI_SF2_WARNING "你正在播放 MIDI 音乐，但是由于没有正确载入 MIDI 音色库，因此你将听不到任何声音。 请在菜单“工具”——“选项”——“常规设置”的“MIDI 音色库路径”中选择正确的MIDI 音色库路径。 点击“取消”不再提示。"
-    IDS_SELECT_COPY_TARGET_FOLDER "选择复制的目标文件夹"
-    IDS_SELECT_MOVE_TARGET_FOLDER "选择移动的目标文件夹"
-    IDS_DEFAULT_TITLE       "<未知标题>"
-    IDS_DEFAULT_ARTIST      "<未知艺术家>"
-    IDS_DEFAULT_ALBUM       "<未知唱片集>"
-    IDS_DEFAULT_YEAR        "<未知年份>"
-    IDS_DEFAULT_GENRE       "<未知流派>"
-    IDS_DEFAULT_LYRIC_TEXT  "……"
-    IDS_DEFAULT_LYRIC_TEXT_CORTANA "Music …"
-    IDS_VOLUME              "音量"
-    IDS_PLAY_ERROR          "播放出错"
-    IDS_SEEK_TO_MINUTE_SECOND "定位到%d分%.2d秒"
-    IDS_SHOW_HIDE_PLAYLIST  "显示/隐藏播放列表"
-    IDS_BACK_TO_NARMAL      "返回正常模式"
-    IDS_EXIT_PROGRAM        "退出程序"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_SEEK_TO             "定位到"
-    IDS_TITLE               "标题"
-    IDS_RHYTHM              "节拍"
-    IDS_SOUND_FONT          "音色库"
-    IDS_ARTIST              "艺术家"
-    IDS_ALBUM               "唱片集"
-    IDS_FORMAT              "格式"
-    IDS_MONO                "单声道"
-    IDS_STEREO              "立体声"
-    IDS_CHANNEL             "声道"
-    IDS_NO_LYRIC_INFO       "当前歌曲没有歌词"
-    IDS_LYRIC_SHOW          "歌词秀"
-    IDS_TRAS                "译"
-    IDS_ALBUM_COVER         "专辑封面"
-    IDS_INNER_ALBUM_COVER_TIP_INFO "内嵌图片\r\n图片格式: "
-    IDS_OUT_IMAGE           "外部图片"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_PLAYLIST_INIT_INFO  "找到<%1%>首歌曲，正在读取音频文件信息，请稍候……"
-    IDS_REPEAT_MODE         "循环模式"
-    IDS_PLAY_ODER           "顺序播放"
-    IDS_LOOP_PLAYLIST       "列表循环"
-    IDS_LOOP_TRACK          "单曲循环"
-    IDS_PLAY_SHUFFLE        "无序播放"
-    IDS_SHOW_LYRIC_TRANSLATION "显示歌词翻译"
-    IDS_MOUSE_WHEEL_ADJUST_VOLUME "鼠标滚轮调整音量"
-    IDS_SWITCH_UI           "切换界面"
-    IDS_SOUND_EFFECT_SETTING "音效设定"
-    IDS_SETTINGS            "设置"
-    IDS_FIND_DLG_INFO       "查找关键字：<%1%>，结果数：<%2%>"
-    IDS_FIND_RESULT         "查找结果"
-    IDS_NO_RESULT           "没有找到结果！"
-    IDS_NUMBER              "序号"
-    IDS_FILE_NAME           "文件名"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_FILE_PATH           "文件路径"
-    IDS_CHARACTER_TOTAL     "共<%1%>个字符"
-    IDS_MODIFIED            "已修改"
-    IDS_UNMODIFIED          "未修改"
-    IDS_ENCODE_FORMAT       "编码格式"
-    IDS_UTF8_NO_BOM         "UTF8无BOM"
-    IDS_LYRIC_SAVE_INRUARY  "歌词已更改，是否要保存？"
-    IDS_LYRIC_FILE_FILTER   "歌词文件(*.lrc;*.ksc)|*.lrc;*.ksc|文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||"
-    IDS_SAVE_AS_ANSI        "以ANSI格式保存"
-    IDS_SAVE_AS_UTF8        "以UTF-8格式保存"
-    IDS_REPLACE_COMPLETE_INFO "替换完成，共替换<%1%>个字符串。"
-    IDS_CONNOT_FIND_STRING  "找不到“<%1%>”"
-    IDS_INSERT_TIME_TAG_TIP "插入时间标签 (F8)"
-    IDS_REPLACE_TIME_TAG_TIP "替换时间标签 (F9)"
-    IDS_DELETE_TIME_TAG_TIP "删除时间标签 (Ctrl+Del)"
-    IDS_SAVE_TIP            "保存 (Ctrl+S)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_PLAY_PAUSE_TIP      "播放/暂停  (Ctrl+P)"
-    IDS_REWIND_TIP          "快退 (Ctrl+←)"
-    IDS_FAST_FOWARD_TIP     "快进 (Ctrl+→)"
-    IDS_FIND_TIP            "查找 (Ctrl+F)"
-    IDS_REPLACE_TIP         "替换 (Ctrl+H)"
-    IDS_CANNOT_GET_SONG_LENGTH "暂未获取或无法获取音频的长度"
-    IDS_NO_MATCHED_LYRIC    "没有匹配的歌词"
-    IDS_MP3_TAG_TYPE        "标签类型："
-    IDS_UNKNOW              "未知"
-    IDS_CANNOT_WRITE_TO_FILE "无法写入文件！"
-    IDS_FOLDER              "文件夹"
-    IDS_PATH                "路径"
-    IDS_TRACK_PLAYED        "上次播放"
-    IDS_TRACK_TOTAL_NUM     "曲目数"
-    IDS_TOTAL_LENGTH        "总时长"
-    IDS_CLEAR_PATH_INQUARY  "确实要清除列表中无效的文件夹吗？"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_PATH_CLEAR_COMPLETE "完成，清除了 <%1%> 个无效的文件夹。"
-    IDS_NONE                "无"
-    IDS_CLASSICAL           "古典"
-    IDS_POP                 "流行"
-    IDS_JAZZ                "爵士"
-    IDS_ROCK                "摇滚"
-    IDS_SOFT                "柔和"
-    IDS_BASS                "重低音"
-    IDS_ELIMINATE_BASS      "消除低音"
-    IDS_WEAKENING_TREBLE    "弱化高音"
-    IDS_USER_DEFINE         "自定义"
-    IDS_EQUALIZER           "均衡器"
-    IDS_REVERB              "混响"
-    IDS_PLUGIN_FILE_NAME    "插件文件名"
-    IDS_FORMAT_SUPPORTED    "提供的格式支持"
-    IDS_FILE_EXTENSION      "文件的扩展名"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_STATE               "状态"
-    IDS_LYRIC_BATCH_DOWNLOADING_INFO "正在下载歌词，已完成 <%1%>%，请稍候……"
-    IDS_DOWNLOADING         "正在下载…"
-    IDS_SKIPED              "已跳过"
-    IDS_NETWORK_CONNECTION_FAILED "网络连接失败或超时"
-    IDS_CANNOT_FIND_THIS_SONG "找不到此歌曲"
-    IDS_LYRIC_DOWNLOAD_FAILED "歌词下载失败"
-    IDS_SONG_NO_LYRIC       "该歌曲没有歌词"
-    IDS_DOWNLOAD_ENCODE_WARNING "成功，但是歌词中有无法转换的Unicode字符，建议保存为UTF-8格式"
-    IDS_SUCCESSED           "成功"
-    IDS_DOWNLOAD_COMPLETE   "下载完成。"
-    IDS_RETURN_VALUE_OF_WAIT_FOR_SINGLE_OBJECT "WaitForSingleObject函数的返回值为%x。"
-    IDS_SEARCHING           "正在搜索……"
-    IDS_SEARCH_FAILED_INFO  "搜索失败，请检查你的网络连接！"
-    IDS_SEARCH_TIME_OUT     "搜索超时！"
-    IDS_SEARCH_NO_SONG      "搜索结果：（没有找到歌曲）"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_SEARCH_NO_MATCHED   "搜索结果：（似乎没有最佳匹配的项）"
-    IDS_SEARCH_RELATED      "搜索结果：（已关联项：<%1%>）"
-    IDS_SEARCH_BEST_MATCHED "搜索结果：（最佳匹配项：<%1%>）"
-    IDS_LYRIC_OVERWRITE_INQUARY "歌词文件已存在，要替换它吗？"
-    IDS_DOWNLOAD_COMPLETE_SAVED "下载完成，保存为“<%1%>”。"
-    IDS_CONVERTING_STATE    "转换状态"
-    IDS_MP3_LAME_ENCODER    "MP3 (lame编码器)"
-    IDS_AUTO_RENAME         "自动重命名"
-    IDS_IGNORE              "跳过"
-    IDS_OVERWRITE           "覆盖"
-    IDS_CONVERT_WMA_ERROR   "转换 “<%1%>” 到 WMA 出错："
-    IDS_NO_WMP9_OR_LATER    "没有安装 Windows Media Player 9 或更高版本。"
-    IDS_NO_SUPPORTED_ENCODER_WARNING "无法找到可支持请求的采样格式和比特率的编解码器。"
-    IDS_UNKNOW_ERROR        "未知错误。"
-    IDS_BASS_ENCODER_LOAD_ERROR "BASS 编码器加载失败，文件 “<%1%>” 可能丢失或已经损坏！"
-    IDS_SET_OUTPUT_DIR_INFO "请设置输出目录！"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_OUTPUT_DIR_NOT_EXIST "输出目录 ""<%1%>"" 不存在！"
-    IDS_SELECT_OUTPUT_FOLDER "选择输出文件夹"
-    IDS_ERROR               "出错"
-    IDS_COMPLEATE           "完成"
-    IDS_SKIPED1             "跳过"
-    IDS_CURRENT_SELECTED    "当前选择"
-    IDS_CURRENT_COLOR       "当前的颜色"
-    IDS_LIGNT_BLUE          "天蓝色"
-    IDS_GREEN               "绿色"
-    IDS_ORANGE              "橙色"
-    IDS_CYAN_GREEN          "青绿色"
-    IDS_PINK                "浅红色"
-    IDS_LIGHT_PURPLE        "淡紫色"
-    IDS_STRETCH             "拉伸"
-    IDS_FILL                "填充"
-    IDS_ADAPT               "适应"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_COVER_FIT_TIP_INFO  "拉伸：会改变长宽比\r\n填充：不会改变长宽比，会裁剪长边\r\n适应：不会改变长宽比，不裁剪"
-    IDS_USE_OUT_IMAGE_TIP_INFO "如果无法从音频文件获取专辑封面，则尝试在音频文件所在目录下查找下面指定的文件名为专辑封面"
-    IDS_DEFAULT_COVER_NAME_TIP_INFO 
-                            "在此设置默认的专辑封面文件名，多个文件名之间使用半角逗号隔开，支持通配符与相对路径，设置绝对路径会使封面查找总是成功无法自动下载专辑封面"
-    IDS_WHITE_THEME_COLOR_WARNING "警告：将主题颜色设置成白色会使进度条完全看不见！"
-    IDS_FOLLOWING_SYSTEM    "跟随系统"
-    IDS_CLEAR_DATA_FILE_TIP_INFO 
-                            "说明：程序目录下的 song_data.dat 文件保存了所有加载过的歌曲信息，用于加快播放列表的载入速度。点击此按钮以清理不存在的文件。"
-    IDS_AUTO_DOWNLOAD_LYRIC_TIP_INFO 
-                            "勾选此项后，只有当歌曲的“标题”和“艺术家”信息都不为空时，才自动下载歌词和专辑封面。"
-    IDS_MIDI_INNER_LYRIC_TIP_INFO "有些 MIDI 音乐包含歌词，勾选此项后，会优先显示 MIDI 音乐内嵌的歌词。"
-    IDS_CURRENT_DATA_FILE_SIZE "当前数据文件大小"
-    IDS_BYTE                "字节"
-    IDS_CLEAR_COMPLETE_INFO "清理完成，已删除 <%1%> 个项目，数据文件大小减小 <%2%> 个字节。"
-    IDS_SOUND_FONT_FILTER   "音色库文件|*.SF2|所有文件|*.*||"
-    IDS_FUNCTION            "功能"
-    IDS_SHORTCUT_KEY        "快捷键"
-    IDS_PLAY_PAUSE          "播放/暂停"
-    IDS_STOP                "停止"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_FAST_FORWARD        "快进"
-    IDS_REWIND              "快退"
-    IDS_VOLUME_UP           "增大音量"
-    IDS_VOLUME_DOWN         "减小音量"
-    IDS_EXIT                "退出"
-    IDS_GLOBLE_HOT_KEY_WARNING "全局快捷键至少需要包含Ctrl、Shift、Alt中的一个！"
-    IDS_LYRIC_FUZZY_MATHC_TIP_INFO 
-                            "如果去掉此复选框的勾选，则只会匹配和歌曲文件名完全一样的歌词文件；\r\n如果选中此复选框，当找不到文件名完全一样的歌词文件时，会匹配文件名中包含艺术家和歌曲标题的歌词文件。\r\n（可能需要重新启动程序才能生效。）"
-    IDS_LYRIC_PATH_TIP_INFO "说明：如果歌曲所在目录下找不到匹配的歌词文件，就会在此文件夹下寻找歌词文件。"
-    IDS_CORTANA_SHOW_LYRIC_TIP_INFO 
-                            "勾选项后，可以在 Cortana 搜索框中显示歌词、歌曲名称和专辑封面。开启此功能后可能需要重新启动软件才能生效。"
-    IDS_BLACK               "黑色"
-    IDS_WHITE               "白色"
-    IDS_SELECT_LYRIC_FOLDER "选择歌词文件夹"
-    IDS_LYRIC_SETTINGS      "歌词设置"
-    IDS_APPEARANCE_SETTINGS "外观设置"
-    IDS_GENERAL_SETTINGS    "常规设置"
-    IDS_PLAY_SETTINGS       "播放设置"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_GLOBLE_HOTKEY       "全局快捷键"
-    IDS_DEVICE_TYPE_DIGITAL "通过用于未知类型数字接口的连接器连接到音频适配器的音频端点设备。"
-    IDS_DEVICE_TYPE_DISPLAYPORT "通过 DisplayPort 连接器连接到音频适配器的音频端点设备。"
-    IDS_DEVICE_TYPE_HANDSET "包含用于双向通信的扬声器和麦克风的手持电话的一部分。"
-    IDS_DEVICE_TYPE_HDMI    "通过高清晰度多媒体接口 (HDMI) 连接器连接到音频适配器的音频端点设备。"
-    IDS_DEVICE_TYPE_HEADPHONES "耳机"
-    IDS_DEVICE_TYPE_HEADSET "用于双向通信的带话筒的单个或一对耳机。"
-    IDS_DEVICE_TYPE_LINE    "音频端点设备, 用于将线路级模拟信号发送到音频适配器上的线路输入插孔, 或从适配器上的输出插孔接收线路级模拟信号。"
-    IDS_DEVICE_TYPE_MICROPHONE "麦克风"
-    IDS_DEVICE_TYPE_NETWORK "用户通过网络远程访问的音频端点设备。"
-    IDS_DEVICE_TYPE_SPDIF   "通过索尼/飞利浦数字接口 (PDIF) 连接器连接到音频适配器的音频端点设备。"
-    IDS_DEVICE_TYPE_SPEAKERS "扬声器"
-    IDS_ITEM                "项目"
-    IDS_VLAUE               "值"
-    IDS_NAME                "名称"
-    IDS_DRIVER              "驱动程序"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_DEVICE_TYPE         "设备类型"
-    IDS_ALBUM_COVER_DOWNLOAD_FAILED_WARNING "专辑封面下载失败，请检查你的网络连接！"
-    IDS_AUDIO_FILE          "音频文件"
-    IDS_MINI_SEQUENCE       "MIDI 序列"
-    IDS_DELETE              "删除"
-    IDS_COPY                "复制"
-    IDS_MOVE                "移动"
-    IDS_INVALID_DIR_WARNING "无效的目录，请重新选择！"
-    IDS_DEFAULT_OUTPUT_DEVICE "默认输出设备"
-    IDS_BASIC_AUDIO_FORMAT  "基本音频格式"
-    IDS_SOUND_FONT_LOAD_FAILED "音色库“<%1%>”加载失败！"
-    IDS_LOAD_FAILED         "加载失败"
-    IDS_BASS_ERROR_LOG_INFO "BASS音频库发生了错误，错误代码：<%1%>，文件：<%2%>"
-    IDS_LANGUAGE_CHANGE_INFO "请重新启动程序使语言设置生效。"
-    IDS_STOPED              "已停止"
-    IDS_PAUSED              "已暂停"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_RECENT_PATH_SERIALIZE_ERROR_LOG 
-                            "读取最近播放路径文件文件时发生了序列化异常，异常类型：CArchiveException，m_cause = <%1%>。可能是recent_path.dat文件被损坏或版本不匹配造成的。"
-    IDS_NO_RESULT_TO_SHOW   "没有结果可以显示。"
-    IDS_BITRATE             "比特率"
-    IDS_TRACK               "曲目"
-    IDS_LENGTH              "长度"
-    IDS_TEST_STR            "测试_<%1%>_@@#$_#_<%2%>_ERgfde<%3%>_444"
-    IDS_CLOSE               "关闭"
-    IDS_MULTI_MEDIA_KEY_TIP "勾选此选项后，即使程序在后台运行，你仍然可以使用键盘上的多媒体按键控制音乐的播放。需要重新启动程序才能生效。"
-    IDS_SONG_INFO           "曲目信息"
-    IDS_SELECT_FOLDER       "选择文件夹"
-    IDS_FIND_SONGS          "查找歌曲"
-    IDS_EXIT_FULL_SCREEN    "退出全屏"
-    IDS_FULL_SCREEN         "全屏显示"
-    IDS_WELCOM_TO_USE       "欢迎使用MusicPlayer2！"
-    IDS_ERROR_MESSAGE       "错误信息："
-    IDS_CRASH_INFO          "很抱歉，程序出现了错误，请将此文件 “<%1%>” 通过电子邮件发送到 zhongyang219@hotmail.com，以帮助作者确定问题所在。并将以下内容添加到邮件正文中："
-END
-
-STRINGTABLE
-BEGIN
-    IDS_ERROR1              "错误"
-    IDS_HELP                "帮助"
-    IDS_FILE_NOT_FOUND      "没有找到文件"
-    IDS_PLAY_SHORTCUT_CREATED "已经在“<%1%>”目录下创建了播放控制快捷方式。"
-    IDS_CREATE_PLAY_SHORTCUT_INFO 
-                            "此命令将会在程序所在目录下创建播放控制快捷方式，当播放器正在运行时，你可以通过这些快捷方式来控制音乐的播放。你也可以将它们固定到任务栏。要创建播放控制快捷方式吗？"
-    IDS_LISTEN_TIME         "累计时间"
-    IDS_LISTEN_TIME_FILE_DLG_FILTER "csv文件(*.csv)|*.csv|所有文件(*.*)|*.*||"
-    IDS_LISTEN_TIMES        "累计次数"
-    IDS_LISTEN_TIME_STATISTICS "累计播放时间统计"
-    IDS_HIDE_MENU_BAR_TIP   "提示：隐藏菜单栏后可以右击窗口标题栏，或者点击右上角的主菜单“≡”按钮，在弹出的菜单中选择“视图”——“显示菜单栏”以重新显示菜单栏。\r\n点击“取消”不再提示。"
-    IDS_LYRIC_PREVIEW       "歌词预览"
-    IDS_CRASH_ERROR_LOG_INFO "程序崩溃了，dump文件已经保存到“<%1%>”。"
-    IDS_MAIN_MENU           "主菜单"
-    IDS_LYRIC_SAVE_FAILED   "歌词保存失败，请检查目标文件夹是否有写入权限！"
-    IDS_PLAYLIST            "播放列表"
-    IDS_PLAYLIST_FILTER     "文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_CLEAR_PLAYLIST_WARNING "确实要清空播放列表吗？"
-    IDS_DEFAULT             "默认"
-    IDS_NEW_PLAYLIST        "新建播放列表"
-    IDS_INPUT_PLAYLIST_NAME "输入播放列表名称："
-    IDS_RENAME_PLAYLIST     "重命名播放列表"
-    IDS_CURRENT_FOLDER      "当前文件夹"
-    IDS_PLAYLIST_EXIST_WARNING "播放列表“<%1%>”已存在！"
-    IDS_REMOVE_SAME_SONGS_INFO "完成，已删除 <%1%> 个项目。"
-    IDS_MEDIA_LIB           "媒体库"
-    IDS_OPEN_MEDIA_LIB      "打开媒体库"
-    IDS_ADD_TO_PLAYLIST_FAILED_WARNING "添加失败，播放列表“<%1%>”不存在！"
-    IDS_DESCRIPTION         "说明"
-    IDS_INCLUDE_SUB_DIR     "包含子文件夹"
-    IDS_MY_FAVURITE         "我喜欢的音乐"
-    IDS_ADD_TO_MA_FAVOURITE "添加到“我喜欢的音乐”"
-    IDS_REMANE_FAILED       "重命名失败！"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_REMOVE_MY_FAVOURITE_WARNING "取消“我喜欢”会将正在播放的曲目从当前播放列表中移除，要继续吗？"
-    IDS_FILE_NAME_INVALID_WARNING "名称中不能包含以下字符：\n\\""/:*?<>|"
-    IDS_OPEN_URL            "打开URL"
-    IDS_ADD_URL             "添加URL"
-    IDS_INPUT_URL_TIP       "请输入URL："
-    IDS_MCI_INIT_FAILED     "MCI初始化失败！"
-    IDS_MCI_NO_THIS_FUNCTION_WARNING "MCI内核无法使用此功能！"
-    IDS_MCI_KERNAL_TIP      "使用MCI内核将导致格式转换和音效设置功能无法使用，且部分音频无法播放。建议仅在需要的时候切换为此内核。"
-    IDS_CLEAR_LISTEN_TIME_WARNING "确实要清空所有统计数据吗？"
-    IDS_PLAYLIST_NAME_EMPTY_WARNING "播放列表名称不能为空！"
-    IDS_ALBUM_COVER_COMPRESSED "已压缩尺寸过大的专辑封面"
-    IDS_TOW_COLOR_GRADIENT  "两色渐变"
-    IDS_THREE_COLOR_GRADIENT "三色渐变"
-    IDS_NO_GRADIENT         "无渐变"
-    IDS_LRC                 "词"
-    IDS_SHOW_DESKTOP_LYRIC  "显示桌面歌词"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_LOCK_DESKTOP_LYRIC  "锁定桌面歌词"
-    IDS_CLOSE_DESKTOP_LYRIC "关闭桌面歌词窗口"
-    IDS_LYRIC_DOUBLE_LINE   "歌词双行显示"
-    IDS_LYRIC_BACKGROUND_PENETRATE "歌词背景穿透"
-    IDS_ULOCK_DESKTOP_LYRIC "解锁桌面歌词"
-    IDS_ADD                 "添加"
-    IDS_SORT                "排序"
-    IDS_LIST                "列表"
-    IDS_EDIT                "编辑"
-    IDS_DEFAULT_STYLE       "预设方案"
-    IDS_MODIFY_DEFAULT_STYLE_WARNING "确实要用当前颜色方案覆盖“预设 <%1%>”吗？"
-    IDS_RESTORE_DEFAULT_STYTLE_WARNING "所有修改过的预设方案都将被恢复，要继续吗？"
-    IDS_URL_INVALID_WARNING "请输入正确的URL！"
-    IDS_PROGRESS_INFO       "已完成 <%1%>%，请稍候……"
-    IDS_BASS_MIX_LOAD_ERROR "BASSmix 加载失败，文件 “<%1%>” 可能丢失或已经损坏！"
-    IDS_BROWSE              "浏览"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_OTHER               "其他"
-    IDS_SEARCH_ARTIST       "在此处键入搜索艺术家"
-    IDS_SEARCH_ALBUM        "在此处键入搜索唱片集"
-    IDS_TEMP_PLAYLIST       "临时的播放列表"
-    IDS_GENRE               "流派"
-    IDS_SEARCH_GENRE        "在此处键入搜索流派"
-    IDS_YEAR                "年份"
-    IDS_SEARCH_YEAR         "在此处键入搜索年份"
-    IDS_TRACK_NUM           "音轨号"
-    IDS_FOLDER_EXPLORE      "文件夹浏览"
-    IDS_SEARCH_FORDER       "在此处键入搜索文件夹"
-    IDS_BTN_SETTINGS        "设置(&S)..."
-    IDS_MORE_PLAYLIST       "更多播放列表"
-    IDS_SEARCH_RESULT       "搜索结果："
-    IDS_UPDATING_MEDIA_LIB_INFO "正在更新媒体库……已更新 <%1%> 个曲目"
-    IDS_ERROR_CODE          "错误代码"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_UPDATE_MEDIA_LIB_TIP "勾选此项时，程序会在启动时自动扫描“媒体库目录”中的音频文件。"
-    IDS_FILE_NOT_EXIST      "文件不存在"
-    IDS_FILE_CONNOT_BE_OPEND "文件无法打开"
-    IDS_ALIGN_LEFT          "左对齐"
-    IDS_ALIGN_RIGHT         "右对齐"
-    IDS_CENTER              "居中"
-    IDS_ALL_TRACKS          "所有曲目"
-    IDS_DO_NOT_SAVE         "不保存"
-    IDS_AUTO_SAVE           "自动保存"
-    IDS_INQUIRY             "询问"
-    IDS_LYRIC_FORWARD       "歌词提前0.5秒"
-    IDS_LYRIC_DELAY         "歌词延后0.5秒"
-    IDS_RECENT_PLAYED       "最近播放"
-    IDS_LAST_PLAYED_TIME    "上次播放时间"
-    IDS_CLEAR_RECENT_PLAYLIST_INFO "确实要清空最近播放曲目列表吗？"
-    IDS_AB_REPEAT_A_SELECTED "AB重复：已选择A点 (<%1%>)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_AB_REPEAT_ON_INFO   "AB重复：开 (<%1%>-<%2%>)"
-    IDS_AB_REPEAT           "AB重复"
-    IDS_INNER_LYRIC         "内嵌歌词"
-    IDS_SHOW_ONLINE_HELP_INFO "点击此处查看详细在线帮助文档。"
-    IDS_PLAYLIST_FILE_FILTER 
-                            "全部支持的播放列表文件|*.playlist;*.m3u;*.m3u8|MusicPlayer2播放列表文件|*.playlist|m3u播放列表文件|*.m3u|m3u8播放列表文件|*.m3u8|所有文件(*.*)|*.*||"
-    IDS_SAVE_PLAYLIST_FILTER 
-                            "m3u播放列表文件|*.m3u|m3u8播放列表文件|*.m3u8|MusicPlayer2播放列表文件|*.playlist|所有文件(*.*)|*.*||"
-    IDS_CREATE_MINI_MODE_SHORTCUT_INFO 
-                            "此命令将会在程序所在目录下创建一个迷你模式的快捷方式，通过此快捷方式将总是以迷你模式启动播放器。要创建迷你模式快捷方式吗？"
-    IDS_CREATE_DESKTOP_SHORTCUT_INFO "确实要创建程序的桌面快捷方式吗？"
-    IDS_DELETE_SINGLE_FILE_INQUIRY "确实要删除文件“<%1%>”吗？"
-    IDS_ALL                 "全部"
-    IDS_LAST_WEEK           "最近一星期"
-    IDS_LAST_MONTH          "最近一个月"
-    IDS_LAST_HALF_YEAR      "最近半年"
-    IDS_LAST_YEAR           "最近一年"
-    IDS_TODAY               "今天"
-    IDS_LAST_THREE_DAYS     "最近三天"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_LICENSE_EXPLAIN     "使用本软件的源代码时请遵守以下开源协议。"
-    IDS_LICENSE             "开源协议"
-    IDS_FILE_EXIST_IN_PLAYLIST_INFO "文件已存在于播放列表中。"
-    IDS_IS_RELATED          "是否关联"
-    IDS_YES                 "是"
-    IDS_ALBUM_COVER_INFO    "专辑封面详情"
-    IDS_INNER_ALBUM_COVER   "内嵌专辑封面"
-    IDS_WIDTH               "宽度"
-    IDS_HEIGHT              "高度"
-    IDS_BPP                 "每像素位数"
-    IDS_FILE_SIZE           "文件大小"
-    IDS_DEFAULT_ICON        "默认图标"
-    IDS_LIGHT_ICON          "浅色图标"
-    IDS_DARK_ICON           "深色图标"
-    IDS_NO                  "否"
-    IDS_CONVERT_ERROR_FILE_CONNOT_OPEN "源文件无法读取"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED "编码通道创建失败"
-    IDS_CONVERT_ERROR_ENCODE_PARA_ERROR "找不到编码器或编码器参数错误"
-    IDS_CONVERT_ERROR_MIDI_NO_SF2 "没有MIDI音色库"
-    IDS_CONTAIN_SUB_FOLDER  "包含子文件夹"
-    IDS_TYPE                "类型"
-    IDS_FILE_TYPE           "文件类型"
-    IDS_CLEAN_UP_MEDIA_WARNING "清选择一个清理范围！"
-    IDS_FILES_THAT_NOT_EXIST "不存在的文件"
-    IDS_FILES_NOT_IN_MEDIA_LIB_DIR "不在媒体库目录中的文件"
-    IDS_FILES_THAT_ERROR    "错误的文件"
-    IDS_IMAGE_FILE_FILTER   "图片文件(*.jpg;*.jpeg;*.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|所有文件(*.*)|*.*||"
-    IDS_SEARCH_FILE_TYPE    "在此处键入搜索文件类型"
-    IDS_SEARCH_BITRATE      "在此处键入搜索比特率"
-    IDS_PLAY_RANDOM         "随机播放"
-    IDS_FILE_PROPERTY       "文件属性"
-    IDS_PROPERTY_TITLE_INFO " (<%1%>个文件)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_MULTI_VALUE         "<多个数值>"
-    IDS_TAG_BATCH_EDIT_INFO "已保存到 <%1%> 个文件。"
-    IDS_GET_TAG_ONLINE_TITLE "在线获取标签信息"
-    IDS_GET_THIS            "获取此项"
-    IDS_NO_LYRICS_FOUND_INFO "没有找到歌词！"
-    IDS_CLEAR_HISTORY       "清除历史记录..."
-    IDS_CLEAR_HISTORY_INFO  "确实要清除历史记录吗？"
-    IDS_RENAME              "重命名"
-    IDS_RENAME_INFO         "重命名 <%1%> 个文件，成功 <%2%> 个，忽略 <%3%> 个，失败 <%4%> 个。"
-    IDS_PLAY_TRACK          "单曲播放"
-    IDS_ADVANCED_PROPERTY   "高级标签信息"
-    IDS_CONNOT_FIND_ARTIST_WARNING "无法在媒体库中找到艺术家 <%1%>！"
-    IDS_CONNOT_FIND_ALBUM_WARNING "无法在媒体库中找到唱片集 <%1%>！"
-    IDS_SCI_NOT_LOADED_ERROR_INFO 
-                            "无法打开此对话框，因为 SciLexer.dll 没有正确加载，请检查 SciLexer.dll 是否丢失！"
-    IDS_SELECT_ARTIST       "选择艺术家"
-    IDS_LOCATE_TO_CURRENT   "定位到正在播放曲目"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_UI                  "界面"
-    IDS_RATING              "分级"
-    IDS_UNRATED             "未分级"
-    IDS_RANDOM_TRACK        "随机曲目"
-    IDS_NEXT_TRACK          "下一曲"
-    IDS_MEDIA_LIB_UPDATING_INFO "媒体库正在更新，请稍后再试！"
-    IDS_MINIMIZE            "最小化"
-    IDS_MAXIMIZE            "最大化"
-    IDS_RESTORE             "还原"
-    IDS_SET_FILENAME_FORM   "设置文件名格式"
-    IDS_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME "设置多个外部专辑封面的文件名"
-    IDS_DARK                "深色"
-    IDS_LIGHT               "浅色"
-    IDS_SHOW_HIDE_PLAYER    "显示/隐藏播放器"
-    IDS_MUTE                "静音"
-    IDS_UNDEFINED           "未定义"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_DELETE_INNER_ALBUM_COVER_INQUERY 
-                            "当前专辑封面是内嵌在音频文件里的，删除后将不可恢复，确实要删除内嵌的专辑封面吗？"
-    IDS_TOTAL_TRACKS        "曲目总数"
-    IDS_TRACKS_PLAYED       "播放过的曲目数"
-    IDS_MEDIALIB_STATISTICS "媒体库统计"
-    IDS_CFG_DIR_CHANGED_INFO 
-                            "你更改了配置文件和数据文件的保存位置，重启后生效。你可能需要手动将配置文件和数据文件转移到新的位置。"
-    IDS_ADD_TO_PLAYLIST     "添加到播放列表"
-    IDS_LYRICS_HIDE_BLANK_LINES_TIP 
-                            "勾选此选项后，在歌词单行显示和双行显示时，如果遇到空白行，则不再显示“Music...”，而是会提前显示之后的歌词，若同时勾选了“歌词卡拉OK样式显示”则会将大于一定时长的空白行替换为音乐进度符号（♪♪♪）。此选项也会影响桌面歌词的显示。"
-    IDS_BOLD                "加粗"
-    IDS_ITALIC              "倾斜"
-    IDS_SDL_DEFAULT_DEVICE  "SDL 默认音频设备"
-    IDS_FFMPEG_CORE         "使用FFMPEG内核将导致混响功能和格式转换无法使用，且不支持播放MIDI文件。需要有 ffmpeg_core.dll。"
-    IDS_FFMPEG_INIT_FAILED  "FFMPEG内核初始化失败！"
-    IDS_FFMPEG_NO_THIS_FUNCTION "FFMPEG内核下暂不支持此功能！"
-    IDS_SUPPORTTED_FORMAT_INFO 
-                            "MusicPlayer2支持多种播放内核，当前使用的播放内核为BASS音频库。\r\n更多音频格式支持依赖于BASS引擎插件（位于"".\\Plugins""目录下）。"
-    IDS_SUPPORTTED_FORMAT_INFO_MCI 
-                            "MusicPlayer2支持多种播放内核，当前使用的播放内核为MCI。仅支持mp3、wma、wav、mid格式，需要支持更多音频格式的播放，请切换到BASS或FFMPEG内核。"
-    IDS_SUPPORTTED_FORMAT_INFO_FFMPEG "MusicPlayer2支持多种播放内核，当前使用的播放内核为FFMPEG。"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_OTHER_FORMATS       "其他音频格式"
-    IDS_IDS_ENCODER_INIT_ERROR "编码器初始化失败！"
-    IDS_SEEK_TO_LINE_TIP    "定位到当前行 (Ctrl+G)"
-    IDS_SWITCH_DISPLAY      "切换显示"
-    IDS_FILE                "文件"
-    IDS_PLAY_CONTROL        "播放控制"
-    IDS_LYRICS              "歌词"
-    IDS_VIEW                "视图"
-    IDS_TOOLS               "工具"
-    IDS_DOWNLOAD_FFMPEG_CORE_INFO 
-                            "FFMPEG内核需要单独下载，下载后请将解压得到的所有dll文件放到程序所在目录下。要下载FFMPEG内核吗？"
-    IDS_TRAFFICMONITOR_DESCRIPTION "TrafficMonitor: 功能强大的Windows网速监控软件"
-    IDS_SIMPLENOTEPAD_DESCRIPTION "SimpleNotePad: 简洁的 Windows 文本编辑器"
-    IDS_NO_TRACKS_TIP_INFO  "当前没有正在播放的曲目，你可以：\r\n按下<%1%>打开播放列表，并向播放列表中添加歌曲；\r\n点击“主菜单”——“文件”——“打开文件”或者快捷键<%2%>来打开一个音频文件；\r\n点击“主菜单”——“文件”——“打开文件夹”或者快捷键<%3%>打开并播放一个文件夹；\r\n按下<%4%>打开媒体库，在媒体库中寻找要播放的歌曲。"
-    IDS_SWITHC_TO_DARK_MODE "切换到深色模式"
-    IDS_SWITCH_TO_LIGHT_MODE "切换到浅色模式"
-    IDS_SHORCUT_LEFT        "←"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_SHOTCUT_RIGHT       "→"
-    IDS_SHOTCUT_UP          "↑"
-    IDS_SHOTCUT_DOWN        "↓"
-    IDS_SPACE               "空格"
-    IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO "如果歌曲所在目录下没有找到专辑封面则会在此文件夹下寻找封面文件。"
-    IDS_LOGIN_REQUIRED      "需要登录"
-    IDS_LOGGED              "已登录"
-    IDS_LASTFM_LOGIN        "请您在打开的浏览器窗口内完成登录并在登录成功后单击确定。"
-    IDS_LOGIN_FAILED        "登录失败！"
-    IDS_LASTFM_CACHE_STATUS "%i条记录"
-    IDS_SHOW_HIDE_DESKTOP_LYRIC "显示/隐藏桌面歌词"
-    IDS_APP_RUNING_INFO     "MusicPlayer2 还在进行，请等待进程退出，或者通过任务管理器结束进程。"
-    IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 
-                            "勾选此项后，如果没有歌词，会显示歌曲的艺术家、唱片集和歌曲标题等信息，而不是显示“当前歌曲没有歌词”。"
-    IDS_EXCLUSIVE_MODE      "独占模式"
-    IDS_PLAYLIST_FIX_PATH_ERROR_INFO 
-                            "此功能将会检查播放列表中不存在的曲目，通过在媒体库中寻找匹配的曲目来修复错误的路径。需要修复播放列表中错误的路径吗？"
-    IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE "完成，已修复<%1%>个错误的路径。"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_LOCATE              "定位"
-    IDS_PLAYLIST_MENU       "播放列表菜单"
-    IDS_RECENT_FOLDER_OR_PLAYLIST "最近播放的文件夹/播放列表"
-    IDS_PLAYLIST_EMPTY_INFO "播放列表为空。"
-    IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP 
-                            "勾选此项后，在切换播放列表时，如果新的播放列表中存在正在播放的曲目，则在切换播放列表后继续播放当前播放的曲目。"
-    IDS_ACKNOWLEDGEMENT     "鸣谢"
-    IDS_SIMPLE_UI           "简洁UI"
-    IDS_GROOVE_MUSIC_STYLE  "Groove音乐风格"
-    IDS_DEFAULT_UI          "默认界面"
-    IDS_ALIGN_AUTO          "自动"
-    IDS_SET_MULTI_ARTIST_SPLIT_EXT "设置多个艺术家识别例外"
-    IDS_ARTIST_SPLIT_EXT_TIP_INFO "添加所有名称本身含有“/;&&、”的艺术家作为例外，避免程序误识别。"
-    IDS_FILES_TOO_SHORT     "过短的文件"
-    IDS_FILES_NON_MAIN_IN_OSU "osu! 文件夹中的非主要文件"
-    IDS_WAIT_AND_RETRY      "请等待当前操作完成后重试。"
 END
 
 #endif    // 中文(简体，中国) resources
@@ -4454,7 +3781,7 @@ FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
     LTEXT           "Folder:",IDC_PATH_STATIC,186,3,46,12,SS_CENTERIMAGE | WS_TABSTOP
     CONTROL         "",IDC_PLAYLIST_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,185,42,190,200
-    PUSHBUTTON      "Media &Library...",ID_SET_PATH,321,1,54,13
+    PUSHBUTTON      "Media &Library...",ID_MEDIA_LIB,321,1,54,13
     LTEXT           "Toolbar",IDC_PLAYLIST_TOOLBAR,185,32,182,9
     CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,188,17,178,12
     LTEXT           "UI Static",IDC_UI_STATIC,3,0,108,53
@@ -4872,7 +4199,7 @@ BEGIN
     CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,4,4,327,155
 END
 
-IDD_TAG_FROM_FILE_NAME_DIALOG DIALOGEX 0, 0, 215, 134
+IDD_TAG_MODE_SELECT_DIALOG DIALOGEX 0, 0, 215, 134
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Get tag from file name"
 FONT 9, "Segoe UI", 400, 0, 0x0
@@ -5243,7 +4570,7 @@ BEGIN
         BOTTOMMARGIN, 176
     END
 
-    IDD_TAG_FROM_FILE_NAME_DIALOG, DIALOG
+    IDD_TAG_MODE_SELECT_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 208
@@ -5721,7 +5048,7 @@ BEGIN
     0, 0, 100, 100
 END
 
-IDD_TAG_FROM_FILE_NAME_DIALOG AFX_DIALOG_LAYOUT
+IDD_TAG_MODE_SELECT_DIALOG AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -5906,7 +5233,7 @@ BEGIN
             MENUITEM "&Unrated",                    ID_RATING_NONE
         END
         MENUITEM SEPARATOR
-        MENUITEM "Media &Library...",           ID_SET_PATH
+        MENUITEM "Media &Library...",           ID_MEDIA_LIB
         MENUITEM "&Find Songs...",              ID_FIND
         MENUITEM "O&pen File Location",         ID_EXPLORE_PATH
         MENUITEM "Sound &Effect Settings...",   ID_EQUALIZER
@@ -6073,7 +5400,7 @@ BEGIN
     END
     POPUP "&Tool"
     BEGIN
-        MENUITEM "&Media Library...",           ID_SET_PATH
+        MENUITEM "&Media Library...",           ID_MEDIA_LIB
         MENUITEM "&Find Songs...",              ID_FIND
         MENUITEM "Open File &Location",         ID_EXPLORE_PATH
         MENUITEM "Song &Info...",               ID_SONG_INFO
@@ -6146,7 +5473,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Add to My Fa&vourite",        ID_ADD_REMOVE_FROM_FAVOURITE
         MENUITEM SEPARATOR
-        MENUITEM "Media &Library...",           ID_SET_PATH
+        MENUITEM "Media &Library...",           ID_MEDIA_LIB
         MENUITEM "&Find Songs...",              ID_FIND
         MENUITEM "Open File Lo&cation",         ID_EXPLORE_PATH
         MENUITEM "Sound &Effect Settings...",   ID_EQUALIZER
@@ -6473,22 +5800,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// TEXT
-//
-
-IDR_TEXT1               TEXT                    "Help_en_us.txt"
-
-IDR_LICENSE             TEXT                    "..\\LICENSE"
-
-IDR_UI1                 TEXT                    "skins\\ui1.xml"
-
-IDR_UI2                 TEXT                    "skins\\ui2.xml"
-
-IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement_en.txt"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Bitmap
 //
 
@@ -6600,708 +5911,20 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// String Table
+// TEXT
 //
 
-STRINGTABLE
-BEGIN
-    IDS_ABOUTBOX            "&About MusicPlayer2..."
-    IDS_STRING102           "Warning: The current selection of the font size is too large, which may cause the console window information to not be fully displayed!"
-    IDS_STRING103           "The content to be saved contains Unicode characters that will be lost if saved in ANSI format. If you want to keep these characters, select Save As UTF-8 format. Are you sure you want to save it?"
-    IDS_LYRIC_FOLDER_NOT_EXIST 
-                            "The lyrics folder does not exist, please reset the lyrics folder!"
-    IDS_BASS_VERSION_WARNING 
-                            "The bass.dll file version does not match, the version is <%1%>.<%2%>, and the expected version is <%3%>.<%4%>. The mismatched version may cause an exception when playing. Do you still want to continue?"
-    IDS_CHECK_UPDATA_FAILED "Check for update failed, please check your network connection!"
-    IDS_CHECK_UPDATA_ERROR  "Check for update failed and get the wrong information from the remote update file, please contact the author!"
-    IDS_UPDATE_AVLIABLE     "New version V<%1%> detected, do you want to go to update?"
-    IDS_UPDATE_AVLIABLE2    "New version V<%1%> detected, update content: \r\n<%2%>\r\ndo you want to go to update?"
-    IDS_ALREADY_UPDATED     "Already updated to the latest version."
-    IDS_RESTART_EXIT        "The program has been restarted by Windows Restartmanager, restart parameters: <%1%>, the program has exited."
-END
+IDR_COMPILE_TIME        TEXT                    "compile_time.txt"
 
-STRINGTABLE
-BEGIN
-    IDS_SERIALIZE_ERROR     "A serialization exception occurred while reading the data file ""<%1%>"", the exception type: Carchiveexception,m_cause = <%2%>. It may be caused by the corruption of data file or a version mismatch."
-    IDS_SEND_EMAIL_TO_ATHOUR "Send an e-mail to the author."
-    IDS_GOTO_GITHUB         "Go to the page on GitHub for this project."
-    IDS_DONATE_ATHOUR       "Donate the author"
-    IDS_LANGUAGE_CODE       "1"
-    IDS_DEFAULT_FONT        "Segoe UI"
-    IDS_PLAY                "Play"
-    IDS_PAUSE               "Pause"
-    IDS_PREVIOUS            "Previous"
-    IDS_NEXT                "Next"
-    IDS_PLAY2               "&Play"
-    IDS_PAUSE2              "&Pause"
-    IDS_CREATE_SHORTCUT_INFO 
-                            "You may be running this program for the first time, do you want to create a shortcut to the program on the desktop?"
-    IDS_SHORTCUT_CREATED    "A shortcut to the program has been created under the ""<%1%>"" path."
-    IDS_SHORTCUT_CREAT_FAILED "Shortcut create failed!"
-    IDS_MINI_MODE           "Mini mode"
-END
+IDR_LICENSE             TEXT                    "..\\LICENSE"
 
-STRINGTABLE
-BEGIN
-    IDS_MINI_MODE2          "M&ini Mode"
-    IDS_SELECT_RENENT_FOLDER "Select a recently played folder"
-    IDS_PLAY_TIME           "Play time"
-    IDS_CLEAR_SEARCH_RESULT "Clear search results"
-    IDS_INPUT_KEY_WORD      "Input the keyword to search"
-    IDS_SEARCH_HERE         "Type here to search"
-    IDS_NOW_PLAYING         "Now Playing"
-    IDS_CONNOT_FIND_FILE    "The file ""<%1%>"" could not be found! It may have been moved or deleted."
-    IDS_ALL_SUPPORTED_FORMAT "All supported audio formats"
-    IDS_ALL_FILES           "All files"
-    IDS_OPEN_FOLDER_INFO    "Please select a folder where all audio files in the folder will be added to the playlist."
-    IDS_DELETE_FILE_INQUARY "Are you sure you want to delete the selected <%1%> songs?"
-    IDS_CONNOT_DELETE_FILE  "Unable to delete file!"
-    IDS_COPY_CLIPBOARD_FAILED "Copy to clipboard failed!"
-    IDS_ALL_LRYIC_COPIED    "All lyrics have been copied to the Clipboard."
-    IDS_DEBUG_MODE          "(DEBUG Mode)"
-END
+IDR_UI1                 TEXT                    "skins\\ui1.xml"
 
-STRINGTABLE
-BEGIN
-    IDS_NO_MIDI_SF2_WARNING "You are playing MIDI music, but you will not hear any sound because the MIDI sound font is not loaded correctly. Please select the correct MIDI sound font in the menu ""Tools""--""options""--""General settings""-- ""MIDI sound font path"", and select the correct MIDI sound font path. Click ""Cancel"" will no longer prompt."
-    IDS_SELECT_COPY_TARGET_FOLDER "Select the copy destination folder"
-    IDS_SELECT_MOVE_TARGET_FOLDER "Select the move destination folder"
-    IDS_DEFAULT_TITLE       "<Unknown Title>"
-    IDS_DEFAULT_ARTIST      "<Unknown Artist>"
-    IDS_DEFAULT_ALBUM       "<Unknown Album>"
-    IDS_DEFAULT_YEAR        "<Unknown Year>"
-    IDS_DEFAULT_GENRE       "<Unknown Genre>"
-    IDS_DEFAULT_LYRIC_TEXT  "..."
-    IDS_DEFAULT_LYRIC_TEXT_CORTANA "Music ..."
-    IDS_VOLUME              "Volume"
-    IDS_PLAY_ERROR          "Play error"
-    IDS_SEEK_TO_MINUTE_SECOND "Seek to %d minute %.2d second"
-    IDS_SHOW_HIDE_PLAYLIST  "Show/hide playlist"
-    IDS_BACK_TO_NARMAL      "Back to normal mode"
-    IDS_EXIT_PROGRAM        "Exit the program"
-END
+IDR_UI2                 TEXT                    "skins\\ui2.xml"
 
-STRINGTABLE
-BEGIN
-    IDS_SEEK_TO             "Seek to"
-    IDS_TITLE               "Title"
-    IDS_RHYTHM              "Rhythm"
-    IDS_SOUND_FONT          "Sound font"
-    IDS_ARTIST              "Artist"
-    IDS_ALBUM               "Album"
-    IDS_FORMAT              "Format"
-    IDS_MONO                "Mono"
-    IDS_STEREO              "Stereo"
-    IDS_CHANNEL             "Channels"
-    IDS_NO_LYRIC_INFO       "The current song has no lyrics"
-    IDS_LYRIC_SHOW          "Lyric Show"
-    IDS_TRAS                "Tr"
-    IDS_ALBUM_COVER         "Album cover"
-    IDS_INNER_ALBUM_COVER_TIP_INFO "Inner image\r\nImage format: "
-    IDS_OUT_IMAGE           "External image"
-END
+IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement.txt"
 
-STRINGTABLE
-BEGIN
-    IDS_PLAYLIST_INIT_INFO  "Find <%1%> songs, reading audio file information, please wait ..."
-    IDS_REPEAT_MODE         "Repeat mode"
-    IDS_PLAY_ODER           "Play in oder"
-    IDS_LOOP_PLAYLIST       "Loop playlist"
-    IDS_LOOP_TRACK          "Loop track"
-    IDS_PLAY_SHUFFLE        "Play shuffle"
-    IDS_SHOW_LYRIC_TRANSLATION "Show lyric translation"
-    IDS_MOUSE_WHEEL_ADJUST_VOLUME "Use mouse wheel to adjust volume"
-    IDS_SWITCH_UI           "Switch UI"
-    IDS_SOUND_EFFECT_SETTING "Sound effect settings"
-    IDS_SETTINGS            "Settings"
-    IDS_FIND_DLG_INFO       "Find keyword <%1%>, <%2%> results."
-    IDS_FIND_RESULT         "Find result"
-    IDS_NO_RESULT           "No results found!"
-    IDS_NUMBER              "No."
-    IDS_FILE_NAME           "File name"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_FILE_PATH           "File path"
-    IDS_CHARACTER_TOTAL     "<%1%> characters"
-    IDS_MODIFIED            "Modified"
-    IDS_UNMODIFIED          "Unmodified"
-    IDS_ENCODE_FORMAT       "Encode format"
-    IDS_UTF8_NO_BOM         "UTF8 no BOM"
-    IDS_LYRIC_SAVE_INRUARY  "The lyrics have changed, do you want to save them?"
-    IDS_LYRIC_FILE_FILTER   "Lyric file(*.lrc;*.ksc)|*.lrc;*.ksc|Text file(*.txt)|*.txt|All file(*.*)|*.*||"
-    IDS_SAVE_AS_ANSI        "Save as ANSI format"
-    IDS_SAVE_AS_UTF8        "Save as UTF8 format"
-    IDS_REPLACE_COMPLETE_INFO "Replace complete with <%1%> strings."
-    IDS_CONNOT_FIND_STRING  "Can't find ""<%1%>"""
-    IDS_INSERT_TIME_TAG_TIP "Insert time tag (F8)"
-    IDS_REPLACE_TIME_TAG_TIP "Replace time tag (F9)"
-    IDS_DELETE_TIME_TAG_TIP "Delete time tag (Ctrl+Del)"
-    IDS_SAVE_TIP            "Save (Ctrl+S)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_PLAY_PAUSE_TIP      "Play/Pause  (Ctrl+P)"
-    IDS_REWIND_TIP          "Rewind (Ctrl+Left)"
-    IDS_FAST_FOWARD_TIP     "Fast forward (Ctrl+Right)"
-    IDS_FIND_TIP            "Find (Ctrl+F)"
-    IDS_REPLACE_TIP         "Replace (Ctrl+H)"
-    IDS_CANNOT_GET_SONG_LENGTH "Song length not obtained"
-    IDS_NO_MATCHED_LYRIC    "No matched lyrics"
-    IDS_MP3_TAG_TYPE        "Tag type: "
-    IDS_UNKNOW              "Unknown"
-    IDS_CANNOT_WRITE_TO_FILE "Unable to write to file!"
-    IDS_FOLDER              "Folder"
-    IDS_PATH                "Path"
-    IDS_TRACK_PLAYED        "Last played track"
-    IDS_TRACK_TOTAL_NUM     "Total track number"
-    IDS_TOTAL_LENGTH        "Total length"
-    IDS_CLEAR_PATH_INQUARY  "Are you sure you want to clear the invalid folder in the list?"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_PATH_CLEAR_COMPLETE "Complete, <%1%> invalid folder cleared."
-    IDS_NONE                "None"
-    IDS_CLASSICAL           "Classical"
-    IDS_POP                 "Popular"
-    IDS_JAZZ                "Jazz"
-    IDS_ROCK                "Rock"
-    IDS_SOFT                "Soft"
-    IDS_BASS                "Heavy bass"
-    IDS_ELIMINATE_BASS      "Eliminate bass"
-    IDS_WEAKENING_TREBLE    "Weakening treble"
-    IDS_USER_DEFINE         "Custom"
-    IDS_EQUALIZER           "Equalizer"
-    IDS_REVERB              "Reverb"
-    IDS_PLUGIN_FILE_NAME    "Plug-in file name"
-    IDS_FORMAT_SUPPORTED    "Format support provided"
-    IDS_FILE_EXTENSION      "File extension"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_STATE               "State"
-    IDS_LYRIC_BATCH_DOWNLOADING_INFO 
-                            "Downloading lyrics, <%1%>% completed, please wait..."
-    IDS_DOWNLOADING         "Downloading..."
-    IDS_SKIPED              "skipped"
-    IDS_NETWORK_CONNECTION_FAILED "Network connection failed or timed out"
-    IDS_CANNOT_FIND_THIS_SONG "This song could not be found"
-    IDS_LYRIC_DOWNLOAD_FAILED "Lyrics download failed"
-    IDS_SONG_NO_LYRIC       "The song has no lyrics"
-    IDS_DOWNLOAD_ENCODE_WARNING 
-                            "Successful, but there are Unicode characters in the lyrics that cannot be converted, it is recommended to save them in UTF-8 format"
-    IDS_SUCCESSED           "Succeed"
-    IDS_DOWNLOAD_COMPLETE   "Download complete."
-    IDS_RETURN_VALUE_OF_WAIT_FOR_SINGLE_OBJECT 
-                            "The return value of WaitForSingleObject is %x."
-    IDS_SEARCHING           "Searching..."
-    IDS_SEARCH_FAILED_INFO  "Search failed, please check your network connection!"
-    IDS_SEARCH_TIME_OUT     "Search Timeout!"
-    IDS_SEARCH_NO_SONG      "Search results: (No songs found)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_SEARCH_NO_MATCHED   "Search results: (Seems to no best match for this item)"
-    IDS_SEARCH_RELATED      "Search results: (Linked item: <%1%>)"
-    IDS_SEARCH_BEST_MATCHED "Search results: (Best batched item: <%1%>)"
-    IDS_LYRIC_OVERWRITE_INQUARY 
-                            "The lyrics file already exists, do you want to replace it?"
-    IDS_DOWNLOAD_COMPLETE_SAVED "Download complete, saved as ""<%1%>""."
-    IDS_CONVERTING_STATE    "Conversion state"
-    IDS_MP3_LAME_ENCODER    "MP3 (lame Encoder)"
-    IDS_AUTO_RENAME         "Auto rename"
-    IDS_IGNORE              "Skip"
-    IDS_OVERWRITE           "Overwrite"
-    IDS_CONVERT_WMA_ERROR   "Error converting ""<%1%>"" to WMA:"
-    IDS_NO_WMP9_OR_LATER    "Windows Media Player 9 or later is not installed."
-    IDS_NO_SUPPORTED_ENCODER_WARNING 
-                            "The codec that supports the requested sampling format and bit rate could not be found."
-    IDS_UNKNOW_ERROR        "Unknown error."
-    IDS_BASS_ENCODER_LOAD_ERROR 
-                            "BASS Encoder load failed, file ""<%1%>"" may be lost or corrupted!"
-    IDS_SET_OUTPUT_DIR_INFO "Please set the output directory!"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_OUTPUT_DIR_NOT_EXIST "Output directory ""<%1%>""does not exist!"
-    IDS_SELECT_OUTPUT_FOLDER "Select output folder"
-    IDS_ERROR               "Error"
-    IDS_COMPLEATE           "Complete"
-    IDS_SKIPED1             "Skipped"
-    IDS_CURRENT_SELECTED    "Current selection"
-    IDS_CURRENT_COLOR       "Current color"
-    IDS_LIGNT_BLUE          "Azure"
-    IDS_GREEN               "Green"
-    IDS_ORANGE              "Orange"
-    IDS_CYAN_GREEN          "Turquoise"
-    IDS_PINK                "Pink"
-    IDS_LIGHT_PURPLE        "Pale purple"
-    IDS_STRETCH             "Stretch"
-    IDS_FILL                "Fill"
-    IDS_ADAPT               "Adapt"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_COVER_FIT_TIP_INFO  "Stretch: Will change the aspect ratio.\r\nFill: Will not change the aspect ratio, will crop the long edge.\r\nAdatp: will not change the aspect ratio, not crop."
-    IDS_USE_OUT_IMAGE_TIP_INFO 
-                            "If the album cover can't be get from the audio file, it will try to looking for the specified file name for the album cover in the directory where the audio file located."
-    IDS_DEFAULT_COVER_NAME_TIP_INFO 
-                            "Set the default album cover file name here, separated by a comma between multiple file names, support wildcards and relative paths, setting absolute paths will make the cover search always successful and not automatically download the album cover."
-    IDS_WHITE_THEME_COLOR_WARNING 
-                            "Warning: Setting the theme color to white will make the progress bar completely invisible!"
-    IDS_FOLLOWING_SYSTEM    "Following system"
-    IDS_CLEAR_DATA_FILE_TIP_INFO 
-                            "Description: The song_data.dat file in the program directory holds all loaded song information to speed up the loading of the playlist. Click this button to clean up non-existing files."
-    IDS_AUTO_DOWNLOAD_LYRIC_TIP_INFO 
-                            "After checking this item, the lyrics and album covers are automatically downloaded only if neither the title nor the artist information of the song is empty."
-    IDS_MIDI_INNER_LYRIC_TIP_INFO 
-                            "Some MIDI music contains lyrics, and when you check this item, it will give priority to displaying the lyrics embedded in MIDI music."
-    IDS_CURRENT_DATA_FILE_SIZE "Current data file size"
-    IDS_BYTE                "Bytes"
-    IDS_CLEAR_COMPLETE_INFO "Cleanup completed, <%1%> items have been deleted, and the data file size is reduced by <%2%> bytes."
-    IDS_SOUND_FONT_FILTER   "Sound font files|*.SF2|All files|*.*||"
-    IDS_FUNCTION            "Function"
-    IDS_SHORTCUT_KEY        "Shortcut key"
-    IDS_PLAY_PAUSE          "Play/Pause"
-    IDS_STOP                "Stop"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_FAST_FORWARD        "Fast forward"
-    IDS_REWIND              "Rewind"
-    IDS_VOLUME_UP           "Volume up"
-    IDS_VOLUME_DOWN         "Volume down"
-    IDS_EXIT                "Exit"
-    IDS_GLOBLE_HOT_KEY_WARNING 
-                            "Global shortcuts need to contain at least one of Ctrl, Shift, and Alt!"
-    IDS_LYRIC_FUZZY_MATHC_TIP_INFO 
-                            "If you remove the check of this check box, it will only match the lyrics file that is exactly the same as the song file name; \r\n If you select this check box, the lyrics file that contains the artist and song title in the file name will match when it cannot find the exact same lyrics file for the file name. \r\n (You may need to restart the program to take it effect.) "
-    IDS_LYRIC_PATH_TIP_INFO "Description: If it can't find a matching lyrics file in the directory where the song is located, it will looking for the lyrics file in this folder."
-    IDS_CORTANA_SHOW_LYRIC_TIP_INFO 
-                            "After the check option, it can display lyrics, song names, and album covers in the Cortana search box. After you turn on this feature, you may need to restart the program to take effect."
-    IDS_BLACK               "Black"
-    IDS_WHITE               "White"
-    IDS_SELECT_LYRIC_FOLDER "Select lyrics folder"
-    IDS_LYRIC_SETTINGS      "Lyrics Settings"
-    IDS_APPEARANCE_SETTINGS "Appearance Settings"
-    IDS_GENERAL_SETTINGS    "General Settings"
-    IDS_PLAY_SETTINGS       "Play Settings"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_GLOBLE_HOTKEY       "Global Shortcut Keys"
-    IDS_DEVICE_TYPE_DIGITAL "An audio endpoint device that connects to an audio adapter through a connector for a digital interface of unknown type."
-    IDS_DEVICE_TYPE_DISPLAYPORT 
-                            "An audio endpoint device that connects to an audio adapter through a DisplayPort connector."
-    IDS_DEVICE_TYPE_HANDSET "The part of a telephone that is held in the hand and that contains a speaker and a microphone for two-way communication."
-    IDS_DEVICE_TYPE_HDMI    "An audio endpoint device that connects to an audio adapter through a High-Definition Multimedia Interface (HDMI) connector. "
-    IDS_DEVICE_TYPE_HEADPHONES "Headphones"
-    IDS_DEVICE_TYPE_HEADSET "An earphone or a pair of earphones with an attached mouthpiece for two-way communication."
-    IDS_DEVICE_TYPE_LINE    "An audio endpoint device that sends a line-level analog signal to a line-input jack on an audio adapter or that receives a line-level analog signal from a line-output jack on the adapter."
-    IDS_DEVICE_TYPE_MICROPHONE "Microphone"
-    IDS_DEVICE_TYPE_NETWORK "An audio endpoint device that the user accesses remotely through a network."
-    IDS_DEVICE_TYPE_SPDIF   "An audio endpoint device that connects to an audio adapter through a Sony/Philips Digital Interface (S/PDIF) connector. "
-    IDS_DEVICE_TYPE_SPEAKERS "Speakers"
-    IDS_ITEM                "Item"
-    IDS_VLAUE               "Value"
-    IDS_NAME                "Name"
-    IDS_DRIVER              "Driver"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_DEVICE_TYPE         "Device type"
-    IDS_ALBUM_COVER_DOWNLOAD_FAILED_WARNING 
-                            "Album cover download failed, please check your network connection!"
-    IDS_AUDIO_FILE          "Audio file"
-    IDS_MINI_SEQUENCE       "MIDI Sequence"
-    IDS_DELETE              "Delete"
-    IDS_COPY                "Copy"
-    IDS_MOVE                "Move"
-    IDS_INVALID_DIR_WARNING "Invalid directory, please reselect!"
-    IDS_DEFAULT_OUTPUT_DEVICE "Default output device"
-    IDS_BASIC_AUDIO_FORMAT  "Basic audio formats"
-    IDS_SOUND_FONT_LOAD_FAILED "Sound font ""<%1%>"" load failed!"
-    IDS_LOAD_FAILED         "Load failed"
-    IDS_BASS_ERROR_LOG_INFO "An error occurred with the Bass Audio library, error code: <%1%>. File name: <%2%>"
-    IDS_LANGUAGE_CHANGE_INFO 
-                            "Please restart the application to apply the language setting."
-    IDS_STOPED              "Stopped"
-    IDS_PAUSED              "Paused"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_RECENT_PATH_SERIALIZE_ERROR_LOG 
-                            "A serialization exception occurred while reading the recent path file, exception type: Carchiveexception, m_cause = <%1%>. It may be caused by a corrupted recent_path.dat file or a version mismatch."
-    IDS_NO_RESULT_TO_SHOW   "No results to be shown"
-    IDS_BITRATE             "Bit rate"
-    IDS_TRACK               "Track"
-    IDS_LENGTH              "Length"
-    IDS_TEST_STR            "测试_<%1%>_@@#$_#_<%2%>_ERgfde<%3%>_444"
-    IDS_CLOSE               "Close"
-    IDS_MULTI_MEDIA_KEY_TIP "When this option is checked, even if the program is running in the background, you can still control the playing of the music by the multimedia keys on your keyboard. It would be taken effect after the program is restarted."
-    IDS_SONG_INFO           "Song Info"
-    IDS_SELECT_FOLDER       "Select folder"
-    IDS_FIND_SONGS          "Find songs"
-    IDS_EXIT_FULL_SCREEN    "Exit Full Screen"
-    IDS_FULL_SCREEN         "Full Screen"
-    IDS_WELCOM_TO_USE       "Welcome to use MusicPlayer2!"
-    IDS_ERROR_MESSAGE       "Error Message:"
-    IDS_CRASH_INFO          "Sorry, the program has crashed. Please email this file ""<%1%>"" to zhongyang219@hotmail.com to help the author locate the problem. And add the following to the body of the message:"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_ERROR1              "Error"
-    IDS_HELP                "Help"
-    IDS_FILE_NOT_FOUND      "File not found"
-    IDS_PLAY_SHORTCUT_CREATED 
-                            "The playback control shortcuts has been created in the <%1%> directory."
-    IDS_CREATE_PLAY_SHORTCUT_INFO 
-                            "This command will create the playback control shortcuts in the directory where the program is located. When the player is running, you can control the playback of the music through these shortcuts. You can also pin them to the taskbar. Do you want to create the playback control shortcuts?"
-    IDS_LISTEN_TIME         "Total play time"
-    IDS_LISTEN_TIME_FILE_DLG_FILTER 
-                            "Csv Files(*.csv)|*.csv|All Files(*.*)|*.*||"
-    IDS_LISTEN_TIMES        "Play times"
-    IDS_LISTEN_TIME_STATISTICS "Total play time statistics"
-    IDS_HIDE_MENU_BAR_TIP   "Tip: After you hide the menu bar, you can right-click the window title bar, or click the main menu ""≡"" button on the top right, and select ""View"" - ""Show Menu Bar"" in the pop-up menu to re-display the menu bar. \r\n Click ""Cancel"" to no longer prompt."
-    IDS_LYRIC_PREVIEW       "Lyric Preview"
-    IDS_CRASH_ERROR_LOG_INFO 
-                            "The program crashed, the dump file has been saved to ""<%1%>""."
-    IDS_MAIN_MENU           "Main Menu"
-    IDS_LYRIC_SAVE_FAILED   "The lyric failed to save, please check if the target folder has write permission!"
-    IDS_PLAYLIST            "Playlist"
-    IDS_PLAYLIST_FILTER     "Text file(*.txt)|*.txt|All file(*.*)|*.*||"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_CLEAR_PLAYLIST_WARNING "Are you sure you want to clear the playlist?"
-    IDS_DEFAULT             "Default"
-    IDS_NEW_PLAYLIST        "New Playlist"
-    IDS_INPUT_PLAYLIST_NAME "Input the playlist name:"
-    IDS_RENAME_PLAYLIST     "Rename Playlist"
-    IDS_CURRENT_FOLDER      "Current folder"
-    IDS_PLAYLIST_EXIST_WARNING "Playlist ""<%1%>"" already exists!"
-    IDS_REMOVE_SAME_SONGS_INFO "Complete, <%1%> item(s) removed."
-    IDS_MEDIA_LIB           "Media Library"
-    IDS_OPEN_MEDIA_LIB      "Open media library"
-    IDS_ADD_TO_PLAYLIST_FAILED_WARNING 
-                            "Add failed, playlist ""<%1%>"" does not exist!"
-    IDS_DESCRIPTION         "Description"
-    IDS_INCLUDE_SUB_DIR     "Include subfolders"
-    IDS_MY_FAVURITE         "My Favourite"
-    IDS_ADD_TO_MA_FAVOURITE "Add to ""My Favourite"""
-    IDS_REMANE_FAILED       "Rename failed!"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_REMOVE_MY_FAVOURITE_WARNING 
-                            "Canceling ""My Favourite"" will remove the track being played from the current playlist. Do you want to continue?"
-    IDS_FILE_NAME_INVALID_WARNING 
-                            "The following characters cannot be included in the name:\n\\""/:*?<>|"
-    IDS_OPEN_URL            "Open URL"
-    IDS_ADD_URL             "Add URL"
-    IDS_INPUT_URL_TIP       "Please input the URL:"
-    IDS_MCI_INIT_FAILED     "MCI initialization failed!"
-    IDS_MCI_NO_THIS_FUNCTION_WARNING 
-                            "This function cannot be used in the MCI kernel!"
-    IDS_MCI_KERNAL_TIP      "Using the MCI kernel will result in format conversion and sound effect settings being unavailable and some audio will not be played. It is recommended to switch to this kernel only when needed."
-    IDS_CLEAR_LISTEN_TIME_WARNING 
-                            "Are you sure you want to clear all the statistics?"
-    IDS_PLAYLIST_NAME_EMPTY_WARNING "The playlist name cannot be empty!"
-    IDS_ALBUM_COVER_COMPRESSED "Oversized album cover compressed"
-    IDS_TOW_COLOR_GRADIENT  "Two-color gradient"
-    IDS_THREE_COLOR_GRADIENT "Three-color gradient"
-    IDS_NO_GRADIENT         "No gradient"
-    IDS_LRC                 "Lrc"
-    IDS_SHOW_DESKTOP_LYRIC  "Show desktop lyric"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_LOCK_DESKTOP_LYRIC  "Lock desktop lyric"
-    IDS_CLOSE_DESKTOP_LYRIC "Close desktop lyric window"
-    IDS_LYRIC_DOUBLE_LINE   "Lyrics displayed in &double line"
-    IDS_LYRIC_BACKGROUND_PENETRATE "Lyrics background penetrate"
-    IDS_ULOCK_DESKTOP_LYRIC "Unlock desktop lyric"
-    IDS_ADD                 "Add"
-    IDS_SORT                "Sort"
-    IDS_LIST                "Playlist"
-    IDS_EDIT                "Edit"
-    IDS_DEFAULT_STYLE       "Default style"
-    IDS_MODIFY_DEFAULT_STYLE_WARNING 
-                            "Are you sure you want to override ""Default <%1%>"" with the current color setting?"
-    IDS_RESTORE_DEFAULT_STYTLE_WARNING 
-                            "All the modified default style will be restored, do you want to continue?"
-    IDS_URL_INVALID_WARNING "Please input the correct URL!"
-    IDS_PROGRESS_INFO       "<%1%>% completed, please wait..."
-    IDS_BASS_MIX_LOAD_ERROR "BASSmix load failed, file ""<%1%>"" may be lost or corrupted!"
-    IDS_BROWSE              "Browse"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_OTHER               "Others"
-    IDS_SEARCH_ARTIST       "Type here to search artist"
-    IDS_SEARCH_ALBUM        "Type here to search album"
-    IDS_TEMP_PLAYLIST       "Temporary playlist"
-    IDS_GENRE               "Genre"
-    IDS_SEARCH_GENRE        "Type here to search genre"
-    IDS_YEAR                "Year"
-    IDS_SEARCH_YEAR         "Type here to search year"
-    IDS_TRACK_NUM           "Track number"
-    IDS_FOLDER_EXPLORE      "Folder explore"
-    IDS_SEARCH_FORDER       "Type here to search folder"
-    IDS_BTN_SETTINGS        "&Settings..."
-    IDS_MORE_PLAYLIST       "More Playlist"
-    IDS_SEARCH_RESULT       "Search results:"
-    IDS_UPDATING_MEDIA_LIB_INFO 
-                            "Updating media library... <%1%> tracks updated."
-    IDS_ERROR_CODE          "Error code"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_UPDATE_MEDIA_LIB_TIP 
-                            "When this option is checked, the program will automatically scan the audio files in the “Media Library Directory” at startup."
-    IDS_FILE_NOT_EXIST      "File does not exist"
-    IDS_FILE_CONNOT_BE_OPEND "File cannot be opened"
-    IDS_ALIGN_LEFT          "Left alignment"
-    IDS_ALIGN_RIGHT         "Right alignment"
-    IDS_CENTER              "Center"
-    IDS_ALL_TRACKS          "All tracks"
-    IDS_DO_NOT_SAVE         "Do not save"
-    IDS_AUTO_SAVE           "Auto save"
-    IDS_INQUIRY             "Inquiry"
-    IDS_LYRIC_FORWARD       "Lyrics 0.5 Seconds in Advance"
-    IDS_LYRIC_DELAY         "Lyrics 0.5 Seconds Delayed"
-    IDS_RECENT_PLAYED       "Recently played"
-    IDS_LAST_PLAYED_TIME    "Last played time"
-    IDS_CLEAR_RECENT_PLAYLIST_INFO 
-                            "Are you sure you want to clear the recently played tracks list?"
-    IDS_AB_REPEAT_A_SELECTED "AB Repeat: Point A selected (<%1%>)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_AB_REPEAT_ON_INFO   "AB Repeat: On (<%1%>-<%2%>)"
-    IDS_AB_REPEAT           "AB Repeat"
-    IDS_INNER_LYRIC         "Internal lyrics"
-    IDS_SHOW_ONLINE_HELP_INFO 
-                            "Click here for detailed online help documentation."
-    IDS_PLAYLIST_FILE_FILTER 
-                            "All surpported playlist files|*.playlist;*.m3u;*.m3u8|MusicPlayer2 playlist files|*.playlist|m3u playlist files|*.m3u|m3u8 playlist files|*.m3u8|All files(*.*)|*.*||"
-    IDS_SAVE_PLAYLIST_FILTER 
-                            "m3u playlist files|*.m3u|m3u8 playlist files|*.m3u8|MusicPlayer2 playlist files|*.playlist|All files(*.*)|*.*||"
-    IDS_CREATE_MINI_MODE_SHORTCUT_INFO 
-                            "This command will create a mini mode shortcut in the program directory. The player will always be launched in mini mode by this shortcut. Do you want to create a mini mode shortcut?"
-    IDS_CREATE_DESKTOP_SHORTCUT_INFO 
-                            "Do you want to create a desktop shortcut?"
-    IDS_DELETE_SINGLE_FILE_INQUIRY 
-                            "Are you sure you want to delete the file ""<%1%>""?"
-    IDS_ALL                 "All"
-    IDS_LAST_WEEK           "Last week"
-    IDS_LAST_MONTH          "Last month"
-    IDS_LAST_HALF_YEAR      "Last six months"
-    IDS_LAST_YEAR           "Last year"
-    IDS_TODAY               "Today"
-    IDS_LAST_THREE_DAYS     "Last three days"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_LICENSE_EXPLAIN     "Please follow the following open source license when using the source code of this software."
-    IDS_LICENSE             "License"
-    IDS_FILE_EXIST_IN_PLAYLIST_INFO "The file already exists in the playlist."
-    IDS_IS_RELATED          "Linked"
-    IDS_YES                 "Yes"
-    IDS_ALBUM_COVER_INFO    "Album Cover Details"
-    IDS_INNER_ALBUM_COVER   "Internal album cover"
-    IDS_WIDTH               "Width"
-    IDS_HEIGHT              "Height"
-    IDS_BPP                 "Bits per pixel"
-    IDS_FILE_SIZE           "File size"
-    IDS_DEFAULT_ICON        "Default icon"
-    IDS_LIGHT_ICON          "Light icon"
-    IDS_DARK_ICON           "Dark icon"
-    IDS_NO                  "No"
-    IDS_CONVERT_ERROR_FILE_CONNOT_OPEN "The source file cannot be read."
-END
-
-STRINGTABLE
-BEGIN
-    IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED 
-                            "Failed to create the encoding channel."
-    IDS_CONVERT_ERROR_ENCODE_PARA_ERROR 
-                            "Cannot find encoder or encoder parameter error."
-    IDS_CONVERT_ERROR_MIDI_NO_SF2 "No MIDI sound font"
-    IDS_CONTAIN_SUB_FOLDER  "Contains subfolders"
-    IDS_TYPE                "Type"
-    IDS_FILE_TYPE           "File Type"
-    IDS_CLEAN_UP_MEDIA_WARNING "Please select a clean-up range!"
-    IDS_FILES_THAT_NOT_EXIST "Files not exist"
-    IDS_FILES_NOT_IN_MEDIA_LIB_DIR "Files not in the media library directory"
-    IDS_FILES_THAT_ERROR    "The wrong files"
-    IDS_IMAGE_FILE_FILTER   "Image files(*.jpg;*.jpeg;*.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|All files(*.*)|*.*||"
-    IDS_SEARCH_FILE_TYPE    "Type here to search file type"
-    IDS_SEARCH_BITRATE      "Type here to search bitrate"
-    IDS_PLAY_RANDOM         "Play random"
-    IDS_FILE_PROPERTY       "File properties"
-    IDS_PROPERTY_TITLE_INFO " (<%1%> Files)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_MULTI_VALUE         "<Multiple values>"
-    IDS_TAG_BATCH_EDIT_INFO "Saved to <%1%> file(s)."
-    IDS_GET_TAG_ONLINE_TITLE "Get tag information online"
-    IDS_GET_THIS            "Get this item"
-    IDS_NO_LYRICS_FOUND_INFO "No lyrics found!"
-    IDS_CLEAR_HISTORY       "Clear history..."
-    IDS_CLEAR_HISTORY_INFO  "Are you sure you want to clear the history?"
-    IDS_RENAME              "Rename"
-    IDS_RENAME_INFO         "Rename <%1%> files, <%2%> succeeded, <%3%> ignored, <%4%> failed."
-    IDS_PLAY_TRACK          "Play once"
-    IDS_ADVANCED_PROPERTY   "Advanced tag info"
-    IDS_CONNOT_FIND_ARTIST_WARNING 
-                            "Could not find artist <%1%> in the media library!"
-    IDS_CONNOT_FIND_ALBUM_WARNING 
-                            "Could not find album <%1%> in the media library!"
-    IDS_SCI_NOT_LOADED_ERROR_INFO 
-                            "This dialog box cannot be opened because SciLexer.dll is not loaded correctly, please check whether SciLexer.dll is missing!"
-    IDS_SELECT_ARTIST       "Select artist"
-    IDS_LOCATE_TO_CURRENT   "Locate the track is playing"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_UI                  "UI"
-    IDS_RATING              "Rating"
-    IDS_UNRATED             "Unrated"
-    IDS_RANDOM_TRACK        "Random track"
-    IDS_NEXT_TRACK          "Next track"
-    IDS_MEDIA_LIB_UPDATING_INFO 
-                            "The media library is being updated, please try again later!"
-    IDS_MINIMIZE            "Minimize"
-    IDS_MAXIMIZE            "Maximize"
-    IDS_RESTORE             "Restore"
-    IDS_SET_FILENAME_FORM   "Set file name format"
-    IDS_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME 
-                            "Set multiple external album cover file names"
-    IDS_DARK                "Dark"
-    IDS_LIGHT               "Light"
-    IDS_SHOW_HIDE_PLAYER    "Show/hide player"
-    IDS_MUTE                "Mute"
-    IDS_UNDEFINED           "Undefined"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_DELETE_INNER_ALBUM_COVER_INQUERY 
-                            "The current album cover is embedded in the audio file and cannot be restored after deletion. Are you sure you want to delete the embedded album cover?"
-    IDS_TOTAL_TRACKS        "Total number of tracks"
-    IDS_TRACKS_PLAYED       "Number of tracks played"
-    IDS_MEDIALIB_STATISTICS "Media library statistics"
-    IDS_CFG_DIR_CHANGED_INFO 
-                            "You have changed the location where the configuration and data files saved. It will take effect after restarted. You may need to transfer the configuration and data files to the new location manually."
-    IDS_ADD_TO_PLAYLIST     "Add to playlist"
-    IDS_LYRICS_HIDE_BLANK_LINES_TIP 
-                            "After checking this option, when the lyrics are displayed in a single line or double line, if there is a blank line, ""Music..."" will not be displayed. Instead, the lyrics will be displayed in advance, and if ""Show lyrics karaoke style"" is also checked, blank lines longer than a certain length will be replaced with music progress symbols (♪♪♪). This option also affects the display of desktop lyrics."
-    IDS_BOLD                "bold"
-    IDS_ITALIC              "italic"
-    IDS_SDL_DEFAULT_DEVICE  "SDL default audio device"
-    IDS_FFMPEG_CORE         "Using the FFMPEG kernel will result in revertb sound effect and format conversion settings being unavailable and MIDI file will not be played. ffmpeg_core.dll is needed."
-    IDS_FFMPEG_INIT_FAILED  "FFMPEG kernel initialization failed!"
-    IDS_FFMPEG_NO_THIS_FUNCTION 
-                            "This function is not currently supported in the FFMPEG kernel!"
-    IDS_SUPPORTTED_FORMAT_INFO 
-                            "MusicPlayer2 supports multiple playback cores, the currently used playback core is BASS audio library.\r\n More audio format support depends on the bass engine plug-in (located in the "". \\Plugins"" directory)."
-    IDS_SUPPORTTED_FORMAT_INFO_MCI 
-                            "MusicPlayer2 supports multiple playback cores, and the currently used playback core is MCI. Only supports mp3, wma, wav, mid format, if you need to support the playback of more audio formats, please switch to BASS or FFMPEG core."
-    IDS_SUPPORTTED_FORMAT_INFO_FFMPEG 
-                            "MusicPlayer2 supports multiple playback cores. The currently used playback core is FFMPEG."
-END
-
-STRINGTABLE
-BEGIN
-    IDS_OTHER_FORMATS       "Other audio formats"
-    IDS_IDS_ENCODER_INIT_ERROR "Encoder initialization failed!"
-    IDS_SEEK_TO_LINE_TIP    "Seek to current line (Ctrl+G)"
-    IDS_SWITCH_DISPLAY      "Switch display"
-    IDS_FILE                "File"
-    IDS_PLAY_CONTROL        "Play Control"
-    IDS_LYRICS              "Lyrics"
-    IDS_VIEW                "View"
-    IDS_TOOLS               "Tool"
-    IDS_DOWNLOAD_FFMPEG_CORE_INFO 
-                            "The FFMPEG core needs to be downloaded separately. After downloaded, please put all the dll files obtained by decompression into the program directory. Do you want to download FFMPEG core?"
-    IDS_TRAFFICMONITOR_DESCRIPTION 
-                            "TrafficMonitor: A powerful net speed monitoring software for Windows"
-    IDS_SIMPLENOTEPAD_DESCRIPTION 
-                            "SimpleNotePad: A simple text editor for Windows"
-    IDS_NO_TRACKS_TIP_INFO  "There are currently no tracks playing, you can:\r\nPress <%1%> to open playlist and add songs to the playlist;\r\nClick ""Main Menu"" > ""File"" > ""Open File"" or shortcut <%2%> to open an audio file;\r\nClick ""Main Menu"" > ""File"" > ""Open Folder"" or shortcut <%3%> to open and play a folder;\r\nPress <%4%> to open the media library and find the song you want to play in the media library."
-    IDS_SWITHC_TO_DARK_MODE "Switch to dark mode"
-    IDS_SWITCH_TO_LIGHT_MODE "Switch to light mode"
-    IDS_SHORCUT_LEFT        "Left"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_SHOTCUT_RIGHT       "Right"
-    IDS_SHOTCUT_UP          "Up"
-    IDS_SHOTCUT_DOWN        "Down"
-    IDS_SPACE               "Space"
-    IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO 
-                            "If the album cover is not found in the directory where the song is located then the cover file will be searched for in this folder."
-    IDS_LOGIN_REQUIRED      "Login required"
-    IDS_LOGGED              "Already logged in"
-    IDS_LASTFM_LOGIN        "Please complete the login in the opened browser window and click OK after successful login."
-    IDS_LOGIN_FAILED        "Login failed!"
-    IDS_LASTFM_CACHE_STATUS "%i scrobbles"
-    IDS_SHOW_HIDE_DESKTOP_LYRIC "Show/hide desktop lyric"
-    IDS_APP_RUNING_INFO     "MusicPlayer2 is still running, please wait for the process to exit, or end the process through the task manager."
-    IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP 
-                            "When this option is checked, information such as the artist, album and song title of the song will be displayed if there are no lyrics, instead of ""The current song has no lyrics."""
-    IDS_EXCLUSIVE_MODE      "Exclusive mode"
-    IDS_PLAYLIST_FIX_PATH_ERROR_INFO 
-                            "This feature will check for tracks that do not exist in the playlist and fix the incorrect path by looking for a match item in the media library. Do you want to fix the incorrect path in the playlist?"
-    IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE 
-                            "Finished, <%1%> incorrect path(s) have been fixed."
-END
-
-STRINGTABLE
-BEGIN
-    IDS_LOCATE              "Locate"
-    IDS_PLAYLIST_MENU       "Playlist menu"
-    IDS_RECENT_FOLDER_OR_PLAYLIST "Recently played folder/playlist"
-    IDS_PLAYLIST_EMPTY_INFO "The playlist is empty."
-    IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP 
-                            "When this option is selected, if the playing track exists in the new playlist, the playing track will continue to be played after the playlist is switched."
-    IDS_ACKNOWLEDGEMENT     "Acknowledgement"
-    IDS_SIMPLE_UI           "Simple UI"
-    IDS_GROOVE_MUSIC_STYLE  "Groove Style"
-    IDS_DEFAULT_UI          "Default UI"
-    IDS_ALIGN_AUTO          "Auto"
-    IDS_SET_MULTI_ARTIST_SPLIT_EXT 
-                            "Set multiple artist recognition exceptions"
-    IDS_ARTIST_SPLIT_EXT_TIP_INFO 
-                            "Add all artists whose names contain ""/;&&、"" as exceptions to prevent inadvertent recognition errors."
-    IDS_FILES_TOO_SHORT     "Too short files"
-    IDS_FILES_NON_MAIN_IN_OSU "Non-main files in the osu! folder"
-    IDS_WAIT_AND_RETRY      "Please wait and try again after the current operation is completed."
-END
+IDR_STRING_TABLE        TEXT                    "language\\English.ini"
 
 #endif    // 英语(美国) resources
 /////////////////////////////////////////////////////////////////////////////

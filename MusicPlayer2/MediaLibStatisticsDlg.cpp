@@ -47,14 +47,14 @@ BOOL CMediaLibStatisticsDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetWindowText(CCommon::LoadText(IDS_MEDIALIB_STATISTICS));
+    SetWindowText(theApp.m_str_table.LoadText(L"TITLE_LIB_STATISTICS").c_str());
     SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
 
     //初始化控件
     CWnd* ok_btn{ GetDlgItem(IDOK) };
     if (ok_btn != nullptr)
         ok_btn->ShowWindow(SW_HIDE);
-    SetDlgItemText(IDCANCEL, CCommon::LoadText(IDS_CLOSE));
+    SetDlgItemText(IDCANCEL, theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE").c_str());
 
     //初始化列表
     CRect rect;
@@ -62,15 +62,15 @@ BOOL CMediaLibStatisticsDlg::OnInitDialog()
     m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_GRIDLINES);
     int width0 = rect.Width() / 2;
     int width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
-    m_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_ITEM), LVCFMT_LEFT, width0);
-    m_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_VLAUE), LVCFMT_LEFT, width1);
+    m_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_ITEM").c_str(), LVCFMT_LEFT, width0);
+    m_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_VALUE").c_str(), LVCFMT_LEFT, width1);
 
     //插入列
-    m_list_ctrl.InsertItem(RI_ARTIST, CCommon::LoadText(IDS_ARTIST));   //艺术家
-    m_list_ctrl.InsertItem(RI_ALBUM, CCommon::LoadText(IDS_ALBUM));     //唱片
-    m_list_ctrl.InsertItem(RI_GENRE, CCommon::LoadText(IDS_GENRE));     //流派
-    m_list_ctrl.InsertItem(RI_TOTAL, CCommon::LoadText(IDS_TOTAL_TRACKS));      //曲目总数
-    m_list_ctrl.InsertItem(RI_PLAYED, CCommon::LoadText(IDS_TRACKS_PLAYED));    //播放过的曲目数
+    m_list_ctrl.InsertItem(RI_ARTIST, theApp.m_str_table.LoadText(L"TXT_ARTIST").c_str());   //艺术家
+    m_list_ctrl.InsertItem(RI_ALBUM, theApp.m_str_table.LoadText(L"TXT_ALBUM").c_str());     //唱片
+    m_list_ctrl.InsertItem(RI_GENRE, theApp.m_str_table.LoadText(L"TXT_GENRE").c_str());     //流派
+    m_list_ctrl.InsertItem(RI_TOTAL, theApp.m_str_table.LoadText(L"TXT_LIB_STATISTICS_TOTAL_NUM_OF_TRACK").c_str());      //曲目总数
+    m_list_ctrl.InsertItem(RI_PLAYED, theApp.m_str_table.LoadText(L"TXT_LIB_STATISTICS_NUM_OF_TRACK_PLAYED").c_str());    //播放过的曲目数
 
     //设置数值
     std::set<std::wstring, StringComparerNoCase> artist_set;
@@ -84,7 +84,7 @@ BOOL CMediaLibStatisticsDlg::OnInitDialog()
             {
                 //处理多个艺术家情况
                 std::vector<std::wstring> artist_list;
-                item.second.GetArtistList(artist_list, theApp.m_media_lib_setting_data.artist_split_ext);
+                item.second.GetArtistList(artist_list);
                 for (const auto& artist : artist_list)
                     artist_set.emplace(artist);
 

@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "AppearanceSettingDlg.h"
 #include "afxdialogex.h"
+#include "FilterHelper.h"
 
 
 // CAppearanceSettingDlg 对话框
@@ -232,13 +233,13 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
-    m_toolTip.AddTool(&m_color_static, CCommon::LoadText(IDS_CURRENT_COLOR));
-    m_toolTip.AddTool(&m_color_static1, CCommon::LoadText(IDS_LIGNT_BLUE));
-    m_toolTip.AddTool(&m_color_static2, CCommon::LoadText(IDS_GREEN));
-    m_toolTip.AddTool(&m_color_static3, CCommon::LoadText(IDS_ORANGE));
-    m_toolTip.AddTool(&m_color_static4, CCommon::LoadText(IDS_CYAN_GREEN));
-    m_toolTip.AddTool(&m_color_static5, CCommon::LoadText(IDS_PINK));
-    m_toolTip.AddTool(&m_color_static6, CCommon::LoadText(IDS_LIGHT_PURPLE));
+    m_toolTip.AddTool(&m_color_static, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_CURRENT").c_str());
+    m_toolTip.AddTool(&m_color_static1, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_LIGNT_BLUE").c_str());
+    m_toolTip.AddTool(&m_color_static2, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_GREEN").c_str());
+    m_toolTip.AddTool(&m_color_static3, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_ORANGE").c_str());
+    m_toolTip.AddTool(&m_color_static4, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_CYAN_GREEN").c_str());
+    m_toolTip.AddTool(&m_color_static5, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_PINK").c_str());
+    m_toolTip.AddTool(&m_color_static6, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_LIGHT_PURPLE").c_str());
 
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -258,18 +259,18 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
     //
     m_show_album_cover_chk.SetCheck(m_data.show_album_cover);
-    m_album_cover_fit_combo.AddString(CCommon::LoadText(IDS_STRETCH));
-    m_album_cover_fit_combo.AddString(CCommon::LoadText(IDS_FILL));
-    m_album_cover_fit_combo.AddString(CCommon::LoadText(IDS_ADAPT));
+    m_album_cover_fit_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_FIT_STRETCH").c_str());
+    m_album_cover_fit_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_FIT_FILL").c_str());
+    m_album_cover_fit_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_FIT_ADAPT").c_str());
     m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_data.album_cover_fit));
-    m_toolTip.AddTool(&m_album_cover_fit_combo, CCommon::LoadText(IDS_COVER_FIT_TIP_INFO));
-    m_toolTip.AddTool(&m_use_out_image_chk, CCommon::LoadText(IDS_USE_OUT_IMAGE_TIP_INFO));
-    m_toolTip.AddTool(&m_album_cover_name_edit, CCommon::LoadText(IDS_DEFAULT_COVER_NAME_TIP_INFO));
-    m_toolTip.AddTool(&m_album_cover_path_edit, CCommon::LoadText(IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO));
+    m_toolTip.AddTool(&m_album_cover_fit_combo, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COVER_FIT").c_str());
+    m_toolTip.AddTool(&m_use_out_image_chk, theApp.m_str_table.LoadText(L"TIP_OPT_APC_TRY_OUT_COVER").c_str());
+    m_toolTip.AddTool(&m_album_cover_name_edit, theApp.m_str_table.LoadText(L"TIP_OPT_APC_OUT_COVER_NAME").c_str());
+    m_toolTip.AddTool(&m_album_cover_path_edit, theApp.m_str_table.LoadText(L"TIP_OPT_APC_OUT_COVER_PATH").c_str());
 
     m_album_cover_name_edit.SetWindowTextW(CCommon::StringMerge(m_data.default_album_name, L',').c_str());
     m_album_cover_name_edit.SetEditBrowseMode(CBrowseEdit::EditBrowseMode::LIST);
-    m_album_cover_name_edit.SetPopupDlgTitle(CCommon::LoadText(IDS_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME));
+    m_album_cover_name_edit.SetPopupDlgTitle(theApp.m_str_table.LoadText(L"TITLE_BROWSE_EDIT_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME"));
     m_album_cover_path_edit.SetWindowTextW(m_data.album_cover_path.c_str());
 
     m_enable_background_chk.SetCheck(m_data.enable_background);
@@ -294,8 +295,8 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_low_freq_in_center_chk.SetCheck(m_data.spectrum_low_freq_in_center);
 
     m_default_background_edit.SetWindowText(m_data.default_background.c_str());
-    CString szFilter = CCommon::LoadText(IDS_IMAGE_FILE_FILTER);
-    m_default_background_edit.EnableFileBrowseButton(NULL, szFilter);
+    wstring img_fliter = FilterHelper::GetImageFileFilter();
+    m_default_background_edit.EnableFileBrowseButton(NULL, img_fliter.c_str());
     CheckDlgButton(IDC_USE_DESKTOP_BACKGROUND_CHECK, m_data.use_desktop_background);
 
     m_default_cover_hq_chk.SetCheck(m_data.draw_album_high_quality);
@@ -303,9 +304,9 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_ui_refresh_interval_edit.SetRange(MIN_UI_INTERVAL, MAX_UI_INTERVAL);
     m_ui_refresh_interval_edit.SetValue(m_data.ui_refresh_interval);
 
-    m_icon_select_combo.AddString(CCommon::LoadText(IDS_DEFAULT_ICON));
-    m_icon_select_combo.AddString(CCommon::LoadText(IDS_LIGHT_ICON));
-    m_icon_select_combo.AddString(CCommon::LoadText(IDS_DARK_ICON));
+    m_icon_select_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_ICON_DEFAULT").c_str());
+    m_icon_select_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_ICON_LIGHT").c_str());
+    m_icon_select_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_ICON_DARK").c_str());
     m_icon_select_combo.SetCurSel(m_data.notify_icon_selected);
 
     m_notify_icon_auto_adapt_chk.SetCheck(m_data.notify_icon_auto_adapt);
@@ -408,7 +409,7 @@ void CAppearanceSettingDlg::OnBnClickedSetThemeButton()
         //if (m_data.theme_color.original_color == 0)
         //	MessageBox(_T("警告：将主题颜色设置成黑色会使播放列表中正在播放的项目看不见！"), NULL, MB_ICONWARNING);
         //if(m_data.theme_color.original_color == RGB(255,255,255))
-        //	MessageBox(CCommon::LoadText(IDS_WHITE_THEME_COLOR_WARNING), NULL, MB_ICONWARNING);
+        //	MessageBox(WHITE_THEME_COLOR_WARNING), NULL, MB_ICONWARNING);
         m_color_static.SetFillColor(m_data.theme_color.original_color);
         //设置了“更多颜色”之后，取消“跟随系统主题色”复选按钮的选中
         m_data.theme_color_follow_system = false;

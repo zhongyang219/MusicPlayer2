@@ -41,7 +41,7 @@ private:
     CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
     CStaticEx m_path_static;
     CMenuEditCtrl m_path_edit;
-    CButton m_set_path_button;
+    CButton m_media_lib_button;
     CSearchEditCtrl m_search_edit;
     //CButton m_clear_search_button;
     CPlayerToolBar m_playlist_toolbar;

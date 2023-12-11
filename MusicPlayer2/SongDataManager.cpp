@@ -109,6 +109,7 @@ void CSongDataManager::LoadSongData(std::wstring path)
         }
         // LoadSongData执行时主窗口还未启动应该没有其他线程，不过还是加上
         std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
+        m_song_data.reserve(size);
         for (int i{}; i < size; i++)
         {
             ar >> temp;
@@ -245,9 +246,8 @@ void CSongDataManager::LoadSongData(std::wstring path)
     }
     catch (CArchiveException* exception)
     {
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { path, exception->m_cause });
-        theApp.WriteLog(wstring{ info });
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SERIALIZE_ERROR", { path, exception->m_cause });
+        theApp.WriteLog(info);
     }
     // 关闭对象
     ar.Close();

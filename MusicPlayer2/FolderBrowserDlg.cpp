@@ -1,7 +1,6 @@
 ﻿#include "stdafx.h"
 #include "FolderBrowserDlg.h"
-#include "Common.h"
-#include "resource.h"
+#include "MusicPlayer2.h"
 
 
 CFolderBrowserDlg::CFolderBrowserDlg(HWND hParent)
@@ -36,7 +35,8 @@ int CFolderBrowserDlg::DoModal()
 	{
 		if (!SHGetPathFromIDList(lp, szPath))
 		{
-			AfxMessageBox(CCommon::LoadText(IDS_INVALID_DIR_WARNING), MB_ICONWARNING | MB_OK);
+            static const wstring& info = theApp.m_str_table.LoadText(L"MSG_FOLDER_BROWSER_INVALID_DIR_WARNING");
+            AfxMessageBox(info.c_str(), MB_ICONWARNING | MB_OK);
 			goto browse;
 		}
 		m_path = szPath;

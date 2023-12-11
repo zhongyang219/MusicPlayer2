@@ -7,15 +7,19 @@
 //#include <Windows.h>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <algorithm>
 #include <tuple>
 #include <deque>
 #include <algorithm>
 #include <iomanip>
 #include <map>
-#include <cmath>
 #include <unordered_map>
+#include <set>
+#include <mutex>
+#include <cmath>
 #include <memory>
+#include <functional>
 using std::ofstream;
 using std::ifstream;
 using std::string;
@@ -108,9 +112,6 @@ using _tstring = std::string;
 #define IDC_SAVE_COMBO_BOX 1990		//定义添加到“另存为”对话框中的组合框的ID
 #define IDC_OPEN_CHECKBOX 1991		//定义添加到“添加文件夹”对话框中的复选框的ID
 
-//添加到系统菜单中的“迷你模式”菜单项的ID
-#define IDM_MINIMODE 112
-
 //均衡器
 #define EQU_CH_NUM 10		//均衡器通道的数量
 const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
@@ -142,6 +143,7 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define FAVOURITE_PLAYLIST_NAME L"favourite.playlist"
 #define TEMP_PLAYLIST_NAME L"temp.playlist"
 #define PLAYLIST_EXTENSION L".playlist"
+#define PLAYLIST_EXTENSION_2 L"playlist"
 #define APP_NAME L"MusicPlayer2"
 #define NO_LYRIC_STR L"NoLyric"
 #define DEFAULT_BACKGROUND_NAME L"default_background.jpg"

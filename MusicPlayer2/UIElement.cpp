@@ -623,7 +623,7 @@ void UiElement::Button::Draw()
         ui->DrawTranslateButton(rect);
         break;
     case CPlayerUIBase::BTN_LRYIC:
-        ui->DrawTextButton(rect, ui->m_buttons[key], CCommon::LoadText(IDS_LRC), theApp.m_lyric_setting_data.show_desktop_lyric);
+        ui->DrawDesktopLyricButton(rect);
         break;
     case CPlayerUIBase::BTN_AB_REPEAT:
         ui->DrawABRepeatButton(rect);
@@ -673,7 +673,7 @@ void UiElement::Button::FromString(const std::string& key_type)
     else if (key_type == "favorite")
         key = CPlayerUIBase::BTN_FAVOURITE;
     else if (key_type == "mediaLib")
-        key = CPlayerUIBase::BTN_SELECT_FOLDER;
+        key = CPlayerUIBase::BTN_MEDIA_LIB;
     else if (key_type == "showPlaylist")
         key = CPlayerUIBase::BTN_SHOW_PLAYLIST;
     else if (key_type == "addToPlaylist")
@@ -792,13 +792,16 @@ std::wstring UiElement::Text::GetText() const
     case UiElement::Text::PlayTimeAndVolume:
         if (show_volume)
         {
-            CString str;
-            str.Format(CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
-            draw_text = str;
+            static const wstring& mute_str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE");
+            int volume = CPlayer::GetInstance().GetVolume();
+            if(volume <= 0)
+                draw_text = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { mute_str, L"" });
+            else
+                draw_text = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { volume, L"%" });
         }
         else
         {
-            draw_text = CPlayer::GetInstance().GetTimeString().c_str();
+            draw_text = CPlayer::GetInstance().GetTimeString();
         }
         break;
     default:

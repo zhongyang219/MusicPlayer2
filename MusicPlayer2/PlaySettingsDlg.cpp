@@ -64,45 +64,23 @@ void CPlaySettingsDlg::ShowDeviceInfo()
 	m_data.output_device = device.name;
 	DWORD device_type;
 	device_type = device.flags & BASS_DEVICE_TYPE_MASK;
-	CString type_info;
-	switch (device_type)
-	{
-	case BASS_DEVICE_TYPE_DIGITAL:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_DIGITAL);
-		break;
-	case BASS_DEVICE_TYPE_DISPLAYPORT:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_DISPLAYPORT);
-		break;
-	case BASS_DEVICE_TYPE_HANDSET:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_HANDSET);
-		break;
-	case BASS_DEVICE_TYPE_HDMI:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_HDMI);
-		break;
-	case BASS_DEVICE_TYPE_HEADPHONES:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_HEADPHONES);
-		break;
-	case BASS_DEVICE_TYPE_HEADSET:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_HEADSET);
-		break;
-	case BASS_DEVICE_TYPE_LINE:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_LINE);
-		break;
-	case BASS_DEVICE_TYPE_MICROPHONE:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_MICROPHONE);
-		break;
-	case BASS_DEVICE_TYPE_NETWORK:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_NETWORK);
-		break;
-	case BASS_DEVICE_TYPE_SPDIF:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_SPDIF);
-		break;
-	case BASS_DEVICE_TYPE_SPEAKERS:
-		type_info = CCommon::LoadText(IDS_DEVICE_TYPE_SPEAKERS);
-		break;
-	}
-	m_device_info_list.SetItemText(2, 1, type_info);
-
+    wstring type_info;
+    switch (device_type)
+    {
+    case BASS_DEVICE_TYPE_NETWORK: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_NETWORK"); break;
+    case BASS_DEVICE_TYPE_SPEAKERS: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_SPEAKERS"); break;
+    case BASS_DEVICE_TYPE_LINE: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_LINE"); break;
+    case BASS_DEVICE_TYPE_HEADPHONES: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_HEADPHONES"); break;
+    case BASS_DEVICE_TYPE_MICROPHONE: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_MICROPHONE"); break;
+    case BASS_DEVICE_TYPE_HEADSET: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_HEADSET"); break;
+    case BASS_DEVICE_TYPE_HANDSET: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_HANDSET"); break;
+    case BASS_DEVICE_TYPE_DIGITAL: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_DIGITAL"); break;
+    case BASS_DEVICE_TYPE_SPDIF: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_SPDIF"); break;
+    case BASS_DEVICE_TYPE_HDMI: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_HDMI"); break;
+    case BASS_DEVICE_TYPE_DISPLAYPORT: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_DISPLAYPORT"); break;
+    default: break;
+    }
+    m_device_info_list.SetItemText(2, 1, type_info.c_str());
 }
 
 void CPlaySettingsDlg::EnableControl()
@@ -176,9 +154,9 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
-    m_toolTip.AddTool(GetDlgItem(IDC_MCI_RADIO), CCommon::LoadText(IDS_MCI_KERNAL_TIP));
-    m_toolTip.AddTool(GetDlgItem(IDC_FFMPEG_RADIO), CCommon::LoadText(IDS_FFMPEG_CORE));
-    m_toolTip.AddTool(GetDlgItem(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK), CCommon::LoadText(IDS_CONTINUE_WHEN_SWITCH_PLAYLIST_TIP));
+    m_toolTip.AddTool(GetDlgItem(IDC_MCI_RADIO), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_RADIO_MCI_CORE").c_str());
+    m_toolTip.AddTool(GetDlgItem(IDC_FFMPEG_RADIO), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_RADIO_FFMPEG_CORE").c_str());
+    m_toolTip.AddTool(GetDlgItem(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_CONTINUE_WHEN_SWITCH_PLAYLIST").c_str());
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
 	//初始化各控件的状态
@@ -236,11 +214,11 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 	width1 = rect.Width() - width0 - theApp.DPI(20);
 
     m_device_info_list.SetExtendedStyle(m_device_info_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-	m_device_info_list.InsertColumn(0, CCommon::LoadText(IDS_ITEM), LVCFMT_LEFT, width0);		//插入第1列
-	m_device_info_list.InsertColumn(1, CCommon::LoadText(IDS_VLAUE), LVCFMT_LEFT, width1);		//插入第2列
-	m_device_info_list.InsertItem(0, CCommon::LoadText(IDS_NAME));
-	m_device_info_list.InsertItem(1, CCommon::LoadText(IDS_DRIVER));
-	m_device_info_list.InsertItem(2, CCommon::LoadText(IDS_DEVICE_TYPE));
+    m_device_info_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_ITEM").c_str(), LVCFMT_LEFT, width0);
+    m_device_info_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_VALUE").c_str(), LVCFMT_LEFT, width1);
+	m_device_info_list.InsertItem(0, theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_NAME").c_str());
+	m_device_info_list.InsertItem(1, theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_DRIVER").c_str());
+	m_device_info_list.InsertItem(2, theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE").c_str());
 	ShowDeviceInfo();
 
     EnableControl();
@@ -356,7 +334,8 @@ void CPlaySettingsDlg::OnOK() {
 void CPlaySettingsDlg::OnNMClickFfmpegDownSyslink(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    if (MessageBox(CCommon::LoadText(IDS_DOWNLOAD_FFMPEG_CORE_INFO), NULL, MB_ICONINFORMATION | MB_YESNO) == IDYES)
+    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_PLAY_FFMPEG_CORE_DOWNLOAD_INFO");
+    if (MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_YESNO) == IDYES)
     {
         ShellExecute(NULL, _T("open"), _T("https://github.com/lifegpc/ffmpeg_core/releases"), NULL, NULL, SW_SHOW);
     }

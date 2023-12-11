@@ -63,7 +63,7 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
 
     SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), FALSE);		// 设置小图标
 
-    m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+    m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
 
     //初始化列表
     for (const auto& item : CPlaylistMgr::Instance().m_recent_playlists)

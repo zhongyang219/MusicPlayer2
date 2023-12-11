@@ -58,20 +58,20 @@ BOOL CAboutDlg::OnInitDialog()
     //设置最后编译日期
     CString temp_str;
     GetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
-    CString compile_time = CCommon::GetLastCompileTime();
-    temp_str.Replace(_T("<compile_date>"), compile_time);
+    wstring compile_time = CCommon::GetLastCompileTime();
+    temp_str.Replace(_T("<compile_date>"), compile_time.c_str());
     temp_str.Replace(_T("<year>"), COPY_RIGHT_YEAR);
     SetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
 
     m_tool_tip.Create(this);
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), CCommon::LoadText(IDS_SEND_EMAIL_TO_ATHOUR, _T("\r\nmailto:zhongyang219@hotmail.com")));
-    m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), CCommon::LoadText(IDS_GOTO_GITHUB, _T("\r\nhttps://github.com/zhongyang219/MusicPlayer2")));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_BASS), _T("http://www.un4seen.com/bass.html"));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TAGLIB), _T("http://taglib.org/"));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TINYXML2), _T("https://github.com/leethomason/tinyxml2"));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SCINTILLA), _T("https://www.scintilla.org/index.html"));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TRAFFICMONITOR), CCommon::LoadText(IDS_TRAFFICMONITOR_DESCRIPTION, _T("\r\nhttps://github.com/zhongyang219/TrafficMonitor")));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SIMPLENOTEPAD), CCommon::LoadText(IDS_SIMPLENOTEPAD_DESCRIPTION, _T("\r\nhttps://github.com/zhongyang219/SimpleNotePad")));
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_SEND_EMAIL_TO_ATHOUR") + L"\r\nmailto:zhongyang219@hotmail.com").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_GOTO_GITHUB") + L"\r\nhttps://github.com/zhongyang219/MusicPlayer2").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_BASS), L"http://www.un4seen.com/bass.html");
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TAGLIB), L"http://taglib.org/");
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TINYXML2), L"https://github.com/leethomason/tinyxml2");
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SCINTILLA), L"https://www.scintilla.org/index.html");
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TRAFFICMONITOR), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_TRAFFICMONITOR_DESCRIPTION") + L"\r\nhttps://github.com/zhongyang219/TrafficMonitor").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SIMPLENOTEPAD), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_SIMPLENOTEPAD_DESCRIPTION") + L"\r\nhttps://github.com/zhongyang219/SimpleNotePad").c_str());
     m_tool_tip.SetDelayTime(300);	//设置延迟
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 
@@ -166,9 +166,9 @@ void CAboutDlg::OnNMClickLicenseSyslink(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
     CMessageDlg dlg;
-    dlg.SetWindowTitle(CCommon::LoadText(IDS_LICENSE));
-    dlg.SetInfoText(CCommon::LoadText(IDS_LICENSE_EXPLAIN));
-    dlg.SetMessageText(CCommon::GetTextResource(IDR_LICENSE, CodeType::UTF8_NO_BOM));
+    dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_LICENSE").c_str());
+    dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_LICENSE_EXPLAIN").c_str());
+    dlg.SetMessageText(CCommon::GetTextResource(IDR_LICENSE, CodeType::UTF8_NO_BOM).c_str());
     dlg.DoModal();
     *pResult = 0;
 }
@@ -281,8 +281,10 @@ void CAboutDlg::OnNMClickAcknowledgementSyslink(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
     CMessageDlg dlg;
-    dlg.SetWindowTitle(CCommon::LoadText(IDS_ACKNOWLEDGEMENT));
-    dlg.SetMessageText(CCommon::GetTextResource(IDR_ACKNOWLEDGEMENT, CodeType::UTF8_NO_BOM));
+    dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_ACKNOWLEDGEMENT").c_str());
+    wstring info = theApp.m_str_table.LoadText(L"TXT_ACKNOWLEDGEMENT_INFO") + L"\r\n";
+    info += CCommon::GetTextResource(IDR_ACKNOWLEDGEMENT, CodeType::UTF8_NO_BOM);
+    dlg.SetMessageText(info.c_str());
     dlg.DoModal();
     *pResult = 0;
 }

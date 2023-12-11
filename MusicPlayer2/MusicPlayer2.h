@@ -20,6 +20,7 @@
 #include "MediaLibHelper.h"
 #include "AcceleratorRes.h"
 #include "LastFM.h"
+#include "StrTable.h"
 
 
 // CMusicPlayerApp:
@@ -65,6 +66,8 @@ public:
     CHotkeyManager m_hot_key;
     CAcceleratorRes m_accelerator_res;
 
+    StrTable m_str_table;   // 实际上负责language manger
+
     UIData m_ui_data;
     IconSet m_icon_set;			//图标资源
     FontSet m_font_set;			//字体资源
@@ -75,7 +78,7 @@ public:
 
     int m_fps{};
 
-    CString m_window_title;        //窗口的标题
+    wstring m_window_title;         // 窗口的标题
 
     volatile bool m_lyric_download_dialog_exit{ true };		//用于指示歌词下载对话框已经退出
     volatile bool m_batch_download_dialog_exit{ true };		//用于指示歌词批量下载对话框已经退出
@@ -112,14 +115,8 @@ public:
         return m_dpi;
     }
 
-    WORD GetCurrentLanguage() const;
-    //bool IsGlobalMultimediaKeyEnabled() const;
-
-    //获取帮助文本
-    CString GetHelpString();
-
     //获取系统信息文本
-    CString GetSystemInfoString();
+    wstring GetSystemInfoString();
 
     void SetAutoRun(bool auto_run);
     bool GetAutoRun();

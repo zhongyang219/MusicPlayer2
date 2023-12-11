@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "SongInfo.h"
 #include "FormatConvertDlg.h"
-#include <functional>
 class CMusicPlayerCmdHelper
 {
 public:

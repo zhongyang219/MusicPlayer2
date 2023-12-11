@@ -24,7 +24,7 @@ CCoverDownloadDlg::~CCoverDownloadDlg()
 
 UINT CCoverDownloadDlg::SongSearchThreadFunc(LPVOID lpParam)
 {
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     CCoverDownloadDlg* pThis = (CCoverDownloadDlg*)lpParam;
     wstring search_result;
     pThis->m_search_rtn = CInternetCommon::HttpPost(pThis->m_search_url, search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
@@ -37,7 +37,7 @@ UINT CCoverDownloadDlg::SongSearchThreadFunc(LPVOID lpParam)
 
 UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
 {
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     CCoverDownloadDlg* pThis = (CCoverDownloadDlg*)lpParam;
     CInternetCommon::ItemInfo match_item = pThis->m_down_list[pThis->m_item_selected];
     wstring song_id = match_item.id;
@@ -46,7 +46,8 @@ UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
     wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song_id);
     if (cover_url.empty())
     {
-        AfxMessageBox(CCommon::LoadText(IDS_ALBUM_COVER_DOWNLOAD_FAILED_WARNING), MB_ICONWARNING | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_NETWORK_COVER_DOWNLOAD_FAILED");
+        AfxMessageBox(info.c_str(), MB_ICONWARNING | MB_OK);
     }
 
     //获取要保存的专辑封面的文件路径
@@ -206,10 +207,10 @@ BOOL CCoverDownloadDlg::OnInitDialog()
     width3 = rect.Width() - theApp.DPI(20) - 1 - width0 - width1 - width2;
 
     m_down_list_ctrl.SetExtendedStyle(m_down_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    m_down_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//插入第1列
-    m_down_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, width1);		//插入第2列
-    m_down_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, width2);		//插入第3列
-    m_down_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, width3);		//插入第3列
+    m_down_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, width0);
+    m_down_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_TITLE").c_str(), LVCFMT_LEFT, width1);
+    m_down_list_ctrl.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_ARTIST").c_str(), LVCFMT_LEFT, width2);
+    m_down_list_ctrl.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_ALBUM").c_str(), LVCFMT_LEFT, width3);
 
     m_unassciate_lnk.ShowWindow(SW_HIDE);
 
@@ -236,7 +237,7 @@ BOOL CCoverDownloadDlg::OnInitDialog()
 void CCoverDownloadDlg::OnBnClickedSearchButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    SetDlgItemText(IDC_STATIC_INFO, CCommon::LoadText(IDS_SEARCHING));
+    SetDlgItemText(IDC_STATIC_INFO, theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_INFO_SEARCHING").c_str());    // 这里使用的是歌词下载对话框的字符串
     GetDlgItem(IDC_SEARCH_BUTTON)->EnableWindow(FALSE);		//点击“搜索”后禁用该按钮
     wstring keyword = CInternetCommon::URLEncode(m_artist + L' ' + m_title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
     CString url;
@@ -254,8 +255,18 @@ afx_msg LRESULT CCoverDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
     GetDlgItem(IDC_SEARCH_BUTTON)->EnableWindow(TRUE);	//搜索完成之后启用该按钮
     switch (m_search_rtn)
     {
-    case 1: MessageBox(CCommon::LoadText(IDS_SEARCH_FAILED_INFO), NULL, MB_ICONWARNING); return 0;
-    case 2: MessageBox(CCommon::LoadText(IDS_SEARCH_TIME_OUT), NULL, MB_ICONWARNING); return 0;
+    case CInternetCommon::FAILURE:
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_NETWORK_SEARCH_FAILED");
+        MessageBox(info.c_str(), NULL, MB_ICONWARNING);
+        return 0;
+    }
+    case CInternetCommon::OUTTIME:
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_NETWORK_SEARCH_TIME_OUT");
+        MessageBox(info.c_str(), NULL, MB_ICONWARNING);
+        return 0;
+    }
     default: break;
     }
 
@@ -279,20 +290,20 @@ afx_msg LRESULT CCoverDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
     }
     if (!id_releated)
         best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
-    CString info;
+    wstring info;
     m_unassciate_lnk.ShowWindow(SW_HIDE);
     if (m_down_list.empty())
-        info = CCommon::LoadText(IDS_SEARCH_NO_SONG);
+        info = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_INFO_SEARCH_NO_SONG");
     else if (best_matched == -1)
-        info = CCommon::LoadText(IDS_SEARCH_NO_MATCHED);
+        info = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_INFO_SEARCH_NO_MATCHED");
     else if (id_releated)
     {
-        info = CCommon::LoadTextFormat(IDS_SEARCH_RELATED, { best_matched + 1 });
+        info = theApp.m_str_table.LoadTextFormat(L"TXT_LYRIC_DL_INFO_SEARCH_RELATED", { best_matched + 1 });
         m_unassciate_lnk.ShowWindow(SW_SHOW);
     }
     else
-        info = CCommon::LoadTextFormat(IDS_SEARCH_BEST_MATCHED, { best_matched + 1 });
-    SetDlgItemText(IDC_STATIC_INFO, info);
+        info = theApp.m_str_table.LoadTextFormat(L"TXT_LYRIC_DL_INFO_SEARCH_BEST_MATCHED", { best_matched + 1 });
+    SetDlgItemText(IDC_STATIC_INFO, info.c_str());
     //自动选中列表中最佳匹配的项目
     m_down_list_ctrl.SetFocus();
     m_down_list_ctrl.SetItemState(best_matched, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);	//选中行
@@ -387,7 +398,8 @@ afx_msg LRESULT CCoverDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
         CPlayer::GetInstance().AlbumCoverGaussBlur();
     }
     GetDlgItem(IDC_DOWNLOAD_SELECTED)->EnableWindow(TRUE);		//下载完成后启用该按钮
-    MessageBox(CCommon::LoadText(IDS_DOWNLOAD_COMPLETE), NULL, MB_ICONINFORMATION | MB_OK);
+    const wstring& info = theApp.m_str_table.LoadText(L"MSG_NETWORK_DOWNLOAD_COMPLETE");
+    MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
     return 0;
 }
 

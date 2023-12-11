@@ -73,21 +73,15 @@ CPlayerUIBase* CMiniModeDlg::GetCurUi()
 
 void CMiniModeDlg::UpdateSongTipInfo()
 {
-    CString song_tip_info;
-    song_tip_info += CCommon::LoadText(IDS_NOW_PLAYING, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetFileName().c_str();
-    song_tip_info += _T("\r\n");
-    song_tip_info += CCommon::LoadText(IDS_TITLE, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].GetTitle().c_str();
-    song_tip_info += _T("\r\n");
-    song_tip_info += CCommon::LoadText(IDS_ARTIST, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].GetArtist().c_str();
-    song_tip_info += _T("\r\n");
-    song_tip_info += CCommon::LoadText(IDS_ALBUM, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].GetAlbum().c_str();
+    static const wstring& empty_name_str = theApp.m_str_table.LoadText(L"TXT_EMPTY_FILE_NAME");
+    const auto& song = CPlayer::GetInstance().GetCurrentSongInfo();
+    wstring song_tip_info = theApp.m_str_table.LoadTextFormat(L"UI_TIP_COVER_MINI_MODE", {
+        song.file_path.empty() ? empty_name_str : song.GetFileName(),
+        song.GetTitle(), song.GetArtist(), song.GetAlbum() });
+
     CMiniModeUI* cur_ui{ dynamic_cast<CMiniModeUI*>(GetCurUi()) };
     if (cur_ui != nullptr)
-        cur_ui->UpdateSongInfoTip(song_tip_info);
+        cur_ui->UpdateSongInfoTip(song_tip_info.c_str());
 }
 
 void CMiniModeDlg::SetTitle()
@@ -224,11 +218,10 @@ void CMiniModeDlg::Init()
         for (size_t i{}; i < user_ui_list.size() && i < MINIMODE_UI_MAX; i++)
         {
             user_ui_list[i]->SetIndex(i + 1);
-            CString str_name = user_ui_list[i]->GetUIName();   //获取界面的名称
-            if (str_name.IsEmpty())
-                str_name.Format(_T("%s %d"), CCommon::LoadText(IDS_MINI_MODE).GetString(), i + 1); //如果名称为空（没有指定名称），则使用“迷你模式 +数字”的默认名称
-
-            pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_MINIMODE_UI_DEFAULT + i + 1, str_name);
+            wstring str_name = user_ui_list[i]->GetUIName().GetString();    // 获取界面的名称
+            if (str_name.empty())    //如果名称为空（没有指定名称），则使用“迷你模式 +数字”的默认名称
+                str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_MINI_DEFAULT", { i + 1 });
+            pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_MINIMODE_UI_DEFAULT + i + 1, str_name.c_str());
         }
     }
 }
@@ -333,16 +326,14 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
     if (nIDEvent == TIMER_ID_MINI)
     {
         //更新鼠标提示
-        static int index{};
-        static wstring song_name{};
+        static SongInfo last_song_info;
+        const SongInfo& song_info = CPlayer::GetInstance().GetCurrentSongInfo();
         //如果当前播放的歌曲发生变化，就更新鼠标提示信息
-        if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
+        if (!song_info.IsSameSong(last_song_info))
         {
+            last_song_info = song_info;
             UpdateSongTipInfo();
             SetTitle();
-            //m_Mytip.UpdateTipText(m_song_tip_info, this);
-            index = CPlayer::GetInstance().GetIndex();
-            song_name = CPlayer::GetInstance().GetFileName();
             m_draw_reset = true;
         }
     }

@@ -97,13 +97,13 @@ AudioType CAudioCommon::GetAudioTypeByFileName(const wstring & file_name)
 wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 {
     if (extension.empty())
-        return wstring(CCommon::LoadText(IDS_UNKNOW));
+        return theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_UNKNOWN");
 
     CCommon::StringTransform(extension, false);
 
     for (const auto& item : m_surpported_format)
     {
-        if (item.description != CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT).GetString())
+        if (item.description != theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_BASE"))
         {
             for (const auto& ext : item.extensions)
             {
@@ -112,39 +112,40 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
             }
         }
     }
-
+    wstring audio_str;
     if (extension == L"mp3")
-        return L"MPEG Audio Layer 3";
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_MP3");
     else if (extension == L"mp1" || extension == L"mp2")
-        return L"MPEG Audio";
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_MP1_MP2");
     else if (extension == L"wma")
-        return L"Windows Media Audio";
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_WMA");
     else if (extension == L"asf")
-        return L"Advanced Streaming Format";
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_ASF");
     else if (extension == L"wav")
-        return wstring(CCommon::LoadText(_T("WAV "), IDS_AUDIO_FILE));
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_WAV");
     else if (extension == L"ogg" || extension == L"oga")
-        return wstring(CCommon::LoadText(_T("OGG Vorbis "), IDS_AUDIO_FILE));
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_OGG_OGA");
     else if (extension == L"m4a" || extension == L"mp4")
-        return wstring(CCommon::LoadText(_T("MPEG-4 "), IDS_AUDIO_FILE));
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_M4A_MP4");
     else if (extension == L"ape")
-        return wstring(L"Monkey's Audio (APE)");
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_APE");
     else if (extension == L"aac")
-        return wstring(L"Advanced Audio Coding (AAC)");
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_ACC");
     else if (extension == L"aif" || extension == L"aiff")
-        return wstring(L"Audio Interchange File");
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_AIF_AIFF");
     else if (extension == L"cda")
-        return wstring(CCommon::LoadText(_T("CD "), IDS_AUDIO_FILE, _T(" (CDA)")));
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_CDA");
     else if (extension == L"playlist")
-        return wstring(CCommon::LoadText(_T("MusicPlayer2 "), IDS_PLAYLIST));
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_PLAYLIST");
     else if (extension == L"m3u")
-        return wstring(CCommon::LoadText(_T("M3U "), IDS_PLAYLIST));
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_M3U");
     else if (extension == L"m3u8")
-        return wstring(CCommon::LoadText(_T("M3U8 "), IDS_PLAYLIST));
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_M3U8");
     else if (extension == L"cue")
-        return L"CUE Sheets";
+        audio_str = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_CUE");
     else
-        return wstring(extension + CCommon::LoadText(_T(" "), IDS_AUDIO_FILE).GetString());
+        audio_str = theApp.m_str_table.LoadTextFormat(L"TXT_FILE_TYPE_OTHER", { extension });
+    return audio_str;
 }
 
 void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file, bool include_sub_dir)
@@ -613,7 +614,7 @@ wstring CAudioCommon::GetBASSChannelDescription(DWORD ctype)
     switch (ctype)
     {
     case 0:
-        return CCommon::LoadText(IDS_UNKNOW).GetString();
+        return theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_UNKNOWN");      // 这里使用的是文件类型描述(File type description)的 “未知”的字符串
     case 1:
         return L"SAMPLE";
     case 2:
@@ -773,42 +774,6 @@ CString CAudioCommon::TrackToString(BYTE track)
     {
         return CString();
     }
-}
-
-void CAudioCommon::ClearDefaultTagStr(SongInfo & song_info)
-{
-    if (song_info.title == CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())
-        song_info.title.clear();
-    if (song_info.artist == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())
-        song_info.artist.clear();
-    if (song_info.album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
-        song_info.album.clear();
-    //if (song_info.year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
-    //    song_info.year.clear();
-    if (song_info.genre == CCommon::LoadText(IDS_DEFAULT_GENRE).GetString())
-        song_info.genre.clear();
-}
-
-wstring CAudioCommon::GetFileDlgFilter()
-{
-    wstring filter(CCommon::LoadText(IDS_ALL_SUPPORTED_FORMAT, _T("|")));
-    for (const auto& ext : m_all_surpported_extensions)
-    {
-        filter += L"*.";
-        filter += ext;
-        filter.push_back(L';');
-    }
-    filter.pop_back();
-    filter.push_back(L'|');
-    for (const auto& format : m_surpported_format)
-    {
-        filter += format.description;
-        filter.push_back(L'|');
-        filter += format.extensions_list;
-        filter.push_back(L'|');
-    }
-    filter += CCommon::LoadText(IDS_ALL_FILES, _T("|*.*||"));
-    return filter;
 }
 
 SupportedFormat CAudioCommon::CreateSupportedFormat(const wchar_t* exts, const wchar_t* description, const wchar_t* file_name /*= L""*/)

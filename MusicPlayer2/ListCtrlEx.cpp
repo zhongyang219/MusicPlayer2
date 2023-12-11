@@ -1,7 +1,6 @@
 ﻿#include "stdafx.h"
 #include "ListCtrlEx.h"
 #include "MusicPlayer2.h"
-#include <set>
 
 IMPLEMENT_DYNAMIC(CListCtrlEx, CListCtrl)
 

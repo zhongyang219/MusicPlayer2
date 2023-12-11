@@ -55,13 +55,13 @@ BOOL CSupportedFormatDlg::OnInitDialog()
     switch (core_type)
     {
     case PT_BASS:
-        SetDlgItemText(IDC_INFO_STATIC, CCommon::LoadText(IDS_SUPPORTTED_FORMAT_INFO));
+        SetDlgItemText(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_BASS").c_str());
         break;
     case PT_MCI:
-        SetDlgItemText(IDC_INFO_STATIC, CCommon::LoadText(IDS_SUPPORTTED_FORMAT_INFO_MCI));
+        SetDlgItemText(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_MCI").c_str());
         break;
     case PT_FFMPEG:
-        SetDlgItemText(IDC_INFO_STATIC, CCommon::LoadText(IDS_SUPPORTTED_FORMAT_INFO_FFMPEG));
+        SetDlgItemText(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_FFMPEG").c_str());
         break;
     }
 
@@ -71,23 +71,23 @@ BOOL CSupportedFormatDlg::OnInitDialog()
 	m_format_list.GetWindowRect(rect);
 	int width0, width1, width2;
     m_format_list.SetExtendedStyle(m_format_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    
+
     if (core_type == PT_BASS)
     {
         width0 = theApp.DPI(100);
         width1 = rect.Width() / 3;
         width2 = rect.Width() - width1 - width0 - theApp.DPI(20) - 1;
 
-        m_format_list.InsertColumn(0, CCommon::LoadText(IDS_PLUGIN_FILE_NAME), LVCFMT_LEFT, width0);
-        m_format_list.InsertColumn(1, CCommon::LoadText(IDS_FORMAT_SUPPORTED), LVCFMT_LEFT, width1);
-        m_format_list.InsertColumn(2, CCommon::LoadText(IDS_FILE_EXTENSION), LVCFMT_LEFT, width2);
+        m_format_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FILE_NAME").c_str(), LVCFMT_LEFT, width0);
+        m_format_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FORMAT_PROVIDED").c_str(), LVCFMT_LEFT, width1);
+        m_format_list.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FILE_EXTENSION").c_str(), LVCFMT_LEFT, width2);
     }
     else
     {
         width0 = rect.Width() / 2;
         width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
-        m_format_list.InsertColumn(0, CCommon::LoadText(IDS_FORMAT_SUPPORTED), LVCFMT_LEFT, width0);
-        m_format_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_EXTENSION), LVCFMT_LEFT, width1);
+        m_format_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FORMAT_PROVIDED").c_str(), LVCFMT_LEFT, width0);
+        m_format_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FILE_EXTENSION").c_str(), LVCFMT_LEFT, width1);
     }
 
 	int index = 0;

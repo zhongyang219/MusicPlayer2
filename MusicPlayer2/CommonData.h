@@ -133,13 +133,13 @@ struct FontSet
     UIFont cortana_translate;	//搜索框翻译字体
 
 
-    void Init()
+    void Init(LPCTSTR font_name)
     {
-        font9.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font8.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font10.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font11.SetFont(11, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font12.SetFont(12, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font9.SetFont(9, font_name);
+        font8.SetFont(8, font_name);
+        font10.SetFont(10, font_name);
+        font11.SetFont(11, font_name);
+        font12.SetFont(12, font_name);
     }
 };
 
@@ -297,7 +297,7 @@ struct GeneralSettingData
     bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
     bool minimize_to_notify_icon{ false };		//是否最小到通知区图标
 
-    Language language;
+    wstring language_;                          // 这个是设置状态（空字符串为跟随系统）
     bool portable_mode{ false };                //如果为true，则程序所有数据都保存到exe所在目录下，否则保存到Appdata\Romaing目录下
 };
 

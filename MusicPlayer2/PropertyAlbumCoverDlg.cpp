@@ -8,6 +8,8 @@
 #include "DrawCommon.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlgHelper.h"
+#include "CommonDialogMgr.h"
+#include "FilterHelper.h"
 
 #define PROPERTY_COVER_IMG_FILE_NAME L"PropertyCoverImg_U6V19HODcJ2p11FM"
 
@@ -137,12 +139,12 @@ void CPropertyAlbumCoverDlg::ShowInfo()
     if (HasAlbumCover())
     {
         //路径
-        CString str_path;
+        wstring str_path;
         if (IsShowOutAlbumCover())
-            str_path = m_out_img_path.c_str();
+            str_path = m_out_img_path;
         else
-            str_path = CCommon::LoadText(_T("<"), IDS_INNER_ALBUM_COVER, L">");
-        m_list_ctrl.SetItemText(RI_COVER_PATH, 1, str_path);
+            str_path = theApp.m_str_table.LoadText(L"TXT_INNER_COVER");
+        m_list_ctrl.SetItemText(RI_COVER_PATH, 1, str_path.c_str());
 
         //文件类型
         CString str_type;
@@ -191,18 +193,6 @@ void CPropertyAlbumCoverDlg::ShowInfo()
         {
             m_list_ctrl.SetItemText(RI_SIZE, 1, CCommon::DataSizeToString(cover_size));
         }
-
-    //    //已压缩尺寸过大的专辑封面
-    //    if (!m_cover_changed && !m_batch_edit && IsCurrentSong())
-    //    {
-    //        m_list_ctrl.SetItemText(RI_COMPRESSED, 0, CCommon::LoadText(IDS_ALBUM_COVER_COMPRESSED));
-    //        m_list_ctrl.SetItemText(RI_COMPRESSED, 1, (CPlayer::GetInstance().GetAlbumCoverInfo().size_exceed ? CCommon::LoadText(IDS_YES) : CCommon::LoadText(IDS_NO)));
-    //    }
-    //    else
-    //    {
-    //        m_list_ctrl.SetItemText(RI_COMPRESSED, 0, _T(""));
-    //        m_list_ctrl.SetItemText(RI_COMPRESSED, 1, _T(""));
-    //    }
     }
     else
     {
@@ -382,7 +372,7 @@ void CPropertyAlbumCoverDlg::DeleteLinkedPic(const wstring& file_path, const wst
     wstring file_name = CFilePathHelper(file_path).GetFilePathWithoutExtension();
     if (file_name == album_cover_file_name)
     {
-        CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), album_cover_path);
+        CommonDialogMgr::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), album_cover_path);
     }
 }
 
@@ -433,18 +423,17 @@ BOOL CPropertyAlbumCoverDlg::OnInitDialog()
     m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_GRIDLINES);
     int width0 = theApp.DPI(85);
     int width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
-    m_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_ITEM), LVCFMT_LEFT, width0);
-    m_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_VLAUE), LVCFMT_LEFT, width1);
+    m_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_ITEM").c_str(), LVCFMT_LEFT, width0);
+    m_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_VALUE").c_str(), LVCFMT_LEFT, width1);
 
 
-    m_list_ctrl.InsertItem(RI_FILE_PATH, CCommon::LoadText(IDS_FILE_PATH));    //文件路径
-    m_list_ctrl.InsertItem(RI_COVER_PATH, CCommon::LoadText(IDS_PATH));    //封面路径
-    m_list_ctrl.InsertItem(RI_FORMAT, CCommon::LoadText(IDS_FORMAT));    //封面类型
-    m_list_ctrl.InsertItem(RI_WIDTH, CCommon::LoadText(IDS_WIDTH));    //宽度
-    m_list_ctrl.InsertItem(RI_HEIGHT, CCommon::LoadText(IDS_HEIGHT));    //高度
-    m_list_ctrl.InsertItem(RI_BPP, CCommon::LoadText(IDS_BPP));    //每像素位数
-    m_list_ctrl.InsertItem(RI_SIZE, CCommon::LoadText(IDS_FILE_SIZE));    //文件大小
-    //m_list_ctrl.InsertItem(RI_COMPRESSED, CCommon::LoadText(IDS_ALBUM_COVER_COMPRESSED));    //已压缩尺寸过大的专辑封面
+    m_list_ctrl.InsertItem(RI_FILE_PATH, theApp.m_str_table.LoadText(L"TXT_FILE_PATH").c_str());                   //文件路径
+    m_list_ctrl.InsertItem(RI_COVER_PATH, theApp.m_str_table.LoadText(L"TXT_PATH").c_str());                       //封面路径
+    m_list_ctrl.InsertItem(RI_FORMAT, theApp.m_str_table.LoadText(L"TXT_COVER_PROPERTY_FORMAT").c_str());          //封面类型
+    m_list_ctrl.InsertItem(RI_WIDTH, theApp.m_str_table.LoadText(L"TXT_COVER_PROPERTY_WIDTH").c_str());            //宽度
+    m_list_ctrl.InsertItem(RI_HEIGHT, theApp.m_str_table.LoadText(L"TXT_COVER_PROPERTY_HEIGHT").c_str());          //高度
+    m_list_ctrl.InsertItem(RI_BPP, theApp.m_str_table.LoadText(L"TXT_COVER_PROPERTY_BPP").c_str());                //每像素位数
+    m_list_ctrl.InsertItem(RI_SIZE, theApp.m_str_table.LoadText(L"TXT_COVER_PROPERTY_FILE_SIZE").c_str());         //文件大小
 
     CheckDlgButton(IDC_SHOW_OUT_ALBUM_COVER_CHK, m_show_out_album_cover);
 
@@ -520,11 +509,14 @@ void CPropertyAlbumCoverDlg::OnBnClickedDeleteButton()
     // TODO: 在此添加控件通知处理程序代码
     if (IsShowOutAlbumCover() && !m_batch_edit)
     {
-        CString str_info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { m_out_img_path });
-        if (MessageBox(str_info, NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+        wstring inquary_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUARY", { m_out_img_path });
+        if (MessageBox(inquary_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
         {
-            if (CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_out_img_path) != 0)
-                MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
+            if (CommonDialogMgr::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_out_img_path) != 0)
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_DELETE_FILE_FAILED");
+                MessageBox(info.c_str(), NULL, MB_ICONWARNING);
+            }
         }
     }
     else
@@ -539,8 +531,8 @@ void CPropertyAlbumCoverDlg::OnBnClickedBrowseButton()
 {
     // TODO: 在此添加控件通知处理程序代码
 
-    CString filter = CCommon::LoadText(IDS_IMAGE_FILE_FILTER);
-    CFileDialog fileDlg(TRUE, NULL, NULL, 0, filter, this);
+    wstring filter = FilterHelper::GetImageFileFilter();
+    CFileDialog fileDlg(TRUE, NULL, NULL, 0, filter.c_str(), this);
     if (IDOK == fileDlg.DoModal())
     {
         m_out_img_path = fileDlg.GetPathName().GetString();
@@ -581,7 +573,7 @@ void CPropertyAlbumCoverDlg::OnCoverSaveAs()
 {
     // TODO: 在此添加命令处理程序代码
         //设置过滤器
-    CString szFilter = CCommon::LoadText(IDS_ALL_FILES, _T("(*.*)|*.*||"));
+    wstring szFilter = theApp.m_str_table.LoadText(L"TXT_FILTER_ALL_FILES") + L"(*.*)|*.*||";
     //设置另存为时的默认文件名
     CString file_name;
     CString extension = m_list_ctrl.GetItemText(RI_FORMAT, 1);
@@ -589,7 +581,7 @@ void CPropertyAlbumCoverDlg::OnCoverSaveAs()
     wstring file_name_wcs{ file_name };
     CCommon::FileNameNormalize(file_name_wcs);		//替换掉文件名中的无效字符
     //构造保存文件对话框
-    CFileDialog fileDlg(FALSE, NULL, file_name_wcs.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+    CFileDialog fileDlg(FALSE, NULL, file_name_wcs.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter.c_str(), this);
     //显示保存文件对话框
     if (IDOK == fileDlg.DoModal())
     {

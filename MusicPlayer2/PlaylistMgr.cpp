@@ -1,7 +1,6 @@
 ﻿#include "stdafx.h"
 #include "PlaylistMgr.h"
 #include "MusicPlayer2.h"
-#include <set>
 #include "Playlist.h"
 
 CPlaylistMgr CPlaylistMgr::m_instance;
@@ -270,9 +269,8 @@ void CPlaylistMgr::LoadPlaylistData()
     catch (CArchiveException* exception)
     {
         //捕获序列化时出现的异常
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { theApp.m_recent_playlist_data_path, exception->m_cause });
-        theApp.WriteLog(wstring{ info });
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SERIALIZE_ERROR", { theApp.m_recent_playlist_data_path, exception->m_cause });
+        theApp.WriteLog(info);
     }
     // 关闭对象
     ar.Close();

@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "SongInfo.h"
-#include <functional>
 #include <shared_mutex>
 
 class CSongDataManager

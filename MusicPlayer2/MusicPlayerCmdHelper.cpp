@@ -11,6 +11,7 @@
 #include "COSUPlayerHelper.h"
 #include "SongDataManager.h"
 #include "SelectItemDlg.h"
+#include "CommonDialogMgr.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -54,10 +55,12 @@ void CMusicPlayerCmdHelper::FormatConvert(const std::vector<SongInfo>& songs)
 
     if (CPlayer::GetInstance().IsMciCore())
     {
-        GetOwner()->MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_MCI_NO_THIS_FUNCTION_WARNING");
+        GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         return;
     } else if (CPlayer::GetInstance().IsFfmpegCore()) {
-        GetOwner()->MessageBox(CCommon::LoadText(IDS_FFMPEG_NO_THIS_FUNCTION), NULL, MB_ICONWARNING | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_FFMPEG_NO_THIS_FUNCTION_WARNING");
+        GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         return;
     }
 
@@ -69,26 +72,29 @@ void CMusicPlayerCmdHelper::FormatConvert(const std::vector<SongInfo>& songs)
 bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<SongInfo>&)> get_song_list, std::wstring& playlist_path, const std::wstring& default_name /*= L""*/)
 {
     CInputDlg imput_dlg(GetOwner());
-    imput_dlg.SetTitle(CCommon::LoadText(IDS_NEW_PLAYLIST));
-    imput_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_PLAYLIST_NAME));
+    imput_dlg.SetTitle(theApp.m_str_table.LoadText(L"TITLE_NEW_PLAYLIST").c_str());
+    imput_dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_NEW_PLAYLIST_INPUT_PLAYLIST_NAME").c_str());
     imput_dlg.SetEditText(default_name.c_str());
     if (imput_dlg.DoModal() == IDOK)
     {
-        CString playlist_name = imput_dlg.GetEditText();
-        if (playlist_name.IsEmpty())
+        wstring playlist_name = imput_dlg.GetEditText().GetString();
+        if (playlist_name.empty())
         {
-            GetOwner()->MessageBox(CCommon::LoadText(IDS_PLAYLIST_NAME_EMPTY_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_NAME_EMPTY_WARNING");
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
             return false;
         }
-        if (!CCommon::IsFileNameValid(wstring(playlist_name.GetString())))
+        if (!CCommon::IsFileNameValid(playlist_name))
         {
-            GetOwner()->MessageBox(CCommon::LoadText(IDS_FILE_NAME_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_NAME_INVALID_WARNING");
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
             return false;
         }
-        playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION;
+        playlist_path = theApp.m_playlist_dir + playlist_name + PLAYLIST_EXTENSION;
         if (CCommon::FileExist(playlist_path))
         {
-            GetOwner()->MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_EXIST_WARNING, { playlist_name }), NULL, MB_ICONWARNING | MB_OK);
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_EXIST_WARNING", { playlist_name });
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
             return false;
         }
         //添加空的播放列表
@@ -104,7 +110,8 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
         playlist.LoadFromFile(playlist_path);
         if (!playlist.AddSongsToPlaylist(selected_item_path, theApp.m_media_lib_setting_data.insert_begin_of_playlist)) // 这里由于是空列表所以实际上设置无效不过仍然传递设置
         {
-            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");
+            pPlayerDlg->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
             return false;
         }
         playlist.SaveToFile(playlist_path);
@@ -181,7 +188,8 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
                 }
                 else
                 {
-                    GetOwner()->MessageBox(CCommon::LoadText(IDS_ADD_TO_PLAYLIST_FAILED_WARNING), NULL, MB_ICONWARNING | MB_OK);
+                    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_ADD_SONGS_FAILED", { menu_string });
+                    GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
                 }
             }
         }
@@ -195,8 +203,8 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
     if (theApp.m_media_lib_setting_data.disable_delete_from_disk)
         return false;
 
-    CString info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { files.size() });
-    if (GetOwner()->MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUARY", { files.size() });
+    if (GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
         return false;
 
     vector<wstring> delected_files;
@@ -219,7 +227,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
         CPlayer::GetInstance().GetPlayStatusMutex().unlock();
     }
     int rtn{};
-    rtn = CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);
+    rtn = CommonDialogMgr::DeleteFiles(GetOwner()->m_hWnd, delected_files);
     if (rtn == 0)
     {
         //如果文件删除成功，则从歌曲数据中删除
@@ -233,7 +241,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
             CFilePathHelper file_path(file);
             file = file_path.ReplaceFileExtension(L"jpg").c_str();
         }
-        CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);
+        CommonDialogMgr::DeleteFiles(GetOwner()->m_hWnd, delected_files);
         for (const wstring& ext : CLyrics::m_surpported_lyric)      // 删除所有后缀的歌词
         {
             for (auto& file : delected_files)
@@ -241,7 +249,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
                 CFilePathHelper file_path(file);
                 file = file_path.ReplaceFileExtension(ext.c_str()).c_str();
             }
-            CCommon::DeleteFiles(GetOwner()->m_hWnd, delected_files);
+            CommonDialogMgr::DeleteFiles(GetOwner()->m_hWnd, delected_files);
         }
     }
     else if (rtn == 1223)	//如果在弹出的对话框中点击“取消”则返回值为1223
@@ -250,7 +258,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
     }
     else
     {
-        GetOwner()->MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
+        GetOwner()->MessageBox(theApp.m_str_table.LoadText(L"MSG_DELETE_FILE_FAILED").c_str(), NULL, MB_ICONWARNING);
         return false;
     }
     return true;
@@ -661,7 +669,7 @@ void CMusicPlayerCmdHelper::RefreshMediaTabData(eMediaLibTab tab_index)
 void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
 {
     vector<wstring> artist_list;
-    song_info.GetArtistList(artist_list, theApp.m_media_lib_setting_data.artist_split_ext);     // 获取艺术家（可能有多个）
+    song_info.GetArtistList(artist_list);     // 获取艺术家（可能有多个）
     wstring artist;
     if (artist_list.empty())
     {
@@ -675,7 +683,7 @@ void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
     {
         //如果有多个艺术家，弹出“选择艺术家”对话框
         CSelectItemDlg dlg(artist_list);
-        dlg.SetTitle(CCommon::LoadText(IDS_SELECT_ARTIST));
+        dlg.SetTitle(theApp.m_str_table.LoadText(L"TITLE_SELECT_ARTIST").c_str());
         dlg.SetDlgIcon(theApp.m_icon_set.artist.GetIcon());
         if (dlg.DoModal() == IDOK)
             artist = dlg.GetSelectedItem();
@@ -686,7 +694,8 @@ void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
     CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(artist))
     {
-        pPlayerDlg->MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ARTIST_WARNING, { artist }), NULL, MB_OK | MB_ICONWARNING);
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_CANNOT_FIND_ARTIST_WARNING", { artist });
+        pPlayerDlg->MessageBox(info.c_str(), NULL, MB_OK | MB_ICONWARNING);
     }
 }
 
@@ -697,7 +706,8 @@ void CMusicPlayerCmdHelper::OnViewAlbum(const SongInfo& song_info)
     CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
     if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(album))
     {
-        pPlayerDlg->MessageBox(CCommon::LoadTextFormat(IDS_CONNOT_FIND_ALBUM_WARNING, { album }), NULL, MB_OK | MB_ICONWARNING);
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_CANNOT_FIND_ALBUM_WARNING", { album });
+        pPlayerDlg->MessageBox(info.c_str(), NULL, MB_OK | MB_ICONWARNING);
     }
 }
 
@@ -747,9 +757,15 @@ void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, co
     {
         int rtn = CPlayer::GetInstance().AddSongsToPlaylist(songs);
         if (rtn == 0)
-            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");
+            pPlayerDlg->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else if (rtn == -1)
-            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            pPlayerDlg->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
     else
     {
@@ -758,7 +774,10 @@ void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, co
         if (playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.insert_begin_of_playlist))
             playlist.SaveToFile(playlist_path);
         else
-            pPlayerDlg->MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");
+            pPlayerDlg->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
 }
 

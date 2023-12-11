@@ -158,9 +158,8 @@ void LastFMDataArchive::LoadData(wstring path) {
             cached_tracks.push_back(track);
         }
     } catch (CArchiveException* exception) {
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { path, exception->m_cause });
-        theApp.WriteLog(wstring{ info });
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SERIALIZE_ERROR", { path, exception->m_cause });
+        theApp.WriteLog(info);
     }
     ar.Close();
     file.Close();

@@ -9,7 +9,6 @@ CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
     : m_ui_data(ui_data), m_pMainWnd(pMainWnd)
 {
 
-    //m_font_time.CreatePointFont(80, CCommon::LoadText(IDS_DEFAULT_FONT));
 }
 
 
@@ -271,12 +270,13 @@ void CPlayerUIBase::MouseMove(CPoint point)
         song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * CPlayer::GetInstance().GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
         Time song_pos_time;
         song_pos_time.fromInt(static_cast<int>(song_pos));
-        CString str;
         static int last_sec{};
         if (last_sec != song_pos_time.sec)      //只有鼠标指向位置对应的秒数变化了才更新鼠标提示
         {
-            str.Format(CCommon::LoadText(IDS_SEEK_TO_MINUTE_SECOND), song_pos_time.min, song_pos_time.sec);
-            UpdateMouseToolTip(BTN_PROGRESS, str);
+            wstring min = std::to_wstring(song_pos_time.min);
+            wstring sec = std::to_wstring(song_pos_time.sec);
+            wstring str = theApp.m_str_table.LoadTextFormat(L"UI_TIP_SEEK_TO_MINUTE_SECOND", { min, sec.size() <= 1 ? L'0' + sec : sec });
+            UpdateMouseToolTip(BTN_PROGRESS, str.c_str());
             last_sec = song_pos_time.sec;
         }
     }
@@ -416,9 +416,9 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                     theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAYLIST);
                 return true;
 
-            case BTN_SELECT_FOLDER:
-                m_buttons[BTN_SELECT_FOLDER].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SET_PATH);
+            case BTN_MEDIA_LIB:
+                m_buttons[BTN_MEDIA_LIB].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MEDIA_LIB);
                 return true;
 
             case BTN_FAVOURITE:
@@ -592,46 +592,48 @@ CRect CPlayerUIBase::GetThumbnailClipArea()
 void CPlayerUIBase::UpdateRepeatModeToolTip()
 {
     SetRepeatModeToolTipText();
-    UpdateMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
+    UpdateMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip.c_str());
 }
 
 void CPlayerUIBase::UpdateSongInfoToolTip()
 {
     SetSongInfoToolTipText();
-    UpdateMouseToolTip(BTN_INFO, m_info_tip);
+    UpdateMouseToolTip(BTN_INFO, m_info_tip.c_str());
 
     SetCoverToolTipText();
-    UpdateMouseToolTip(BTN_COVER, m_cover_tip);
+    UpdateMouseToolTip(BTN_COVER, m_cover_tip.c_str());
 }
 
 void CPlayerUIBase::UpdatePlayPauseButtonTip()
 {
     if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
-        UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PAUSE));
+        UpdateMouseToolTip(BTN_PLAY_PAUSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE").c_str());
     else
-        UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY));
+        UpdateMouseToolTip(BTN_PLAY_PAUSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
 }
 
 void CPlayerUIBase::UpdateFullScreenTip()
 {
     if (m_ui_data.full_screen)
     {
-        UpdateMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
-        UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_EXIT_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
+        wstring tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FULL_SCREEN_EXIT") + GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN).GetString();
+        UpdateMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, tip_str.c_str());
+        UpdateMouseToolTip(BTN_FULL_SCREEN, tip_str.c_str());
     }
     else
     {
-        UpdateMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
-        UpdateMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
+        wstring tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FULL_SCREEN") + GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN).GetString();
+        UpdateMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, tip_str.c_str());
+        UpdateMouseToolTip(BTN_FULL_SCREEN, tip_str.c_str());
     }
 }
 
 void CPlayerUIBase::UpdateTitlebarBtnToolTip()
 {
     if (theApp.m_pMainWnd->IsZoomed())
-        UpdateMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_RESTORE));
+        UpdateMouseToolTip(BTN_MAXIMIZE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_RESTORE").c_str());
     else
-        UpdateMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_MAXIMIZE));
+        UpdateMouseToolTip(BTN_MAXIMIZE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAXIMIZE").c_str());
 }
 
 bool CPlayerUIBase::SetCursor()
@@ -699,7 +701,7 @@ IconRes CPlayerUIBase::GetBtnIcon(BtnKey key, bool big_icon)
             return (big_icon ? theApp.m_icon_set.play_l : theApp.m_icon_set.play_new);
     case BTN_NEXT: return (big_icon ? theApp.m_icon_set.next_l : theApp.m_icon_set.next_new);
     case BTN_SHOW_PLAYLIST: return theApp.m_icon_set.show_playlist;
-    case BTN_SELECT_FOLDER: return theApp.m_icon_set.media_lib;
+    case BTN_MEDIA_LIB: return theApp.m_icon_set.media_lib;
     case BTN_FULL_SCREEN_TITLEBAR: case BTN_FULL_SCREEN: return (m_ui_data.full_screen ? theApp.m_icon_set.full_screen : theApp.m_icon_set.full_screen1);
     case BTN_MENU_TITLEBAR: case BTN_MENU: return theApp.m_icon_set.menu;
     case BTN_FAVOURITE: return (CPlayer::GetInstance().IsFavourite() ? theApp.m_icon_set.heart : theApp.m_icon_set.favourite);
@@ -1012,9 +1014,9 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
     if (rect.Width() >= DPI(270))
     {
         rc_tmp.MoveToX(rc_tmp.right);
-        CRect translate_rect = rc_tmp;
-        translate_rect.DeflateRect(DPI(2), DPI(2));
-        DrawTextButton(translate_rect, m_buttons[BTN_LRYIC], CCommon::LoadText(IDS_LRC), theApp.m_lyric_setting_data.show_desktop_lyric);
+        CRect desktop_lyric_rect = rc_tmp;
+        desktop_lyric_rect.DeflateRect(DPI(2), DPI(2));
+        DrawDesktopLyricButton(desktop_lyric_rect);
     }
     else
     {
@@ -1242,15 +1244,23 @@ void CPlayerUIBase::UpdateVolumeToolTip()
 
 void CPlayerUIBase::UpdatePlaylistBtnToolTip()
 {
+    wstring tool_tip = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
     if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
-        UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST)));
+        tool_tip += GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST).GetString();
     else
-        UpdateMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST)));
+        tool_tip += GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST).GetString();
+    UpdateMouseToolTip(BTN_SHOW_PLAYLIST, tool_tip.c_str());
 }
 
 void CPlayerUIBase::UpdateDarkLightModeBtnToolTip()
 {
-    UpdateMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, GetCmdShortcutKeyForTooltips(ID_DARK_MODE)));
+    wstring tip_str;
+    if(theApp.m_app_setting_data.dark_mode)
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE");
+    else
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
+    tip_str += GetCmdShortcutKeyForTooltips(ID_DARK_MODE).GetString();
+    UpdateMouseToolTip(BTN_DARK_LIGHT, tip_str.c_str());
 }
 
 void CPlayerUIBase::UpdateToolTipPositionLater()
@@ -1268,87 +1278,42 @@ void CPlayerUIBase::UpdateToolTipPosition()
 
 void CPlayerUIBase::SetRepeatModeToolTipText()
 {
-    m_repeat_mode_tip = CCommon::LoadText(IDS_REPEAT_MODE, _T(" (M): "));
-    switch (CPlayer::GetInstance().GetRepeatMode())
+    wstring mode_str;
+    auto repeat_mode = CPlayer::GetInstance().GetRepeatMode();
+    switch (repeat_mode)
     {
-    case RepeatMode::RM_PLAY_ORDER:
-        m_repeat_mode_tip += CCommon::LoadText(IDS_PLAY_ODER);
-        break;
-    case RepeatMode::RM_LOOP_PLAYLIST:
-        m_repeat_mode_tip += CCommon::LoadText(IDS_LOOP_PLAYLIST);
-        break;
-    case RepeatMode::RM_LOOP_TRACK:
-        m_repeat_mode_tip += CCommon::LoadText(IDS_LOOP_TRACK);
-        break;
-    case RepeatMode::RM_PLAY_SHUFFLE:
-        m_repeat_mode_tip += CCommon::LoadText(IDS_PLAY_SHUFFLE);
-        break;
-    case RepeatMode::RM_PLAY_RANDOM:
-        m_repeat_mode_tip += CCommon::LoadText(IDS_PLAY_RANDOM);
-        break;
-    case RepeatMode::RM_PLAY_TRACK:
-        m_repeat_mode_tip += CCommon::LoadText(IDS_PLAY_TRACK);
-        break;
+    case RM_PLAY_ORDER: mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_OREDE");break;
+    case RM_PLAY_SHUFFLE:  mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_SHUFFLE"); break;
+    case RM_PLAY_RANDOM: mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_RANDOM"); break;
+    case RM_LOOP_PLAYLIST: mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_PLAYLIST"); break;
+    case RM_LOOP_TRACK: mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_TRACK"); break;
+    case RM_PLAY_TRACK: mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_ONCE"); break;
+    default: mode_str = L"<repeat mode error>";
     }
+    m_repeat_mode_tip = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_MODE") + L" (M): " + mode_str;
 }
 
 void CPlayerUIBase::SetSongInfoToolTipText()
 {
     const SongInfo& songInfo = CPlayer::GetInstance().GetCurrentSongInfo();
 
-    m_info_tip = CCommon::LoadText(IDS_SONG_INFO, GetCmdShortcutKeyForTooltips(ID_SONG_INFO));
-    m_info_tip += _T("\r\n");
-
-    m_info_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
-    m_info_tip += songInfo.GetTitle().c_str();
-    m_info_tip += _T("\r\n");
-
-    m_info_tip += CCommon::LoadText(IDS_ARTIST, _T(": "));
-    m_info_tip += songInfo.GetArtist().c_str();
-    m_info_tip += _T("\r\n");
-
-    m_info_tip += CCommon::LoadText(IDS_ALBUM, _T(": "));
-    m_info_tip += songInfo.GetAlbum().c_str();
-    //m_info_tip += _T("\r\n");
-
-    //m_info_tip += CCommon::LoadText(IDS_BITRATE, _T(": "));
-    //CString strTmp;
-    //strTmp.Format(_T("%d kbps"), songInfo.bitrate);
-    //m_info_tip += strTmp;
+    m_info_tip = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PROPETRY") + GetCmdShortcutKeyForTooltips(ID_SONG_INFO).GetString() + L"\r\n";
+    m_info_tip += theApp.m_str_table.LoadText(L"TXT_TITLE") + L": " + songInfo.GetTitle() + L"\r\n";
+    m_info_tip += theApp.m_str_table.LoadText(L"TXT_ARTIST") + L": " + songInfo.GetArtist() + L"\r\n";
+    m_info_tip += theApp.m_str_table.LoadText(L"TXT_ALBUM") + L": " + songInfo.GetAlbum();
 }
 
 void CPlayerUIBase::SetCoverToolTipText()
 {
     if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
     {
-        m_cover_tip = CCommon::LoadText(IDS_ALBUM_COVER, _T(": "));
-
         if (CPlayer::GetInstance().IsInnerCover())
-        {
-            m_cover_tip += CCommon::LoadText(IDS_INNER_ALBUM_COVER_TIP_INFO);
-            switch (CPlayer::GetInstance().GetAlbumCoverType())
-            {
-            case 0:
-                m_cover_tip += _T("jpg");
-                break;
-            case 1:
-                m_cover_tip += _T("png");
-                break;
-            case 2:
-                m_cover_tip += _T("gif");
-                break;
-            }
-        }
+            m_cover_tip = theApp.m_str_table.LoadTextFormat(L"UI_TIP_COVER_INNER", { CPlayer::GetInstance().GetAlbumCoverType() });
         else
-        {
-            m_cover_tip += CCommon::LoadText(IDS_OUT_IMAGE, _T("\r\n"));
-            m_cover_tip += CPlayer::GetInstance().GetAlbumCoverPath().c_str();
-        }
+            m_cover_tip = theApp.m_str_table.LoadTextFormat(L"UI_TIP_COVER_OUT", { CPlayer::GetInstance().GetAlbumCoverPath() });
     }
     else
-    {
-        m_cover_tip.Empty();
-    }
+        m_cover_tip.clear();
 }
 
 int CPlayerUIBase::Margin() const
@@ -1465,22 +1430,12 @@ wstring CPlayerUIBase::GetDisplayFormatString()
     wstring result;
     int chans = CPlayer::GetInstance().GetChannels();
     int freq = CPlayer::GetInstance().GetFreq();
-    CString chans_str;
-    if (chans == 1)
-        chans_str = CCommon::LoadText(IDS_MONO);
-    else if (chans == 2)
-        chans_str = CCommon::LoadText(IDS_STEREO);
-    else if (chans == 6)
-        chans_str = CCommon::LoadText(_T("5.1 "), IDS_CHANNEL);
-    else if (chans == 8)
-        chans_str = CCommon::LoadText(_T("7.1 "), IDS_CHANNEL);
-    else if (chans > 2)
-        chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), chans);
+    wstring chans_str = CSongInfoHelper::GetChannelsString(static_cast<BYTE>(chans));
     wchar_t buff[64];
     if (!CPlayer::GetInstance().IsMidi())
-        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.GetString());
+        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.c_str());
     else
-        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.GetString());
+        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.c_str());
     result = buff;
     if (CPlayer::GetInstance().IsMidi())
     {
@@ -1494,12 +1449,15 @@ wstring CPlayerUIBase::GetDisplayFormatString()
 
 CString CPlayerUIBase::GetVolumeTooltipString()
 {
-    CString tooltip;
+    static const wstring& mute_str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE");
+    static const wstring& volume_adjust = theApp.m_str_table.LoadText(L"UI_TIP_VOLUME_MOUSE_WHEEL_ADJUST");
+    wstring tooltip;
     if (CPlayer::GetInstance().GetVolume() <= 0)
-        tooltip.Format(_T("%s: %s\r\n%s"), CCommon::LoadText(IDS_VOLUME).GetString(), CCommon::LoadText(IDS_MUTE).GetString(), CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME).GetString());
+        tooltip = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { mute_str, L"" });
     else
-        tooltip.Format(_T("%s: %d%%\r\n%s"), CCommon::LoadText(IDS_VOLUME).GetString(), CPlayer::GetInstance().GetVolume(), CCommon::LoadText(IDS_MOUSE_WHEEL_ADJUST_VOLUME).GetString());
-    return tooltip;
+        tooltip = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { CPlayer::GetInstance().GetVolume(), L"%" });
+    tooltip += L"\r\n" + volume_adjust;
+    return CString(tooltip.c_str());
 }
 
 int CPlayerUIBase::DPI(int pixel) const
@@ -1586,7 +1544,7 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
             //如果不显示音量文本，则在音量调整按钮旁边显示音量。在这里计算文本的位置
             rect_text = m_buttons[BTN_VOLUME_UP].rect;
             if (CPlayer::GetInstance().GetVolume() <= 0)
-                volume_str = CCommon::LoadText(IDS_MUTE);
+                volume_str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE").c_str();
             else
                 volume_str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
             int width{ m_draw.GetTextExtent(volume_str).cx };
@@ -1720,8 +1678,8 @@ void CPlayerUIBase::DrawControlBar(CRect rect, bool draw_switch_display_btn)
     DrawControlBarBtn(rc_btn, m_buttons[BTN_SHOW_PLAYLIST], theApp.m_icon_set.show_playlist);
 
     rc_btn.MoveToX(rc_btn.left - btn_side);
-    m_buttons[BTN_SELECT_FOLDER].enable = !CPlayer::GetInstance().m_loading;
-    DrawControlBarBtn(rc_btn, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
+    m_buttons[BTN_MEDIA_LIB].enable = !CPlayer::GetInstance().m_loading;
+    DrawControlBarBtn(rc_btn, m_buttons[BTN_MEDIA_LIB], theApp.m_icon_set.media_lib);
 
     if (draw_switch_display_btn)
     {
@@ -1856,8 +1814,15 @@ void CPlayerUIBase::DrawProgess(CRect rect)
 
 void CPlayerUIBase::DrawTranslateButton(CRect rect)
 {
+    static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_TRANSLATE");
     m_buttons[BTN_TRANSLATE].enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
-    DrawTextButton(rect, m_buttons[BTN_TRANSLATE], CCommon::LoadText(IDS_TRAS), theApp.m_lyric_setting_data.show_translate);
+    DrawTextButton(rect, m_buttons[BTN_TRANSLATE], btn_str.c_str(), theApp.m_lyric_setting_data.show_translate);
+}
+
+void CPlayerUIBase::DrawDesktopLyricButton(CRect rect)
+{
+    static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_DESKTOP_LYRIC");
+    DrawTextButton(rect, m_buttons[BTN_LRYIC], btn_str.c_str(), theApp.m_lyric_setting_data.show_desktop_lyric);
 }
 
 int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
@@ -2001,44 +1966,35 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         rc_tmp.right = rc_tmp.left - DPI(4);
         rc_tmp.left = rect.left;
         static CDrawCommon::ScrollInfo scroll_info0;
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_PLAYLIST_INIT_INFO, { CPlayer::GetInstance().GetSongNum() });
-        m_draw.DrawScrollText(rc_tmp, info, m_colors.color_text, GetScrollTextPixel(), false, scroll_info0, reset);
+        wstring info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_PLAYLIST_INIT_INFO", { CPlayer::GetInstance().GetSongNum() });
+        m_draw.DrawScrollText(rc_tmp, info.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info0, reset);
     }
     //显示AB重复状态
     else if (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE)
     {
-        CString info;
+        wstring info;
         if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_A_SELECTED)
-            info = CCommon::LoadTextFormat(IDS_AB_REPEAT_A_SELECTED, { CPlayer::GetInstance().GetARepeatPosition().toString(false) });
+            info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_AB_REPEAT_A_SELECTED", { CPlayer::GetInstance().GetARepeatPosition().toString(false) });
         else if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
-            info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, { CPlayer::GetInstance().GetARepeatPosition().toString(false), CPlayer::GetInstance().GetBRepeatPosition().toString(false) });
-        m_draw.DrawWindowText(rect, info, m_colors.color_text);
+            info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_AB_REPEAT_ON", { CPlayer::GetInstance().GetARepeatPosition().toString(false), CPlayer::GetInstance().GetBRepeatPosition().toString(false) });
+        m_draw.DrawWindowText(rect, info.c_str(), m_colors.color_text);
     }
     //显示媒体库更新状态
     else if (theApp.IsMeidaLibUpdating() && theApp.m_media_update_para.num_added > 0)
     {
-        CString info = CCommon::LoadTextFormat(IDS_UPDATING_MEDIA_LIB_INFO, { theApp.m_media_update_para.num_added });
-        CString str;
-        str.Format(_T(" %d%%"), theApp.m_media_update_para.num_added * 100 / theApp.m_media_update_para.total_num);
-        info += str;
+        int percent = theApp.m_media_update_para.num_added * 100 / theApp.m_media_update_para.total_num;
+        wstring info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_MEDIA_LIB_UPDATING_INFO", { theApp.m_media_update_para.num_added, percent });
         static CDrawCommon::ScrollInfo scroll_info2;
-        m_draw.DrawScrollText(rect, info, m_colors.color_text, GetScrollTextPixel(), false, scroll_info2, reset);
+        m_draw.DrawScrollText(rect, info.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info2, reset);
     }
     else
     {
         //显示播放信息
         wstring str_info;
         if (CPlayer::GetInstance().IsError())
-        {
-            str_info = CCommon::LoadText(IDS_PLAY_ERROR).GetString();
-            str_info += L": ";
-            str_info += CPlayer::GetInstance().GetErrorInfo();
-        }
+            str_info = CPlayer::GetInstance().GetErrorInfo();
         else
-        {
             str_info = CPlayer::GetInstance().GetPlayingState();
-        }
         int text_width = m_draw.GetTextExtent(str_info.c_str()).cx;
         CRect rect_play{ rect };
         rect_play.right = rect_play.left + text_width + theApp.DPI(8);
@@ -2047,11 +2003,11 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         //显示下一个播放曲目
         if (theApp.m_app_setting_data.show_next_track)
         {
-            static CString str_next_track_label = CCommon::LoadText(IDS_NEXT_TRACK, _T(": "));
+            static wstring str_next_track_label = theApp.m_str_table.LoadText(L"UI_TXT_NEXT_TRACK");
             CRect rect_next_track{ rect };
             rect_next_track.left = rect_play.right;
-            rect_next_track.right = rect_next_track.left + m_draw.GetTextExtent(str_next_track_label).cx;
-            m_draw.DrawWindowText(rect_next_track, str_next_track_label.GetString(), m_colors.color_text);
+            rect_next_track.right = rect_next_track.left + m_draw.GetTextExtent(str_next_track_label.c_str()).cx;
+            m_draw.DrawWindowText(rect_next_track, str_next_track_label.c_str(), m_colors.color_text);
 
             rect_next_track.left = rect_next_track.right;
             rect_next_track.right = rect.right;
@@ -2060,9 +2016,9 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
             if (next_song.IsEmpty())
             {
                 if (CPlayer::GetInstance().GetRepeatMode() == RM_PLAY_RANDOM || CPlayer::GetInstance().GetRepeatMode() == RM_PLAY_SHUFFLE)
-                    str_next_song += CCommon::LoadText(IDS_RANDOM_TRACK).GetString();
+                    str_next_song += theApp.m_str_table.LoadText(L"UI_TXT_NEXT_TRACK_RANDOM");
                 else
-                    str_next_song += CCommon::LoadText(IDS_NONE).GetString();
+                    str_next_song += theApp.m_str_table.LoadText(L"UI_TXT_NEXT_TRACK_NONE");
             }
             else
             {
@@ -2178,7 +2134,7 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     rect_temp.right = rect_temp.left;
     rect_temp.left = m_layout.titlabar_height;
     static CDrawCommon::ScrollInfo scroll_info{};
-    m_draw.DrawScrollText(rect_temp, theApp.m_window_title.GetString(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info);
+    m_draw.DrawScrollText(rect_temp, theApp.m_window_title.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info);
     //m_draw.DrawWindowText(rect_temp, title.GetString(), m_colors.color_text);
 }
 
@@ -2197,6 +2153,23 @@ CString CPlayerUIBase::GetCmdShortcutKeyForTooltips(UINT id)
         return shortcut_key_tip;
     }
     return CString();
+}
+
+void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
+{
+    size_t index{};
+    while ((index = str.find(L"%(", index)) != wstring::npos)
+    {
+        size_t right_bracket_index = str.find(L')', index + 2);
+        if (right_bracket_index == wstring::npos)
+            break;
+        wstring key_str{ str.begin() + index + 2 , str.begin() + right_bracket_index };
+        const wstring& value_str = theApp.m_str_table.LoadText(key_str);
+        if (value_str == StrTable::error_str)   // LoadText内部已记录错误日志
+            break;
+        str.replace(index, right_bracket_index + 1, value_str);
+        index = right_bracket_index + 1;
+    }
 }
 
 void CPlayerUIBase::DrawAlbumCover(CRect rect)
@@ -2336,7 +2309,7 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
         rect_text.left = rect_icon.right;
         CString str;
         if (CPlayer::GetInstance().GetVolume() <= 0)
-            str = CCommon::LoadText(IDS_MUTE).GetString();
+            str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE").c_str();
         else
             str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
         if (m_buttons[BTN_VOLUME].hover)        //鼠标指向音量区域时，以另外一种颜色显示
@@ -2417,7 +2390,8 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
 
     if (CPlayer::GetInstance().IsPlaylistEmpty())
     {
-        m_draw.DrawWindowText(rect, CCommon::LoadText(IDS_PLAYLIST_EMPTY_INFO), m_colors.color_text);
+        const wstring& info = theApp.m_str_table.LoadText(L"UI_PLAYLIST_EMPTY_INFO");
+        m_draw.DrawWindowText(rect, info.c_str(), m_colors.color_text);
     }
     else
     {
@@ -2575,11 +2549,15 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect)
     rect_icon.right = rect_icon.left + DPI(26);
     DrawUiIcon(rect_icon, icon, !theApp.m_app_setting_data.dark_mode);
     //绘制文本
-    CString str{ CCommon::LoadText(CPlayer::GetInstance().IsPlaylistMode() ? IDS_PLAYLIST : IDS_FOLDER, _T(":")) };
+    wstring str;
+    if (CPlayer::GetInstance().IsPlaylistMode())
+        str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST");
+    else
+        str = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER");
     CRect rect_text{ rect };
     rect_text.left = rect_icon.right;
-    rect_text.right = rect_text.left + m_draw.GetTextExtent(str).cx;
-    m_draw.DrawWindowText(rect_text, str, m_colors.color_text, Alignment::LEFT, true);
+    rect_text.right = rect_text.left + m_draw.GetTextExtent(str.c_str()).cx;
+    m_draw.DrawWindowText(rect_text, str.c_str(), m_colors.color_text, Alignment::LEFT, true);
     //绘制菜单按钮
     CRect menu_btn_rect{ rect };
     menu_btn_rect.left = rect.right - DPI(26);
@@ -2677,12 +2655,11 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
     CRect rc_item{ rect };
     rc_item.bottom = rc_item.top + DPI(20);
     rc_item.left += DPI(4);
-    auto drawMenuItem = [&](BtnKey key, IconRes icon, UINT str_id)
+    auto drawMenuItem = [&](BtnKey key, IconRes icon, LPCTSTR menu_str)
     {
-        CString text = CCommon::LoadText(str_id);
         UIButton& btn{ m_buttons[key] };
         btn.rect = rc_item;
-        btn.rect.right = btn.rect.left + btn.rect.Height() + m_draw.GetTextExtent(text).cx + DPI(6);
+        btn.rect.right = btn.rect.left + btn.rect.Height() + m_draw.GetTextExtent(menu_str).cx + DPI(6);
 
         CRect rc_cur_item{ btn.rect };
         if (btn.pressed && btn.enable)
@@ -2721,19 +2698,26 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
         CRect rc_text{ rc_cur_item };
         rc_text.left = rc_icon.right;
         rc_text.right = btn.rect.right;
-        m_draw.DrawWindowText(rc_text, text, m_colors.color_text);
+        m_draw.DrawWindowText(rc_text, menu_str, m_colors.color_text);
 
         //下一个矩形的位置
         rc_item.left = rc_text.right + DPI(2);
     };
-
-    drawMenuItem(MENU_FILE, theApp.m_icon_set.select_folder, IDS_FILE);                 //文件
-    drawMenuItem(MENU_PLAY_CONTROL, theApp.m_icon_set.play_new, IDS_PLAY_CONTROL);      //播放控制
-    drawMenuItem(MENU_PLAYLIST, theApp.m_icon_set.show_playlist, IDS_PLAYLIST);         //播放列表
-    drawMenuItem(MENU_LYRICS, theApp.m_icon_set.lyric, IDS_LYRICS);                     //歌词
-    drawMenuItem(MENU_VIEW, theApp.m_icon_set.playlist_dock, IDS_VIEW);                 //视图
-    drawMenuItem(MENU_TOOLS, theApp.m_icon_set.setting, IDS_TOOLS);                     //工具
-    drawMenuItem(MENU_HELP, theApp.m_icon_set.help, IDS_HELP);                          //帮助
+    // 自绘的菜单栏不支持助记键，显示的字符串与系统菜单栏不同，所以这里的字符串使用LoadText而不是LoadMenuText
+    static const wstring& menu_name_file = theApp.m_str_table.LoadText(L"UI_TXT_MENU_FILE");
+    static const wstring& menu_name_play_control = theApp.m_str_table.LoadText(L"UI_TXT_MENU_PLAY_CONTROL");
+    static const wstring& menu_name_playlist = theApp.m_str_table.LoadText(L"UI_TXT_MENU_PLAYLIST");
+    static const wstring& menu_name_lyrics = theApp.m_str_table.LoadText(L"UI_TXT_MENU_LYRICS");
+    static const wstring& menu_name_view = theApp.m_str_table.LoadText(L"UI_TXT_MENU_VIEW");
+    static const wstring& menu_name_tools = theApp.m_str_table.LoadText(L"UI_TXT_MENU_TOOLS");
+    static const wstring& menu_name_help = theApp.m_str_table.LoadText(L"UI_TXT_MENU_HELP");
+    drawMenuItem(MENU_FILE, theApp.m_icon_set.select_folder, menu_name_file.c_str());                 //文件
+    drawMenuItem(MENU_PLAY_CONTROL, theApp.m_icon_set.play_new, menu_name_play_control.c_str());      //播放控制
+    drawMenuItem(MENU_PLAYLIST, theApp.m_icon_set.show_playlist, menu_name_playlist.c_str());         //播放列表
+    drawMenuItem(MENU_LYRICS, theApp.m_icon_set.lyric, menu_name_lyrics.c_str());                     //歌词
+    drawMenuItem(MENU_VIEW, theApp.m_icon_set.playlist_dock, menu_name_view.c_str());                 //视图
+    drawMenuItem(MENU_TOOLS, theApp.m_icon_set.setting, menu_name_tools.c_str());                     //工具
+    drawMenuItem(MENU_HELP, theApp.m_icon_set.help, menu_name_help.c_str());                          //帮助
     ResetDrawArea();
 }
 
@@ -2806,53 +2790,129 @@ void CPlayerUIBase::DrawUiIcon(CRect rect, const IconRes & icon, bool dark)
 void CPlayerUIBase::AddToolTips()
 {
     bool is_mini_mode{ IsMiniMode() };
-    AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip);
-    AddMouseToolTip(BTN_TRANSLATE, CCommon::LoadText(IDS_SHOW_LYRIC_TRANSLATION));
+    wstring tip_str;
+    // 翻译
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_TRANSLATION");
+    AddMouseToolTip(BTN_TRANSLATE, tip_str.c_str());
+    // 音量
     AddMouseToolTip(BTN_VOLUME, GetVolumeTooltipString());
+    // 切换界面
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_UI");
+    if (!is_mini_mode) tip_str += GetCmdShortcutKeyForTooltips(ID_SWITCH_UI);
+    AddMouseToolTip(BTN_SKIN, tip_str.c_str());
+    AddMouseToolTip(BTN_SKIN_TITLEBAR, tip_str.c_str());
+    // 音效
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_SOUND_EFFECT_SETTING");
+    tip_str += GetCmdShortcutKeyForTooltips(ID_EQUALIZER);
+    AddMouseToolTip(BTN_EQ, tip_str.c_str());
+    // 设置
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING");
+    tip_str += GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS);
+    AddMouseToolTip(BTN_SETTING, tip_str.c_str());
+    AddMouseToolTip(BTN_SETTING_TITLEBAR, tip_str.c_str());
+    // MINI模式
     if (is_mini_mode)
-        AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI));
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE_RTN");
     else
-        AddMouseToolTip(BTN_SKIN, CCommon::LoadText(IDS_SWITCH_UI, GetCmdShortcutKeyForTooltips(ID_SWITCH_UI)));
-    AddMouseToolTip(BTN_SKIN_TITLEBAR, CCommon::LoadText(IDS_SWITCH_UI, GetCmdShortcutKeyForTooltips(ID_SWITCH_UI)));
-    AddMouseToolTip(BTN_EQ, CCommon::LoadText(IDS_SOUND_EFFECT_SETTING, GetCmdShortcutKeyForTooltips(ID_EQUALIZER)));
-    AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS, GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS)));
-    AddMouseToolTip(BTN_SETTING_TITLEBAR, CCommon::LoadText(IDS_SETTINGS, GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS)));
-    if (is_mini_mode)
-        AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_BACK_TO_NARMAL));
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE");
+    tip_str += GetCmdShortcutKeyForTooltips(ID_MINI_MODE);
+    AddMouseToolTip(BTN_MINI, tip_str.c_str());
+    AddMouseToolTip(BTN_MINI_TITLEBAR, tip_str.c_str());
+    // 曲目信息（属性）
+    AddMouseToolTip(BTN_INFO, m_info_tip.c_str());
+    // 停止
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
+    AddMouseToolTip(BTN_STOP, tip_str.c_str());
+    // 上一曲
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS");
+    AddMouseToolTip(BTN_PREVIOUS, tip_str.c_str());
+    // 播放/暂停
+    if (CPlayer::GetInstance().IsPlaying())
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE");
     else
-        AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
-    AddMouseToolTip(BTN_MINI_TITLEBAR, CCommon::LoadText(IDS_MINI_MODE, GetCmdShortcutKeyForTooltips(ID_MINI_MODE)));
-    AddMouseToolTip(BTN_INFO, m_info_tip);
-    AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
-    AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
-    AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
-    AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
-    AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
-    if (is_mini_mode)
-        AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    AddMouseToolTip(BTN_PLAY_PAUSE, tip_str.c_str());
+    // 下一曲
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT");
+    AddMouseToolTip(BTN_NEXT, tip_str.c_str());
+    // 进度条
+    tip_str = theApp.m_str_table.LoadTextFormat(L"UI_TIP_SEEK_TO_MINUTE_SECOND", { L"0", L"00" });
+    AddMouseToolTip(BTN_PROGRESS, tip_str.c_str());
+    // 显示/隐藏播放列表
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
+    if (!is_mini_mode)
+    {
+        if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+            tip_str += GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST);
+        else
+            tip_str += GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST);
+    }
+    AddMouseToolTip(BTN_SHOW_PLAYLIST, tip_str.c_str());
+    // 媒体库
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MEDIA_LIB");
+    tip_str += GetCmdShortcutKeyForTooltips(ID_MEDIA_LIB);
+    AddMouseToolTip(BTN_MEDIA_LIB, tip_str.c_str());
+    // 查找歌曲
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FIND_SONGS");
+    tip_str += GetCmdShortcutKeyForTooltips(ID_FIND);
+    AddMouseToolTip(BTN_FIND, tip_str.c_str());
+    // 封面
+    AddMouseToolTip(BTN_COVER, m_cover_tip.c_str());
+    // 全屏
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FULL_SCREEN");
+    tip_str += GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN);
+    AddMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, tip_str.c_str());
+    AddMouseToolTip(BTN_FULL_SCREEN, tip_str.c_str());
+    // 主菜单
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAIN_MENU");
+    AddMouseToolTip(BTN_MENU_TITLEBAR, tip_str.c_str());
+    AddMouseToolTip(BTN_MENU, tip_str.c_str());
+    // “我喜欢的音乐”
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
+    AddMouseToolTip(BTN_FAVOURITE, tip_str.c_str());
+    // 桌面歌词
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC");
+    AddMouseToolTip(BTN_LRYIC, tip_str.c_str());
+    // AB重复
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_AB_REPEAT");
+    tip_str = GetCmdShortcutKeyForTooltips(ID_AB_REPEAT);
+    AddMouseToolTip(BTN_AB_REPEAT, tip_str.c_str());
+    // 关闭
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE");
+    AddMouseToolTip(BTN_APP_CLOSE, tip_str.c_str());
+    AddMouseToolTip(BTN_CLOSE, tip_str.c_str());
+    // 最小化
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMIZE");
+    AddMouseToolTip(BTN_MINIMIZE, tip_str.c_str());
+    // 最大化
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAXIMIZE");
+    AddMouseToolTip(BTN_MAXIMIZE, tip_str.c_str());
+    // 添加到播放列表
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    AddMouseToolTip(BTN_ADD_TO_PLAYLIST, tip_str.c_str());
+    // 切换界面
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_DISPLAY");
+    AddMouseToolTip(BTN_SWITCH_DISPLAY, tip_str.c_str());
+    // 深色/浅色模式
+    if(theApp.m_app_setting_data.dark_mode)
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE");
     else
-        AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST, theApp.m_nc_setting_data.playlist_btn_for_float_playlist ? GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST) : GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST)));
-    AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, GetCmdShortcutKeyForTooltips(ID_SET_PATH)));
-    AddMouseToolTip(BTN_FIND, CCommon::LoadText(IDS_FIND_SONGS, GetCmdShortcutKeyForTooltips(ID_FIND)));
-    AddMouseToolTip(BTN_COVER, m_cover_tip);
-    AddMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
-    AddMouseToolTip(BTN_FULL_SCREEN, CCommon::LoadText(IDS_FULL_SCREEN, GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN)));
-    AddMouseToolTip(BTN_MENU_TITLEBAR, CCommon::LoadText(IDS_MAIN_MENU));
-    AddMouseToolTip(BTN_MENU, CCommon::LoadText(IDS_MAIN_MENU));
-    AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
-    AddMouseToolTip(BTN_LRYIC, CCommon::LoadText(IDS_SHOW_DESKTOP_LYRIC));
-    AddMouseToolTip(BTN_AB_REPEAT, CCommon::LoadText(IDS_AB_REPEAT, GetCmdShortcutKeyForTooltips(ID_AB_REPEAT)));
-    AddMouseToolTip(BTN_APP_CLOSE, CCommon::LoadText(IDS_CLOSE));
-    AddMouseToolTip(BTN_MINIMIZE, CCommon::LoadText(IDS_MINIMIZE));
-    AddMouseToolTip(BTN_MAXIMIZE, CCommon::LoadText(IDS_MAXIMIZE));
-    AddMouseToolTip(BTN_ADD_TO_PLAYLIST, CCommon::LoadText(IDS_ADD_TO_PLAYLIST));
-    AddMouseToolTip(BTN_SWITCH_DISPLAY, CCommon::LoadText(IDS_SWITCH_DISPLAY));
-    AddMouseToolTip(BTN_DARK_LIGHT, CCommon::LoadText(theApp.m_app_setting_data.dark_mode ? IDS_SWITCH_TO_LIGHT_MODE : IDS_SWITHC_TO_DARK_MODE, GetCmdShortcutKeyForTooltips(ID_DARK_MODE)));
-    AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE));
-    AddMouseToolTip(BTN_LOCATE_TO_CURRENT, CCommon::LoadText(IDS_LOCATE_TO_CURRENT, GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT)));
-    AddMouseToolTip(BTN_PLAYLIST_MENU, CCommon::LoadText(IDS_PLAYLIST_MENU));
-    AddMouseToolTip(BTN_PLAYLIST_DROP_DOWN, CCommon::LoadText(IDS_RECENT_FOLDER_OR_PLAYLIST));
-    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::PLAYLIST_TOOLTIP_INDEX), _T(""));
-
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
+    tip_str += GetCmdShortcutKeyForTooltips(ID_DARK_MODE);
+    AddMouseToolTip(BTN_DARK_LIGHT, tip_str.c_str());
+    // 播放列表定位到当前播放
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT");
+    tip_str += GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT);
+    AddMouseToolTip(BTN_LOCATE_TO_CURRENT, tip_str.c_str());
+    // 播放列表
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_MENU");
+    AddMouseToolTip(BTN_PLAYLIST_MENU, tip_str.c_str());
+    // 播放列表下拉菜单按钮
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST");
+    AddMouseToolTip(BTN_PLAYLIST_DROP_DOWN, tip_str.c_str());
+    // 循环模式
+    AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip.c_str());
     UpdateRepeatModeToolTip();
+    // 播放列表工具提示
+    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::PLAYLIST_TOOLTIP_INDEX), L"");
 }

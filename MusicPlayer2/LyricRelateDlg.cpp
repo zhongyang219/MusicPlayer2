@@ -7,6 +7,8 @@
 #include "SongInfoHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
+#include "FilterHelper.h"
+#include "CommonDialogMgr.h"
 
 
 // CLyricRelateDlg 对话框
@@ -49,7 +51,7 @@ void CLyricRelateDlg::AddListRow(const wstring& lyric_path)
     bool is_related{ lyric_path == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file };
     if(is_related)
     {
-        m_result_list.SetItemText(index, 3, CCommon::LoadText(IDS_YES));
+        m_result_list.SetItemText(index, 3, theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_IS_RELATED_YES").c_str());
         m_result_list.SetHightItem(index);
     }
 }
@@ -142,10 +144,10 @@ BOOL CLyricRelateDlg::OnInitDialog()
     width[1] = rect.Width() * 3 / 10;
     width[2] = rect.Width() * 2 / 5;
     width[3] = rect.Width() - width[0] - width[1] - width[2] - theApp.DPI(20) - 1;
-    m_result_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);
-    m_result_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, width[1]);
-    m_result_list.InsertColumn(2, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, width[2]);
-    m_result_list.InsertColumn(3, CCommon::LoadText(IDS_IS_RELATED), LVCFMT_LEFT, width[3]);
+    m_result_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, width[0]);
+    m_result_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_FILE_NAME").c_str(), LVCFMT_LEFT, width[1]);
+    m_result_list.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_FILE_PATH").c_str(), LVCFMT_LEFT, width[2]);
+    m_result_list.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_IS_RELATED").c_str(), LVCFMT_LEFT, width[3]);
 
     SearchLyrics();
     ShowSearchResult();
@@ -166,9 +168,9 @@ void CLyricRelateDlg::OnBnClickedLocalSearchButton()
 void CLyricRelateDlg::OnBnClickedBrowseButton1()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CString szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
+    wstring filter = FilterHelper::GetLyricFileFilter();
     //构造打开文件对话框
-    CFileDialog fileDlg(TRUE, NULL, NULL, 0, szFilter, this);
+    CFileDialog fileDlg(TRUE, NULL, NULL, 0, filter.c_str(), this);
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {
@@ -183,7 +185,7 @@ void CLyricRelateDlg::OnBnClickedDeleteFileButton()
     // TODO: 在此添加控件通知处理程序代码
     int index_selected = m_result_list.GetCurSel();
     wstring lyric_file = GetListRow(index_selected);
-    CCommon::DeleteAFile(m_hWnd, lyric_file);
+    CommonDialogMgr::DeleteAFile(m_hWnd, lyric_file);
     if (lyric_file == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file)
     {
         //如果删除的是正在显示的歌词，则将其清除

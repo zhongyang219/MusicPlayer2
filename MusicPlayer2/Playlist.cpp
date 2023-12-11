@@ -3,9 +3,8 @@
 #include "Common.h"
 #include "FilePathHelper.h"
 #include "SongDataManager.h"
-#include <set>
 
-const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION, L".m3u", L".m3u8" };
+const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8" };
 
 /*
 播放列表文件格式说明
@@ -170,7 +169,7 @@ void CPlaylistFile::RemoveSong(const SongInfo& song)
 
 bool CPlaylistFile::IsPlaylistFile(const wstring& file_path)
 {
-    wstring file_extension = CFilePathHelper(file_path).GetFileExtension(false, true);
+    wstring file_extension = CFilePathHelper(file_path).GetFileExtension();
     return CCommon::IsItemInVector(m_surpported_playlist, file_extension);
 }
 
@@ -178,8 +177,8 @@ bool CPlaylistFile::IsPlaylistExt(wstring ext)
 {
     if (ext.empty())
         return false;
-    if (ext.front() != L'.')
-        ext = L'.' + ext;
+    if (ext.front() == L'.')
+        ext =  ext.substr(1);
     return CCommon::IsItemInVector(m_surpported_playlist, ext);
 }
 

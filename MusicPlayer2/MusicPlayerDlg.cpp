@@ -22,15 +22,16 @@
 #include "AddToPlaylistDlg.h"
 #include "WIC.h"
 #include "LyricRelateDlg.h"
-#include "AlbumCoverInfoDlg.h"
 #include "SongDataManager.h"
-#include "TagFromFileNameDlg.h"
+#include "TagModeSelectDlg.h"
 #include "PropertyDlgHelper.h"
 #include "TagLibHelper.h"
 #include "RecentFolderAndPlaylist.h"
 #include "UserUi.h"
 #include "FfmpegCore.h"
 #include "SongInfoHelper.h"
+#include "FilterHelper.h"
+#include "CommonDialogMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -46,7 +47,7 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     : m_cmdLine{ cmdLine }, CMainDialogBase(IDD_MUSICPLAYER2_DIALOG, pParent)
 {
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-    m_path_edit.SetTooltopText(CCommon::LoadText(IDS_RECENT_FOLDER_OR_PLAYLIST));
+    m_path_edit.SetTooltopText(theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST").c_str());
 
     //初始化UI
     //加载内置界面
@@ -120,7 +121,7 @@ void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_PLAYLIST_LIST, m_playlist_list);
     DDX_Control(pDX, IDC_PATH_STATIC, m_path_static);
     DDX_Control(pDX, IDC_PATH_EDIT, m_path_edit);
-    DDX_Control(pDX, ID_SET_PATH, m_set_path_button);
+    DDX_Control(pDX, ID_MEDIA_LIB, m_media_lib_button);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
     //DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
@@ -142,7 +143,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_NEXT, &CMusicPlayerDlg::OnNext)
     ON_COMMAND(ID_REW, &CMusicPlayerDlg::OnRew)
     ON_COMMAND(ID_FF, &CMusicPlayerDlg::OnFF)
-    ON_COMMAND(ID_SET_PATH, &CMusicPlayerDlg::OnSetPath)
+    ON_COMMAND(ID_MEDIA_LIB, &CMusicPlayerDlg::OnMediaLib)
     ON_COMMAND(ID_FIND, &CMusicPlayerDlg::OnFind)
     ON_COMMAND(ID_EXPLORE_PATH, &CMusicPlayerDlg::OnExplorePath)
     ON_WM_DESTROY()
@@ -567,7 +568,7 @@ void CMusicPlayerDlg::LoadConfig()
     //else
     theApp.m_lyric_setting_data.cortana_info_enable = ini.GetBool(L"config", L"show_lyric_in_cortana", false);
     // theApp.m_lyric_setting_data.save_lyric_in_offset = ini.GetBool(L"config", L"save_lyric_in_offset", false);
-    theApp.m_lyric_setting_data.lyric_font.name = ini.GetString(L"config", L"font", CCommon::LoadText(IDS_DEFAULT_FONT));
+    theApp.m_lyric_setting_data.lyric_font.name = ini.GetString(L"config", L"font", theApp.m_str_table.GetDefaultFontName().c_str());
     theApp.m_lyric_setting_data.lyric_font.size = ini.GetInt(L"config", L"font_size", 11);
     theApp.m_lyric_setting_data.lyric_font.style.FromInt(ini.GetInt(L"config", L"font_style", 0));
     theApp.m_lyric_setting_data.lyric_line_space = ini.GetInt(L"config", L"lyric_line_space", 4);
@@ -584,7 +585,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.cortana_show_album_cover = ini.GetBool(L"config", L"cortana_show_album_cover", 1);
     theApp.m_lyric_setting_data.cortana_icon_beat = ini.GetBool(L"config", L"cortana_icon_beat", 0);
     theApp.m_lyric_setting_data.cortana_lyric_compatible_mode = ini.GetBool(L"config", L"cortana_lyric_compatible_mode", false);
-    theApp.m_lyric_setting_data.cortana_font.name = ini.GetString(L"config", L"cortana_font", CCommon::LoadText(IDS_DEFAULT_FONT));
+    theApp.m_lyric_setting_data.cortana_font.name = ini.GetString(L"config", L"cortana_font", theApp.m_str_table.GetDefaultFontName().c_str());
     theApp.m_lyric_setting_data.cortana_font.size = ini.GetInt(L"config", L"cortana_font_size", 11);
     theApp.m_lyric_setting_data.cortana_font.style.FromInt(ini.GetInt(L"config", L"cortana_font_style", 0));
     theApp.m_lyric_setting_data.cortana_lyric_keep_display = ini.GetBool(L"config", L"cortana_lyric_keep_display", false);
@@ -593,7 +594,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.show_default_album_icon_in_search_box = ini.GetBool(L"config", L"show_default_album_icon_in_search_box", false);
 
     theApp.m_lyric_setting_data.show_desktop_lyric = ini.GetBool(L"desktop_lyric", L"show_desktop_lyric", false);
-    theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.name = ini.GetString(L"desktop_lyric", L"font_name", CCommon::LoadText(IDS_DEFAULT_FONT));
+    theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.name = ini.GetString(L"desktop_lyric", L"font_name", theApp.m_str_table.GetDefaultFontName().c_str());
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.size = ini.GetInt(L"desktop_lyric", L"font_size", 30);
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.style.FromInt(ini.GetInt(L"desktop_lyric", L"font_style", 0));
     theApp.m_lyric_setting_data.desktop_lyric_data.text_color1 = ini.GetInt(L"desktop_lyric", L"text_color1", RGB(37, 152, 10));
@@ -672,12 +673,9 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
     theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(L"general", L"midi_use_inner_lyric", 0);
     theApp.m_general_setting_data.minimize_to_notify_icon = ini.GetBool(L"general", L"minimize_to_notify_icon", false);
-    bool is_chinese_language{};     //当前语言是否为简体中文
-    if (theApp.m_general_setting_data.language == Language::FOLLOWING_SYSTEM)
-        is_chinese_language = CCommon::LoadText(IDS_LANGUAGE_CODE) == _T("2");
-    else
-        is_chinese_language = (theApp.m_general_setting_data.language == Language::SIMPLIFIED_CHINESE);
-    theApp.m_general_setting_data.update_source = ini.GetInt(L"general", L"update_source", is_chinese_language ? 1 : 0);   //如果当前语言为简体，则默认更新源为Gitee，否则为GitHub
+
+    bool is_zh_cn = theApp.m_str_table.IsSimplifiedChinese();       //当前语言是否为简体中文
+    theApp.m_general_setting_data.update_source = ini.GetInt(L"general", L"update_source", is_zh_cn ? 1 : 0);   //如果当前语言为简体，则默认更新源为Gitee，否则为GitHub
 
     theApp.m_play_setting_data.stop_when_error = ini.GetBool(L"config", L"stop_when_error", true);
     theApp.m_play_setting_data.auto_play_when_start = ini.GetBool(L"config", L"auto_play_when_start", false);
@@ -832,7 +830,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy, int playlist_width)
     rect_select_folder.right = cx - m_layout.margin;
     rect_select_folder.top--;
     rect_select_folder.bottom++;
-    m_set_path_button.MoveWindow(rect_select_folder);
+    m_media_lib_button.MoveWindow(rect_select_folder);
 
     //设置歌曲搜索框的大小和位置
     CRect rect_search;
@@ -941,12 +939,12 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
     {
         if (CPlayer::GetInstance().IsPlaylistMode())
         {
-            pStatic->SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+            pStatic->SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str());
             pStatic->SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
         }
         else
         {
-            pStatic->SetWindowText(CCommon::LoadText(IDS_FOLDER, _T(":")));
+            pStatic->SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str());
             pStatic->SetIcon(theApp.m_icon_set.select_folder.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
         }
     };
@@ -957,11 +955,13 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
     //播放列表模式下，播放列表工具栏第一个菜单为“添加”，文件夹模式下为“文件夹”
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+        const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
     }
     else
     {
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, CCommon::LoadText(IDS_FOLDER), CCommon::LoadText(IDS_FOLDER), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(5), true);
+        const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_FOLDER");
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(5), true);
     }
 
     if (m_miniModeDlg.m_hWnd != NULL)
@@ -1033,7 +1033,7 @@ void CMusicPlayerDlg::SetPlaylistVisible()
     m_path_edit.ShowWindow(cmdShow);
     m_search_edit.ShowWindow(cmdShow);
     //m_clear_search_button.ShowWindow(cmdShow);
-    m_set_path_button.ShowWindow(cmdShow);
+    m_media_lib_button.ShowWindow(cmdShow);
     m_playlist_toolbar.ShowWindow(cmdShow);
     m_splitter_ctrl.ShowWindow(cmdShow);
 }
@@ -1088,7 +1088,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
         {
             //更新任务栏缩略图上“播放/暂停”的图标
             m_thumbButton[1].hIcon = theApp.m_icon_set.pause.GetIcon();
-            wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PAUSE));
+            wcscpy_s(m_thumbButton[1].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE").c_str());
             //更新任务按钮上的播放状态图标
             if (theApp.m_play_setting_data.show_playstate_icon)
                 m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.play.GetIcon(), L"");
@@ -1104,7 +1104,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
         {
             //更新任务栏缩略图上“播放/暂停”的图标
             m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
-            wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
+            wcscpy_s(m_thumbButton[1].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
             //更新任务按钮上的播放状态图标
             if (theApp.m_play_setting_data.show_playstate_icon && CPlayer::GetInstance().GetPlayingState2() == 1)
                 m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.pause.GetIcon(), L"");
@@ -1155,7 +1155,7 @@ void CMusicPlayerDlg::EnablePlaylist(bool enable)
     m_playlist_list.EnableWindow(enable);
     m_search_edit.EnableWindow(enable);
     //m_clear_search_button.EnableWindow(enable);
-    m_set_path_button.EnableWindow(enable);
+    m_media_lib_button.EnableWindow(enable);
     m_playlist_toolbar.EnableWindow(enable);
     m_playlist_toolbar.Invalidate();
 
@@ -1166,24 +1166,23 @@ void CMusicPlayerDlg::EnablePlaylist(bool enable)
 }
 
 
-void CMusicPlayerDlg::CreateDesktopShortcut()
+void CMusicPlayerDlg::FirstRunCreateShortcut()
 {
     //如果目录下没有recent_path和song_data文件，就判断为是第一次运行程序，提示用户是否创建桌面快捷方式
     if (!CCommon::FileExist(theApp.m_song_data_path) && !CCommon::FileExist(theApp.m_recent_path_dat_path))
     {
-        wstring shortcut_path;
-
-        if (MessageBox(CCommon::LoadText(IDS_CREATE_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+        const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUARY_FIRST");
+        if (MessageBox(create_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
         {
             if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("MusicPlayer2.lnk")))
             {
-                CString info;
-                info = CCommon::LoadTextFormat(IDS_SHORTCUT_CREATED, { theApp.m_desktop_path });
-                MessageBox(info, NULL, MB_ICONINFORMATION);
+                wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SHORTCUT_CREATED", { theApp.m_desktop_path });
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION);
             }
             else
             {
-                MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_FAILED");
+                MessageBox(info.c_str(), NULL, MB_ICONWARNING);
             }
         }
     }
@@ -1853,7 +1852,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
             //if (recent_playlist.size() > ADD_TO_PLAYLIST_MAX_SIZE)
             //{
             pMenu->AppendMenu(MF_SEPARATOR);
-            pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_OTHER_PLAYLIST, CCommon::LoadText(IDS_MORE_PLAYLIST, _T("...")));
+            pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_OTHER_PLAYLIST, theApp.m_str_table.LoadMenuText(L"TXT_PLAYLIST_MORE").c_str());
             CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_ADD_TO_OTHER_PLAYLIST, FALSE, theApp.m_icon_set.show_playlist.GetIcon(true));
             //}
         }
@@ -1886,23 +1885,16 @@ void CMusicPlayerDlg::InitUiMenu()
 
             for (size_t i{}; i < m_ui_list.size() && i < SELECT_UI_MAX_SIZE; i++)
             {
-                CString str_name = m_ui_list[i]->GetUIName();   //获取界面的名称
-                if (str_name.IsEmpty())
-                    str_name.Format(_T("%s %d"), CCommon::LoadText(IDS_UI).GetString(), m_ui_list[i]->GetUiIndex()); //如果名称为空（没有指定名称），则使用“界面 +数字”的默认名称
-
-                if (i + 1 <= 9)     //如果界面的序号在9以内，为其分配Ctrl+数字的快捷键
-                {
-                    CString str_short_key;
-                    str_short_key.Format(_T("\tCtrl+%d"), i + 1);
-                    str_name += str_short_key;
-                }
-                else if (i == 9)    //第10个界面分配快捷键C+0
-                {
-                    str_name += _T("\tCtrl+0");
-                }
+                wstring str_name = m_ui_list[i]->GetUIName().GetString();   //获取界面的名称
+                if (str_name.empty())   // 如果名称为空（没有指定名称），则使用“界面 +数字”的默认名称
+                    str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_DEFAULT", { m_ui_list[i]->GetUiIndex() });
+                if (i < 9)              // 如果界面的序号在9以内，为其分配Ctrl+数字的快捷键
+                    str_name += L"\tCtrl+" + std::to_wstring(i + 1);
+                if (i == 9)             // 第10个界面分配快捷键C+0
+                    str_name += L"\tCtrl+0";
                 if (i == 2)
                     pMenu->AppendMenu(MF_SEPARATOR);
-                pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_SWITCH_UI + i + 1, str_name);
+                pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_SWITCH_UI + i + 1, str_name.c_str());
             }
         }
     };
@@ -1991,11 +1983,14 @@ void CMusicPlayerDlg::DoLyricsAutoSave(bool no_inquiry)
             OnSaveModifiedLyric();
             break;
         case LyricSettingData::LS_INQUIRY:
-            if (no_inquiry || MessageBoxW(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)    // 仅当MessageBox按下是时保存
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_LYRIC_SAVE_INRUARY");
+            if (no_inquiry || MessageBoxW(info.c_str(), NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)     // 仅当MessageBox按下是时保存
             {
                 OnSaveModifiedLyric();
             }
             break;
+        }
         default:
             break;
         }
@@ -2004,14 +1999,14 @@ void CMusicPlayerDlg::DoLyricsAutoSave(bool no_inquiry)
 
 void CMusicPlayerDlg::UpdateABRepeatToolTip()
 {
-    CString tooltip_info;
+    wstring tip_str;
     if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_A_SELECTED)
-        tooltip_info = CCommon::LoadTextFormat(IDS_AB_REPEAT_A_SELECTED, { CPlayer::GetInstance().GetARepeatPosition().toString(false) });
+        tip_str = theApp.m_str_table.LoadTextFormat(L"UI_TXT_AB_REPEAT_A_SELECTED", { CPlayer::GetInstance().GetARepeatPosition().toString(false) });
     else if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
-        tooltip_info = CCommon::LoadTextFormat(IDS_AB_REPEAT_ON_INFO, { CPlayer::GetInstance().GetARepeatPosition().toString(false), CPlayer::GetInstance().GetBRepeatPosition().toString(false) });
+        tip_str = theApp.m_str_table.LoadTextFormat(L"UI_TXT_AB_REPEAT_ON", { CPlayer::GetInstance().GetARepeatPosition().toString(false), CPlayer::GetInstance().GetBRepeatPosition().toString(false) });
     else
-        tooltip_info = CCommon::LoadText(IDS_AB_REPEAT);
-    m_pUI->UpdateMouseToolTip(CPlayerUIBase::BTN_AB_REPEAT, tooltip_info);
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_AB_REPEAT");
+    m_pUI->UpdateMouseToolTip(CPlayerUIBase::BTN_AB_REPEAT, tip_str.c_str());
 }
 
 void CMusicPlayerDlg::LoadDefaultBackground()
@@ -2117,7 +2112,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_hAccel = LoadAccelerators(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_ACCELERATOR1));
 
     //初始化字体
-    theApp.m_font_set.Init();
+    theApp.m_font_set.Init(theApp.m_str_table.GetDefaultFontName().c_str());
 
     theApp.InitMenuResourse();
 
@@ -2155,7 +2150,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     CDC* pDC = GetDC();
     draw.Create(pDC, this);
     CString media_lib_btn_str;
-    m_set_path_button.GetWindowText(media_lib_btn_str);
+    m_media_lib_button.GetWindowText(media_lib_btn_str);
     m_medialib_btn_width = draw.GetTextExtent(media_lib_btn_str).cx;
     if (m_medialib_btn_width < theApp.DPI(66))
         m_medialib_btn_width = theApp.DPI(66);
@@ -2165,12 +2160,15 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //初始化提示信息
     m_tool_tip.Create(this, TTS_ALWAYSTIP);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
-    m_tool_tip.AddTool(GetDlgItem(ID_SET_PATH), CCommon::LoadText(IDS_OPEN_MEDIA_LIB, CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_SET_PATH)));
+    wstring tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MEDIA_LIB") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_MEDIA_LIB).GetString();
+    m_tool_tip.AddTool(GetDlgItem(ID_MEDIA_LIB), tip_str.c_str());
 
     SetMenubarVisible();
 
-    m_set_path_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
-    m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+    m_media_lib_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
+
+    wstring prompt_str = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT") + L"(F)";
+    m_search_edit.SetCueBanner(prompt_str.c_str(), TRUE);
 
     //CoInitialize(0);  //初始化COM组件，用于支持任务栏显示进度和缩略图按钮
 #ifndef COMPILE_IN_WIN_XP
@@ -2183,19 +2181,19 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_thumbButton[0].dwMask = dwMask;
     m_thumbButton[0].iId = IDT_PREVIOUS;
     m_thumbButton[0].hIcon = theApp.m_icon_set.previous.GetIcon();
-    wcscpy_s(m_thumbButton[0].szTip, CCommon::LoadText(IDS_PREVIOUS));
+    wcscpy_s(m_thumbButton[0].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS").c_str());
     m_thumbButton[0].dwFlags = THBF_ENABLED;
     //播放/暂停按钮
     m_thumbButton[1].dwMask = dwMask;
     m_thumbButton[1].iId = IDT_PLAY_PAUSE;
     m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
-    wcscpy_s(m_thumbButton[1].szTip, CCommon::LoadText(IDS_PLAY));
+    wcscpy_s(m_thumbButton[1].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
     m_thumbButton[1].dwFlags = THBF_ENABLED;
     //下一曲按钮
     m_thumbButton[2].dwMask = dwMask;
     m_thumbButton[2].iId = IDT_NEXT;
     m_thumbButton[2].hIcon = theApp.m_icon_set.next.GetIcon();
-    wcscpy_s(m_thumbButton[2].szTip, CCommon::LoadText(IDS_NEXT));
+    wcscpy_s(m_thumbButton[2].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT").c_str());
     m_thumbButton[2].dwFlags = THBF_ENABLED;
 #endif
 
@@ -2262,13 +2260,20 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     m_notify_icon.AddNotifyIcon();
 
     //初始化播放列表工具栏
+    wstring menu_str;
     m_playlist_toolbar.SetIconSize(theApp.DPI(20));
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, CCommon::LoadText(IDS_DELETE), CCommon::LoadText(IDS_DELETE), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, CCommon::LoadText(IDS_SORT), CCommon::LoadText(IDS_SORT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, CCommon::LoadText(IDS_LIST), CCommon::LoadText(IDS_LIST), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, CCommon::LoadText(IDS_LOCATE_TO_CURRENT, CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT)), ID_LOCATE_TO_CURRENT);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_DELETE");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_SORT");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_LIST");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_EDIT");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT).GetString();
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, menu_str.c_str(), ID_LOCATE_TO_CURRENT);
 
     //初始化分隔条
     m_splitter_ctrl.RegAdjustLayoutCallBack(CMusicPlayerDlg::OnSplitterChanged);
@@ -2291,11 +2296,11 @@ void CMusicPlayerDlg::OnSysCommand(UINT nID, LPARAM lParam)
         CAboutDlg dlgAbout;
         dlgAbout.DoModal();
     }
-    else */if (cmd == IDM_MINIMODE)
+    else if (cmd == IDM_MINIMODE)
     {
         OnMiniMode();
     }
-    else
+    else*/
     {
         CMainDialogBase::OnSysCommand(nID, lParam);
     }
@@ -2490,17 +2495,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             DrawInfo();
             m_uiThread = AfxBeginThread(UiThreadFunc, (LPVOID)&m_ui_thread_para);
 
-            //注：不应该在这里打开或播放歌曲，应该在播放列表初始化完毕时执行。
-            //CPlayer::GetInstance().MusicControl(Command::OPEN);
-            //CPlayer::GetInstance().MusicControl(Command::SEEK);
-            //CPlayer::GetInstance().GetPlayerCoreError();
-            //SetPorgressBarSize(rect.Width(), rect.Height());      //重新调整进度条在窗口中的大小和位置（需要根据歌曲的时长调整显示时间控件的宽度）
-            //ShowTime();
-            //m_progress_bar.SetSongLength(CPlayer::GetInstance().GetSongLength());
-
-            //if(!m_cmdLine.empty())
-            //  CPlayer::GetInstance().MusicControl(Command::PLAY); //如果文件是通过命令行打开的，则打开后直接播放
-
             UpdatePlayPauseButton();
             //SetForegroundWindow();
             //ShowPlayList();
@@ -2522,7 +2516,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             }
 
             //提示用户是否创建桌面快捷方式
-            CreateDesktopShortcut();
+            FirstRunCreateShortcut();
 
             SetAlwaysOnTop();
         }
@@ -2530,11 +2524,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         m_timer_count++;
 
         UpdateTaskBarProgress();
-        //UpdateProgress();
-
-        //CPlayer::GetInstance().GetPlayerCoreError();
-        //if (m_miniModeDlg.m_hWnd == NULL && (CPlayer::GetInstance().IsPlaying() || GetActiveWindow() == this))        //进入迷你模式时不刷新，不在播放且窗口处于后台时不刷新
-        //    DrawInfo();           //绘制界面上的信息（如果显示了迷你模式，则不绘制界面信息）
 
         // 判断主窗口是否具有焦点
         CWnd* pActiveWnd = GetActiveWindow();
@@ -2825,7 +2814,10 @@ void CMusicPlayerDlg::OnPrevious()
 {
     // TODO: 在此添加命令处理程序代码
     if (!CPlayer::GetInstance().PlayTrack(PREVIOUS))
-        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
 }
 
 
@@ -2833,7 +2825,10 @@ void CMusicPlayerDlg::OnNext()
 {
     // TODO: 在此添加命令处理程序代码
     if (!CPlayer::GetInstance().PlayTrack(NEXT))
-        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
 }
 
 
@@ -2865,21 +2860,8 @@ void CMusicPlayerDlg::OnFF()
 }
 
 
-void CMusicPlayerDlg::OnSetPath()
+void CMusicPlayerDlg::OnMediaLib()
 {
-    //static bool dialog_exist{ false };
-
-    //if (!dialog_exist)        //确保对话框已经存在时不再弹出
-    //{
-    //    dialog_exist = true;
-    //    int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
-    //    CMediaLibDlg media_lib_dlg{ cur_tab };
-    //    media_lib_dlg.DoModal();
-    //    dialog_exist = false;
-    //    //if (media_lib_dlg.m_playlist_dlg.IsPlaylistModified())
-    //    //IniPlaylistPopupMenu();
-    //}
-
     CMusicPlayerCmdHelper helper;
     helper.ShowMediaLib();
 }
@@ -3007,8 +2989,9 @@ void CMusicPlayerDlg::OnDestroy()
     m_notify_icon.DeleteNotifyIcon();
 
     m_ui_thread_para.ui_thread_exit = true;
+    DWORD rtn{};
     if (m_uiThread != nullptr)
-        WaitForSingleObject(m_uiThread->m_hThread, 2000);   //等待线程退出
+        rtn = WaitForSingleObject(m_uiThread->m_hThread, 20000);   //等待线程退出
 
     m_ui_static_ctrl.ReleaseDC(m_pUiDC);
 
@@ -3027,13 +3010,15 @@ void CMusicPlayerDlg::OnFileOpen()
     // TODO: 在此添加命令处理程序代码
     vector<wstring> files;  //储存打开的多个文件路径
     //设置过滤器
-    wstring filter = CAudioCommon::GetFileDlgFilter();
-
+    wstring filter = FilterHelper::GetAudioFileFilter();
     CCommon::DoOpenFileDlg(filter, files, this);
     if (!files.empty())
     {
         if (!CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
 }
 
@@ -3043,13 +3028,16 @@ void CMusicPlayerDlg::OnFileOpenFolder()
     // TODO: 在此添加命令处理程序代码
 
     static bool include_sub_dir{ false };
+    static CString include_sub_dir_str{ theApp.m_str_table.LoadText(L"TXT_FOLDER_BROWSER_INCLUDE_SUB_DIR").c_str() };
+    const wstring& title = theApp.m_str_table.LoadText(L"TITLE_FOLDER_BROWSER_SONG_SOURCE");
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-    folderPickerDlg.SetInfo(CCommon::LoadText(IDS_OPEN_FOLDER_INFO));
+    folderPickerDlg.SetInfo(title.c_str());
 #else
     CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
     CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
-    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, CCommon::LoadText(IDS_INCLUDE_SUB_DIR), include_sub_dir);     //在打开对话框中添加一个复选框
+    folderPickerDlg.m_ofn.lpstrTitle = title.c_str();
+    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, include_sub_dir_str, include_sub_dir);     //在打开对话框中添加一个复选框
 #endif
     if (folderPickerDlg.DoModal() == IDOK)
     {
@@ -3059,7 +3047,10 @@ void CMusicPlayerDlg::OnFileOpenFolder()
         include_sub_dir = (checked != FALSE);
 #endif
         if (!CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
 }
 
@@ -3094,14 +3085,20 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
                 int rtn = CPlayer::GetInstance().AddFilesToPlaylist(files);
                 ok = (rtn != -1);   // 返回值不是-1说明没有遇到取得锁失败的问题
                 if (rtn == 0)
-                    MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+                {
+                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");
+                    MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                }
             }
             else
                 ok = CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files, false);
         }
     }
     if (!ok)
-        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
 
     CMainDialogBase::OnDropFiles(hDropInfo);
 }
@@ -3243,7 +3240,10 @@ void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 
     if (song_index < 0) return;
     if (!CPlayer::GetInstance().PlayTrack(song_index))
-        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
 
     *pResult = 0;
 }
@@ -3267,7 +3267,10 @@ void CMusicPlayerDlg::OnReloadPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     if (!CPlayer::GetInstance().ReloadPlaylist())
-        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
 }
 
 
@@ -3303,7 +3306,10 @@ void CMusicPlayerDlg::OnPlayItem()
 {
     // TODO: 在此添加命令处理程序代码
     if (!CPlayer::GetInstance().PlayTrack(m_item_selected))
-        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
 }
 
 
@@ -3424,7 +3430,10 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                     if (item.playlist_info != nullptr)
                     {
                         if (!CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position))
-                            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+                        {
+                            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                        }
                     }
                 }
                 else
@@ -3432,7 +3441,10 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                     if (item.folder_info != nullptr)
                     {
                         if (!CPlayer::GetInstance().SetPath(*item.folder_info))
-                            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+                        {
+                            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                        }
                     }
                 }
             }
@@ -3485,7 +3497,8 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     }
     if (rating_failed)
     {
-        MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_WRITE_FAILED");
+        MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
     }
 
     return CMainDialogBase::OnCommand(wParam, lParam);
@@ -3635,9 +3648,8 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 
     if (m_item_selected < 0 || m_item_selected >= CPlayer::GetInstance().GetSongNum())
         return;
-    CString info;
-    info = CCommon::LoadTextFormat(IDS_DELETE_FILE_INQUARY, { m_items_selected.size() });
-    if (MessageBoxW(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK) return;
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUARY", { m_items_selected.size() });
+    if (MessageBoxW(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK) return;
     // 以下操作可能涉及MusicControl，先取得锁
     if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
     int rtn;
@@ -3655,7 +3667,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
         }
         if (delected_files.empty())
             return;
-        rtn = CCommon::DeleteFiles(m_hWnd, delected_files);
+        rtn = CommonDialogMgr::DeleteFiles(m_hWnd, delected_files);
     }
     else
     {
@@ -3666,7 +3678,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
             return;
         delected_file = song.file_path;
 
-        rtn = CCommon::DeleteAFile(m_hWnd, delected_file);
+        rtn = CommonDialogMgr::DeleteAFile(m_hWnd, delected_file);
     }
     if (rtn == ERROR_SUCCESS)
     {
@@ -3687,7 +3699,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
                 CFilePathHelper file_path(file);
                 file = file_path.ReplaceFileExtension(L"jpg").c_str();
             }
-            CCommon::DeleteFiles(m_hWnd, delected_files);
+            CommonDialogMgr::DeleteFiles(m_hWnd, delected_files);
             for (const wstring& ext : CLyrics::m_surpported_lyric)      // 删除所有后缀的歌词
             {
                 for (auto& file : delected_files)
@@ -3695,16 +3707,16 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
                     CFilePathHelper file_path(file);
                     file = file_path.ReplaceFileExtension(ext.c_str()).c_str();
                 }
-                CCommon::DeleteFiles(m_hWnd, delected_files);
+                CommonDialogMgr::DeleteFiles(m_hWnd, delected_files);
             }
         }
         else
         {
             CFilePathHelper file_path(delected_file);
-            CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
+            CommonDialogMgr::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
             for (const wstring& ext : CLyrics::m_surpported_lyric)      // 删除所有后缀的歌词
             {
-                CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(ext.c_str()).c_str());
+                CommonDialogMgr::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(ext.c_str()).c_str());
             }
         }
     }
@@ -3723,7 +3735,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
     else
     {
         CPlayer::GetInstance().GetPlayStatusMutex().unlock();   // 在进入模态对话框MessageBox前及时解锁
-        MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
+        MessageBox(theApp.m_str_table.LoadText(L"MSG_DELETE_FILE_FAILED").c_str(), NULL, MB_ICONWARNING);
     }
 }
 
@@ -3880,9 +3892,8 @@ void CMusicPlayerDlg::LoadUiData()
         }
     }
     catch (CArchiveException* exception) {
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { theApp.m_ui_data_path, exception->m_cause });
-        theApp.WriteLog(wstring{ info });
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SERIALIZE_ERROR", { theApp.m_ui_data_path, exception->m_cause });
+        theApp.WriteLog(info);
     }
     ar.Close();
     file.Close();
@@ -3989,7 +4000,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
     if (!CCommon::CopyStringToClipboard(lyric_str))
         //  MessageBox(_T("当前歌词已成功复制到剪贴板。"), NULL, MB_ICONINFORMATION);
         //else
-        MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
+        MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
 }
 
 
@@ -3997,9 +4008,9 @@ void CMusicPlayerDlg::OnCopyAllLyric()
 {
     // TODO: 在此添加命令处理程序代码
     if (CCommon::CopyStringToClipboard(CPlayer::GetInstance().m_Lyrics.GetAllLyricText(theApp.m_lyric_setting_data.show_translate)))
-        MessageBox(CCommon::LoadText(IDS_ALL_LRYIC_COPIED), NULL, MB_ICONINFORMATION);
+        MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_ALL_LYRIC").c_str(), NULL, MB_ICONINFORMATION);
     else
-        MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
+        MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
 }
 
 
@@ -4063,7 +4074,8 @@ void CMusicPlayerDlg::OnEditLyric()
     CCommon::DeleteModelessDialog(m_pLyricEdit);
     if (!theApp.IsScintillaLoaded())
     {
-        MessageBox(CCommon::LoadText(IDS_SCI_NOT_LOADED_ERROR_INFO), NULL, MB_ICONERROR | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_SCI_NOT_LOADED_ERROR");
+        MessageBox(info.c_str(), NULL, MB_ICONERROR | MB_OK);
         return;
     }
     m_pLyricEdit = new CLyricEditDlg;
@@ -4098,7 +4110,7 @@ void CMusicPlayerDlg::OnDeleteLyric()
     // TODO: 在此添加命令处理程序代码
     if (CCommon::FileExist(CPlayer::GetInstance().m_Lyrics.GetPathName()))
     {
-        int rtn = CCommon::DeleteAFile(m_hWnd, CPlayer::GetInstance().m_Lyrics.GetPathName());      //删除歌词文件
+        int rtn = CommonDialogMgr::DeleteAFile(m_hWnd, CPlayer::GetInstance().m_Lyrics.GetPathName());      //删除歌词文件
         CPlayer::GetInstance().ClearLyric();        //清除歌词关联
     }
 
@@ -4208,42 +4220,45 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 
 afx_msg LRESULT CMusicPlayerDlg::OnAfterSetTrack(WPARAM wParam, LPARAM lParam)
 {
-    CString title;
-    title = CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str();
-
-    CString title_suffix;
-    if (!title.IsEmpty())
-        title_suffix += _T(" - ");
+    wstring title = CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format);
+    wstring title_suffix;
+    if (!title.empty())
+        title_suffix += L" - ";
     title_suffix += APP_NAME;
 
     if (CPlayer::GetInstance().IsMciCore())
-        title_suffix += _T(" (MCI)");
+        title_suffix += L" (MCI)";
     else if (CPlayer::GetInstance().IsFfmpegCore()) {
-        title_suffix += _T(" (FFMPEG");
+        title_suffix += L" (FFMPEG";
         auto core = (CFfmpegCore*)CPlayer::GetInstance().GetPlayerCore();
         if (core->IsWASAPISupported() && theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI) {
-            title_suffix += _T(", WASAPI");
+            title_suffix += L", WASAPI";
             if (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode) {
-                title_suffix += _T("(");
-                title_suffix += CCommon::LoadText(IDS_EXCLUSIVE_MODE);
-                title_suffix += _T(")");
+                title_suffix += L'(' + theApp.m_str_table.LoadText(L"UI_TITLE_EXCLUSIVE_MODE") + L')';
             }
         }
-        title_suffix += _T(")");
+        title_suffix += L')';
     }
 
 #ifdef _DEBUG
-    title_suffix += _T(' ');
-    title_suffix += CCommon::LoadText(IDS_DEBUG_MODE);
+    title_suffix += L' ';
+    title_suffix += L'(' + theApp.m_str_table.LoadText(L"UI_TITLE_DEBUG_MODE") + L')';
 #endif
 
     theApp.m_window_title = title + title_suffix;
-    SetWindowText(theApp.m_window_title);        //用当前正在播放的歌曲名作为窗口标题
+    SetWindowText(theApp.m_window_title.c_str());        //用当前正在播放的歌曲名作为窗口标题
 
-    int title_length = 128 - title_suffix.GetLength() - 1;
-    if (title.GetLength() > title_length)
-        title = title.Left(title_length);
-    m_notify_icon.SetIconToolTip(title + title_suffix);
+    if (title_suffix.size() <= 127)
+    {
+        size_t title_length = 127 - title_suffix.size();
+        if (title.size() > title_length)
+            title = title.substr(0, title_length) + title_suffix;
+        else
+            title += title_suffix;
+    }
+    else
+        title = title_suffix.substr(0, 127);
+    m_notify_icon.SetIconToolTip(title.c_str());
 
     SwitchTrack();
     UpdatePlayPauseButton();
@@ -4257,7 +4272,8 @@ void CMusicPlayerDlg::OnEqualizer()
     // TODO: 在此添加命令处理程序代码
     if (CPlayer::GetInstance().IsMciCore())
     {
-        MessageBox(CCommon::LoadText(IDS_MCI_NO_THIS_FUNCTION_WARNING), NULL, MB_ICONWARNING | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_MCI_NO_THIS_FUNCTION_WARNING");
+        MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         return;
     }
 
@@ -4276,7 +4292,7 @@ void CMusicPlayerDlg::OnExploreOnline()
 
 UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 {
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     //此命令用于跳转到歌曲对应的网易云音乐的在线页面
     int item_selected = (int)lpParam;
     if (item_selected >= 0 && item_selected < CPlayer::GetInstance().GetSongNum())
@@ -4290,7 +4306,7 @@ UINT CMusicPlayerDlg::ViewOnlineThreadFunc(LPVOID lpParam)
 
 UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 {
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     //CMusicPlayerDlg* pThis = (CMusicPlayerDlg*)lpParam;
 
     bool is_osu{ CPlayer::GetInstance().IsOsuFile() };
@@ -4425,7 +4441,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
 
 UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
 {
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     UIThreadPara* pPara = (UIThreadPara*)lpParam;
     CMusicPlayerDlg* pThis = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     int fresh_cnt{ };
@@ -4524,7 +4540,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniStart(WPARAM wParam, LPARAM lParam
         else if (CPlaylistFile::IsPlaylistFile(remove_list_path))
         {
             CPlaylistMgr::Instance().DeletePlaylist(remove_list_path);
-            CCommon::DeleteAFile(this->GetSafeHwnd(), remove_list_path);
+            CommonDialogMgr::DeleteAFile(this->GetSafeHwnd(), remove_list_path);
         }
     }
     return 0;
@@ -4558,37 +4574,24 @@ void CMusicPlayerDlg::OnAlbumCoverSaveAs()
 {
     // TODO: 在此添加命令处理程序代码
     //设置过滤器
-    CString szFilter = CCommon::LoadText(IDS_ALL_FILES, _T("(*.*)|*.*||"));
+    wstring szFilter = theApp.m_str_table.LoadText(L"TXT_FILTER_ALL_FILES") + L"(*.*)|*.*||";
     //设置另存为时的默认文件名
     CString file_name;
-    CString extension;
+    wstring extension;
     if (CPlayer::GetInstance().IsInnerCover())
     {
-        switch (CPlayer::GetInstance().GetAlbumCoverType())
-        {
-        case 0:
-            extension = _T("jpg");
-            break;
-        case 1:
-            extension = _T("png");
-            break;
-        case 2:
-            extension = _T("gif");
-            break;
-        default:
-            return;
-        }
+        extension = CPlayer::GetInstance().GetAlbumCoverType();
     }
     else
     {
         CFilePathHelper cover_path(CPlayer::GetInstance().GetAlbumCoverPath());
-        extension = cover_path.GetFileExtension().c_str();
+        extension = cover_path.GetFileExtension();
     }
-    file_name.Format(_T("AlbumCover - %s - %s.%s"), CPlayer::GetInstance().GetCurrentSongInfo().artist.c_str(), CPlayer::GetInstance().GetCurrentSongInfo().album.c_str(), extension.GetString());
+    file_name.Format(_T("AlbumCover - %s - %s.%s"), CPlayer::GetInstance().GetCurrentSongInfo().artist.c_str(), CPlayer::GetInstance().GetCurrentSongInfo().album.c_str(), extension.c_str());
     wstring file_name_wcs{ file_name };
     CCommon::FileNameNormalize(file_name_wcs);      //替换掉文件名中的无效字符
     //构造保存文件对话框
-    CFileDialog fileDlg(FALSE, _T("txt"), file_name_wcs.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter, this);
+    CFileDialog fileDlg(FALSE, _T("txt"), file_name_wcs.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, szFilter.c_str(), this);
     //显示保存文件对话框
     if (IDOK == fileDlg.DoModal())
     {
@@ -4603,7 +4606,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnConnotPlayWarning(WPARAM wParam, LPARAM lPara
 {
     if (theApp.m_nc_setting_data.no_sf2_warning)
     {
-        if (MessageBox(CCommon::LoadText(IDS_NO_MIDI_SF2_WARNING), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_NO_MIDI_SF2_WARNING");
+        if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
             theApp.m_nc_setting_data.no_sf2_warning = false;
     }
     return 0;
@@ -4691,13 +4695,13 @@ void CMusicPlayerDlg::OnCurrentExploreOnline()
 void CMusicPlayerDlg::OnDeleteAlbumCover()
 {
     // TODO: 在此添加命令处理程序代码
-    CString str_info;
+    wstring delete_info;
     bool is_inner_cover{ CPlayer::GetInstance().IsInnerCover() };
     if (is_inner_cover)
-        str_info = CCommon::LoadText(IDS_DELETE_INNER_ALBUM_COVER_INQUERY);
+        delete_info = theApp.m_str_table.LoadText(L"MSG_DELETE_INNER_COVER_INQUERY");
     else
-        str_info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { CPlayer::GetInstance().GetAlbumCoverPath() });
-    if (MessageBox(str_info, NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+        delete_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUARY", { CPlayer::GetInstance().GetAlbumCoverPath() });
+    if (MessageBox(delete_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
         bool result{ false };
         //内嵌专辑封面，从音频文件中删除
@@ -4710,12 +4714,15 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
                 result = audio_tag.WriteAlbumCover(wstring());
             }
             else
-                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            }
         }
         //外部专辑封面，删除专辑封面文件
         else
         {
-            result = (CCommon::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), CPlayer::GetInstance().GetAlbumCoverPath().c_str()) == ERROR_SUCCESS);
+            result = (CommonDialogMgr::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), CPlayer::GetInstance().GetAlbumCoverPath().c_str()) == ERROR_SUCCESS);
             CPlayer::GetInstance().SearchAlbumCover();      // 重新获取专辑封面（代替原来的m_album_cover.Destroy();）
             CPlayer::GetInstance().AlbumCoverGaussBlur();
         }
@@ -4728,7 +4735,7 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
         }
         else
         {
-            MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
+            MessageBox(theApp.m_str_table.LoadText(L"MSG_DELETE_FILE_FAILED").c_str(), NULL, MB_ICONWARNING);
         }
     }
 }
@@ -4737,14 +4744,14 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
 void CMusicPlayerDlg::OnCopyFileTo()
 {
     // TODO: 在此添加命令处理程序代码
-    LPCTSTR title{ CCommon::LoadText(IDS_SELECT_COPY_TARGET_FOLDER) };
+    const wstring& title = theApp.m_str_table.LoadText(L"TITLE_FOLDER_BROWSER_COPY_TARGET");
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-    folderPickerDlg.SetInfo(title);
+    folderPickerDlg.SetInfo(title.c_str());
 #else
     CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
     CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
-    folderPickerDlg.m_ofn.lpstrTitle = title;
+    folderPickerDlg.m_ofn.lpstrTitle = title.c_str();
 #endif
     if (folderPickerDlg.DoModal() == IDOK)
     {
@@ -4761,14 +4768,14 @@ void CMusicPlayerDlg::OnCopyFileTo()
             }
             if (source_files.empty())
                 return;
-            CCommon::CopyFiles(this->GetSafeHwnd(), source_files, wstring(folderPickerDlg.GetPathName()));
+            CommonDialogMgr::CopyFiles(this->GetSafeHwnd(), source_files, wstring(folderPickerDlg.GetPathName()));
         }
         else
         {
             const auto& song = CPlayer::GetInstance().GetPlayList()[m_item_selected];
             if (song.is_cue)
                 return;
-            CCommon::CopyAFile(this->GetSafeHwnd(), song.file_path, wstring(folderPickerDlg.GetPathName()));
+            CommonDialogMgr::CopyAFile(this->GetSafeHwnd(), song.file_path, wstring(folderPickerDlg.GetPathName()));
         }
     }
 }
@@ -4780,14 +4787,14 @@ void CMusicPlayerDlg::OnMoveFileTo()
     if (theApp.m_media_lib_setting_data.disable_delete_from_disk)
         return;
 
-    LPCTSTR title{ CCommon::LoadText(IDS_SELECT_MOVE_TARGET_FOLDER) };
+    const wstring& title = theApp.m_str_table.LoadText(L"TITLE_FOLDER_BROWSER_MOVE_TARGET");
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-    folderPickerDlg.SetInfo(title);
+    folderPickerDlg.SetInfo(title.c_str());
 #else
     CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
     CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
-    folderPickerDlg.m_ofn.lpstrTitle = title;
+    folderPickerDlg.m_ofn.lpstrTitle = title.c_str();
 #endif
     if (folderPickerDlg.DoModal() == IDOK)
     {
@@ -4810,7 +4817,7 @@ void CMusicPlayerDlg::OnMoveFileTo()
             }
             if (source_files.empty())
                 return;
-            rtn = CCommon::MoveFiles(m_hWnd, source_files, wstring(folderPickerDlg.GetPathName()));
+            rtn = CommonDialogMgr::MoveFiles(m_hWnd, source_files, wstring(folderPickerDlg.GetPathName()));
         }
         else
         {
@@ -4820,7 +4827,7 @@ void CMusicPlayerDlg::OnMoveFileTo()
             if (song.is_cue || COSUPlayerHelper::IsOsuFile(song.file_path))
                 return;
             source_file = song.file_path;
-            rtn = CCommon::MoveAFile(m_hWnd, source_file, wstring(folderPickerDlg.GetPathName()));
+            rtn = CommonDialogMgr::MoveAFile(m_hWnd, source_file, wstring(folderPickerDlg.GetPathName()));
         }
         if (rtn == ERROR_SUCCESS)
         {
@@ -5172,7 +5179,8 @@ void CMusicPlayerDlg::OnShowMenuBar()
     {
         if (theApp.m_nc_setting_data.show_hide_menu_bar_tip)
         {
-            if (MessageBox(CCommon::LoadText(IDS_HIDE_MENU_BAR_TIP), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDCANCEL)
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_HIDE_MENU_BAR_INFO");
+            if (MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDCANCEL)
                 theApp.m_nc_setting_data.show_hide_menu_bar_tip = false;
         }
     }
@@ -5215,28 +5223,41 @@ void CMusicPlayerDlg::OnCreatePlayShortcut()
 {
     // TODO: 在此添加命令处理程序代码
 
-    if (MessageBox(CCommon::LoadText(IDS_CREATE_PLAY_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+    const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUARY_PLAY_CONTROL");
+    if (MessageBox(create_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
-        //创建播放/暂停快捷方式
-        wstring play_pause{ CCommon::LoadText(IDS_PLAY_PAUSE, L".lnk") };
-        CCommon::FileNameNormalize(play_pause);
-
         bool success = true;
-        success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, play_pause.c_str(), NULL, 0, 0, 1, L"-play_pause", 2);
+        wstring lnk_name;
+        //创建播放/暂停快捷方式
+        lnk_name = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_PAUSE") + L".lnk";
+        CCommon::FileNameNormalize(lnk_name);
+        success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, lnk_name.c_str(), NULL, 0, 0, 1, L"-play_pause", 2);
 
         //创建上一曲快捷方式
-        success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_PREVIOUS, L".lnk"), NULL, 0, 0, 1, L"-previous", 1);
+        lnk_name = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS") + L".lnk";
+        CCommon::FileNameNormalize(lnk_name);
+        success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, lnk_name.c_str(), NULL, 0, 0, 1, L"-previous", 1);
 
         //创建下一曲快捷方式
-        success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_NEXT, L".lnk"), NULL, 0, 0, 1, L"-next", 3);
+        lnk_name = theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT") + L".lnk";
+        CCommon::FileNameNormalize(lnk_name);
+        success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, lnk_name.c_str(), NULL, 0, 0, 1, L"-next", 3);
 
         //创建停止快捷方式
-        success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, CCommon::LoadText(IDS_STOP, L".lnk"), NULL, 0, 0, 1, L"-stop", 6);
+        lnk_name = theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP") + L".lnk";
+        CCommon::FileNameNormalize(lnk_name);
+        success &= CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, lnk_name.c_str(), NULL, 0, 0, 1, L"-stop", 6);
 
         if (success)
-            MessageBox(CCommon::LoadTextFormat(IDS_PLAY_SHORTCUT_CREATED, { theApp.m_module_dir }), NULL, MB_ICONINFORMATION);
+        {
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SHORTCUT_CREATED", { theApp.m_module_dir });
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION);
+        }
         else
-            MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_FAILED");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING);
+        }
     }
 }
 
@@ -5348,15 +5369,21 @@ void CMusicPlayerDlg::OnPlaylistAddFile()
         return;
 
     vector<wstring> files;
-    wstring filter = CAudioCommon::GetFileDlgFilter();
+    wstring filter = FilterHelper::GetAudioFileFilter();
     CCommon::DoOpenFileDlg(filter, files, this);
     if (!files.empty())
     {
         int rtn = CPlayer::GetInstance().AddFilesToPlaylist(files);
         if (rtn == 0)
-            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else if(rtn == -1)
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
 }
 
@@ -5372,7 +5399,8 @@ void CMusicPlayerDlg::OnRemoveFromPlaylist()
 void CMusicPlayerDlg::OnEmptyPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    if (MessageBox(CCommon::LoadText(IDS_CLEAR_PLAYLIST_WARNING), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+    const wstring& info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_CLEAR_WARNING");
+    if (MessageBox(info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
         CPlayer::GetInstance().ClearPlaylist();
         ShowPlayList();
@@ -5455,7 +5483,8 @@ void CMusicPlayerDlg::OnRemoveSameSongs()
     {
         ShowPlayList();
     }
-    MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_REMOVE_SONGS", { removed });
+    MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
 
@@ -5502,13 +5531,16 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
         return;
 
     static bool include_sub_dir{ false };
+    static CString include_sub_dir_str{ theApp.m_str_table.LoadText(L"TXT_FOLDER_BROWSER_INCLUDE_SUB_DIR").c_str() };
+    const wstring& title = theApp.m_str_table.LoadText(L"TITLE_FOLDER_BROWSER_SONG_SOURCE");
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-    folderPickerDlg.SetInfo(CCommon::LoadText(IDS_OPEN_FOLDER_INFO));
+    folderPickerDlg.SetInfo(title.c_str());
 #else
     CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
     CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
-    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, CCommon::LoadText(IDS_INCLUDE_SUB_DIR), include_sub_dir);     //在打开对话框中添加一个复选框
+    folderPickerDlg.m_ofn.lpstrTitle = title.c_str();
+    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, include_sub_dir_str, include_sub_dir);     //在打开对话框中添加一个复选框
 #endif
     if (folderPickerDlg.DoModal() == IDOK)
     {
@@ -5528,9 +5560,15 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
         }
         int rtn = CPlayer::GetInstance().AddFilesToPlaylist(file_list);
         if (rtn == 0)
-            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else if (rtn == -1)
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
 
     }
 }
@@ -5544,7 +5582,8 @@ void CMusicPlayerDlg::OnRemoveInvalidItems()
     {
         ShowPlayList();
     }
-    MessageBox(CCommon::LoadTextFormat(IDS_REMOVE_SAME_SONGS_INFO, { removed }), NULL, MB_ICONINFORMATION | MB_OK);
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_REMOVE_SONGS", { removed });
+    MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
 
@@ -5592,7 +5631,8 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
     if (CPlayer::GetInstance().IsPlaylistMode() && CPlaylistMgr::Instance().m_cur_playlist_type == PT_FAVOURITE)
     {
         //如果当前播放列表就是“我喜欢”播放列表，则直接将当前歌曲从列表中移除
-        if (MessageBox(CCommon::LoadText(IDS_REMOVE_MY_FAVOURITE_WARNING), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_REMOVE_FAVOURITE_WARNING");
+        if (MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
         {
             CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
             ShowPlayList();
@@ -5629,20 +5669,24 @@ void CMusicPlayerDlg::OnFileOpenUrl()
 {
     // TODO: 在此添加命令处理程序代码
     CInputDlg input_dlg;
-    input_dlg.SetTitle(CCommon::LoadText(IDS_OPEN_URL));
-    input_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_URL_TIP));
+    input_dlg.SetTitle(theApp.m_str_table.LoadText(L"TITLE_INPUT_URL_OPEN_URL").c_str());
+    input_dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_INPUT_URL_INPUT_URL").c_str());
     if (input_dlg.DoModal() == IDOK)
     {
         wstring strUrl = input_dlg.GetEditText().GetString();
         if (!CCommon::IsURL(strUrl))
         {
-            MessageBox(CCommon::LoadText(IDS_URL_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_INPUT_URL_INVALID_WARNING");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
             return;
         }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
         if (!CPlayer::GetInstance().OpenFilesInDefaultPlaylist(vecUrl))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
 }
 
@@ -5654,23 +5698,30 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
         return;
 
     CInputDlg input_dlg;
-    input_dlg.SetTitle(CCommon::LoadText(IDS_ADD_URL));
-    input_dlg.SetInfoText(CCommon::LoadText(IDS_INPUT_URL_TIP));
+    input_dlg.SetTitle(theApp.m_str_table.LoadText(L"TITLE_INPUT_URL_ADD_URL").c_str());
+    input_dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_INPUT_URL_INPUT_URL").c_str());
     if (input_dlg.DoModal() == IDOK)
     {
         wstring strUrl = input_dlg.GetEditText().GetString();
         if (!CCommon::IsURL(strUrl))
         {
-            MessageBox(CCommon::LoadText(IDS_URL_INVALID_WARNING), NULL, MB_ICONWARNING | MB_OK);
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_INPUT_URL_INVALID_WARNING");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
             return;
         }
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
         int rtn = CPlayer::GetInstance().AddFilesToPlaylist(vecUrl);
         if (rtn == 0)
-            MessageBox(CCommon::LoadText(IDS_FILE_EXIST_IN_PLAYLIST_INFO), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else if (rtn == -1)
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
 }
 
@@ -5689,12 +5740,12 @@ void CMusicPlayerDlg::OnLockDesktopLryic()
     // TODO: 在此添加命令处理程序代码
     theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric = !theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric;
     m_desktop_lyric.SetLyricWindowLock(theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric);
-    CString strTip;
+    wstring tip_str;
     if (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric)
-        strTip = CCommon::LoadText(IDS_ULOCK_DESKTOP_LYRIC);
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_UNLOCK");
     else
-        strTip = CCommon::LoadText(IDS_LOCK_DESKTOP_LYRIC);
-    m_desktop_lyric.UpdateMouseToolTip(CDesktopLyric::BTN_LOCK, strTip);
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_LOCK");
+    m_desktop_lyric.UpdateMouseToolTip(CDesktopLyric::BTN_LOCK, tip_str.c_str());
 }
 
 
@@ -5895,7 +5946,8 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
     {
         playlist_name = CFilePathHelper(playlist_name).GetFolderName();
     }
-    CFileDialog fileDlg(FALSE, _T("m3u"), playlist_name.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CCommon::LoadText(IDS_SAVE_PLAYLIST_FILTER), this);
+    wstring filter = FilterHelper::GetPlaylistSaveAsFilter();
+    CFileDialog fileDlg(FALSE, _T("m3u"), playlist_name.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter.c_str(), this);
     if (IDOK == fileDlg.DoModal())
     {
         CPlaylistFile playlist;
@@ -5921,25 +5973,21 @@ void CMusicPlayerDlg::OnFileOpenPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
     //设置过滤器
-    CString szFilter = CCommon::LoadText(IDS_PLAYLIST_FILE_FILTER);
+    wstring filter = FilterHelper::GetPlaylistSelectFilter();
     //构造打开文件对话框
-    CFileDialog fileDlg(TRUE, NULL, NULL, 0, szFilter, this);
+    CFileDialog fileDlg(TRUE, NULL, NULL, 0, filter.c_str(), this);
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {
         wstring file_path{ fileDlg.GetPathName() };
         if (!CPlayer::GetInstance().OpenPlaylistFile(file_path))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
 
 }
-
-
-//void CMusicPlayerDlg::OnExportCurrentPlaylist()
-//{
-//    // TODO: 在此添加命令处理程序代码
-//
-//}
 
 
 void CMusicPlayerDlg::OnSaveAsNewPlaylist()
@@ -5958,18 +6006,18 @@ void CMusicPlayerDlg::OnSaveAsNewPlaylist()
 
 void CMusicPlayerDlg::OnCreateDesktopShortcut()
 {
-    // TODO: 在此添加命令处理程序代码
-    if (MessageBox(CCommon::LoadText(IDS_CREATE_DESKTOP_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+    const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUARY_DESKTOP");
+    if (MessageBox(create_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
     {
         if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("MusicPlayer2.lnk")))
         {
-            CString info;
-            info = CCommon::LoadTextFormat(IDS_SHORTCUT_CREATED, { theApp.m_desktop_path });
-            MessageBox(info, NULL, MB_ICONINFORMATION);
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SHORTCUT_CREATED", { theApp.m_desktop_path });
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION);
         }
         else
         {
-            MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_FAILED");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING);
         }
     }
 }
@@ -5977,17 +6025,22 @@ void CMusicPlayerDlg::OnCreateDesktopShortcut()
 
 void CMusicPlayerDlg::OnCreateMiniModeShortCut()
 {
-    // TODO: 在此添加命令处理程序代码
-
-    if (MessageBox(CCommon::LoadText(IDS_CREATE_MINI_MODE_SHORTCUT_INFO), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+    const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUARY_MINIMODE");
+    if (MessageBox(create_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
     {
-        CString file_name = CCommon::LoadText(IDS_MINI_MODE, L".lnk");
-        if (CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, file_name, NULL, 0, 0, 1, L"-mini"))
-            MessageBox(CCommon::LoadTextFormat(IDS_SHORTCUT_CREATED, { theApp.m_module_dir }), NULL, MB_ICONINFORMATION);
+        wstring file_name = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE") + L".lnk";
+        CCommon::FileNameNormalize(file_name);
+        if (CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, file_name.c_str(), NULL, 0, 0, 1, L"-mini"))
+        {
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SHORTCUT_CREATED", { theApp.m_desktop_path });
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION);
+        }
         else
-            MessageBox(CCommon::LoadText(IDS_SHORTCUT_CREAT_FAILED), NULL, MB_ICONWARNING);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_FAILED");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING);
+        }
     }
-
 }
 
 
@@ -6007,13 +6060,12 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
     // TODO: 在此添加命令处理程序代码
     if (theApp.m_media_lib_setting_data.disable_delete_from_disk) return;
 
-    CString info;
     SongInfo song = CPlayer::GetInstance().GetCurrentSongInfo();
     wstring file_path = song.file_path;
     if (file_path.empty() || song.is_cue || COSUPlayerHelper::IsOsuFile(file_path))
         return;
-    info = CCommon::LoadTextFormat(IDS_DELETE_SINGLE_FILE_INQUIRY, { file_path });
-    if (MessageBox(info, NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUARY", { file_path });
+    if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
         return;
     if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
     bool file_exist = CCommon::FileExist(file_path);
@@ -6021,7 +6073,7 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
     if (file_exist)
     {
         CPlayer::GetInstance().MusicControl(Command::CLOSE);
-        rtn = CCommon::DeleteAFile(m_hWnd, file_path);
+        rtn = CommonDialogMgr::DeleteAFile(m_hWnd, file_path);
     }
     if (rtn == ERROR_SUCCESS || !file_exist)
     {
@@ -6033,8 +6085,8 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
         DrawInfo(true);
         //文件删除后同时删除和文件同名的图片文件和歌词文件
         CFilePathHelper file_path(file_path);
-        CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
-        CCommon::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"lrc").c_str());
+        CommonDialogMgr::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"jpg").c_str());
+        CommonDialogMgr::DeleteAFile(m_hWnd, file_path.ReplaceFileExtension(L"lrc").c_str());
     }
     else if (rtn == ERROR_CANCELLED)   //如果在弹出的对话框中点击“取消”则返回值为1223
     {
@@ -6049,7 +6101,7 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
     else
     {
         CPlayer::GetInstance().GetPlayStatusMutex().unlock();
-        MessageBox(CCommon::LoadText(IDS_CONNOT_DELETE_FILE), NULL, MB_ICONWARNING);
+        MessageBox(theApp.m_str_table.LoadText(L"MSG_DELETE_FILE_FAILED").c_str(), NULL, MB_ICONWARNING);
     }
 }
 
@@ -6179,7 +6231,10 @@ void CMusicPlayerDlg::OnContainSubFolder()
 {
     // TODO: 在此添加命令处理程序代码
     if (!CPlayer::GetInstance().SetContainSubFolder())
-        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
 }
 
 
@@ -6238,8 +6293,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged(WPARAM wParam, L
 void CMusicPlayerDlg::OnRename()
 {
     // TODO: 在此添加命令处理程序代码
-    CTagFromFileNameDlg dlg;
-    dlg.SetDialogTitle(CCommon::LoadText(IDS_RENAME));
+    const wstring& title_str = theApp.m_str_table.LoadText(L"TITLE_RENAME_SONG");
+    CTagModeSelectDlg dlg(title_str, false);
     if (dlg.DoModal() == IDOK)
     {
         int count{};
@@ -6251,7 +6306,7 @@ void CMusicPlayerDlg::OnRename()
                 SongInfo& song{ CPlayer::GetInstance().GetPlayList()[index] };
                 if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path))
                 {
-                    wstring new_name = CPropertyDlgHelper::FileNameFromTag(dlg.GetFormularSelected(), song);
+                    wstring new_name = dlg.FileNameFromTag(song);
                     CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
                     if (reopen.IsLockSuccess())     // 这个一般来说是绝对成功的不过确实存在失败的情况
                     {
@@ -6264,7 +6319,10 @@ void CMusicPlayerDlg::OnRename()
                         }
                     }
                     else
-                        MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+                    {
+                        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                    }
                 }
                 else
                 {
@@ -6280,9 +6338,9 @@ void CMusicPlayerDlg::OnRename()
             CPlayer::GetInstance().SaveCurrentPlaylist();
         }
 
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_RENAME_INFO, { m_items_selected.size(), count, ignore_count, static_cast<int>(m_items_selected.size()) - count - ignore_count });
-        MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_RENAME_SONG_COMPLETED_INFO",
+            { m_items_selected.size(), count, ignore_count, static_cast<int>(m_items_selected.size()) - count - ignore_count });
+        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -6307,11 +6365,15 @@ void CMusicPlayerDlg::OnEmbedLyricToAudioFile()
                 failed = !audio_tag.WriteAudioLyric(lyric_contents);
             }
             else
-                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            }
         }
         if (failed)
         {
-            MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_WRITE_FAILED");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         }
     }
 }
@@ -6334,11 +6396,15 @@ void CMusicPlayerDlg::OnDeleteLyricFromAudioFile()
             failed = !audio_tag.WriteAudioLyric(wstring());
         }
         else
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
     if (failed)
     {
-        MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_WRITE_FAILED");
+        MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
     }
 }
 
@@ -6621,7 +6687,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, 
             item_count++;
         }
         theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_SEPARATOR);
-        theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_STRING | MF_ENABLED, ID_SET_PATH, CCommon::LoadText(IDS_MEDIA_LIB, _T("...")));
+        theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_STRING | MF_ENABLED, ID_MEDIA_LIB, theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str());
 
         //设置菜单图标
         for (int i{}; i < item_count; i++)
@@ -6641,7 +6707,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, 
             }
             CMenuIcon::AddIconToMenuItem(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu(), i, TRUE, icon);
         }
-        CMenuIcon::AddIconToMenuItem(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu(), ID_SET_PATH, FALSE, theApp.m_icon_set.media_lib.GetIcon(true));
+        CMenuIcon::AddIconToMenuItem(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu(), ID_MEDIA_LIB, FALSE, theApp.m_icon_set.media_lib.GetIcon(true));
     }
     return 0;
 }
@@ -6655,11 +6721,13 @@ void CMusicPlayerDlg::OnPlayAsNext() {
 
 void CMusicPlayerDlg::OnPlaylistFixPathError()
 {
-    if (MessageBox(CCommon::LoadText(IDS_PLAYLIST_FIX_PATH_ERROR_INFO), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+    const wstring& inquary_info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_FIX_ERROR_PATH_INQUARY");
+    if (MessageBox(inquary_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
     {
         CMusicPlayerCmdHelper helper(this);
         int fixed_count = helper.FixPlaylistPathError(CPlayer::GetInstance().GetPlaylistPath());
-        MessageBox(CCommon::LoadTextFormat(IDS_PLAYLIST_FIX_PATH_ERROR_COMPLETE, { fixed_count }), NULL, MB_ICONINFORMATION | MB_OK);
+        wstring complete_info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_FIX_ERROR_PATH_COMPLETE", { fixed_count });
+        MessageBox(complete_info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 

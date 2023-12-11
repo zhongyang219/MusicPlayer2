@@ -89,25 +89,25 @@ BOOL CHotKeySettingDlg::OnInitDialog()
 
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
-    m_toolTip.AddTool(GetDlgItem(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK), CCommon::LoadText(IDS_MULTI_MEDIA_KEY_TIP));
+    m_toolTip.AddTool(GetDlgItem(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_HOT_KEY_HOOK_MULTI_MEDIA_KEY").c_str());
 
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
     m_key_list.SetExtendedStyle(m_key_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    m_key_list.InsertColumn(0, CCommon::LoadText(IDS_FUNCTION), LVCFMT_LEFT, theApp.DPI(130));
-    m_key_list.InsertColumn(1, CCommon::LoadText(IDS_SHORTCUT_KEY), LVCFMT_LEFT, theApp.DPI(170));
+    m_key_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_FUNCTION").c_str(), LVCFMT_LEFT, theApp.DPI(130));
+    m_key_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY").c_str(), LVCFMT_LEFT, theApp.DPI(170));
 
-    m_key_list.InsertItem(0, CCommon::LoadText(IDS_PLAY_PAUSE));
-    m_key_list.InsertItem(1, CCommon::LoadText(IDS_STOP));
-    m_key_list.InsertItem(2, CCommon::LoadText(IDS_FAST_FORWARD));
-    m_key_list.InsertItem(3, CCommon::LoadText(IDS_REWIND));
-    m_key_list.InsertItem(4, CCommon::LoadText(IDS_PREVIOUS));
-    m_key_list.InsertItem(5, CCommon::LoadText(IDS_NEXT));
-    m_key_list.InsertItem(6, CCommon::LoadText(IDS_VOLUME_UP));
-    m_key_list.InsertItem(7, CCommon::LoadText(IDS_VOLUME_DOWN));
-    m_key_list.InsertItem(8, CCommon::LoadText(IDS_EXIT));
-    m_key_list.InsertItem(9, CCommon::LoadText(IDS_SHOW_HIDE_PLAYER));
-    m_key_list.InsertItem(10, CCommon::LoadText(IDS_SHOW_HIDE_DESKTOP_LYRIC));
+    m_key_list.InsertItem(0, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_PLAY_PAUSE").c_str());
+    m_key_list.InsertItem(1, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_STOP").c_str());
+    m_key_list.InsertItem(2, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_FAST_FORWARD").c_str());
+    m_key_list.InsertItem(3, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_REWIND").c_str());
+    m_key_list.InsertItem(4, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_PREVIOUS").c_str());
+    m_key_list.InsertItem(5, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_NEXT").c_str());
+    m_key_list.InsertItem(6, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_VOLUME_UP").c_str());
+    m_key_list.InsertItem(7, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_VOLUME_DOWN").c_str());
+    m_key_list.InsertItem(8, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_EXIT").c_str());
+    m_key_list.InsertItem(9, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_PLAYER_SHOW_HIDE").c_str());
+    m_key_list.InsertItem(10, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_DESKTOP_LYRIC_SHOW_HIDE").c_str());
 
     ShowKeyList();
 
@@ -128,7 +128,8 @@ void CHotKeySettingDlg::OnBnClickedSetButton()
 
     if (modifiers == 0 && key_coke != 0)
     {
-        MessageBox(CCommon::LoadText(IDS_GLOBLE_HOT_KEY_WARNING), NULL, MB_ICONWARNING | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_HOT_KEY_GLOBLE_HOT_KEY_WARNING");
+        MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         return;
     }
 

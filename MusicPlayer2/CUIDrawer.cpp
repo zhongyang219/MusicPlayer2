@@ -71,12 +71,12 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     if (CPlayer::GetInstance().IsPlaylistEmpty())   //当前播放为空时在歌词区域显示播放提示
     {
         CFont* font = SetFont(&theApp.m_font_set.font10.GetFont());
-        CString no_track_tip_str{ CCommon::LoadTextFormat(IDS_NO_TRACKS_TIP_INFO, {
+        wstring no_track_tip_str = theApp.m_str_table.LoadTextFormat(L"UI_LYRIC_NO_TRACKS_TIP", {
             theApp.m_accelerator_res.GetShortcutDescriptionById(ID_SHOW_PLAYLIST),
             theApp.m_accelerator_res.GetShortcutDescriptionById(ID_FILE_OPEN),
             theApp.m_accelerator_res.GetShortcutDescriptionById(ID_FILE_OPEN_FOLDER),
-            theApp.m_accelerator_res.GetShortcutDescriptionById(ID_SET_PATH)})};
-        DrawWindowText(lyric_area, no_track_tip_str, m_colors.color_text_2, Alignment::LEFT, false, true);
+            theApp.m_accelerator_res.GetShortcutDescriptionById(ID_MEDIA_LIB)});
+        DrawWindowText(lyric_area, no_track_tip_str.c_str(), m_colors.color_text_2, Alignment::LEFT, false, true);
         SetFont(font);
     }
     else if (CPlayerUIHelper::IsMidiLyric())
@@ -100,7 +100,8 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
         //显示“当前歌曲没有歌词”
         else
         {
-            DrawWindowText(lyric_area, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
+            static const wstring& no_lyric_info = theApp.m_str_table.LoadText(L"UI_LYRIC_NONE");
+            DrawWindowText(lyric_area, no_lyric_info.c_str(), m_colors.color_text_2, Alignment::CENTER);
         }
     }
     else
@@ -237,7 +238,8 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
         //显示“当前歌曲没有歌词”
         else
         {
-            DrawWindowText(rect, CCommon::LoadText(IDS_NO_LYRIC_INFO), m_colors.color_text_2, Alignment::CENTER);
+            static const wstring& no_lyric_info = theApp.m_str_table.LoadText(L"UI_LYRIC_NONE");
+            DrawWindowText(rect, no_lyric_info.c_str(), m_colors.color_text_2, Alignment::CENTER);
         }
     }
     else
@@ -245,6 +247,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
         SetDrawArea(rect);
         CRect lyric_rect = rect;
 
+        static const wstring& empty_lyric = theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE");
         const bool karaoke{ theApp.m_lyric_setting_data.lyric_karaoke_disp };
         const bool ignore_blank{ theApp.m_lyric_setting_data.donot_show_blank_lines};
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
@@ -256,14 +259,14 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
         flag = switch_flag ? 10000 + progress : progress;
 
         if (current_lyric.text.empty())
-            current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+            current_lyric.text = empty_lyric;
         //双行显示歌词
         if (double_line && (current_lyric.translate.empty() || !theApp.m_lyric_setting_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
         {
             wstring next_lyric_text;
             next_lyric_text = now_lyrics.GetLyric(time, true, ignore_blank, karaoke).text;
             if (next_lyric_text.empty())
-                next_lyric_text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+                next_lyric_text = empty_lyric;
             //这里实现文本从非高亮缓慢变化到高亮效果
             int last_time_span = time - current_lyric.time_start;     //当前播放的歌词已持续的时间
             int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒

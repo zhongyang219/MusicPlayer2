@@ -62,7 +62,7 @@ UINT CMediaLibTabDlg::ViewOnlineThreadFunc(LPVOID lpParam)
     CMediaLibTabDlg* pThis = (CMediaLibTabDlg*)(lpParam);
     if (pThis == nullptr)
         return 0;
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     //此命令用于跳转到歌曲对应的网易云音乐的在线页面
     if (pThis->GetItemSelected() >= 0)
     {
@@ -90,7 +90,10 @@ void CMediaLibTabDlg::OnOK()
         else
             ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(GetSongList(), GetItemSelected());
         if (!ok)
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
         {
             CTabDlg::OnOK();
@@ -173,7 +176,10 @@ void CMediaLibTabDlg::OnPlayItemInFolderMode()
     if (sel_item >= 0 && sel_item < static_cast<int>(GetSongList().size()))
     {
         if (!CPlayer::GetInstance().OpenASongInFolderMode(GetSongList()[sel_item], true))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
             OnCancel();
     }
@@ -195,7 +201,10 @@ void CMediaLibTabDlg::OnAddToNewPalylistAndPlay()
     if (_OnAddToNewPlaylist(playlist_path))
     {
         if (!CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
             OnCancel();
     }
@@ -273,5 +282,5 @@ void CMediaLibTabDlg::OnCopyText()
 {
     // TODO: 在此添加命令处理程序代码
     if (!CCommon::CopyStringToClipboard(GetSelectedString()))
-        MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
+        MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
 }

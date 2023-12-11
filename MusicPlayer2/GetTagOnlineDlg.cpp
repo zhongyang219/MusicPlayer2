@@ -45,12 +45,12 @@ BOOL CGetTagOnlineDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
     SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
-    
-    SetWindowText(CCommon::LoadText(IDS_GET_TAG_ONLINE_TITLE));
+
+    SetWindowText(theApp.m_str_table.LoadText(L"TITLE_GET_TAG_ONLINE").c_str());
 
     CWnd* pGetInfoBtn = GetDlgItem(IDC_DOWNLOAD_SELECTED);
     if (pGetInfoBtn != nullptr)
-        pGetInfoBtn->SetWindowText(CCommon::LoadText(IDS_GET_THIS));
+        pGetInfoBtn->SetWindowText(theApp.m_str_table.LoadText(L"TXT_GET_TAG_ONLINE_GET_THIS").c_str());
 
     ShowDlgCtrl(IDC_DOWNLOAD_OPTION_GROUPBOX, false);
     ShowDlgCtrl(IDC_COVER_LOCATION_STATIC, false);

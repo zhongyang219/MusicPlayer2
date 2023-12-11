@@ -284,7 +284,10 @@ void CAllMediaDlg::OnOK()
         else
             ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
         if (!ok)
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
         {
             CTabDlg::OnOK();
@@ -317,19 +320,19 @@ BOOL CAllMediaDlg::OnInitDialog()
 
     //初始化歌曲列表
     m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, theApp.DPI(40));
-    m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(150));
-    m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
-    m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_TRACK_NUM), LVCFMT_LEFT, theApp.DPI(60));
-    m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_BITRATE), LVCFMT_LEFT, theApp.DPI(60));
-    m_song_list_ctrl.InsertColumn(7, CCommon::LoadText(IDS_YEAR), LVCFMT_LEFT, theApp.DPI(60));
-    m_song_list_ctrl.InsertColumn(8, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
-    m_song_list_ctrl.InsertColumn(9, CCommon::LoadText(IDS_LAST_PLAYED_TIME), LVCFMT_LEFT, theApp.DPI(140));
+    m_song_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, theApp.DPI(40));
+    m_song_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_TITLE").c_str(), LVCFMT_LEFT, theApp.DPI(150));
+    m_song_list_ctrl.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_ARTIST").c_str(), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_ALBUM").c_str(), LVCFMT_LEFT, theApp.DPI(150));
+    m_song_list_ctrl.InsertColumn(4, theApp.m_str_table.LoadText(L"TXT_TRACK_NUM").c_str(), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(5, theApp.m_str_table.LoadText(L"TXT_GENRE").c_str(), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(6, theApp.m_str_table.LoadText(L"TXT_BITRATE").c_str(), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(7, theApp.m_str_table.LoadText(L"TXT_YEAR").c_str(), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(8, theApp.m_str_table.LoadText(L"TXT_FILE_PATH").c_str(), LVCFMT_LEFT, theApp.DPI(600));
+    m_song_list_ctrl.InsertColumn(9, theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TIME").c_str(), LVCFMT_LEFT, theApp.DPI(140));
     m_song_list_ctrl.SetCtrlAEnable(true);
 
-    m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+    m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

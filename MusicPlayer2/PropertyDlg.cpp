@@ -100,10 +100,10 @@ BOOL CPropertyDlg::OnInitDialog()
         m_advanced_dlg.Create(IDD_PROPERTY_ADVANCED_DIALOG);
 
     //添加对话框
-    m_tab_ctrl.AddWindow(&m_property_dlg, CCommon::LoadText(IDS_FILE_PROPERTY));
-    m_tab_ctrl.AddWindow(&m_album_cover_dlg, CCommon::LoadText(IDS_ALBUM_COVER));
+    m_tab_ctrl.AddWindow(&m_property_dlg, theApp.m_str_table.LoadText(L"TITLE_PROPERTY_DLG").c_str());
+    m_tab_ctrl.AddWindow(&m_album_cover_dlg, theApp.m_str_table.LoadText(L"TITLE_COVER_PROPERTY").c_str());
     if (!m_batch_edit)
-        m_tab_ctrl.AddWindow(&m_advanced_dlg, CCommon::LoadText(IDS_ADVANCED_PROPERTY));
+        m_tab_ctrl.AddWindow(&m_advanced_dlg, theApp.m_str_table.LoadText(L"TITLE_ADVANCED_PROPERTY").c_str());
 
     //为每个标签添加图标
     CImageList ImageList;
@@ -135,14 +135,10 @@ BOOL CPropertyDlg::OnInitDialog()
 
     if (m_batch_edit)
     {
+        SetWindowText(theApp.m_str_table.LoadTextFormat(L"TITLE_PROPERTY_PARENT_BATCH", { m_song_num }).c_str());
         ShowDlgCtrl(IDC_PREVIOUS_BUTTON, false);
         ShowDlgCtrl(IDC_NEXT_BUTTON, false);
         ShowDlgCtrl(IDC_ITEM_STATIC, false);
-
-        CString str_title;
-        GetWindowText(str_title);
-        str_title += CCommon::LoadTextFormat(IDS_PROPERTY_TITLE_INFO, { m_song_num });
-        SetWindowText(str_title);
     }
 
     return TRUE;  // return TRUE unless you set the focus to a control
@@ -163,17 +159,23 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
             m_modified = true;
             if (m_batch_edit)
             {
-                CString info = CCommon::LoadTextFormat(IDS_TAG_BATCH_EDIT_INFO, { saved_num });
-                MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
+                wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PROPERTY_PARENT_TAG_BATCH_EDIT_SAVE_INFO", { saved_num });
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
             }
             else
             {
                 if (saved_num == 0)
-                    MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+                {
+                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_WRITE_FAILED");
+                    MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+                }
             }
         }
         else
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
 }
 

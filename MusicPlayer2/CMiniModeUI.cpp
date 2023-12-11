@@ -6,7 +6,7 @@
 CMiniModeUI::CMiniModeUI(SMiniModeUIData& ui_data, CWnd* pMaineWnd)
     : m_ui_data(ui_data), CPlayerUIBase(theApp.m_ui_data, pMaineWnd)
 {
-    m_font_time.CreatePointFont(80, CCommon::LoadText(IDS_DEFAULT_FONT));
+    m_font_time.CreatePointFont(80, theApp.m_str_table.GetDefaultFontName().c_str());
 }
 
 
@@ -95,15 +95,15 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
     rc_tmp.right = m_ui_data.widnow_width - 3 * theApp.DPI(20) - 4 * m_ui_data.margin;
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(16);
-    CString str;
+    wstring str;
     if (m_ui_data.m_show_volume)
-        str.Format(CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
+        str = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { CPlayer::GetInstance().GetVolume(), L"%" });
     else if (CPlayer::GetInstance().IsError())
-        str = CCommon::LoadText(IDS_PLAY_ERROR);
+        str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_ERROR");
     else
-        str = CPlayer::GetInstance().GetTimeString().c_str();
+        str = CPlayer::GetInstance().GetTimeString();
     m_draw.SetFont(&m_font_time);
-    m_draw.DrawWindowText(rc_tmp, str, m_colors.color_text, Alignment::CENTER);
+    m_draw.DrawWindowText(rc_tmp, str.c_str(), m_colors.color_text, Alignment::CENTER);
     m_draw.SetFont(theApp.m_pMainWnd->GetFont());
 
     //绘制进度条
@@ -152,7 +152,7 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
 
     //绘制右下角按钮
     rc_tmp.MoveToXY(m_ui_data.widnow_width - theApp.DPI(20) - m_ui_data.margin, m_ui_data.margin + theApp.DPI(20));
-    DrawUIButton(rc_tmp, m_buttons[BTN_SELECT_FOLDER], theApp.m_icon_set.media_lib);
+    DrawUIButton(rc_tmp, m_buttons[BTN_MEDIA_LIB], theApp.m_icon_set.media_lib);
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
     if (CPlayer::GetInstance().IsFavourite())
         DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.heart);
@@ -190,9 +190,10 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
         }
         else        //显示歌词
         {
+            static const wstring& empty_lyric = theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE");
             COLORREF color2 = (theApp.m_lyric_setting_data.lyric_karaoke_disp ? m_colors.color_text_2 : m_colors.color_text);
             if (current_lyric.text.empty())     //如果当前歌词为空白，就显示为省略号
-                current_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+                current_lyric.text = empty_lyric;
             m_draw.DrawWindowText(rc_tmp, current_lyric.text.c_str(), m_colors.color_text, color2, progress, Alignment::CENTER);
         }
     }
@@ -235,8 +236,8 @@ bool CMiniModeUI::LButtonUp(CPoint point)
                 else
                     m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
                 break;
-            case BTN_SELECT_FOLDER:
-                m_pMainWnd->SendMessage(WM_COMMAND, ID_SET_PATH);
+            case BTN_MEDIA_LIB:
+                m_pMainWnd->SendMessage(WM_COMMAND, ID_MEDIA_LIB);
                 break;
             case BTN_FAVOURITE:
                 m_pMainWnd->SendMessage(WM_COMMAND, ID_ADD_REMOVE_FROM_FAVOURITE);
@@ -276,9 +277,9 @@ void CMiniModeUI::UpdateSongInfoTip(LPCTSTR str_tip)
 void CMiniModeUI::UpdatePlayPauseButtonTip()
 {
     if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
-        UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PAUSE));
+        UpdateMouseToolTip(BTN_PLAY_PAUSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE").c_str());
     else
-        UpdateMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY));
+        UpdateMouseToolTip(BTN_PLAY_PAUSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
 }
 
 void CMiniModeUI::PreDrawInfo()
@@ -308,14 +309,18 @@ void CMiniModeUI::UpdateToolTipPosition()
 
 void CMiniModeUI::AddToolTips()
 {
-    AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
-    AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? CCommon::LoadText(IDS_PAUSE) : CCommon::LoadText(IDS_PLAY));
-    AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
-    AddMouseToolTip(BTN_SHOW_PLAYLIST, CCommon::LoadText(IDS_SHOW_HIDE_PLAYLIST));
-    AddMouseToolTip(BTN_MINI, CCommon::LoadText(IDS_BACK_TO_NARMAL));
-    AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE));
+    wstring tip_str;
+    AddMouseToolTip(BTN_PREVIOUS, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS").c_str());
+    AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE").c_str() : theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
+    AddMouseToolTip(BTN_NEXT, theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT").c_str());
+    AddMouseToolTip(BTN_SHOW_PLAYLIST, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE").c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_MINI_MODE).GetString();
+    AddMouseToolTip(BTN_MINI, tip_str.c_str());
+    AddMouseToolTip(BTN_CLOSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE").c_str());
     AddMouseToolTip(BTN_COVER, _T(""));
-    AddMouseToolTip(BTN_PROGRESS, CCommon::LoadText(IDS_SEEK_TO));
-    AddMouseToolTip(BTN_SELECT_FOLDER, CCommon::LoadText(IDS_MEDIA_LIB, CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_SET_PATH)));
-    AddMouseToolTip(BTN_FAVOURITE, CCommon::LoadText(IDS_ADD_TO_MA_FAVOURITE));
+    AddMouseToolTip(BTN_PROGRESS, theApp.m_str_table.LoadTextFormat(L"UI_TIP_SEEK_TO_MINUTE_SECOND", { L"0", L"00" }).c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MEDIA_LIB") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_MEDIA_LIB).GetString();
+    AddMouseToolTip(BTN_MEDIA_LIB, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
+    AddMouseToolTip(BTN_FAVOURITE, tip_str.c_str());
 }

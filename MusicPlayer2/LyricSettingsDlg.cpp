@@ -127,9 +127,9 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_karaoke_disp_check.SetCheck(m_data.lyric_karaoke_disp);
     m_lyric_fuzzy_match_check.SetCheck(m_data.lyric_fuzzy_match);
     m_use_inner_lyric_chk.SetCheck(m_data.use_inner_lyric_first);
-    m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_DO_NOT_SAVE));
-    m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_AUTO_SAVE));
-    m_lyric_save_policy_combo.AddString(CCommon::LoadText(IDS_INQUIRY));
+    m_lyric_save_policy_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SAVE_POLICY_DO_NOT_SAVE").c_str());
+    m_lyric_save_policy_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SAVE_POLICY_AUTO_SAVE").c_str());
+    m_lyric_save_policy_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SAVE_POLICY_INQUIRY").c_str());
     m_lyric_save_policy_combo.SetCurSel(static_cast<int>(m_data.lyric_save_policy));
     CheckDlgButton(IDC_SHOW_LYRIC_TRANSLATE_CHECK, m_data.show_translate);
     CheckDlgButton(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, m_data.donot_show_blank_lines);
@@ -138,10 +138,10 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_lyric_line_space_edit.SetRange(MIM_LINE_SPACE, MAX_LINE_SPACE);
     m_lyric_line_space_edit.SetValue(m_data.lyric_line_space);
 
-    m_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));
-    m_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
-    m_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_AUTO));
-    m_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_CENTER));
+    m_lyric_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_LEFT").c_str());
+    m_lyric_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_RIGHT").c_str());
+    m_lyric_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_AUTO").c_str());
+    m_lyric_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_CENTER").c_str());
     m_lyric_alignment_combo.SetCurSel(static_cast<int>(m_data.lyric_align));
 
     m_lyric_double_line_chk.SetCheck(m_data.cortana_lyric_double_line);
@@ -168,22 +168,22 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_lyric_background_penetrate_chk.SetCheck(m_data.desktop_lyric_data.lyric_background_penetrate);
     m_show_unlock_when_locked_chk.SetCheck(m_data.desktop_lyric_data.show_unlock_when_locked);
 
-    m_text_gradient_combo.AddString(CCommon::LoadText(IDS_NO_GRADIENT));
-    m_text_gradient_combo.AddString(CCommon::LoadText(IDS_TOW_COLOR_GRADIENT));
-    m_text_gradient_combo.AddString(CCommon::LoadText(IDS_THREE_COLOR_GRADIENT));
+    m_text_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_NONE").c_str());
+    m_text_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_TWO").c_str());
+    m_text_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_THREE").c_str());
     m_text_gradient_combo.SetCurSel(m_data.desktop_lyric_data.text_gradient);
-    m_highlight_gradient_combo.AddString(CCommon::LoadText(IDS_NO_GRADIENT));
-    m_highlight_gradient_combo.AddString(CCommon::LoadText(IDS_TOW_COLOR_GRADIENT));
-    m_highlight_gradient_combo.AddString(CCommon::LoadText(IDS_THREE_COLOR_GRADIENT));
+    m_highlight_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_NONE").c_str());
+    m_highlight_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_TWO").c_str());
+    m_highlight_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_THREE").c_str());
     m_highlight_gradient_combo.SetCurSel(m_data.desktop_lyric_data.highlight_gradient);
 
     m_desktop_lyric_opacity_sld.SetRange(20, 100);
     m_desktop_lyric_opacity_sld.SetPos(m_data.desktop_lyric_data.opacity);
 
-    m_desktop_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));
-    m_desktop_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
-    m_desktop_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_AUTO));
-    m_desktop_lyric_alignment_combo.AddString(CCommon::LoadText(IDS_CENTER));
+    m_desktop_lyric_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_LEFT").c_str());
+    m_desktop_lyric_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_RIGHT").c_str());
+    m_desktop_lyric_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_AUTO").c_str());
+    m_desktop_lyric_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_CENTER").c_str());
     m_desktop_lyric_alignment_combo.SetCurSel(static_cast<int>(m_data.desktop_lyric_data.lyric_align));
 
     CString str;
@@ -206,29 +206,36 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_lyric_dir_edit.SetWindowText(m_data.lyric_path.c_str());
     m_lyric_dir_edit.EnableFolderBrowseButton();
 
+    wstring tip_str;
     m_tool_tip.Create(this);
     m_tool_tip.SetMaxTipWidth(300);
-    m_tool_tip.AddTool(&m_lyric_fuzzy_match_check, CCommon::LoadText(IDS_LYRIC_FUZZY_MATHC_TIP_INFO));
-    m_tool_tip.AddTool(&m_lyric_dir_edit, CCommon::LoadText(IDS_LYRIC_PATH_TIP_INFO));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), CCommon::LoadText(IDS_CORTANA_SHOW_LYRIC_TIP_INFO));
-    //m_tool_tip.AddTool(&m_search_box_opaque_chk, CCommon::LoadText(IDS_SEARCH_BOX_OPAQUE_TIP));
-    m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_HIDE_BLANK_LINE_CHECK), CCommon::LoadText(IDS_LYRICS_HIDE_BLANK_LINES_TIP));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT_BUTTON), GetFontInfoString(m_data.lyric_font));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT2), GetFontInfoString(m_data.desktop_lyric_data.lyric_font));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT), GetFontInfoString(m_data.cortana_font));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK), CCommon::LoadText(IDS_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST_TIP));
+    m_tool_tip.AddTool(&m_lyric_fuzzy_match_check, theApp.m_str_table.LoadText(L"TIP_OPT_LRC_LYRIC_FUZZY_MATHC").c_str());
+    m_tool_tip.AddTool(&m_lyric_dir_edit, theApp.m_str_table.LoadText(L"TIP_OPT_LRC_LYRIC_FOLDER_PATH").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), theApp.m_str_table.LoadText(L"TIP_OPT_LRC_CORTANA_LYRIC_SHOW").c_str());
+    tip_str = theApp.m_str_table.LoadTextFormat(L"TIP_OPT_LRC_HIDE_BLANK_LINES", {
+        theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE"),
+        theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE_2"),
+        theApp.m_str_table.LoadText(L"UI_LYRIC_MUSIC_SYMBOL")
+    });
+    m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_HIDE_BLANK_LINE_CHECK), tip_str.c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT_BUTTON), GetFontInfoString(m_data.lyric_font).c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT2), GetFontInfoString(m_data.desktop_lyric_data.lyric_font).c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT), GetFontInfoString(m_data.cortana_font).c_str());
+    tip_str = theApp.m_str_table.LoadTextFormat(L"TIP_OPT_LRC_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST",
+        { theApp.m_str_table.LoadText(L"UI_LYRIC_NONE") });
+    m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK), tip_str.c_str());
 
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
-    m_cortana_color_combo.AddString(CCommon::LoadText(IDS_FOLLOWING_SYSTEM));
-    m_cortana_color_combo.AddString(CCommon::LoadText(IDS_DARK));
-    m_cortana_color_combo.AddString(CCommon::LoadText(IDS_LIGHT));
+    m_cortana_color_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_CORTANT_COLOR_FOLLOWING_SYSTEM").c_str());
+    m_cortana_color_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_CORTANT_COLOR_DARK").c_str());
+    m_cortana_color_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_CORTANT_COLOR_LIGHT").c_str());
     m_cortana_color_combo.SetCurSel(m_data.cortana_color);
 
-    m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_LEFT));
-    m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_RIGHT));
-    m_alignment_combo.AddString(CCommon::LoadText(IDS_ALIGN_AUTO));
-    m_alignment_combo.AddString(CCommon::LoadText(IDS_CENTER));
+    m_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_LEFT").c_str());
+    m_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_RIGHT").c_str());
+    m_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_AUTO").c_str());
+    m_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_CENTER").c_str());
     m_alignment_combo.SetCurSel(static_cast<int>(m_data.cortana_lyric_align));
 
     //设置控件不响应鼠标滚轮消息
@@ -317,22 +324,16 @@ bool CLyricSettingsDlg::IsSearchBoxTransparentInWhiteTheme() const
     return (m_data.cortana_transparent_color == LIGHT_MODE_SEARCH_BOX_BACKGROUND_COLOR);
 }
 
-CString CLyricSettingsDlg::GetFontInfoString(const FontInfo& font_info)
+wstring CLyricSettingsDlg::GetFontInfoString(const FontInfo& font_info)
 {
-    CString str;
-    str.Format(_T("%s, %dpt"), font_info.name.c_str(), font_info.size);
-
-    CString font_style;
+    wstring str = font_info.name + L", " + std::to_wstring(font_info.size) + L"pt";
+    wstring font_style;
+    if (font_info.style.bold || font_info.style.italic)
+        str.push_back(L',');
     if (font_info.style.bold)
-        font_style += CCommon::LoadText(IDS_BOLD);
+        str += L' ' + theApp.m_str_table.LoadText(L"TIP_OPT_LRC_FONT_INFO_BOLD");
     if (font_info.style.italic)
-        font_style += CCommon::LoadText(_T(" "), IDS_ITALIC);
-
-    if (!font_style.IsEmpty())
-    {
-        str += _T(", ");
-        str += font_style;
-    }
+        str += L' ' + theApp.m_str_table.LoadText(L"TIP_OPT_LRC_FONT_INFO_ITALIC");
 
     return str;
 }
@@ -450,7 +451,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont()
         m_data.cortana_font.style.underline = (fontDlg.IsUnderline() != FALSE);
         m_data.cortana_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
         m_search_box_font_changed = true;
-        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.cortana_font), GetDlgItem(IDC_SET_FONT));
+        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.cortana_font).c_str(), GetDlgItem(IDC_SET_FONT));
     }
 }
 
@@ -511,7 +512,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont2()
         m_data.desktop_lyric_data.lyric_font.style.italic = (fontDlg.IsItalic() != FALSE);
         m_data.desktop_lyric_data.lyric_font.style.underline = (fontDlg.IsUnderline() != FALSE);
         m_data.desktop_lyric_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
-        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.desktop_lyric_data.lyric_font), GetDlgItem(IDC_SET_FONT2));
+        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.desktop_lyric_data.lyric_font).c_str(), GetDlgItem(IDC_SET_FONT2));
     }
 }
 
@@ -671,7 +672,8 @@ afx_msg LRESULT CLyricSettingsDlg::OnColorSelected(WPARAM wParam, LPARAM lParam)
 void CLyricSettingsDlg::OnLyricDefaultStyle1Modify()
 {
     // TODO: 在此添加命令处理程序代码
-    if (MessageBox(CCommon::LoadTextFormat(IDS_MODIFY_DEFAULT_STYLE_WARNING, { 1 }), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_LRC_DEFAULT_STYLE_MODIFY_WARNING", { 1 });
+    if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
     {
         LyricStyleDefaultData style_data;
         CDesktopLyric::LyricSettingDatatOLyricStyleDefaultData(m_data.desktop_lyric_data, style_data);
@@ -683,7 +685,8 @@ void CLyricSettingsDlg::OnLyricDefaultStyle1Modify()
 void CLyricSettingsDlg::OnLyricDefaultStyle2Modify()
 {
     // TODO: 在此添加命令处理程序代码
-    if (MessageBox(CCommon::LoadTextFormat(IDS_MODIFY_DEFAULT_STYLE_WARNING, { 2 }), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_LRC_DEFAULT_STYLE_MODIFY_WARNING", { 2 });
+    if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
     {
         LyricStyleDefaultData style_data;
         CDesktopLyric::LyricSettingDatatOLyricStyleDefaultData(m_data.desktop_lyric_data, style_data);
@@ -695,7 +698,8 @@ void CLyricSettingsDlg::OnLyricDefaultStyle2Modify()
 void CLyricSettingsDlg::OnLyricDefaultStyle3Modify()
 {
     // TODO: 在此添加命令处理程序代码
-    if (MessageBox(CCommon::LoadTextFormat(IDS_MODIFY_DEFAULT_STYLE_WARNING, { 3 }), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_LRC_DEFAULT_STYLE_MODIFY_WARNING", { 3 });
+    if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
     {
         LyricStyleDefaultData style_data;
         CDesktopLyric::LyricSettingDatatOLyricStyleDefaultData(m_data.desktop_lyric_data, style_data);
@@ -707,7 +711,8 @@ void CLyricSettingsDlg::OnLyricDefaultStyle3Modify()
 void CLyricSettingsDlg::OnRestoreDefaultStyle()
 {
     // TODO: 在此添加命令处理程序代码
-    if (MessageBox(CCommon::LoadText(IDS_RESTORE_DEFAULT_STYTLE_WARNING), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
+    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_LRC_DEFAULT_STYLE_RESTORE_WARNING");
+    if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
     {
         m_pDesktopLyric->RestoreDefaultStyle();
     }
@@ -786,7 +791,7 @@ void CLyricSettingsDlg::OnBnClickedSetFontButton()
         m_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
         //将字体已更改flag置为true
         m_font_changed = true;
-        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.lyric_font), GetDlgItem(IDC_SET_FONT_BUTTON));
+        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.lyric_font).c_str(), GetDlgItem(IDC_SET_FONT_BUTTON));
     }
 }
 

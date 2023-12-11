@@ -229,7 +229,6 @@
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="AcceleratorRes.h" />
     <ClInclude Include="AddToPlaylistDlg.h" />
-    <ClInclude Include="AlbumCoverInfoDlg.h" />
     <ClInclude Include="AllMediaDlg.h" />
     <ClInclude Include="AppearanceSettingDlg.h" />
     <ClInclude Include="AudioCommon.h" />
@@ -253,6 +252,7 @@
     <ClInclude Include="CListBoxEnhanced.h" />
     <ClInclude Include="CListenTimeStatisticsDlg.h" />
     <ClInclude Include="CMMNotificationClient.h" />
+    <ClInclude Include="CommonDialogMgr.h" />
     <ClInclude Include="CUIDrawer.h" />
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
@@ -260,6 +260,7 @@
     <ClInclude Include="EditableListBox.h" />
     <ClInclude Include="EditStringListDlg.h" />
     <ClInclude Include="FfmpegCore.h" />
+    <ClInclude Include="FilterHelper.h" />
     <ClInclude Include="FlacEncodeCfgDlg.h" />
     <ClInclude Include="GetTagOnlineDlg.h" />
     <ClInclude Include="HorizontalSplitter.h" />
@@ -284,7 +285,8 @@
     <ClInclude Include="SongInfoHelper.h" />
     <ClInclude Include="SpectralDataHelper.h" />
     <ClInclude Include="SpinEdit.h" />
-    <ClInclude Include="TagFromFileNameDlg.h" />
+    <ClInclude Include="StrTable.h" />
+    <ClInclude Include="TagModeSelectDlg.h" />
     <ClInclude Include="TagLibHelper.h" />
     <ClInclude Include="TinyXml2Helper.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
@@ -386,7 +388,6 @@
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="AcceleratorRes.cpp" />
     <ClCompile Include="AddToPlaylistDlg.cpp" />
-    <ClCompile Include="AlbumCoverInfoDlg.cpp" />
     <ClCompile Include="AllMediaDlg.cpp" />
     <ClCompile Include="AppearanceSettingDlg.cpp" />
     <ClCompile Include="AudioCommon.cpp" />
@@ -410,6 +411,7 @@
     <ClCompile Include="CListenTimeStatisticsDlg.cpp" />
     <ClCompile Include="CMMNotificationClient.cpp" />
     <ClCompile Include="CommonData.cpp" />
+    <ClCompile Include="CommonDialogMgr.cpp" />
     <ClCompile Include="CUIDrawer.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />
@@ -417,6 +419,7 @@
     <ClCompile Include="EditableListBox.cpp" />
     <ClCompile Include="EditStringListDlg.cpp" />
     <ClCompile Include="FfmpegCore.cpp" />
+    <ClCompile Include="FilterHelper.cpp" />
     <ClCompile Include="FlacEncodeCfgDlg.cpp" />
     <ClCompile Include="GetTagOnlineDlg.cpp" />
     <ClCompile Include="HorizontalSplitter.cpp" />
@@ -437,10 +440,12 @@
     <ClCompile Include="SelectItemDlg.cpp" />
     <ClCompile Include="SliderCtrlEx.cpp" />
     <ClCompile Include="SongDataManager.cpp" />
+    <ClCompile Include="SongInfo.cpp" />
     <ClCompile Include="SongInfoHelper.cpp" />
     <ClCompile Include="SpectralDataHelper.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
-    <ClCompile Include="TagFromFileNameDlg.cpp" />
+    <ClCompile Include="StrTable.cpp" />
+    <ClCompile Include="TagModeSelectDlg.cpp" />
     <ClCompile Include="TagLibHelper.cpp" />
     <ClCompile Include="TinyXml2Helper.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp">
@@ -545,6 +550,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LICENSE" />
+    <None Include="language\English.ini" />
     <None Include="res\drag.cur" />
     <None Include="res\MusicPlayer2.rc2" />
     <None Include="skins\ui1.xml" />

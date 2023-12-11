@@ -7,7 +7,6 @@
 #include "afxdialogex.h"
 #include "AudioCommon.h"
 #include "RegFileRelate.h"
-#include <set>
 #include "Playlist.h"
 
 
@@ -105,15 +104,15 @@ BOOL CFileRelateDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
     SetIcon(theApp.m_icon_set.file_relate, FALSE);
-    
+
     CRect rect;
     m_list_ctrl.GetWindowRect(rect);
 
     m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
     int width0 = theApp.DPI(120);
     int width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
-    m_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_FORMAT), LVCFMT_LEFT, width0);
-    m_list_ctrl.InsertColumn(1,CCommon::LoadText(IDS_DESCRIPTION), LVCFMT_LEFT, width1);
+    m_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_FILE_RELATE_FORMAT").c_str(), LVCFMT_LEFT, width0);
+    m_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_FILE_RELATE_DESCRIPTION").c_str(), LVCFMT_LEFT, width1);
 
     RefreshList();
 

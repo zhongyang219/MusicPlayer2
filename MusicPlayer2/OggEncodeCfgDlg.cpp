@@ -23,7 +23,7 @@ COggEncodeCfgDlg::~COggEncodeCfgDlg()
 
 void COggEncodeCfgDlg::SetInfoText()
 {
-	int rate;
+    int rate{};
 	switch (m_encode_para.encode_quality)
 	{
 	case -1: rate = 45; break;
@@ -39,9 +39,8 @@ void COggEncodeCfgDlg::SetInfoText()
 	case 9: rate = 320; break;
 	case 10: rate = 500; break;
 	}
-	CString info;
-	info.Format(CCommon::LoadText(IDS_CURRENT_SELECTED, _T(": %d (%d kbps)")), m_encode_para.encode_quality, rate);
-	SetDlgItemText(IDC_INFO_STATIC, info);
+    wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_FORMAT_CONVERT_OGG_QUALITY_INFO", { m_encode_para.encode_quality, rate });
+    SetDlgItemText(IDC_INFO_STATIC, info.c_str());
 }
 
 void COggEncodeCfgDlg::DoDataExchange(CDataExchange* pDX)

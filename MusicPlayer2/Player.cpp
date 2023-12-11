@@ -191,7 +191,7 @@ void CPlayer::IniPlayList(bool play, bool refresh_info)
 
 UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 {
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     ThreadInfo* pInfo = (ThreadInfo*)lpParam;
     wstring remove_list_path{ pInfo->remove_list_path };
     SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_START, (WPARAM)&remove_list_path, 0);
@@ -466,7 +466,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_pCore->Open(cur_song.file_path.c_str());
         GetPlayerCoreError(L"Open");
         if (m_pCore->GetCoreType() == PT_BASS && GetBassHandle() == 0)
-            m_error_state = ES_FILE_CONNOT_BE_OPEN;
+            m_error_state = ES_FILE_CANNOT_BE_OPEN;
         m_file_opend = true;
         //获取音频类型
         m_current_file_type = m_pCore->GetAudioType();  // 根据通道信息获取当前音频文件的类型
@@ -1376,11 +1376,12 @@ std::wstring CPlayer::GetErrorInfo()
 {
     wstring error_info;
     if (m_error_state == ES_FILE_NOT_EXIST)
-        error_info = CCommon::LoadText(IDS_FILE_NOT_EXIST).GetString();
-    else if (m_error_state == ES_FILE_CONNOT_BE_OPEN)
-        error_info = CCommon::LoadText(IDS_FILE_CONNOT_BE_OPEND).GetString();
+        error_info = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_ERROR_FILE_NOT_EXIST");
+    else if (m_error_state == ES_FILE_CANNOT_BE_OPEN)
+        error_info = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_ERROR_FILE_CANNOT_BE_OPEND");
     else
         error_info = m_pCore->GetErrorInfo();
+    error_info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_PLAYSTATUS_ERROR_2", { error_info });
     return error_info;
 }
 
@@ -1556,11 +1557,11 @@ wstring CPlayer::GetCurrentFolderOrPlaylistName() const
         CFilePathHelper file_path{ m_playlist_path };
         wstring playlist_name = file_path.GetFileName();
         if (playlist_name == DEFAULT_PLAYLIST_NAME)
-            return wstring(CCommon::LoadText(_T("["), IDS_DEFAULT, _T("]")));
+            return theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_DEFAULT");
         else if (playlist_name == FAVOURITE_PLAYLIST_NAME)
-            return wstring(CCommon::LoadText(_T("["), IDS_MY_FAVURITE, _T("]")));
+            return theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_FAVOURITE");
         else if (playlist_name == TEMP_PLAYLIST_NAME)
-            return wstring(CCommon::LoadText(_T("["), IDS_TEMP_PLAYLIST, _T("]")));
+            return theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_TEMP");
         else
             return file_path.GetFileNameWithoutExtension();
     }
@@ -1583,22 +1584,17 @@ wstring CPlayer::GetCurrentFilePath() const
         return wstring();
 }
 
-wstring CPlayer::GetFileName() const
-{
-    wstring file_name{ GetCurrentSongInfo().GetFileName() };
-    if (file_name.empty())
-        return CCommon::LoadText(IDS_FILE_NOT_FOUND).GetString();
-    return file_name;
-}
-
 wstring CPlayer::GetDisplayName() const
 {
-    if (GetCurrentSongInfo().is_cue && !GetCurrentSongInfo().IsArtistEmpty() && !GetCurrentSongInfo().IsTitleEmpty())
-        return GetCurrentSongInfo().artist + L" - " + GetCurrentSongInfo().title;
-    if (IsOsuFile() && !GetCurrentSongInfo().comment.empty())
-        return GetCurrentSongInfo().comment;
-    else
-        return GetFileName();
+    const SongInfo& song = GetCurrentSongInfo();
+    if (song.is_cue && !song.IsArtistEmpty() && !song.IsTitleEmpty())
+        return song.artist + L" - " + song.title;
+    if (IsOsuFile() && !song.comment.empty())
+        return song.comment;
+    wstring file_name = GetCurrentSongInfo().GetFileName();
+    if (!file_name.empty())
+        return file_name;
+    return theApp.m_str_table.LoadText(L"TXT_EMPTY_FILE_NAME");
 }
 
 CImage& CPlayer::GetAlbumCover()
@@ -1620,6 +1616,19 @@ bool CPlayer::AlbumCoverExist()
         return false;
     else
         return !m_album_cover.IsNull();
+}
+
+wstring CPlayer::GetAlbumCoverType() const
+{ 
+    // TagLibHelper.cpp中GetPicType的反向方法，之后需要重构，跳过int转手
+    switch (m_album_cover_type)
+    {
+    case 0: return L"jpg";
+    case 1: return L"png";
+    case 2: return L"gif";
+    case 3: return L"bmp";
+    default: return L"other";
+    }
 }
 
 void CPlayer::AfterRemoveSong(bool is_current)
@@ -1954,22 +1963,23 @@ wstring CPlayer::GetTimeString() const
 
 wstring CPlayer::GetPlayingState() const
 {
-    static CString str_paly_error = CCommon::LoadText(IDS_PLAY_ERROR);
-    static CString str_stoped = CCommon::LoadText(IDS_STOPED);
-    static CString str_paused = CCommon::LoadText(IDS_PAUSED);
-    static CString str_playing = CCommon::LoadText(IDS_NOW_PLAYING);
+    static wstring str_paly_error = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_ERROR");
+    static wstring str_stoped = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_STOPED");
+    static wstring str_paused = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PAUSED");
+    static wstring str_playing = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PLAYING");
     if (m_error_code != 0)
-        return str_paly_error.GetString();
+        return str_paly_error;
     switch (m_playing)
     {
     case PS_STOPED:
-        return str_stoped.GetString();
+        return str_stoped;
     case PS_PAUSED:
-        return str_paused.GetString();
+        return str_paused;
     case PS_PLAYING:
-        return str_playing.GetString();
+        return str_playing;
+    default:
+        return wstring();
     }
-    return wstring();
 }
 
 const SongInfo& CPlayer::GetCurrentSongInfo() const
@@ -2347,9 +2357,8 @@ void CPlayer::LoadRecentPath()
     catch (CArchiveException* exception)
     {
         //捕获序列化时出现的异常
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_RECENT_PATH_SERIALIZE_ERROR_LOG, { exception->m_cause });
-        theApp.WriteLog(wstring{ info });
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SERIALIZE_ERROR", { theApp.m_recent_path_dat_path, exception->m_cause });
+        theApp.WriteLog(info);
     }
     // 关闭对象
     ar.Close();

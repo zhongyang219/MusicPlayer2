@@ -14,8 +14,8 @@ CFfmpegCore::CFfmpegCore() {
     err = 0;
     Init(L"ffmpeg_core.dll");
     if (!IsSucceed()) {
-        CString strInfo = CCommon::LoadText(IDS_FFMPEG_INIT_FAILED);
-        theApp.WriteLog(wstring(strInfo));
+        const wstring& info = theApp.m_str_table.LoadText(L"LOG_FFMPEG_INIT_FAILED");
+        theApp.WriteLog(info);
     }
 }
 
@@ -28,7 +28,7 @@ void CFfmpegCore::InitCore() {
     if (IsSucceed()) {
         CAudioCommon::m_surpported_format.clear();
         CAudioCommon::m_all_surpported_extensions.clear();
-        CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"mp3 wma wav m4a ogg oga flac ape mp2 mp1 opus ape cda aif aiff cue mp4 mkv mka m2ts", CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT)));
+        CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"mp3 wma wav m4a ogg oga flac ape mp2 mp1 opus ape cda aif aiff cue mp4 mkv mka m2ts", theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_BASE").c_str()));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"3gp 3g2 mj2 psp m4b ism ismv isma f4v", L"3gp"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"aa", L"Audible Format 2, 3, and 4"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"aac", L"AAC (Advanced Audio Coding)"));
@@ -62,7 +62,7 @@ void CFfmpegCore::InitCore() {
 
         if (!theApp.m_nc_setting_data.user_defined_type_ffmpeg.empty())
         {
-            CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(theApp.m_nc_setting_data.user_defined_type_ffmpeg, CCommon::LoadText(IDS_OTHER_FORMATS)));
+            CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(theApp.m_nc_setting_data.user_defined_type_ffmpeg, theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_FFMPEG_USER_DEFINE").c_str()));
         }
 
         for (const auto& item : CAudioCommon::m_surpported_format)
@@ -81,7 +81,7 @@ void CFfmpegCore::InitCore() {
         auto devices = GetAudioDevices();
         DeviceInfo d;
         d.index = -1;
-        d.name = CCommon::LoadText(IDS_SDL_DEFAULT_DEVICE);
+        d.name = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_NAME_SDL_DEFAULT");
         d.driver = L"";
         d.flags = 0;
         theApp.m_output_devices.clear();

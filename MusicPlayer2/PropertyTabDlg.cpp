@@ -10,14 +10,14 @@
 #include "SongDataManager.h"
 #include "GetTagOnlineDlg.h"
 #include "MusicPlayerCmdHelper.h"
-#include "TagFromFileNameDlg.h"
+#include "TagModeSelectDlg.h"
 #include "SongInfoHelper.h"
 
 // CPropertyTabDlg 对话框
 
 static void CopyMultiTagInfo(const wstring& str_src, wstring& str_dest)
 {
-    static wstring str_multi_value = CCommon::LoadText(IDS_MULTI_VALUE).GetString();
+    static wstring str_multi_value = theApp.m_str_table.LoadText(L"TXT_MULTI_VALUE");
     if (str_src != str_multi_value)
         str_dest = str_src;
 }
@@ -64,7 +64,10 @@ void CPropertyTabDlg::ShowInfo()
         m_file_name_edit.SetWindowText(helper.GetMultiFileName().c_str());
         m_file_path_edit.SetWindowText(helper.GetMultiFilePath().c_str());
         m_file_type_edit.SetWindowText(helper.GetMultiType().c_str());
-        m_song_length_edit.SetWindowText(helper.GetMultiLength().c_str());
+        wstring multi_length = helper.GetMultiLength();
+        if (multi_length == L"-:--")
+            multi_length = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_UNKNOWN_SONG_LENGTH");
+        m_song_length_edit.SetWindowText(multi_length.c_str());
         m_file_size_edit.SetWindowText(helper.GetMultiSize().c_str());
         m_bit_rate_edit.SetWindowText(helper.GetMultiBitrate().c_str());
         SetDlgItemText(IDC_SAMPLE_FREQ, helper.GetMultiFreq().c_str());
@@ -92,26 +95,12 @@ void CPropertyTabDlg::ShowInfo()
         wstring file_type;
         CFilePathHelper file_path{ m_all_song_info[m_index].file_path };
         file_type = file_path.GetFileExtension();
-        //if (file_type == _T("mp3"))
-        //  m_file_type_edit.SetWindowText(_T("MP3音频文件"));
-        //else if (file_type == _T("wma"))
-        //  m_file_type_edit.SetWindowText(_T("Windows Media 音频文件"));
-        //else if (file_type == _T("wav"))
-        //  m_file_type_edit.SetWindowText(_T("WAV音频文件"));
-        //else if (file_type == _T("mid"))
-        //  m_file_type_edit.SetWindowText(_T("MIDI序列"));
-        //else if (file_type == _T("ogg"))
-        //  m_file_type_edit.SetWindowText(_T("OGG音频文件"));
-        //else if (file_type == _T("m4a"))
-        //  m_file_type_edit.SetWindowText(_T("MPEG-4 音频文件"));
-        //else
-        //  m_file_type_edit.SetWindowText((file_type + _T("文件")).c_str());
         m_file_type_edit.SetWindowText((CAudioCommon::GetAudioDescriptionByExtension(file_type)).c_str());
 
         //显示文件长度
         wstring song_length;
         if (m_all_song_info[m_index].length().isZero())
-            song_length = CCommon::LoadText(IDS_CANNOT_GET_SONG_LENGTH);
+            song_length = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_UNKNOWN_SONG_LENGTH");
         else
             song_length = m_all_song_info[m_index].length().toString2();
         m_song_length_edit.SetWindowText(song_length.c_str());
@@ -131,15 +120,15 @@ void CPropertyTabDlg::ShowInfo()
         SetDlgItemText(IDC_BITS_DIPTH, CSongInfoHelper::GetBitsString(m_all_song_info[m_index]));
 
         //显示位声道数
-        SetDlgItemText(IDC_CHANNELS, CSongInfoHelper::GetChannelsString(m_all_song_info[m_index]));
+        SetDlgItemText(IDC_CHANNELS, CSongInfoHelper::GetChannelsString(m_all_song_info[m_index].channels).c_str());
 
         //显示歌词路径
         if(m_all_song_info[m_index].IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && CPlayer::GetInstance().IsInnerLyric())
-            m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_INNER_LYRIC));
+            m_lyric_file_edit.SetWindowText(theApp.m_str_table.LoadText(L"TXT_INNER_LYRIC").c_str());
         else if(!m_all_song_info[m_index].lyric_file.empty())
             m_lyric_file_edit.SetWindowText(m_all_song_info[m_index].lyric_file.c_str());
         else
-            m_lyric_file_edit.SetWindowText(CCommon::LoadText(IDS_NO_MATCHED_LYRIC));
+            m_lyric_file_edit.SetWindowText(theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_NO_ASSOCIATED_LYRIC_FILE").c_str());
 
         //显示音频信息
         //CString info;
@@ -160,13 +149,7 @@ void CPropertyTabDlg::ShowInfo()
         auto tag_type = m_all_song_info[m_index].tag_type;
         if (tag_type != 0)
         {
-            CString tag_type_str{ CCommon::LoadText(IDS_MP3_TAG_TYPE) };
-            //if (tag_type == 0)
-            //{
-            //    tag_type_str += CCommon::LoadText(IDS_OTHER);
-            //}
-            //else
-            //{
+            wstring tag_type_str;
             if (tag_type & T_ID3V1)
                 tag_type_str += _T("ID3v1 ");
             if (tag_type & T_ID3V2)
@@ -177,8 +160,9 @@ void CPropertyTabDlg::ShowInfo()
                 tag_type_str += _T("RIFF ");
             if (tag_type & T_MP4)
                 tag_type_str += _T("MP4 ");
-            //}
-            SetDlgItemText(IDC_TAG_TYPE_STATIC, tag_type_str);
+            tag_type_str.pop_back();
+            tag_type_str = theApp.m_str_table.LoadTextFormat(L"TXT_PROPERTY_DLG_TAG_TYPE", { tag_type_str });
+            SetDlgItemText(IDC_TAG_TYPE_STATIC, tag_type_str.c_str());
         }
         else
         {
@@ -490,13 +474,13 @@ int CPropertyTabDlg::SaveModified()
             CopyMultiTagInfo(song_info.title, cur_song.title);
             CopyMultiTagInfo(song_info.artist, cur_song.artist);
             CopyMultiTagInfo(song_info.album, cur_song.album);
-            if (str_year != CCommon::LoadText(IDS_MULTI_VALUE))
+            if (str_year != theApp.m_str_table.LoadText(L"TXT_MULTI_VALUE").c_str())
             {
                 cur_song.SetYear(str_year);
             }
             CopyMultiTagInfo(song_info.genre, cur_song.genre);
             CopyMultiTagInfo(song_info.comment, cur_song.comment);
-            if (str_track != CCommon::LoadText(IDS_MULTI_VALUE))
+            if (str_track != theApp.m_str_table.LoadText(L"TXT_MULTI_VALUE").c_str())
             {
                 cur_song.track = static_cast<BYTE>(_wtoi(str_track));
             }
@@ -629,7 +613,10 @@ void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
         if (GetTagFromLyrics(song, result))
             ModifyTagInfo(result);
         else
-            MessageBox(CCommon::LoadText(IDS_NO_LYRICS_FOUND_INFO), NULL, MB_ICONWARNING | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_PROPERTY_DLG_NO_LYRICS_FOUND");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+        }
     }
     else
     {
@@ -665,17 +652,16 @@ void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
 void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CTagFromFileNameDlg dlg;
-    dlg.HideOriginalBtn(true);
+    const wstring& title_str = theApp.m_str_table.LoadText(L"TITLE_TAG_SEL_TAG_FROM_FILE_NAME");
+    CTagModeSelectDlg dlg(title_str, true);
     if (dlg.DoModal() == IDOK)
     {
         CWaitCursor wait_cursor;
-        wstring str_formular = dlg.GetFormularSelected();
         if (!m_batch_edit)
         {
             SongInfo song;
             wstring file_name = CFilePathHelper(m_all_song_info[m_index].file_path).GetFileNameWithoutExtension();
-            CPropertyDlgHelper::GetTagFromFileName(file_name, str_formular, song);
+            dlg.GetTagFromFileName(file_name, song);
             ModifyTagInfo(song);
         }
         else
@@ -684,7 +670,7 @@ void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
             for (auto& song : m_all_song_info)
             {
                 wstring file_name = CFilePathHelper(song.file_path).GetFileNameWithoutExtension();
-                CPropertyDlgHelper::GetTagFromFileName(file_name, str_formular, song);
+                dlg.GetTagFromFileName(file_name, song);
             }
             ShowInfo();
             m_modified = true;

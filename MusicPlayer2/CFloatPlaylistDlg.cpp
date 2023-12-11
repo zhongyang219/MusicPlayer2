@@ -15,7 +15,7 @@ IMPLEMENT_DYNAMIC(CFloatPlaylistDlg, CDialog)
 CFloatPlaylistDlg::CFloatPlaylistDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent /*=nullptr*/)
     : CDialog(IDD_MUSICPLAYER2_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }
 {
-    m_path_edit.SetTooltopText(CCommon::LoadText(IDS_RECENT_FOLDER_OR_PLAYLIST));
+    m_path_edit.SetTooltopText(theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST").c_str());
 }
 
 CFloatPlaylistDlg::~CFloatPlaylistDlg()
@@ -32,11 +32,13 @@ void CFloatPlaylistDlg::RefreshData()
     //播放列表模式下，播放列表工具栏第一个菜单为“添加”，文件夹模式下为“文件夹”
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+        const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
     }
     else
     {
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, CCommon::LoadText(IDS_FOLDER), CCommon::LoadText(IDS_FOLDER), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(5), true);
+        const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_FOLDER");
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(5), true);
     }
     m_playlist_ctrl.SetCurSel(-1);
 }
@@ -55,7 +57,7 @@ void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
     CDC* pDC = GetDC();
     draw.Create(pDC, this);
     CString media_lib_btn_str;
-    m_set_path_button.GetWindowText(media_lib_btn_str);
+    m_media_lib_button.GetWindowText(media_lib_btn_str);
     int media_lib_btn_width = draw.GetTextExtent(media_lib_btn_str).cx;
     if (media_lib_btn_width < theApp.DPI(70))
         media_lib_btn_width = theApp.DPI(70);
@@ -66,7 +68,7 @@ void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
     CRect rect_select_folder{ rect_static };
     rect_select_folder.right = cx - m_layout.margin;
     rect_select_folder.left = rect_select_folder.right - media_lib_btn_width;
-    m_set_path_button.MoveWindow(rect_select_folder);
+    m_media_lib_button.MoveWindow(rect_select_folder);
 
     //设置“当前路径”edit控件大小和位置
     CRect rect_edit;
@@ -157,7 +159,7 @@ void CFloatPlaylistDlg::EnableControl(bool enable)
 {
     m_playlist_ctrl.EnableWindow(enable);
     m_search_edit.EnableWindow(enable);
-    m_set_path_button.EnableWindow(enable);
+    m_media_lib_button.EnableWindow(enable);
     //m_clear_search_button.EnableWindow(enable);
     m_playlist_toolbar.EnableWindow(enable);
     m_playlist_toolbar.Invalidate();
@@ -185,7 +187,7 @@ void CFloatPlaylistDlg::SetInitPoint(CPoint point)
 bool CFloatPlaylistDlg::Initilized() const
 {
     return m_playlist_ctrl.GetSafeHwnd() != NULL && m_path_static.GetSafeHwnd() != NULL && m_path_edit.GetSafeHwnd() != NULL
-        && m_set_path_button.GetSafeHwnd() != NULL && m_search_edit.GetSafeHwnd() != NULL/* && m_clear_search_button.GetSafeHwnd() != NULL*/;
+        && m_media_lib_button.GetSafeHwnd() != NULL && m_search_edit.GetSafeHwnd() != NULL/* && m_clear_search_button.GetSafeHwnd() != NULL*/;
 }
 
 void CFloatPlaylistDlg::DoDataExchange(CDataExchange* pDX)
@@ -194,7 +196,7 @@ void CFloatPlaylistDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_PLAYLIST_LIST, m_playlist_ctrl);
     DDX_Control(pDX, IDC_PATH_STATIC, m_path_static);
     DDX_Control(pDX, IDC_PATH_EDIT, m_path_edit);
-    DDX_Control(pDX, ID_SET_PATH, m_set_path_button);
+    DDX_Control(pDX, ID_MEDIA_LIB, m_media_lib_button);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
     //DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
@@ -231,14 +233,14 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
     UpdateStyles();
-    SetWindowText(CCommon::LoadText(IDS_PLAYLIST));
+    SetWindowText(theApp.m_str_table.LoadText(L"TXT_PLAYLIST").c_str());
     SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
 
     // 为浮动播放列表禁用分割条控件
     m_splitter_ctrl.EnableWindow(false);
     m_splitter_ctrl.ShowWindow(SW_HIDE);
 
-    m_set_path_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
+    m_media_lib_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
 
     //设置窗口大小和位置
     if (CMusicPlayerDlg::IsPointValid(m_init_point))
@@ -250,27 +252,35 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     GetClientRect(rect);
     ReSizeControl(rect.Width(), rect.Height());
 
-    m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+    wstring prompt_str = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT") + L"(F)";
+    m_search_edit.SetCueBanner(prompt_str.c_str(), TRUE);
 
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
-        m_path_static.SetWindowText(CCommon::LoadText(IDS_PLAYLIST, _T(":")));
+        m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str());
         m_path_static.SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
     }
     else
     {
-        m_path_static.SetWindowText(CCommon::LoadText(IDS_FOLDER, _T(":")));
+        m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str());
         m_path_static.SetIcon(theApp.m_icon_set.select_folder.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
     }
 
     //初始化播放列表工具栏
+    wstring menu_str;
     m_playlist_toolbar.SetIconSize(theApp.DPI(20));
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, CCommon::LoadText(IDS_ADD), CCommon::LoadText(IDS_ADD), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, CCommon::LoadText(IDS_DELETE), CCommon::LoadText(IDS_DELETE), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, CCommon::LoadText(IDS_SORT), CCommon::LoadText(IDS_SORT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, CCommon::LoadText(IDS_LIST), CCommon::LoadText(IDS_LIST), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, CCommon::LoadText(IDS_EDIT), CCommon::LoadText(IDS_EDIT), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, CCommon::LoadText(IDS_LOCATE_TO_CURRENT, CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT)), ID_LOCATE_TO_CURRENT);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_DELETE");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_SORT");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_LIST");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_EDIT");
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
+    menu_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT).GetString();
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, menu_str.c_str(), ID_LOCATE_TO_CURRENT);
 
     RefreshData();
     RefreshState();
@@ -421,7 +431,7 @@ BOOL CFloatPlaylistDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         GetPlaylistItemSelected();
         break;
     default:
-        if (command == ID_SET_PATH || CCommon::IsMenuItemInMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0), command)
+        if (command == ID_MEDIA_LIB || CCommon::IsMenuItemInMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0), command)
             || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_playlist_toolbar_menu, command)
             || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_main_menu, command)
             || (command >= ID_ADD_TO_MY_FAVOURITE && command < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE))

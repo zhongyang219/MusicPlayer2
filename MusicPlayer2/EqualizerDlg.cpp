@@ -115,16 +115,16 @@ BOOL CEqualizerDlg::OnInitDialog()
 	m_enable_equ_check.SetCheck(CPlayer::GetInstance().GetEqualizerEnable());
 
 	//初始化“均衡器预设”列表
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_NONE));
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_CLASSICAL));
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_POP));
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_JAZZ));
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_ROCK));
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_SOFT));
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_BASS));
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_ELIMINATE_BASS));
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_WEAKENING_TREBLE));
-	m_equ_style_list.AddString(CCommon::LoadText(IDS_USER_DEFINE));
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_NONE").c_str());
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_CLASSICAL").c_str());
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_POP").c_str());
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_JAZZ").c_str());
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_ROCK").c_str());
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_SOFT").c_str());
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_BASS").c_str());
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_ELIMINATE_BASS").c_str());
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_WEAKENING_TREBLE").c_str());
+	m_equ_style_list.AddString(theApp.m_str_table.LoadText(L"TXT_EQ_USER_DEFINE").c_str());
 	m_equ_style_list.SetCurSel(m_equ_style_selected);
 
 	//初始化控件的启用禁用状态

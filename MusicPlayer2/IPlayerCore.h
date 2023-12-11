@@ -74,7 +74,7 @@ struct FlacEncodePara
 enum class EncodeFormat { WAV, MP3, WMA, OGG, FLAC };
 
 //格式转换错误代码
-#define CONVERT_ERROR_FILE_CONNOT_OPEN (-1)			//源文件无法读取
+#define CONVERT_ERROR_FILE_CANNOT_OPEN (-1)	        //源文件无法读取
 #define CONVERT_ERROR_ENCODE_CHANNEL_FAILED (-2)	//编码通道创建失败
 #define CONVERT_ERROR_ENCODE_PARA_ERROR (-3)		//找不到编码器或编码器参数错误
 #define CONVERT_ERROR_MIDI_NO_SF2 (-4)				//没有MIDI音色库

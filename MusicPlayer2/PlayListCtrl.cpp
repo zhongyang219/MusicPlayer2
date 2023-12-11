@@ -49,7 +49,7 @@ void CPlayListCtrl::ShowPlaylist(DisplayFormat display_format, bool search_resul
 		{
 			CListCtrlEx::RowData row_data;
 			row_data[0] = wstring();
-			row_data[1] = CCommon::LoadText(IDS_NO_RESULT_TO_SHOW).GetString();
+            row_data[1] = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_CTRL_NO_RESULT_TO_SHOW");
 			m_list_data.push_back(std::move(row_data));
 
 		}
@@ -250,9 +250,9 @@ void CPlayListCtrl::PreSubclassWindow()
 	SetExtendedStyle(style);
 	vector<int> width;
 	CalculateColumeWidth(width);
-	InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);		//插入第1列
-	InsertColumn(1, CCommon::LoadText(IDS_TRACK), LVCFMT_LEFT, width[1]);		//插入第2列
-	InsertColumn(2, CCommon::LoadText(IDS_LENGTH), LVCFMT_LEFT, width[2]);		//插入第3列
+	InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, width[0]);
+	InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_TRACK").c_str(), LVCFMT_LEFT, width[1]);
+	InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_LENGTH").c_str(), LVCFMT_LEFT, width[2]);
 	SetCtrlAEnable(true);
 
 	SetRowHeight(theApp.DPI(theApp.m_media_lib_setting_data.playlist_item_height));

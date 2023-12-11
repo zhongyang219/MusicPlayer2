@@ -47,8 +47,8 @@ BOOL CSoundEffectDlg::OnInitDialog()
     m_reverb_dlg.Create(IDD_REVERB_DIALOG, &m_tab);
 
     //添加对话框
-    m_tab.AddWindow(&m_equ_dlg, CCommon::LoadText(IDS_EQUALIZER));
-    m_tab.AddWindow(&m_reverb_dlg, CCommon::LoadText(IDS_REVERB));
+    m_tab.AddWindow(&m_equ_dlg, theApp.m_str_table.LoadText(L"TITLE_EQ").c_str());
+    m_tab.AddWindow(&m_reverb_dlg, theApp.m_str_table.LoadText(L"TITLE_REVERB").c_str());
 
     //为每个标签添加图标
     CImageList ImageList;

@@ -6,7 +6,8 @@
 #include "LyricEditDlg.h"
 #include "afxdialogex.h"
 #include "WIC.h"
-
+#include "FilterHelper.h"
+#include "COSUPlayerHelper.h"
 
 // CLyricEditDlg 对话框
 
@@ -90,22 +91,24 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
 
 bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
 {
-    bool is_osu{ CPlayer::GetInstance().IsOsuFile() };
-    const SongInfo& song{ CPlayer::GetInstance().GetCurrentSongInfo() };
-    bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(CFilePathHelper(song.file_path).GetFileExtension());
+    // 这里不应当依赖播放实例，因为当前播放与启动歌词编辑的SongInfo不一定是同一个
+    CFilePathHelper song_path(m_current_edit_song.file_path);
+    bool lyric_write_support = CAudioTag::IsFileTypeLyricWriteSupport(song_path.GetFileExtension());
     if (m_inner_lyric && lyric_write_support)
     {
         //写入内嵌歌词
         bool saved{ false };
-        SongInfo song_info{ song };
         CPlayer::ReOpen reopen(true);
         if (reopen.IsLockSuccess())
         {
-            CAudioTag audio_tag(song_info);
+            CAudioTag audio_tag(m_current_edit_song);
             saved = audio_tag.WriteAudioLyric(m_lyric_string);
         }
         else
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         if (saved)
         {
             m_modified = false;
@@ -114,7 +117,8 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
         }
         else
         {
-            MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_FAILED), NULL, MB_ICONWARNING | MB_OK);
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_LYRIC_SAVE_FAILED");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         }
         return saved;
     }
@@ -123,17 +127,15 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
         //写入歌词文件
         if (path.empty())		//如果保存时传递的路径的空字符串，则将保存路径设置为当前歌曲所在路径
         {
-            if (!song.is_cue && !is_osu)
+            if (!m_current_edit_song.is_cue && !COSUPlayerHelper::IsOsuFile(m_current_edit_song.file_path))
             {
-                m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + CPlayer::GetInstance().GetFileName();
-                int index = m_lyric_path.rfind(L'.');
-                m_lyric_path = m_lyric_path.substr(0, index);
+                m_lyric_path = song_path.ReplaceFileExtension(L"lrc");
             }
             else
             {
-                m_lyric_path = CPlayer::GetInstance().GetCurrentDir() + song.artist + L" - " + song.title;
+                m_lyric_path = song_path.GetDir() + m_current_edit_song.artist + L" - " + m_current_edit_song.title + L".lrc";
+                CCommon::FileNameNormalize(m_lyric_path);
             }
-            m_lyric_path += L".lrc";
             m_original_lyric_path = m_lyric_path;
             SetLyricPathEditText();
             path = m_lyric_path;
@@ -142,8 +144,9 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
         string lyric_str = CCommon::UnicodeToStr(m_lyric_string, code_type, &char_connot_convert);
         if (char_connot_convert)	//当文件中包含Unicode字符时，询问用户是否要选择一个Unicode编码格式再保存
         {
-            CString info{ CCommon::LoadText(IDS_STRING103) };                                   //从string table载入字符串
-            if (MessageBox(info, NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK) return false;		//如果用户点击了取消按钮，则返回false
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_UNICODE_WARNING");
+            if (MessageBox(info.c_str(), NULL, MB_OKCANCEL | MB_ICONWARNING) != IDOK)
+                return false;       //如果用户点击了取消按钮，则返回false
         }
         ofstream out_put{ path, std::ios::binary };
         bool failed = out_put.fail();
@@ -157,7 +160,8 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
         }
         else
         {
-            MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_FAILED), NULL, MB_ICONWARNING | MB_OK);
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_LYRIC_SAVE_FAILED");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         }
         return !failed;
     }
@@ -165,25 +169,26 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
 
 void CLyricEditDlg::UpdateStatusbarInfo()
 {
-    CString str;
     //显示字符数
-    str = CCommon::LoadTextFormat(IDS_CHARACTER_TOTAL, { m_lyric_string.size() });
-    m_status_bar.SetText(str, 0, 0);
-
+    wstring total_char = theApp.m_str_table.LoadTextFormat(L"TXT_LYRIC_EDIT_TOTAL_CHARACTER", { m_lyric_string.size() });
     //显示是否修改
-    m_status_bar.SetText(m_modified ? CCommon::LoadText(IDS_MODIFIED) : CCommon::LoadText(IDS_UNMODIFIED), 1, 0);
-
+    wstring modified_info = m_modified ? theApp.m_str_table.LoadText(L"TXT_LYRIC_EDIT_MODIFIED") : theApp.m_str_table.LoadText(L"TXT_LYRIC_EDIT_UNMODIFIED");
     //显示编码格式
-    str = CCommon::LoadText(IDS_ENCODE_FORMAT, _T(": "));
+    wstring str;
     switch (m_code_type)
     {
-    case CodeType::ANSI: str += _T("ANSI"); break;
-    case CodeType::UTF8: str += _T("UTF8"); break;
-    case CodeType::UTF8_NO_BOM: str += CCommon::LoadText(IDS_UTF8_NO_BOM); break;
-    case CodeType::UTF16LE: str += _T("UTF16LE"); break;
-    case CodeType::UTF16BE: str += _T("UTF16BE"); break;
+    case CodeType::ANSI: str = L"ANSI"; break;
+    case CodeType::UTF8: str = L"UTF8"; break;
+    case CodeType::UTF8_NO_BOM: str = theApp.m_str_table.LoadText(L"TXT_LYRIC_EDIT_UTF8NOBOM"); break;
+    case CodeType::UTF16LE: str = L"UTF16LE"; break;
+    case CodeType::UTF16BE: str = L"UTF16BE"; break;
+    default: str = L"<encode format error>";
     }
-    m_status_bar.SetText(str, 2, 0);
+    wstring encode_info = theApp.m_str_table.LoadTextFormat(L"TXT_LYRIC_EDIT_ENCODE_FORMAT", { str });
+
+    m_status_bar.SetText(total_char.c_str(), 0, 0);
+    m_status_bar.SetText(modified_info.c_str(), 1, 0);
+    m_status_bar.SetText(encode_info.c_str(), 2, 0);
 }
 
 void CLyricEditDlg::StatusBarSetParts(int width)
@@ -207,7 +212,8 @@ bool CLyricEditDlg::SaveInquiry()
 {
     if (m_modified)
     {
-        int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_LYRIC_SAVE_INRUARY");
+        int rtn = MessageBox(info.c_str(), NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
         switch (rtn)
         {
         case IDYES: if (!SaveLyric(m_lyric_path.c_str(), m_code_type)) return false;
@@ -221,7 +227,7 @@ bool CLyricEditDlg::SaveInquiry()
 void CLyricEditDlg::SetLyricPathEditText()
 {
     if (m_inner_lyric)
-        SetDlgItemText(IDC_LYRIC_PATH_EDIT2, CCommon::LoadText(IDS_INNER_LYRIC));
+        SetDlgItemText(IDC_LYRIC_PATH_EDIT2, theApp.m_str_table.LoadText(L"TXT_INNER_LYRIC").c_str());
     else
         SetDlgItemText(IDC_LYRIC_PATH_EDIT2, m_lyric_path.c_str());
 }
@@ -323,10 +329,10 @@ BOOL CLyricEditDlg::OnInitDialog()
     }
     m_original_lyric_path = m_lyric_path;
     //m_code_type = CPlayer::GetInstance().m_Lyrics.GetCodeType();
-    m_current_song_name = CPlayer::GetInstance().GetFileName();
+    m_current_edit_song = CPlayer::GetInstance().GetCurrentSongInfo();
 
     //初始化编辑区字体
-    m_view->SetFontFace(CCommon::LoadText(IDS_DEFAULT_FONT));
+    m_view->SetFontFace(theApp.m_str_table.GetDefaultFontName().c_str());
     m_view->SetFontSize(10);
 
     m_view->SetTextW(m_lyric_string);
@@ -489,7 +495,7 @@ void CLyricEditDlg::OnDestroy()
     // TODO: 在此处添加消息处理程序代码
     CBaseDialog::OnDestroy();
     m_dlg_exist = false;
-    if (m_current_song_name == CPlayer::GetInstance().GetFileName() && m_lyric_saved)		//关闭歌词编辑窗口时如果正在播放的歌曲没有变，且执行过保存操作，就重新初始化歌词
+    if (m_current_edit_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && m_lyric_saved)       // 关闭歌词编辑窗口时如果正在播放的歌曲没有变，且执行过保存操作，就重新初始化歌词
     {
         if (CPlayer::GetInstance().IsInnerLyric())
         {
@@ -613,7 +619,8 @@ void CLyricEditDlg::OnLyricOpen()
     // TODO: 在此添加命令处理程序代码
     if (m_modified)
     {
-        int rtn = MessageBox(CCommon::LoadText(IDS_LYRIC_SAVE_INRUARY), NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_LYRIC_SAVE_INRUARY");
+        int rtn = MessageBox(info.c_str(), NULL, MB_YESNOCANCEL | MB_ICONQUESTION);
         switch (rtn)
         {
         case IDYES:
@@ -629,9 +636,9 @@ void CLyricEditDlg::OnLyricOpen()
     }
 
     //设置过滤器
-    CString szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
+    wstring filter = FilterHelper::GetLyricFileFilter();
     //构造打开文件对话框
-    CFileDialog fileDlg(TRUE, _T("txt"), NULL, 0, szFilter, this);
+    CFileDialog fileDlg(TRUE, _T("txt"), NULL, 0, filter.c_str(), this);
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {
@@ -656,15 +663,16 @@ void CLyricEditDlg::OnLyricSaveAs()
 {
     // TODO: 在此添加命令处理程序代码
     //构造保存文件对话框
-    CString default_path = m_lyric_path.c_str();
+    wstring default_path = m_lyric_path;
     if (m_inner_lyric)
         default_path = CFilePathHelper(CPlayer::GetInstance().GetCurrentFilePath()).ReplaceFileExtension(L"lrc").c_str();
-    CFileDialog fileDlg(FALSE, _T("txt"), default_path, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, CCommon::LoadText(IDS_LYRIC_FILE_FILTER), this);
+    wstring filter = FilterHelper::GetLyricFileFilter();
+    CFileDialog fileDlg(FALSE, _T("txt"), default_path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter.c_str(), this);
     //为“另存为”对话框添加一个组合选择框
     fileDlg.AddComboBox(IDC_SAVE_COMBO_BOX);
     //为组合选择框添加项目
-    fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, CCommon::LoadText(IDS_SAVE_AS_ANSI));
-    fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, CCommon::LoadText(IDS_SAVE_AS_UTF8));
+    fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 0, theApp.m_str_table.LoadText(L"TXT_SAVE_AS_ANSI").c_str());
+    fileDlg.AddControlItem(IDC_SAVE_COMBO_BOX, 1, theApp.m_str_table.LoadText(L"TXT_SAVE_AS_UTF8").c_str());
     //为组合选择框设置默认选中的项目
     DWORD default_selected{ 0 };
     if (m_code_type == CodeType::UTF8 || m_code_type == CodeType::UTF8_NO_BOM)
@@ -782,9 +790,8 @@ afx_msg LRESULT CLyricEditDlg::OnFindReplace(WPARAM wParam, LPARAM lParam)
             UpdateStatusbarInfo();
             if (replace_count != 0)
             {
-                CString info;
-                info = CCommon::LoadTextFormat(IDS_REPLACE_COMPLETE_INFO, { replace_count });
-                MessageBox(info, NULL, MB_ICONINFORMATION);
+                wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_LYRIC_EDIT_STRING_REPLACE_COMPLETE", { replace_count });
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION);
             }
         }
         if (m_pReplaceDlg->IsTerminating())
@@ -805,9 +812,8 @@ void CLyricEditDlg::OnFindNext()
         m_find_index = m_lyric_string.rfind(m_find_str, m_find_index - 1);	//向前查找
     if (m_find_index == string::npos)
     {
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_CONNOT_FIND_STRING, { m_find_str });
-        MessageBox(info, NULL, MB_OK | MB_ICONINFORMATION);
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_LYRIC_EDIT_STRING_CANNOT_FIND", { m_find_str });
+        MessageBox(info.c_str(), NULL, MB_OK | MB_ICONINFORMATION);
         m_find_flag = false;
     }
     else
@@ -927,42 +933,42 @@ BOOL CLyricEditDlg::OnToolTipText(UINT, NMHDR* pNMHDR, LRESULT* pResult)
 {
     TOOLTIPTEXT* pT = (TOOLTIPTEXT*)pNMHDR; //将pNMHDR转换成TOOLTIPTEXT指针类型数据
     UINT nID = pNMHDR->idFrom;  //获取工具条上按钮的ID
-    CString tipInfo;
+    wstring tipInfo;
     switch (nID)
     {
     case ID_LYRIC_INSERT_TAG:
-        tipInfo = CCommon::LoadText(IDS_INSERT_TIME_TAG_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_INSERT_TIME_TAG") + L" (F8)";
         break;
     case ID_LYRIC_REPLACE_TAG:
-        tipInfo = CCommon::LoadText(IDS_REPLACE_TIME_TAG_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_REPLACE_TIME_TAG") + L" (F9)";
         break;
     case ID_LYRIC_DELETE_TAG:
-        tipInfo = CCommon::LoadText(IDS_DELETE_TIME_TAG_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_DELETE_TIME_TAG") + L" (Ctrl+Del)";
         break;
     case ID_LYRIC_SAVE:
-        tipInfo = CCommon::LoadText(IDS_SAVE_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_SAVE") + L" (Ctrl+S)";
         break;
     case ID_PLAY_PAUSE:
-        tipInfo = CCommon::LoadText(IDS_PLAY_PAUSE_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_PLAY_PAUSE") + L" (Ctrl+P)";
         break;
     case ID_REW:
-        tipInfo = CCommon::LoadText(IDS_REWIND_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_REWIND") + L" (Ctrl+←)";
         break;
     case ID_FF:
-        tipInfo = CCommon::LoadText(IDS_FAST_FOWARD_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_FAST_FOWARD") + L" (Ctrl+→)";
         break;
     case ID_LYRIC_FIND:
-        tipInfo = CCommon::LoadText(IDS_FIND_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_FIND") + L" (Ctrl+F)";
         break;
     case ID_LYRIC_REPLACE:
-        tipInfo = CCommon::LoadText(IDS_REPLACE_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_REPLACE") + L" (Ctrl+H)";
         break;
     case ID_SEEK_TO_CUR_LINE:
-        tipInfo = CCommon::LoadText(IDS_SEEK_TO_LINE_TIP);
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_INSERT_TIME_TAG") + L" (Ctrl+G)";
         break;
     }
 
-    CCommon::WStringCopy(pT->szText, 80, tipInfo.GetString());
+    CCommon::WStringCopy(pT->szText, 80, tipInfo.c_str());
 
     return 0;
 }

@@ -159,8 +159,8 @@ void CSearchEditCtrl::PreSubclassWindow()
     // TODO: 在此添加专用代码和/或调用基类
     m_tool_tip.Create(this, TTS_ALWAYSTIP);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
-    m_tool_tip.AddTool(this, CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT), CRect(), 1);
-    m_tool_tip.AddTool(this, CCommon::LoadText(IDS_INPUT_KEY_WORD), CRect(), 2);
+    m_tool_tip.AddTool(this, theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str(), CRect(), 1);
+    m_tool_tip.AddTool(this, theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_INPUT").c_str(), CRect(), 2);
     UpdateToolTipPosition();
 
     CMFCEditBrowseCtrl::PreSubclassWindow();

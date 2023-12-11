@@ -12,7 +12,6 @@
 #include "BassCore.h"
 #include "SpectralDataHelper.h"
 #include "MediaTransControls.h"
-#include <mutex>
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)         // 播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)      // 播放列表加载完成消息
@@ -66,7 +65,7 @@ public:
     {
         ES_NO_ERROR,
         ES_FILE_NOT_EXIST,
-        ES_FILE_CONNOT_BE_OPEN
+        ES_FILE_CANNOT_BE_OPEN
     };
 
     enum ABRepeatMode       //AB循环的模式
@@ -344,10 +343,14 @@ public:
     void SetSpeed(float speed);
     float GetSpeed() { return m_speed; }
 
-    //获取BASS音频库的错误
+private:
+    // 获取CPlayer操作播放内核时产生的错误写入错误日志
     bool GetPlayerCoreError(const wchar_t* function_name);
+
+public:
     //有错误时返回ture，否则返回false
     bool IsError() const;
+    // IsError()为true时获取状态栏显示的错误字符串
     std::wstring GetErrorInfo();
 
     // 通知主窗口当前播放歌曲改变需要更新显示（向主窗口发送消息）（原SetTitle）
@@ -388,8 +391,6 @@ public:
     wstring GetCurrentFilePath() const;
     //获取当前播放的曲目序号
     int GetIndex() const { return m_index; }
-    //获取正在播放文件的文件名（当前播放文件名为空时返回"没有找到文件" IDS_FILE_NOT_FOUND）
-    wstring GetFileName() const;
     //获取正在播放文件的显示名称
     wstring GetDisplayName() const;
     int GetVolume() const { return m_volume; }
@@ -397,7 +398,7 @@ public:
     CImage& GetAlbumCoverBlur();
     bool AlbumCoverExist();
     wstring GetAlbumCoverPath() const { return m_album_cover_path; }
-    int GetAlbumCoverType() const { return m_album_cover_type; }
+    wstring GetAlbumCoverType() const;
 
 private:
     // 下方播放列表移除歌曲方法中的共有部分

@@ -77,7 +77,7 @@ protected:
     //用于支持鼠标指向列表中的项目时显示歌曲信息)
     CStaticEx m_path_static;
     CMenuEditCtrl m_path_edit;
-    CButton m_set_path_button;
+    CButton m_media_lib_button;
     CSearchEditCtrl m_search_edit;
     //CButton m_clear_search_button;
     CUIWindow m_ui_static_ctrl{ m_pUI };
@@ -221,7 +221,7 @@ protected:
     void SetThumbnailClipArea(CRect rect);		//设置任务栏缩略图的区域
     void EnablePlaylist(bool enable);		//设置启用或禁用播放列表控件
 
-    void CreateDesktopShortcut();		//用于在提示用户创建桌面快捷方式
+    void FirstRunCreateShortcut();            // 如果是首次运行那么提示用户是否创建桌面快捷方式
 
     void ApplySettings(const COptionsDlg& optionDlg);		//从选项设置对话框获取设置
     void ApplyThemeColor();			//应用主题颜色设置
@@ -283,7 +283,7 @@ protected:
     afx_msg void OnNext();
     afx_msg void OnRew();
     afx_msg void OnFF();
-    afx_msg void OnSetPath();
+    afx_msg void OnMediaLib();
     afx_msg void OnFind();
     afx_msg void OnExplorePath();
     virtual BOOL PreTranslateMessage(MSG* pMsg);

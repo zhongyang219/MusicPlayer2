@@ -110,10 +110,13 @@ BOOL CMusicPlayerApp::InitInstance()
     //当程序被Windows重新启动时，直接退出程序
     if (cmd_line.find(L"RestartByRestartManager") != wstring::npos)
     {
-        //将命令行参数写入日志文件
-        CString info = CCommon::LoadTextFormat(IDS_RESTART_EXIT, { cmd_line });
-        //swprintf_s(buff, CCommon::LoadText(IDS_RESTART_EXIT), cmd_line.c_str());
-        WriteLog(wstring{ info.GetString() });
+        LoadConfig();   // m_str_table.Init之前需要先加载语言配置
+        // Init略花时间，不应当在互斥量成功创建之前执行，这里是特例
+        m_str_table.Init(m_local_dir + L"language\\", m_general_setting_data.language_);
+        CCommon::SetThreadLanguageList(m_str_table.GetLanguageTag());
+        // 将命令行参数写入日志文件
+        wstring info = theApp.m_str_table.LoadTextFormat(L"LOG_RESTART_EXIT", { cmd_line });
+        WriteLog(info);
         return FALSE;
     }
 
@@ -198,28 +201,35 @@ BOOL CMusicPlayerApp::InitInstance()
             }
             else        //仍然找不到窗口句柄，说明程序还没有退出
             {
-                AfxMessageBox(IDS_APP_RUNING_INFO, MB_ICONINFORMATION | MB_OK);
+                LoadConfig();
+                m_str_table.Init(m_local_dir + L"language\\", m_general_setting_data.language_);
+                CCommon::SetThreadLanguageList(m_str_table.GetLanguageTag());
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_APP_RUNING_INFO");
+                AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
             }
             return FALSE;		//退出当前程序
         }
     }
 
-    //CString str = CCommon::LoadTextFormat(IDS_TEST_STR, { 3, L"asdfghhh", 1.2 });
+    LoadConfig();
+    // 获取互斥量后StrTable应尽早初始化以免某些LoadText后以静态变量保存字符串引用的地方加载到空字符串<error>
+    m_str_table.Init(m_local_dir + L"language\\", m_general_setting_data.language_);
 
     LoadSongData();
     LoadLastFMData();
-    LoadConfig();
 
     //初始化界面语言
-    CCommon::SetThreadLanguage(m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(m_str_table.GetLanguageTag());
 
     //检查bass.dll的版本是否和API的版本匹配
     WORD dll_version{ HIWORD(BASS_GetVersion()) };
     //WORD dll_version{ 0x203 };
     if (dll_version != BASSVERSION)
     {
-        CString info = CCommon::LoadTextFormat(IDS_BASS_VERSION_WARNING, { HIBYTE(dll_version), LOBYTE(dll_version), HIBYTE(BASSVERSION), LOBYTE(BASSVERSION) });
-        if (AfxMessageBox(info, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
+        wstring dll_version_str{ std::to_wstring(static_cast<int>(HIBYTE(dll_version))) + L'.' + std::to_wstring(static_cast<int>(LOBYTE(dll_version))) };
+        wstring bass_version_str{ std::to_wstring(static_cast<int>(HIBYTE(BASSVERSION))) + L'.' + std::to_wstring(static_cast<int>(LOBYTE(BASSVERSION))) };
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_BASS_VERSION_WARNING", { dll_version_str, bass_version_str });
+        if (AfxMessageBox(info.c_str(), MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
             return FALSE;
     }
 
@@ -340,16 +350,15 @@ void CMusicPlayerApp::OnHelp()
     {
         dialog_exist = true;
         CMessageDlg helpDlg;
-        helpDlg.SetWindowTitle(CCommon::LoadText(IDS_HELP));
-        helpDlg.SetInfoText(CCommon::LoadText(IDS_WELCOM_TO_USE));
+        helpDlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_HELP_DLG").c_str());
+        helpDlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_HELP_DLG_WELCOM_TO_USE").c_str());
         helpDlg.ShowLinkStatic(true);
-        helpDlg.SetLinkInfo(CCommon::LoadText(IDS_SHOW_ONLINE_HELP_INFO), _T("https://github.com/zhongyang219/MusicPlayer2/wiki"));
+        helpDlg.SetLinkInfo(theApp.m_str_table.LoadText(L"TXT_HELP_DLG_SHOW_ONLINE_HELP").c_str(), L"https://github.com/zhongyang219/MusicPlayer2/wiki");
 
-        CString info{ GetHelpString() };
-        info += _T("\r\n\r\n");
-        info += GetSystemInfoString();
+        wstring info = theApp.m_str_table.LoadText(L"TXT_HELP_DLG_HELP_INFO");
+        info += L"\r\n\r\n" + GetSystemInfoString();
 
-        helpDlg.SetMessageText(info);
+        helpDlg.SetMessageText(info.c_str());
         helpDlg.DoModal();
 
         dialog_exist = false;
@@ -370,14 +379,15 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 
     wstring version;		//程序版本
     wstring link;			//下载链接
-    wstring contents_zh_cn;	//更新内容（简体中文）
-    wstring contents_en;	//更新内容（English）
     CUpdateHelper update_helper;
     update_helper.SetUpdateSource(static_cast<CUpdateHelper::UpdateSource>(m_general_setting_data.update_source));
     if (!update_helper.CheckForUpdate())
     {
         if (message)
-            AfxMessageBox(CCommon::LoadText(IDS_CHECK_UPDATA_FAILED), MB_OK | MB_ICONWARNING);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_UPDATE_CHECK_FAILED");
+            AfxMessageBox(info.c_str(), MB_OK | MB_ICONWARNING);
+        }
         return;
     }
 
@@ -387,42 +397,29 @@ void CMusicPlayerApp::CheckUpdate(bool message)
 #else
     link = update_helper.GetLink();
 #endif
-    contents_zh_cn = update_helper.GetContentsZhCn();
-    contents_en = update_helper.GetContentsEn();
 
     if (version.empty() || link.empty())
     {
         if (message)
         {
-            CString info = CCommon::LoadText(IDS_CHECK_UPDATA_ERROR);
-            info += _T("\r\nrow_data=");
-            info += std::to_wstring(update_helper.IsRowData()).c_str();
-            theApp.m_pMainWnd->MessageBox(info, NULL, MB_OK | MB_ICONWARNING);
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_UPDATE_CHECK_ERROR", { L"row_data = " + std::to_wstring(update_helper.IsRowData()) });
+            theApp.m_pMainWnd->MessageBox(info.c_str(), NULL, MB_OK | MB_ICONWARNING);
         }
         return;
     }
     if (version > APP_VERSION)		//如果服务器上的版本大于本地版本
     {
-        CString info;
         //根据语言设置选择对应语言版本的更新内容
-        int language_code = _ttoi(CCommon::LoadText(IDS_LANGUAGE_CODE));
-        wstring contents_lan;
-        switch (language_code)
-        {
-        case 2:
-            contents_lan = contents_zh_cn;
-            break;
-        default:
-            contents_lan = contents_en;
-            break;
-        }
+        bool is_zh_cn = theApp.m_str_table.IsSimplifiedChinese();
+        wstring contents{ is_zh_cn ? update_helper.GetContentsZhCn() : update_helper.GetContentsEn() };
 
-        if (contents_lan.empty())
-            info = CCommon::LoadTextFormat(IDS_UPDATE_AVLIABLE, { version });
+        wstring info;
+        if (contents.empty())
+            info = theApp.m_str_table.LoadTextFormat(L"MSG_UPDATE_AVLIABLE", { version });
         else
-            info = CCommon::LoadTextFormat(IDS_UPDATE_AVLIABLE2, { version, contents_lan });
+            info = theApp.m_str_table.LoadTextFormat(L"MSG_UPDATE_AVLIABLE_2", { version, contents });
 
-        if (theApp.m_pMainWnd->MessageBox(info, NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)
+        if (theApp.m_pMainWnd->MessageBox(info.c_str(), NULL, MB_YESNO | MB_ICONQUESTION) == IDYES)
         {
             ShellExecute(NULL, _T("open"), link.c_str(), NULL, NULL, SW_SHOW);		//转到下载链接
         }
@@ -430,7 +427,10 @@ void CMusicPlayerApp::CheckUpdate(bool message)
     else
     {
         if (message)
-            theApp.m_pMainWnd->MessageBox(CCommon::LoadText(IDS_ALREADY_UPDATED), NULL, MB_OK | MB_ICONINFORMATION);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_UPDATE_ALREADY");
+            theApp.m_pMainWnd->MessageBox(info.c_str(), NULL, MB_OK | MB_ICONINFORMATION);
+        }
     }
 }
 
@@ -487,7 +487,7 @@ void CMusicPlayerApp::SaveGlobalConfig()
 
 UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
 {
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     theApp.CheckUpdate(lpParam);		//检查更新
     return 0;
 }
@@ -506,7 +506,8 @@ void CMusicPlayerApp::SaveConfig()
     CIniHelper ini(m_config_path);
     ini.WriteString(L"app", L"version", APP_VERSION);
     ini.WriteBool(L"general", L"check_update_when_start", m_general_setting_data.check_update_when_start);
-    ini.WriteInt(_T("general"), _T("language"), static_cast<int>(m_general_setting_data.language));
+    // ini.WriteInt(_T("general"), _T("language"), static_cast<int>(m_general_setting_data.language));
+    ini.WriteString(L"general", L"language_", m_general_setting_data.language_);
     if (!CWinVersionHelper::IsWindows81OrLater())
         ini.WriteBool(L"hot_key", L"global_multimedia_key_enable", m_hot_key_setting_data.global_multimedia_key_enable);
     ini.Save();
@@ -517,7 +518,8 @@ void CMusicPlayerApp::LoadConfig()
     CIniHelper ini(m_config_path);
     wstring config_version = ini.GetString(L"app", L"version", L"");
     m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", true);
-    m_general_setting_data.language = static_cast<Language>(ini.GetInt(L"general", L"language", 0));
+    // m_general_setting_data.language = static_cast<Language>(ini.GetInt(L"general", L"language", 0));
+    m_general_setting_data.language_ = ini.GetString(L"general", L"language_", L"");     // 留空表示“跟随系统”
     if (!CWinVersionHelper::IsWindows81OrLater())
         m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", false);
 }
@@ -754,7 +756,7 @@ void CMusicPlayerApp::InitMenuResourse()
     ASSERT(m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(11) != nullptr);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSubMenu(4)->GetSafeHmenu(), 11, TRUE, m_icon_set.skin.GetIcon(true));
     //工具
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SET_PATH, FALSE, m_icon_set.media_lib.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_MEDIA_LIB, FALSE, m_icon_set.media_lib.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_FIND, FALSE, m_icon_set.find_songs.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_EXPLORE_PATH, FALSE, m_icon_set.folder_explore.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu.GetSafeHmenu(), ID_SONG_INFO, FALSE, m_icon_set.info.GetIcon(true));
@@ -791,7 +793,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_ADD_TO_MY_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_VIEW_ARTIST, FALSE, m_icon_set.artist.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_VIEW_ALBUM, FALSE, m_icon_set.album.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_SET_PATH, FALSE, m_icon_set.media_lib.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_MEDIA_LIB, FALSE, m_icon_set.media_lib.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_FIND, FALSE, m_icon_set.find_songs.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_EXPLORE_PATH, FALSE, m_icon_set.folder_explore.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_popup_menu.GetSafeHmenu(), ID_EQUALIZER, FALSE, m_icon_set.eq.GetIcon(true));
@@ -926,7 +928,7 @@ void CMusicPlayerApp::InitMenuResourse()
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_DOWNLOAD_LYRIC, FALSE, m_icon_set.download);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_DOWNLOAD_ALBUM_COVER, FALSE, m_icon_set.album_cover);
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_ADD_REMOVE_FROM_FAVOURITE, FALSE, m_icon_set.favourite.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_SET_PATH, FALSE, m_icon_set.media_lib.GetIcon(true));
+    CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_MEDIA_LIB, FALSE, m_icon_set.media_lib.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_FIND, FALSE, m_icon_set.find_songs.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_EXPLORE_PATH, FALSE, m_icon_set.folder_explore.GetIcon(true));
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_mini_mode_menu.GetSafeHmenu(), ID_EQUALIZER, FALSE, m_icon_set.eq.GetIcon(true));
@@ -965,7 +967,7 @@ void CMusicPlayerApp::InitMenuResourse()
     int index = m_menu_set.m_main_menu_popup.GetMenuItemCount();
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_main_menu_popup.GetSafeHmenu(), index - 1, TRUE, m_icon_set.exit);                     //退出
 
-    //将主菜单添加到系统菜单中
+    // 将主菜单添加到系统菜单中(右键系统标题栏打开)
     CMenu* pSysMenu = m_pMainWnd->GetSystemMenu(FALSE);
     if (pSysMenu != NULL)
     {
@@ -982,14 +984,17 @@ void CMusicPlayerApp::InitMenuResourse()
         CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index + 6, TRUE, m_icon_set.help.GetIcon(true));               //帮助
 
         pSysMenu->AppendMenu(MF_SEPARATOR);
-        pSysMenu->AppendMenu(MF_STRING, IDM_MINIMODE, CCommon::LoadText(IDS_MINI_MODE2, _T("\tCtrl+M")));
-        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), IDM_MINIMODE, FALSE, m_icon_set.mini.GetIcon(true));
-
+        // 额外添加一个“MINI模式” “退出”命令到一级菜单（助记键会和原本的系统菜单重复，问题不大）
+        // 由于子菜单下已经有一个同样的命令，因此这里只能通过菜单项的序号设置图标
+        index = pSysMenu->GetMenuItemCount();
+        CString miniStr;
+        m_menu_set.m_main_menu.GetMenuString(ID_MINI_MODE, miniStr, 0);
+        pSysMenu->AppendMenu(MF_STRING, ID_MINI_MODE, miniStr);
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index, TRUE, m_icon_set.mini.GetIcon(true));
         CString exitStr;
         m_menu_set.m_main_menu.GetMenuString(ID_MENU_EXIT, exitStr, 0);
         pSysMenu->AppendMenu(MF_STRING, ID_MENU_EXIT, exitStr);
-        index = pSysMenu->GetMenuItemCount();
-        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index - 1, TRUE, m_icon_set.exit);       //由于“文件”子菜单下已经有一个“退出”，命令，因此这里只能通过菜单项的序号指定
+        CMenuIcon::AddIconToMenuItem(pSysMenu->GetSafeHmenu(), index + 1, TRUE, m_icon_set.exit);
 
         //添加一个测试命令
 #ifdef _DEBUG
@@ -1002,8 +1007,9 @@ void CMusicPlayerApp::InitMenuResourse()
     m_menu_set.m_playlist_toolbar_popup_menu.CreatePopupMenu();
     CCommon::AppendMenuOp(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), m_menu_set.m_playlist_toolbar_menu.GetSafeHmenu());
     m_menu_set.m_playlist_toolbar_popup_menu.AppendMenu(MF_SEPARATOR);
-    CString temp = CCommon::LoadText(IDS_LOCATE, CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT));
-    m_menu_set.m_playlist_toolbar_popup_menu.AppendMenu(MF_STRING, ID_LOCATE_TO_CURRENT, temp);
+    wstring menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_LOCATE");
+    menu_str += CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT);
+    m_menu_set.m_playlist_toolbar_popup_menu.AppendMenu(MF_STRING, ID_LOCATE_TO_CURRENT, menu_str.c_str());
     //为播放列表工具栏弹出菜单添加图标
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), 0, TRUE, m_icon_set.add.GetIcon(true));               //添加
     CMenuIcon::AddIconToMenuItem(m_menu_set.m_playlist_toolbar_popup_menu.GetSafeHmenu(), 1, TRUE, m_icon_set.close.GetIcon(true));             //删除
@@ -1056,55 +1062,21 @@ void CMusicPlayerApp::GetDPIFromWindow(CWnd* pWnd)
     m_dpi = GetDeviceCaps(hDC, LOGPIXELSY);
 }
 
-WORD CMusicPlayerApp::GetCurrentLanguage() const
+wstring CMusicPlayerApp::GetSystemInfoString()
 {
-    switch (m_general_setting_data.language)
-    {
-    case Language::SIMPLIFIED_CHINESE:
-        return MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED);
-    default:
-        return MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
-    }
-}
+    wstringstream wss;
+    wss << L"System Info:\r\n"
+        << L"Windows Version: " << CWinVersionHelper::GetMajorVersion() << L'.' << CWinVersionHelper::GetMinorVersion()
+        << L" build " << CWinVersionHelper::GetBuildNumber() << L"\r\n"
+        << L"DPI: " << GetDPI() << L"\r\n";
 
-//bool CMusicPlayerApp::IsGlobalMultimediaKeyEnabled() const
-//{
-//    return m_multimedia_key_hook != NULL;
-//}
+    vector<wstring> language_list;
+    CCommon::GetThreadLanguageList(language_list);
+    wss << L"System Language List:\r\n";
+    for (wstring& str : language_list)
+        wss << str << L"\r\n";
 
-CString CMusicPlayerApp::GetHelpString()
-{
-    CString help_info;
-    HRSRC hRes;
-    if (m_general_setting_data.language == Language::FOLLOWING_SYSTEM)
-        hRes = FindResource(NULL, MAKEINTRESOURCE(IDR_TEXT1), _T("TEXT"));
-    else
-        hRes = FindResourceEx(NULL, _T("TEXT"), MAKEINTRESOURCE(IDR_TEXT1), GetCurrentLanguage());
-    if (hRes != NULL)
-    {
-        HGLOBAL hglobal = LoadResource(NULL, hRes);
-        if (hglobal != NULL)
-            help_info.Format(_T("%s"), (LPVOID)hglobal);
-    }
-
-    return help_info;
-}
-
-CString CMusicPlayerApp::GetSystemInfoString()
-{
-    CString info;
-    info += _T("System Info:\r\n");
-
-    CString strTmp;
-    strTmp.Format(_T("Windows Version: %d.%d build %d\r\n"), CWinVersionHelper::GetMajorVersion(),
-        CWinVersionHelper::GetMinorVersion(), CWinVersionHelper::GetBuildNumber());
-    info += strTmp;
-
-    strTmp.Format(_T("DPI: %d"), GetDPI());
-    info += strTmp;
-    info += _T("\r\n");
-
-    return info;
+    return std::move(wss).str();
 }
 
 void CMusicPlayerApp::SetAutoRun(bool auto_run)
@@ -1158,6 +1130,8 @@ bool CMusicPlayerApp::GetAutoRun()
 
 void CMusicPlayerApp::WriteLog(const wstring& log_str, int log_type)
 {
+    static std::mutex log_mutex;
+    std::lock_guard<std::mutex> lock(log_mutex);
     if (((log_type & NonCategorizedSettingData::LT_ERROR) != 0) && ((m_nc_setting_data.debug_log & NonCategorizedSettingData::LT_ERROR) != 0))
         CCommon::WriteLog((m_config_dir + L"error.log").c_str(), log_str);
 #ifdef _DEBUG
@@ -1268,6 +1242,23 @@ int CMusicPlayerApp::ExitInstance()
     // 卸载GDI+
     Gdiplus::GdiplusShutdown(m_gdiplusToken);
 
+    const auto& unknown_key = m_str_table.GetUnKnownKey();
+    if (!unknown_key.empty())
+    {
+        wstring log_str = m_str_table.LoadText(L"LOG_STRING_TABLE_UNKNOWN_KEY");
+        for (const auto& item : unknown_key)
+            log_str += item + L';';
+        WriteLog(log_str);
+    }
+    const auto& error_para_key = m_str_table.GetErrorParaKey();
+    if (!error_para_key.empty())
+    {
+        wstring log_str = m_str_table.LoadText(L"LOG_STRING_TABLE_PARA_ERROR");
+        for (const auto& item : error_para_key)
+            log_str += item + L';';
+        WriteLog(log_str);
+    }
+
     return CWinApp::ExitInstance();
 }
 
@@ -1275,8 +1266,8 @@ int CMusicPlayerApp::ExitInstance()
 void CMusicPlayerApp::OnHelpUpdateLog()
 {
     // TODO: 在此添加命令处理程序代码
-    CString language = CCommon::LoadText(IDS_LANGUAGE_CODE);
-    if (language == _T("2"))
+    bool is_zh_cn = theApp.m_str_table.IsSimplifiedChinese();
+    if (is_zh_cn)
         ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log.md"), NULL, NULL, SW_SHOW);
     else
         ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/blob/master/Documents/update_log_en-us.md"), NULL, NULL, SW_SHOW);
@@ -1292,8 +1283,8 @@ void CMusicPlayerApp::OnHelpCustomUi()
 
 void CMusicPlayerApp::OnHelpFaq()
 {
-    CString language = CCommon::LoadText(IDS_LANGUAGE_CODE);
-    if (language == _T("2"))
+    bool is_zh_cn = theApp.m_str_table.IsSimplifiedChinese();
+    if (is_zh_cn)
         ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"), NULL, NULL, SW_SHOW);
     else
         ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/wiki/FAQ"), NULL, NULL, SW_SHOW);
