@@ -1299,7 +1299,7 @@ bool CCommon::GetThreadLanguageList(vector<wstring>& language_tag)
     language_tag.clear();
     ULONG num{};
     vector<wchar_t> buffer(LOCALE_NAME_MAX_LENGTH, L'\0');
-    ULONG buffer_size{ buffer.size() };
+    ULONG buffer_size{ static_cast<ULONG>(buffer.size()) };
     bool rtn = GetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, &num, buffer.data(), &buffer_size); // >=Windows Vista
     if (!rtn) return false;
     ASSERT(buffer_size <= LOCALE_NAME_MAX_LENGTH);
