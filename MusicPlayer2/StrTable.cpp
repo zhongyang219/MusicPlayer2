@@ -20,8 +20,8 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
     if (!initialized.compare_exchange_strong(expected, true))
         return false;
     std::map<wstring, LanguageInfo> list;   // 使用map自动去重与排序
-    // 存在外部en-US文件时这里设置的list项目会被覆写
-    list.emplace(L"en-US", LanguageInfo{ L"<MusicPlayer2>", L"English <Default>", L"en-US", L"Segoe UI" });
+    // 存在外部en-US文件时这里设置的list项目会被覆写（下面根据LanguageInfo.file_name是否为空判断是否存在外部英文翻译）
+    list.emplace(L"en-US", LanguageInfo{ L"", L"English <Default>", L"en-US", L"Segoe UI" });
     // 加载内嵌资源作为默认值确保外部翻译文件不完整/不存在时的正常使用
     CIniHelper default_file(IDR_STRING_TABLE);
     default_file.GetAllKeyValues(L"text", m_text_string_table);
