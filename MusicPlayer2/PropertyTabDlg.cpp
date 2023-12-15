@@ -249,7 +249,6 @@ void CPropertyTabDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_ALBUM_EDIT, m_album_edit);
     DDX_Control(pDX, IDC_TRACK_EDIT, m_track_edit);
     DDX_Control(pDX, IDC_YEAR_EDIT, m_year_edit);
-    //DDX_Control(pDX, IDC_GENRE_EDIT, m_genre_edit);
     DDX_Control(pDX, IDC_COMMENT_EDIT, m_comment_edit);
     DDX_Control(pDX, IDC_LYRIC_FILE_EDIT, m_lyric_file_edit);
     DDX_Control(pDX, IDC_GENRE_COMBO, m_genre_combo);

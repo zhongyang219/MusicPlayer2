@@ -167,7 +167,6 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_NOTIFY(NM_DBLCLK, IDC_LIST2, &CMiniModeDlg::OnNMDblclkList2)
     ON_NOTIFY(NM_RCLICK, IDC_LIST2, &CMiniModeDlg::OnNMRClickList2)
     ON_WM_PAINT()
-    //ON_STN_CLICKED(IDC_MINI_PROGRESS_STATIC, &CMiniModeDlg::OnStnClickedMiniProgressStatic)
     ON_WM_MOUSEMOVE()
     ON_WM_LBUTTONUP()
     ON_COMMAND(ID_SHOW_PLAY_LIST, &CMiniModeDlg::OnShowPlayList)
@@ -620,15 +619,6 @@ void CMiniModeDlg::OnPaint()
     // 不为绘图消息调用 CDialogEx::OnPaint()
     //m_ui.DrawInfo();
 }
-
-
-//void CMiniModeDlg::OnStnClickedMiniProgressStatic()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	//int pos = m_progress_bar.GetPos();
-//	//int song_pos = static_cast<__int64>(pos) * CPlayer::GetInstance().GetSongLength() / 1000;
-//	//CPlayer::GetInstance().SeekTo(song_pos);
-//}
 
 
 void CMiniModeDlg::OnMouseMove(UINT nFlags, CPoint point)

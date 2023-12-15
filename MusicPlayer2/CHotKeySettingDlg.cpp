@@ -69,7 +69,7 @@ BEGIN_MESSAGE_MAP(CHotKeySettingDlg, CTabDlg)
     ON_NOTIFY(NM_RCLICK, IDC_HOT_KEY_LIST, &CHotKeySettingDlg::OnNMRClickHotKeyList)
     ON_BN_CLICKED(IDC_HOT_KEY_ENABLE_CHECK, &CHotKeySettingDlg::OnBnClickedHotKeyEnableCheck)
     ON_WM_DESTROY()
-    ON_BN_CLICKED(IDC_ENABLE_GLABOL_MULTIMEDIA_KEY_CHECK, &CHotKeySettingDlg::OnBnClickedEnableGlabolMultimediaKeyCheck)
+    ON_BN_CLICKED(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK, &CHotKeySettingDlg::OnBnClickedEnableGlobalMultimediaKeyCheck)
 END_MESSAGE_MAP()
 
 
@@ -175,7 +175,7 @@ void CHotKeySettingDlg::OnBnClickedHotKeyEnableCheck()
 
 
 
-void CHotKeySettingDlg::OnBnClickedEnableGlabolMultimediaKeyCheck()
+void CHotKeySettingDlg::OnBnClickedEnableGlobalMultimediaKeyCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.global_multimedia_key_enable = (m_enable_global_multimedia_key_check.GetCheck() != 0);

@@ -44,6 +44,6 @@ public:
 	afx_msg void OnNMClickHotKeyList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClickHotKeyList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedHotKeyEnableCheck();
-	afx_msg void OnBnClickedEnableGlabolMultimediaKeyCheck();
+	afx_msg void OnBnClickedEnableGlobalMultimediaKeyCheck();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

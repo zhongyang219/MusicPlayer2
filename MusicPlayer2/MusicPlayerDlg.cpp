@@ -123,7 +123,6 @@ void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_PATH_EDIT, m_path_edit);
     DDX_Control(pDX, ID_MEDIA_LIB, m_media_lib_button);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
-    //DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
     DDX_Control(pDX, IDC_UI_STATIC, m_ui_static_ctrl);
     DDX_Control(pDX, IDC_HSPLITER_STATIC, m_splitter_ctrl);
@@ -180,10 +179,6 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_DISP_ARTIST_TITLE, &CMusicPlayerDlg::OnDispArtistTitle)
     ON_COMMAND(ID_DISP_TITLE_ARTIST, &CMusicPlayerDlg::OnDispTitleArtist)
     ON_COMMAND(ID_MINI_MODE, &CMusicPlayerDlg::OnMiniMode)
-    ON_BN_CLICKED(IDC_STOP, &CMusicPlayerDlg::OnBnClickedStop)
-    ON_BN_CLICKED(IDC_PREVIOUS, &CMusicPlayerDlg::OnBnClickedPrevious)
-    ON_BN_CLICKED(IDC_PLAY_PAUSE, &CMusicPlayerDlg::OnBnClickedPlayPause)
-    ON_BN_CLICKED(IDC_NEXT, &CMusicPlayerDlg::OnBnClickedNext)
     ON_COMMAND(ID_RELOAD_LYRIC, &CMusicPlayerDlg::OnReloadLyric)
     ON_COMMAND(ID_SONG_INFO, &CMusicPlayerDlg::OnSongInfo)
     ON_COMMAND(ID_COPY_CURRENT_LYRIC, &CMusicPlayerDlg::OnCopyCurrentLyric)
@@ -212,7 +207,6 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     // ON_MESSAGE(WM_PATH_SELECTED, &CMusicPlayerDlg::OnPathSelected)
     ON_MESSAGE(WM_CONNOT_PLAY_WARNING, &CMusicPlayerDlg::OnConnotPlayWarning)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMusicPlayerDlg::OnEnChangeSearchEdit)
-    //ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CMusicPlayerDlg::OnBnClickedClearSearchButton)
     ON_COMMAND(ID_DOWNLOAD_ALBUM_COVER, &CMusicPlayerDlg::OnDownloadAlbumCover)
     ON_MESSAGE(WM_MUSIC_STREAM_OPENED, &CMusicPlayerDlg::OnMusicStreamOpened)
     ON_COMMAND(ID_CURRENT_EXPLORE_ONLINE, &CMusicPlayerDlg::OnCurrentExploreOnline)
@@ -223,7 +217,6 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_FORMAT_CONVERT, &CMusicPlayerDlg::OnFormatConvert)
     ON_COMMAND(ID_FORMAT_CONVERT1, &CMusicPlayerDlg::OnFormatConvert1)
     ON_MESSAGE(WM_SETTINGS_APPLIED, &CMusicPlayerDlg::OnSettingsApplied)
-    ON_COMMAND(ID_RECORDER, &CMusicPlayerDlg::OnRecorder)
     ON_MESSAGE(WM_ALBUM_COVER_DOWNLOAD_COMPLETE, &CMusicPlayerDlg::OnAlbumCoverDownloadComplete)
     ON_WM_DWMCOLORIZATIONCOLORCHANGED()
     ON_COMMAND(ID_SUPPORTED_FORMAT, &CMusicPlayerDlg::OnSupportedFormat)
@@ -250,7 +243,6 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_DOCKED_PLAYLIST, &CMusicPlayerDlg::OnDockedPlaylist)
     ON_COMMAND(ID_FLOATED_PLAYLIST, &CMusicPlayerDlg::OnFloatedPlaylist)
     ON_MESSAGE(WM_FLOAT_PLAYLIST_CLOSED, &CMusicPlayerDlg::OnFloatPlaylistClosed)
-    //    ON_COMMAND(ID_FILE_OPEN_PALYLIST, &CMusicPlayerDlg::OnFileOpenPalylist)
     // ON_MESSAGE(WM_PLAYLIST_SELECTED, &CMusicPlayerDlg::OnPlaylistSelected)
     ON_COMMAND(ID_PLAYLIST_ADD_FILE, &CMusicPlayerDlg::OnPlaylistAddFile)
     ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CMusicPlayerDlg::OnRemoveFromPlaylist)
@@ -295,7 +287,6 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_NEXT_AB_REPEAT, &CMusicPlayerDlg::OnNextAbRepeat)
     ON_COMMAND(ID_SAVE_CURRENT_PLAYLIST_AS, &CMusicPlayerDlg::OnSaveCurrentPlaylistAs)
     ON_COMMAND(ID_FILE_OPEN_PLAYLIST, &CMusicPlayerDlg::OnFileOpenPlaylist)
-    //ON_COMMAND(ID_EXPORT_CURRENT_PLAYLIST, &CMusicPlayerDlg::OnExportCurrentPlaylist)
     ON_COMMAND(ID_SAVE_AS_NEW_PLAYLIST, &CMusicPlayerDlg::OnSaveAsNewPlaylist)
     ON_COMMAND(ID_CREATE_DESKTOP_SHORTCUT, &CMusicPlayerDlg::OnCreateDesktopShortcut)
     ON_COMMAND(ID_CREATE_MINI_MODE_SHORT_CUT, &CMusicPlayerDlg::OnCreateMiniModeShortCut)
@@ -3918,46 +3909,6 @@ void CMusicPlayerDlg::OnSplitterChanged(CRect splitter_rect)
     }
 }
 
-void CMusicPlayerDlg::OnBnClickedStop()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    SetFocus();
-    OnStop();
-}
-
-
-void CMusicPlayerDlg::OnBnClickedPrevious()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    SetFocus();
-    OnPrevious();
-}
-
-
-void CMusicPlayerDlg::OnBnClickedPlayPause()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    SetFocus();
-    OnPlayPause();
-}
-
-
-void CMusicPlayerDlg::OnBnClickedNext()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    SetFocus();
-    OnNext();
-}
-
-
-//void CMusicPlayerDlg::OnMove(int x, int y)
-//{
-//  CMainDialogBase::OnMove(x, y);
-//
-//  // TODO: 在此处添加消息处理程序代码
-//  SetMaskWindowPos();
-//}
-
 
 void CMusicPlayerDlg::OnReloadLyric()
 {
@@ -4845,21 +4796,6 @@ void CMusicPlayerDlg::OnMoveFileTo()
 }
 
 
-//afx_msg LRESULT CMusicPlayerDlg::OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam)
-//{
-//    wstring cmd_line = CCommon::GetStringFromClipboard();
-//    if (cmd_line.empty())
-//        return 0;
-//    vector<wstring> files;
-//    CCommon::DisposeCmdLineFiles(wstring(cmd_line), files);
-//    if (!files.empty() && CPlaylistFile::IsPlaylistFile(files[0]))
-//        CPlayer::GetInstance().OpenPlaylistFile(files[0]);
-//    else
-//        CPlayer::GetInstance().OpenFiles(files);
-//    return 0;
-//}
-
-
 void CMusicPlayerDlg::OnFormatConvert()
 {
     // TODO: 在此添加命令处理程序代码
@@ -4891,14 +4827,6 @@ afx_msg LRESULT CMusicPlayerDlg::OnSettingsApplied(WPARAM wParam, LPARAM lParam)
         return 0;
     ApplySettings(*pOptionsDlg);
     return 0;
-}
-
-
-void CMusicPlayerDlg::OnRecorder()
-{
-    // TODO: 在此添加命令处理程序代码
-    CRecorderDlg dlg;
-    dlg.DoModal();
 }
 
 

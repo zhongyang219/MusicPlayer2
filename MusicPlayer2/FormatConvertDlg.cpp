@@ -308,14 +308,8 @@ BOOL CFormatConvertDlg::OnInitDialog()
 void CFormatConvertDlg::EnableControls(bool enable)
 {
     GetDlgItem(IDC_OUT_FORMAT_COMBO)->EnableWindow(enable);
-    //GetDlgItem(IDC_BROWSE_BUTTON)->EnableWindow(enable);
     GetDlgItem(IDC_START_CONVERT_BUTTON)->EnableWindow(enable);
     GetDlgItem(IDC_ENCODER_CONFIG_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_ADD_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_DELETE_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_CLEAR_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_MOVE_UP_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_MOVE_DOWN_BUTTON)->EnableWindow(enable);
     GetDlgItem(IDC_COPY_TAG_CHECK)->EnableWindow(enable);
     GetDlgItem(IDC_TARGET_FILE_EXIST_COMBO)->EnableWindow(enable);
     GetDlgItem(IDC_COPY_ALBUM_COVER_CHECK)->EnableWindow(enable);

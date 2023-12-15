@@ -198,7 +198,6 @@ void CFloatPlaylistDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_PATH_EDIT, m_path_edit);
     DDX_Control(pDX, ID_MEDIA_LIB, m_media_lib_button);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
-    //DDX_Control(pDX, IDC_CLEAR_SEARCH_BUTTON, m_clear_search_button);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
     DDX_Control(pDX, IDC_HSPLITER_STATIC, m_splitter_ctrl);
 }
@@ -209,7 +208,6 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_NOTIFY(NM_RCLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMRClickPlaylistList)
     ON_NOTIFY(NM_DBLCLK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMDblclkPlaylistList)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CFloatPlaylistDlg::OnEnChangeSearchEdit)
-    //ON_BN_CLICKED(IDC_CLEAR_SEARCH_BUTTON, &CFloatPlaylistDlg::OnBnClickedClearSearchButton)
     ON_WM_CLOSE()
     ON_WM_GETMINMAXINFO()
     ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMClickPlaylistList)

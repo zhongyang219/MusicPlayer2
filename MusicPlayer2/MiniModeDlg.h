@@ -103,7 +103,6 @@ protected:
     afx_msg void OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnPaint();
 public:
-    //afx_msg void OnStnClickedMiniProgressStatic();
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnShowPlayList();

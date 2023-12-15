@@ -74,11 +74,9 @@ void CDataSettingsDlg::ApplyDataToUi()
 
 
 BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
-    //ON_BN_CLICKED(IDC_ID3V2_FIRST_CHECK, &CDataSettingsDlg::OnBnClickedId3v2FirstCheck)
     ON_BN_CLICKED(IDC_COVER_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedCoverAutoDownloadCheck)
     ON_BN_CLICKED(IDC_LYRIC_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedLyricAutoDownloadCheck)
     ON_BN_CLICKED(IDC_CHECK_UPDATE_CHECK, &CDataSettingsDlg::OnBnClickedCheckUpdateCheck)
-    //ON_BN_CLICKED(IDC_BROWSE_BUTTON, &CDataSettingsDlg::OnBnClickedBrowseButton)
     ON_BN_CLICKED(IDC_MIDI_USE_INNER_LYRIC_CHECK, &CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck)
     ON_BN_CLICKED(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK, &CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck)
     ON_EN_CHANGE(IDC_SF2_PATH_EDIT, &CDataSettingsDlg::OnEnChangeSf2PathEdit)
@@ -123,7 +121,6 @@ BOOL CDataSettingsDlg::OnInitDialog()
     CheckDlgButton(IDC_SAVE_TO_PROGRAM_DIR_RADIO, m_data.portable_mode);
     EnableDlgCtrl(IDC_SAVE_TO_PROGRAM_DIR_RADIO, theApp.m_module_dir_writable);
 
-    //((CButton*)GetDlgItem(IDC_ID3V2_FIRST_CHECK))->SetCheck(m_data.id3v2_first);
     ((CButton*)GetDlgItem(IDC_COVER_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_album_cover);
     ((CButton*)GetDlgItem(IDC_LYRIC_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_lyric);
     ((CButton*)GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK))->SetCheck(m_data.auto_download_only_tag_full);
@@ -205,13 +202,6 @@ void CDataSettingsDlg::EnableControl()
     ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER3))->EnableWindow(m_data.auto_download_album_cover);
     ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER3))->EnableWindow(m_data.auto_download_album_cover && CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path));
 }
-
-
-//void CDataSettingsDlg::OnBnClickedId3v2FirstCheck()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	m_data.id3v2_first = (((CButton*)GetDlgItem(IDC_ID3V2_FIRST_CHECK))->GetCheck() != 0);
-//}
 
 
 void CDataSettingsDlg::OnBnClickedCoverAutoDownloadCheck()

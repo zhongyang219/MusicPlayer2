@@ -260,14 +260,8 @@ void CLyricEditDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CLyricEditDlg, CBaseDialog)
-    //ON_BN_CLICKED(IDC_INSERT_TAG_BUTTON, &CLyricEditDlg::OnBnClickedInsertTagButton)
-    //ON_BN_CLICKED(IDC_REPLACE_TAG_BUTTON, &CLyricEditDlg::OnBnClickedReplaceTagButton)
-    //ON_BN_CLICKED(IDC_DELETE_TAG__BUTTON, &CLyricEditDlg::OnBnClickedDeleteTag)
-    //ON_BN_CLICKED(IDC_SAVE_LYRIC_BUTTON, &CLyricEditDlg::OnBnClickedSaveLyricButton)
-    //ON_BN_CLICKED(IDC_SAVE_AS_BUTTON5, &CLyricEditDlg::OnBnClickedSaveAsButton5)
     ON_WM_DESTROY()
     ON_WM_CLOSE()
-    //ON_BN_CLICKED(IDC_OPEN_LYRIC_BUTTON, &CLyricEditDlg::OnBnClickedOpenLyricButton)
     ON_COMMAND(ID_LYRIC_OPEN, &CLyricEditDlg::OnLyricOpen)
     ON_COMMAND(ID_LYRIC_SAVE, &CLyricEditDlg::OnLyricSave)
     ON_COMMAND(ID_LYRIC_SAVE_AS, &CLyricEditDlg::OnLyricSaveAs)
@@ -341,16 +335,6 @@ BOOL CLyricEditDlg::OnInitDialog()
     m_view->SetLexerLyric(theApp.m_app_setting_data.theme_color);
 
     SetLyricPathEditText();
-
-    ////初始化提示信息
-    //m_Mytip.Create(this, TTS_ALWAYSTIP);
-    //m_Mytip.AddTool(GetDlgItem(IDC_INSERT_TAG_BUTTON), _T("在光标所在行的最左边插入一个时间标签，快捷键：F8"));
-    //m_Mytip.AddTool(GetDlgItem(IDC_REPLACE_TAG_BUTTON), _T("替换光标所在行最左边的时间标签，快捷键：F9"));
-    //m_Mytip.AddTool(GetDlgItem(IDC_DELETE_TAG__BUTTON), _T("删除光标处的时间标签，快捷键：Ctrl+Del"));
-    //m_Mytip.AddTool(GetDlgItem(IDC_SAVE_LYRIC_BUTTON), _T("快捷键：Ctrl+S"));
-    //m_Mytip.AddTool(GetDlgItem(ID_PLAY_PAUSE), _T("快捷键：Ctrl+P"));
-    //m_Mytip.AddTool(GetDlgItem(ID_REW), _T("快捷键：Ctrl+←"));
-    //m_Mytip.AddTool(GetDlgItem(ID_FF), _T("快捷键：Ctrl+→"));
 
     ////获取初始时窗口的大小
     //CRect rect;

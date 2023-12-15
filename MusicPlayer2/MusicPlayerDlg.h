@@ -22,7 +22,6 @@
 #include "CoverDownloadCommon.h"
 #include "CoverDownloadDlg.h"
 #include "FormatConvertDlg.h"
-#include "RecorderDlg.h"
 #include "CNotifyIcon.h"
 #include "StaticEx.h"
 #include "CMainDialogBase.h"
@@ -334,11 +333,6 @@ public:
     afx_msg void OnDispTitleArtist();
     afx_msg void OnMiniMode();
 
-    afx_msg void OnBnClickedStop();
-    afx_msg void OnBnClickedPrevious();
-    afx_msg void OnBnClickedPlayPause();
-    afx_msg void OnBnClickedNext();
-    //	afx_msg void OnMove(int x, int y);
     afx_msg void OnReloadLyric();
     afx_msg void OnSongInfo();
     afx_msg void OnCopyCurrentLyric();
@@ -382,16 +376,10 @@ public:
     afx_msg void OnDeleteAlbumCover();
     afx_msg void OnCopyFileTo();
     afx_msg void OnMoveFileTo();
-protected:
-    //afx_msg LRESULT OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam);
-public:
     afx_msg void OnFormatConvert();
     afx_msg void OnFormatConvert1();
 protected:
     afx_msg LRESULT OnSettingsApplied(WPARAM wParam, LPARAM lParam);
-public:
-    afx_msg void OnRecorder();
-protected:
     afx_msg LRESULT OnAlbumCoverDownloadComplete(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnColorizationColorChanged(DWORD dwColorizationColor, BOOL bOpacity);

@@ -74,9 +74,6 @@
     <Filter Include="对话框类\格式转换相关对话框\编码选项对话框">
       <UniqueIdentifier>{6f54d060-c0cf-4263-b48a-d4ffdc8ab770}</UniqueIdentifier>
     </Filter>
-    <Filter Include="对话框类\RecorderDlg">
-      <UniqueIdentifier>{bc15dc8a-cf52-42cb-ac8f-03c1795d5ab6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="对话框类\SupportedFormatDlg">
       <UniqueIdentifier>{31a26140-6f82-4081-be3f-bd5bc3d369f6}</UniqueIdentifier>
     </Filter>
@@ -390,11 +387,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-    <Text Include="Help.txt" />
-    <Text Include="Help_en_us.txt" />
     <Text Include="compile_time.txt" />
     <Text Include="res\Acknowledgement.txt" />
-    <Text Include="res\Acknowledgement_en.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -540,9 +534,6 @@
     </ClInclude>
     <ClInclude Include="GaussBlur.h">
       <Filter>公共的类\GaussBlur</Filter>
-    </ClInclude>
-    <ClInclude Include="RecorderDlg.h">
-      <Filter>对话框类\RecorderDlg</Filter>
     </ClInclude>
     <ClInclude Include="LyricSettingsDlg.h">
       <Filter>对话框类\选项设置对话框\LyricSettingsDlg</Filter>
@@ -1001,9 +992,6 @@
     </ClCompile>
     <ClCompile Include="GaussBlur.cpp">
       <Filter>公共的类\GaussBlur</Filter>
-    </ClCompile>
-    <ClCompile Include="RecorderDlg.cpp">
-      <Filter>对话框类\RecorderDlg</Filter>
     </ClCompile>
     <ClCompile Include="LyricSettingsDlg.cpp">
       <Filter>对话框类\选项设置对话框\LyricSettingsDlg</Filter>
