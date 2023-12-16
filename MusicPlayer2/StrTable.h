@@ -28,6 +28,8 @@ public:
     wstring LoadTextFormat(const wstring& key, const std::initializer_list<CVariant>& paras) const;
     // 载入翻译字符串(菜单文本)
     const wstring& LoadMenuText(const wstring& key) const;
+    // 获取scintilla使用的string table
+    const std::map<wstring, wstring>& GetScintillaStrMap() const;
 
     // 获取默认字体名称
     const wstring& GetDefaultFontName() const { return m_default_font_name; };
@@ -49,6 +51,7 @@ private:
     vector<LanguageInfo> m_language_list;               // 下拉菜单需要vector的索引访问所以不使用map
     std::map<wstring, wstring> m_text_string_table;     // 初始化之后保持只读（对外提供静态引用），不需要锁保护
     std::map<wstring, wstring> m_menu_string_table;
+    std::map<wstring, wstring> m_scintilla_string_table;
     // 记录程序运行中的错误，程序退出时写入日志
     mutable std::mutex error_mutex;                     // 存储错误的set不是只读的，写入需要使用锁保护
     mutable std::set<std::wstring> m_unknown_key;

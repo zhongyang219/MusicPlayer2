@@ -26,6 +26,7 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
     CIniHelper default_file(IDR_STRING_TABLE);
     default_file.GetAllKeyValues(L"text", m_text_string_table);
     default_file.GetAllKeyValues(L"menu", m_menu_string_table);
+    default_file.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
     // 即使最终决定是en-US接下来也再加载一次外部翻译，使文本无须重新编译即可修改
 
     bool succeed{};
@@ -45,6 +46,7 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
         {
             file.GetAllKeyValues(L"text", m_text_string_table);
             file.GetAllKeyValues(L"menu", m_menu_string_table);
+            file.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
             m_default_font_name = item.default_font_name;
             m_language_tag.push_back(tag);  // 此处的tag可能不存在于当前系统，设置线程语言的api会略过完全不支持的语言（可以自动匹配相近的语言）
             succeed = true;
@@ -65,6 +67,7 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
             CIniHelper file(language_dir + iter->second.file_name);
             file.GetAllKeyValues(L"text", m_text_string_table);
             file.GetAllKeyValues(L"menu", m_menu_string_table);
+            file.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
             m_default_font_name = iter->second.default_font_name;
             m_language_tag.push_back(tag);
             succeed = true;
@@ -81,6 +84,7 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
             CIniHelper file(language_dir + en.file_name);
             file.GetAllKeyValues(L"text", m_text_string_table);
             file.GetAllKeyValues(L"menu", m_menu_string_table);
+            file.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
             m_default_font_name = en.default_font_name;
             m_language_tag.push_back(L"en-US");
             succeed = true;
@@ -150,4 +154,9 @@ const wstring& StrTable::LoadMenuText(const wstring& key) const
         m_unknown_key.insert(key);
         return error_str;
     }
+}
+
+const std::map<wstring, wstring>& StrTable::GetScintillaStrMap() const
+{
+    return m_scintilla_string_table;
 }
