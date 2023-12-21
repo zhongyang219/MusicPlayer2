@@ -269,6 +269,12 @@ BOOL CMusicPlayerApp::InitInstance()
     if (m_hot_key_setting_data.global_multimedia_key_enable && !CWinVersionHelper::IsWindows81OrLater())
         m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
 
+#ifndef COMPILE_IN_WIN_XP
+    // 初始化ITaskbarList3
+    EnableTaskbarInteraction(TRUE);
+    m_pTaskbar = theApp.GetITaskbarList3();
+#endif
+
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
@@ -1267,6 +1273,11 @@ int CMusicPlayerApp::ExitInstance()
     // TODO: 在此添加专用代码和/或调用基类
     // 卸载GDI+
     Gdiplus::GdiplusShutdown(m_gdiplusToken);
+
+#ifndef COMPILE_IN_WIN_XP
+    // 释放ITaskbarList3
+    theApp.ReleaseTaskBarRefs();
+#endif
 
     return CWinApp::ExitInstance();
 }
