@@ -20,7 +20,8 @@ CPlayerUIBase::~CPlayerUIBase()
 void CPlayerUIBase::Init(CDC* pDC)
 {
     m_pDC = pDC;
-    m_draw.Create(m_pDC, m_pMainWnd);
+    //m_draw.Create(m_pDC, m_pMainWnd);
+    m_draw.Create(m_pDC, &theApp.m_font_set.dlg.GetFont()); // m_draw的字体直接从m_font_set取得，CWnd->GetFont在不保留多语言窗口资源后不再准确
 
     m_tool_tip.Create(m_pMainWnd, TTS_ALWAYSTIP);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
@@ -777,7 +778,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
     if (!theApp.m_app_setting_data.always_show_statusbar)
     {
         CString play_state_str = CPlayer::GetInstance().GetPlayingState().c_str();
-        //m_draw.GetDC()->SelectObject(theApp.m_pMainWnd->GetFont());
+        //m_draw.GetDC()->SelectObject(&theApp.m_font_set.dlg.GetFont());
         rc_tmp.right = rc_tmp.left + m_draw.GetTextExtent(play_state_str).cx + DPI(4);
         m_draw.DrawWindowText(rc_tmp, play_state_str, m_colors.color_text_lable);
     }

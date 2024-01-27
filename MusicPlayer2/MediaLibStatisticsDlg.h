@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "ListCtrlEx.h"
 #include "BaseDialog.h"
+#include "ListCtrlEx.h"
 
 
 // CMediaLibStatisticsDlg 对话框
@@ -32,12 +32,11 @@ protected:
         RI_MAX
     };
 
+    virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     DECLARE_MESSAGE_MAP()
-
-    virtual CString GetDialogName() const override;
-
 public:
     virtual BOOL OnInitDialog();
 };

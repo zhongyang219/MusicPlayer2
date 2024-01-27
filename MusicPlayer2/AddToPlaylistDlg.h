@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "CListBoxEnhanced.h"
 #include "BaseDialog.h"
+#include "CListBoxEnhanced.h"
 #include "SearchEditCtrl.h"
 
 
@@ -31,6 +31,8 @@ protected:
 
 protected:
     virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
+
     void ShowList();
     void QuickSearch(const wstring& key_word);
 

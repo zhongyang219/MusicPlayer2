@@ -90,7 +90,7 @@ void CCortanaLyric::Init()
             m_cover_width = min_conver_width;
 
         m_pDC = m_cortana_wnd->GetDC();
-        m_draw.Create(m_pDC, m_cortana_wnd);
+        m_draw.Create(m_pDC, m_cortana_wnd->GetFont());
 
 
         //获取用来检查小娜是否为深色模式的采样点的坐标

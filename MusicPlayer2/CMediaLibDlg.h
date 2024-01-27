@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "BaseDialog.h"
 #include "CTabCtrlEx.h"
 #include "CSelectPlaylist.h"
 #include "MediaClassifyDlg.h"
@@ -7,7 +8,7 @@
 
 // CMediaLibDlg 对话框
 
-class CMediaLibDlg : public CDialog
+class CMediaLibDlg : public CBaseDialog
 {
     DECLARE_DYNAMIC(CMediaLibDlg)
 
@@ -47,6 +48,8 @@ protected:
     void SaveConfig() const;
     void LoadConfig();
 
+    virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     DECLARE_MESSAGE_MAP()

@@ -40,12 +40,13 @@ enum PlayingState       //正在播放标志
 //MP3编码参数
 struct MP3EncodePara
 {
-    int encode_type{ 0 };		//0:CBR, 1:ABR, 2:VBR, 3:自定义参数
-    wstring cbr_bitrate{ L"128" };		//CBR比特率
-    wstring abr_bitrate{ L"128" };		//ABR比特率
-    int vbr_quality{ 4 };		//VBR质量（0~9）
+    int encode_type{ 0 };               // 0:CBR, 1:ABR, 2:VBR, （更改：<3:自定义参数>不再使用，但加载配置时保持兼容）
+    int cbr_bitrate{ 128 };             // CBR比特率
+    int abr_bitrate{ 128 };             // ABR比特率
+    int vbr_quality{ 4 };               // VBR质量（0~9）
     bool joint_stereo{ true };
-    wstring cmd_para;		//命令行参数
+    bool user_define_para{ false };     // 使用用户自定义参数（此项不保存，当ini中cmd_para非空时加载为true）
+    wstring cmd_para;                   // 命令行参数
 };
 
 //wma 编码参数

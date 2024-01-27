@@ -82,9 +82,10 @@ protected:
     wstring m_freq_sel{};       //采样频率下拉列表中的选中项
     bool m_open_output_dir{ false };	//转换完成后打开输出目录
 
-    std::map<wstring, int> m_freq_map;
+    vector<pair<wstring, int>> m_freq_map;
 
     virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     void LoadConfig();

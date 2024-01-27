@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "LyricSettingsDlg.h"
-#include "afxdialogex.h"
 #include "CortanaLyric.h"
 #include "MusicPlayerDlg.h"
 
@@ -20,6 +19,113 @@ CLyricSettingsDlg::CLyricSettingsDlg(CWnd* pParent /*=NULL*/)
 
 CLyricSettingsDlg::~CLyricSettingsDlg()
 {
+}
+
+bool CLyricSettingsDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_OPT");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_USE_INNER_FIRST");
+    SetDlgItemTextW(IDC_USE_INNER_LYRIC_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_FUZZY_MATCH");
+    SetDlgItemTextW(IDC_LYRIC_FUZZY_MATCH, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SHOW_TRANSLATION");
+    SetDlgItemTextW(IDC_SHOW_LYRIC_TRANSLATE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SONG_INFO_IF_NO_LRC");
+    SetDlgItemTextW(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_LRC_FOLDER");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_LRC_FOLDER_STATIC, temp.c_str());
+    // IDC_LYRIC_PATH_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SAVE_POLICY_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_SAVE_POLICY_SEL_STATIC, temp.c_str());
+    // IDC_LYRIC_SAVE_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_KARAOKE_DISP");
+    SetDlgItemTextW(IDC_KARAOKE_DISP, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_USE_MUSIC_SYMBOL");
+    SetDlgItemTextW(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, temp.c_str());
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_WINDOW_LRC");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_WINDOW_LRC_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_WINDOW_LRC_LINE_SPACING");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_WINDOW_LRC_LINE_SPACING_STATIC, temp.c_str());
+    // IDC_FONT_SIZE_EDIT2
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_WINDOW_LRC_ALIGN_SEL_STATIC, temp.c_str());
+    // IDC_ALIGNMENT_COMBO2
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_FONT_SEL");
+    SetDlgItemTextW(IDC_SET_FONT_BUTTON, temp.c_str());
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_DESKTOP_LRC_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_ENABLE");
+    SetDlgItemTextW(IDC_SHOW_DESKTOP_LYRIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_BG_PENETRATE");
+    SetDlgItemTextW(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK3, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_HIDE_NO_LRC");
+    SetDlgItemTextW(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_HIDE_PAUSE");
+    SetDlgItemTextW(IDC_HIDE_LYRIC_PAUSE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_LOCK");
+    SetDlgItemTextW(IDC_LOCK_DESKTOP_LYRIC_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_SHOW_UNLOCK_WHEN_LOCK");
+    SetDlgItemTextW(IDC_SHOW_UNLOCK_WHEN_LOCKED, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DOUBLE_LINE");
+    SetDlgItemTextW(IDC_LYRIC_DOUBLE_LINE_CHECK2, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_COLOR_TEXT");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_DESKTOP_LRC_COLOR_TEXT_STATIC, temp.c_str());
+    // IDC_TEXT_COLOR1_STATIC
+    // IDC_TEXT_COLOR2_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_COLOR_HIGHLIGHT");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_DESKTOP_LRC_COLOR_HIGHLIGHT_STATIC, temp.c_str());
+    // IDC_HIGHLIGHT_COLOR1_STATIC
+    // IDC_HIGHLIGHT_COLOR2_STATIC
+    // IDC_TEXT_GRADIENT_COMBO
+    // IDC_HIGHLIGHT_GRADIENT_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_DEFAULT_STYLE");
+    SetDlgItemTextW(IDC_DEFAULT_STYLE, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_TRANSPARENCY");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_DESKTOP_LRC_TRANSPARENCY_STATIC, temp.c_str());
+    // IDC_LYRIC_OPACITY_SLIDER
+    // IDC_LYRIC_OPACITY_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_DESKTOP_LRC_ALIGN_SEL_STATIC, temp.c_str());
+    // IDC_DESKTOP_LYRIC_ALIGNMENT_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_FONT_SEL");
+    SetDlgItemTextW(IDC_SET_FONT2, temp.c_str());
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_FUNCTION");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_SEARCH_BOX_FUNCTION_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_FUNCTION_ENABLE");
+    SetDlgItemTextW(IDC_SHOW_LYRIC_IN_CORTANA, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_COMPATIBLE_MODE");
+    SetDlgItemTextW(IDC_LYRIC_COMPATIBLE_MODE, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_SHOW_WHEN_PAUSE");
+    SetDlgItemTextW(IDC_KEEP_DISPLAY_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_BG_COLOR_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_SEARCH_BOX_BG_COLOR_SEL_STATIC, temp.c_str());
+    // IDC_CORTANA_COLOR_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_BG_TRANSPARENCY_IN_WHITE_MODE");
+    SetDlgItemTextW(IDC_SEARCH_BOX_TRANSPARENT_IN_WHITE_MODE, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_SHOW_COVER");
+    SetDlgItemTextW(IDC_SHOW_ALBUM_COVER_IN_CORTANA, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_NO_COVER_SHOW_DEFAULT_COVER");
+    SetDlgItemTextW(IDC_SHOW_DEFAULT_ALBUM_ICON_CHK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_NO_COVER_BEATS_CORTANA_ICON");
+    SetDlgItemTextW(IDC_CORTANA_ICON_DEAT_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_SHOW_SPECTRUM");
+    SetDlgItemTextW(IDC_SHOW_SPECTRUM_IN_CORTANA, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_SHOW_LRC");
+    SetDlgItemTextW(IDC_SHOW_LYRIC_IN_CORTANA2, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DOUBLE_LINE");
+    SetDlgItemTextW(IDC_LYRIC_DOUBLE_LINE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_LRC_SEARCH_BOX_ALIGN_SEL_STATIC, temp.c_str());
+    // IDC_ALIGNMENT_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LRC_FONT_SEL");
+    SetDlgItemTextW(IDC_SET_FONT, temp.c_str());
+
+    return false;
 }
 
 void CLyricSettingsDlg::DoDataExchange(CDataExchange* pDX)
@@ -79,7 +185,6 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_CBN_SELCHANGE(IDC_TEXT_GRADIENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeTextGradientCombo)
     ON_CBN_SELCHANGE(IDC_HIGHLIGHT_GRADIENT_COMBO, &CLyricSettingsDlg::OnCbnSelchangeHighlightGradientCombo)
     ON_BN_CLICKED(IDC_LOCK_DESKTOP_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedLockDesktopLyricCheck)
-    ON_WM_CTLCOLOR()
     ON_WM_HSCROLL()
     ON_BN_CLICKED(IDC_HIDE_LYRIC_WITHOUT_LYRIC_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricWithoutLyricCheck)
     ON_BN_CLICKED(IDC_HIDE_LYRIC_PAUSE_CHECK, &CLyricSettingsDlg::OnBnClickedHideLyricPauseCheck)
@@ -117,7 +222,6 @@ END_MESSAGE_MAP()
 BOOL CLyricSettingsDlg::OnInitDialog()
 {
     CTabDlg::OnInitDialog();
-
     // TODO:  在此添加额外的初始化
 
     //初始化各控件的状态
@@ -165,13 +269,13 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_lyric_background_penetrate_chk.SetCheck(m_data.desktop_lyric_data.lyric_background_penetrate);
     m_show_unlock_when_locked_chk.SetCheck(m_data.desktop_lyric_data.show_unlock_when_locked);
 
-    m_text_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_NONE").c_str());
-    m_text_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_TWO").c_str());
-    m_text_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_THREE").c_str());
+    m_text_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_COLOR_GRADIENT_NONE").c_str());
+    m_text_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_COLOR_GRADIENT_TWO").c_str());
+    m_text_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_COLOR_GRADIENT_THREE").c_str());
     m_text_gradient_combo.SetCurSel(m_data.desktop_lyric_data.text_gradient);
-    m_highlight_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_NONE").c_str());
-    m_highlight_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_TWO").c_str());
-    m_highlight_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_COLOR_GRADIENT_THREE").c_str());
+    m_highlight_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_COLOR_GRADIENT_NONE").c_str());
+    m_highlight_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_COLOR_GRADIENT_TWO").c_str());
+    m_highlight_gradient_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_DESKTOP_LRC_COLOR_GRADIENT_THREE").c_str());
     m_highlight_gradient_combo.SetCurSel(m_data.desktop_lyric_data.highlight_gradient);
 
     m_desktop_lyric_opacity_sld.SetRange(20, 100);
@@ -206,10 +310,10 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     wstring tip_str;
     m_tool_tip.Create(this);
     m_tool_tip.SetMaxTipWidth(300);
-    m_tool_tip.AddTool(&m_lyric_fuzzy_match_check, theApp.m_str_table.LoadText(L"TIP_OPT_LRC_LYRIC_FUZZY_MATHC").c_str());
-    m_tool_tip.AddTool(&m_lyric_dir_edit, theApp.m_str_table.LoadText(L"TIP_OPT_LRC_LYRIC_FOLDER_PATH").c_str());
-    m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), theApp.m_str_table.LoadText(L"TIP_OPT_LRC_CORTANA_LYRIC_SHOW").c_str());
-    tip_str = theApp.m_str_table.LoadTextFormat(L"TIP_OPT_LRC_HIDE_BLANK_LINES", {
+    m_tool_tip.AddTool(&m_lyric_fuzzy_match_check, theApp.m_str_table.LoadText(L"TIP_OPT_LRC_FUZZY_MATCH").c_str());
+    m_tool_tip.AddTool(&m_lyric_dir_edit, theApp.m_str_table.LoadText(L"TIP_OPT_LRC_LRC_FOLDER_PATH").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_LYRIC_IN_CORTANA), theApp.m_str_table.LoadText(L"TIP_OPT_LRC_SEARCH_BOX_FUNCTION_ENABLE").c_str());
+    tip_str = theApp.m_str_table.LoadTextFormat(L"TIP_OPT_LRC_USE_MUSIC_SYMBOL", {
         theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE"),
         theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE_2"),
         theApp.m_str_table.LoadText(L"UI_LYRIC_MUSIC_SYMBOL")
@@ -218,15 +322,15 @@ BOOL CLyricSettingsDlg::OnInitDialog()
     m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT_BUTTON), GetFontInfoString(m_data.lyric_font).c_str());
     m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT2), GetFontInfoString(m_data.desktop_lyric_data.lyric_font).c_str());
     m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT), GetFontInfoString(m_data.cortana_font).c_str());
-    tip_str = theApp.m_str_table.LoadTextFormat(L"TIP_OPT_LRC_SHOW_SONG_INFO_WHEN_LYRICS_NOT_EXIST",
+    tip_str = theApp.m_str_table.LoadTextFormat(L"TIP_OPT_LRC_SONG_INFO_IF_NO_LRC",
         { theApp.m_str_table.LoadText(L"UI_LYRIC_NONE") });
     m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK), tip_str.c_str());
 
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
-    m_cortana_color_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_CORTANT_COLOR_FOLLOWING_SYSTEM").c_str());
-    m_cortana_color_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_CORTANT_COLOR_DARK").c_str());
-    m_cortana_color_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_CORTANT_COLOR_LIGHT").c_str());
+    m_cortana_color_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_BG_COLOR_FOLLOWING_SYSTEM").c_str());
+    m_cortana_color_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_BG_COLOR_DARK").c_str());
+    m_cortana_color_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_SEARCH_BOX_BG_COLOR_LIGHT").c_str());
     m_cortana_color_combo.SetCurSel(m_data.cortana_color);
 
     m_alignment_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_LRC_ALIGN_LEFT").c_str());
@@ -535,24 +639,6 @@ void CLyricSettingsDlg::OnBnClickedLockDesktopLyricCheck()
 }
 
 
-HBRUSH CLyricSettingsDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-    HBRUSH hbr = CTabDlg::OnCtlColor(pDC, pWnd, nCtlColor);
-
-    // TODO:  在此更改 DC 的任何特性
-    if (pWnd == &m_desktop_lyric_opacity_sld)		//设置滑动条控件的背景色为白色
-    {
-        static HBRUSH brush{};
-        if (brush == NULL)
-            brush = CreateSolidBrush(m_background_color);
-        return brush;
-    }
-
-    // TODO:  如果默认的不是所需画笔，则返回另一个画笔
-    return hbr;
-}
-
-
 void CLyricSettingsDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -669,7 +755,7 @@ afx_msg LRESULT CLyricSettingsDlg::OnColorSelected(WPARAM wParam, LPARAM lParam)
 void CLyricSettingsDlg::OnLyricDefaultStyle1Modify()
 {
     // TODO: 在此添加命令处理程序代码
-    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_LRC_DEFAULT_STYLE_MODIFY_WARNING", { 1 });
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_LRC_DESKTOP_LRC_DEFAULT_STYLE_MODIFY_WARNING", { 1 });
     if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
     {
         LyricStyleDefaultData style_data;
@@ -682,7 +768,7 @@ void CLyricSettingsDlg::OnLyricDefaultStyle1Modify()
 void CLyricSettingsDlg::OnLyricDefaultStyle2Modify()
 {
     // TODO: 在此添加命令处理程序代码
-    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_LRC_DEFAULT_STYLE_MODIFY_WARNING", { 2 });
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_LRC_DESKTOP_LRC_DEFAULT_STYLE_MODIFY_WARNING", { 2 });
     if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
     {
         LyricStyleDefaultData style_data;
@@ -695,7 +781,7 @@ void CLyricSettingsDlg::OnLyricDefaultStyle2Modify()
 void CLyricSettingsDlg::OnLyricDefaultStyle3Modify()
 {
     // TODO: 在此添加命令处理程序代码
-    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_LRC_DEFAULT_STYLE_MODIFY_WARNING", { 3 });
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_LRC_DESKTOP_LRC_DEFAULT_STYLE_MODIFY_WARNING", { 3 });
     if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
     {
         LyricStyleDefaultData style_data;
@@ -708,7 +794,7 @@ void CLyricSettingsDlg::OnLyricDefaultStyle3Modify()
 void CLyricSettingsDlg::OnRestoreDefaultStyle()
 {
     // TODO: 在此添加命令处理程序代码
-    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_LRC_DEFAULT_STYLE_RESTORE_WARNING");
+    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_LRC_DESKTOP_LRC_DEFAULT_STYLE_RESTORE_WARNING");
     if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_YESNO) == IDYES)
     {
         m_pDesktopLyric->RestoreDefaultStyle();

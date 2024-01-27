@@ -344,25 +344,14 @@ BOOL CMusicPlayerApp::InitInstance()
 void CMusicPlayerApp::OnHelp()
 {
     // TODO: 在此添加命令处理程序代码
-    static bool dialog_exist{ false };
-
-    if (!dialog_exist)		//确保对话框已经存在时不再弹出
-    {
-        dialog_exist = true;
-        CMessageDlg helpDlg;
-        helpDlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_HELP_DLG").c_str());
-        helpDlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_HELP_DLG_WELCOM_TO_USE").c_str());
-        helpDlg.ShowLinkStatic(true);
-        helpDlg.SetLinkInfo(theApp.m_str_table.LoadText(L"TXT_HELP_DLG_SHOW_ONLINE_HELP").c_str(), L"https://github.com/zhongyang219/MusicPlayer2/wiki");
-
-        wstring info = theApp.m_str_table.LoadText(L"TXT_HELP_DLG_HELP_INFO");
-        info += L"\r\n\r\n" + GetSystemInfoString();
-
-        helpDlg.SetMessageText(info.c_str());
-        helpDlg.DoModal();
-
-        dialog_exist = false;
-    }
+    CMessageDlg helpDlg(L"HelpDlg");    // 此字符串对应CBaseDialog::GetDialogName，用于保证对话框不会重复打开
+    helpDlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_HELP_DLG"));
+    helpDlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_HELP_DLG_WELCOM_TO_USE"));
+    helpDlg.SetLinkInfo(theApp.m_str_table.LoadText(L"TXT_HELP_DLG_SHOW_ONLINE_HELP"), L"https://github.com/zhongyang219/MusicPlayer2/wiki");
+    wstring info = theApp.m_str_table.LoadText(L"TXT_HELP_DLG_HELP_INFO");
+    info += L"\r\n\r\n" + GetSystemInfoString();
+    helpDlg.SetMessageText(info);
+    helpDlg.DoModal();
 }
 
 void CMusicPlayerApp::SaveSongData()

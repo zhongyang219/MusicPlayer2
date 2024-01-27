@@ -55,7 +55,7 @@ void CStaticEx::OnPaint()
 					   // 不为绘图消息调用 CStatic::OnPaint()
 
 	CDrawCommon draw;
-	draw.Create(&dc, this);
+	draw.Create(&dc, GetFont());
 
 	CRect rect;
 	GetClientRect(rect);

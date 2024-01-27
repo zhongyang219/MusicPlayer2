@@ -10,10 +10,10 @@
 
 // CFloatPlaylistDlg 对话框
 
-IMPLEMENT_DYNAMIC(CFloatPlaylistDlg, CDialog)
+IMPLEMENT_DYNAMIC(CFloatPlaylistDlg, CBaseDialog)
 
 CFloatPlaylistDlg::CFloatPlaylistDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent /*=nullptr*/)
-    : CDialog(IDD_MUSICPLAYER2_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }
+    : CBaseDialog(IDD_MUSICPLAYER2_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }
 {
     m_path_edit.SetTooltopText(theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST").c_str());
 }
@@ -45,63 +45,36 @@ void CFloatPlaylistDlg::RefreshData()
 
 void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
 {
-    //设置“当前路径”static控件大小
-    CRect rect_static;
-    m_path_static.GetWindowRect(rect_static);
-    rect_static.bottom = rect_static.top + m_layout.search_edit_height;
-    rect_static.MoveToXY(m_layout.margin, m_layout.margin);
+    CRect rect_base{ m_layout.margin, m_layout.margin, cx - m_layout.margin, cy - m_layout.margin };
+
+    // 设置IDC_PATH_STATIC/IDC_PATH_EDIT/ID_MEDIA_LIB的位置和大小
+    int edit_height = m_layout.path_edit_height;
+    CRect rect_static{ rect_base.left, rect_base.top, rect_base.left + max(m_part_static_playlist_width, m_part_static_folder_width), rect_base.top + edit_height };
+    CRect rect_media_lib{ rect_base.right - m_medialib_btn_width, rect_base.top - 1, rect_base.right, rect_base.top + edit_height + 1 };
+    CRect rect_edit{ rect_static.right + m_layout.margin, rect_base.top, rect_media_lib.left - m_layout.margin, rect_base.top + edit_height };
     m_path_static.MoveWindow(rect_static);
-
-    //计算“媒体库”按钮的宽度
-    CDrawCommon draw;
-    CDC* pDC = GetDC();
-    draw.Create(pDC, this);
-    CString media_lib_btn_str;
-    m_media_lib_button.GetWindowText(media_lib_btn_str);
-    int media_lib_btn_width = draw.GetTextExtent(media_lib_btn_str).cx;
-    if (media_lib_btn_width < theApp.DPI(70))
-        media_lib_btn_width = theApp.DPI(70);
-    media_lib_btn_width += theApp.DPI(20);
-    ReleaseDC(pDC);
-
-    //设置“选择文件夹”的大小和位置
-    CRect rect_select_folder{ rect_static };
-    rect_select_folder.right = cx - m_layout.margin;
-    rect_select_folder.left = rect_select_folder.right - media_lib_btn_width;
-    m_media_lib_button.MoveWindow(rect_select_folder);
-
-    //设置“当前路径”edit控件大小和位置
-    CRect rect_edit;
-    m_path_edit.GetWindowRect(rect_edit);
-    rect_edit.MoveToY(rect_select_folder.top + (rect_select_folder.Height() - rect_edit.Height()) / 2);
-    rect_edit.left = rect_static.right + m_layout.margin;
-    rect_edit.right = rect_select_folder.left - m_layout.margin;
     m_path_edit.MoveWindow(rect_edit);
+    m_media_lib_button.MoveWindow(rect_media_lib);
 
-    //设置搜索控件的大小和位置
-    CRect rect_search{ };
-    rect_search.top = 2 * m_layout.margin + m_layout.search_edit_height;
-    rect_search.left = m_layout.margin;
-    rect_search.right = cx - m_layout.margin;
-    rect_search.bottom = rect_search.top + m_layout.search_edit_height;
+    rect_base.top += edit_height + m_layout.margin;
+    //设置歌曲搜索框的大小和位置
+    CRect rect_search;
+    m_search_edit.GetWindowRect(rect_search);
+    int search_height = rect_search.Height();
+    rect_search = { rect_base.left, rect_base.top, rect_base.right, rect_base.top + search_height };
     m_search_edit.MoveWindow(rect_search);
 
-    CRect rect_toolbar{ rect_search };
-    rect_toolbar.top = rect_search.bottom + m_layout.margin;
-    rect_toolbar.right = rect_search.right;
-    rect_toolbar.bottom = rect_toolbar.top + m_layout.toolbar_height;
+    rect_base.top += search_height + m_layout.margin;
+    //设置播放列表工具栏的大小位置
+    int toolbar_height = m_layout.toolbar_height;
+    CRect rect_toolbar{ rect_base.left, rect_base.top, rect_base.right, rect_base.top + toolbar_height };
     m_playlist_toolbar.MoveWindow(rect_toolbar);
     m_playlist_toolbar.Invalidate();
 
-    //
-    CRect rect_playlist;
-    rect_playlist.top = rect_toolbar.bottom + m_layout.margin;
-    rect_playlist.left = m_layout.margin;
-    rect_playlist.right = cx - m_layout.margin;
-    rect_playlist.bottom = cy - m_layout.margin;
-    m_playlist_ctrl.MoveWindow(rect_playlist);
+    rect_base.top += toolbar_height + m_layout.margin;
+    // 设置播放列表控件大小和位置（即rect_base剩余空间）
+    m_playlist_ctrl.MoveWindow(rect_base);
     m_playlist_ctrl.AdjustColumnWidth();
-
 }
 
 void CFloatPlaylistDlg::RefreshState(bool highlight_visible)
@@ -160,7 +133,6 @@ void CFloatPlaylistDlg::EnableControl(bool enable)
     m_playlist_ctrl.EnableWindow(enable);
     m_search_edit.EnableWindow(enable);
     m_media_lib_button.EnableWindow(enable);
-    //m_clear_search_button.EnableWindow(enable);
     m_playlist_toolbar.EnableWindow(enable);
     m_playlist_toolbar.Invalidate();
 }
@@ -190,26 +162,55 @@ bool CFloatPlaylistDlg::Initilized() const
         && m_media_lib_button.GetSafeHwnd() != NULL && m_search_edit.GetSafeHwnd() != NULL/* && m_clear_search_button.GetSafeHwnd() != NULL*/;
 }
 
+CString CFloatPlaylistDlg::GetDialogName() const
+{
+    return CString();
+}
+
+bool CFloatPlaylistDlg::InitializeControls()
+{
+    // 设置最小窗口大小(为需要容纳可能较长的控件文本，调整最小宽度到与主窗口一致)
+    SetMinSize(theApp.DPI(340), theApp.DPI(228));
+    // 设置窗口标题
+    SetWindowTextW(theApp.m_str_table.LoadText(L"TXT_PLAYLIST").c_str());
+    // 测量受翻译字符串影响的控件所需宽度，并应用翻译字符串到控件
+    CString text;
+    // "播放列表:"宽度（含图标）
+    text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str();
+    int playlist_width = (std::min)(GetTextExtent(text).Width() + theApp.DPI(20), theApp.DPI(150));
+    m_part_static_playlist_width = (std::max)(m_part_static_playlist_width, playlist_width);
+    // "文件夹:"宽度（含图标）
+    text = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str();
+    m_path_static.SetWindowTextW(text);
+    int folder_width = (std::min)(GetTextExtent(text).Width() + theApp.DPI(20), theApp.DPI(150));
+    m_part_static_folder_width = (std::max)(m_part_static_folder_width, folder_width);
+    // 媒体库按钮宽度
+    text = theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str();
+    m_media_lib_button.SetWindowTextW(text);
+    int media_lib_width = (std::min)(GetTextExtent(text).Width() + theApp.DPI(32), theApp.DPI(150));
+    m_medialib_btn_width = (std::max)(m_medialib_btn_width, media_lib_width);
+
+    return true;
+}
+
 void CFloatPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_PLAYLIST_LIST, m_playlist_ctrl);
     DDX_Control(pDX, IDC_PATH_STATIC, m_path_static);
     DDX_Control(pDX, IDC_PATH_EDIT, m_path_edit);
     DDX_Control(pDX, ID_MEDIA_LIB, m_media_lib_button);
     DDX_Control(pDX, IDC_SEARCH_EDIT, m_search_edit);
     DDX_Control(pDX, IDC_PLAYLIST_TOOLBAR, m_playlist_toolbar);
-    DDX_Control(pDX, IDC_HSPLITER_STATIC, m_splitter_ctrl);
 }
 
 
-BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
+BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CBaseDialog)
     ON_WM_SIZE()
     ON_NOTIFY(NM_RCLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMRClickPlaylistList)
     ON_NOTIFY(NM_DBLCLK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMDblclkPlaylistList)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CFloatPlaylistDlg::OnEnChangeSearchEdit)
     ON_WM_CLOSE()
-    ON_WM_GETMINMAXINFO()
     ON_NOTIFY(NM_CLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMClickPlaylistList)
     ON_MESSAGE(WM_INITMENU, &CFloatPlaylistDlg::OnInitmenu)
     ON_MESSAGE(WM_LIST_ITEM_DRAGGED, &CFloatPlaylistDlg::OnListItemDragged)
@@ -217,7 +218,6 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CDialog)
     ON_COMMAND(ID_LOCATE_TO_CURRENT, &CFloatPlaylistDlg::OnLocateToCurrent)
     ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CFloatPlaylistDlg::OnMainWindowActivated)
     ON_WM_DROPFILES()
-    ON_WM_CTLCOLOR()
     ON_WM_COPYDATA()
 END_MESSAGE_MAP()
 
@@ -227,16 +227,18 @@ END_MESSAGE_MAP()
 
 BOOL CFloatPlaylistDlg::OnInitDialog()
 {
-    CDialog::OnInitDialog();
+    CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
+    SetBackgroundColor(CONSTVAL::BACKGROUND_COLOR);
     UpdateStyles();
-    SetWindowText(theApp.m_str_table.LoadText(L"TXT_PLAYLIST").c_str());
     SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
 
-    // 为浮动播放列表禁用分割条控件
-    m_splitter_ctrl.EnableWindow(false);
-    m_splitter_ctrl.ShowWindow(SW_HIDE);
+    // 为浮动播放列表禁用仅在主窗口使用的控件
+    EnableDlgCtrl(IDC_HSPLITER_STATIC, false);
+    ShowDlgCtrl(IDC_HSPLITER_STATIC, false);
+    EnableDlgCtrl(IDC_UI_STATIC, false);
+    ShowDlgCtrl(IDC_UI_STATIC, false);
 
     m_media_lib_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
 
@@ -286,17 +288,13 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     SetDragEnable();
     EnableControl(!CPlayer::GetInstance().m_loading);
 
-    CWnd* pWnd = GetDlgItem(IDC_UI_STATIC);
-    if (pWnd != nullptr)
-        pWnd->ShowWindow(SW_HIDE);
-
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE
 }
 
 void CFloatPlaylistDlg::OnSize(UINT nType, int cx, int cy)
 {
-    CDialog::OnSize(nType, cx, cy);
+    CBaseDialog::OnSize(nType, cx, cy);
 
     if (nType != SIZE_MINIMIZED && Initilized())
     {
@@ -381,32 +379,21 @@ void CFloatPlaylistDlg::OnEnChangeSearchEdit()
     SetDragEnable();
 }
 
-//void CFloatPlaylistDlg::OnBnClickedClearSearchButton()
-//{
-//    if (m_searched)
-//    {
-//        //清除搜索结果
-//        m_searched = false;
-//        m_search_edit.SetWindowText(_T(""));
-//        m_playlist_ctrl.ShowPlaylist(theApp.m_media_lib_setting_data.display_format, m_searched);
-//        m_playlist_ctrl.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);		//清除搜索结果后确保正在播放曲目可见
-//    }
-//}
-
 
 void CFloatPlaylistDlg::OnCancel()
 {
     // TODO: 在此添加专用代码和/或调用基类
     DestroyWindow();
 
-    //CDialog::OnCancel();
+    //CBaseDialog::OnCancel();
 }
 
 void CFloatPlaylistDlg::OnClose()
 {
     theApp.m_pMainWnd->SendMessage(WM_FLOAT_PLAYLIST_CLOSED);
+    // 仅在用户主动关闭浮动播放列表时更改设置，在退出时会直接OnCancel关闭窗口
     theApp.m_nc_setting_data.float_playlist = false;
-    CDialog::OnClose();
+    CBaseDialog::OnClose();
 }
 
 
@@ -440,16 +427,7 @@ BOOL CFloatPlaylistDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         break;
     }
 
-    return CDialog::OnCommand(wParam, lParam);
-}
-
-void CFloatPlaylistDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-    //限制窗口最小大小
-    lpMMI->ptMinTrackSize.x = theApp.DPI(286);		//设置最小宽度
-    lpMMI->ptMinTrackSize.y = theApp.DPI(228);		//设置最小高度
-
-    CDialog::OnGetMinMaxInfo(lpMMI);
+    return CBaseDialog::OnCommand(wParam, lParam);
 }
 
 void CFloatPlaylistDlg::OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
@@ -503,7 +481,7 @@ BOOL CFloatPlaylistDlg::PreTranslateMessage(MSG* pMsg)
         return TRUE;
     }
 
-    return CDialog::PreTranslateMessage(pMsg);
+    return CBaseDialog::PreTranslateMessage(pMsg);
 }
 
 
@@ -563,23 +541,7 @@ void CFloatPlaylistDlg::OnDropFiles(HDROP hDropInfo)
     if (main_wnd != nullptr)
         main_wnd->OnDropFiles(hDropInfo);
     else
-        CDialog::OnDropFiles(hDropInfo);
-}
-
-
-HBRUSH CFloatPlaylistDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-    HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-
-    if (pWnd == this)
-    {
-        static HBRUSH hBackBrush{};
-        if (hBackBrush == NULL)
-            hBackBrush = CreateSolidBrush(CONSTVAL::BACKGROUND_COLOR);
-        return hBackBrush;
-    }
-
-    return hbr;
+        CBaseDialog::OnDropFiles(hDropInfo);
 }
 
 
@@ -591,5 +553,5 @@ BOOL CFloatPlaylistDlg::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
     if (main_wnd != nullptr)
         return main_wnd->OnCopyData(pWnd, pCopyDataStruct);
     else
-        return CDialog::OnCopyData(pWnd, pCopyDataStruct);
+        return CBaseDialog::OnCopyData(pWnd, pCopyDataStruct);
 }

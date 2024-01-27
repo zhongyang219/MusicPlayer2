@@ -9,10 +9,10 @@
 
 // CMediaLibDlg 对话框
 
-IMPLEMENT_DYNAMIC(CMediaLibDlg, CDialog)
+IMPLEMENT_DYNAMIC(CMediaLibDlg, CBaseDialog)
 
 CMediaLibDlg::CMediaLibDlg(int cur_tab, CWnd* pParent /*=nullptr*/)
-    : CDialog(IDD_MEDIA_LIB_DIALOG, pParent), m_init_tab(cur_tab)
+    : CBaseDialog(IDD_MEDIA_LIB_DIALOG, pParent), m_init_tab(cur_tab)
 {
 }
 
@@ -51,14 +51,44 @@ void CMediaLibDlg::LoadConfig()
     m_window_size.cy = ini.GetInt(L"media_lib", L"height", -1);
 }
 
+CString CMediaLibDlg::GetDialogName() const
+{
+    // 为避免未知问题（我没试过）和媒体库窗口大小设置存储键名的不兼容更新
+    // 这里暂时还没有迁移到使用基类CBaseDialog的相关处理
+    return CString();
+}
+
+bool CMediaLibDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_LIB");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LIB_MEDIA_LIB_SETTING");
+    SetDlgItemTextW(IDC_MEDIA_LIB_SETTINGS_BTN, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LIB_STATISTICS_INFO");
+    SetDlgItemTextW(IDC_STATISTICS_INFO_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LIB_PLAY_SEL");
+    SetDlgItemTextW(IDC_PLAY_SELECTED, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_CLOSE");
+    SetDlgItemTextW(IDCANCEL, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L2, IDC_MEDIA_LIB_SETTINGS_BTN, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_STATISTICS_INFO_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R1, IDC_PLAY_SELECTED, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CMediaLibDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_TAB1, m_tab_ctrl);
 }
 
 
-BEGIN_MESSAGE_MAP(CMediaLibDlg, CDialog)
+BEGIN_MESSAGE_MAP(CMediaLibDlg, CBaseDialog)
     ON_BN_CLICKED(IDC_PLAY_SELECTED, &CMediaLibDlg::OnBnClickedPlaySelected)
     ON_WM_GETMINMAXINFO()
     ON_MESSAGE(WM_PLAY_SELECTED_BTN_ENABLE, &CMediaLibDlg::OnPlaySelectedBtnEnable)
@@ -74,7 +104,7 @@ END_MESSAGE_MAP()
 
 BOOL CMediaLibDlg::OnInitDialog()
 {
-    CDialog::OnInitDialog();
+    CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
     ModifyStyle(0, WS_CLIPCHILDREN);
@@ -82,18 +112,9 @@ BOOL CMediaLibDlg::OnInitDialog()
     SetIcon(theApp.m_icon_set.media_lib.GetIcon(true), FALSE);
     SetIcon(AfxGetApp()->LoadIcon(IDI_MEDIA_LIB_D), TRUE);
 
-    CButton* close_btn = (CButton*)(GetDlgItem(IDCANCEL));
-    if (close_btn != nullptr)
-        close_btn->SetIcon(theApp.m_icon_set.close.GetIcon(true));
-    CButton* play_btn = (CButton*)(GetDlgItem(IDC_PLAY_SELECTED));
-    if (play_btn != nullptr)
-        play_btn->SetIcon(theApp.m_icon_set.play_new.GetIcon(true));
-    CButton* setting_btn = (CButton*)(GetDlgItem(IDC_MEDIA_LIB_SETTINGS_BTN));
-    if (setting_btn != nullptr)
-        setting_btn->SetIcon(theApp.m_icon_set.setting.GetIcon(true));
-    CButton* statistics_btn = (CButton*)(GetDlgItem(IDC_STATISTICS_INFO_BUTTON));
-    if (statistics_btn != nullptr)
-        statistics_btn->SetIcon(theApp.m_icon_set.info.GetIcon(true));
+    SetButtonIcon(IDC_MEDIA_LIB_SETTINGS_BTN, theApp.m_icon_set.setting.GetIcon(true));
+    SetButtonIcon(IDC_STATISTICS_INFO_BUTTON, theApp.m_icon_set.info.GetIcon(true));
+    SetButtonIcon(IDC_PLAY_SELECTED, theApp.m_icon_set.play_new.GetIcon(true));
 
     //为每个标签添加图标
     CImageList ImageList;
@@ -230,7 +251,7 @@ void CMediaLibDlg::OnBnClickedPlaySelected()
     // 调用子窗口的OnOK方法
     CTabDlg* current_tab = dynamic_cast<CTabDlg*>(m_tab_ctrl.GetCurrentTab());
     if (current_tab != nullptr)
-        current_tab->OnOK();
+        current_tab->OnOK();    // OnOK是虚方法，此处实际上执行的是CTabDlg的最终派生类的OnOK
 }
 
 
@@ -241,7 +262,7 @@ void CMediaLibDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
     lpMMI->ptMinTrackSize.x = m_min_size.cx;        //设置最小宽度
     lpMMI->ptMinTrackSize.y = m_min_size.cy;        //设置最小高度
 
-    CDialog::OnGetMinMaxInfo(lpMMI);
+    CBaseDialog::OnGetMinMaxInfo(lpMMI);
 }
 
 
@@ -272,7 +293,7 @@ BOOL CMediaLibDlg::OnEraseBkgnd(CDC* pDC)
     //draw_rgn.CreateRectRgnIndirect(rc_client);
     //draw_rgn.CombineRgn(&draw_rgn, &tab_rgn, RGN_DIFF);
     //pDC->SelectClipRgn(&draw_rgn);
-    return CDialog::OnEraseBkgnd(pDC);
+    return CBaseDialog::OnEraseBkgnd(pDC);
 }
 
 
@@ -286,7 +307,7 @@ void CMediaLibDlg::OnBnClickedMediaLibSettingsBtn()
 
 void CMediaLibDlg::OnSize(UINT nType, int cx, int cy)
 {
-    CDialog::OnSize(nType, cx, cy);
+    CBaseDialog::OnSize(nType, cx, cy);
 
     // TODO: 在此处添加消息处理程序代码
     if (nType != SIZE_MINIMIZED && nType != SIZE_MAXIMIZED)
@@ -308,7 +329,7 @@ void CMediaLibDlg::OnBnClickedStatisticsInfoButton()
 
 void CMediaLibDlg::OnDestroy()
 {
-    CDialog::OnDestroy();
+    CBaseDialog::OnDestroy();
 
     // TODO: 在此处添加消息处理程序代码
     SaveConfig();

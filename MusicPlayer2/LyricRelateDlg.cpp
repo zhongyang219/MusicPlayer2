@@ -95,6 +95,50 @@ CString CLyricRelateDlg::GetDialogName() const
     return _T("LyricRelateDlg");
 }
 
+bool CLyricRelateDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_LRC_RELATE");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_LRC_TITLE");
+    SetDlgItemTextW(IDC_TXT_LRC_RELATE_LRC_TITLE_STATIC, temp.c_str());
+    // IDC_LYRIC_NAME_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_FUZZY_MATCH");
+    SetDlgItemTextW(IDC_FUZZY_MATCH_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_SEARCH_LOCAL");
+    SetDlgItemTextW(IDC_LOCAL_SEARCH_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_SEARCH_RESULT");
+    SetDlgItemTextW(IDC_TXT_LRC_RELATE_SEARCH_RESULT_STATIC, temp.c_str());
+    // IDC_SEARCH_RESULT_LIST
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_BROWSE");
+    SetDlgItemTextW(IDC_BROWSE_BUTTON1, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_DEL_FILE");
+    SetDlgItemTextW(IDC_DELETE_FILE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_UNLINK");
+    SetDlgItemTextW(IDC_DONOT_RELATE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_SEL_LINK");
+    SetDlgItemTextW(IDOK, temp.c_str());
+    // IDCANCEL
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_LRC_RELATE_LRC_TITLE_STATIC },
+        { CtrlTextInfo::C0, IDC_LYRIC_NAME_EDIT },
+        { CtrlTextInfo::R1, IDC_FUZZY_MATCH_CHECK, CtrlTextInfo::W16 },
+        { CtrlTextInfo::R2, IDC_LOCAL_SEARCH_BUTTON, CtrlTextInfo::W32 }
+        }, CtrlTextInfo::W128);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::C0, IDC_SEARCH_RESULT_LIST },
+        { CtrlTextInfo::R1, IDC_BROWSE_BUTTON1, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R1, IDC_DELETE_FILE_BUTTON, CtrlTextInfo::W32 }
+        }, CtrlTextInfo::W256);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_DONOT_RELATE_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CLyricRelateDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);

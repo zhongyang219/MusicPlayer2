@@ -156,7 +156,7 @@ void CPlayerToolBar::OnPaint()
     {
         CDrawDoubleBuffer drawDoubleBuffer(&dc, rect);
         CDrawCommon drawer;
-        drawer.Create(drawDoubleBuffer.GetMemDC(), this);
+        drawer.Create(drawDoubleBuffer.GetMemDC(), GetFont());
 
         //绘制背景
         if(!theApp.m_app_setting_data.button_round_corners)

@@ -381,8 +381,17 @@
     <Filter Include="公共的类\FilterHelper">
       <UniqueIdentifier>{182f9a41-5bb3-4552-b8d4-5d143951d54a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="对话框类\TagModeSelectDlg">
-      <UniqueIdentifier>{05e96306-45ad-47a7-90de-b6ecbdc11cad}</UniqueIdentifier>
+    <Filter Include="功能逻辑类\CTagSelBaseDlg">
+      <UniqueIdentifier>{89cbce5a-fb9c-46f0-bedc-fe582d9c3a36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\RenameDlg">
+      <UniqueIdentifier>{bd53f37c-760e-4eec-bf7b-755a87ca0565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\FileNameFormDlg">
+      <UniqueIdentifier>{1e50ecfe-c7d9-443c-96cb-cb748a7f1087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\TagFromNameDlg">
+      <UniqueIdentifier>{5ce11d43-a74b-4aed-8ba7-26aa37b9e090}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -766,9 +775,6 @@
     <ClInclude Include="GetTagOnlineDlg.h">
       <Filter>对话框类\PropertyDlg\GetTagOnline</Filter>
     </ClInclude>
-    <ClInclude Include="TagModeSelectDlg.h">
-      <Filter>对话框类\TagModeSelectDlg</Filter>
-    </ClInclude>
     <ClInclude Include="PropertyAdvancedDlg.h">
       <Filter>对话框类\PropertyDlg</Filter>
     </ClInclude>
@@ -858,6 +864,18 @@
     </ClInclude>
     <ClInclude Include="CommonDialogMgr.h">
       <Filter>公共的类\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TagSelBaseDlg.h">
+      <Filter>功能逻辑类\CTagSelBaseDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="RenameDlg.h">
+      <Filter>对话框类\RenameDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="TagFromNameDlg.h">
+      <Filter>对话框类\TagFromNameDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="FileNameFormDlg.h">
+      <Filter>对话框类\FileNameFormDlg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1209,9 +1227,6 @@
     <ClCompile Include="GetTagOnlineDlg.cpp">
       <Filter>对话框类\PropertyDlg\GetTagOnline</Filter>
     </ClCompile>
-    <ClCompile Include="TagModeSelectDlg.cpp">
-      <Filter>对话框类\TagModeSelectDlg</Filter>
-    </ClCompile>
     <ClCompile Include="PropertyAdvancedDlg.cpp">
       <Filter>对话框类\PropertyDlg</Filter>
     </ClCompile>
@@ -1304,6 +1319,18 @@
     </ClCompile>
     <ClCompile Include="CommonDialogMgr.cpp">
       <Filter>公共的类\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="TagSelBaseDlg.cpp">
+      <Filter>功能逻辑类\CTagSelBaseDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="RenameDlg.cpp">
+      <Filter>对话框类\RenameDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="TagFromNameDlg.cpp">
+      <Filter>对话框类\TagFromNameDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="FileNameFormDlg.cpp">
+      <Filter>对话框类\FileNameFormDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

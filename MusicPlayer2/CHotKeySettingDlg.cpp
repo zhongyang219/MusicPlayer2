@@ -53,6 +53,23 @@ void CHotKeySettingDlg::ListClicked()
     //m_hot_key_ctrl.SetHotKey(hot_key.key, hot_key.Modifiers());
 }
 
+bool CHotKeySettingDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_HOOK_SHORTCUT_KEY_ENABLE");
+    SetDlgItemTextW(IDC_HOT_KEY_ENABLE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_HOOK_MULTI_MEDIA_KEY_ENABLE");
+    SetDlgItemTextW(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK, temp.c_str());
+    // IDC_HOT_KEY_LIST
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY");
+    SetDlgItemTextW(IDC_TXT_OPT_HOT_KEY_SHORTCUT_KEY_STATIC, temp.c_str());
+    // IDC_HOTKEY1
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY_SET");
+    SetDlgItemTextW(IDC_SET_BUTTON, temp.c_str());
+
+    return false;
+}
+
 void CHotKeySettingDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
@@ -93,9 +110,13 @@ BOOL CHotKeySettingDlg::OnInitDialog()
 
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
+    CRect rect;
+    m_key_list.GetWindowRect(rect);
+    int width0 = theApp.DPI(180);
+    int width1 = rect.Width() - width0 - theApp.DPI(20) - 1;    // 这里预留一个滚动条宽度但空白为两个，因为此子对话框高度不足tab滚动条没有显示，如果在OnSize重新设置就会正常了
     m_key_list.SetExtendedStyle(m_key_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    m_key_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_FUNCTION").c_str(), LVCFMT_LEFT, theApp.DPI(130));
-    m_key_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY").c_str(), LVCFMT_LEFT, theApp.DPI(170));
+    m_key_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_FUNCTION").c_str(), LVCFMT_LEFT, width0);
+    m_key_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY").c_str(), LVCFMT_LEFT, width1);
 
     m_key_list.InsertItem(0, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_PLAY_PAUSE").c_str());
     m_key_list.InsertItem(1, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_STOP").c_str());

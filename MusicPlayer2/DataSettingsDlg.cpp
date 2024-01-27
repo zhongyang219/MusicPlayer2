@@ -28,6 +28,69 @@ bool CDataSettingsDlg::IsAutoRunModified() const
     return m_auto_run_modified;
 }
 
+bool CDataSettingsDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_APP_SETTING");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_APP_SETTING_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_UPDATE_AUTO_CHECK");
+    SetDlgItemTextW(IDC_CHECK_UPDATE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_UPDATE_SOURCE_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_UPDATE_SOURCE_SEL_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_UPDATE_SOURCE_GITHUB");
+    SetDlgItemTextW(IDC_GITHUB_RADIO, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_UPDATE_SOURCE_GITEE");
+    SetDlgItemTextW(IDC_GITEE_RADIO, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_RUN");
+    SetDlgItemTextW(IDC_AUTO_RUN_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_LANGUAGE_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_LANGUAGE_SEL_STATIC, temp.c_str());
+    // IDC_COMBO1
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_DATA_FILE_CFG");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_DATA_FILE_CFG_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_DATA_FILE_SAVE_DIR_APPDATA");
+    SetDlgItemTextW(IDC_SAVE_TO_APPDATA_RADIO, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_DATA_FILE_SAVE_DIR_PROGRAM");
+    SetDlgItemTextW(IDC_SAVE_TO_PROGRAM_DIR_RADIO, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_DATA_FILE_DIR_OPEN");
+    SetDlgItemTextW(IDC_OPEN_CONFIG_PATH_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_CLOSE_MAIN_WINDOW");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_CLOSE_MAIN_WINDOW_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_CLOSE_MAIN_WINDOW_MINIMIZE_NOTIFY_AREA");
+    SetDlgItemTextW(IDC_MINIMIZE_TO_NOTIFY_RADIO, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_CLOSE_MAIN_WINDOW_EXIT");
+    SetDlgItemTextW(IDC_EXIT_PROGRAM_RADIO, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_SETTING");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_AUTO_DL_SETTING_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_LYRIC");
+    SetDlgItemTextW(IDC_LYRIC_AUTO_DOWNLOAD_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_SEL_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_SONG_DIR");
+    SetDlgItemTextW(IDC_SAVE_TO_SONG_FOLDER, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_LYRIC_DIR");
+    SetDlgItemTextW(IDC_SAVE_TO_LYRIC_FOLDER, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_COVER");
+    SetDlgItemTextW(IDC_COVER_AUTO_DOWNLOAD_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_COVER_SAVE_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_AUTO_DL_COVER_SAVE_SEL_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_COVER_SAVE_SONG_DIR");
+    SetDlgItemTextW(IDC_SAVE_TO_SONG_FOLDER3, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_COVER_SAVE_COVER_DIR");
+    SetDlgItemTextW(IDC_SAVE_TO_ALBUM_FOLDER3, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_ONLY_WHEN_TAG_FULL");
+    SetDlgItemTextW(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_MIDI_SETTING");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_MIDI_SETTING_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_MIDI_INNER_LYRIC_FIRST");
+    SetDlgItemTextW(IDC_MIDI_USE_INNER_LYRIC_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_MIDI_SF2_PATH");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_MIDI_SF2_PATH_STATIC, temp.c_str());
+    // IDC_SF2_PATH_EDIT
+
+    return false;
+}
+
 void CDataSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
@@ -96,7 +159,6 @@ BOOL CDataSettingsDlg::OnInitDialog()
     CTabDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    //SetBackgroundColor(RGB(255, 255, 255));
 
     m_language_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_DATA_LANGUAGE_FOLLOWING_SYSTEM").c_str());
     const auto& language_list = theApp.m_str_table.GetLanguageList();
@@ -169,7 +231,7 @@ BOOL CDataSettingsDlg::OnInitDialog()
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
     m_toolTip.AddTool(GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_AUTO_DL_ONLY_WHEN_TAG_FULL").c_str());
     //m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("需要额外的音色库才能播放 MIDI 音乐。"));
-    m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_MIDI_USE_INNER_LYRIC_FIRSR").c_str());
+    m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_MIDI_INNER_LYRIC_FIRSR").c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_APPDATA_RADIO), theApp.m_appdata_dir.c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_PROGRAM_DIR_RADIO), theApp.m_module_dir.c_str());
 

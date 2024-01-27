@@ -225,22 +225,58 @@ bool SongInfo::IsGenreEmpty() const
 
 void SongInfo::GetArtistList(vector<wstring>& artist_list) const
 {
-    wstring artist_{ artist };
-    vector<wstring> tmp;
+    artist_list.clear();
+    if (artist.empty())
+        return;
+    static const wstring split_char = L"/;&、";
+    if (artist.find_first_of(split_char) == wstring::npos)  // 不含分割字符的字符串不需要处理，直接返回
+    {
+        artist_list.push_back(artist);
+        return;
+    }
+    // 现在是保守分割方案，理论上有可能少切分但不会多，处理后艺术家仍然按照原顺序排列
+    vector<bool> char_flag(artist.size(), false);
+    for (size_t i{}; i < artist.size(); ++i)
+    {
+        if (split_char.find(artist[i]) == wstring::npos)
+            char_flag[i] = true;
+    }
     const vector<wstring>& split_ext = theApp.m_media_lib_setting_data.artist_split_ext;
     for (const wstring& str : split_ext)
     {
-        size_t index{ artist_.find(str) };
-        // 这里有点问题，如果有artist是“222/77”那么会出现“22/7”与“27”，但处理有些繁琐不做了
-        if (index != wstring::npos)
+        size_t index{ artist.find(str) };
+        while (index != wstring::npos)
         {
-            artist_ = artist_.substr(0, index) + artist_.substr(index + str.size());
-            tmp.push_back(str);
+            for (size_t i{}; i < str.size(); ++i)
+                char_flag[index + i] = true;
+            index = artist.find(str, index + 1);
         }
     }
-    CCommon::StringSplitWithMulitChars(artist_, L"/;&、", artist_list);
-    if (!tmp.empty())
-        artist_list.insert(artist_list.begin(), tmp.begin(), tmp.end());
+    auto push_back_artist = [&](size_t _Off, size_t _Count = wstring::npos)
+    {
+        wstring temp = artist.substr(_Off, _Count);
+        CCommon::StringNormalize(temp);
+        if (!temp.empty())
+            artist_list.push_back(temp);
+    };
+    size_t start_pos{};
+    for (size_t i{}; i < artist.size(); ++i)
+    {
+        if (char_flag[i])
+            continue;
+        push_back_artist(start_pos, i - start_pos);
+        start_pos = i + 1;
+    }
+    push_back_artist(start_pos); // 处理最后一项艺术家
+}
+
+wstring SongInfo::GetFirstArtist() const
+{
+    vector<wstring> artist_list;
+    GetArtistList(artist_list);
+    if (artist_list.empty())
+        return GetArtist();
+    return artist_list.at(0);
 }
 
 wstring SongInfo::GetTitle() const

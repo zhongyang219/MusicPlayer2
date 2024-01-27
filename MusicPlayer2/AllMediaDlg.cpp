@@ -316,7 +316,6 @@ BOOL CAllMediaDlg::OnInitDialog()
     CMediaLibTabDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    CCommon::SetDialogFont(this, theApp.m_pMainWnd->GetFont());     //由于此对话框资源由不同语言共用，所以这里要设置一下字体
 
     //初始化歌曲列表
     m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);

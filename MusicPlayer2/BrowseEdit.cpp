@@ -5,7 +5,7 @@
 #include "BrowseEdit.h"
 #include "MusicPlayer2.h"
 #include "DrawCommon.h"
-#include "TagModeSelectDlg.h"
+#include "FileNameFormDlg.h"
 #include "EditStringListDlg.h"
 
 // CBrowseEdit
@@ -26,7 +26,7 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
     //使用双缓冲绘图
     CDrawDoubleBuffer drawDoubleBuffer(pDC, rect);
     CDrawCommon drawer;
-    drawer.Create(drawDoubleBuffer.GetMemDC(), this);
+    drawer.Create(drawDoubleBuffer.GetMemDC(), GetFont());
     CRect rc_draw{ rect };
     rc_draw.MoveToXY(0, 0);
 
@@ -82,8 +82,6 @@ void CBrowseEdit::OnChangeLayout()
     ENSURE(GetSafeHwnd() != NULL);
 
     int btn_width;
-    CDrawCommon drawer;
-    drawer.Create(m_pDC, this);
     if (m_Mode == BrowseMode_Default)
         m_btn_str = theApp.m_str_table.LoadText(L"TXT_BROWSE_EDIT_EDIT");
     else
@@ -99,7 +97,11 @@ void CBrowseEdit::OnChangeLayout()
     }
     else
     {
+        CDC* pDC = GetDC();     // OnChangeLayout仅在设置浏览模式时被调用，不需要保持DC
+        CDrawCommon drawer;
+        drawer.Create(pDC, GetFont());
         btn_width = drawer.GetTextExtent(m_btn_str.c_str()).cx + theApp.DPI(28);
+        ReleaseDC(pDC);
     }
     m_nBrowseButtonWidth = max(btn_width, m_sizeImage.cx + 8);
 
@@ -200,13 +202,8 @@ void CBrowseEdit::OnBrowse()
         {
             CString strFile;
             GetWindowText(strFile);
-            wstring title_str;
-            if (m_poopup_dlg_title.IsEmpty())
-                title_str = theApp.m_str_table.LoadText(L"TITLE_TAG_SEL_SET_FILENAME_FORM");
-            else
-                title_str = m_poopup_dlg_title.GetString();
-
-            CTagModeSelectDlg dlg(title_str, false);
+            // 这里无视m_poopup_dlg_title设置的对话框标题，如果有必要再加
+            CFileNameFormDlg dlg;
             dlg.SetInitInsertFormular(strFile.GetString());
 
             if (dlg.DoModal() == IDOK && strFile != dlg.GetFormularSelected().c_str())
@@ -239,8 +236,13 @@ void CBrowseEdit::OnBrowse()
                 SetModify(TRUE);
                 OnAfterUpdate();
             }
+
+            if (GetParent() != NULL)
+            {
+                GetParent()->RedrawWindow(NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+            }
         }
-        break;
+            break;
         case CBrowseEdit::EditBrowseMode::LIST2:
         {
             // 列表模式2 下，将编辑框的文本用""包裹后以逗号分隔后以列表的形式编辑
@@ -258,9 +260,15 @@ void CBrowseEdit::OnBrowse()
                 SetModify(TRUE);
                 OnAfterUpdate();
             }
+
+            if (GetParent() != NULL)
+            {
+                GetParent()->RedrawWindow(NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+            }
         }
-        break;
+            break;
         default:
+            ASSERT(false);
             break;
 
         }
@@ -305,30 +313,9 @@ IconRes& CBrowseEdit::GetIcon()
 }
 
 BEGIN_MESSAGE_MAP(CBrowseEdit, CMFCEditBrowseCtrl)
-    ON_WM_DESTROY()
     ON_WM_NCLBUTTONDOWN()
     ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CBrowseEdit::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
-
-
-
-
-void CBrowseEdit::PreSubclassWindow()
-{
-    // TODO: 在此添加专用代码和/或调用基类
-    m_pDC = GetDC();
-
-    CMFCEditBrowseCtrl::PreSubclassWindow();
-}
-
-
-void CBrowseEdit::OnDestroy()
-{
-    CMFCEditBrowseCtrl::OnDestroy();
-
-    // TODO: 在此处添加消息处理程序代码
-    ReleaseDC(m_pDC);
-}
 
 
 void CBrowseEdit::OnNcLButtonDown(UINT nHitTest, CPoint point)

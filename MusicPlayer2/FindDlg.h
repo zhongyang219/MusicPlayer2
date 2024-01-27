@@ -63,6 +63,7 @@ protected:
     CString m_selected_string;
 
     virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void ShowFindResult();
     void ShowFindInfo();

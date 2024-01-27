@@ -164,6 +164,25 @@ void CSetPathDlg::OnTabEntered()
     SetButtonsEnable();
 }
 
+bool CSetPathDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_LIB_PATH_CURRENT_FOLDER");
+    SetDlgItemTextW(IDC_TXT_LIB_PATH_CURRENT_FOLDER_STATIC, temp.c_str());
+    // IDC_PATH_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_LIB_PATH_OPEN_NEW_FOLDER");
+    SetDlgItemTextW(IDC_OPEN_FOLDER, temp.c_str());
+    // IDC_SEARCH_EDIT
+    // IDC_PATH_LIST
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_LIB_PATH_CURRENT_FOLDER_STATIC },
+        { CtrlTextInfo::C0, IDC_PATH_EDIT },
+        { CtrlTextInfo::R1, IDC_OPEN_FOLDER, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CSetPathDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);

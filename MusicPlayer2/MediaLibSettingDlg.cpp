@@ -45,6 +45,148 @@ void CMediaLibSettingDlg::ShowDataSizeInfo()
     SetDlgItemText(IDC_SIZE_STATIC, info.c_str());
 }
 
+bool CMediaLibSettingDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_MEDIA_LIB_OPT");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_MEDIA_LIB_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_DISABLE_DEL");
+    SetDlgItemTextW(IDC_DISABLE_DELETE_FROM_DISK_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_USE_CLASSIFY_OTHER");
+    SetDlgItemTextW(IDC_CLASSIFY_OTHER_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_TOO_SHORT_SEC");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_TOO_SHORT_SEC_STATIC, temp.c_str());
+    // IDC_FILE_TOO_SHORT_SEC_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_ARTIST_SPLIT_EXT_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_ARTIST_SPLIT_EXT_SEL_STATIC, temp.c_str());
+    // IDC_ARTIST_SPLIT_EXT_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_MEDIA_LIB_UPDATE_OPT");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_MEDIA_LIB_UPDATE_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_REMOVE_FILE_NOT_EXIST");
+    SetDlgItemTextW(IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_IGNORE_TOO_SHORT");
+    SetDlgItemTextW(IDC_IGNORE_TOO_SHORT_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_AUTO_UPDATE_WHEN_STARTUP");
+    SetDlgItemTextW(IDC_UPDATE_MEDIA_LIB_CHK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_FORCE_RELOAD");
+    SetDlgItemTextW(IDC_REFRESH_MEDIA_LIB_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_MEDIA_LIB_DIR");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_MEDIA_LIB_DIR_STATIC, temp.c_str());
+    // IDC_DIR_LIST
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_MEDIA_LIB_DIR_ADD");
+    SetDlgItemTextW(IDC_ADD_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_MEDIA_LIB_DIR_DEL");
+    SetDlgItemTextW(IDC_DELETE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_MEDIA_LIB_DISP_TAB");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_MEDIA_LIB_DISP_TAB_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_ARTIST");
+    SetDlgItemTextW(IDC_ARTIST_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_ALBUM");
+    SetDlgItemTextW(IDC_ALBUM_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_GENRE");
+    SetDlgItemTextW(IDC_GENRE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_YEAR");
+    SetDlgItemTextW(IDC_YEAR_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
+    SetDlgItemTextW(IDC_FILE_TYPE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_BITRATE");
+    SetDlgItemTextW(IDC_BITRATE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_RATING");
+    SetDlgItemTextW(IDC_RATING_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS");
+    SetDlgItemTextW(IDC_ALL_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED");
+    SetDlgItemTextW(IDC_RECENT_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FOLDER_EXPLORE");
+    SetDlgItemTextW(IDC_FOLDER_EXPLORE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_PLAYLIST_OPT");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_PLAYLIST_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_DISABLE_DRAGE_SORT");
+    SetDlgItemTextW(IDC_DISABLE_DRAGE_SORT_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_INS_BEGIN");
+    SetDlgItemTextW(IDC_INSERT_BEGIN_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_SHOW_TOOLTIP");
+    SetDlgItemTextW(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_FLOAT_PLAYLIST_FOLLOW_MAIN_WND");
+    SetDlgItemTextW(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_PLAYLIST_DISPLAY_MODE");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_PLAYLIST_DISPLAY_MODE_STATIC, temp.c_str());
+    // IDC_PLAYLIST_DISPLAY_MODE_OMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_PLAYLIST_ITEM_HEIGHT");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_PLAYLIST_ITEM_HEIGHT_STATIC, temp.c_str());
+    // IDC_PLAYLIST_ITEM_HEIGHT_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_RECENT_PLAY");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_RECENT_PLAY_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_RECENT_PLAY_RANGE_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_RECENT_PLAY_RANGE_SEL_STATIC, temp.c_str());
+    // IDC_RECENT_PLAYED_RANGE_OMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_RECENT_PLAY_CLEAR");
+    SetDlgItemTextW(IDC_CLEAR_RECENT_PLAYED_LIST_BTN, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_CLEAN_MEDIA_LIB");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_CLEAN_MEDIA_LIB_STATIC, temp.c_str());
+    // IDC_SIZE_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_DATA_FILE_CLEAN");
+    SetDlgItemTextW(IDC_CLEAN_DATA_FILE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_TAG_EDIT");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_TAG_EDIT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_TAG_ID3V2_WRITE_TYPE");
+    SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_TAG_ID3V2_WRITE_TYPE_STATIC, temp.c_str());
+    // IDC_ID3V2_TYPE_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM");
+    SetDlgItemTextW(IDC_TXT_OPT_LAST_FM_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_ENABLE");
+    SetDlgItemTextW(IDC_ENABLE_LASTFM, temp.c_str());
+    // IDC_LASTFM_STATUS
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_USE_HTTPS");
+    SetDlgItemTextW(IDC_LASTFM_ENABLE_HTTPS, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_LOGIN");
+    SetDlgItemTextW(IDC_LASTFM_LOGIN, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_UPLOAD_NOW_PLAYING");
+    SetDlgItemTextW(IDC_LASTFM_ENABLE_NOWPLAYING, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_CACHE_CONDITION");
+    SetDlgItemTextW(IDC_TXT_OPT_LAST_FM_CACHE_CONDITION_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_CACHE_CONDITION_PERCENT");
+    SetDlgItemTextW(IDC_TXT_OPT_LAST_FM_CACHE_CONDITION_PERCENT_STATIC, temp.c_str());
+    // IDC_LASTFM_LEAST_PERDUR
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_CACHE_CONDITION_DURATION");
+    SetDlgItemTextW(IDC_TXT_OPT_LAST_FM_CACHE_CONDITION_DURATION_STATIC, temp.c_str());
+    // IDC_LASTFM_LEAST_DUR
+    // IDC_LASTFM_CACHE_STATUS
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_CACHE_UPLOAD");
+    SetDlgItemTextW(IDC_LASTFM_UPLOAD_CACHE, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_UPLOAD_WHEN_REACH_THRESHOLD");
+    SetDlgItemTextW(IDC_LASTFM_AUTO_SCROBBLE, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_LAST_FM_AUTO_UPLOAD_THRESHOLD");
+    SetDlgItemTextW(IDC_TXT_OPT_LAST_FM_AUTO_UPLOAD_THRESHOLD_STATIC, temp.c_str());
+    // IDC_LASTFM_AUTO_SCROBBLE_MIN
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::C0, IDC_UPDATE_MEDIA_LIB_CHK },
+        { CtrlTextInfo::R1, IDC_REFRESH_MEDIA_LIB_BUTTON, CtrlTextInfo::W32 }
+        });
+    RepositionTextBasedControls({
+        { CtrlTextInfo::C0, IDC_DIR_LIST },
+        { CtrlTextInfo::R1, IDC_ADD_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R1, IDC_DELETE_BUTTON, CtrlTextInfo::W32 }
+        });
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDC_CLEAR_RECENT_PLAYED_LIST_BTN, CtrlTextInfo::W32 }
+        });
+    RepositionTextBasedControls({
+        { CtrlTextInfo::C0, IDC_SIZE_STATIC },
+        { CtrlTextInfo::R1, IDC_CLEAN_DATA_FILE_BUTTON, CtrlTextInfo::W32 }
+        });
+    RepositionTextBasedControls({
+        { CtrlTextInfo::C0, IDC_LASTFM_ENABLE_HTTPS },
+        { CtrlTextInfo::C0, IDC_LASTFM_ENABLE_NOWPLAYING },
+        { CtrlTextInfo::R1, IDC_LASTFM_LOGIN, CtrlTextInfo::W32 }
+        });
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDC_LASTFM_UPLOAD_CACHE, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
@@ -166,9 +308,9 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     wstring tip_str;
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
-    tip_str = theApp.m_str_table.LoadText(L"TIP_OPT_MEDIA_LIB_CLEAR_DATA_FILE");
+    tip_str = theApp.m_str_table.LoadText(L"TIP_OPT_MEDIA_LIB_DATA_FILE_CLEAN");
     m_toolTip.AddTool(GetDlgItem(IDC_CLEAN_DATA_FILE_BUTTON), tip_str.c_str());
-    tip_str = theApp.m_str_table.LoadText(L"TIP_OPT_MEDIA_LIB_AUTO_SCAN_WHEN_START");
+    tip_str = theApp.m_str_table.LoadText(L"TIP_OPT_MEDIA_LIB_AUTO_UPDATE_WHEN_STARTUP");
     m_toolTip.AddTool(&m_update_media_lib_chk, tip_str.c_str());
     tip_str = theApp.m_str_table.LoadText(L"TIP_OPT_MEDIA_LIB_ARTIST_SPLIT_EXT");
     m_toolTip.AddTool(&m_artist_split_ext_edit, tip_str.c_str());
@@ -356,7 +498,7 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
         size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);	 //清理后数据文件的大小
         int size_reduced = m_data_size - data_size;		//清理后数据文件减少的字节数
         if (size_reduced < 0) size_reduced = 0;
-        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_MEDIA_LIB_CLEAR_DATA_FILE_COMPLETE", { clear_cnt, size_reduced });
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_MEDIA_LIB_DATA_FILE_CLEAR_COMPLETE", { clear_cnt, size_reduced });
         MessageBox(info.c_str(), NULL, MB_ICONINFORMATION);
         m_data_size = data_size;
         ShowDataSizeInfo();
@@ -379,7 +521,7 @@ void CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn()
     // TODO: 在此添加控件通知处理程序代码
 
     //清除歌曲的上次播放时间
-    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_MEDIA_LIB_CLEAR_RECENT_PLAY_INQUARY");
+    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_MEDIA_LIB_RECENT_PLAY_CLEAR_INQUARY");
     if (MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_YESNO) == IDYES)
     {
         CSongDataManager::GetInstance().ClearLastPlayedTime();

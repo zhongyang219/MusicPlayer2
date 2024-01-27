@@ -28,6 +28,45 @@ CString CLyricBatchDownloadDlg::GetDialogName() const
     return _T("LyricBatchDownloadDlg");
 }
 
+bool CLyricBatchDownloadDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_LYRIC_BDL");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_DL_OPT");
+    SetDlgItemTextW(IDC_TXT_LYRIC_BDL_DL_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_SKIP_ALREADY");
+    SetDlgItemTextW(IDC_SKIP_EXIST_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_SAVE_ENCODE_SEL");
+    SetDlgItemTextW(IDC_TXT_LYRIC_BDL_SAVE_ENCODE_SEL_STATIC, temp.c_str());
+    // IDC_COMBO1
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_WITH_TRANSLATION");
+    SetDlgItemTextW(IDC_DOWNLOAD_TRASNLATE_CHECK2, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_SAVE_DIR_SEL");
+    SetDlgItemTextW(IDC_TXT_LYRIC_BDL_SAVE_DIR_SEL_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_SAVE_DIR_LYRIC");
+    SetDlgItemTextW(IDC_SAVE_TO_LYRIC_FOLDER, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_SAVE_DIR_SONG");
+    SetDlgItemTextW(IDC_SAVE_TO_SONG_FOLDER, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_SONG_LIST");
+    SetDlgItemTextW(IDC_TXT_LYRIC_BDL_SONG_LIST_STATIC, temp.c_str());
+    // IDC_SONG_LIST1
+    temp = L"";
+    SetDlgItemTextW(IDC_PROGRESS_BAR, temp.c_str());
+    SetDlgItemTextW(IDC_INFO_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_DL_START");
+    SetDlgItemTextW(IDC_START_DOWNLOAD, temp.c_str());
+    // IDCANCEL
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_PROGRESS_BAR },
+        { CtrlTextInfo::C0, IDC_INFO_STATIC },
+        { CtrlTextInfo::R1, IDC_START_DOWNLOAD, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CLyricBatchDownloadDlg::SaveConfig() const
 {
     CIniHelper ini(theApp.m_config_path);

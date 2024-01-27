@@ -4,15 +4,14 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "TestDlg.h"
-#include "afxdialogex.h"
 #include "FilterHelper.h"
 
 // CTestDlg 对话框
 
-IMPLEMENT_DYNAMIC(CTestDlg, CDialog)
+IMPLEMENT_DYNAMIC(CTestDlg, CBaseDialog)
 
 CTestDlg::CTestDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_TEST_DIALOG, pParent)
+    : CBaseDialog(IDD_TEST_DIALOG, pParent)
 {
 
 }
@@ -22,16 +21,26 @@ CTestDlg::~CTestDlg()
     SAFE_DELETE(m_pImage);
 }
 
+CString CTestDlg::GetDialogName() const
+{
+    return L"TestDlg";
+}
+
+bool CTestDlg::InitializeControls()
+{
+    return false;
+}
+
 void CTestDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_TEST_TOOLBAR, m_toolbar);
     DDX_Control(pDX, IDC_TEST_PROGRESS_BAR, m_progress_bar);
     DDX_Control(pDX, IDC_MFCEDITBROWSE1, m_browse_edit);
 }
 
 
-BEGIN_MESSAGE_MAP(CTestDlg, CDialog)
+BEGIN_MESSAGE_MAP(CTestDlg, CBaseDialog)
     ON_WM_TIMER()
     ON_WM_PAINT()
 END_MESSAGE_MAP()
@@ -42,7 +51,7 @@ END_MESSAGE_MAP()
 
 BOOL CTestDlg::OnInitDialog()
 {
-    CDialog::OnInitDialog();
+    CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
     m_toolbar.SetIconSize(theApp.DPI(20));
@@ -105,7 +114,7 @@ void CTestDlg::OnTimer(UINT_PTR nIDEvent)
         m_progress_bar.SetProgress(m_timer_cnt % 100);
     }
 
-    CDialog::OnTimer(nIDEvent);
+    CBaseDialog::OnTimer(nIDEvent);
 }
 
 
@@ -113,14 +122,14 @@ void CTestDlg::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
                        // TODO: 在此处添加消息处理程序代码
-                       // 不为绘图消息调用 CDialog::OnPaint()
+                       // 不为绘图消息调用 CBaseDialog::OnPaint()
 
     const int START_X{ theApp.DPI(16) };
     const int START_Y{ theApp.DPI(120) };
 
     CRect img_rect{ CPoint(START_X, START_Y), CSize(theApp.DPI(250), theApp.DPI(150)) };
     CDrawCommon draw;
-    draw.Create(&dc, this);
+    draw.Create(&dc, &theApp.m_font_set.dlg.GetFont());
     //draw.DrawImage(m_image, img_rect.TopLeft(), img_rect.Size(), CDrawCommon::StretchMode::FIT);
 
     //Gdiplus::Bitmap bm(m_image, NULL);

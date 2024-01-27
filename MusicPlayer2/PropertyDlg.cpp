@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "PropertyDlg.h"
-#include "afxdialogex.h"
 
 
 // CPropertyDlg 对话框
@@ -57,6 +56,32 @@ void CPropertyDlg::ShowPageNum()
 CString CPropertyDlg::GetDialogName() const
 {
     return _T("PropertyDlg");
+}
+
+bool CPropertyDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_PROPERTY_PARENT");
+    SetWindowTextW(temp.c_str());
+    // IDC_TAB1
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_PARENT_PREVIOUS");
+    SetDlgItemTextW(IDC_PREVIOUS_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_PARENT_NEXT");
+    SetDlgItemTextW(IDC_NEXT_BUTTON, temp.c_str());
+    // IDC_ITEM_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_PARENT_SAVE_TO_FILE");
+    SetDlgItemTextW(IDC_SAVE_TO_FILE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_CLOSE");
+    SetDlgItemTextW(IDCANCEL, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L2, IDC_PREVIOUS_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_NEXT_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::C0, IDC_ITEM_STATIC },
+        { CtrlTextInfo::R1, IDC_SAVE_TO_FILE_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
 }
 
 void CPropertyDlg::DoDataExchange(CDataExchange* pDX)

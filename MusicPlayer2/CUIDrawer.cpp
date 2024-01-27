@@ -32,9 +32,9 @@ int CUIDrawer::GetLyricTextHeight() const
     return m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
 }
 
-void CUIDrawer::Create(CDC* pDC, CWnd* pMainWnd)
+void CUIDrawer::Create(CDC* pDC, CFont* pFont)
 {
-    CDrawCommon::Create(pDC, pMainWnd);
+    CDrawCommon::Create(pDC, pFont);
 }
 
 bool CUIDrawer::IsDrawMultiLine(int height) const

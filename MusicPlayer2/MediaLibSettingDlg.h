@@ -55,6 +55,7 @@ private:
 protected:
     void ShowDataSizeInfo();
 
+    virtual bool InitializeControls() override;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     // 在点击选项设置对话框的“应用”或“确定”时CMusicPlayerDlg::ApplySettings()将所有m_data写入theApp前被调用
     // 这里是设置应用前最后的更新ui到m_data的机会，不需要实时更新到m_data的ui也可以只在这里获取

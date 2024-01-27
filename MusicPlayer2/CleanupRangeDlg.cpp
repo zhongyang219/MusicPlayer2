@@ -26,6 +26,21 @@ CString CCleanupRangeDlg::GetDialogName() const
     return _T("CleanupRangeDlg");
 }
 
+bool CCleanupRangeDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_CLEAN_UP_RANGE");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_CLEAN_UP_RANGE_SEL");
+    SetDlgItemTextW(IDC_TXT_CLEAN_UP_RANGE_SEL_STATIC, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CCleanupRangeDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);

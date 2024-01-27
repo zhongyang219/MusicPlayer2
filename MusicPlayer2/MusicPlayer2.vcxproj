@@ -257,6 +257,7 @@
     <ClInclude Include="EditableListBox.h" />
     <ClInclude Include="EditStringListDlg.h" />
     <ClInclude Include="FfmpegCore.h" />
+    <ClInclude Include="FileNameFormDlg.h" />
     <ClInclude Include="FilterHelper.h" />
     <ClInclude Include="FlacEncodeCfgDlg.h" />
     <ClInclude Include="GetTagOnlineDlg.h" />
@@ -275,6 +276,7 @@
     <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="PropertyDlgHelper.h" />
     <ClInclude Include="RecentFolderAndPlaylist.h" />
+    <ClInclude Include="RenameDlg.h" />
     <ClInclude Include="ScintillaEditView.h" />
     <ClInclude Include="SelectItemDlg.h" />
     <ClInclude Include="SliderCtrlEx.h" />
@@ -283,7 +285,8 @@
     <ClInclude Include="SpectralDataHelper.h" />
     <ClInclude Include="SpinEdit.h" />
     <ClInclude Include="StrTable.h" />
-    <ClInclude Include="TagModeSelectDlg.h" />
+    <ClInclude Include="TagFromNameDlg.h" />
+    <ClInclude Include="TagSelBaseDlg.h" />
     <ClInclude Include="TagLibHelper.h" />
     <ClInclude Include="TinyXml2Helper.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
@@ -415,6 +418,7 @@
     <ClCompile Include="EditableListBox.cpp" />
     <ClCompile Include="EditStringListDlg.cpp" />
     <ClCompile Include="FfmpegCore.cpp" />
+    <ClCompile Include="FileNameFormDlg.cpp" />
     <ClCompile Include="FilterHelper.cpp" />
     <ClCompile Include="FlacEncodeCfgDlg.cpp" />
     <ClCompile Include="GetTagOnlineDlg.cpp" />
@@ -432,6 +436,7 @@
     <ClCompile Include="PropertyDlg.cpp" />
     <ClCompile Include="PropertyDlgHelper.cpp" />
     <ClCompile Include="RecentFolderAndPlaylist.cpp" />
+    <ClCompile Include="RenameDlg.cpp" />
     <ClCompile Include="ScintillaEditView.cpp" />
     <ClCompile Include="SelectItemDlg.cpp" />
     <ClCompile Include="SliderCtrlEx.cpp" />
@@ -441,7 +446,8 @@
     <ClCompile Include="SpectralDataHelper.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
     <ClCompile Include="StrTable.cpp" />
-    <ClCompile Include="TagModeSelectDlg.cpp" />
+    <ClCompile Include="TagFromNameDlg.cpp" />
+    <ClCompile Include="TagSelBaseDlg.cpp" />
     <ClCompile Include="TagLibHelper.cpp" />
     <ClCompile Include="TinyXml2Helper.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp">

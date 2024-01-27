@@ -29,6 +29,25 @@ CString CFileRelateDlg::GetDialogName() const
     return _T("FileRelateDlg");
 }
 
+bool CFileRelateDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_FILE_RELATE");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FILE_RELATE_SEL_DEFAULT");
+    SetDlgItemTextW(IDC_DEFAULT_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FILE_RELATE_SEL_ALL");
+    SetDlgItemTextW(IDC_SELECT_ALL_CHECK, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L2, IDC_DEFAULT_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_SELECT_ALL_CHECK, CtrlTextInfo::W16 },
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CFileRelateDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);

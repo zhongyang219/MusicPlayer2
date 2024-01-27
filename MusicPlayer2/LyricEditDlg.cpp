@@ -253,6 +253,23 @@ CString CLyricEditDlg::GetDialogName() const
     return _T("LyricEditDlg");
 }
 
+bool CLyricEditDlg::InitializeControls()
+{
+    CBaseDialog::SetMinSize(theApp.DPI(300), theApp.DPI(300));
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_LYRIC_EDIT");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_EDIT_LYRIC_PATH");
+    SetDlgItemTextW(IDC_STATIC1, temp.c_str());
+    // IDC_LYRIC_PATH_EDIT2
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_STATIC1 },
+        { CtrlTextInfo::C0, IDC_LYRIC_PATH_EDIT2 }
+        }, CtrlTextInfo::W128);
+    return true;
+}
+
 void CLyricEditDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);
@@ -291,7 +308,6 @@ END_MESSAGE_MAP()
 
 BOOL CLyricEditDlg::OnInitDialog()
 {
-    CBaseDialog::SetMinSize(theApp.DPI(300), theApp.DPI(300));
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
@@ -840,16 +856,6 @@ void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
     //调整窗口的大小和位置
     if (nType != SIZE_MINIMIZED)
     {
-        CRect rect;
-        CWnd* plyric_path_wnd{ GetDlgItem(IDC_LYRIC_PATH_EDIT2) };
-        if (plyric_path_wnd != nullptr)
-        {
-            plyric_path_wnd->GetWindowRect(rect);
-            ScreenToClient(&rect);
-            rect.right = cx - MARGIN;
-            plyric_path_wnd->MoveWindow(rect);
-        }
-
         if (m_view->GetSafeHwnd() != NULL)
         {
             m_view->MoveWindow(CalculateEditCtrlRect());
@@ -857,6 +863,7 @@ void CLyricEditDlg::OnSize(UINT nType, int cx, int cy)
 
         if (m_wndToolBar.m_hWnd != NULL)
         {
+            CRect rect;
             rect.left = 0;
             rect.top = 0;
             rect.right = cx;

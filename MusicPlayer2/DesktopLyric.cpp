@@ -445,7 +445,7 @@ void CDesktopLyric::AddToolTips()
     AddMouseToolTip(BTN_STOP, theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP").c_str());
     AddMouseToolTip(BTN_PREVIOUS, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS").c_str());
     AddMouseToolTip(BTN_PLAY_PAUSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_PAUSE").c_str());
-    AddMouseToolTip(BTN_NEXT, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS").c_str());
+    AddMouseToolTip(BTN_NEXT, theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT").c_str());
     AddMouseToolTip(BTN_SETTING, theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING").c_str());
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_FORWARD");
     AddMouseToolTip(BTN_LYRIC_FORWARD, tip_str.c_str());

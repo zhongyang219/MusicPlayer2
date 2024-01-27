@@ -23,7 +23,7 @@
 #include "WIC.h"
 #include "LyricRelateDlg.h"
 #include "SongDataManager.h"
-#include "TagModeSelectDlg.h"
+#include "RenameDlg.h"
 #include "PropertyDlgHelper.h"
 #include "TagLibHelper.h"
 #include "RecentFolderAndPlaylist.h"
@@ -766,100 +766,51 @@ void CMusicPlayerDlg::DrawInfo(bool reset)
 
 void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy, int playlist_width)
 {
-    //设置播放列表大小
-    int playlist_x = cx - playlist_width;
     CPlayerUIBase* pUiBase = dynamic_cast<CPlayerUIBase*>(m_pUI);
-    if (!theApp.m_ui_data.narrow_mode)
-    {
-        m_playlist_list.MoveWindow(playlist_x + m_layout.margin, m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + 2 * m_layout.margin,
-            playlist_width - 2 * m_layout.margin, cy - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.toolbar_height - 3 * m_layout.margin);
-    }
-    else
-    {
-        m_playlist_list.MoveWindow(m_layout.margin, pUiBase->DrawAreaHeight() + m_layout.search_edit_height + m_layout.path_edit_height + m_layout.toolbar_height + m_layout.margin,
-            cx - 2 * m_layout.margin, cy - pUiBase->DrawAreaHeight() - m_layout.search_edit_height - m_layout.path_edit_height - m_layout.toolbar_height - 2 * m_layout.margin);
-    }
-    m_playlist_list.AdjustColumnWidth();
 
-    //设置“当前路径”static控件大小
-    CRect rect_static;
-    m_path_static.GetWindowRect(rect_static);
-    rect_static.bottom = rect_static.top + m_layout.path_edit_height - 2 * m_layout.margin;
-    //CDrawCommon draw;
-    //int width = theApp.DPI(70);
-    //if (m_pDC != nullptr)
-    //{
-    //    draw.Create(m_pDC, this);
-    //    CString str = m_path_static.GetWindowText();
-    //    width = draw.GetTextExtent(str).cx + theApp.DPI(8);
-    //}
-    //rect_static.right = rect_static.left + width;
+    CRect rect_base;
     if (!theApp.m_ui_data.narrow_mode)
-        rect_static.MoveToXY(playlist_x + m_layout.margin, m_layout.margin);
+        rect_base = { CPoint(cx - playlist_width + m_layout.margin, m_layout.margin),
+        CSize(playlist_width - 2 * m_layout.margin, cy - 2 * m_layout.margin) };
     else
-        rect_static.MoveToXY(m_layout.margin, pUiBase->DrawAreaHeight());
+        rect_base = { CPoint(m_layout.margin, pUiBase->DrawAreaHeight()/* + m_layout.margin*/),         // 不知道为什窄界面时上面不需要加边距
+        CSize(cx - 2 * m_layout.margin, cy - pUiBase->DrawAreaHeight() - /*2 * */m_layout.margin) };    // 同上
+
+    // 设置IDC_PATH_STATIC/IDC_PATH_EDIT/ID_MEDIA_LIB的位置和大小
+    int edit_height = m_layout.path_edit_height;
+    CRect rect_static{ rect_base.left, rect_base.top, rect_base.left + max(m_part_static_playlist_width, m_part_static_folder_width), rect_base.top + edit_height };
+    CRect rect_media_lib{ rect_base.right - m_medialib_btn_width, rect_base.top - 1, rect_base.right, rect_base.top + edit_height + 1 };
+    CRect rect_edit{ rect_static.right + m_layout.margin, rect_base.top, rect_media_lib.left - m_layout.margin, rect_base.top + edit_height };
     m_path_static.MoveWindow(rect_static);
-
-    //设置“当前路径”edit控件大小
-    CRect rect_edit;
-    m_path_edit.GetWindowRect(rect_edit);
-    if (!theApp.m_ui_data.narrow_mode)
-    {
-        rect_edit.right = rect_edit.left + (playlist_width - 3 * m_layout.margin - rect_static.Width() - m_medialib_btn_width);
-        rect_edit.MoveToXY(playlist_x + m_layout.margin + rect_static.Width(), m_layout.margin);
-    }
-    else
-    {
-        rect_edit.right = rect_edit.left + (cx - 3 * m_layout.margin - rect_static.Width() - m_medialib_btn_width);
-        rect_edit.MoveToXY(m_layout.margin + rect_static.Width(), pUiBase->DrawAreaHeight());
-    }
     m_path_edit.MoveWindow(rect_edit);
+    m_media_lib_button.MoveWindow(rect_media_lib);
 
-    //设置“选择文件夹”按钮的大小和位置
-    CRect rect_select_folder{ rect_edit };
-    rect_select_folder.left = rect_edit.right + m_layout.margin;
-    rect_select_folder.right = cx - m_layout.margin;
-    rect_select_folder.top--;
-    rect_select_folder.bottom++;
-    m_media_lib_button.MoveWindow(rect_select_folder);
-
+    rect_base.top += edit_height + m_layout.margin;
     //设置歌曲搜索框的大小和位置
     CRect rect_search;
     m_search_edit.GetWindowRect(rect_search);
-    if (!theApp.m_ui_data.narrow_mode)
-    {
-        rect_search.right = rect_search.left + (playlist_width - 2 * m_layout.margin);
-        rect_search.MoveToXY(playlist_x + m_layout.margin, m_layout.path_edit_height + theApp.DPI(1));
-    }
-    else
-    {
-        rect_search.right = rect_search.left + (cx - 2 * m_layout.margin);
-        rect_search.MoveToXY(m_layout.margin, pUiBase->DrawAreaHeight() + m_layout.path_edit_height - theApp.DPI(3));
-    }
+    int search_height = rect_search.Height();
+    rect_search = { rect_base.left, rect_base.top, rect_base.right, rect_base.top + search_height };
     m_search_edit.MoveWindow(rect_search);
-    ////设置清除搜索按钮的大小和位置
-    //CRect rect_clear{};
-    //rect_clear.right = rect_clear.bottom = rect_search.Height();
-    ////if (!theApp.m_ui_data.narrow_mode)
-    //rect_clear.MoveToXY(rect_search.right + m_layout.margin, rect_search.top);
-    //m_clear_search_button.MoveWindow(rect_clear);
-    //m_clear_search_button.Invalidate();
+
+    rect_base.top += search_height + m_layout.margin;
     //设置播放列表工具栏的大小位置
-    CRect rect_toolbar{ rect_search };
-    rect_toolbar.top = rect_search.bottom + m_layout.margin;
-    //rect_toolbar.right = rect_search.right;
-    rect_toolbar.bottom = rect_toolbar.top + m_layout.toolbar_height;
+    int toolbar_height = m_layout.toolbar_height;
+    CRect rect_toolbar{ rect_base.left, rect_base.top, rect_base.right, rect_base.top + toolbar_height };
     m_playlist_toolbar.MoveWindow(rect_toolbar);
     m_playlist_toolbar.Invalidate();
+
+    rect_base.top += toolbar_height + m_layout.margin;
+    // 设置播放列表控件大小和位置（即rect_base剩余空间）
+    m_playlist_list.MoveWindow(rect_base);
+    m_playlist_list.AdjustColumnWidth();
+
 
     //设置分隔条的大小和位置
     if (!theApp.m_ui_data.narrow_mode && theApp.m_ui_data.show_playlist)
     {
         m_splitter_ctrl.ShowWindow(SW_SHOW);
-        CRect rect_splitter;
-        rect_splitter.bottom = cy;
-        rect_splitter.left = cx - playlist_width - 1;
-        rect_splitter.right = cx - playlist_width + m_layout.margin - 1;
+        CRect rect_splitter{ cx - playlist_width - 1, 0, cx - playlist_width + m_layout.margin - 1, cy };
         m_splitter_ctrl.MoveWindow(rect_splitter);
     }
     else
@@ -1026,7 +977,10 @@ void CMusicPlayerDlg::SetPlaylistVisible()
     //m_clear_search_button.ShowWindow(cmdShow);
     m_media_lib_button.ShowWindow(cmdShow);
     m_playlist_toolbar.ShowWindow(cmdShow);
-    m_splitter_ctrl.ShowWindow(cmdShow);
+    if (!theApp.m_ui_data.narrow_mode)
+        m_splitter_ctrl.ShowWindow(cmdShow);
+    else
+        m_splitter_ctrl.ShowWindow(SW_HIDE);
 }
 
 void CMusicPlayerDlg::SetMenubarVisible()
@@ -2076,11 +2030,19 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     CMainDialogBase::OnInitDialog();
 
-    // 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
-    //  执行此操作
-
-    //载入图标资源
+    // 载入图标资源
     theApp.LoadIconResource();
+    // 载入字体资源
+    theApp.m_font_set.Init(theApp.m_str_table.GetDefaultFontName().c_str());
+    // 载入菜单资源
+    theApp.InitMenuResourse();
+
+    // 多语言主窗口资源移除后各窗口对象的->GetFont()不再自动跟随语言设置
+    // 我没有找到能够修改其返回值的方法，暂时改为使用m_font_set中的字体
+    // 设置窗口字体
+    CCommon::SetDialogFont(this, &theApp.m_font_set.dlg.GetFont());
+
+    // 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动执行此操作
 
 #ifdef _DEBUG
     SetIcon(theApp.m_icon_set.app.GetIcon(false, true), TRUE);          // 设置大图标
@@ -2102,10 +2064,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     m_hAccel = LoadAccelerators(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_ACCELERATOR1));
 
-    //初始化字体
-    theApp.m_font_set.Init(theApp.m_str_table.GetDefaultFontName().c_str());
-
-    theApp.InitMenuResourse();
 
     m_miniModeDlg.Init();
 
@@ -2136,16 +2094,28 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     ShowTitlebar(theApp.m_app_setting_data.show_window_frame);
 
-    //计算“媒体库”按钮的大小
-    CDrawCommon draw;
+    // 测量主窗口受翻译字符串影响的控件所需宽度，并应用翻译字符串到控件
+    CString text;
+    CRect text_size;
     CDC* pDC = GetDC();
-    draw.Create(pDC, this);
-    CString media_lib_btn_str;
-    m_media_lib_button.GetWindowText(media_lib_btn_str);
-    m_medialib_btn_width = draw.GetTextExtent(media_lib_btn_str).cx;
-    if (m_medialib_btn_width < theApp.DPI(66))
-        m_medialib_btn_width = theApp.DPI(66);
-    m_medialib_btn_width += theApp.DPI(20);
+    pDC->SelectObject(&theApp.m_font_set.dlg.GetFont());
+    // "播放列表:"宽度（含图标）
+    text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str();
+    pDC->DrawTextW(text, &text_size, DT_CALCRECT);
+    if (m_part_static_playlist_width < text_size.Width() + theApp.DPI(20))
+        m_part_static_playlist_width = min(text_size.Width() + theApp.DPI(20), theApp.DPI(150));
+    // "文件夹:"宽度（含图标）
+    text = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str();
+    m_path_static.SetWindowTextW(text);
+    pDC->DrawTextW(text, &text_size, DT_CALCRECT);
+    if (m_part_static_folder_width < text_size.Width() + theApp.DPI(20))
+        m_part_static_folder_width = min(text_size.Width() + theApp.DPI(20), theApp.DPI(150));
+    // 媒体库按钮宽度
+    text = theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str();
+    m_media_lib_button.SetWindowTextW(text);
+    pDC->DrawTextW(text, &text_size, DT_CALCRECT);
+    if (m_medialib_btn_width < text_size.Width() + theApp.DPI(32))
+        m_medialib_btn_width = min(text_size.Width() + theApp.DPI(32), theApp.DPI(150));
     ReleaseDC(pDC);
 
     //初始化提示信息
@@ -2435,7 +2405,6 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             //theApp.m_ui_data.client_height = rect.Height();
             SetPlaylistSize(rect.Width(), rect.Height(), CalculatePlaylistWidth(rect.Width()));       //调整播放列表的大小和位置
             m_path_static.Invalidate();
-            //SetPorgressBarSize(rect.Width(), rect.Height());      //调整进度条在窗口中的大小和位置
             SetPlaylistVisible();
 
             if (m_cmdLine.empty())      //没有有通过命令行打开文件
@@ -6221,55 +6190,44 @@ afx_msg LRESULT CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged(WPARAM wParam, L
 void CMusicPlayerDlg::OnRename()
 {
     // TODO: 在此添加命令处理程序代码
-    const wstring& title_str = theApp.m_str_table.LoadText(L"TITLE_RENAME_SONG");
-    CTagModeSelectDlg dlg(title_str, false);
-    if (dlg.DoModal() == IDOK)
+    int count{}, fail_count{};
+    CRenameDlg dlg;
+    auto& cur_playlist = CPlayer::GetInstance().GetPlayList();
+    // 单选曲目重命名时建议当前名称
+    if (m_items_selected.size() <= 1 && m_item_selected >= 0 && m_item_selected < static_cast<int>(cur_playlist.size()))
+        dlg.SetInitInsertFormular(CFilePathHelper(cur_playlist[m_item_selected].file_path).GetFileNameWithoutExtension());
+    if (dlg.DoModal() != IDOK)
+        return;
+    wstring formular = dlg.GetFormularSelected();
+    for (int index : m_items_selected)
     {
-        int count{};
-        int ignore_count{};
-        for (int index : m_items_selected)
+        if (index < 0 || index >= static_cast<int>(cur_playlist.size()))
+            continue;
+        SongInfo& song = cur_playlist[index];
+        if (song.is_cue || COSUPlayerHelper::IsOsuFile(song.file_path))
+            continue;
+        CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
+        if (!reopen.IsLockSuccess())
+            continue;
+        wstring new_name = CRenameDlg::FileNameFromTag(formular, song);
+        wstring new_file_path = CCommon::FileRename(song.file_path, new_name);
+        if (!new_file_path.empty())
         {
-            if (index >= 0 && index < CPlayer::GetInstance().GetSongNum())
-            {
-                SongInfo& song{ CPlayer::GetInstance().GetPlayList()[index] };
-                if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path))
-                {
-                    wstring new_name = dlg.FileNameFromTag(song);
-                    CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
-                    if (reopen.IsLockSuccess())     // 这个一般来说是绝对成功的不过确实存在失败的情况
-                    {
-                        wstring new_file_path = CCommon::FileRename(song.file_path, new_name);
-                        if (!new_file_path.empty())
-                        {
-                            CSongDataManager::GetInstance().ChangeFilePath(song.file_path, new_file_path);
-                            song.file_path = new_file_path;
-                            ++count;
-                        }
-                    }
-                    else
-                    {
-                        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-                    }
-                }
-                else
-                {
-                    ignore_count++;
-                }
-            }
+            CSongDataManager::GetInstance().ChangeFilePath(song.file_path, new_file_path);
+            song.file_path = new_file_path;
+            ++count;
         }
-
-        if (count > 0)
-        {
-            //重命名成功，刷新播放列表
-            ShowPlayList(false);
-            CPlayer::GetInstance().SaveCurrentPlaylist();
-        }
-
-        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_RENAME_SONG_COMPLETED_INFO",
-            { m_items_selected.size(), count, ignore_count, static_cast<int>(m_items_selected.size()) - count - ignore_count });
-        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        else
+            ++fail_count;
     }
+    if (count > 0)  //重命名成功，刷新播放列表
+    {
+        ShowPlayList(false);
+        CPlayer::GetInstance().SaveCurrentPlaylist();
+    }
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_RENAME_SONG_COMPLETED_INFO",
+        { m_items_selected.size(), count, static_cast<int>(m_items_selected.size()) - count - fail_count, fail_count });
+    MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
 

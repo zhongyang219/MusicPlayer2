@@ -1630,13 +1630,22 @@ bool CCommon::GetNumberBit(unsigned short num, int bit)
 std::string CCommon::GetTextResourceRawData(UINT id)
 {
     std::string res_data;
-    HRSRC hRes = FindResource(NULL, MAKEINTRESOURCE(id), _T("TEXT"));
-    if (hRes != NULL)
+    HINSTANCE hInstance = AfxGetResourceHandle();
+    HRSRC hRsrc = FindResource(NULL, MAKEINTRESOURCE(id), _T("TEXT"));
+    if (hRsrc != NULL)
     {
-        HGLOBAL hglobal = LoadResource(NULL, hRes);
-        if (hglobal != NULL)
+        HGLOBAL hGlobal = LoadResource(NULL, hRsrc);
+        if (hGlobal != NULL)
         {
-            res_data = (const char*)hglobal;
+            const char* pResource = static_cast<const char*>(LockResource(hGlobal));
+            if (pResource != NULL)
+            {
+                // 获取资源大小
+                DWORD dwSize = SizeofResource(hInstance, hRsrc);
+                // 将资源数据存储到std::string
+                return std::string(pResource, dwSize);
+            }
+            UnlockResource(hGlobal);
         }
     }
     return res_data;

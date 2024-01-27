@@ -127,6 +127,7 @@ struct FontSet
     UIFont font11;
     UIFont font12;           //界面4的歌曲标题
 
+    UIFont dlg;                 // 窗口控件字体
     UIFont lyric;				//歌词字体
     UIFont lyric_translate;		//歌词翻译的字体
     UIFont cortana;				//搜索框字体
@@ -140,6 +141,7 @@ struct FontSet
         font10.SetFont(10, font_name);
         font11.SetFont(11, font_name);
         font12.SetFont(12, font_name);
+        dlg.SetFont(9, font_name);
     }
 };
 

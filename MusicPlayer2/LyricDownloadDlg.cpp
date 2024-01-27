@@ -110,6 +110,59 @@ CString CLyricDownloadDlg::GetDialogName() const
     return _T("LyricDownloadDlg");
 }
 
+bool CLyricDownloadDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_LYRIC_DL");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_TITLE");
+    SetDlgItemTextW(IDC_TXT_LYRIC_DL_TITLE_STATIC, temp.c_str());
+    // IDC_TITLE_EDIT1
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SEARCH");
+    SetDlgItemTextW(IDC_SEARCH_BUTTON2, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_ARTIST");
+    SetDlgItemTextW(IDC_TXT_LYRIC_DL_ARTIST_STATIC, temp.c_str());
+    // IDC_ARTIST_EDIT1
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_INFO");
+    SetDlgItemTextW(IDC_STATIC_INFO, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_UNLINK");
+    SetDlgItemTextW(IDC_UNASSOCIATE_LINK, temp.c_str());
+    // IDC_LYRIC_DOWN_LIST1
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_OPT");
+    SetDlgItemTextW(IDC_TXT_LYRIC_DL_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_WITH_TRANSLATION");
+    SetDlgItemTextW(IDC_DOWNLOAD_TRANSLATE_CHECK1, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SAVE_ENCODE_SEL");
+    SetDlgItemTextW(IDC_TXT_LYRIC_DL_SAVE_ENCODE_SEL_STATIC, temp.c_str());
+    // IDC_COMBO2
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SAVE_DIR_SEL");
+    SetDlgItemTextW(IDC_TXT_LYRIC_DL_SAVE_DIR_SEL_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SAVE_DIR_LYRIC");
+    SetDlgItemTextW(IDC_SAVE_TO_LYRIC_FOLDER1, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SAVE_DIR_SONG");
+    SetDlgItemTextW(IDC_SAVE_TO_SONG_FOLDER1, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SEL_DL");
+    SetDlgItemTextW(IDC_DOWNLOAD_SELECTED, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SEL_SAVE_AS");
+    SetDlgItemTextW(IDC_SELECTED_SAVE_AS, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_CLOSE");
+    SetDlgItemTextW(IDCANCEL, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_LYRIC_DL_TITLE_STATIC },
+        { CtrlTextInfo::C0, IDC_TITLE_EDIT1 },
+        { CtrlTextInfo::R1, IDC_SEARCH_BUTTON2, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_TXT_LYRIC_DL_ARTIST_STATIC },
+        { CtrlTextInfo::C0, IDC_ARTIST_EDIT1 }
+        }, CtrlTextInfo::W64);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDC_DOWNLOAD_SELECTED, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDC_SELECTED_SAVE_AS, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R3, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CLyricDownloadDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CBaseDialog::DoDataExchange(pDX);
@@ -774,18 +827,13 @@ void CLyricDownloadDlg::OnLdPreview()
 	lyrics.LyricsFromRowString(result, CLyrics::LyricType::LY_LRC_NETEASE);
 	result = lyrics.GetLyricsString2();
 
-	//显示预览窗口
-    const wstring& dlg_title = theApp.m_str_table.LoadText(L"TITLE_LYRIC_PREVIEW");
-	CMessageDlg dlg;
-    dlg.SetWindowTitle(dlg_title.c_str());
-	CString info;
-	info += item.artist.c_str();
-	info += _T(" - ");
-	info += item.title.c_str();
-	dlg.SetInfoText(info);
-	dlg.SetMessageText(result.c_str());
-
-	dlg.DoModal();
+    // 显示预览窗口
+    CMessageDlg dlg(L"LrcPreviewDlg");
+    dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_LYRIC_PREVIEW"));
+    wstring info = item.artist + L" - " + item.title;
+    dlg.SetInfoText(info);
+    dlg.SetMessageText(result);
+    dlg.DoModal();
 }
 
 

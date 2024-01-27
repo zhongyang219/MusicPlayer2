@@ -4,14 +4,13 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "FormatConvertDlg.h"
-#include "afxdialogex.h"
 #include "BassCore.h"
 #include "COSUPlayerHelper.h"
 #include "WIC.h"
 #include "TagLibHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
-#include "TagModeSelectDlg.h"
+#include "FileNameFormDlg.h"
 #include "FlacEncodeCfgDlg.h"
 #include "FilterHelper.h"
 
@@ -65,13 +64,13 @@ CFormatConvertDlg::CFormatConvertDlg(const vector<SongInfo>& items, CWnd* pParen
             m_file_list.push_back(item);
     }
 
-    m_freq_map[L"8 kHz"] = 8000;
-    m_freq_map[L"16 kHz"] = 16000;
-    m_freq_map[L"22 kHz"] = 22050;
-    m_freq_map[L"24 kHz"] = 24000;
-    m_freq_map[L"32 kHz"] = 32000;
-    m_freq_map[L"44.1 kHz"] = 44100;
-    m_freq_map[L"48 kHz"] = 48000;
+    m_freq_map.emplace_back(L"8 kHz", 8000);
+    m_freq_map.emplace_back(L"16 kHz", 16000);
+    m_freq_map.emplace_back(L"22 kHz", 22050);
+    m_freq_map.emplace_back(L"24 kHz", 24000);
+    m_freq_map.emplace_back(L"32 kHz", 32000);
+    m_freq_map.emplace_back(L"44.1 kHz", 44100);
+    m_freq_map.emplace_back(L"48 kHz", 48000);
 }
 
 CFormatConvertDlg::~CFormatConvertDlg()
@@ -83,6 +82,72 @@ CString CFormatConvertDlg::GetDialogName() const
 {
     return _T("FormatConvertDlg");
 
+}
+
+bool CFormatConvertDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_FORMAT_CONVERT");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OUT_FORMAT_SEL");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_OUT_FORMAT_SEL_STATIC, temp.c_str());
+    // IDC_OUT_FORMAT_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_SETTING");
+    SetDlgItemTextW(IDC_ENCODER_CONFIG_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_FILE_LIST");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_FILE_LIST_STATIC, temp.c_str());
+    // IDC_SONG_LIST1
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OPT");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_CHANGE_FREQ");
+    SetDlgItemTextW(IDC_CHANGE_FREQ_CHECK, temp.c_str());
+    // IDC_FREQ_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_COPY_TAG");
+    SetDlgItemTextW(IDC_COPY_TAG_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_COPY_COVER");
+    SetDlgItemTextW(IDC_COPY_ALBUM_COVER_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OUT_FILE_NAME");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_OUT_FILE_NAME_STATIC, temp.c_str());
+    // IDC_OUT_NAME_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_ADD_SERIAL_NUMBER");
+    SetDlgItemTextW(IDC_ADD_NUMBER_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_FILE_EXIST_SEL");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_FILE_EXIST_SEL_STATIC, temp.c_str());
+    // IDC_TARGET_FILE_EXIST_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OUT_DIR");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_OUT_DIR_STATIC, temp.c_str());
+    // IDC_OUT_DIR_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OUT_DIR_OPEN_WHEN_COMPLETE");
+    SetDlgItemTextW(IDC_OPEN_TARGET_DIR_CHECK, temp.c_str());
+    temp = L"";
+    SetDlgItemTextW(IDC_PROGRESS_BAR, temp.c_str());    // 此控件持有的文本会影响接下来的重排，需要先清空
+    SetDlgItemTextW(IDC_PROGRESS_TEXT, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_START_CONVERT");
+    SetDlgItemTextW(IDC_START_CONVERT_BUTTON, temp.c_str());
+    // IDCANCEL
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_FORMAT_CONVERT_OUT_FORMAT_SEL_STATIC },
+        { CtrlTextInfo::C0, IDC_OUT_FORMAT_COMBO },
+        { CtrlTextInfo::R1, IDC_ENCODER_CONFIG_BUTTON, CtrlTextInfo::W32 }
+        }, CtrlTextInfo::W128);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L2, IDC_CHANGE_FREQ_CHECK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_FREQ_COMBO }
+        });
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_FORMAT_CONVERT_OUT_FILE_NAME_STATIC },
+        { CtrlTextInfo::C0, IDC_OUT_NAME_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_FORMAT_CONVERT_OUT_DIR_STATIC },
+        { CtrlTextInfo::C0, IDC_OUT_DIR_EDIT }
+        }, CtrlTextInfo::W128);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_PROGRESS_BAR },
+        { CtrlTextInfo::C0, IDC_PROGRESS_TEXT },
+        { CtrlTextInfo::R1, IDC_START_CONVERT_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        }, CtrlTextInfo::W128);
+    return true;
 }
 
 void CFormatConvertDlg::DoDataExchange(CDataExchange* pDX)
@@ -109,7 +174,7 @@ void CFormatConvertDlg::LoadConfig()
     {
         m_out_dir = CCommon::GetSpecialDir(CSIDL_MYDOCUMENTS);
     }
-    m_out_name = ini.GetString(L"format_convert", L"out_name_formular", FORMULAR_ORIGINAL);
+    m_out_name = ini.GetString(L"format_convert", L"out_name_formular", CFileNameFormDlg::FORMULAR_ORIGINAL.c_str());
     m_convert_freq = ini.GetBool(L"format_convert", L"convert_freq", false);
     m_freq_sel = ini.GetString(L"format_convert", L"freq_sel", L"");
     m_open_output_dir = ini.GetBool(L"format_convert", L"open_output_dir", false);
@@ -136,11 +201,21 @@ void CFormatConvertDlg::LoadEncoderConfig()
     CIniHelper ini(theApp.m_config_dir + L"Encoder\\encoder.ini");
 
     m_mp3_encode_para.encode_type = ini.GetInt(L"mp3_encoder", L"encode_type", 0);
-    m_mp3_encode_para.cbr_bitrate = ini.GetString(L"mp3_encoder", L"cbr_bitrate", L"128");
-    m_mp3_encode_para.abr_bitrate = ini.GetString(L"mp3_encoder", L"abr_bitrate", L"128");
+    m_mp3_encode_para.cbr_bitrate = ini.GetInt(L"mp3_encoder", L"cbr_bitrate", 128);
+    m_mp3_encode_para.abr_bitrate = ini.GetInt(L"mp3_encoder", L"abr_bitrate", 128);
     m_mp3_encode_para.vbr_quality = ini.GetInt(L"mp3_encoder", L"vbr_quality", 4);
     m_mp3_encode_para.cmd_para = ini.GetString(L"mp3_encoder", L"cmd_para", L"");
     m_mp3_encode_para.joint_stereo = ini.GetBool(L"mp3_encoder", L"joint_stereo", true);
+    if (m_mp3_encode_para.encode_type == 3)    // 旧版兼容
+    {
+        m_mp3_encode_para.encode_type = 0;
+        m_mp3_encode_para.cmd_para.clear();
+    }
+    if (!m_mp3_encode_para.cmd_para.empty())
+    {
+        m_mp3_encode_para.user_define_para = true;
+    }
+    CMP3EncodeCfgDlg::EncodeParaToCmdline(m_mp3_encode_para);
 
     m_wma_encode_para.cbr = ini.GetBool(L"wma_encoder", L"cbr", true);
     m_wma_encode_para.cbr_bitrate = ini.GetInt(L"wma_encoder", L"cbr_bitrate", 64);
@@ -160,10 +235,10 @@ void CFormatConvertDlg::SaveEncoderConfig() const
     CIniHelper ini(encoder_dir + L"encoder.ini");
 
     ini.WriteInt(L"mp3_encoder", L"encode_type", m_mp3_encode_para.encode_type);
-    ini.WriteString(L"mp3_encoder", L"cbr_bitrate", m_mp3_encode_para.cbr_bitrate);
-    ini.WriteString(L"mp3_encoder", L"abr_bitrate", m_mp3_encode_para.abr_bitrate);
+    ini.WriteInt(L"mp3_encoder", L"cbr_bitrate", m_mp3_encode_para.cbr_bitrate);
+    ini.WriteInt(L"mp3_encoder", L"abr_bitrate", m_mp3_encode_para.abr_bitrate);
     ini.WriteInt(L"mp3_encoder", L"vbr_quality", m_mp3_encode_para.vbr_quality);
-    ini.WriteString(L"mp3_encoder", L"cmd_para", m_mp3_encode_para.cmd_para);
+    ini.WriteString(L"mp3_encoder", L"cmd_para", m_mp3_encode_para.user_define_para ? m_mp3_encode_para.cmd_para : L"");
     ini.WriteBool(L"mp3_encoder", L"joint_stereo", m_mp3_encode_para.joint_stereo);
 
     ini.WriteBool(L"wma_encoder", L"cbr", m_wma_encode_para.cbr);
@@ -272,13 +347,17 @@ BOOL CFormatConvertDlg::OnInitDialog()
     file_exist_combo->SetCurSel(m_file_exist_action);
     ((CButton*)GetDlgItem(IDC_OPEN_TARGET_DIR_CHECK))->SetCheck(m_open_output_dir);
 
-
-    for (const auto& item : m_freq_map)
-        m_freq_comb.AddString(item.first.c_str());
-    if (m_freq_sel.empty())
-        m_freq_comb.SelectString(0, _T("44.1 kHz"));
-    else
-        m_freq_comb.SelectString(0, m_freq_sel.c_str());
+    int freq_comb_sel{ -1 };
+    for (size_t i{}; i < m_freq_map.size(); ++i)
+    {
+        m_freq_comb.AddString(m_freq_map[i].first.c_str());
+        if (m_freq_map[i].first == m_freq_sel)
+            freq_comb_sel = i;
+        if (m_freq_map[i].second == 44100)          // 默认值
+            m_freq_comb.SetCurSel(i);
+    }
+    if (freq_comb_sel != -1)
+        m_freq_comb.SetCurSel(freq_comb_sel);
     m_freq_comb.EnableWindow(m_convert_freq);
     ((CButton*)GetDlgItem(IDC_CHANGE_FREQ_CHECK))->SetCheck(m_convert_freq);
 
@@ -289,7 +368,6 @@ BOOL CFormatConvertDlg::OnInitDialog()
         m_out_dir.push_back(L'\\');
     m_out_dir_edit.SetWindowText(m_out_dir.c_str());
     m_out_dir_edit.EnableFolderBrowseButton(theApp.m_str_table.LoadText(L"TITLE_FOLDER_BROWSER_OUTPUT_FOLDER").c_str());
-    SetDlgItemText(IDC_PROGRESS_TEXT, _T(""));
     m_progress_bar.SetBackgroundColor(GetSysColor(COLOR_BTNFACE));
     m_progress_bar.ShowWindow(SW_HIDE);
 
@@ -372,7 +450,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
     }
 
     // 按照格式字符串生成输出文件名(这里缺少长度检查)
-    out_file_path += CTagModeSelectDlg::FileNameFromTag(pthis->m_out_name, song_info);
+    out_file_path += CFileNameFormDlg::FileNameFromTag(pthis->m_out_name, song_info);
 
     // 按照输出格式添加后缀
     switch (pthis->m_encode_format)
@@ -494,10 +572,8 @@ void CFormatConvertDlg::SetProgressInfo(int progress)
 
 int CFormatConvertDlg::GetFreq()
 {
-    CString str;
-    m_freq_comb.GetWindowText(str);
-
-    return m_freq_map[str.GetString()];
+    int sel_index = m_freq_comb.GetCurSel();
+    return m_freq_map[sel_index].second;
 }
 
 UINT CFormatConvertDlg::ThreadFunc(LPVOID lpParam)

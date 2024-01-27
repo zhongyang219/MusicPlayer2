@@ -32,6 +32,52 @@ CString CFindDlg::GetDialogName() const
     return _T("FindDlg");
 }
 
+bool CFindDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_FIND");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_KEY_WORD_INPUT");
+    SetDlgItemTextW(IDC_TXT_FIND_KEY_WORD_INPUT_STATIC, temp.c_str());
+    // IDC_FIND_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_FIND");
+    SetDlgItemTextW(IDC_FIND_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_FIND_RANGE");
+    SetDlgItemTextW(IDC_TXT_FIND_FIND_RANGE_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_CURRENT_PLAYLIST");
+    SetDlgItemTextW(IDC_FIND_CURRENT_PLAYLIST_RADIO, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_MEDIA_LIB");
+    SetDlgItemTextW(IDC_FIND_ALL_PLAYLIST_RADIO, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_OPT");
+    SetDlgItemTextW(IDC_TXT_FIND_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_OPT_FILE_NAME");
+    SetDlgItemTextW(IDC_FIND_FILE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_OPT_TITLE");
+    SetDlgItemTextW(IDC_FIND_TITLE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_OPT_ARTIST");
+    SetDlgItemTextW(IDC_FIND_ARTIST_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_OPT_ALBUM");
+    SetDlgItemTextW(IDC_FIND_ALBUM_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_RESULT_LAST");
+    SetDlgItemTextW(IDC_FIND_RESULT_STATIC, temp.c_str());
+    temp = L"";
+    SetDlgItemTextW(IDC_FIND_INFO_STATIC, temp.c_str());
+    // IDC_FIND_LIST
+    temp = theApp.m_str_table.LoadText(L"TXT_FIND_PLAY_SELECTED");
+    SetDlgItemTextW(IDOK, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_FIND_KEY_WORD_INPUT_STATIC },
+        { CtrlTextInfo::C0, IDC_FIND_EDIT },
+        { CtrlTextInfo::R1, IDC_FIND_BUTTON, CtrlTextInfo::W32 }
+        }, CtrlTextInfo::W128);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CFindDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);

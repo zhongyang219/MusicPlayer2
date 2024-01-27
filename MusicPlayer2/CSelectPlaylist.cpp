@@ -83,13 +83,6 @@ int CSelectPlaylistDlg::GetPlayingItem()
     return playing_item;
 }
 
-void CSelectPlaylistDlg::OnTabEntered()
-{
-    if (m_playlist_ctrl.GetCurSel() != -1)
-        m_left_selected_item = m_playlist_ctrl.GetCurSel();     // m_left_selected_item直接存储m_playlist_ctrl的索引
-    SetButtonsEnable();
-}
-
 void CSelectPlaylistDlg::ShowSongList()
 {
     CWaitCursor wait_cursor;
@@ -187,6 +180,30 @@ void CSelectPlaylistDlg::AfterDeleteFromDisk(const std::vector<SongInfo>& files)
 wstring CSelectPlaylistDlg::GetSelectedString() const
 {
     return m_selected_string;
+}
+
+void CSelectPlaylistDlg::OnTabEntered()
+{
+    if (m_playlist_ctrl.GetCurSel() != -1)
+        m_left_selected_item = m_playlist_ctrl.GetCurSel();     // m_left_selected_item直接存储m_playlist_ctrl的索引
+    SetButtonsEnable();
+}
+
+bool CSelectPlaylistDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_NEW_PLAYLIST");
+    SetDlgItemTextW(IDC_NEW_PLAYLIST, temp.c_str());
+    // IDC_SEARCH_EDIT
+    // IDC_LIST1
+    // IDC_HSPLITER_STATIC
+    // IDC_SONG_LIST
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_NEW_PLAYLIST, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R1, IDC_SEARCH_EDIT }
+        });
+    return true;
 }
 
 BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)

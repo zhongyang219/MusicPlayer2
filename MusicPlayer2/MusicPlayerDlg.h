@@ -103,7 +103,9 @@ protected:
     int m_window_height;	//窗口的高度
     CPoint m_desktop_lyric_pos{ -1, -1 };     //桌面歌词窗口的位置
     CSize m_desktop_lyric_size{ 0, 0 };
-    int m_medialib_btn_width{ theApp.DPI(70) };
+    int m_part_static_playlist_width{ theApp.DPI(32) };     // 这里的值是最小宽度，窗口init时会根据文字变大
+    int m_part_static_folder_width{ theApp.DPI(32) };       // 这里的值是最小宽度，窗口init时会根据文字变大
+    int m_medialib_btn_width{ theApp.DPI(64) };             // 这里的值是最小宽度，窗口init时会根据文字变大
 
     SLayoutData m_layout;		//窗口布局的固定数据
 

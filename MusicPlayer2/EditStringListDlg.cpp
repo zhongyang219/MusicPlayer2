@@ -4,17 +4,14 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "EditStringListDlg.h"
-#include "afxdialogex.h"
 
 
 // CEditStringListDlg 对话框
 
-#define IDC_ITEM_EDITBOX 1991
-
 IMPLEMENT_DYNAMIC(CEditStringListDlg, CBaseDialog)
 
 CEditStringListDlg::CEditStringListDlg(vector<wstring>& items, CWnd* pParent /*=nullptr*/)
-	: CBaseDialog(IDD_SELECT_ITEM_DIALOG, pParent), m_items(items)
+    : CBaseDialog(IDD_SELECT_ITEM_DIALOG, pParent), m_items(items)
 {
 
 }
@@ -46,6 +43,20 @@ CString CEditStringListDlg::GetDialogName() const
     return _T("SelectItemDlg");
 }
 
+bool CEditStringListDlg::InitializeControls()
+{
+    SetWindowTextW(m_title);
+    // IDC_LIST1
+    // IDOK
+    // IDCANCEL
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 
 BEGIN_MESSAGE_MAP(CEditStringListDlg, CBaseDialog)
 END_MESSAGE_MAP()
@@ -59,7 +70,6 @@ BOOL CEditStringListDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetWindowText(m_title);
     if (m_icon == NULL)
         SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);
     else

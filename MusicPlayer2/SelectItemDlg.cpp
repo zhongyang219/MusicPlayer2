@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "SelectItemDlg.h"
-#include "afxdialogex.h"
 
 
 // CSelectItemDlg 对话框
@@ -12,7 +11,7 @@
 IMPLEMENT_DYNAMIC(CSelectItemDlg, CBaseDialog)
 
 CSelectItemDlg::CSelectItemDlg(const vector<wstring>& items, CWnd* pParent /*=nullptr*/)
-	: CBaseDialog(IDD_SELECT_ITEM_DIALOG, pParent), m_items(items)
+    : CBaseDialog(IDD_SELECT_ITEM_DIALOG, pParent), m_items(items)
 {
 
 }
@@ -38,16 +37,29 @@ wstring CSelectItemDlg::GetSelectedItem() const
     return wstring();
 }
 
+CString CSelectItemDlg::GetDialogName() const
+{
+    return _T("SelectItemDlg");
+}
+
+bool CSelectItemDlg::InitializeControls()
+{
+    SetWindowTextW(m_title);
+    // IDC_LIST1
+    // IDOK
+    // IDCANCEL
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CSelectItemDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST1, m_list_ctrl);
-}
-
-
-CString CSelectItemDlg::GetDialogName() const
-{
-    return _T("SelectItemDlg");
 }
 
 BEGIN_MESSAGE_MAP(CSelectItemDlg, CBaseDialog)
@@ -63,7 +75,6 @@ BOOL CSelectItemDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetWindowText(m_title);
     if (m_icon == NULL)
         SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);
     else

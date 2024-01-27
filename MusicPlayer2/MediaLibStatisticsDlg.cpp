@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "MediaLibStatisticsDlg.h"
-#include "afxdialogex.h"
 #include "SongDataManager.h"
 #include "MediaLibHelper.h"
 
@@ -22,16 +21,32 @@ CMediaLibStatisticsDlg::~CMediaLibStatisticsDlg()
 {
 }
 
+CString CMediaLibStatisticsDlg::GetDialogName() const
+{
+    return _T("MediaLibStatisticsDlg");
+}
+
+bool CMediaLibStatisticsDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_LIB_STATISTICS");
+    SetWindowTextW(temp.c_str());
+    // IDC_LIST1
+    // IDOK
+    temp = theApp.m_str_table.LoadText(L"TXT_CLOSE");
+    SetDlgItemTextW(IDCANCEL, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CMediaLibStatisticsDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_LIST1, m_list_ctrl);
-}
-
-
-CString CMediaLibStatisticsDlg::GetDialogName() const
-{
-    return _T("MediaLibStatisticsDlg");
 }
 
 BEGIN_MESSAGE_MAP(CMediaLibStatisticsDlg, CBaseDialog)
@@ -47,14 +62,12 @@ BOOL CMediaLibStatisticsDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetWindowText(theApp.m_str_table.LoadText(L"TITLE_LIB_STATISTICS").c_str());
     SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
 
     //初始化控件
-    CWnd* ok_btn{ GetDlgItem(IDOK) };
-    if (ok_btn != nullptr)
-        ok_btn->ShowWindow(SW_HIDE);
-    SetDlgItemText(IDCANCEL, theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE").c_str());
+    ShowDlgCtrl(IDOK, false);
+    if (auto pWnd = GetDlgItem(IDCANCEL))
+        pWnd->SetFocus();
 
     //初始化列表
     CRect rect;

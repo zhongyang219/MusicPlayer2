@@ -33,6 +33,7 @@ private:
     void EnableControl();
 
 protected:
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     virtual void GetDataFromUi() override;
     virtual void ApplyDataToUi() override;

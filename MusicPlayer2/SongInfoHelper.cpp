@@ -50,7 +50,7 @@ CString CSongInfoHelper::GetBitsString(const SongInfo& song)
 {
     CString bits;
     if (song.bits == 0)
-        bits = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_BITS_UNDEFINED").c_str();
+        bits = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_BIT_DEPTH_UNDEFINED").c_str();
     else
         bits.Format(_T("%d Bit"), song.bits);
     return bits;

@@ -104,7 +104,7 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
         str = CPlayer::GetInstance().GetTimeString();
     m_draw.SetFont(&m_font_time);
     m_draw.DrawWindowText(rc_tmp, str.c_str(), m_colors.color_text, Alignment::CENTER);
-    m_draw.SetFont(theApp.m_pMainWnd->GetFont());
+    m_draw.SetFont(&theApp.m_font_set.dlg.GetFont());
 
     //绘制进度条
     rc_tmp.MoveToY(rc_tmp.bottom);

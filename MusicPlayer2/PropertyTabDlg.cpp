@@ -4,13 +4,12 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "PropertyTabDlg.h"
-#include "afxdialogex.h"
 #include "COSUPlayerHelper.h"
 #include "PropertyDlgHelper.h"
 #include "SongDataManager.h"
 #include "GetTagOnlineDlg.h"
 #include "MusicPlayerCmdHelper.h"
-#include "TagModeSelectDlg.h"
+#include "TagFromNameDlg.h"
 #include "SongInfoHelper.h"
 
 // CPropertyTabDlg 对话框
@@ -66,7 +65,7 @@ void CPropertyTabDlg::ShowInfo()
         m_file_type_edit.SetWindowText(helper.GetMultiType().c_str());
         wstring multi_length = helper.GetMultiLength();
         if (multi_length == L"-:--")
-            multi_length = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_UNKNOWN_SONG_LENGTH");
+            multi_length = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_DURATION_UNKNOWN");
         m_song_length_edit.SetWindowText(multi_length.c_str());
         m_file_size_edit.SetWindowText(helper.GetMultiSize().c_str());
         m_bit_rate_edit.SetWindowText(helper.GetMultiBitrate().c_str());
@@ -100,7 +99,7 @@ void CPropertyTabDlg::ShowInfo()
         //显示文件长度
         wstring song_length;
         if (m_all_song_info[m_index].length().isZero())
-            song_length = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_UNKNOWN_SONG_LENGTH");
+            song_length = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_DURATION_UNKNOWN");
         else
             song_length = m_all_song_info[m_index].length().toString2();
         m_song_length_edit.SetWindowText(song_length.c_str());
@@ -128,7 +127,7 @@ void CPropertyTabDlg::ShowInfo()
         else if(!m_all_song_info[m_index].lyric_file.empty())
             m_lyric_file_edit.SetWindowText(m_all_song_info[m_index].lyric_file.c_str());
         else
-            m_lyric_file_edit.SetWindowText(theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_NO_ASSOCIATED_LYRIC_FILE").c_str());
+            m_lyric_file_edit.SetWindowText(theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_LRC_FILE_NO_LINK").c_str());
 
         //显示音频信息
         //CString info;
@@ -233,6 +232,123 @@ void CPropertyTabDlg::OnTabEntered()
 {
     SetWreteEnable();
     ShowInfo();
+}
+
+bool CPropertyTabDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_INFO");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_INFO_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_NAME");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_NAME_STATIC, temp.c_str());
+    // IDC_FILE_NAME_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_PATH");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_PATH_STATIC, temp.c_str());
+    // IDC_FILE_PATH_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_TYPE");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_TYPE_STATIC, temp.c_str());
+    // IDC_FILE_TYPE_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_DURATION");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_DURATION_STATIC, temp.c_str());
+    // IDC_SONG_LENGTH_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_SIZE");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_SIZE_STATIC, temp.c_str());
+    // IDC_FILE_SIZE_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_BIT_RATE");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_BIT_RATE_STATIC, temp.c_str());
+    // IDC_BIT_RATE_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_CHANNELS");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_CHANNELS_STATIC, temp.c_str());
+    // IDC_CHANNELS
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_FREQ");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_FREQ_STATIC, temp.c_str());
+    // IDC_SAMPLE_FREQ
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_BIT_DEPTH");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_FILE_BIT_DEPTH_STATIC, temp.c_str());
+    // IDC_BITS_DIPTH
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_LRC_FILE");
+    SetDlgItemTextW(IDC_LYRIC_FILE_STATIC, temp.c_str());
+    // IDC_LYRIC_FILE_EDIT
+
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_TAG_INFO");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_TAG_INFO_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_TAG_TITLE");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_TAG_TITLE_STATIC, temp.c_str());
+    // IDC_TITEL_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_TAG_ARTIST");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_TAG_ARTIST_STATIC, temp.c_str());
+    // IDC_ARTIST_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_TAG_ALBUM");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_TAG_ALBUM_STATIC, temp.c_str());
+    // IDC_ALBUM_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_TAG_TRACK");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_TAG_TRACK_STATIC, temp.c_str());
+    // IDC_TRACK_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_TAG_YEAR");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_TAG_YEAR_STATIC, temp.c_str());
+    // IDC_YEAR_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_TAG_GENRE");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_TAG_GENRE_STATIC, temp.c_str());
+    // IDC_GENRE_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_TAG_COMMENT");
+    SetDlgItemTextW(IDC_TXT_PROPERTY_DLG_TAG_COMMENT_STATIC, temp.c_str());
+    // IDC_COMMENT_EDIT
+    // IDC_TAG_TYPE_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FROM_FILE_NAME");
+    SetDlgItemTextW(IDC_GET_TAG_FROM_FILE_NAME_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FROM_LRC");
+    SetDlgItemTextW(IDC_GET_TAG_FROM_LYRIC_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FROM_ONLINE");
+    SetDlgItemTextW(IDC_GET_TAG_ONLINE_BUTTON, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_FILE_NAME_STATIC },
+        { CtrlTextInfo::C0, IDC_FILE_NAME_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_FILE_PATH_STATIC },
+        { CtrlTextInfo::C0, IDC_FILE_PATH_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_FILE_TYPE_STATIC },
+        { CtrlTextInfo::C0, IDC_FILE_TYPE_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_FILE_DURATION_STATIC },
+        { CtrlTextInfo::C0, IDC_SONG_LENGTH_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_FILE_BIT_RATE_STATIC },
+        { CtrlTextInfo::C0, IDC_BIT_RATE_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_FILE_FREQ_STATIC },
+        { CtrlTextInfo::C0, IDC_SAMPLE_FREQ },
+        { CtrlTextInfo::L1, IDC_LYRIC_FILE_STATIC },
+        { CtrlTextInfo::C0, IDC_LYRIC_FILE_EDIT }
+        }, CtrlTextInfo::W64);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_FILE_SIZE_STATIC },
+        { CtrlTextInfo::C0, IDC_FILE_SIZE_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_FILE_CHANNELS_STATIC },
+        { CtrlTextInfo::C0, IDC_CHANNELS },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_FILE_BIT_DEPTH_STATIC },
+        { CtrlTextInfo::C0, IDC_BITS_DIPTH }
+        }, CtrlTextInfo::W60);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_TAG_TITLE_STATIC },
+        { CtrlTextInfo::C0, IDC_TITEL_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_TAG_ARTIST_STATIC },
+        { CtrlTextInfo::C0, IDC_ARTIST_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_TAG_ALBUM_STATIC },
+        { CtrlTextInfo::C0, IDC_ALBUM_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_TAG_TRACK_STATIC },
+        { CtrlTextInfo::C0, IDC_TRACK_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_TAG_GENRE_STATIC },
+        { CtrlTextInfo::C0, IDC_GENRE_COMBO },
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_TAG_COMMENT_STATIC },
+        { CtrlTextInfo::C0, IDC_COMMENT_EDIT }
+        }, CtrlTextInfo::W32);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_TAG_YEAR_STATIC },
+        { CtrlTextInfo::C0, IDC_YEAR_EDIT }
+        }, CtrlTextInfo::W40);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L3, IDC_GET_TAG_FROM_FILE_NAME_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L2, IDC_GET_TAG_FROM_LYRIC_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_GET_TAG_ONLINE_BUTTON, CtrlTextInfo::W32 }
+        });
+    return true;
 }
 
 void CPropertyTabDlg::DoDataExchange(CDataExchange* pDX)
@@ -651,16 +767,16 @@ void CPropertyTabDlg::OnBnClickedGetTagFromLyricButton()
 void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
 {
     // TODO: 在此添加控件通知处理程序代码
-    const wstring& title_str = theApp.m_str_table.LoadText(L"TITLE_TAG_SEL_TAG_FROM_FILE_NAME");
-    CTagModeSelectDlg dlg(title_str, true);
+    CTagFromNameDlg dlg;
     if (dlg.DoModal() == IDOK)
     {
+        wstring formular = dlg.GetFormularSelected();
         CWaitCursor wait_cursor;
         if (!m_batch_edit)
         {
             SongInfo song;
             wstring file_name = CFilePathHelper(m_all_song_info[m_index].file_path).GetFileNameWithoutExtension();
-            dlg.GetTagFromFileName(file_name, song);
+            CTagFromNameDlg::GetTagFromFileName(formular, file_name, song);
             ModifyTagInfo(song);
         }
         else
@@ -669,7 +785,7 @@ void CPropertyTabDlg::OnBnClickedGetTagFromFileNameButton()
             for (auto& song : m_all_song_info)
             {
                 wstring file_name = CFilePathHelper(song.file_path).GetFileNameWithoutExtension();
-                dlg.GetTagFromFileName(file_name, song);
+                CTagFromNameDlg::GetTagFromFileName(formular, file_name, song);
             }
             ShowInfo();
             m_modified = true;

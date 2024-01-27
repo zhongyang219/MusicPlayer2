@@ -27,6 +27,7 @@ using std::wstring;
 using std::vector;
 using std::deque;
 using std::map;
+using std::pair;
 
 //用于BASS音频库的支持
 #include"bass.h"

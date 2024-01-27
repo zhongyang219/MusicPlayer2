@@ -46,7 +46,7 @@ void CMenuEditCtrl::OnDrawBrowseButton(CDC* pDC, CRect rect, BOOL bIsButtonPress
     //使用双缓冲绘图
     CDrawDoubleBuffer drawDoubleBuffer(pDC, rect);
     CDrawCommon drawer;
-    drawer.Create(drawDoubleBuffer.GetMemDC(), this);
+    drawer.Create(drawDoubleBuffer.GetMemDC());
     CRect rc_draw{ rect };
     rc_draw.MoveToXY(0, 0);
     

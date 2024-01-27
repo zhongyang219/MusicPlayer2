@@ -381,6 +381,26 @@ void CPropertyAlbumCoverDlg::OnTabEntered()
     ShowInfo();
 }
 
+bool CPropertyAlbumCoverDlg::InitializeControls()
+{
+    wstring temp;
+    // IDC_LIST1
+    temp = theApp.m_str_table.LoadText(L"TXT_COVER_PROPERTY_BROWSE");
+    SetDlgItemTextW(IDC_BROWSE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_COVER_PROPERTY_DELETE");
+    SetDlgItemTextW(IDC_DELETE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_COVER_PROPERTY_SHOW_OUT_COVER");
+    SetDlgItemTextW(IDC_SHOW_OUT_ALBUM_COVER_CHK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_COVER_PROPERTY_DO_INNER_COVER");
+    SetDlgItemTextW(IDC_SAVE_ALBUM_COVER_BUTTON, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_BROWSE_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L2, IDC_DELETE_BUTTON, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CPropertyAlbumCoverDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
@@ -467,12 +487,6 @@ void CPropertyAlbumCoverDlg::OnPaint()
 
     rect.right = rect_list.left;
     rect.DeflateRect(theApp.DPI(16), theApp.DPI(16));
-
-    CRect rect_tmp;
-    ::GetWindowRect(GetDlgItem(IDC_SHOW_OUT_ALBUM_COVER_CHK)->GetSafeHwnd(), rect_tmp);
-    ScreenToClient(rect_tmp);
-    if (!rect_tmp.IsRectEmpty())
-        rect.bottom = rect_tmp.top - theApp.DPI(8);
 
     if (HasAlbumCover())        //有专辑封面时绘制专辑封面
     {

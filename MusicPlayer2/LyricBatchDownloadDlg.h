@@ -66,13 +66,13 @@ protected:
 	CWinThread* m_pThread{};		//下载歌词的线程
 
     virtual CString GetDialogName() const override;
-    
+    virtual bool InitializeControls() override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+
     void SaveConfig() const;
 	void LoadConfig();
 
 	void EnableControls(bool enable);		//启用或禁用控件
-
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
 public:

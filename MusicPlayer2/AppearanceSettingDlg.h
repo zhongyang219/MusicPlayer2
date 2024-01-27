@@ -85,6 +85,7 @@ protected:
     CBrowseEdit m_album_cover_name_edit;
     CBrowseEdit m_album_cover_path_edit;
 
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     void SetTransparency();
@@ -111,9 +112,6 @@ public:
     afx_msg void OnStnClickedColorStatic7();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnBnClickedFollowSystemColorCheck();
-    virtual void OnCancel();
-    virtual void OnOK();
-    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg void OnBnClickedShowAlbumCoverCheck();
     afx_msg void OnCbnSelchangeAlbumFitCombo();
     afx_msg void OnBnClickedAlbumCoverBackgroundCheck();

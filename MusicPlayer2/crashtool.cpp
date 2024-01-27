@@ -54,18 +54,18 @@ public:
         theApp.WriteLog(log_info);
 
         // 显示错误信息对话框
-        CMessageDlg dlg;
-        dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_CRASH_REPOART").c_str());
-        dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_CRASH_REPOART_ERROR_MESSAGE").c_str());
-
+        // 之后应改用独立的对话框，不依赖CMessageDlg
+        CMessageDlg dlg(L"CrashDlg");
+        dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_CRASH_REPOART"));
+        dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_CRASH_REPOART_ERROR_MESSAGE"));
         wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_CRASH_REPOART_CRASH_INFO", { m_dumpFile, theApp.GetSystemInfoString() });
-        dlg.SetMessageText(info.c_str());
+        dlg.SetMessageText(info);
 
-        //设置图标
-        HICON hIcon;
-        HRESULT hr = LoadIconWithScaleDown(NULL, IDI_ERROR, theApp.DPI(32), theApp.DPI(32), &hIcon);
-        if (SUCCEEDED(hr))
-            dlg.SetMessageIcon(hIcon);
+        //设置图标(此功能已从CMessageDlg移除)
+        // HICON hIcon;
+        // HRESULT hr = LoadIconWithScaleDown(NULL, IDI_ERROR, theApp.DPI(32), theApp.DPI(32), &hIcon);
+        // if (SUCCEEDED(hr))
+        //     dlg.SetMessageIcon(hIcon);
 
         dlg.DoModal();
     }

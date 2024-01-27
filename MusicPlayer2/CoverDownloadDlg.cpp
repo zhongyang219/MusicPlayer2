@@ -115,6 +115,57 @@ CString CCoverDownloadDlg::GetDialogName() const
     return _T("CoverDownloadDlg");
 }
 
+bool CCoverDownloadDlg::InitializeControls()
+{
+    SetIcon(theApp.m_icon_set.album_cover, FALSE);
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_COVER_DL");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_TITLE");
+    SetDlgItemTextW(IDC_TXT_COVER_DL_TITLE_STATIC, temp.c_str());
+    // IDC_TITLE_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SEARCH");
+    SetDlgItemTextW(IDC_SEARCH_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_ARTIST");
+    SetDlgItemTextW(IDC_TXT_COVER_DL_ARTIST_STATIC, temp.c_str());
+    // IDC_ARTIST_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_INFO");
+    SetDlgItemTextW(IDC_STATIC_INFO, temp.c_str());
+    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_UNLINK") + L"</a>";
+    SetDlgItemTextW(IDC_UNASSOCIATE_LINK, temp.c_str());
+    // IDC_COVER_DOWN_LIST
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_OPT");
+    SetDlgItemTextW(IDC_DOWNLOAD_OPTION_GROUPBOX, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_COVER_DL_LOCATION_SEL");
+    SetDlgItemTextW(IDC_COVER_LOCATION_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_COVER_DL_LOCATION_FOLDER_SONG");
+    SetDlgItemTextW(IDC_SAVE_TO_SONG_FOLDER2, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_COVER_DL_LOCATION_FOLDER_COVER");
+    SetDlgItemTextW(IDC_SAVE_TO_ALBUM_FOLDER2, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SEL_DL");
+    SetDlgItemTextW(IDC_DOWNLOAD_SELECTED, temp.c_str());
+
+    SetButtonIcon(IDC_SEARCH_BUTTON, theApp.m_icon_set.find_songs.GetIcon(true));
+    SetButtonIcon(IDC_DOWNLOAD_SELECTED, theApp.m_icon_set.download);
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_COVER_DL_TITLE_STATIC },
+        { CtrlTextInfo::C0, IDC_TITLE_EDIT },
+        { CtrlTextInfo::R1, IDC_SEARCH_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_TXT_COVER_DL_ARTIST_STATIC },
+        { CtrlTextInfo::C0, IDC_ARTIST_EDIT }
+        }, CtrlTextInfo::W64);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::C0, IDC_STATIC_INFO },
+        { CtrlTextInfo::R1, IDC_UNASSOCIATE_LINK }
+        }, CtrlTextInfo::W128);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDC_DOWNLOAD_SELECTED, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CCoverDownloadDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);
@@ -163,10 +214,6 @@ BOOL CCoverDownloadDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
     LoadConfig();
-
-    SetIcon(theApp.m_icon_set.album_cover, FALSE);
-    SetButtonIcon(IDC_SEARCH_BUTTON, theApp.m_icon_set.find_songs.GetIcon(true));
-    SetButtonIcon(IDC_DOWNLOAD_SELECTED, theApp.m_icon_set.download);
 
     m_song = GetSongInfo(); // 初始化复制Songinfo使用，防止随着播放GetSongInfo获取到另一首
     m_org_album_cover_path = CPlayer::GetInstance().GetAlbumCoverPath();

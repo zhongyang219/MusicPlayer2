@@ -7,7 +7,7 @@
 #include "IniHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "MessageDlg.h"
-#include "TagModeSelectDlg.h"
+#include "TagSelBaseDlg.h"
 #include "TagLibHelper.h"
 #include "Player.h"
 #include "CueFile.h"
@@ -201,26 +201,13 @@ void CTest::TestImageResize()
 void CTest::TestCrashDlg()
 {
     //显示错误信息对话框
-    CMessageDlg dlg;
-    dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_CRASH_REPOART").c_str());
-    dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_CRASH_REPOART_ERROR_MESSAGE").c_str());
-
-    wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_CRASH_REPOART_CRASH_INFO", { L"<dmp file path>", theApp.GetSystemInfoString() });
-    dlg.SetMessageText(info.c_str());
-
-    //设置图标
-    HICON hIcon;
-    HRESULT hr = LoadIconMetric(NULL, IDI_ERROR, LIM_LARGE, &hIcon);
-    if (SUCCEEDED(hr))
-        dlg.SetMessageIcon(hIcon);
-
-    dlg.DoModal();
+    // 待重写(做独立的crash对话框)
 }
 
 void CTest::TestTagParse()
 {
     SongInfo song;
-    CTagModeSelectDlg::GetTagFromFileName(FORMULAR_YEAR L"-" FORMULAR_ARTIST L"FFFF" FORMULAR_TITLE, L"666-744FFFF23", song);
+    CTagSelBaseDlg::GetTagFromFileName(CTagSelBaseDlg::FORMULAR_YEAR + L"-" + CTagSelBaseDlg::FORMULAR_ARTIST + L"FFFF" + CTagSelBaseDlg::FORMULAR_TITLE, L"666-744FFFF23", song);
 
     int a = 0;
 }

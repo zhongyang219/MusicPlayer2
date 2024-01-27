@@ -26,6 +26,22 @@ CString COptionsDlg::GetDialogName() const
     return _T("OptionsDlg");
 }
 
+bool COptionsDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_OPT");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_APPLY");
+    SetDlgItemTextW(IDC_APPLY_BUTTON, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R3, IDC_APPLY_BUTTON, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void COptionsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CBaseDialog::DoDataExchange(pDX);
