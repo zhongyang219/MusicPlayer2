@@ -2114,8 +2114,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     text = theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str();
     m_media_lib_button.SetWindowTextW(text);
     pDC->DrawTextW(text, &text_size, DT_CALCRECT);
-    if (m_medialib_btn_width < text_size.Width() + theApp.DPI(32))
-        m_medialib_btn_width = min(text_size.Width() + theApp.DPI(32), theApp.DPI(150));
+    if (m_medialib_btn_width < text_size.Width() + theApp.DPI(40))
+        m_medialib_btn_width = min(text_size.Width() + theApp.DPI(40), theApp.DPI(150));
     ReleaseDC(pDC);
 
     //初始化提示信息

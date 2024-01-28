@@ -249,7 +249,7 @@ bool CTagSelBaseDlg::InitializeControls()
         { CtrlTextInfo::C0, IDC_YEAR_BUTTON },
         { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_TAG_COMMENT_STATIC },
         { CtrlTextInfo::C0, IDC_COMMENT_BUTTON }
-        }, CtrlTextInfo::W64);
+        }, CtrlTextInfo::W96);
     RepositionTextBasedControls({
         { CtrlTextInfo::L1, IDC_TXT_PROPERTY_DLG_TAG_ARTIST_STATIC },
         { CtrlTextInfo::C0, IDC_ARTIST_BUTTON },
@@ -259,7 +259,7 @@ bool CTagSelBaseDlg::InitializeControls()
         { CtrlTextInfo::C0, IDC_GENRE_BUTTON },
         { CtrlTextInfo::L1, IDC_ORIGINAL_STATIC },
         { CtrlTextInfo::C0, IDC_ORIGINAL_BUTTON }
-        }, CtrlTextInfo::W64);
+        }, CtrlTextInfo::W96);
     RepositionTextBasedControls({
         { CtrlTextInfo::L3, IDC_TXT_TAG_SEL_CLICK_BTN_SEL_STATIC },
         { CtrlTextInfo::L2, IDC_INSERT_RADIO, CtrlTextInfo::W16 },

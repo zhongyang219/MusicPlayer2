@@ -187,7 +187,7 @@ bool CFloatPlaylistDlg::InitializeControls()
     // 媒体库按钮宽度
     text = theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str();
     m_media_lib_button.SetWindowTextW(text);
-    int media_lib_width = (std::min)(GetTextExtent(text).Width() + theApp.DPI(32), theApp.DPI(150));
+    int media_lib_width = (std::min)(GetTextExtent(text).Width() + theApp.DPI(40), theApp.DPI(150));
     m_medialib_btn_width = (std::max)(m_medialib_btn_width, media_lib_width);
 
     return true;
