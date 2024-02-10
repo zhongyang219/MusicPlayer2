@@ -1777,7 +1777,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
         if (menu_list.size() >= ADD_TO_PLAYLIST_MAX_SIZE)
             break;
         UINT id = ID_ADD_TO_MY_FAVOURITE + 1 + menu_list.size();
-        menu_list.emplace_back(MenuMgr::MenuItem{ id, NULL, CFilePathHelper(item.path).GetFileNameWithoutExtension().c_str() });
+        menu_list.emplace_back(MenuMgr::MenuItem{ id, NULL, CFilePathHelper(item.path).GetFileNameWithoutExtension() });
     }
     theApp.m_menu_mgr.UpdateMenu(MenuMgr::AddToPlaylistMenu, menu_list);
 }
@@ -1799,7 +1799,7 @@ void CMusicPlayerDlg::InitUiMenu()
         if (i == 2)
             menu_list.emplace_back(MenuMgr::MenuItem{});    // 在外部UI前插入一个分割条
         UINT id = ID_SWITCH_UI + i + 1;
-        menu_list.emplace_back(MenuMgr::MenuItem{ id, NULL, str_name.c_str() });
+        menu_list.emplace_back(MenuMgr::MenuItem{ id, NULL, str_name });
     }
     theApp.m_menu_mgr.UpdateMenu(MenuMgr::MainViewSwitchUiMenu, menu_list);
 }
