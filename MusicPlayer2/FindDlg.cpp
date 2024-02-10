@@ -11,6 +11,7 @@
 #include "AddToPlaylistDlg.h"
 #include "SongDataManager.h"
 #include "COSUPlayerHelper.h"
+#include "IniHelper.h"
 
 
 // CFindDlg 对话框

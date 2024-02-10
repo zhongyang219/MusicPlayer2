@@ -13,6 +13,8 @@
 #include "FileNameFormDlg.h"
 #include "FlacEncodeCfgDlg.h"
 #include "FilterHelper.h"
+#include "WinVersionHelper.h"
+#include "IniHelper.h"
 
 #define MAX_ALBUM_COVER_SIZE (128 * 1024)                           //编码器支持的最大专辑封面大小
 #define CONVERT_TEMP_ALBUM_COVER_NAME L"cover_R1hdyFy6CoEK7Gu8"     //临时的专辑封面文件名

@@ -9,6 +9,7 @@
 #include "SongInfoHelper.h"
 #include "SongDataManager.h"
 #include "FilterHelper.h"
+#include "IniHelper.h"
 
 
 // CLyricDownloadDlg 对话框

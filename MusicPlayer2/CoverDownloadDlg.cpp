@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "CoverDownloadDlg.h"
 #include "SongDataManager.h"
+#include "IniHelper.h"
 
 
 // CCoverDownloadDlg 对话框

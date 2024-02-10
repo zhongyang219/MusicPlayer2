@@ -2,6 +2,7 @@
 #include "PlaylistMgr.h"
 #include "MusicPlayer2.h"
 #include "Playlist.h"
+#include "FilePathHelper.h"
 
 CPlaylistMgr CPlaylistMgr::m_instance;
 

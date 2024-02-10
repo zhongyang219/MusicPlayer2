@@ -5,9 +5,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "MusicPlayerDlg.h"
-#include "afxdialogex.h"
-#include "afxwin.h"
-#include "afxcmn.h"
 #include "SupportedFormatDlg.h"
 #include "AboutDlg.h"
 #include "CTest.h"
@@ -31,6 +28,7 @@
 #include "SongInfoHelper.h"
 #include "FilterHelper.h"
 #include "CommonDialogMgr.h"
+#include "WinVersionHelper.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -491,7 +489,7 @@ void CMusicPlayerDlg::SaveConfig()
 
     //保存热键设置
     ini.WriteBool(L"hot_key", L"hot_key_enable", theApp.m_hot_key_setting_data.hot_key_enable);
-    theApp.m_hot_key.SaveToTni(ini);
+    m_hot_key.SaveToTni(ini);
 
     //保存桌面歌词预设
     m_desktop_lyric.SaveDefaultStyle(ini);
@@ -704,7 +702,7 @@ void CMusicPlayerDlg::LoadConfig()
 
     //载入热键设置
     theApp.m_hot_key_setting_data.hot_key_enable = ini.GetBool(L"hot_key", L"hot_key_enable", true);
-    theApp.m_hot_key.LoadFromIni(ini);
+    m_hot_key.LoadFromIni(ini);
 
     //载入桌面歌词预设方案
     m_desktop_lyric.LoadDefaultStyle(ini);
@@ -1169,7 +1167,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
     theApp.m_general_setting_data = optionDlg.m_tab3_dlg.m_data;
     theApp.m_play_setting_data = optionDlg.m_tab4_dlg.m_data;
-    theApp.m_hot_key.FromHotkeyGroup(optionDlg.m_tab5_dlg.m_hotkey_group);
+    m_hot_key.FromHotkeyGroup(optionDlg.m_tab5_dlg.m_hotkey_group);
     theApp.m_hot_key_setting_data = optionDlg.m_tab5_dlg.m_data;
     theApp.m_media_lib_setting_data = optionDlg.m_media_lib_dlg.m_data;
 
@@ -1818,7 +1816,7 @@ void CMusicPlayerDlg::SetPlaylistDragEnable()
 
 void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
 {
-    theApp.m_hot_key.UnRegisterAllHotKey();
+    m_hot_key.UnRegisterAllHotKey();
     try
     {
         // 设置窗口类的内存申请从栈移动到堆以修正警告
@@ -1834,7 +1832,7 @@ void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
         pOptionDlg->m_tab2_dlg.m_data = theApp.m_app_setting_data;
         pOptionDlg->m_tab3_dlg.m_data = theApp.m_general_setting_data;
         pOptionDlg->m_tab4_dlg.m_data = theApp.m_play_setting_data;
-        pOptionDlg->m_tab5_dlg.m_hotkey_group = theApp.m_hot_key.GetHotKeyGroup();
+        pOptionDlg->m_tab5_dlg.m_hotkey_group = m_hot_key.GetHotKeyGroup();
         pOptionDlg->m_tab5_dlg.m_data = theApp.m_hot_key_setting_data;
         pOptionDlg->m_media_lib_dlg.m_data = theApp.m_media_lib_setting_data;
 
@@ -1866,7 +1864,7 @@ void CMusicPlayerDlg::_OnOptionSettings(CWnd* pParent)
         // 这里暂时不处理了，只是保险起见
     }
     if (theApp.m_hot_key_setting_data.hot_key_enable)
-        theApp.m_hot_key.RegisterAllHotKey();
+        m_hot_key.RegisterAllHotKey();
 }
 
 void CMusicPlayerDlg::DoLyricsAutoSave(bool no_inquiry)
@@ -2125,7 +2123,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     //注册全局热键
     if (theApp.m_hot_key_setting_data.hot_key_enable)
-        theApp.m_hot_key.RegisterAllHotKey();
+        m_hot_key.RegisterAllHotKey();
 
     //设置界面的颜色
     CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
@@ -2882,7 +2880,7 @@ void CMusicPlayerDlg::OnDestroy()
     m_findDlg.SaveConfig();
     theApp.SaveConfig();
     //解除全局热键
-    theApp.m_hot_key.UnRegisterAllHotKey();
+    m_hot_key.UnRegisterAllHotKey();
 
     //取消注册接收音频设备变化通知回调的IMMNotificationClient接口
     devicesManager->ReleaseDeviceEnumerator();

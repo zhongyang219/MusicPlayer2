@@ -9,6 +9,7 @@
 #include "CleanupRangeDlg.h"
 #include "SongDataManager.h"
 #include "COSUPlayerHelper.h"
+#include "FilePathHelper.h"
 
 
 // CMediaLibSettingDlg 对话框

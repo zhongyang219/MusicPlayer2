@@ -1,5 +1,7 @@
 ﻿#include "stdafx.h"
 #include "AudioTagOld.h"
+#include "FilePathHelper.h"
+#include "Common.h"
 
 const string jpg_head{ '\xff', '\xd8', '\xff' };
 const string jpg_tail{ '\xff', '\xd9' };

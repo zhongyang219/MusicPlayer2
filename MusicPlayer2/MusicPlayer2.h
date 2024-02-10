@@ -8,14 +8,8 @@
 #error "在包含此文件之前包含“stdafx.h”以生成 PCH 文件"
 #endif
 
-#include "resource.h"		// 主符号
-#include "AudioCommon.h"
-#include "ColorConvert.h"
-#include "DrawCommon.h"
-#include "WinVersionHelper.h"
-#include "CHotkeyManager.h"
+#include "resource.h"       // 主符号
 #include "CommonData.h"
-#include "MediaLibHelper.h"
 #include "AcceleratorRes.h"
 #include "LastFM.h"
 #include "StrTable.h"
@@ -50,11 +44,6 @@ public:
 
     vector<CRect> m_screen_rects;                   // 屏幕的范围
 
-    //CMediaClassifier m_artist_classifer{ CMediaClassifier::CT_ARTIST, true };     //将所有歌曲信息按艺术家分类
-    //CMediaClassifier m_album_classifer{ CMediaClassifier::CT_ALBUM, true };       //将所有歌曲信息按唱片集分类
-    //CMediaClassifier m_genre_classifer{ CMediaClassifier::CT_GENRE, true };       //将所有歌曲信息按流派分类
-    //CMediaClassifier m_year_classifer{ CMediaClassifier::CT_YEAR, true };       //将所有歌曲信息按年份分类
-
     LyricSettingData m_lyric_setting_data;			//“选项设置”对话框中“歌词设置”中的数据
     ApperanceSettingData m_app_setting_data;		//“选项设置”对话框中“外观设置”中的数据
     GeneralSettingData m_general_setting_data;		//“选项设置”对话框中“常规设置”中的数据
@@ -62,7 +51,6 @@ public:
     NonCategorizedSettingData m_nc_setting_data;	//未分类的设置数据
     GlobalHotKeySettingData m_hot_key_setting_data;	//“全局快捷键”设置
     MediaLibSettingData m_media_lib_setting_data;  	//“媒体库”设置
-    CHotkeyManager m_hot_key;
     CAcceleratorRes m_accelerator_res;
 
     StrTable m_str_table;   // 实际上负责language manger

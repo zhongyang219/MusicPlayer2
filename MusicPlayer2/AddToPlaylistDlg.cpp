@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "AddToPlaylistDlg.h"
 #include "PlaylistMgr.h"
+#include "FilePathHelper.h"
 
 
 // CAddToPlaylistDlg 对话框

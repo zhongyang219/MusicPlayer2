@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "TabDlg.h"
 #include "MusicPlayer2.h"
+#include "WinVersionHelper.h"
 
 IMPLEMENT_DYNAMIC(CTabDlg, CBaseDialog)
 

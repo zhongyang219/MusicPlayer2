@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "SongDataManager.h"
 #include "MusicPlayer2.h"
+#include "FilePathHelper.h"
 
 CSongDataManager CSongDataManager::m_instance;
 

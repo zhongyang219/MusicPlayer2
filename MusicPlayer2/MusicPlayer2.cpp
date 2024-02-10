@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "WinVersionHelper.h"
 #include "MusicPlayerDlg.h"
 #include "MessageDlg.h"
 #include "crashtool.h"

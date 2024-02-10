@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "TagSelBaseDlg.h"
+#include "FilePathHelper.h"
+#include "IniHelper.h"
 
 
 // CTagSelBaseDlg 对话框

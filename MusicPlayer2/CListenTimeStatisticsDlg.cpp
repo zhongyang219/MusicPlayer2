@@ -6,6 +6,7 @@
 #include "CListenTimeStatisticsDlg.h"
 #include "SongDataManager.h"
 #include "FilterHelper.h"
+#include "AudioCommon.h"
 
 
 // CListenTimeStatisticsDlg 对话框

@@ -3,6 +3,7 @@
 #include "AudioCommon.h"
 #include "MusicPlayer2.h"
 #include "AudioTag.h"
+#include "FilePathHelper.h"
 
 
 CMciCore::CMciCore()

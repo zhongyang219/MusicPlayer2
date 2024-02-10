@@ -2,6 +2,7 @@
 #include "MediaLibHelper.h"
 #include "MusicPlayer2.h"
 #include "SongDataManager.h"
+#include "FilePathHelper.h"
 
 CMediaClassifier::CMediaClassifier(ClassificationType type, bool hide_only_one_classification)
     : m_type(type), m_hide_only_one_classification(hide_only_one_classification)

@@ -3,9 +3,6 @@
 //
 
 #pragma once
-#include "afxwin.h"
-#include "afxcmn.h"
-//#include"Player.h"
 #include"PlayListCtrl.h"
 #include"FindDlg.h"
 #include"OptionsDlg.h"
@@ -15,7 +12,6 @@
 #include"LyricEditDlg.h"
 #include "LyricDownloadDlg.h"
 #include "LyricBatchDownloadDlg.h"
-//#include "EqualizerDlg.h"
 #include "SoundEffectDlg.h"
 #include "CortanaLyric.h"
 #include "FilePathHelper.h"
@@ -34,6 +30,7 @@
 #include "MenuEditCtrl.h"
 #include "HorizontalSplitter.h"
 #include "powrprof.h"
+#include "CHotkeyManager.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -86,6 +83,7 @@ protected:
     THUMBBUTTON m_thumbButton[3]{};
 #endif
 
+    CHotkeyManager m_hot_key;
     CFindDlg m_findDlg;		//查找对话框
     HACCEL m_hAccel{};
 

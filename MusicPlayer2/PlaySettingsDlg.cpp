@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "PlaySettingsDlg.h"
 #include "FfmpegCore.h"
+#include "WinVersionHelper.h"
 
 
 // CPlaySettingsDlg 对话框

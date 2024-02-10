@@ -1,9 +1,5 @@
 ﻿//此类用于定义音频信息相关的全局函数
 #pragma once
-#include "Time.h"
-#include "Common.h"
-#include "FilePathHelper.h"
-#include "Resource.h"
 #include "SongInfo.h"
 #include "IPlayerCore.h"
 

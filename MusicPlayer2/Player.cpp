@@ -11,6 +11,7 @@
 #include "SongInfoHelper.h"
 #include "RecentFolderAndPlaylist.h"
 #include <random>
+#include "IniHelper.h"
 
 CPlayer CPlayer::m_instance;
 

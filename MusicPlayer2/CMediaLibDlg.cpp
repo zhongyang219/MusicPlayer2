@@ -4,8 +4,8 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "CMediaLibDlg.h"
-#include "afxdialogex.h"
 #include "MediaLibStatisticsDlg.h"
+#include "IniHelper.h"
 
 // CMediaLibDlg 对话框
 

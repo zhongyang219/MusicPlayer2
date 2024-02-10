@@ -2,6 +2,7 @@
 #include "COSUPlayerHelper.h"
 #include "FilePathHelper.h"
 #include "AudioCommon.h"
+#include "Common.h"
 
 
 COSUPlayerHelper::COSUPlayerHelper()

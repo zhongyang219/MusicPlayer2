@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "SongDataManager.h"
 #include "COSUPlayerHelper.h"
+#include "IniHelper.h"
 
 
 // CLyricBatchDownloadDlg 对话框

@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include "afxcmn.h"
-#include "afxwin.h"
 #include "Common.h"
 #include "DrawCommon.h"
 #include "ColorStatic.h"

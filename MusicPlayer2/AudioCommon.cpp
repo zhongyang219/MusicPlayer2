@@ -7,6 +7,7 @@
 #include "SongInfoHelper.h"
 #include "Lyric.h"
 #include "AudioTag.h"
+#include "FilePathHelper.h"
 
 
 void SupportedFormat::CreateExtensionsList()

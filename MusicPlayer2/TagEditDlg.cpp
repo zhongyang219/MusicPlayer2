@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "TagEditDlg.h"
+#include "AudioCommon.h"
 
 
 // CTagEditDlg 对话框

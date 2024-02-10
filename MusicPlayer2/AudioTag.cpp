@@ -3,6 +3,7 @@
 #include "TagLibHelper.h"
 #include "AudioTagOld.h"
 #include "CueFile.h"
+#include "FilePathHelper.h"
 
 CAudioTag::CAudioTag(SongInfo& song_info, HSTREAM hStream)
     :m_song_info{ song_info }, m_hStream{ hStream }

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "CHotKeySettingDlg.h"
+#include "WinVersionHelper.h"
 
 
 // CHotKeySettingDlg 对话框

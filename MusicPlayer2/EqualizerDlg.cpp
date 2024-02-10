@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "Player.h"
 #include "EqualizerDlg.h"
+#include "IniHelper.h"
 
 
 // CEqualizerDlg 对话框

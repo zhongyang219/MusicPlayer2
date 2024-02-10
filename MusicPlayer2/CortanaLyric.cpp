@@ -4,6 +4,7 @@
 #include "CPlayerUIBase.h"
 #include "CPlayerUIHelper.h"
 #include "Player.h"
+#include "WinVersionHelper.h"
 
 CCriticalSection CCortanaLyric::m_critical;
 

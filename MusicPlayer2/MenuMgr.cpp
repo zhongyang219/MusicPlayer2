@@ -2,6 +2,7 @@
 #include "MusicPlayer2.h"
 #include "MenuMgr.h"
 #include "WIC.h"
+#include "WinVersionHelper.h"
 
 
 MenuMgr::MenuBase::MenuBase(MenuMgr* pMenuMgr, MenuMgr::MenuType menu_type)

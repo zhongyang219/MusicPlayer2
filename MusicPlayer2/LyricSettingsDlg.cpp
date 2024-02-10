@@ -6,6 +6,7 @@
 #include "LyricSettingsDlg.h"
 #include "CortanaLyric.h"
 #include "MusicPlayerDlg.h"
+#include "WinVersionHelper.h"
 
 // CLyricSettingsDlg 对话框
 
