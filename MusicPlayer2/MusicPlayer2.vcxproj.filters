@@ -393,6 +393,9 @@
     <Filter Include="对话框类\TagFromNameDlg">
       <UniqueIdentifier>{5ce11d43-a74b-4aed-8ba7-26aa37b9e090}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\MenuMgr">
+      <UniqueIdentifier>{737b0ae8-ac0c-4bf1-b335-f027bf625e43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -877,6 +880,9 @@
     <ClInclude Include="FileNameFormDlg.h">
       <Filter>对话框类\FileNameFormDlg</Filter>
     </ClInclude>
+    <ClInclude Include="MenuMgr.h">
+      <Filter>功能逻辑类\MenuMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1331,6 +1337,9 @@
     </ClCompile>
     <ClCompile Include="FileNameFormDlg.cpp">
       <Filter>对话框类\FileNameFormDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuMgr.cpp">
+      <Filter>功能逻辑类\MenuMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

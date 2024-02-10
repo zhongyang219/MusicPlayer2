@@ -598,7 +598,7 @@ void CSelectPlaylistDlg::OnNMRClickList1(NMHDR* pNMHDR, LRESULT* pResult)
     m_selected_string = m_playlist_ctrl.GetItemText(pNMItemActivate->iItem, pNMItemActivate->iSubItem);
 
     //弹出右键菜单
-    CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_playlist_menu.GetSubMenu(0);
+    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistMenu);
     m_playlist_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;
@@ -712,7 +712,7 @@ void CSelectPlaylistDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
     if (!m_right_selected_items.empty())
     {
         //弹出右键菜单
-        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {

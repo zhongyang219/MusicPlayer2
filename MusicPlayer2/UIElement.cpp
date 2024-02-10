@@ -1027,9 +1027,9 @@ bool UiElement::Playlist::RButtunUp(CPoint point)
         mouse_pressed = false;
         CMenu* menu{};
         if (item_selected >= 0 && !scrollbar_rect.PtInRect(point))
-            menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+            menu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
         else
-            menu = &theApp.m_menu_set.m_playlist_toolbar_popup_menu;
+            menu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu);
         if (menu != nullptr)
         {
             CPoint cursor_pos;

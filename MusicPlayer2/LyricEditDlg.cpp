@@ -4,8 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "LyricEditDlg.h"
-#include "afxdialogex.h"
-#include "WIC.h"
 #include "FilterHelper.h"
 #include "COSUPlayerHelper.h"
 
@@ -352,43 +350,8 @@ BOOL CLyricEditDlg::OnInitDialog()
 
     SetLyricPathEditText();
 
-    ////获取初始时窗口的大小
-    //CRect rect;
-    //GetWindowRect(rect);
-    //m_min_size.cx = rect.Width();
-    //m_min_size.cy = rect.Height();
-
-    //为菜单添加图标
-    CMenu* pMenu = GetMenu();
-    if (pMenu != nullptr)
-    {
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_OPEN, FALSE, theApp.m_icon_set.music);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_SAVE, FALSE, theApp.m_icon_set.save_new);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_SAVE_AS, FALSE, theApp.m_icon_set.save_as);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), IDCANCEL, FALSE, theApp.m_icon_set.exit);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_INSERT_TAG, FALSE, theApp.m_icon_set.exit);
-
-        HICON icon_add_tag = CDrawCommon::LoadIconResource(IDI_ADD_TAG, theApp.DPI(16), theApp.DPI(16));
-        HICON icon_replace_tag = CDrawCommon::LoadIconResource(IDI_REPLACE_TAG, theApp.DPI(16), theApp.DPI(16));
-        HICON icon_delete_tag = CDrawCommon::LoadIconResource(IDI_DELETE_TAG, theApp.DPI(16), theApp.DPI(16));
-        HICON icon_find = CDrawCommon::LoadIconResource(IDI_FIND, theApp.DPI(16), theApp.DPI(16));
-        HICON icon_replace = CDrawCommon::LoadIconResource(IDI_REPLACE, theApp.DPI(16), theApp.DPI(16));
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_INSERT_TAG, FALSE, icon_add_tag);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_REPLACE_TAG, FALSE, icon_replace_tag);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_DELETE_TAG, FALSE, icon_delete_tag);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_FIND, FALSE, icon_find);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_LYRIC_REPLACE, FALSE, icon_replace);
-        DestroyIcon(icon_add_tag);
-        DestroyIcon(icon_replace_tag);
-        DestroyIcon(icon_delete_tag);
-        DestroyIcon(icon_find);
-        DestroyIcon(icon_replace);
-
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_PLAY_PAUSE, FALSE, theApp.m_icon_set.play_pause);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_REW, FALSE, theApp.m_icon_set.rew_new);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_FF, FALSE, theApp.m_icon_set.ff_new);
-        CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_SEEK_TO_CUR_LINE, FALSE, theApp.m_icon_set.locate.GetIcon(true));
-    }
+    // 设置窗口菜单 (窗口销毁前记得先分离菜单句柄)
+    ::SetMenu(m_hWnd, theApp.m_menu_mgr.GetSafeHmenu(MenuMgr::LeMenu));
 
     //初始化工具栏
     if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE/* | CBRS_TOP*/ | CBRS_ALIGN_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_TOP
@@ -493,7 +456,10 @@ void CLyricEditDlg::OnCancel()
 void CLyricEditDlg::OnDestroy()
 {
     // TODO: 在此处添加消息处理程序代码
+    ::SetMenu(m_hWnd, NULL);    // 菜单对象/句柄由MenuMgr管理，这里分离菜单以免句柄被销毁
+
     CBaseDialog::OnDestroy();
+
     m_dlg_exist = false;
     if (m_current_edit_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && m_lyric_saved)       // 关闭歌词编辑窗口时如果正在播放的歌曲没有变，且执行过保存操作，就重新初始化歌词
     {

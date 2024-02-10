@@ -4,9 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "LyricDownloadDlg.h"
-#include "afxdialogex.h"
 #include "MessageDlg.h"
-#include "WIC.h"
 #include "SongInfoHelper.h"
 #include "SongDataManager.h"
 #include "FilterHelper.h"
@@ -305,13 +303,6 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 		m_save_to_song_folder = true;
 	}
 
-	//初始化右键菜单
-	m_menu.LoadMenu(IDR_LYRIC_DOWNLOAD_MENU);
-	m_menu.GetSubMenu(0)->SetDefaultItem(ID_LD_LYRIC_DOWNLOAD);
-    CMenuIcon::AddIconToMenuItem(m_menu.GetSafeHmenu(), ID_LD_LYRIC_DOWNLOAD, FALSE, theApp.m_icon_set.download);
-    CMenuIcon::AddIconToMenuItem(m_menu.GetSafeHmenu(), ID_LD_LYRIC_SAVEAS, FALSE, theApp.m_icon_set.save_as);
-    CMenuIcon::AddIconToMenuItem(m_menu.GetSafeHmenu(), ID_LD_VIEW_ONLINE, FALSE, theApp.m_icon_set.online);
-
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -381,7 +372,7 @@ void CLyricDownloadDlg::OnNMRClickLyricDownList1(NMHDR *pNMHDR, LRESULT *pResult
 	if (IsItemSelectedValid())
 	{
 		//弹出右键菜单
-		CMenu* pContextMenu = m_menu.GetSubMenu(0);	//获取第一个弹出菜单
+        CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LdListMenu);
         m_down_list_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
     }
 

@@ -202,7 +202,7 @@ BEGIN_MESSAGE_MAP(CFindDlg, CBaseDialog)
     ON_COMMAND(ID_EXPLORE_ONLINE, &CFindDlg::OnExploreOnline)
     ON_COMMAND(ID_FORMAT_CONVERT, &CFindDlg::OnFormatConvert)
     ON_COMMAND(ID_ITEM_PROPERTY, &CFindDlg::OnItemProperty)
-    ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CFindDlg::OnAddToNewPalylistAndPlay)
+    ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY, &CFindDlg::OnAddToNewPlaylistAndPlay)
     ON_WM_INITMENU()
     ON_COMMAND(ID_DELETE_FROM_DISK, &CFindDlg::OnDeleteFromDisk)
     ON_COMMAND(ID_PLAY_AS_NEXT, &CFindDlg::OnPlayAsNext)
@@ -374,11 +374,6 @@ BOOL CFindDlg::OnInitDialog()
     //设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
     m_find_result_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
-    //初始化右键菜单
-    //if (m_menu.m_hMenu == NULL)
-    //  m_menu.LoadMenu(IDR_FIND_POPUP_MENU);
-    //m_menu.GetSubMenu(0)->SetDefaultItem(ID_FD_PLAY);
-
     GetDlgItem(IDOK)->EnableWindow(FALSE);  //禁用“播放选中曲目”按钮，除非选中了一个项目
 
     return FALSE;  // return TRUE unless you set the focus to a control
@@ -520,7 +515,7 @@ void CFindDlg::OnNMRClickFindList(NMHDR* pNMHDR, LRESULT* pResult)
         sub_item = pNMItemActivate->iSubItem;
         m_selected_string = m_find_result_list.GetItemText(m_item_selected, sub_item);
         //弹出右键菜单
-        CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+        CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu);
         m_find_result_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
     }
 
@@ -626,7 +621,7 @@ void CFindDlg::OnOK()
 }
 
 
-void CFindDlg::OnAddToNewPalylistAndPlay()
+void CFindDlg::OnAddToNewPlaylistAndPlay()
 {
     // TODO: 在此添加命令处理程序代码
     wstring playlist_path;
@@ -655,7 +650,6 @@ void CFindDlg::OnInitMenu(CMenu* pMenu)
     bool can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
         std::find_if(songs.begin(), songs.end(), [&](const SongInfo& song_info) { return song_info.is_cue || COSUPlayerHelper::IsOsuFile(song_info.file_path); }) != songs.end();
 
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);
     pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (select_all_in_playing_list ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
 }

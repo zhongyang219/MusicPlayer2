@@ -58,7 +58,7 @@ BOOL CTestDlg::OnInitDialog()
     m_toolbar.AddToolButton(theApp.m_icon_set.media_lib, _T("添加"), _T("打开文件"), ID_MEDIA_LIB, false);
     m_toolbar.AddToolButton(theApp.m_icon_set.setting, _T("添加"), _T("测试文本"), (UINT)0, true);
     m_toolbar.AddToolButton(theApp.m_icon_set.eq, _T("删除"), _T("测试文本1"), (UINT)0, true);
-    m_toolbar.AddToolButton(theApp.m_icon_set.menu, _T("菜单"), _T("显示菜单"), theApp.m_menu_set.m_main_menu.GetSubMenu(0), true);
+    m_toolbar.AddToolButton(theApp.m_icon_set.menu, _T("菜单"), _T("显示菜单"), theApp.m_menu_mgr.GetMenu(MenuMgr::MainFileMenu), true);
     m_toolbar.AddToolButton(theApp.m_icon_set.edit, nullptr, _T("显示菜单"), nullptr, true);
 
     //进度条

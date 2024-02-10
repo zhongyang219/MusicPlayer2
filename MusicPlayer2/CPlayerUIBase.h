@@ -109,7 +109,7 @@ public:
     bool PointInMenubarArea(CPoint point) const;
 
     //获取界面的名称
-    virtual CString GetUIName() { return CString(); }
+    virtual wstring GetUIName() { return wstring(); }
 
     enum class UiSize
     {

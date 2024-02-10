@@ -690,7 +690,7 @@ void CLyricSettingsDlg::OnBnClickedDefaultStyle()
         pBtn->GetWindowRect(rect);
         point.x = rect.left;
         point.y = rect.bottom;
-        CMenu* pMenu = theApp.m_menu_set.m_lyric_default_style.GetSubMenu(1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::OptDlrcDefStyleMenu);
         if (pMenu != NULL)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
     }

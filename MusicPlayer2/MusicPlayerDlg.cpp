@@ -20,7 +20,6 @@
 #include "COSUPlayerHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "AddToPlaylistDlg.h"
-#include "WIC.h"
 #include "LyricRelateDlg.h"
 #include "SongDataManager.h"
 #include "RenameDlg.h"
@@ -852,9 +851,9 @@ void CMusicPlayerDlg::SetAlwaysOnTop()
 
 bool CMusicPlayerDlg::IsMainWindowPopupMenu() const
 {
-    return (m_pCurMenu == theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)
-        || m_pCurMenu == theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(2)
-        || m_pCurMenu == theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0));
+    return (m_pCurMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)
+        || m_pCurMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu)
+        || m_pCurMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::MiniAreaMenu));
 }
 
 int CMusicPlayerDlg::CalculatePlaylistWidth(int client_width)
@@ -898,12 +897,12 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
     }
     else
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_FOLDER");
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(5), true);
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarFolderMenu), true);
     }
 
     if (m_miniModeDlg.m_hWnd != NULL)
@@ -987,7 +986,7 @@ void CMusicPlayerDlg::SetMenubarVisible()
 {
     if (theApp.m_ui_data.ShowWindowMenuBar() && theApp.m_app_setting_data.show_window_frame && !theApp.m_ui_data.full_screen)
     {
-        SetMenu(&theApp.m_menu_set.m_main_menu);
+        SetMenu(theApp.m_menu_mgr.GetMenu(MenuMgr::MainMenu));
     }
     else
     {
@@ -1582,9 +1581,6 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     else
         pMenu->CheckMenuRadioItem(ID_DOCKED_PLAYLIST, ID_FLOATED_PLAYLIST, ID_DOCKED_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
 
-    //设置播放列表右键菜单的默认菜单项
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);
-
     //根据歌词是否存在设置启用或禁用菜单项
     bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
     bool lyric_disable{ midi_lyric || CPlayer::GetInstance().m_Lyrics.IsEmpty() };
@@ -1775,79 +1771,38 @@ void CMusicPlayerDlg::GetPlaylistItemSelected()
 
 void CMusicPlayerDlg::IniPlaylistPopupMenu()
 {
-    //向“添加到播放列表”菜单追加播放列表
-    auto initAddToMenu = [](CMenu* pMenu)
+    //向“添加到播放列表”菜单更新播放列表
+    vector<MenuMgr::MenuItem> menu_list;
+    const auto& recent_playlist = CPlaylistMgr::Instance().m_recent_playlists;
+    for (const auto& item : recent_playlist)
     {
-        ASSERT(pMenu != nullptr);
-        if (pMenu != nullptr)
-        {
-            //将ID_ADD_TO_MY_FAVOURITE后面的所有菜单项删除
-            int start_pos = CCommon::GetMenuItemPosition(pMenu, ID_ADD_TO_MY_FAVOURITE) + 1;
-            while (pMenu->GetMenuItemCount() > start_pos)
-            {
-                pMenu->DeleteMenu(start_pos, MF_BYPOSITION);
-            }
-
-            auto& recent_playlist{ CPlaylistMgr::Instance().m_recent_playlists };
-            for (size_t i{}; i < recent_playlist.size() && i < ADD_TO_PLAYLIST_MAX_SIZE; i++)
-            {
-                CFilePathHelper playlist_path{ recent_playlist[i].path };
-                pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_MY_FAVOURITE + i + 1, playlist_path.GetFileNameWithoutExtension().c_str());
-            }
-            //if (recent_playlist.size() > ADD_TO_PLAYLIST_MAX_SIZE)
-            //{
-            pMenu->AppendMenu(MF_SEPARATOR);
-            pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_ADD_TO_OTHER_PLAYLIST, theApp.m_str_table.LoadMenuText(L"TXT_PLAYLIST_MORE").c_str());
-            CMenuIcon::AddIconToMenuItem(pMenu->GetSafeHmenu(), ID_ADD_TO_OTHER_PLAYLIST, FALSE, theApp.m_icon_set.show_playlist.GetIcon(true));
-            //}
-        }
-    };
-
-    initAddToMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0)->GetSubMenu(12));
-    initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4)->GetSubMenu(0));
-    initAddToMenu(theApp.m_menu_set.m_playlist_toolbar_popup_menu.GetSubMenu(4)->GetSubMenu(0));
-    initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0)->GetSubMenu(1));
-    initAddToMenu(theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1)->GetSubMenu(4));
-    initAddToMenu(theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(2));
-    initAddToMenu(theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0)->GetSubMenu(2));
+        if (menu_list.size() >= ADD_TO_PLAYLIST_MAX_SIZE)
+            break;
+        UINT id = ID_ADD_TO_MY_FAVOURITE + 1 + menu_list.size();
+        menu_list.emplace_back(MenuMgr::MenuItem{ id, NULL, CFilePathHelper(item.path).GetFileNameWithoutExtension().c_str() });
+    }
+    theApp.m_menu_mgr.UpdateMenu(MenuMgr::AddToPlaylistMenu, menu_list);
 }
 
 void CMusicPlayerDlg::InitUiMenu()
 {
-    auto initUiMenu = [this](CMenu* pMenu)
+    vector<MenuMgr::MenuItem> menu_list;
+    for (size_t i{}; i < m_ui_list.size(); ++i)
     {
-        ASSERT(pMenu != nullptr);
-        if (pMenu != nullptr)
-        {
-            //将ID_SWITCH_UI后面的所有菜单项删除
-            int start_pos = CCommon::GetMenuItemPosition(pMenu, ID_SWITCH_UI) + 1;
-            while (pMenu->GetMenuItemCount() > start_pos)
-            {
-                pMenu->DeleteMenu(start_pos, MF_BYPOSITION);
-            }
-
-            pMenu->AppendMenu(MF_SEPARATOR);
-
-            for (size_t i{}; i < m_ui_list.size() && i < SELECT_UI_MAX_SIZE; i++)
-            {
-                wstring str_name = m_ui_list[i]->GetUIName().GetString();   //获取界面的名称
-                if (str_name.empty())   // 如果名称为空（没有指定名称），则使用“界面 +数字”的默认名称
-                    str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_DEFAULT", { m_ui_list[i]->GetUiIndex() });
-                if (i < 9)              // 如果界面的序号在9以内，为其分配Ctrl+数字的快捷键
-                    str_name += L"\tCtrl+" + std::to_wstring(i + 1);
-                if (i == 9)             // 第10个界面分配快捷键C+0
-                    str_name += L"\tCtrl+0";
-                if (i == 2)
-                    pMenu->AppendMenu(MF_SEPARATOR);
-                pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_SWITCH_UI + i + 1, str_name.c_str());
-            }
-        }
-    };
-
-    initUiMenu(theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(11));
-    initUiMenu(theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(20));
-    initUiMenu(theApp.m_menu_set.m_popup_menu.GetSubMenu(0)->GetSubMenu(22));
-    initUiMenu(theApp.m_menu_set.m_main_menu_popup.GetSubMenu(4)->GetSubMenu(11));
+        if (menu_list.size() >= SELECT_UI_MAX_SIZE + 1)
+            break;
+        wstring str_name = m_ui_list[i]->GetUIName();       // 获取界面的名称
+        if (str_name.empty())   // 如果名称为空（没有指定名称），则使用“界面 +数字”的默认名称
+            str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_DEFAULT", { m_ui_list[i]->GetUiIndex() });
+        if (i < 9)              // 如果界面的序号在9以内，为其分配Ctrl+数字的快捷键
+            str_name += L"\tCtrl+" + std::to_wstring(i + 1);
+        if (i == 9)             // 第10个界面分配快捷键C+0
+            str_name += L"\tCtrl+0";
+        if (i == 2)
+            menu_list.emplace_back(MenuMgr::MenuItem{});    // 在外部UI前插入一个分割条
+        menu_list.emplace_back(MenuMgr::MenuItem{ ID_SWITCH_UI + i + 1, NULL, str_name.c_str() });
+    }
+    theApp.m_menu_mgr.UpdateMenu(MenuMgr::MainViewSwitchUiMenu, menu_list);
 }
 
 void CMusicPlayerDlg::SetPlaylistDragEnable()
@@ -2034,8 +1989,6 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     theApp.LoadIconResource();
     // 载入字体资源
     theApp.m_font_set.Init(theApp.m_str_table.GetDefaultFontName().c_str());
-    // 载入菜单资源
-    theApp.InitMenuResourse();
 
     // 多语言主窗口资源移除后各窗口对象的->GetFont()不再自动跟随语言设置
     // 我没有找到能够修改其返回值的方法，暂时改为使用m_font_set中的字体
@@ -2224,15 +2177,15 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     wstring menu_str;
     m_playlist_toolbar.SetIconSize(theApp.DPI(20));
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_DELETE");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistDelMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_SORT");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistSortMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_LIST");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarListMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_EDIT");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarEditMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT).GetString();
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, menu_str.c_str(), ID_LOCATE_TO_CURRENT);
 
@@ -3253,9 +3206,9 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 
     CMenu* pContextMenu{};
     if (m_item_selected >= 0)
-        pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+        pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
     else
-        pContextMenu = &theApp.m_menu_set.m_playlist_toolbar_popup_menu;
+        pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu);
     m_playlist_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;
@@ -5186,7 +5139,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnMainMenuPopup(WPARAM wParam, LPARAM lParam)
 {
     CPoint point = *((CPoint*)wParam);
     ClientToScreen(&point);
-    theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+    theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 
     return 0;
 }
@@ -6530,71 +6483,28 @@ bool CMusicPlayerDlg::IsPointValid(CPoint point)
 afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, LPARAM lParam)
 {
     //初始化点击文件夹/播放列表右侧按钮弹出的菜单
-    //检查菜单项目是否有改变
-    bool menu_changed{ false };
-    int menu_size{};
-    if (::IsMenu(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu()))
-        menu_size = theApp.m_menu_set.m_recent_folder_playlist_menu.GetMenuItemCount();
-    else
-        menu_changed = true;
-    for (int i{}; i < menu_size; i++)
+    vector<MenuMgr::MenuItem> menu_list;
+    HICON playlist = theApp.m_icon_set.show_playlist.GetIcon(true);
+    HICON favourite = theApp.m_icon_set.favourite.GetIcon(true);
+    HICON folder = theApp.m_icon_set.select_folder.GetIcon(true);
+    const auto& list = CRecentFolderAndPlaylist::Instance().GetItemList();
+    for (const auto& item : list)
     {
-        CString str_menu_name;
-        theApp.m_menu_set.m_recent_folder_playlist_menu.GetMenuString(i, str_menu_name, MF_BYPOSITION);
-        if (i < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()))
+        if (item.LastPlayedTime() == 0)
+            break;
+        if (menu_list.size() >= RECENT_FOLDER_PLAYLIST_MAX_SIZE)
+            break;
+        UINT id = ID_RECENT_FOLDER_PLAYLIST_MENU_START + menu_list.size();
+        if (item.is_playlist)
         {
-            if (str_menu_name != CRecentFolderAndPlaylist::Instance().GetItemList()[i].GetName().c_str())
-                menu_changed = true;
+            bool is_favourite{ item.playlist_info->path == CPlaylistMgr::Instance().m_favourite_playlist.path };
+            menu_list.emplace_back(MenuMgr::MenuItem{ id, is_favourite ? favourite : playlist, item.GetName() });
         }
+        else
+            menu_list.emplace_back(MenuMgr::MenuItem{ id, folder, item.GetName() });
     }
-    if (menu_changed)
-    {
-        //CMenuIcon类中缓存了所有菜单的位图对象，因此这里不再需要销毁菜单中的位图对象
-        ////销毁菜单前先销毁菜单中的位图对象
-        //for (int i{}; i < menu_size; i++)
-        //{
-        //    MENUITEMINFO mii{};
-        //    mii.cbSize = sizeof(MENUITEMINFO);
-        //    mii.fMask = MIIM_BITMAP;
-        //    theApp.m_menu_set.m_recent_folder_playlist_menu.GetMenuItemInfo(i, &mii, TRUE);
-        //    if (mii.hbmpItem != nullptr)
-        //        DeleteObject(mii.hbmpItem);
-        //}
-        theApp.m_menu_set.m_recent_folder_playlist_menu.DestroyMenu();
-        theApp.m_menu_set.m_recent_folder_playlist_menu.CreatePopupMenu();
-        int item_count{};
-        for (int i{}; i < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()) && i < RECENT_FOLDER_PLAYLIST_MAX_SIZE; i++)
-        {
-            const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[i] };
-            if (item.LastPlayedTime() == 0)
-                break;
-            wstring item_name{ item.GetName() };
-            theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_STRING | MF_ENABLED, ID_RECENT_FOLDER_PLAYLIST_MENU_START + i, item_name.c_str());
-            item_count++;
-        }
-        theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_SEPARATOR);
-        theApp.m_menu_set.m_recent_folder_playlist_menu.AppendMenu(MF_STRING | MF_ENABLED, ID_MEDIA_LIB, theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str());
+    theApp.m_menu_mgr.UpdateMenu(MenuMgr::RecentFolderPlaylistMenu, menu_list);
 
-        //设置菜单图标
-        for (int i{}; i < item_count; i++)
-        {
-            const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[i] };
-            HICON icon{};
-            if (item.is_playlist)
-            {
-                if (item.playlist_info->path == CPlaylistMgr::Instance().m_favourite_playlist.path)
-                    icon = theApp.m_icon_set.favourite.GetIcon(true);
-                else
-                    icon = theApp.m_icon_set.show_playlist.GetIcon(true);
-            }
-            else
-            {
-                icon = theApp.m_icon_set.select_folder.GetIcon(true);
-            }
-            CMenuIcon::AddIconToMenuItem(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu(), i, TRUE, icon);
-        }
-        CMenuIcon::AddIconToMenuItem(theApp.m_menu_set.m_recent_folder_playlist_menu.GetSafeHmenu(), ID_MEDIA_LIB, FALSE, theApp.m_icon_set.media_lib.GetIcon(true));
-    }
     return 0;
 }
 

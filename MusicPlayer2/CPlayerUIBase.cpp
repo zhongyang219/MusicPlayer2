@@ -202,7 +202,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
     GetCursorPos(&point1);  //获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
     if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))     //如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
     {
-        CMenu* pMenu = theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlayCtrlRepeatModeMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != NULL)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
@@ -211,7 +211,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 
     if (m_buttons[BTN_SHOW_PLAYLIST].rect.PtInRect(point))
     {
-        CMenu* pMenu = theApp.m_menu_set.m_playlist_btn_menu.GetSubMenu(0);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaPlaylistBtnMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != NULL)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
@@ -220,7 +220,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 
     if (m_buttons[BTN_AB_REPEAT].rect.PtInRect(point))
     {
-        CMenu* pMenu = theApp.m_menu_set.m_main_menu.GetSubMenu(1)->GetSubMenu(13);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlayCtrlAbRepeatMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
@@ -229,7 +229,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 
     if (m_buttons[BTN_SKIN].rect.PtInRect(point))
     {
-        CMenu* pMenu = theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(11);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainViewSwitchUiMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
             pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
@@ -243,15 +243,13 @@ void CPlayerUIBase::RButtonUp(CPoint point)
             return;
     }
 
-    if (!m_draw_data.lyric_rect.PtInRect(point))    //如果在歌词区域点击了鼠标右键
+    if (m_draw_data.lyric_rect.PtInRect(point))    //如果在歌词区域点击了鼠标右键
     {
-        theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaLrcMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return;
     }
-    else
-    {
-        theApp.m_menu_set.m_popup_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-    }
-
+    // 其他区域显示主界面区域右键菜单
+    theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
 }
 
 void CPlayerUIBase::MouseMove(CPoint point)
@@ -297,16 +295,14 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
     else        //如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
         m_show_volume_adj = (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point));
 
-    auto showMenu = [](CRect rect, int index)
+    auto showMenu = [](const CRect& rect, CMenu* pMenu)
     {
         CPoint point;
         point.x = rect.left;
         point.y = rect.bottom;
         ClientToScreen(AfxGetMainWnd()->GetSafeHwnd(), &point);
-        CMenu* menu = theApp.m_menu_set.m_main_menu.GetSubMenu(index);
-        if (menu != nullptr)
-            menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
-
+        if (pMenu)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, AfxGetMainWnd());
     };
 
     for (auto& btn : m_buttons)
@@ -350,14 +346,15 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_lyric_setting_data.show_translate = !theApp.m_lyric_setting_data.show_translate;
                 return true;
 
-            case BTN_SKIN: case BTN_SKIN_TITLEBAR:
+            case BTN_SKIN:
+            case BTN_SKIN_TITLEBAR:
             {
                 m_buttons[BTN_SKIN].hover = false;
                 m_buttons[BTN_SKIN_TITLEBAR].hover = false;
                 //theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
                 CPoint point1;
                 GetCursorPos(&point1);
-                CMenu* pMenu = theApp.m_menu_set.m_main_menu.GetSubMenu(4)->GetSubMenu(11);
+                CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainViewSwitchUiMenu);
                 ASSERT(pMenu != nullptr);
                 if (pMenu != nullptr)
                     pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
@@ -442,7 +439,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 m_buttons[BTN_PLAYLIST_DROP_DOWN].hover = false;
                 CRect btn_rect = btn.second.rect;
                 AfxGetMainWnd()->ClientToScreen(&btn_rect);
-                theApp.m_menu_set.m_recent_folder_playlist_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
+                theApp.m_menu_mgr.GetMenu(MenuMgr::RecentFolderPlaylistMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
                 return true;
             }
             case BTN_PLAYLIST_MENU:
@@ -450,7 +447,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 m_buttons[BTN_PLAYLIST_MENU].hover = false;
                 CRect btn_rect = btn.second.rect;
                 AfxGetMainWnd()->ClientToScreen(&btn_rect);
-                theApp.m_menu_set.m_playlist_toolbar_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
+                theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
                 return true;
             }
             case BTN_VOLUME_UP:
@@ -514,7 +511,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
             {
                 CPoint point1;
                 GetCursorPos(&point1);
-                CMenu* add_to_menu = theApp.m_menu_set.m_main_popup_menu.GetSubMenu(0)->GetSubMenu(2);
+                CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
                 ASSERT(add_to_menu != nullptr);
                 if (add_to_menu != nullptr)
                 {
@@ -529,25 +526,25 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
 
                 //菜单
             case MENU_FILE:
-                showMenu(btn.second.rect, 0);
+                showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainFileMenu));
                 return true;
             case MENU_PLAY_CONTROL:
-                showMenu(btn.second.rect, 1);
+                showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlayCtrlMenu));
                 return true;
             case MENU_PLAYLIST:
-                showMenu(btn.second.rect, 2);
+                showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistMenu));
                 return true;
             case MENU_LYRICS:
-                showMenu(btn.second.rect, 3);
+                showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainLyricMenu));
                 return true;
             case MENU_VIEW:
-                showMenu(btn.second.rect, 4);
+                showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainViewMenu));
                 return true;
             case MENU_TOOLS:
-                showMenu(btn.second.rect, 5);
+                showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainToolMenu));
                 return true;
             case MENU_HELP:
-                showMenu(btn.second.rect, 6);
+                showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainHelpMenu));
                 return true;
             default:
                 break;

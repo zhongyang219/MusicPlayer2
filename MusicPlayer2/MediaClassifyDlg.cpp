@@ -503,7 +503,7 @@ void CMediaClassifyDlg::OnNMRClickClassifyList(NMHDR* pNMHDR, LRESULT* pResult)
     if (!m_left_selected_items.empty())
     {
         //弹出右键菜单
-        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibLeftMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {
@@ -567,7 +567,7 @@ void CMediaClassifyDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
     if (!m_right_selected_items.empty())
     {
         //弹出右键菜单
-        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {
@@ -577,39 +577,6 @@ void CMediaClassifyDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
 
     *pResult = 0;
 }
-
-
-//void CMediaClassifyDlg::OnInitMenu(CMenu* pMenu)
-//{
-//    CMediaLibTabDlg::OnInitMenu(pMenu);
-//
-//    //bool select_valid;
-//    //if (m_left_selected)
-//    //    select_valid = !m_left_selected_items.empty();
-//    //else
-//    //    select_valid = !m_right_selected_items.empty();
-//
-//    //pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_PLAY_ITEM_IN_FOLDER_MODE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE; id++)
-//    //{
-//    //    pMenu->EnableMenuItem(id, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //}
-//    //pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_FORMAT_CONVERT, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_EXPLORE_TRACK, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//
-//    pMenu->SetDefaultItem(ID_PLAY_ITEM);
-//
-//    // TODO: 在此处添加消息处理程序代码
-//}
-
-
 
 
 void CMediaClassifyDlg::OnNMDblclkClassifyList(NMHDR* pNMHDR, LRESULT* pResult)

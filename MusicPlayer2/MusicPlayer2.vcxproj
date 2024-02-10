@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0804</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
@@ -141,7 +141,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0804</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
@@ -175,7 +175,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0804</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
@@ -209,7 +209,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0804</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
@@ -270,6 +270,7 @@
     <ClInclude Include="MediaLibStatisticsDlg.h" />
     <ClInclude Include="MediaTransControls.h" />
     <ClInclude Include="MenuEditCtrl.h" />
+    <ClInclude Include="MenuMgr.h" />
     <ClInclude Include="MiniModeUserUi.h" />
     <ClInclude Include="PropertyAdvancedDlg.h" />
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
@@ -430,6 +431,7 @@
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
     <ClCompile Include="MediaTransControls.cpp" />
     <ClCompile Include="MenuEditCtrl.cpp" />
+    <ClCompile Include="MenuMgr.cpp" />
     <ClCompile Include="MiniModeUserUi.cpp" />
     <ClCompile Include="PropertyAdvancedDlg.cpp" />
     <ClCompile Include="PropertyAlbumCoverDlg.cpp" />

@@ -206,9 +206,9 @@ std::shared_ptr<UiElement::Element> CUserUi::GetCurrentTypeUi() const
     return draw_element;
 }
 
-CString CUserUi::GetUIName()
+wstring CUserUi::GetUIName()
 {
-    return m_ui_name.c_str();
+    return m_ui_name;
 }
 
 bool CUserUi::LButtonUp(CPoint point)

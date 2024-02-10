@@ -193,7 +193,25 @@ void CIniHelper::WriteValue(const wchar_t* AppName, const wchar_t* KeyName, CVar
     WriteString(AppName, KeyName, value.ToString().GetString());
 }
 
-void CIniHelper::GetAllKeyValues(const wchar_t* AppName, std::map<wstring,wstring>& map)
+
+vector<wstring> CIniHelper::GetAllAppName(const wstring& prefix) const
+{
+    vector<wstring> list;
+    size_t pos{};
+    while ((pos = m_ini_str.find(L"\n[" + prefix, pos)) != wstring::npos)
+    {
+        size_t end = m_ini_str.find(L']', pos + 1);
+        if (end != wstring::npos)
+        {
+            wstring tmp(m_ini_str.begin() + pos + prefix.size() + 2, m_ini_str.begin() + end);
+            list.push_back(std::move(tmp));
+            pos = end + 1;
+        }
+    }
+    return list;
+}
+
+void CIniHelper::GetAllKeyValues(const wstring& AppName, std::map<wstring,wstring>& map) const
 {
     wstring app_str{ L"[" };
     app_str.append(AppName).append(L"]");

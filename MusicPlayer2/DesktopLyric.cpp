@@ -3,10 +3,8 @@
 #include "MusicPlayer2.h"
 #include "SongInfoHelper.h"
 #include "GdiPlusTool.h"
-#include "Define.h"
 #include "CPlayerUIHelper.h"
 #include "MusicPlayerDlg.h"
-#include "WIC.h"
 
 CDesktopLyric::CDesktopLyric()
 {
@@ -41,26 +39,6 @@ END_MESSAGE_MAP()
 void CDesktopLyric::Create()
 {
     CLyricsWindow::Create(theApp.DPI(150));
-
-    m_popupMenu.LoadMenu(IDR_DESKTOP_LYRIC_POPUP_MENU);
-
-    //为右键添加图标
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_PAUSE, FALSE, theApp.m_icon_set.play_pause);
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_STOP, FALSE, theApp.m_icon_set.stop_new);
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PREVIOUS, FALSE, theApp.m_icon_set.previous_new.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_NEXT, FALSE, theApp.m_icon_set.next_new.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_ORDER, FALSE, theApp.m_icon_set.play_oder.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_SHUFFLE, FALSE, theApp.m_icon_set.play_shuffle.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_RANDOM, FALSE, theApp.m_icon_set.play_random.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOOP_PLAYLIST, FALSE, theApp.m_icon_set.loop_playlist.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOOP_TRACK, FALSE, theApp.m_icon_set.loop_track.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_TRACK, FALSE, theApp.m_icon_set.play_track.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LYRIC_DISPLAYED_DOUBLE_LINE, FALSE, theApp.m_icon_set.double_line.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LYRIC_BACKGROUND_PENETRATE, FALSE, theApp.m_icon_set.skin.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOCK_DESKTOP_LRYIC, FALSE, theApp.m_icon_set.lock.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSubMenu(0)->GetSafeHmenu(), 10, TRUE, theApp.m_icon_set.media_lib.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, theApp.m_icon_set.setting.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_CLOSE_DESKTOP_LYRIC, FALSE, theApp.m_icon_set.close.GetIcon(true));
 
     //初始化提示信息
     m_tool_tip.Create(this, TTS_ALWAYSTIP);
@@ -579,7 +557,7 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
                 CPoint cur_point;
                 GetCursorPos(&cur_point);
                 m_bMenuPopedUp = true;
-                theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cur_point.x, cur_point.y, this);
+                theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cur_point.x, cur_point.y, this);
                 m_bMenuPopedUp = false;
             }
             return;
@@ -618,7 +596,7 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
                 cur_point.y = m_buttons[BTN_DEFAULT_STYLE].rect.bottom - m_frameSize.cy;
                 ClientToScreen(&cur_point);
                 m_bMenuPopedUp = true;
-                CMenu* pMenu = theApp.m_menu_set.m_lyric_default_style.GetSubMenu(0);
+                CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::DlrcDefMenu);
                 if (pMenu != nullptr)
                     pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cur_point.x, cur_point.y, this);
                 m_bMenuPopedUp = false;
@@ -724,7 +702,7 @@ void CDesktopLyric::OnRButtonUp(UINT nFlags, CPoint point)
     m_bMenuPopedUp = true;
     CPoint point1;		//定义一个用于确定光标位置的位置
     GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-    CMenu* pMenu = m_popupMenu.GetSubMenu(0);
+    CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::DlrcMenu);
     if (pMenu != NULL)
         pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
     m_bMenuPopedUp = false;
@@ -736,8 +714,9 @@ BOOL CDesktopLyric::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
-    if (CCommon::IsMenuItemInMenu(m_popupMenu.GetSubMenu(0), command) || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_main_menu, command))
-        AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
+    if (CCommon::IsMenuItemInMenu(theApp.m_menu_mgr.GetMenu(MenuMgr::DlrcMenu), command)
+        || CCommon::IsMenuItemInMenu(theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu), command))
+        AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//将未处理的菜单命令转发到主窗口
 
     return CLyricsWindow::OnCommand(wParam, lParam);
 }
@@ -751,13 +730,6 @@ void CDesktopLyric::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 
     CLyricsWindow::OnGetMinMaxInfo(lpMMI);
 }
-
-
-//afx_msg LRESULT CDesktopLyric::OnInitmenu(WPARAM wParam, LPARAM lParam)
-//{
-//    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //将WM_INITMENU消息转发到主窗口
-//    return 0;
-//}
 
 
 BOOL CDesktopLyric::PreTranslateMessage(MSG* pMsg)

@@ -296,7 +296,7 @@ void CFolderExploreDlg::OnNMRClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pRes
                 m_folder_explore_tree.GetWindowRect(window_rect);       //获取列表控件的矩形区域（以屏幕左上角为原点）
                 point.y = window_rect.top + item_rect.bottom;   //设置鼠标要弹出的y坐标为选中项目的下边框位置，防止右键菜单挡住选中的项目
             }
-            CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0);
+            CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibLeftMenu);
             pMenu->TrackPopupMenu(TPM_LEFTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
         }
     }
@@ -354,7 +354,7 @@ void CFolderExploreDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
     if(!m_right_selected_items.empty())
     {
         //弹出右键菜单
-        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {

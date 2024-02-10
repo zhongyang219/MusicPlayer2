@@ -94,7 +94,6 @@ private:
 	//CLyricsWindow m_lyric_window;
     LyricStyleDefaultData m_default_style[LYRIC_DEFAULT_STYLE_NUM];
 
-    CMenu m_popupMenu;
     CToolTipCtrl m_tool_tip;
     std::map<BtnKey, UIButton> m_buttons;
     bool m_first_draw = true;       //第一次绘制工具条时，则为true

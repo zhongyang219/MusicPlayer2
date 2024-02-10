@@ -27,7 +27,7 @@ public:
 
     // 通过 CPlayerUIBase 继承
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
-    virtual CString GetUIName() override;
+    virtual wstring GetUIName() override;
     virtual bool LButtonUp(CPoint point) override;
     virtual bool LButtonDown(CPoint point) override;
     virtual void MouseMove(CPoint point) override;

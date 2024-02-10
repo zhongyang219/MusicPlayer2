@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "CFloatPlaylistDlg.h"
-#include "afxdialogex.h"
 #include "MusicPlayerDlg.h"
 
 
@@ -33,12 +32,12 @@ void CFloatPlaylistDlg::RefreshData()
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
     }
     else
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_FOLDER");
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(5), true);
+        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarFolderMenu), true);
     }
     m_playlist_ctrl.SetCurSel(-1);
 }
@@ -270,15 +269,15 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     wstring menu_str;
     m_playlist_toolbar.SetIconSize(theApp.DPI(20));
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(0), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_DELETE");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(1), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistDelMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_SORT");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(2), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistSortMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_LIST");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(3), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarListMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_EDIT");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_set.m_playlist_toolbar_menu.GetSubMenu(4), true);
+    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarEditMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT).GetString();
     m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, menu_str.c_str(), ID_LOCATE_TO_CURRENT);
 
@@ -334,9 +333,9 @@ void CFloatPlaylistDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 
     CMenu* pContextMenu{};
     if (m_item_selected >= 0)
-        pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+        pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
     else
-        pContextMenu = &theApp.m_menu_set.m_playlist_toolbar_popup_menu;
+        pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu);
     m_playlist_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;
@@ -416,9 +415,9 @@ BOOL CFloatPlaylistDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         GetPlaylistItemSelected();
         break;
     default:
-        if (command == ID_MEDIA_LIB || CCommon::IsMenuItemInMenu(theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0), command)
-            || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_playlist_toolbar_menu, command)
-            || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_main_menu, command)
+        if (command == ID_MEDIA_LIB || CCommon::IsMenuItemInMenu(theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu), command)
+            || CCommon::IsMenuItemInMenu(theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu), command)  // 此处使用等价的弹出菜单，含有所有独立的工具栏按钮菜单项
+            || CCommon::IsMenuItemInMenu(theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu), command)
             || (command >= ID_ADD_TO_MY_FAVOURITE && command < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE))
         {
             theApp.m_pMainWnd->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口

@@ -48,7 +48,6 @@ protected:
     CListCtrlEx m_file_list_ctrl;
     CComboBox m_encode_format_combo;
     CPlayerProgressBar m_progress_bar;
-    CMenu m_list_popup_menu;
     CComboBox m_freq_comb;
     CBrowseEdit m_out_dir_edit;
     CBrowseEdit m_out_name_edit;

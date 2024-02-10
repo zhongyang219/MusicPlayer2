@@ -6,7 +6,6 @@
 #include "FormatConvertDlg.h"
 #include "BassCore.h"
 #include "COSUPlayerHelper.h"
-#include "WIC.h"
 #include "TagLibHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
@@ -305,13 +304,6 @@ BOOL CFormatConvertDlg::OnInitDialog()
     m_encoder_succeed = InitEncoder();
     if (!CPlayer::GetInstance().GetPlayerCore()->IsFreqConvertAvailable())
         m_convert_freq = false;
-
-    //初始化菜单
-    m_list_popup_menu.LoadMenu(IDR_FORMAT_CONVERT_POPUP_MENU);
-    CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_ADD_FILE, FALSE, theApp.m_icon_set.add.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_EDIT_TAG_INFO, FALSE, theApp.m_icon_set.edit.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_DELETE_SELECT, FALSE, theApp.m_icon_set.close.GetIcon(true));
-
 
     //初始化文件列表
     CRect rect;
@@ -844,7 +836,7 @@ void CFormatConvertDlg::OnNMRClickSongList1(NMHDR* pNMHDR, LRESULT* pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
-    CMenu* pContextMenu = m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
+    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::FcListMenu);
     m_file_list_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;

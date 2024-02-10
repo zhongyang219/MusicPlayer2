@@ -462,7 +462,7 @@ void CAllMediaDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
     if (pNMItemActivate->iItem >= 0)
     {
         //弹出右键菜单
-        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {

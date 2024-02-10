@@ -99,7 +99,7 @@ public:
     afx_msg void OnFormatConvert();
     afx_msg void OnItemProperty();
     virtual void OnOK();
-    afx_msg void OnAddToNewPalylistAndPlay();
+    afx_msg void OnAddToNewPlaylistAndPlay();
 private:
 public:
     afx_msg void OnInitMenu(CMenu* pMenu);

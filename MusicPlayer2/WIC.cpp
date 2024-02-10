@@ -1,4 +1,4 @@
-#include "stdafx.h"
+Ôªø#include "stdafx.h"
 #include "WIC.h"
 
 CWICFactory CWICFactory::m_instance;
@@ -6,7 +6,7 @@ CWICFactory CWICFactory::m_instance;
 CWICFactory::CWICFactory()
 {
 #ifndef COMPILE_IN_WIN_XP
-    //≥ı ºªØm_pWICFactory
+    //ÂàùÂßãÂåñm_pWICFactory
     _hrOleInit = ::OleInitialize(NULL);
     CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pWICFactory));
     if (m_pWICFactory == nullptr)
@@ -32,7 +32,7 @@ CWICFactory::~CWICFactory()
 //////////////////////////////////////////////////////////
 
 typedef DWORD ARGB;
-std::map<HICON, HBITMAP> CMenuIcon::m_icon_map;
+std::map<HICON, CBitmap> CMenuIcon::m_icon_map;
 
 CMenuIcon::CMenuIcon()
 {
@@ -40,23 +40,6 @@ CMenuIcon::CMenuIcon()
 
 CMenuIcon::~CMenuIcon()
 {
-}
-
-HRESULT CMenuIcon::AddIconToMenuItem(HMENU hmenu, int iMenuItem, BOOL fByPosition, HICON hicon)
-{
-#ifndef COMPILE_IN_WIN_XP
-    HBITMAP hbmp{};
-    HRESULT hr = GetBitmapByIcon(hicon, hbmp);
-
-    if (SUCCEEDED(hr))
-    {
-        hr = AddBitmapToMenuItem(hmenu, iMenuItem, fByPosition, hbmp);
-    }
-
-    return hr;
-#else
-    return 0;
-#endif // !COMPILE_IN_WIN_XP
 }
 
 HRESULT CMenuIcon::AddBitmapToMenuItem(HMENU hmenu, int iItem, BOOL fByPosition, HBITMAP hbmp)
@@ -107,7 +90,7 @@ HRESULT CMenuIcon::Create32BitHBITMAP(HDC hdc, const SIZE * psize, void ** ppvBi
 
 HRESULT CMenuIcon::GetBitmapByIcon(HICON hicon, HBITMAP& hbmp)
 {
-    auto iter = m_icon_map.find(hicon);
+    const auto& iter = m_icon_map.find(hicon);
     if (iter != m_icon_map.end())
     {
         hbmp = iter->second;
@@ -153,7 +136,7 @@ HRESULT CMenuIcon::GetBitmapByIcon(HICON hicon, HBITMAP& hbmp)
         }
         if (SUCCEEDED(hr))
         {
-            m_icon_map[hicon] = hbmp;
+            m_icon_map[hicon].Attach(hbmp);
         }
         if (FAILED(hr))
         {

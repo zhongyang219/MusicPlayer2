@@ -189,40 +189,26 @@ void CMiniModeDlg::Init()
     //载入配置
     LoadConfig();
 
-    //初始化“切换界面”菜单
-    CMenu* pMenu = theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0)->GetSubMenu(17);
-    ASSERT(pMenu != nullptr);
-    if (pMenu != nullptr)
+    // 初始化“mini模式切换界面”菜单
+    vector<MenuMgr::MenuItem> menu_list;
+    menu_list.emplace_back(MenuMgr::MenuItem{});        // 插入一个分隔符 （这使得menu_list.size()可以作为序号使用）
+    for (auto& ui : m_ui_list)
     {
-        //将ID_MINIMODE_UI_DEFAULT后面的所有菜单项删除
-        int start_pos = 1;
-        while (pMenu->GetMenuItemCount() > start_pos)
+        // 转换到派生类以调用SetIndex/GetUIName （基于CMiniModeUI的默认ui会在这里失败）
+        if (auto ui_mini = std::dynamic_pointer_cast<CMiniModeUserUi>(ui))
         {
-            pMenu->DeleteMenu(start_pos, MF_BYPOSITION);
-        }
+            ui_mini->SetIndex(menu_list.size());        // 设置界面序号
+            wstring str_name = ui_mini->GetUIName();    // 获取界面的名称
+            if (str_name.empty())                       // 如果名称为空（没有指定名称），则使用“迷你模式 + 数字”的默认名称
+                str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_MINI_DEFAULT", { menu_list.size() });
+            menu_list.emplace_back(MenuMgr::MenuItem{ ID_MINIMODE_UI_DEFAULT + menu_list.size(), NULL, str_name });
 
-        std::vector<CMiniModeUserUi*> user_ui_list;
-        for (size_t i{}; i < m_ui_list.size(); i++)
-        {
-            CMiniModeUserUi* user_ui = dynamic_cast<CMiniModeUserUi*>(m_ui_list[i].get());
-            if (user_ui != nullptr)
-                user_ui_list.push_back(user_ui);
-        }
-
-        if (!user_ui_list.empty())
-            pMenu->AppendMenu(MF_SEPARATOR);
-
-        const int MINIMODE_UI_MAX = ID_MINIMODE_UI_MAX - ID_MINIMODE_UI_DEFAULT;
-        bool user_ui_separator_added{};
-        for (size_t i{}; i < user_ui_list.size() && i < MINIMODE_UI_MAX; i++)
-        {
-            user_ui_list[i]->SetIndex(i + 1);
-            wstring str_name = user_ui_list[i]->GetUIName().GetString();    // 获取界面的名称
-            if (str_name.empty())    //如果名称为空（没有指定名称），则使用“迷你模式 +数字”的默认名称
-                str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_MINI_DEFAULT", { i + 1 });
-            pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_MINIMODE_UI_DEFAULT + i + 1, str_name.c_str());
+            if (ID_MINIMODE_UI_DEFAULT + menu_list.size() >= ID_MINIMODE_UI_MAX)
+                break;
         }
     }
+    if (menu_list.size() > 1)                           // 如果只有一个分隔符就不更新
+        theApp.m_menu_mgr.UpdateMenu(MenuMgr::MiniModeSwitchUiMenu, menu_list);
 }
 
 void CMiniModeDlg::UpdatePlayPauseButton()
@@ -450,7 +436,7 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
         {
             CRect rect;
             GetWindowRect(rect);
-            theApp.m_menu_set.m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rect.left, rect.bottom, this);
+            theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rect.left, rect.bottom, this);
             return TRUE;
         }
 
@@ -515,11 +501,11 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
     GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标
     if (nFlags == MK_SHIFT)		//按住Shift键点击鼠标右键时，弹出系统菜单
     {
-        theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
+        theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
     }
     else
     {
-        CMenu* pContextMenu = theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0);
+        CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniAreaMenu);
         pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
     }
 
@@ -548,9 +534,6 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
     pMenu->CheckMenuItem(ID_SHOW_PLAY_LIST, MF_BYCOMMAND | (m_show_playlist ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_ADD_REMOVE_FROM_FAVOURITE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFavourite() ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_MINI_MODE_ALWAYS_ON_TOP, MF_BYCOMMAND | (m_always_on_top ? MF_CHECKED : MF_UNCHECKED));
-
-    //设置播放列表右键菜单的默认菜单项
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);
 
     //设置“切换界面”菜单的状态
     pMenu->CheckMenuRadioItem(ID_MINIMODE_UI_DEFAULT, ID_MINIMODE_UI_MAX, ID_MINIMODE_UI_DEFAULT + m_ui_index, MF_BYCOMMAND | MF_CHECKED);
@@ -606,7 +589,7 @@ void CMiniModeDlg::OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult)
     m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
     m_playlist_ctrl.GetItemSelected(m_items_selected);
 
-    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
+    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
     m_playlist_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
     *pResult = 0;
 }

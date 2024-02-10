@@ -24,7 +24,7 @@ BEGIN_MESSAGE_MAP(CMediaLibTabDlg, CTabDlg)
     ON_COMMAND(ID_PLAY_ITEM, &CMediaLibTabDlg::OnPlayItem)
     ON_COMMAND(ID_PLAY_ITEM_IN_FOLDER_MODE, &CMediaLibTabDlg::OnPlayItemInFolderMode)
     ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CMediaLibTabDlg::OnAddToNewPlaylist)
-    ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CMediaLibTabDlg::OnAddToNewPalylistAndPlay)
+    ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY, &CMediaLibTabDlg::OnAddToNewPlaylistAndPlay)
     ON_COMMAND(ID_EXPLORE_ONLINE, &CMediaLibTabDlg::OnExploreOnline)
     ON_COMMAND(ID_EXPLORE_TRACK, &CMediaLibTabDlg::OnExploreTrack)
     ON_COMMAND(ID_FORMAT_CONVERT, &CMediaLibTabDlg::OnFormatConvert)
@@ -146,7 +146,6 @@ void CMediaLibTabDlg::OnInitMenu(CMenu* pMenu)
     bool can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
         std::find_if(songs.begin(), songs.end(), [&](const SongInfo& song_info) { return song_info.is_cue || COSUPlayerHelper::IsOsuFile(song_info.file_path); }) != songs.end();
 
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);    // 左右菜单都有这一项
     pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (select_all_in_playing_list ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
 }
@@ -194,7 +193,7 @@ void CMediaLibTabDlg::OnAddToNewPlaylist()
 }
 
 
-void CMediaLibTabDlg::OnAddToNewPalylistAndPlay()
+void CMediaLibTabDlg::OnAddToNewPlaylistAndPlay()
 {
     // TODO: 在此添加命令处理程序代码
     wstring playlist_path;

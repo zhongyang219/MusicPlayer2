@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "PropertyAdvancedDlg.h"
-#include "afxdialogex.h"
 
 
 // CPropertyAdvancedDlg 对话框
@@ -149,7 +148,7 @@ void CPropertyAdvancedDlg::OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult)
     m_item_selected = pNMItemActivate->iItem;
 
     //弹出右键菜单
-    CMenu* pMenu = theApp.m_menu_set.m_property_menu.GetSubMenu(0);
+    CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::PropertyAdvMenu);
     ASSERT(pMenu != nullptr);
     if (pMenu != nullptr)
     {

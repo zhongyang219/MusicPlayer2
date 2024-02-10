@@ -20,13 +20,22 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
     if (!initialized.compare_exchange_strong(expected, true))
         return false;
     std::map<wstring, LanguageInfo> list;   // 使用map自动去重与排序
+
+    static const wstring MenuAppName = L"menu.";
+
+    auto InitMapFromIniHelper = [this](const CIniHelper& ini) {
+        ini.GetAllKeyValues(L"text", m_text_string_table);
+        ini.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
+        const auto list = ini.GetAllAppName(MenuAppName);
+        for (const auto& item : list)
+            ini.GetAllKeyValues(MenuAppName + item, m_menu_string_table[item]);
+        };
+
     // 存在外部en-US文件时这里设置的list项目会被覆写（下面根据LanguageInfo.file_name是否为空判断是否存在外部英文翻译）
     list.emplace(L"en-US", LanguageInfo{ L"", L"English <Default>", L"en-US", L"Segoe UI" });
     // 加载内嵌资源作为默认值确保外部翻译文件不完整/不存在时的正常使用
-    CIniHelper default_file(IDR_STRING_TABLE);
-    default_file.GetAllKeyValues(L"text", m_text_string_table);
-    default_file.GetAllKeyValues(L"menu", m_menu_string_table);
-    default_file.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
+    CIniHelper default_ini(IDR_STRING_TABLE);
+    InitMapFromIniHelper(default_ini);
     // 即使最终决定是en-US接下来也再加载一次外部翻译，使文本无须重新编译即可修改
 
     bool succeed{};
@@ -44,9 +53,7 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
         item.default_font_name = file.GetString(L"general", L"DEFAULT_FONT", L"Segoe UI");
         if (language_tag_setting == tag)
         {
-            file.GetAllKeyValues(L"text", m_text_string_table);
-            file.GetAllKeyValues(L"menu", m_menu_string_table);
-            file.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
+            InitMapFromIniHelper(file);
             m_default_font_name = item.default_font_name;
             m_language_tag.push_back(tag);  // 此处的tag可能不存在于当前系统，设置线程语言的api会略过完全不支持的语言（可以自动匹配相近的语言）
             succeed = true;
@@ -65,9 +72,7 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
             if (iter == list.end())
                 continue;
             CIniHelper file(language_dir + iter->second.file_name);
-            file.GetAllKeyValues(L"text", m_text_string_table);
-            file.GetAllKeyValues(L"menu", m_menu_string_table);
-            file.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
+            InitMapFromIniHelper(file);
             m_default_font_name = iter->second.default_font_name;
             m_language_tag.push_back(tag);
             succeed = true;
@@ -82,9 +87,7 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
         if (!en.file_name.empty())      // 如果没有加载到外部en-US翻译那么这里会为空
         {
             CIniHelper file(language_dir + en.file_name);
-            file.GetAllKeyValues(L"text", m_text_string_table);
-            file.GetAllKeyValues(L"menu", m_menu_string_table);
-            file.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
+            InitMapFromIniHelper(file);
             m_default_font_name = en.default_font_name;
             m_language_tag.push_back(L"en-US");
             succeed = true;
@@ -142,18 +145,25 @@ wstring StrTable::LoadTextFormat(const wstring& key, const std::initializer_list
     return str;
 }
 
-const wstring& StrTable::LoadMenuText(const wstring& key) const
+const wstring& StrTable::LoadMenuText(const wstring& menu_name, const wstring& key) const
 {
     // 查找key而不是使用[]是为了避免发生任何写入，这样不使用读写锁也有线程安全
-    auto iter = m_menu_string_table.find(key);
-    if (iter != m_menu_string_table.end())
-        return iter->second;
-    else    // 程序中试图读取不存在于<language>.ini中的键或当前还未进行初始化
+    auto iter_name = m_menu_string_table.find(menu_name);
+    if (iter_name == m_menu_string_table.end())
+    {
+        std::lock_guard<std::mutex> lock(error_mutex);
+        m_unknown_key.insert(menu_name);
+        return error_str;
+    }
+    const auto& key_map = iter_name->second;
+    auto iter_key = key_map.find(key);
+    if (iter_key == key_map.end())
     {
         std::lock_guard<std::mutex> lock(error_mutex);
         m_unknown_key.insert(key);
         return error_str;
     }
+    return iter_key->second;
 }
 
 const std::map<wstring, wstring>& StrTable::GetScintillaStrMap() const

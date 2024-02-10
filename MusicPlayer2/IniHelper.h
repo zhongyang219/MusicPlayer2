@@ -33,8 +33,10 @@ public:
 	CVariant GetValue(const wchar_t * AppName, const wchar_t * KeyName, CVariant default_values) const;
 	void WriteValue(const wchar_t * AppName, const wchar_t * KeyName, CVariant value);
 
+    // 获取带有指定前缀的所有AppName（不含前缀）
+    vector<wstring> GetAllAppName(const wstring& prefix) const;
     // 获取一个AppName下所有键值对
-    void GetAllKeyValues(const wchar_t* AppName, std::map<wstring, wstring>& map);
+    void GetAllKeyValues(const wstring& AppName, std::map<wstring, wstring>& map) const;
 
 	bool Save();		//将ini文件保存到文件，成功返回true
 
@@ -43,7 +45,7 @@ protected:
 	wstring m_ini_str;
 	bool m_save_as_utf8{ true };		//是否以UTF8编码保存
 
-    void UnEscapeString(wstring& str);
+    static void UnEscapeString(wstring& str);
 	void _WriteString(const wchar_t* AppName, const wchar_t* KeyName, const wstring& str);
 	wstring _GetString(const wchar_t* AppName, const wchar_t* KeyName, const wchar_t* default_str) const;
 };

@@ -266,7 +266,7 @@ void CSetPathDlg::OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
     SetButtonsEnable();
 
     //弹出右键菜单
-    CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_folder_menu.GetSubMenu(0);  //获取第一个弹出菜单
+    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu);
     m_path_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;

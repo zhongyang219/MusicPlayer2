@@ -578,6 +578,13 @@ struct IconSet
     HICON hot_key;
     HICON fix;
 
+    // 歌词编辑窗口的菜单图标（仅16x16）
+    HICON le_add_tag;
+    HICON le_replace_tag;
+    HICON le_delete_tag;
+    HICON le_find;
+    HICON le_replace;
+
     HICON ok;
     IconRes locate;
     IconRes expand;
@@ -604,27 +611,6 @@ struct UIData
     bool ShowUiMenuBar() const;/* { return show_menu_bar && !show_window_frame && !full_screen; }*/
 };
 
-
-struct MenuSet
-{
-    CMenu m_main_menu;				//菜单栏上的菜单
-    CMenu m_list_popup_menu;		//播放列表右键菜单
-    CMenu m_main_menu_popup;		//按住Shift键时弹出的右键菜单
-    CMenu m_popup_menu;			    //歌词右键菜单
-    CMenu m_main_popup_menu;
-    CMenu m_playlist_btn_menu;		//播放列表按钮上的右键菜单
-    CMenu m_playlist_toolbar_menu;      //播放列表工具栏菜单
-    CMenu m_playlist_toolbar_popup_menu;    //播放列表工具栏弹出菜单
-    CMenu m_lyric_default_style;     //桌面歌词预设方案菜单
-    CMenu m_media_lib_popup_menu;
-    CMenu m_media_lib_folder_menu;      //媒体库-文件夹的右键菜单
-    CMenu m_media_lib_playlist_menu;      //媒体库-播放列表的右键菜单
-    CMenu m_notify_menu;                //通知区图标右键菜单
-    CMenu m_mini_mode_menu;             //迷你模式右键菜单
-    CMenu m_property_cover_menu;        //属性——专辑封面中的右键菜单
-    CMenu m_property_menu;
-    CMenu m_recent_folder_playlist_menu;
-};
 
 struct ImageSet
 {

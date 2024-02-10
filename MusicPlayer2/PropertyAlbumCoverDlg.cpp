@@ -561,7 +561,7 @@ void CPropertyAlbumCoverDlg::OnRButtonUp(UINT nFlags, CPoint point)
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     CPoint point1;
     GetCursorPos(&point1);
-    CMenu* pMenu = theApp.m_menu_set.m_property_cover_menu.GetSubMenu(0);
+    CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::PropertyCoverMenu);
     if (pMenu != NULL)
         pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
 

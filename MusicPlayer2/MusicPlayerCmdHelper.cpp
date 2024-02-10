@@ -177,20 +177,20 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         }
         else        //添加到选中的播放列表
         {
-            CString menu_string;
-            theApp.m_menu_set.m_list_popup_menu.GetMenuString(command, menu_string, 0);
-            if (!menu_string.IsEmpty())
+            wstring playlist_path;
+            const auto& recent_playlist = CPlaylistMgr::Instance().m_recent_playlists;
+            int index = command - ID_ADD_TO_MY_FAVOURITE - 1;
+            if (index >= 0 && index < static_cast<int>(recent_playlist.size()))
+                playlist_path = recent_playlist[index].path;
+            if (CCommon::FileExist(playlist_path))
             {
-                wstring playlist_path = theApp.m_playlist_dir + menu_string.GetString() + PLAYLIST_EXTENSION;
-                if (CCommon::FileExist(playlist_path))
-                {
-                    AddToPlaylist(selected_item_path, playlist_path);
-                }
-                else
-                {
-                    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_ADD_SONGS_FAILED", { menu_string });
-                    GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
-                }
+                AddToPlaylist(selected_item_path, playlist_path);
+            }
+            else
+            {
+                wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_ADD_SONGS_FAILED",
+                    { CFilePathHelper(playlist_path).GetFileNameWithoutExtension() });
+                GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
             }
         }
         return true;

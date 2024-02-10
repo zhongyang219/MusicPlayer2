@@ -21,6 +21,7 @@
 #include "AcceleratorRes.h"
 #include "LastFM.h"
 #include "StrTable.h"
+#include "MenuMgr.h"
 
 
 // CMusicPlayerApp:
@@ -67,11 +68,11 @@ public:
     CAcceleratorRes m_accelerator_res;
 
     StrTable m_str_table;   // 实际上负责language manger
+    MenuMgr m_menu_mgr;
 
     UIData m_ui_data;
     IconSet m_icon_set;			//图标资源
     FontSet m_font_set;			//字体资源
-    MenuSet m_menu_set;			//菜单资源
     ImageSet m_image_set;       //图片资源
 
     int m_cmd;
@@ -100,8 +101,6 @@ public:
 
 
     void LoadIconResource();
-    void InitMenuResourse();
-    void AddMenuShortcuts(CMenu* pMenu);    //在菜单项后面添加快捷键
 
     int DPI(int pixel);		//将一个像素值进行DPI变换
     int DPI(double pixel);
