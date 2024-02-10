@@ -1798,7 +1798,8 @@ void CMusicPlayerDlg::InitUiMenu()
             str_name += L"\tCtrl+0";
         if (i == 2)
             menu_list.emplace_back(MenuMgr::MenuItem{});    // 在外部UI前插入一个分割条
-        menu_list.emplace_back(MenuMgr::MenuItem{ ID_SWITCH_UI + i + 1, NULL, str_name.c_str() });
+        UINT id = ID_SWITCH_UI + i + 1;
+        menu_list.emplace_back(MenuMgr::MenuItem{ id, NULL, str_name.c_str() });
     }
     theApp.m_menu_mgr.UpdateMenu(MenuMgr::MainViewSwitchUiMenu, menu_list);
 }

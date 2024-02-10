@@ -201,7 +201,8 @@ void CMiniModeDlg::Init()
             wstring str_name = ui_mini->GetUIName();    // 获取界面的名称
             if (str_name.empty())                       // 如果名称为空（没有指定名称），则使用“迷你模式 + 数字”的默认名称
                 str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_MINI_DEFAULT", { menu_list.size() });
-            menu_list.emplace_back(MenuMgr::MenuItem{ ID_MINIMODE_UI_DEFAULT + menu_list.size(), NULL, str_name });
+            UINT id = ID_MINIMODE_UI_DEFAULT + menu_list.size();
+            menu_list.emplace_back(MenuMgr::MenuItem{ id, NULL, str_name });
 
             if (ID_MINIMODE_UI_DEFAULT + menu_list.size() >= ID_MINIMODE_UI_MAX)
                 break;
