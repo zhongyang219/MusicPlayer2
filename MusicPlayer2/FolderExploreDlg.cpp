@@ -3,8 +3,8 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "FolderExploreDlg.h"
-#include "afxdialogex.h"
 #include "AudioCommon.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"

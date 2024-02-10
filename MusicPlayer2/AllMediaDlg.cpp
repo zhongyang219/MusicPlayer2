@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "AllMediaDlg.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"

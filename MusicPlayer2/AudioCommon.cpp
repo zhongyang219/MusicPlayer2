@@ -5,6 +5,8 @@
 #include "SongDataManager.h"
 #include "taglib/id3v1genres.h"
 #include "SongInfoHelper.h"
+#include "Lyric.h"
+#include "AudioTag.h"
 
 
 void SupportedFormat::CreateExtensionsList()

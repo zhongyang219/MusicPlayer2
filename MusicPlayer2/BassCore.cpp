@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "AudioCommon.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "CommonDialogMgr.h"
 
 CBASSMidiLibrary CBassCore::m_bass_midi_lib;

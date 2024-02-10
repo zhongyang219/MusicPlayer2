@@ -79,11 +79,7 @@ void CListenTimeStatisticsDlg::ShowData(bool size_changed)
 			str = str.Left(str.GetLength() - 2);
 
 		m_list_ctrl.SetItemText(index, COL_TIMES, str);
-
-        // 处理cue时这里的高亮是有问题的，暂不影响使用以后修
-		if (CPlayer::GetInstance().GetCurrentSongInfo().file_path == data.path)
-			m_list_ctrl.SetHightItem(index);
-
+        // 这里之前设置当前播放高亮，意义不大，去掉了
 		index++;
 	}
 }

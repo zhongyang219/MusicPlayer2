@@ -3,8 +3,8 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "CoverDownloadDlg.h"
-#include "afxdialogex.h"
 #include "SongDataManager.h"
 
 

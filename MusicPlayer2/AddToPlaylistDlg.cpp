@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "AddToPlaylistDlg.h"
+#include "PlaylistMgr.h"
 
 
 // CAddToPlaylistDlg 对话框

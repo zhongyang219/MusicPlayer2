@@ -102,15 +102,15 @@ void CUserUi::ResetVolumeToPlayTime()
         });
 }
 
-void CUserUi::PlaylistLocateToCurrent()
+void CUserUi::PlaylistLocateToIndex(int index)
 {
     //遍历Playlist元素
-    IterateAllElements([this](UiElement::Element* element) ->bool
+    IterateAllElements([&](UiElement::Element* element) ->bool
     {
         UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
         if (playlist_element != nullptr)
         {
-            playlist_element->EnsureItemVisible(CPlayer::GetInstance().GetIndex());
+            playlist_element->EnsureItemVisible(index);
         }
         return false;
     });
@@ -436,7 +436,7 @@ bool CUserUi::DoubleClick(CPoint point)
 
 void CUserUi::UiSizeChanged()
 {
-    PlaylistLocateToCurrent();
+    PlaylistLocateToIndex(INT_MAX);
 }
 
 int CUserUi::GetUiIndex()

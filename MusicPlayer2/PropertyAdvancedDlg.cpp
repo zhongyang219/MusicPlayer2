@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "PropertyAdvancedDlg.h"
+#include "AudioTag.h"
 
 
 // CPropertyAdvancedDlg 对话框

@@ -2,6 +2,7 @@
 #include "MciCore.h"
 #include "AudioCommon.h"
 #include "MusicPlayer2.h"
+#include "AudioTag.h"
 
 
 CMciCore::CMciCore()

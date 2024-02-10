@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "BaseDialog.h"
+#include "ListCtrlEx.h"
 
 
 // CFileRelateDlg 对话框

@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "BaseDialog.h"
 #include "CTabCtrlEx.h"
+#include "SetPathDlg.h"
 #include "CSelectPlaylist.h"
 #include "MediaClassifyDlg.h"
 #include "FolderExploreDlg.h"

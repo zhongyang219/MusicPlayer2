@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "PropertyAlbumCoverDlg.h"
 #include "COSUPlayerHelper.h"
 #include "DrawCommon.h"

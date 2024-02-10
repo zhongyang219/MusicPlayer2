@@ -249,7 +249,8 @@ BOOL CDataSettingsDlg::OnInitDialog()
 
 void CDataSettingsDlg::EnableControl()
 {
-    bool enable = CPlayer::GetInstance().IsBassCore();
+    // bool enable = CPlayer::GetInstance().IsBassCore();
+    bool enable = !theApp.m_play_setting_data.use_ffmpeg && !theApp.m_play_setting_data.use_mci;
     m_sf2_path_edit.EnableWindow(enable && theApp.m_format_convert_dialog_exit);		//正在进行格式转换时不允许更改音色库
     CWnd* pWnd = GetDlgItem(IDC_BROWSE_BUTTON);
     if (pWnd != nullptr)

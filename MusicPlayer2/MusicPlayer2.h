@@ -9,11 +9,9 @@
 #endif
 
 #include "resource.h"		// 主符号
-#include "Player.h"
 #include "AudioCommon.h"
 #include "ColorConvert.h"
 #include "DrawCommon.h"
-#include "IniHelper.h"
 #include "WinVersionHelper.h"
 #include "CHotkeyManager.h"
 #include "CommonData.h"

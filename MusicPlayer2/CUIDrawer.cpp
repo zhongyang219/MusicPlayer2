@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "CUIDrawer.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 
 CUIDrawer::CUIDrawer(UIColors& colors)
     : m_colors(colors)

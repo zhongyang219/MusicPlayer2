@@ -3,6 +3,7 @@
 #include "SongInfoHelper.h"
 #include "CPlayerUIBase.h"
 #include "CPlayerUIHelper.h"
+#include "Player.h"
 
 CCriticalSection CCortanaLyric::m_critical;
 

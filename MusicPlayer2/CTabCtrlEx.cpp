@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "CTabCtrlEx.h"
+#include "TabDlg.h"
 
 
 // CTabCtrlEx

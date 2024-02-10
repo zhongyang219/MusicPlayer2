@@ -926,7 +926,7 @@ void CMusicPlayerDlg::SetPlayListColor(bool highlight_visible)
         m_playlist_list.EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
         CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
         if (user_ui != nullptr)
-            user_ui->PlaylistLocateToCurrent();
+            user_ui->PlaylistLocateToIndex(CPlayer::GetInstance().GetIndex());
     }
 
     if (IsFloatPlaylistExist())
@@ -1933,7 +1933,7 @@ void CMusicPlayerDlg::SelectUi(int ui_selected)
 
     CUserUi* user_ui{ dynamic_cast<CUserUi*>(m_pUI) };
     if (user_ui != nullptr)
-        user_ui->PlaylistLocateToCurrent();
+        user_ui->PlaylistLocateToIndex(CPlayer::GetInstance().GetIndex());
 }
 
 int CMusicPlayerDlg::GetUiSelected() const
@@ -6287,7 +6287,7 @@ void CMusicPlayerDlg::OnLocateToCurrent()
         m_pFloatPlaylistDlg->GetListCtrl().EnsureVisible(CPlayer::GetInstance().GetIndex(), FALSE);
     CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
     if (user_ui != nullptr)
-        user_ui->PlaylistLocateToCurrent();
+        user_ui->PlaylistLocateToIndex(CPlayer::GetInstance().GetIndex());
 }
 
 

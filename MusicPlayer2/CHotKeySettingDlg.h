@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CHotkeyManager.h"
 #include "TabDlg.h"
+#include "ListCtrlEx.h"
 
 
 // CHotKeySettingDlg 对话框

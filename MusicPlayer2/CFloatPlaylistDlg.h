@@ -38,7 +38,7 @@ public:
     void SetInitPoint(CPoint point);
 
 private:
-    CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
+    CPlayListCtrl m_playlist_ctrl;
     CStaticEx m_path_static;
     CMenuEditCtrl m_path_edit;
     CButton m_media_lib_button;

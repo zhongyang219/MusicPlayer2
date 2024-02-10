@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "CMiniModeUI.h"
+#include "Player.h"
 #include "SongInfoHelper.h"
 
 

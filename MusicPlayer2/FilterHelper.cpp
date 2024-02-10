@@ -2,6 +2,7 @@
 #include "FilterHelper.h"
 #include "MusicPlayer2.h"
 #include "Playlist.h"
+#include "Lyric.h"
 
 wstring FilterHelper::GetAudioFileFilter()
 {

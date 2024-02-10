@@ -4,6 +4,7 @@
 #include "AudioCommon.h"
 #include "Common.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 
 #define ft2ts(t) (((size_t)t.dwHighDateTime << 32) | (size_t)t.dwLowDateTime)
 

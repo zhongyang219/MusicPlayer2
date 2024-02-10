@@ -1,11 +1,9 @@
 ﻿#pragma once
 #include"Common.h"
 #include"Lyric.h"
-#include"SetPathDlg.h"
 #include"AudioTag.h"
 #include "FilePathHelper.h"
 #include "BASSMidiLibrary.h"
-//#include"MusicPlayerDlg.h"
 #include "GaussBlur.h"
 #include "PlaylistMgr.h"
 #include "IPlayerCore.h"

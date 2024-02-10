@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "MediaLibTabDlg.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
 #include "SongDataManager.h"

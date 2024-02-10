@@ -62,8 +62,12 @@ BOOL CSupportedFormatDlg::OnInitDialog()
 
     SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);       // 设置小图标
     PlayerCoreType core_type{};
-    if (CPlayer::GetInstance().GetPlayerCore() != nullptr)
-        core_type = CPlayer::GetInstance().GetPlayerCore()->GetCoreType();
+    if (theApp.m_play_setting_data.use_ffmpeg)
+        core_type = PT_FFMPEG;
+    else if (theApp.m_play_setting_data.use_mci)
+        core_type = PT_MCI;
+    else
+        core_type = PT_BASS;
     switch (core_type)
     {
     case PT_BASS:

@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "IPropertyTabDlg.h"
-
+#include "ListCtrlEx.h"
 
 // CPropertyAdvancedDlg 对话框
 

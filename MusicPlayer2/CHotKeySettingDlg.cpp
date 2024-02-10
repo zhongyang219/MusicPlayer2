@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "CHotKeySettingDlg.h"
-#include "afxdialogex.h"
 
 
 // CHotKeySettingDlg 对话框
