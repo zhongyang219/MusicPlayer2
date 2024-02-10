@@ -5,7 +5,6 @@
 #include "MusicPlayer2.h"
 #include "CMediaLibDlg.h"
 #include "MediaLibStatisticsDlg.h"
-#include "IniHelper.h"
 
 // CMediaLibDlg 对话框
 
@@ -36,26 +35,9 @@ bool CMediaLibDlg::NavigateToItem(const wstring& item)
     return false;
 }
 
-void CMediaLibDlg::SaveConfig() const
-{
-    CIniHelper ini{ theApp.m_config_path };
-    ini.WriteInt(L"media_lib", L"width", m_window_size.cx);
-    ini.WriteInt(L"media_lib", L"height", m_window_size.cy);
-    ini.Save();
-}
-
-void CMediaLibDlg::LoadConfig()
-{
-    CIniHelper ini{ theApp.m_config_path };
-    m_window_size.cx = ini.GetInt(L"media_lib", L"width", -1);
-    m_window_size.cy = ini.GetInt(L"media_lib", L"height", -1);
-}
-
 CString CMediaLibDlg::GetDialogName() const
 {
-    // 为避免未知问题（我没试过）和媒体库窗口大小设置存储键名的不兼容更新
-    // 这里暂时还没有迁移到使用基类CBaseDialog的相关处理
-    return CString();
+    return L"MediaLibDlg";
 }
 
 bool CMediaLibDlg::InitializeControls()
@@ -90,11 +72,8 @@ void CMediaLibDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CMediaLibDlg, CBaseDialog)
     ON_BN_CLICKED(IDC_PLAY_SELECTED, &CMediaLibDlg::OnBnClickedPlaySelected)
-    ON_WM_GETMINMAXINFO()
     ON_MESSAGE(WM_PLAY_SELECTED_BTN_ENABLE, &CMediaLibDlg::OnPlaySelectedBtnEnable)
-    ON_WM_ERASEBKGND()
     ON_BN_CLICKED(IDC_MEDIA_LIB_SETTINGS_BTN, &CMediaLibDlg::OnBnClickedMediaLibSettingsBtn)
-    ON_WM_SIZE()
     ON_BN_CLICKED(IDC_STATISTICS_INFO_BUTTON, &CMediaLibDlg::OnBnClickedStatisticsInfoButton)
     ON_WM_DESTROY()
 END_MESSAGE_MAP()
@@ -222,19 +201,7 @@ BOOL CMediaLibDlg::OnInitDialog()
 
     m_tab_ctrl.SetCurTab(m_init_tab);
 
-    //获取初始时窗口的大小
-    CRect rect;
-    GetWindowRect(rect);
-    m_min_size.cx = rect.Width();
-    m_min_size.cy = rect.Height();
-
     OnPlaySelectedBtnEnable(0, 0);
-
-    LoadConfig();
-    if (m_window_size.cx > 0 && m_window_size.cy > 0)
-    {
-        SetWindowPos(nullptr, 0, 0, m_window_size.cx, m_window_size.cy, SWP_NOMOVE | SWP_NOZORDER);
-    }
 
     m_path_dlg->AdjustColumnWidth();
     m_playlist_dlg->AdjustColumnWidth();
@@ -255,17 +222,6 @@ void CMediaLibDlg::OnBnClickedPlaySelected()
 }
 
 
-void CMediaLibDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
-{
-    // TODO: 在此添加消息处理程序代码和/或调用默认值
-    //限制窗口最小大小
-    lpMMI->ptMinTrackSize.x = m_min_size.cx;        //设置最小宽度
-    lpMMI->ptMinTrackSize.y = m_min_size.cy;        //设置最小高度
-
-    CBaseDialog::OnGetMinMaxInfo(lpMMI);
-}
-
-
 afx_msg LRESULT CMediaLibDlg::OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lParam)
 {
     bool enable = (wParam != 0);
@@ -277,45 +233,10 @@ afx_msg LRESULT CMediaLibDlg::OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lPar
 }
 
 
-BOOL CMediaLibDlg::OnEraseBkgnd(CDC* pDC)
-{
-    // TODO: 在此添加消息处理程序代码和/或调用默认值
-
-    ////重绘背景时设置剪辑区域为窗口区域减去tab控件的区域
-    //CRect rc_tab;
-    //m_tab_ctrl.GetWindowRect(rc_tab);
-    //ScreenToClient(rc_tab);
-    //CRgn tab_rgn;       //tab控件区域
-    //tab_rgn.CreateRectRgnIndirect(rc_tab);
-    //CRect rc_client;
-    //GetClientRect(rc_client);
-    //CRgn draw_rgn;      //需要重绘的区域
-    //draw_rgn.CreateRectRgnIndirect(rc_client);
-    //draw_rgn.CombineRgn(&draw_rgn, &tab_rgn, RGN_DIFF);
-    //pDC->SelectClipRgn(&draw_rgn);
-    return CBaseDialog::OnEraseBkgnd(pDC);
-}
-
-
-
 void CMediaLibDlg::OnBnClickedMediaLibSettingsBtn()
 {
     // TODO: 在此添加控件通知处理程序代码
     theApp.m_pMainWnd->SendMessage(WM_OPTION_SETTINGS, 4, LPARAM(this));
-}
-
-
-void CMediaLibDlg::OnSize(UINT nType, int cx, int cy)
-{
-    CBaseDialog::OnSize(nType, cx, cy);
-
-    // TODO: 在此处添加消息处理程序代码
-    if (nType != SIZE_MINIMIZED && nType != SIZE_MAXIMIZED)
-    {
-        CRect rect;
-        GetWindowRect(&rect);
-        m_window_size = rect.Size();
-    }
 }
 
 
@@ -332,7 +253,6 @@ void CMediaLibDlg::OnDestroy()
     CBaseDialog::OnDestroy();
 
     // TODO: 在此处添加消息处理程序代码
-    SaveConfig();
 
     // 销毁并释放子窗口内存
     if (m_path_dlg != nullptr) { m_path_dlg->DestroyWindow(); delete m_path_dlg; m_path_dlg = nullptr; }

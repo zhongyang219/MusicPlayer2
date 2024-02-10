@@ -46,9 +46,6 @@ public:
     bool NavigateToItem(const wstring& item);
 
 protected:
-    void SaveConfig() const;
-    void LoadConfig();
-
     virtual CString GetDialogName() const override;
     virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -57,21 +54,16 @@ protected:
 
 private:
     CTabCtrlEx m_tab_ctrl;
-    CSize m_min_size{};
     int m_init_tab{};
-    CSize m_window_size{};
     int m_tab_show_force{};     //要强制显示出来的标签
 
 public:
     virtual BOOL OnInitDialog();
     afx_msg void OnBnClickedPlaySelected();
-    afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
 protected:
     afx_msg LRESULT OnPlaySelectedBtnEnable(WPARAM wParam, LPARAM lParam);
 public:
-    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     afx_msg void OnBnClickedMediaLibSettingsBtn();
-    afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnBnClickedStatisticsInfoButton();
     afx_msg void OnDestroy();
     virtual void OnOK();
