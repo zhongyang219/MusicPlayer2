@@ -1980,8 +1980,8 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     //显示媒体库更新状态
     else if (theApp.IsMeidaLibUpdating() && theApp.m_media_update_para.num_added > 0)
     {
-        int percent = theApp.m_media_update_para.num_added * 100 / theApp.m_media_update_para.total_num;
-        wstring info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_MEDIA_LIB_UPDATING_INFO", { theApp.m_media_update_para.num_added, percent });
+        wstring info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_MEDIA_LIB_UPDATING_INFO",
+            { theApp.m_media_update_para.num_added, theApp.m_media_update_para.process_percent });
         static CDrawCommon::ScrollInfo scroll_info2;
         m_draw.DrawScrollText(rect, info.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info2, reset);
     }

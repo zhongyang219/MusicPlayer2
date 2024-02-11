@@ -11,6 +11,7 @@
 #include "Playlist.h"
 #include "AddToPlaylistDlg.h"
 #include "SongDataManager.h"
+#include "COSUPlayerHelper.h"
 
 
 // CFolderExploreDlg 对话框
@@ -84,16 +85,21 @@ void CFolderExploreDlg::ShowSongList()
     SetDlgItemText(IDC_PATH_STATIC, m_folder_path_selected.c_str());
 
     //获取歌曲列表
-    std::vector<SongInfo> files;
-    CAudioCommon::GetAudioFiles(m_folder_path_selected, files, 20000, false);
-    int index{};
-    CAudioCommon::GetCueTracks(files, CPlayer::GetInstance().GetPlayerCore(), index, false);
     m_right_items.clear();
-    for (const auto& file : files)
-    {
-        const SongInfo& song{ CSongDataManager::GetInstance().GetSongInfo3(file) };
-        m_right_items.push_back(song);
-    }
+
+    // 此处在主线程更新cue条目到媒体库并加载歌曲信息，如果有大量cue且没有提前“更新媒体库”第一次进行耗时可能很长
+    if (COSUPlayerHelper::IsOsuFolder(m_folder_path_selected))
+        COSUPlayerHelper::GetOSUAudioFiles(m_folder_path_selected, m_right_items);
+    else    // 播放左侧目录的OpenFolder包含子文件夹所以这里也包含子文件夹
+        CAudioCommon::GetAudioFiles(m_folder_path_selected, m_right_items, MAX_SONG_NUM, true);
+
+    bool exit_flag{};
+    int update_cnt{};
+    // 这里仍然使用GetCueTracks而不是GetAudioInfo是因为后者涉及忽略短文件设置，实际执行的OpenFolder无视设置加入短文件
+    // 我希望此处预览(至少数量上)与OpenFolder结果一致，但不希望只为看一下(预览)就把无关(短)文件加入媒体库
+    CAudioCommon::GetCueTracks(m_right_items, update_cnt, exit_flag, MR_MIN_REQUIRED);
+    // 加载歌曲信息
+    CSongDataManager::GetInstance().LoadSongsInfo(m_right_items);
 
     //显示到列表控件中
     m_list_data.clear();

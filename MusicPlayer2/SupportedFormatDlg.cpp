@@ -61,25 +61,12 @@ BOOL CSupportedFormatDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
 
     SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);       // 设置小图标
-    PlayerCoreType core_type{};
     if (theApp.m_play_setting_data.use_ffmpeg)
-        core_type = PT_FFMPEG;
+        SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_FFMPEG").c_str());
     else if (theApp.m_play_setting_data.use_mci)
-        core_type = PT_MCI;
+        SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_MCI").c_str());
     else
-        core_type = PT_BASS;
-    switch (core_type)
-    {
-    case PT_BASS:
-        SetDlgItemText(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_BASS").c_str());
-        break;
-    case PT_MCI:
-        SetDlgItemText(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_MCI").c_str());
-        break;
-    case PT_FFMPEG:
-        SetDlgItemText(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_FFMPEG").c_str());
-        break;
-    }
+        SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_BASS").c_str());
 
     //初始化列表
     //m_format_list.SetColor(theApp.m_app_setting_data.theme_color);
@@ -88,7 +75,8 @@ BOOL CSupportedFormatDlg::OnInitDialog()
     int width0, width1, width2;
     m_format_list.SetExtendedStyle(m_format_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
 
-    if (core_type == PT_BASS)
+    bool is_bass = !theApp.m_play_setting_data.use_ffmpeg && !theApp.m_play_setting_data.use_mci;
+    if (is_bass)
     {
         width0 = theApp.DPI(100);
         width1 = rect.Width() / 3;
@@ -109,7 +97,7 @@ BOOL CSupportedFormatDlg::OnInitDialog()
     int index = 0;
     for (const auto support_format : CAudioCommon::m_surpported_format)
     {
-        if (core_type == PT_BASS)
+        if (is_bass)
         {
             m_format_list.InsertItem(index, support_format.file_name.c_str());
             m_format_list.SetItemText(index, 1, support_format.description.c_str());

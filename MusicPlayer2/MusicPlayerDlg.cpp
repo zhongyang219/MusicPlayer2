@@ -3181,7 +3181,7 @@ void CMusicPlayerDlg::OnOptionSettings()
 void CMusicPlayerDlg::OnReloadPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    if (!CPlayer::GetInstance().ReloadPlaylist())
+    if (!CPlayer::GetInstance().ReloadPlaylist(MR_FOECE_FULL))  // 强制重新获取全部音频元数据
     {
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
         MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
@@ -4084,7 +4084,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
         static bool first_init{ true };
         if (first_init)
         {
-            theApp.StartUpdateMediaLib(true);
+            theApp.StartUpdateMediaLib(MR_FILE_MODIFICATION);   // 获取不存在的项目以及更新修改时间变化的项目
             first_init = false;
         }
     }
@@ -5802,8 +5802,6 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
     CFileDialog fileDlg(FALSE, _T("m3u"), playlist_name.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter.c_str(), this);
     if (IDOK == fileDlg.DoModal())
     {
-        CPlaylistFile playlist;
-        playlist.FromSongList(CPlayer::GetInstance().GetPlayList());        //获取当前播放列表
         //将当前播放列表保存到文件
         wstring file_path{ fileDlg.GetPathName() };
         wstring file_extension{ fileDlg.GetFileExt() };
@@ -5815,7 +5813,7 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
             file_type = CPlaylistFile::PL_M3U;
         else if (file_extension == L".m3u8")
             file_type = CPlaylistFile::PL_M3U8;
-        playlist.SaveToFile(file_path, file_type);
+        CPlaylistFile::SavePlaylistToFile(CPlayer::GetInstance().GetPlayList(), file_path, file_type);
     }
 
 }

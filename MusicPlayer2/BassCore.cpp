@@ -272,7 +272,7 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag
 {
     //获取长度
     if (flag&AF_LENGTH)
-        song_info.setLength(CBassCore::GetBASSSongLength(hStream));
+        song_info.end_pos = CBassCore::GetBASSSongLength(hStream);
     //获取比特率
     if(flag&AF_BITRATE)
     {
@@ -293,6 +293,7 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag
     {
         CAudioTag audio_tag(song_info, hStream);
         audio_tag.GetAudioTag();
+        audio_tag.GetAudioRating();
         //获取midi音乐的标题
         if (CBassCore::m_bass_midi_lib.IsSucceed() && audio_tag.GetAudioType() == AU_MIDI)
         {

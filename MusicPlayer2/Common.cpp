@@ -38,11 +38,16 @@ CCommon::~CCommon()
 //	std::sort(files.begin(), files.end());		//对容器里的文件按名称排序
 //}
 
-bool CCommon::FileExist(const wstring& file)
+bool CCommon::FileExist(const wstring& file, bool is_case_sensitive)
 {
-    if (file == L"." || file == L"..")
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFileW(file.c_str(), &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE)  // 没有找到说明不区分大小写也没有匹配文件
         return false;
-    return (PathFileExists(file.c_str()) != 0);
+    FindClose(hFind);
+    if (is_case_sensitive)              // 如果需要区分大小写那么重新严格比较
+        return CFilePathHelper(file).GetFileName() == findFileData.cFileName;
+    return true;
 }
 
 bool CCommon::FolderExist(const wstring& file)
@@ -57,16 +62,31 @@ bool CCommon::IsFolder(const wstring& path)
     return (dwAttrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-unsigned __int64 CCommon::GetFileLastModified(const wstring& file_path)
+bool CCommon::CheckAndFixFile(wstring& file)
 {
-    WIN32_FIND_DATA ffd;
-    HANDLE hFind = FindFirstFile(file_path.c_str(), &ffd);
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFileW(file.c_str(), &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE)
+        return false;
     FindClose(hFind);
-    unsigned __int64 last_modified_time{};
-    last_modified_time = ffd.ftLastWriteTime.dwLowDateTime;
-    unsigned __int64 hight_date_time = ffd.ftLastWriteTime.dwHighDateTime;
-    last_modified_time |= (hight_date_time << 32);
-    return last_modified_time;
+    CFilePathHelper file_path(file);
+    file = file_path.GetDir() + findFileData.cFileName;  // 修正file的文件名大小写到与文件一致
+    return true;
+}
+
+bool CCommon::GetFileLastModified(const wstring& file_path, unsigned __int64& modified_time)
+{
+    // 使用GetFileAttributesEx，耗时大约为FindFirstFile的2/3
+    WIN32_FILE_ATTRIBUTE_DATA file_attributes;
+    if (GetFileAttributesEx(file_path.c_str(), GetFileExInfoStandard, &file_attributes))
+    {
+        ULARGE_INTEGER last_modified_time{};
+        last_modified_time.HighPart = file_attributes.ftLastWriteTime.dwHighDateTime;
+        last_modified_time.LowPart = file_attributes.ftLastWriteTime.dwLowDateTime;
+        modified_time = last_modified_time.QuadPart;
+        return true;
+    }
+    return false;
 }
 
 bool CCommon::IsFileHidden(const wstring& file_path)

@@ -764,22 +764,24 @@ void CMusicPlayerApp::WriteLog(const wstring& log_str, int log_type)
 #endif
 }
 
-void CMusicPlayerApp::StartUpdateMediaLib(bool refresh)
+void CMusicPlayerApp::StartUpdateMediaLib(MediaLibRefreshMode refresh_mode)
 {
     if (!m_media_lib_updating)
     {
         m_media_lib_updating = true;
+        m_media_update_para.num_added = 0;
+        m_media_update_para.refresh_mode = refresh_mode;
         m_media_lib_update_thread = AfxBeginThread([](LPVOID lpParam)->UINT
             {
                 if (theApp.m_media_lib_setting_data.remove_file_not_exist_when_update)
                 {
+                    CMusicPlayerCmdHelper::CleanUpRecentFolders();  // 虽然仍有线程安全问题不过这行在“启动时更新媒体库”时立刻进行冲突的可能性比较小
                     CMusicPlayerCmdHelper::CleanUpSongData();
-                    CMusicPlayerCmdHelper::CleanUpRecentFolders();
                 }
-                CMusicPlayerCmdHelper::UpdateMediaLib(lpParam);
+                CMusicPlayerCmdHelper::UpdateMediaLib();
                 theApp.m_media_lib_updating = false;
                 return 0;
-            }, (LPVOID)refresh);
+            }, nullptr);
     }
 }
 

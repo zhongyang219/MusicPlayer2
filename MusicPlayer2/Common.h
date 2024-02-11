@@ -50,8 +50,8 @@ public:
     CCommon();
     ~CCommon();
 
-    //判断文件是否存在
-    static bool FileExist(const wstring& file);
+    // 判断文件是否存在，file为文件绝对路径，is_case_sensitive为true时对文件名区分大小写（路径仍然不区分）
+    static bool FileExist(const wstring& file, bool is_case_sensitive = false);
 
     //判断文件夹是否存在
     static bool FolderExist(const wstring& file);
@@ -59,7 +59,10 @@ public:
     //判断是否是文件夹
     static bool IsFolder(const wstring& path);
 
-    static unsigned __int64 GetFileLastModified(const wstring& file_path);
+    // 判断文件是否存在，file为文件绝对路径，如果存在会更正文件名大小写到与实际文件一致
+    static bool CheckAndFixFile(wstring& file);
+
+    static bool GetFileLastModified(const wstring& file_path, unsigned __int64& modified_time);
 
     //判断文件是否隐藏
     static bool IsFileHidden(const wstring& file_path);

@@ -49,8 +49,9 @@ public:
     //用于向初始化播放列表传递信息的结构体
     struct ThreadInfo
     {
-        bool refresh_info{};
+        MediaLibRefreshMode refresh_mode{};
         bool play{};                            // 加载完播放列表后是否立即播放
+        bool playlist_mode{};                   // 是否为播放列表模式
         int play_index{};                       // 播放索引，播放列表模式下需要在cue解析时维持其指向
         int process_percent{};
         wstring remove_list_path{};             // 进入初始化线程后通知主窗口移除此播放列表/文件夹
@@ -169,8 +170,8 @@ private:
     // 此方法进行重新填充m_playlist以及一些共有操作，最后会启动初始化播放列表线程函数，调用前必须停止播放
     // 调用完此方法后请尽快返回并且尽量不要执行任何操作，应当提前进行或安排在IniPlaylistComplate中进行
     // 此方法返回后的任何修改数据的操作都应视为（实际上也是如此）与IniPlaylistThreadFunc及IniPlaylistComplate处于竞争状态
-    // play参数会传递到IniPlaylistComplate指示是否播放，refresh_info指示初始化线程总是重新从文件读取信息
-    void IniPlayList(bool play = false, bool refresh_info = false);
+    // play参数会传递到IniPlaylistComplate指示是否播放，refresh_info指示初始化线程刷新级别
+    void IniPlayList(bool play = false, MediaLibRefreshMode refresh_mode = MR_MIN_REQUIRED);
 
     //应用一个均衡器通道的增益
     void ApplyEqualizer(int channel, int gain);
@@ -321,7 +322,7 @@ public:
     int AddSongsToPlaylist(const vector<SongInfo>& songs);
 
     // 重新载入播放列表（没能取得播放状态锁返回false）
-    bool ReloadPlaylist(bool refresh_info = true);
+    bool ReloadPlaylist(MediaLibRefreshMode refresh_mode);
     // 翻转是否包含子文件夹设置，如果当前为文件夹模式则直接重新加载播放列表（没能取得播放状态锁返回false）
     bool SetContainSubFolder();
 

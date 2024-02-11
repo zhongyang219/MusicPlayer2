@@ -130,16 +130,4 @@ struct SongInfo
     bool IsSameSong(const SongInfo& song) const;
     // 清除歌曲信息中的<>内的默认字符串
     void Normalize();
-
-    // 以下两个方法有问题，所有相关代码已在patch01（难产中）中移除
-
-    void setLength(Time length)
-    {
-        end_pos = start_pos + length.toInt();
-    }
-
-    bool IsLastTrack() const
-    {
-        return track == total_tracks;
-    }
 };
