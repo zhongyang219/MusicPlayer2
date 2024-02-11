@@ -79,7 +79,6 @@ protected:
     CUIWindow m_ui_static_ctrl{ m_pUI };
 
 #ifndef COMPILE_IN_WIN_XP
-    ITaskbarList3* m_pTaskbar{ theApp.GetITaskbarList3() };         //用于支持任务栏显示播放进度
     THUMBBUTTON m_thumbButton[3]{};
 #endif
 

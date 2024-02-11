@@ -64,6 +64,9 @@ public:
     int m_cmd;
 
     int m_fps{};
+#ifndef COMPILE_IN_WIN_XP
+    ITaskbarList3* m_pTaskbar = nullptr;                    // 用于支持任务栏功能
+#endif
 
     wstring m_window_title;         // 窗口的标题
 

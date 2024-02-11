@@ -107,7 +107,7 @@ bool CMusicPlayerDlg::IsTaskbarListEnable() const
 #ifdef COMPILE_IN_WIN_XP
     return false;
 #else
-    return CWinVersionHelper::IsWindows7OrLater() && m_pTaskbar != nullptr;
+    return theApp.m_pTaskbar != nullptr && CWinVersionHelper::IsWindows7OrLater();
 #endif
 }
 
@@ -997,25 +997,36 @@ void CMusicPlayerDlg::UpdateTaskBarProgress()
 #ifndef COMPILE_IN_WIN_XP
     if (IsTaskbarListEnable())
     {
+        // 降低更新频率，避免win11任务栏卡死（待测试）
+        const int total = 100;              // 将进度分为100段，仅变化时更新
+        static int last_progress{};
+        static TBPFLAG last_status{ TBPF_NOPROGRESS };
+        int progress{};
+        TBPFLAG status{ TBPF_NOPROGRESS };
         //根据播放状态设置任务栏状态和进度
         if (theApp.m_play_setting_data.show_taskbar_progress)
         {
-            int position, length;
-            position = CPlayer::GetInstance().GetCurrentPosition();
-            length = CPlayer::GetInstance().GetSongLength();
-            if (position == 0) position = 1;
-            if (length == 0) length = 1;
+            int position = CPlayer::GetInstance().GetCurrentPosition();
+            int length = CPlayer::GetInstance().GetSongLength();
+            progress = max(position, 0) * total / max(length, 1);
+            if (progress > total) progress = total;
+            if (progress < 1) progress = 1;         // 为0时显示效果为TBPF_NOPROGRESS所以直接从1开始
             if (CPlayer::GetInstance().IsError())
-                m_pTaskbar->SetProgressState(this->GetSafeHwnd(), TBPF_ERROR);
+                status = TBPF_ERROR;
             else if (CPlayer::GetInstance().IsPlaying())
-                m_pTaskbar->SetProgressState(this->GetSafeHwnd(), TBPF_INDETERMINATE);
+                status = TBPF_INDETERMINATE;
             else
-                m_pTaskbar->SetProgressState(this->GetSafeHwnd(), TBPF_PAUSED);
-            m_pTaskbar->SetProgressValue(this->GetSafeHwnd(), position, length);
+                status = TBPF_PAUSED;
         }
-        else
+        if (last_status != status)
         {
-            m_pTaskbar->SetProgressState(this->GetSafeHwnd(), TBPF_NOPROGRESS);
+            theApp.m_pTaskbar->SetProgressState(this->GetSafeHwnd(), status);
+            last_status = status;
+        }
+        if (last_progress != progress)
+        {
+            theApp.m_pTaskbar->SetProgressValue(this->GetSafeHwnd(), progress, total);
+            last_progress = progress;
         }
     }
 #endif
@@ -1023,41 +1034,33 @@ void CMusicPlayerDlg::UpdateTaskBarProgress()
 
 void CMusicPlayerDlg::UpdatePlayPauseButton()
 {
-    if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
-    {
 #ifndef COMPILE_IN_WIN_XP
-        if (IsTaskbarListEnable())
+    if (IsTaskbarListEnable())
+    {
+        if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
         {
             //更新任务栏缩略图上“播放/暂停”的图标
             m_thumbButton[1].hIcon = theApp.m_icon_set.pause.GetIcon();
             wcscpy_s(m_thumbButton[1].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE").c_str());
             //更新任务按钮上的播放状态图标
             if (theApp.m_play_setting_data.show_playstate_icon)
-                m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.play.GetIcon(), L"");
+                theApp.m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.play.GetIcon(), L"");
             else
-                m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
+                theApp.m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
         }
-#endif
-    }
-    else
-    {
-#ifndef COMPILE_IN_WIN_XP
-        if (IsTaskbarListEnable())
+        else
         {
             //更新任务栏缩略图上“播放/暂停”的图标
             m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
             wcscpy_s(m_thumbButton[1].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
             //更新任务按钮上的播放状态图标
             if (theApp.m_play_setting_data.show_playstate_icon && CPlayer::GetInstance().GetPlayingState2() == 1)
-                m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.pause.GetIcon(), L"");
+                theApp.m_pTaskbar->SetOverlayIcon(m_hWnd, theApp.m_icon_set.pause.GetIcon(), L"");
             else
-                m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
+                theApp.m_pTaskbar->SetOverlayIcon(m_hWnd, NULL, L"");
         }
-#endif
+        theApp.m_pTaskbar->ThumbBarUpdateButtons(m_hWnd, 3, m_thumbButton);
     }
-#ifndef COMPILE_IN_WIN_XP
-    if (IsTaskbarListEnable())
-        m_pTaskbar->ThumbBarUpdateButtons(m_hWnd, 3, m_thumbButton);
 #endif
     if (m_miniModeDlg.m_hWnd != NULL)
         m_miniModeDlg.UpdatePlayPauseButton();
@@ -1068,12 +1071,12 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 void CMusicPlayerDlg::SetThumbnailClipArea()
 {
 #ifndef COMPILE_IN_WIN_XP
-    if (IsTaskbarListEnable() && m_pTaskbar != nullptr)
+    if (IsTaskbarListEnable())
     {
         CRect thumbnail_rect = m_pUI->GetThumbnailClipArea();
         if (!thumbnail_rect.IsRectEmpty())
         {
-            m_pTaskbar->SetThumbnailClip(m_hWnd, thumbnail_rect);
+            theApp.m_pTaskbar->SetThumbnailClip(m_hWnd, thumbnail_rect);
         }
     }
 #endif
@@ -1082,11 +1085,11 @@ void CMusicPlayerDlg::SetThumbnailClipArea()
 void CMusicPlayerDlg::SetThumbnailClipArea(CRect rect)
 {
 #ifndef COMPILE_IN_WIN_XP
-    if (IsTaskbarListEnable() && m_pTaskbar != nullptr)
+    if (IsTaskbarListEnable())
     {
         if (!rect.IsRectEmpty())
         {
-            m_pTaskbar->SetThumbnailClip(m_hWnd, rect);
+            theApp.m_pTaskbar->SetThumbnailClip(m_hWnd, rect);
         }
     }
 #endif
@@ -2348,7 +2351,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             if (IsTaskbarListEnable())
             {
                 //设置任务栏缩略图窗口按钮
-                m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
+                theApp.m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
             }
 #endif
             CRect rect;
@@ -3658,7 +3661,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnTaskbarcreated(WPARAM wParam, LPARAM lParam)
     if (IsTaskbarListEnable())
     {
         //当资源管理器重启后重新添加任务栏缩略图窗口按钮
-        m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
+        theApp.m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);
         SetThumbnailClipArea();
         //重新更新任务栏上的播放状态角标
         UpdatePlayPauseButton();
@@ -3738,7 +3741,7 @@ void CMusicPlayerDlg::OnMiniMode()
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())
         {
-            m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);   //重新添加任务栏缩略图按钮
+            theApp.m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);   //重新添加任务栏缩略图按钮
             SetThumbnailClipArea();     //重新设置任务栏缩略图
         }
 #endif
@@ -4882,7 +4885,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnNotifyicon(WPARAM wParam, LPARAM lParam)
 #ifndef COMPILE_IN_WIN_XP
         if (IsTaskbarListEnable())
         {
-            m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);   //重新添加任务栏缩略图按钮
+            theApp.m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);   //重新添加任务栏缩略图按钮
             SetThumbnailClipArea();     //重新设置任务栏缩略图
         }
 #endif
@@ -6068,7 +6071,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnMainWindowActivated(WPARAM wParam, LPARAM lPa
 #ifndef COMPILE_IN_WIN_XP
     if (IsTaskbarListEnable())
     {
-        m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);   //重新添加任务栏缩略图按钮
+        theApp.m_pTaskbar->ThumbBarAddButtons(m_hWnd, 3, m_thumbButton);   //重新添加任务栏缩略图按钮
         SetThumbnailClipArea();     //重新设置任务栏缩略图
     }
 #endif
