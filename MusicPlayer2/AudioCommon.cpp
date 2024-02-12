@@ -289,21 +289,57 @@ void CAudioCommon::FixErrorCueAudioPath(vector<SongInfo>& track_from_text)
 {
     // file_path如果不存在那么试着模糊匹配一个音频文件，没能成功找到时不修改file_path
     wstring audio_path; // 存储上一个存在的song的音频文件（正常情况下用来避免反复CCommon::FileExist）
-    for (SongInfo& song : track_from_text)
+    for (SongInfo& song : track_from_text)    // track_from_text是CCueFile给出的文本解析结果
     {
         // 如果循环开始时audio_path不为空说明上次已确认此文件存在
         if (!audio_path.empty() && audio_path == song.file_path)
             continue;
-        if (CCommon::FileExist(song.file_path, true))
+        // if (CCommon::FileExist(song.file_path)          // 当cue内FILE与实际音频文件名大小写不符时以cue为准
+        if (CCommon::CheckAndFixFile(song.file_path))   // 严格检查大小写，如果不正确则修正（以音频文件为准）
         {
-            audio_path = song.file_path;    // 更新audio_path
+            audio_path = song.file_path;                // 更新audio_path
             continue;
         }
         // 文件不存在，以下开始模糊匹配
-        // TODO:
+        auto GetFirstMatchAudioAndFix = [&](const wstring& path_mode, const wstring& dir)->bool {
+            bool succeed = false;
+            intptr_t hFile = 0;     // 文件句柄
+            _wfinddata_t fileinfo;  //文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
+            if ((hFile = _wfindfirst(path_mode.c_str(), &fileinfo)) != -1)
+            {
+                do
+                {
+                    wstring name{ fileinfo.name };
+                    if (CFilePathHelper(name).GetFileExtension() != L"cue" && FileIsAudio(name))
+                    {
+                        song.file_path = dir + name;
+                        succeed = true;
+                        break;
+                    }
+                } while (_wfindnext(hFile, &fileinfo) == 0);
+            }
+            _findclose(hFile);
+            return succeed;
+        };
+        wstring match_name;
+        // 匹配任意格式的音频文件
+        CFilePathHelper path(song.file_path);
+        if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
+            continue;
+        // 匹配与cue同名的任意格式音频文件
+        path.SetFilePath(song.cue_file_path);
+        if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
+            continue;
+        // 处理cue有表示语言的双重后缀的情况，例如“filename.jp.cue”匹配“filename.*”的音频文件
+        path.SetFilePath(path.GetDir() + path.GetFileNameWithoutExtension());   // 将path设置为不含“.cue”的cue路径
+        if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
+            continue;
+        // 再进行一次
+        path.SetFilePath(path.GetDir() + path.GetFileNameWithoutExtension());
+        if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
+            continue;
     }
 }
-
 
 void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, MediaLibRefreshMode refresh_mode)
 {
@@ -349,15 +385,20 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
         // CCueFile暂时不支持内嵌cue有待修改，(我需要内嵌cue的GetAnalysisResult返回SongInfo中cue_file_path项为音频路径)
         CCueFile cue_file{ item.first };
         vector<SongInfo> track_from_text = cue_file.GetAnalysisResult();
-        FixErrorCueAudioPath(track_from_text);  // 试着修正文件不存在的file_path
         // 移除文本解析结果中file_path为空的项目，如果CCueFile::GetAnalysisResult保证file_path不空则这里可以换成断言
         auto new_end = std::remove_if(track_from_text.begin(), track_from_text.end(),
             [&](const SongInfo& song_info) { return song_info.file_path.empty(); });
         track_from_text.erase(new_end, track_from_text.end());
 
-        // 此方法仅维护参数files到SongDataMapKey级别
-        // 此处使用track_from_text代换item.second，会保证item.second全部移除（或更新）
-        // 其中音频路径二者有可能不同（若cue有修改），故此处靠音轨号匹配
+        // 试着修正文件不存在的file_path(这是可选的，但如果切换是否启用那些涉及此功能的现有条目会出问题)
+        FixErrorCueAudioPath(track_from_text);
+
+        // 此处的false是个预留设置项，用于files中存在cue原始文件时控制cue新增方式
+        // true时会移除原有全部音轨并集中添加到cue位置，false时不改变既有音轨位置仅将比现有多出来的音轨添加到cue位置
+        bool remove_all{ false && !item.second.front().is_cue };    // 如果second含有cue文件则首个SongInfo.is_cue为false
+        // 此方法(GetCueTracks)仅维护参数files到SongDataMapKey级别
+        // 此处使用track_from_text代换files中的item.second项目，会保证item.second全部移除（或更新）
+        // 其中音频路径二者有可能不同（若cue有修改(FixErrorCueAudioPath)），故此处靠音轨号匹配
         std::set<int> added_track;  // 以此记录添加过的音轨号以抵抗files内的重复（如果有）
         // 逆序遍历以使得cue原始文件条目（如果存在）被最后处理
         for (auto it = item.second.rbegin(); it != item.second.rend(); ++it)
@@ -368,9 +409,6 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
             if (iter_in_files == files.end()) continue; // 理论上总能找到，保险起见
             if (iter_in_files->is_cue)
             {
-                // 此处的false是个预留设置项，用于files中存在cue原始文件时控制cue新增方式
-                // true时会移除原有全部音轨并集中添加到cue位置，false时不改变既有音轨位置仅将比现有多出来的音轨添加到cue位置
-                bool remove_all{ false && !item.second.front().is_cue };    // 如果second含有cue文件则首个SongInfo.is_cue为false
                 auto iter = std::find_if(track_from_text.begin(), track_from_text.end(),
                     [&](const SongInfo& song_info) { return song_info.track == iter_in_files->track; });
                 if (remove_all || iter == track_from_text.end() || added_track.find(iter_in_files->track) != added_track.end())
@@ -393,8 +431,8 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
                     audio_path.insert(iter->file_path);
                     added_track.insert(iter->track);    // 这里仍然需要维护added_track，以处理cue文件本身重复的情况
                 }
-                files.insert(iter_in_files + 1, track_from_text.begin(), new_end);
-                files.erase(iter_in_files);
+                auto ins_pos =files.erase(iter_in_files);
+                files.insert(ins_pos, track_from_text.begin(), new_end);
             }
         }
         // 判断是否需要获取音频信息，这里将cue作为一个整体，如果需要则刷新全部
@@ -406,11 +444,8 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
             need_get_info |= (song_info.modified_time == 0 || !song_info.info_acquired || !song_info.ChannelInfoAcquired());
             if (refresh_mode == MR_MIN_REQUIRED)
                 continue;
-            unsigned __int64 modified_time_audio{};
-            CCommon::GetFileLastModified(song.file_path, modified_time_audio);  // 不检查音轨是否存在
-            modified_time_audio += modified_time_cue;       // cue条目使用cue文件与音频文件的修改时间和作为修改时间
-            need_get_info |= (modified_time_audio != song.modified_time);
-            song.modified_time = modified_time_audio;
+            // 使用cue修改时间作为SongInfo修改时间(无法发现音频文件需要更新)(但按修改时间排序时比较合适，如需音频修改时间再另加变量)
+            need_get_info |= (modified_time_cue != song_info.modified_time);
         }
         if (!need_get_info)
             continue;
@@ -419,12 +454,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
         {
             if (song.end_pos.toInt() != 0)  // 结束时间不为0说明这不是一个FILE的最后一个音轨，跳过
                 continue;
-            if (song.modified_time == 0)    // 上个循环检查生成need_get_info时没有获取修改时间的项目在此获取
-            {
-                CCommon::GetFileLastModified(song.file_path, song.modified_time);
-                song.modified_time += modified_time_cue;    // cue条目使用cue文件与音频文件的修改时间和作为修改时间
-            }
-            // IPlayerCore::GetAudioInfo只能用于FILE的最后一个音轨（会把音频时长直接写入end_pos）
+            // 使用cue修改时间作为SongInfo修改时间(无法发现音频文件需要更新)
+            song.modified_time = modified_time_cue;
+            // IPlayerCore::GetAudioInfo只能用于每个FILE的最后一个音轨（会把音频时长直接写入end_pos）（这是预定行为，一个cue可以含有多个FILE）
             int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;
             CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(song.file_path.c_str(), song, flag);
             bool info_succeed{ song.end_pos.toInt() != 0 };

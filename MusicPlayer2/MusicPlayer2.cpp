@@ -487,15 +487,6 @@ UINT CMusicPlayerApp::CheckUpdateThreadFunc(LPVOID lpParam)
     return 0;
 }
 
-//UINT CMusicPlayerApp::ClassifySongDataThreadFunc(LPVOID lpParam)
-//{
-//    //theApp.m_artist_classifer.ClassifyMedia();
-//    //theApp.m_album_classifer.ClassifyMedia();
-//    //theApp.m_genre_classifer.ClassifyMedia();
-//    //theApp.m_year_classifer.ClassifyMedia();
-//    return 0;
-//}
-
 void CMusicPlayerApp::SaveConfig()
 {
     CIniHelper ini(m_config_path);

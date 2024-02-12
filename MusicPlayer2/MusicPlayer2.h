@@ -112,8 +112,6 @@ public:
 
     void WriteLog(const wstring& log_str, int log_type = NonCategorizedSettingData::LT_ERROR);
 
-    //void StartClassifySongData();
-
     //开启一个后台线程并更新媒体库
     // refresh_mode: 指示此次的更新级别
     void StartUpdateMediaLib(MediaLibRefreshMode refresh_mode);
