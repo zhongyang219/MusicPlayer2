@@ -27,6 +27,8 @@ jobs:
         uses: microsoft/setup-msbuild@v2
       - name: 编译
         run: msbuild -t:Build '-p:Configuration=Release;platform=x64' -m:4
+      - name: 复制文件到 Release 文件夹
+        run: cp -R ./MusicPlayer2/language/ ./x64/Release/
       - name: 上传文件
         uses: actions/upload-artifact@v4
         with:
@@ -34,6 +36,7 @@ jobs:
           path: |
             ./x64/Release/*.exe
             ./x64/Release/*.dll
+            ./x64/Release/language/
       - name: 打包其他文件
         run: |
           cd x64/Release
@@ -67,6 +70,8 @@ jobs:
         uses: microsoft/setup-msbuild@v2
       - name: 编译
         run: msbuild -t:Build '-p:Configuration=Release;platform=x86' -m:4
+      - name: 复制文件到 Release 文件夹
+        run: cp -R ./MusicPlayer2/language/ ./Release/
       - name: 上传文件
         uses: actions/upload-artifact@v4
         with:
@@ -74,6 +79,7 @@ jobs:
           path: |
             ./Release/*.exe
             ./Release/*.dll
+            ./Release/language/
       - name: 打包其他文件
         run: |
           cd Release
