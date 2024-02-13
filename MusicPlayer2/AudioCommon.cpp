@@ -351,27 +351,30 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
         if (song.file_path.empty()) continue;
         if (song.is_cue)
         {
-            // 这行代码使之前的旧版没有cue_file_path的媒体库/播放列表可通过一次设置了合适“媒体库目录”的“媒体库更新”转换过来（或打开一次对应目录的文件夹模式）
-            SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };   // 如果媒体库内仍然没有cue_file_path那么什么也不会做（和之前一样）
-            if (!song_info.cue_file_path.empty())
+            // 设置了合适“媒体库目录”之后“强制重新加载”可以使得媒体库能够转换旧播放列表到新格式
+            SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
+            if (!song_info.cue_file_path.empty())   // 如果媒体库内仍然没有cue_file_path那么什么也不会做（和之前一样）
                 cue_file[song_info.cue_file_path].push_back(song_info);
         }
         else if (CFilePathHelper(song.file_path).GetFileExtension() == L"cue")
         {
             vector<SongInfo>& a = cue_file[song.file_path]; // 此处file_path为cue路径
-            a.insert(a.begin(), song);          // is_cue为false的此项存在于开头说明添加全部track
+            a.insert(a.begin(), song);              // is_cue为false的此项存在于开头说明添加全部track
         }
+        /* 不再支持内嵌cue，主要是架构问题现有很多代码都不适于内嵌cue需要加写特殊处理 (CCueFile也没有准备好支持内嵌cue等等等)
         else
         {
-            /*之后重新添加内嵌cue支持*/
-            //CAudioTag audio_tag(song.file_path);
-            //wstring song_cue_text{ audio_tag.GetAudioCue() };
-            if (false)
+            // 支持内嵌cue影响文件夹模式的快速启动（当文件夹中有大量ape时），我认为只能二选一
+            // 与refresh_mode的MR_MIN_REQUIRED有冲突 属性编辑等功能也没有支持内嵌cue
+            CAudioTag audio_tag(song.file_path);
+            wstring song_cue_text{ audio_tag.GetAudioCue() };// 对于ape文件即使是固态硬盘这步也非常慢（不适合对所有音频遍历执行）
+            if (!song_cue_text.empty())             // 如果音频有内嵌cue那么将其加入cue_file
             {
                 vector<SongInfo>& a = cue_file[song.file_path];
-                a.insert(a.begin(), song);          // is_cue为false的此项存在于开头说明添加全部track
+                a.insert(a.begin(), song);          // is_cue为false的此项存在于开头说明添加此cue全部track
             }
         }
+        */
     }
     // cue同时有多个语言版本时，这里行为会有点怪，更合理应当总是取修改时间最大的那个cue但开销略大（使用一个辅助变量以cue修改时间升序遍历cue_file）我觉得暂时没必要
     std::set<wstring> audio_path;   // 被cue使用的音频路径，添加完cue音轨之后统一移除
@@ -382,8 +385,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
         // 确认cue文件是否存在（同时获取修改时间），文件不存在时不进行接下来的步骤（原样保留files中此cue相关文件(item.second)）
         if (!CCommon::GetFileLastModified(item.first, modified_time_cue))
             continue;
-        // CCueFile暂时不支持内嵌cue有待修改，(我需要内嵌cue的GetAnalysisResult返回SongInfo中cue_file_path项为音频路径)
+        ASSERT(CFilePathHelper(item.first).GetFileExtension() == L"cue");    // CCueFile只接受cue文件
         CCueFile cue_file{ item.first };
+        // CCueFile暂时不支持内嵌cue有待修改，(这里需要内嵌cue的GetAnalysisResult返回track_from_text中cue_file_path项为音频路径)
         vector<SongInfo> track_from_text = cue_file.GetAnalysisResult();
         // 移除文本解析结果中file_path为空的项目，如果CCueFile::GetAnalysisResult保证file_path不空则这里可以换成断言
         auto new_end = std::remove_if(track_from_text.begin(), track_from_text.end(),
@@ -431,7 +435,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
                     audio_path.insert(iter->file_path);
                     added_track.insert(iter->track);    // 这里仍然需要维护added_track，以处理cue文件本身重复的情况
                 }
-                auto ins_pos =files.erase(iter_in_files);
+                auto ins_pos = files.erase(iter_in_files);
                 files.insert(ins_pos, track_from_text.begin(), new_end);
             }
         }

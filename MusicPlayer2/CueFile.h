@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include <vector>
-#include "Time.h"
 #include "SongInfo.h"
 #include "Common.h"
 
@@ -10,7 +8,7 @@ public:
     CCueFile(const std::wstring& file_path);
     CCueFile();
     ~CCueFile();
-    void LoadContentsDirect(const std::wstring& cue_contets);
+
     std::vector<SongInfo>& GetAnalysisResult();
 
     //将所有cue音轨保存到cue文件
@@ -34,7 +32,6 @@ private:
 
 private:
     std::wstring m_file_path;
-    //std::string m_file_content;
     std::wstring m_file_content_wcs;
     CodeType m_code_type{ CodeType::AUTO };
     std::vector<SongInfo> m_result;

@@ -25,21 +25,6 @@ CCueFile::~CCueFile()
 {
 }
 
-void CCueFile::LoadContentsDirect(const std::wstring& cue_contets)
-{
-    m_file_content_wcs = cue_contets;
-    DoAnalysis();
-}
-
-// void CCueFile::SetTotalLength(Time length)
-// {
-//     if (!m_result.empty())
-//     {
-//         m_result.back().end_pos = length;
-//         m_result.back().lengh = Time(length - m_result.back().start_pos);
-//     }
-// }
-
 std::vector<SongInfo>& CCueFile::GetAnalysisResult()
 {
     return m_result;

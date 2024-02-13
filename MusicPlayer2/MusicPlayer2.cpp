@@ -307,8 +307,8 @@ BOOL CMusicPlayerApp::InitInstance()
     }
     else if (nResponse == -1)
     {
-        TRACE(traceAppMsg, 0, "警告: 对话框创建失败，应用程序将意外终止。\n");
-        TRACE(traceAppMsg, 0, "警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
+        TRACE(traceAppMsg, 0, L"警告: 对话框创建失败，应用程序将意外终止。\n");
+        TRACE(traceAppMsg, 0, L"警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
     }
 
     SaveLastFMData();
