@@ -173,6 +173,6 @@ public:
     static vector<wstring> m_all_surpported_extensions;		//全部支持的文件格式扩展名
 
 protected:
-    // 寻找并修复音频路径不正确的cue track，并移除未能找到音频路径的条目，参数是一个cue的文件解析结果
+    // 寻找并修复音频路径不正确的cue track，参数是一个cue的文件解析结果
     static void FixErrorCueAudioPath(vector<SongInfo>& files);
 };

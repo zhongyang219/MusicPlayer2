@@ -454,10 +454,6 @@ public:
     SongInfo& GetCurrentSongInfo2();
     //获取下一个要播放的曲目。如果返回的是空的SongInfo对象，则说明没有下一个曲目或下一个曲目不确定
     SongInfo GetNextTrack() const;
-    //为当前歌曲设置关联的网易云音乐歌曲ID
-    void SetRelatedSongID(wstring song_id);
-    //为第index首歌曲设置关联的网易云音乐歌曲ID
-    void SetRelatedSongID(int index, wstring song_id);
     //为当前歌曲设置“我喜欢”标记
     void SetFavourite(bool favourite);
     bool IsFavourite();

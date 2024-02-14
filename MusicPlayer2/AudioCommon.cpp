@@ -480,25 +480,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
         }
         update_cnt += track_from_text.size();   // cue文件有不同语言版本时这里会反复刷写，这会导致update_cnt大于实际更新数
         // 更新track_from_text中的信息到媒体库
-        for (const SongInfo& song : track_from_text)
-        {
-            // 这里想用CSongDataManager::SaveSongInfo但其中修改了rating和song_id，之后整理
-            SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
-            song_info.file_path = song.file_path;
-            song_info.cue_file_path = song.cue_file_path;
-            song_info.modified_time = song.modified_time;
-            song_info.CopyAudioTag(song);
-            song_info.start_pos = song.start_pos;
-            song_info.end_pos = song.end_pos;
-            song_info.bitrate = song.bitrate;
-            song_info.freq = song.freq;
-            song_info.bits = song.bits;
-            song_info.channels = song.channels;
-            song_info.is_cue = true;
-            song_info.info_acquired = true;
-            song_info.SetChannelInfoAcquired(true);
-            CSongDataManager::GetInstance().AddItem(song_info);
-        }
+        CSongDataManager::GetInstance().SaveCueSongInfo(track_from_text);
     }
     // 移除files中的cue关联原始音频文件条目（在这之后才能进行普通音频的处理以避免cue关联音轨进入媒体库）
     if (!audio_path.empty())
@@ -517,7 +499,7 @@ void CAudioCommon::GetAudioInfo(vector<SongInfo>& files, int& update_cnt, bool& 
     int file_too_short_ms{ theApp.m_media_lib_setting_data.file_too_short_sec * 1000 };
     unsigned int process_cnt{}, process_all = max(files.size(), 1);  // 防止除0
     std::set<wstring> too_short_remove;
-    for (SongInfo& song : files)
+    for (const SongInfo& song : files)
     {
         if (exit_flag) return;
         process_percent = ++process_cnt * 95 / process_all + 5;

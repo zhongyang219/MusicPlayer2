@@ -24,7 +24,7 @@ struct SongInfo
     wstring genre;                      // 流派
     wstring cue_file_path;              // cue文件的路径
     wstring album_artist;               // 唱片集艺术家
-    unsigned __int64 song_id{};         // 歌曲对应的网易云音乐中的歌曲ID
+    unsigned __int64 song_id{};         // 歌曲对应的网易云音乐中的歌曲ID<仅在媒体库内使用>
     __int64 last_played_time{};         // 上次播放的时间<仅在媒体库内使用>
     unsigned __int64 modified_time{};   // 修改时间
     int track{};                        // 音轨序号

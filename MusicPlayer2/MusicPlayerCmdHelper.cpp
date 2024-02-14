@@ -25,12 +25,13 @@ CMusicPlayerCmdHelper::~CMusicPlayerCmdHelper()
 void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
 {
     //查找歌曲并获取最佳匹配项的歌曲ID
+    CSongDataManager::GetInstance().GetSongID(song, song.song_id);  // 从媒体库读取id
     if (song.song_id == 0)		//如果没有获取过ID，则获取一次ID
     {
         wstring song_id;
         song_id = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
         song.SetSongId(song_id);
-        CSongDataManager::GetInstance().SaveSongInfo(song);
+        CSongDataManager::GetInstance().SetSongID(song, song.song_id);  // 与媒体库同步
     }
 
     if (song.song_id == 0)

@@ -324,7 +324,8 @@ afx_msg LRESULT CCoverDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
     //计算搜索结果中最佳匹配项目
     int best_matched;
     bool id_releated{ false };
-    if (!m_song.song_id == 0)        // 如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
+    CSongDataManager::GetInstance().GetSongID(m_song, m_song.song_id);  // 从媒体库读取id
+    if (m_song.song_id != 0)        // 如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
     {
         for (size_t i{}; i < m_down_list.size(); i++)
         {
