@@ -857,53 +857,35 @@ void CFormatConvertDlg::OnAddFile()
     CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, filter.c_str(), this);
     //设置保存文件名的字符缓冲的大小为128kB（如果以平均一个文件名长度为32字节计算，最多可以打开大约4096个文件）
     fileDlg.m_ofn.nMaxFile = 128 * 1024;
-    LPTSTR ch = new TCHAR[fileDlg.m_ofn.nMaxFile];
-    fileDlg.m_ofn.lpstrFile = ch;
-    //对内存块清零
-    ZeroMemory(fileDlg.m_ofn.lpstrFile, sizeof(TCHAR) * fileDlg.m_ofn.nMaxFile);
+    std::vector<wchar_t> buffer(fileDlg.m_ofn.nMaxFile);
+    fileDlg.m_ofn.lpstrFile = buffer.data();
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {
-        POSITION posFile = fileDlg.GetStartPosition();
-        while (posFile != NULL)
+        wchar_t* pos = buffer.data();
+        wchar_t* end = pos + buffer.size();
+        while (pos < end && *pos != L'\0')
         {
-            SongInfo item;
-            CString file_path = fileDlg.GetNextPathName(posFile);
-            item = CSongDataManager::GetInstance().GetSongInfo(wstring(file_path));
-            if (!item.info_acquired)	//如果歌曲没有获取过信息，则重新获取
-            {
-                HSTREAM hStream;
-                hStream = BASS_StreamCreateFile(FALSE, item.file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-                BASS_CHANNELINFO channel_info;
-                BASS_ChannelGetInfo(hStream, &channel_info);
-                if (CAudioCommon::GetAudioTypeByBassChannel(channel_info.ctype) != AU_MIDI)
-                {
-                    bool is_osu = COSUPlayerHelper::IsOsuFile(item.file_path);
-                    if (is_osu)
-                    {
-                        item.file_path = item.file_path;
-                        COSUPlayerHelper::GetOSUAudioTitleArtist(item);
-                    }
-                    else
-                    {
-                        CBassCore::GetBASSAudioInfo(hStream, item);
-                    }
-                    //CPlayer::AcquireSongInfo(hStream, item.file_path, item);
-                }
-                BASS_StreamFree(hStream);
-            }
-            if (!CCommon::IsItemInVector(m_file_list, [&](const SongInfo song)
-                {
-                    if (!song.is_cue)
-                        return item.file_path == song.file_path;
-                    else
-                        return (item.file_path == song.file_path && item.track == song.track);
-                }))
-                m_file_list.push_back(item);
+            wstring file_name(pos);
+            // 将指针移动到下一个文件名的起始位置
+            pos += file_name.size() + 1;
+            m_file_list.push_back(SongInfo(file_name));
         }
+        // 确保音频文件信息更新到媒体库，并解析cue，(对于大量不存在于媒体库的新文件此方法很慢)
+        int cnt, percent;
+        bool exit_flag;
+        CAudioCommon::GetAudioInfo(m_file_list, cnt, exit_flag, percent, MR_MIN_REQUIRED, false);
+        // 去重
+        std::unordered_set<SongKey> song_key;
+        song_key.reserve(m_file_list.size());
+        auto new_end = std::remove_if(m_file_list.begin(), m_file_list.end(),
+            [&](const SongInfo& song) { return !song_key.emplace(song).second; }); // emplace失败说明此项目已存在，返回true移除当前项目
+        m_file_list.erase(new_end, m_file_list.end());
+        // 加载歌曲信息（与播放列表一致）
+        CSongDataManager::GetInstance().LoadSongsInfo(m_file_list);
+        // 刷新显示
         ShowFileList();
     }
-    delete[] ch;
 }
 
 

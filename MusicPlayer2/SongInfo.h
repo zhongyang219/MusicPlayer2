@@ -131,3 +131,47 @@ struct SongInfo
     // 清除歌曲信息中的<>内的默认字符串
     void Normalize();
 };
+
+struct SongKey
+{
+    wstring path;
+    int cue_track{};    // 当存储cue时用来保存音轨号，其他情况为0
+
+    SongKey() {}
+    SongKey(const wstring& path) : path(path)
+    {
+        ASSERT(!path.empty());
+    }
+    SongKey(const wstring& path, const int& cue_track) : path(path), cue_track(cue_track)
+    {
+        ASSERT(!path.empty());
+    }
+    SongKey(const SongInfo& song_info)
+    {
+        ASSERT(!song_info.file_path.empty());
+        path = song_info.file_path;
+        if (song_info.is_cue)
+            cue_track = song_info.track;
+    }
+    bool operator<(const SongKey& key) const
+    {
+        if (int pathComparison = path.compare(key.path))
+            return pathComparison < 0;
+        return cue_track < key.cue_track;
+    }
+};
+
+namespace std {
+    template <>
+    struct hash<SongKey> {
+        std::size_t operator()(const SongKey& key) const {
+            return std::hash<wstring>()(key.path) ^ std::hash<int>()(key.cue_track);
+        }
+    };
+    template <>
+    struct equal_to<SongKey> {
+        bool operator()(const SongKey& lhs, const SongKey& rhs) const {
+            return lhs.path == rhs.path && lhs.cue_track == rhs.cue_track;
+        }
+    };
+}

@@ -7,43 +7,7 @@ class CSongDataManager
 public:
     ~CSongDataManager();
 
-    struct SongDataMapKey
-    {
-        wstring path;
-        int cue_track{};    // 当存储cue时用来保存音轨号，其他情况为0
-
-        SongDataMapKey() {}
-        SongDataMapKey(const wstring& path) :path(path)
-        {
-            ASSERT(!path.empty());
-        }
-        SongDataMapKey(const wstring& path, const int& cue_track) :path(path), cue_track(cue_track)
-        {
-            ASSERT(!path.empty());
-        }
-        SongDataMapKey(const SongInfo& song_info)
-        {
-            ASSERT(!song_info.file_path.empty());
-            path = song_info.file_path;
-            if (song_info.is_cue)
-                cue_track = song_info.track;
-        }
-
-        bool operator==(const SongDataMapKey& b) const
-        {
-            return path == b.path && cue_track == b.cue_track;
-        }
-    };
-
-    struct SongDataMapKey_Hash
-    {
-        size_t operator()(const SongDataMapKey& key) const
-        {
-            return std::hash<wstring>()(key.path) ^ std::hash<int>()(key.cue_track);
-        }
-    };
-
-    using SongDataMap = std::unordered_map<SongDataMapKey, SongInfo, SongDataMapKey_Hash>;
+    using SongDataMap = std::unordered_map<SongKey, SongInfo>;
 
     static CSongDataManager& GetInstance();
     void SaveSongData(std::wstring path);       //将所有歌曲信息以序列化的方式保存到文件
@@ -54,9 +18,9 @@ public:
     CString GetDataVersion() const;
 
     // 设置歌曲ID
-    bool SetSongID(const SongDataMapKey& key, const unsigned __int64 id);
+    bool SetSongID(const SongKey& key, const unsigned __int64 id);
     // 获取歌曲ID
-    bool GetSongID(const SongDataMapKey& key, unsigned __int64& id) const;
+    bool GetSongID(const SongKey& key, unsigned __int64& id) const;
 
     // CAudioCommon::GetCueTracks用来将获取的信息存入媒体库（专用，其他位置多半不合适）
     void SaveCueSongInfo(const vector<SongInfo>& songs_info);
@@ -64,7 +28,7 @@ public:
     void LoadSongInfo(SongInfo& song_info) const;
     void LoadSongsInfo(vector<SongInfo>& song_info) const;
 
-    SongInfo GetSongInfo(const SongDataMapKey& key) const;
+    SongInfo GetSongInfo(const SongKey& key) const;
     // 获取一个媒体库歌曲信息（不存在会返回和参数song一致的SongInfo）
     // 至少要保证用于查询的file_path,is_cue,track是正确的
     // 用于修改媒体库的歌曲属性，修改后需使用CSongDataManager::AddItem保存
@@ -74,9 +38,9 @@ public:
     // 请勿在func中试图修改媒体库以避免未定义行为
     void GetSongData(const std::function<void(const CSongDataManager::SongDataMap&)>& func) const;
 
-    bool IsItemExist(const SongDataMapKey& key) const;
+    bool IsItemExist(const SongKey& key) const;
     void AddItem(const SongInfo& song);
-    bool RemoveItem(const SongDataMapKey& key);
+    bool RemoveItem(const SongKey& key);
     int RemoveItemIf(std::function<bool(const SongInfo&)>& fun_condition);       //删除符合条件的项目，返回已删除个数
 
     void ClearPlayTime();       //清除播放时间统计数据

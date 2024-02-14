@@ -273,7 +273,7 @@ void CPlayer::IniPlaylistComplate()
     if (m_index < 0 || m_index >= GetSongNum())
     {
         m_index = 0;                    // 确保当前歌曲序号不会超过歌曲总数
-        m_current_position.fromInt(0);  // m_index失效时同时清除进度（这样略有不足，理论上只要m_index指向的歌曲改变就应当清除进度，不过这需要PathInfo和PlaylistInfo改track为SongInfo(SongDataMapKey)）
+        m_current_position.fromInt(0);  // m_index失效时同时清除进度（这样略有不足，理论上只要m_index指向的歌曲改变就应当清除进度，不过这需要PathInfo和PlaylistInfo改track为SongInfo(SongKey)）
     }
     //统计列表总时长
     m_total_time = 0;

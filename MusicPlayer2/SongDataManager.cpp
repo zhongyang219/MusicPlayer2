@@ -266,7 +266,7 @@ CString CSongDataManager::GetDataVersion() const
     return m_data_version;
 }
 
-bool CSongDataManager::SetSongID(const SongDataMapKey& key, const unsigned __int64 id)
+bool CSongDataManager::SetSongID(const SongKey& key, const unsigned __int64 id)
 {
     std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     ASSERT(!key.path.empty());
@@ -276,9 +276,10 @@ bool CSongDataManager::SetSongID(const SongDataMapKey& key, const unsigned __int
     iter->second.song_id = id;
 
     m_song_data_modified = true;
+    return true;
 }
 
-bool CSongDataManager::GetSongID(const SongDataMapKey& key, unsigned __int64& id) const
+bool CSongDataManager::GetSongID(const SongKey& key, unsigned __int64& id) const
 {
     std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     ASSERT(!key.path.empty());
@@ -287,6 +288,7 @@ bool CSongDataManager::GetSongID(const SongDataMapKey& key, unsigned __int64& id
     if (iter == m_song_data.end())
         return false;
     id = iter->second.song_id;
+    return true;
 }
 
 void CSongDataManager::SaveCueSongInfo(const vector<SongInfo>& songs_info)
@@ -355,7 +357,7 @@ void CSongDataManager::LoadSongsInfo(vector<SongInfo>& songs_info) const
     }
 }
 
-SongInfo CSongDataManager::GetSongInfo(const SongDataMapKey& key) const
+SongInfo CSongDataManager::GetSongInfo(const SongKey& key) const
 {
     std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     SongInfo song;
@@ -391,7 +393,7 @@ void CSongDataManager::GetSongData(const std::function<void(const CSongDataManag
     func(m_song_data);
 }
 
-bool CSongDataManager::IsItemExist(const SongDataMapKey& key) const
+bool CSongDataManager::IsItemExist(const SongKey& key) const
 {
     std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     auto iter = m_song_data.find(key);
@@ -406,7 +408,7 @@ void CSongDataManager::AddItem(const SongInfo& song)
     m_song_data_modified = true;
 }
 
-bool CSongDataManager::RemoveItem(const SongDataMapKey& key)
+bool CSongDataManager::RemoveItem(const SongKey& key)
 {
     std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     auto iter = m_song_data.find(key);
