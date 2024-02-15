@@ -301,7 +301,6 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag
             if (CBassCore::m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
             {
                 song_info.title = CCommon::StrToUnicode(mark.text);
-                song_info.info_acquired = true;
             }
         }
     }

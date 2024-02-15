@@ -28,7 +28,6 @@ public:
     void LoadSongInfo(SongInfo& song_info) const;
     void LoadSongsInfo(vector<SongInfo>& song_info) const;
 
-    SongInfo GetSongInfo(const SongKey& key) const;
     // 获取一个媒体库歌曲信息（不存在会返回和参数song一致的SongInfo）
     // 至少要保证用于查询的file_path,is_cue,track是正确的
     // 用于修改媒体库的歌曲属性，修改后需使用CSongDataManager::AddItem保存

@@ -37,7 +37,8 @@ void CAllMediaDlg::RefreshSongList()
     {
         if (index >= 0 && index < static_cast<int>(m_list_data.size()))
         {
-            m_list_songs[index].CopySongInfo(CSongDataManager::GetInstance().GetSongInfo(m_list_songs[index]));
+            SongInfo tmp = CSongDataManager::GetInstance().GetSongInfo3(m_list_songs[index]);
+            std::swap(m_list_songs[index], tmp);
             SetRowData(m_list_data[index], m_list_songs[index]);
         }
     }

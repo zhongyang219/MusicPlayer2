@@ -176,7 +176,6 @@ void CCueFile::DoAnalysis()
     song_info_common.disc_num = static_cast<BYTE>(_wtoi(GetCommand(cue_head_contents, L"REM DISCNUMBER").c_str()));
     song_info_common.total_discs = static_cast<BYTE>(_wtoi(GetCommand(cue_head_contents, L"REM TOTALDISCS").c_str()));
     song_info_common.is_cue = true;
-    song_info_common.info_acquired = true;
 
     //查找所有属性
     FindAllProperty(cue_head_contents, m_cue_property_map);

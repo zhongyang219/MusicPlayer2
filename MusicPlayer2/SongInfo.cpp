@@ -177,23 +177,6 @@ void SongInfo::CopyAudioTag(const SongInfo& song_info)
     tag_type = song_info.tag_type;
 }
 
-void SongInfo::CopySongInfo(const SongInfo& song_info)
-{
-    CopyAudioTag(song_info);
-    start_pos = song_info.start_pos;
-    end_pos = song_info.end_pos;
-    bitrate = song_info.bitrate;
-    song_id = song_info.song_id;
-    is_favourite = song_info.is_favourite;
-    info_acquired = song_info.info_acquired;
-    modified_time = song_info.modified_time;
-    freq = song_info.freq;
-    channels = song_info.channels;
-    bits = song_info.bits;
-    is_cue = song_info.is_cue;
-    cue_file_path = song_info.cue_file_path;
-}
-
 bool SongInfo::IsTitleEmpty() const
 {
     static const wstring& default_title = theApp.m_str_table.LoadText(L"TXT_EMPTY_TITLE");

@@ -326,7 +326,6 @@ void CSongDataManager::LoadSongInfo(SongInfo& song_info) const
         song_info.start_pos = temp.start_pos;
         song_info.end_pos = temp.end_pos;
         song_info.bitrate = temp.bitrate;
-        song_info.info_acquired = temp.info_acquired;// 以后会更改为仅媒体库内使用，之后删掉这行
         song_info.modified_time = temp.modified_time;
         song_info.freq = temp.freq;
         song_info.channels = temp.channels;
@@ -348,28 +347,12 @@ void CSongDataManager::LoadSongsInfo(vector<SongInfo>& songs_info) const
             song_info.start_pos = temp.start_pos;
             song_info.end_pos = temp.end_pos;
             song_info.bitrate = temp.bitrate;
-            song_info.info_acquired = temp.info_acquired;// 以后会更改为仅媒体库内使用，之后删掉这行
             song_info.modified_time = temp.modified_time;
             song_info.freq = temp.freq;
             song_info.channels = temp.channels;
             song_info.bits = temp.bits;
         }
     }
-}
-
-SongInfo CSongDataManager::GetSongInfo(const SongKey& key) const
-{
-    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
-    SongInfo song;
-    auto iter = m_song_data.find(key);
-    if (iter != m_song_data.end())
-        song = iter->second;
-    if (key.cue_track != 0)
-    {
-        song.track = key.cue_track;
-        song.is_cue = true;
-    }
-    return song;
 }
 
 SongInfo CSongDataManager::GetSongInfo3(const SongInfo& song) const

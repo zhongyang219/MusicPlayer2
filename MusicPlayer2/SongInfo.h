@@ -37,7 +37,7 @@ struct SongInfo
     WORD flags{};                       // 保存一些标志<仅在媒体库内使用>
     BYTE tag_type{};                    // 标签的类型（0：其他；1：ID3v1；2：ID3v2；3：APE）
     BYTE genre_idx{ 255 };              // 以字节表示的流派号
-    bool info_acquired{ false };        // 如果已经获取到了信息，则为ture
+    bool info_acquired{ false };        // 如果已经获取到了信息，则为ture (实际上已完全没有作用，可以被modified_time==0和ChannelInfoAcquired代替，考虑移除)
     bool is_favourite{ false };         // 是否在我喜欢的音乐列表内<仅在播放列表内使用>
     bool is_cue{ false };               // 如果曲目是cue分轨，则为true
     BYTE rating{ 255 };                 // 歌曲分级<仅在媒体库内使用>
@@ -97,8 +97,6 @@ struct SongInfo
 
     //从另一个SongInfo对象复制标签信息
     void CopyAudioTag(const SongInfo& song_info);
-
-    void CopySongInfo(const SongInfo& song_info);
 
     bool IsTitleEmpty() const;
     bool IsArtistEmpty() const;
