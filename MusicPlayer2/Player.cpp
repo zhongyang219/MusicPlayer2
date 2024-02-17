@@ -494,7 +494,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             m_pCore->ClearReverb();
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
         UpdateControlsMetadata(GetCurrentSongInfo());
-        m_controls.UpdateControls(Command::STOP);          // OPEN时设置为停止，PLAY时再设置为PLAY
+        m_controls.UpdateControls(PlaybackStatus::Closed);          // OPEN时设置为停止，PLAY时再设置为PLAY
         m_enable_lastfm = theApp.m_media_lib_setting_data.enable_lastfm;
         if (m_enable_lastfm) {
             UpdateLastFMCurrentTrack(GetCurrentSongInfo());
@@ -506,7 +506,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_pCore->Play();
         m_playing = PS_PLAYING;
         GetPlayerCoreError(L"Play");
-        m_controls.UpdateControls(Command::PLAY);
+        m_controls.UpdateControls(PlaybackStatus::Playing);
         MediaTransControlsLoadThumbnailDefaultImage();
         break;
     case Command::CLOSE:
@@ -515,12 +515,12 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_pCore->Close();
         m_playing = PS_STOPED;
         SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_AFTER_MUSIC_STREAM_CLOSED, 0, 0);
-        m_controls.UpdateControls(Command::STOP);
+        m_controls.UpdateControls(PlaybackStatus::Closed);
         break;
     case Command::PAUSE:
         m_pCore->Pause();
         m_playing = PS_PAUSED;
-        m_controls.UpdateControls(Command::PAUSE);
+        m_controls.UpdateControls(PlaybackStatus::Paused);
         MediaTransControlsLoadThumbnailDefaultImage();
         break;
     case Command::STOP:
@@ -536,7 +536,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         m_playing = PS_STOPED;
         m_current_position = Time();
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
-        m_controls.UpdateControls(Command::STOP);
+        m_controls.UpdateControls(PlaybackStatus::Stopped);
         MediaTransControlsLoadThumbnailDefaultImage();
         break;
     case Command::FF:		//快进
@@ -559,7 +559,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         {
             m_pCore->Pause();
             m_playing = PS_PAUSED;
-            m_controls.UpdateControls(Command::PAUSE);
+            m_controls.UpdateControls(PlaybackStatus::Paused);
         }
         else
         {
@@ -567,7 +567,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             m_pCore->Play();
             m_playing = PS_PLAYING;
             GetPlayerCoreError(L"Play");
-            m_controls.UpdateControls(Command::PLAY);
+            m_controls.UpdateControls(PlaybackStatus::Playing);
         }
         MediaTransControlsLoadThumbnailDefaultImage();
         break;
