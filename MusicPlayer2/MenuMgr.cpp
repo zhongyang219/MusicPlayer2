@@ -5,117 +5,128 @@
 #include "WinVersionHelper.h"
 
 
-MenuMgr::MenuBase::MenuBase(MenuMgr* pMenuMgr, MenuMgr::MenuType menu_type)
-    : m_pMenuMgr(pMenuMgr), m_menu_type(menu_type)
+class MenuMgr::MenuBase
 {
-}
+public:
+    MenuBase(MenuMgr* pMenuMgr, MenuMgr::MenuType menu_type)
+        : m_pMenuMgr(pMenuMgr), m_menu_type(menu_type) {}
+    ~MenuBase() {}
 
-MenuMgr::MenuBase::~MenuBase()
-{
-}
-
-void MenuMgr::MenuBase::CreateMenu(bool is_popup, bool add_accelerator)
-{
-    m_add_accelerator = add_accelerator;
-    if (is_popup)
-        m_menu.CreatePopupMenu();
-    else
-        m_menu.CreateMenu();
-}
-
-void MenuMgr::MenuBase::AppendItem(UINT wID, const wstring& id_text, HICON hicon, const wchar_t* text)
-{
-    wstring menu_text;                      // mii使用其内部数据指针，此对象需要有效到api完成
-    MENUITEMINFO mii = { sizeof(mii) };
-    mii.fMask = MIIM_ID | MIIM_STRING | MIIM_FTYPE;
-    mii.wID = wID;
-    if (id_text.empty() && text != nullptr) // 空id_text的话直接使用参数text做正文（给UpdateMenu开的后门）
-        mii.dwTypeData = const_cast<LPWSTR>(text);
-    else
+    void CreateMenu(bool is_popup, bool add_accelerator)
     {
-        menu_text = theApp.m_str_table.LoadMenuText(MenuMgr::GetMenuNameStr(m_menu_type), id_text);
-        if (text != nullptr)                // 由参数直接指定的快捷键优先级更高
-        {
-            menu_text.append(L"\t").append(text);
-        }
-        else if (m_add_accelerator)         // 如果CreateMenu时要求自动附加Accelerator快捷键描述
-        {
-            wstring shortcut = theApp.m_accelerator_res.GetShortcutDescriptionById(wID);
-            if (!shortcut.empty())
-                menu_text += L'\t' + shortcut;
-        }
-        mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
-    }
-#ifndef COMPILE_IN_WIN_XP
-    if (hicon)
-    {
-        HBITMAP hbmp;
-        CMenuIcon::GetBitmapByIcon(hicon, hbmp);
-        if (hbmp)
-        {
-            mii.fMask |= MIIM_BITMAP;
-            mii.hbmpItem = hbmp;
-        }
-    }
-#endif
-    m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
-}
-
-void MenuMgr::MenuBase::AppendSubMenu(MenuMgr::MenuType sub_menu_type, HICON hicon)
-{
-    MENUITEMINFO mii = { sizeof(mii) };
-    mii.fMask = MIIM_STRING | MIIM_SUBMENU | MIIM_FTYPE;
-    mii.hSubMenu = m_pMenuMgr->GetSafeHmenu(sub_menu_type);
-    wstring menu_text = theApp.m_str_table.LoadMenuText(MenuMgr::GetMenuNameStr(m_menu_type), MenuMgr::GetMenuNameStr(sub_menu_type));
-    mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
-#ifndef COMPILE_IN_WIN_XP
-    if (hicon)
-    {
-        HBITMAP hbmp;
-        CMenuIcon::GetBitmapByIcon(hicon, hbmp);
-        if (hbmp)
-        {
-            mii.fMask |= MIIM_BITMAP;
-            mii.hbmpItem = hbmp;
-        }
-    }
-#endif
-    m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
-}
-
-void MenuMgr::MenuBase::AppendSeparator()
-{
-    m_menu.AppendMenuW(MF_SEPARATOR);
-    m_end_pos++;
-}
-
-void MenuMgr::MenuBase::SetDefaultItem()
-{
-    ASSERT(m_end_pos > 0);
-    m_menu.SetDefaultItem(m_end_pos - 1, TRUE);
-}
-
-void MenuMgr::MenuBase::UpdateMenu(const vector<MenuItem>& items)
-{
-    ASSERT(m_update_pos != -1);
-    static wstring empty{ L"" };
-    // 将items插入菜单中m_update_pos位置，会替换掉上次设置的内容（此方法不能为一个菜单更新两段内容）
-    int bk_org_cnt = m_end_pos;         // m_end_pos为菜单初始化后的初始项目数
-    m_end_pos = m_update_pos;           // 也是新项目的插入点
-    int cnt = m_menu.GetMenuItemCount() - bk_org_cnt;
-    while (cnt--)                       // 删除旧的外部提供菜单项
-        m_menu.DeleteMenu(m_update_pos, MF_BYPOSITION);   // DeleteMenu如果用于移除子菜单项会销毁子菜单句柄
-    for (const auto& item : items)      // 插入新的外部提供菜单项
-    {
-        if (item.id != NULL)
-            AppendItem(item.id, empty, item.hicon, item.text.c_str());
+        m_add_accelerator = add_accelerator;
+        if (is_popup)
+            m_menu.CreatePopupMenu();
         else
-            AppendSeparator();
+            m_menu.CreateMenu();
     }
-    m_end_pos = bk_org_cnt;             // 恢复为初始项目数
-    // 这里有一点小问题，如果不销毁重建菜单句柄那么菜单会记忆其所需过的文本宽度，也就是不会变窄（至少我不知道怎样做）
-    // 销毁重建会使得这里的共享子菜单机制不能正常工作
-}
+
+    // 可变参数列表宏至少要一个参数，所以hicon不能预设NULL，不使用时请指定NULL
+    void AppendItem(UINT wID, const wstring& id_text, HICON hicon, const wchar_t* text = nullptr)
+    {
+        wstring menu_text;                      // mii使用其内部数据指针，此对象需要有效到api完成
+        MENUITEMINFO mii = { sizeof(mii) };
+        mii.fMask = MIIM_ID | MIIM_STRING | MIIM_FTYPE;
+        mii.wID = wID;
+        if (id_text.empty() && text != nullptr) // 空id_text的话直接使用参数text做正文（给UpdateMenu开的后门）
+            mii.dwTypeData = const_cast<LPWSTR>(text);
+        else
+        {
+            menu_text = theApp.m_str_table.LoadMenuText(MenuMgr::GetMenuNameStr(m_menu_type), id_text);
+            if (text != nullptr)                // 由参数直接指定的快捷键优先级更高
+            {
+                menu_text.append(L"\t").append(text);
+            }
+            else if (m_add_accelerator)         // 如果CreateMenu时要求自动附加Accelerator快捷键描述
+            {
+                wstring shortcut = theApp.m_accelerator_res.GetShortcutDescriptionById(wID);
+                if (!shortcut.empty())
+                    menu_text += L'\t' + shortcut;
+            }
+            mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
+        }
+#ifndef COMPILE_IN_WIN_XP
+        if (hicon)
+        {
+            HBITMAP hbmp;
+            CMenuIcon::GetBitmapByIcon(hicon, hbmp);
+            if (hbmp)
+            {
+                mii.fMask |= MIIM_BITMAP;
+                mii.hbmpItem = hbmp;
+            }
+        }
+#endif
+        m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
+    }
+
+    void AppendSubMenu(MenuMgr::MenuType sub_menu_type, HICON hicon)
+    {
+        MENUITEMINFO mii = { sizeof(mii) };
+        mii.fMask = MIIM_STRING | MIIM_SUBMENU | MIIM_FTYPE;
+        mii.hSubMenu = m_pMenuMgr->GetSafeHmenu(sub_menu_type);
+        wstring menu_text = theApp.m_str_table.LoadMenuText(MenuMgr::GetMenuNameStr(m_menu_type), MenuMgr::GetMenuNameStr(sub_menu_type));
+        mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
+#ifndef COMPILE_IN_WIN_XP
+        if (hicon)
+        {
+            HBITMAP hbmp;
+            CMenuIcon::GetBitmapByIcon(hicon, hbmp);
+            if (hbmp)
+            {
+                mii.fMask |= MIIM_BITMAP;
+                mii.hbmpItem = hbmp;
+            }
+        }
+#endif
+        m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
+    }
+
+    void AppendSeparator()
+    {
+        m_menu.AppendMenuW(MF_SEPARATOR);
+        m_end_pos++;
+    }
+
+    void SetDefaultItem()
+    {
+        ASSERT(m_end_pos > 0);
+        m_menu.SetDefaultItem(m_end_pos - 1, TRUE);
+    }
+
+    void UpdateMenu(const vector<MenuMgr::MenuItem>& items)
+    {
+        ASSERT(m_update_pos != -1);
+        static wstring empty{ L"" };
+        // 将items插入菜单中m_update_pos位置，会替换掉上次设置的内容（此方法不能为一个菜单更新两段内容）
+        int bk_org_cnt = m_end_pos;         // m_end_pos为菜单初始化后的初始项目数
+        m_end_pos = m_update_pos;           // 也是新项目的插入点
+        int cnt = m_menu.GetMenuItemCount() - bk_org_cnt;
+        while (cnt--)                       // 删除旧的外部提供菜单项
+            m_menu.DeleteMenu(m_update_pos, MF_BYPOSITION);   // DeleteMenu如果用于移除子菜单项会销毁子菜单句柄
+        for (const auto& item : items)      // 插入新的外部提供菜单项
+        {
+            if (item.id != NULL)
+                AppendItem(item.id, empty, item.hicon, item.text.c_str());
+            else
+                AppendSeparator();
+        }
+        m_end_pos = bk_org_cnt;             // 恢复为初始项目数
+        // 这里有一点小问题，如果不销毁重建菜单句柄那么菜单会记忆其所需过的文本宽度，也就是不会变窄（至少我不知道怎样做）
+        // 销毁重建会使得这里的共享子菜单机制不能正常工作
+    }
+
+    MenuMgr::MenuType GetMenuType() const { return m_menu_type; }
+    void SetUpdatePos() { m_update_pos = m_end_pos; }
+
+    CMenu m_menu;
+private:
+    MenuMgr* m_pMenuMgr;
+    MenuMgr::MenuType m_menu_type;
+    int m_end_pos{ 0 };
+    int m_update_pos{ -1 };
+    bool m_add_accelerator{ false };                // AppendItem是否自动根据命令ID附加加速键列表中的快捷键文本
+};
 
 MenuMgr::MenuMgr()
 {
@@ -154,7 +165,7 @@ MenuMgr::MenuBase& MenuMgr::GetMenuBase(MenuType menu_type)
     return *m_menus[menu_type];
 }
 
-const wchar_t* MenuMgr::GetMenuNameStr(MenuType menu_type)
+const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
 {
     // 这里记录菜单在language.ini的键名，当需要同样翻译的不同菜单时（比如是否为其附加全局快捷键）
     // 可以为不同的菜单枚举使用相同的键名以复用相同的翻译字符串（建议仅为子集关系的菜单这样做）

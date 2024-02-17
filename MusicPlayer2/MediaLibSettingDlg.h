@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "TabDlg.h"
 #include "CListBoxEnhanced.h"
-#include "afxwin.h"
 #include "MyComboBox.h"
 #include "SpinEdit.h"
 #include "BrowseEdit.h"

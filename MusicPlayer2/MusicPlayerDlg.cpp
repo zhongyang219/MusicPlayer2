@@ -4084,7 +4084,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
         static bool first_init{ true };
         if (first_init)
         {
-            theApp.StartUpdateMediaLib(MR_FILE_MODIFICATION);   // 获取不存在的项目以及更新修改时间变化的项目
+            theApp.StartUpdateMediaLib(false);   // 获取不存在的项目以及更新修改时间变化的项目
             first_init = false;
         }
     }

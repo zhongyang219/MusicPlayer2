@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "FileRelateDlg.h"
-#include "afxdialogex.h"
 #include "AudioCommon.h"
 #include "RegFileRelate.h"
 #include "Playlist.h"

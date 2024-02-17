@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "MediaClassifyDlg.h"
-#include "afxdialogex.h"
 #include "Playlist.h"
 #include "InputDlg.h"
 #include "MusicPlayerCmdHelper.h"

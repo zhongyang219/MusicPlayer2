@@ -1,6 +1,6 @@
 #pragma once
-#include <afxwin.h>
 #include "IPlayerUI.h"
+
 class CUIWindow :
     public CStatic
 {

@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "afxwin.h"
 #include "Common.h"
 #include "AudioCommon.h"
 #include "ListCtrlEx.h"

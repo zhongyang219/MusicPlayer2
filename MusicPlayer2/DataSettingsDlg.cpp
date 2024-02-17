@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "DataSettingsDlg.h"
-#include "afxdialogex.h"
 #include "UpdateHelper.h"
 #include "FilterHelper.h"
 

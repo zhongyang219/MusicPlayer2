@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "MiniModeDlg.h"
-#include "afxdialogex.h"
 #include "MusicPlayerDlg.h"
 #include "MiniModeUserUi.h"
 #include "SongInfoHelper.h"

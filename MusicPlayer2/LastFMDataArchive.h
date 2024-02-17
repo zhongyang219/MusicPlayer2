@@ -1,7 +1,4 @@
 #pragma once
-#include <string>
-#include <list>
-#include "Time.h"
 #include "SongInfo.h"
 
 using namespace std;

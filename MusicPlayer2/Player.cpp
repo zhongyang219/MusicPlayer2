@@ -2669,9 +2669,9 @@ void CPlayer::MediaTransControlsLoadThumbnailDefaultImage()
     if (m_album_cover.IsNull())
     {
         if (IsPlaying())
-            m_controls.loadThumbnail((const BYTE*)theApp.m_image_set.default_cover_data.data(), theApp.m_image_set.default_cover_data.size());
+            m_controls.loadThumbnail((const BYTE*)theApp.m_image_set.default_cover_img_data.data(), theApp.m_image_set.default_cover_img_data.size());
         else
-            m_controls.loadThumbnail((const BYTE*)theApp.m_image_set.default_cover_not_played_data.data(), theApp.m_image_set.default_cover_not_played_data.size());
+            m_controls.loadThumbnail((const BYTE*)theApp.m_image_set.default_cover_not_played_img_data.data(), theApp.m_image_set.default_cover_not_played_img_data.size());
     }
 }
 

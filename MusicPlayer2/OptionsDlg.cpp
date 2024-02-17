@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "OptionsDlg.h"
-#include "afxdialogex.h"
 
 
 // COptionsDlg 对话框

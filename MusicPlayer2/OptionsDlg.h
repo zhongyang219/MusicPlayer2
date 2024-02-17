@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "afxcmn.h"
 #include "LyricSettingsDlg.h"
 #include "AppearanceSettingDlg.h"
 #include "DataSettingsDlg.h"

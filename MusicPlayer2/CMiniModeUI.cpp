@@ -42,7 +42,7 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
 
         if (theApp.m_app_setting_data.draw_album_high_quality)
         {
-            Gdiplus::Image* image{ CPlayer::GetInstance().IsPlaying() ? theApp.m_image_set.default_cover : theApp.m_image_set.default_cover_not_played };
+            Gdiplus::Image* image{ CPlayer::GetInstance().IsPlaying() ? theApp.m_image_set.default_cover_img : theApp.m_image_set.default_cover_not_played_img };
             m_draw.DrawImage(image, cover_rect.TopLeft(), cover_rect.Size(), CDrawCommon::StretchMode::FIT);
         }
         else

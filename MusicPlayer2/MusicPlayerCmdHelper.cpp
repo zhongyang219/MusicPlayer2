@@ -546,7 +546,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
         theApp.m_media_update_para.num_added,
         theApp.m_media_update_para.thread_exit,
         theApp.m_media_update_para.process_percent,
-        theApp.m_media_update_para.refresh_mode,
+        theApp.m_media_update_para.force ? MR_FOECE_FULL : MR_FILE_MODIFICATION,
         theApp.m_media_lib_setting_data.ignore_too_short_when_update
     );
 

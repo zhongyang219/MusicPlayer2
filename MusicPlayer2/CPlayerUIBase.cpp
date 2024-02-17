@@ -2187,7 +2187,7 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
         rc_temp.DeflateRect(cover_margin, cover_margin);
         if (theApp.m_app_setting_data.draw_album_high_quality)
         {
-            Gdiplus::Image* image{ CPlayer::GetInstance().IsPlaying() ? theApp.m_image_set.default_cover : theApp.m_image_set.default_cover_not_played };
+            Gdiplus::Image* image{ CPlayer::GetInstance().IsPlaying() ? theApp.m_image_set.default_cover_img : theApp.m_image_set.default_cover_not_played_img };
             m_draw.DrawImage(image, rc_temp.TopLeft(), rc_temp.Size(), CDrawCommon::StretchMode::FIT);
         }
         else

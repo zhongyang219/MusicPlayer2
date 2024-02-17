@@ -1,7 +1,5 @@
 ﻿#pragma once
-#include "afxcmn.h"
 #include "AudioCommon.h"
-#include "afxwin.h"
 #include "ListCtrlEx.h"
 #include "Common.h"
 #include "BaseDialog.h"

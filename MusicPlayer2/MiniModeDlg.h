@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include"Player.h"
-#include "afxwin.h"
 #include "PropertyDlg.h"
-#include "afxcmn.h"
 #include "PlayListCtrl.h"
 #include "ColorConvert.h"
 #include "DrawCommon.h"

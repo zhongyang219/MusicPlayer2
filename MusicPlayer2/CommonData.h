@@ -1,10 +1,7 @@
 ﻿#pragma once
-#include "stdafx.h"
 #include "ColorConvert.h"
 #include "DrawCommon.h"
 #include "Common.h"
-#include "resource.h"
-#include "AudioCommon.h"
 
 namespace CONSTVAL
 {
@@ -615,15 +612,15 @@ struct UIData
 
 struct ImageSet
 {
-    Gdiplus::Image* default_cover{};
-    Gdiplus::Image* default_cover_not_played{};
-    string default_cover_data;
-    string default_cover_not_played_data;
+    Gdiplus::Image* default_cover_img{};
+    Gdiplus::Image* default_cover_not_played_img{};
+    string default_cover_img_data;
+    string default_cover_not_played_img_data;
 
     ~ImageSet()
     {
-        SAFE_DELETE(default_cover);
-        SAFE_DELETE(default_cover_not_played);
+        SAFE_DELETE(default_cover_img);
+        SAFE_DELETE(default_cover_not_played_img);
     }
 };
 
@@ -652,5 +649,5 @@ struct MediaUpdateThreadPara
     int num_added{};                       //更新媒体库时新增（包括更新）的音频文件数量
     int process_percent{};                  // 更新媒体库进度%
     bool thread_exit{};             //如果为true，则线程应该退出
-    MediaLibRefreshMode refresh_mode;       // 指示当前媒体库更新线程的刷新模式
+    bool force;                     // 为true时无视修改时间强制刷新
 };

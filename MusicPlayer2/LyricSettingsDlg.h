@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "afxwin.h"
 #include "FolderBrowserDlg.h"
 #include "TabDlg.h"
 #include "ColorStaticEx.h"

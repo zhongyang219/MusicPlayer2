@@ -113,8 +113,8 @@ public:
     void WriteLog(const wstring& log_str, int log_type = NonCategorizedSettingData::LT_ERROR);
 
     //开启一个后台线程并更新媒体库
-    // refresh_mode: 指示此次的更新级别
-    void StartUpdateMediaLib(MediaLibRefreshMode refresh_mode);
+    // force为true时强制重新获取媒体库文件夹下的所有歌曲元数据，false时获取修改时间改变的歌曲元数据
+    void StartUpdateMediaLib(bool force);
     bool IsMeidaLibUpdating() const { return m_media_lib_updating; }
     bool IsCheckingForUpdate() const { return m_checking_update; }      //是否正在检查更新
 

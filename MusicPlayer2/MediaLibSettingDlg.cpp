@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "MediaLibSettingDlg.h"
-#include "afxdialogex.h"
 #include "MusicPlayerCmdHelper.h"
 #include "CleanupRangeDlg.h"
 #include "SongDataManager.h"
@@ -585,7 +584,7 @@ void CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton()
     }
     else
     {
-        theApp.StartUpdateMediaLib(MR_FOECE_FULL);  // 刷新媒体库按钮改为强制重新获取所有元数据
+        theApp.StartUpdateMediaLib(true);  // 刷新媒体库按钮强制重新获取所有元数据
     }
 }
 

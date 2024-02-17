@@ -645,11 +645,11 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.notify_icons[2] = CDrawCommon::LoadIconResource(IDI_APP_DARK, DPI(16), DPI(16));
 
     //加载图片资源
-    m_image_set.default_cover = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
-    m_image_set.default_cover_not_played = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED);
+    m_image_set.default_cover_img = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
+    m_image_set.default_cover_not_played_img = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED);
 
-    m_image_set.default_cover_data = CCommon::GetPngImageResourceData(IDB_DEFAULT_ALBUM_COVER);
-    m_image_set.default_cover_not_played_data = CCommon::GetPngImageResourceData(IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED);
+    m_image_set.default_cover_img_data = CCommon::GetPngImageResourceData(IDB_DEFAULT_ALBUM_COVER);
+    m_image_set.default_cover_not_played_img_data = CCommon::GetPngImageResourceData(IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED);
 }
 
 int CMusicPlayerApp::DPI(int pixel)
@@ -755,13 +755,13 @@ void CMusicPlayerApp::WriteLog(const wstring& log_str, int log_type)
 #endif
 }
 
-void CMusicPlayerApp::StartUpdateMediaLib(MediaLibRefreshMode refresh_mode)
+void CMusicPlayerApp::StartUpdateMediaLib(bool force)
 {
     if (!m_media_lib_updating)
     {
         m_media_lib_updating = true;
         m_media_update_para.num_added = 0;
-        m_media_update_para.refresh_mode = refresh_mode;
+        m_media_update_para.force = force;
         m_media_lib_update_thread = AfxBeginThread([](LPVOID lpParam)->UINT
             {
                 if (theApp.m_media_lib_setting_data.remove_file_not_exist_when_update)

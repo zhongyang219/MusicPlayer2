@@ -83,35 +83,12 @@ public:
     HMENU GetSafeHmenu(MenuType menu_type);
     // 获取CMenu指针
     CMenu* GetMenu(MenuType menu_type);
+    // 获取菜单在 <language>.ini 中的键名字符串
+    static const wchar_t* GetMenuNameStr(MenuType menu_type);
 
 private:
-    struct MenuBase
-    {
-        MenuBase(MenuMgr* pMenuMgr, MenuType menu_type);
-        ~MenuBase();
-
-        void CreateMenu(bool is_popup, bool add_accelerator);
-        void AppendItem(UINT wID, const wstring& id_text, HICON hicon, const wchar_t* text = nullptr);  // 可变参数列表宏至少要一个参数，所以hicon不能预设NULL，不使用时请指定NULL
-        void AppendSubMenu(MenuType menu_type, HICON hicon);
-        void AppendSeparator();
-        void SetUpdatePos() { m_update_pos = m_end_pos; }
-        void SetDefaultItem();
-
-        MenuType GetMenuType() const { return m_menu_type; }
-        void UpdateMenu(const vector<MenuItem>& items);
-
-        CMenu m_menu;
-    private:
-        MenuMgr* m_pMenuMgr;
-        MenuType m_menu_type;
-        int m_end_pos{ 0 };
-        int m_update_pos{ -1 };
-        bool m_add_accelerator{ false };                // AppendItem是否自动根据命令ID附加加速键列表中的快捷键文本
-    };
-
+    class MenuBase;
     MenuBase& GetMenuBase(MenuType menu_type);
-
-    static const wchar_t* GetMenuNameStr(MenuType menu_type);
     static void CreateMenu(MenuBase& menu_base);
 private:
     std::unique_ptr<MenuBase> m_menus[MenuMax];

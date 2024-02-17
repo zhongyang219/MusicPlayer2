@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include "LyricDownloadCommon.h"
-#include "afxcmn.h"
 #include "Lyric.h"
-#include "afxwin.h"
 #include "ListCtrlEx.h"
 #include "SongInfo.h"
 #include "BaseDialog.h"

@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "LyricBatchDownloadDlg.h"
-#include "afxdialogex.h"
 #include "SongDataManager.h"
 #include "COSUPlayerHelper.h"
 #include "IniHelper.h"

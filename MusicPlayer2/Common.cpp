@@ -1680,44 +1680,54 @@ wstring CCommon::GetTextResource(UINT id, CodeType code_type)
 
 Gdiplus::Image* CCommon::GetPngImageResource(UINT id)
 {
-    HINSTANCE hIns = AfxGetInstanceHandle();
-    HRSRC hRsrc = ::FindResource(hIns, MAKEINTRESOURCE(id), _T("PNG")); // type
-    if (!hRsrc)
-        return nullptr;
-    // load resource into memory
-    DWORD len = SizeofResource(hIns, hRsrc);
-    BYTE* lpRsrc = (BYTE*)LoadResource(hIns, hRsrc);
-    if (!lpRsrc)
-        return nullptr;
-    // Allocate global memory on which to create stream
-    HGLOBAL m_hMem = GlobalAlloc(GMEM_FIXED, len);
-    BYTE* pmem = (BYTE*)GlobalLock(m_hMem);
-    memcpy(pmem, lpRsrc, len);
-    IStream* pstm;
-    CreateStreamOnHGlobal(m_hMem, FALSE, &pstm);
-    // load from stream
-    Gdiplus::Image* lpImage = Gdiplus::Image::FromStream(pstm);
-    // free/release stuff
-    GlobalUnlock(m_hMem);
-    pstm->Release();
-    FreeResource(lpRsrc);
-    return lpImage;
+    Gdiplus::Image* pImage = nullptr;
+    HINSTANCE hInst = AfxGetResourceHandle();
+    if (HRSRC hRes = ::FindResource(hInst, MAKEINTRESOURCE(id), _T("PNG")))
+    {
+        DWORD imageSize = ::SizeofResource(hInst, hRes);
+        if (HGLOBAL hResData = ::LoadResource(hInst, hRes))
+        {
+            LPVOID pResourceData = ::LockResource(hResData);
+#ifdef COMPILE_IN_WIN_XP
+            if (HGLOBAL hBuffer = ::GlobalAlloc(GMEM_FIXED, imageSize))
+            {
+                ::CopyMemory(hBuffer, pResourceData, imageSize);
+                IStream* pStream = nullptr;
+                if (SUCCEEDED(::CreateStreamOnHGlobal(hBuffer, TRUE, &pStream)))
+                {
+                    pImage = Gdiplus::Image::FromStream(pStream);
+                    pStream->Release();
+                }
+                ::GlobalFree(hBuffer);  // 释放内存句柄
+            }
+#else       // 在缓冲区上创建内存流
+            if (IStream* pStream = SHCreateMemStream(static_cast<const BYTE*>(pResourceData), imageSize))
+            {
+                pImage = Gdiplus::Image::FromStream(pStream);
+                pStream->Release();
+            }
+#endif // COMPILE_IN_WIN_XP
+            ::FreeResource(hResData);
+        }
+    }
+    return pImage;
 }
 
 
 string CCommon::GetPngImageResourceData(UINT id)
 {
-    HINSTANCE hIns = AfxGetInstanceHandle();
-    HRSRC hRsrc = ::FindResource(hIns, MAKEINTRESOURCE(id), _T("PNG")); // type
-    if (!hRsrc)
-        return nullptr;
-    // load resource into memory
-    DWORD len = SizeofResource(hIns, hRsrc);
-    BYTE* lpRsrc = (BYTE*)LoadResource(hIns, hRsrc);
-    if (!lpRsrc)
-        return nullptr;
-    string data((const char*)lpRsrc, len);
-    FreeResource(lpRsrc);
+    string data;
+    HINSTANCE hInst = AfxGetResourceHandle();
+    if (HRSRC hRes = ::FindResource(hInst, MAKEINTRESOURCE(id), _T("PNG")))
+    {
+        DWORD imageSize = ::SizeofResource(hInst, hRes);
+        if (HGLOBAL hResData = ::LoadResource(hInst, hRes))
+        {
+            LPVOID pResourceData = ::LockResource(hResData);
+            data = string(static_cast<const char*>(pResourceData), imageSize);
+            ::FreeResource(hResData);
+        }
+    }
     return data;
 }
 
