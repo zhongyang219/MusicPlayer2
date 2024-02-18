@@ -587,11 +587,6 @@ UINT CFormatConvertDlg::ThreadFunc(LPVOID lpParam)
     return 0;
 }
 
-bool CFormatConvertDlg::IsTaskbarListEnable() const
-{
-    return CWinVersionHelper::IsWindows7OrLater() && m_pTaskbar != nullptr;
-}
-
 
 void CFormatConvertDlg::OnCbnSelchangeOutFormatCombo()
 {
@@ -642,10 +637,8 @@ void CFormatConvertDlg::OnBnClickedStartConvertButton()
     //创建格式转换的工作线程
     m_pThread = AfxBeginThread(ThreadFunc, this);
     m_thread_runing = true;
-#ifndef COMPILE_IN_WIN_XP
-    if (IsTaskbarListEnable())
-        m_pTaskbar->SetProgressState(this->GetSafeHwnd(), TBPF_INDETERMINATE);
-#endif
+    if (theApp.IsTaskbarInteractionEnabled())
+        theApp.GetITaskbarList3()->SetProgressState(this->GetSafeHwnd(), TBPF_INDETERMINATE);
 }
 
 
@@ -691,12 +684,8 @@ afx_msg LRESULT CFormatConvertDlg::OnConvertProgress(WPARAM wParam, LPARAM lPara
     int position, length;
     length = m_file_list.size() * 100;
     position = wParam * 100 + percent;
-#ifndef COMPILE_IN_WIN_XP
-    if (IsTaskbarListEnable())
-    {
-        m_pTaskbar->SetProgressValue(this->GetSafeHwnd(), position, length);
-    }
-#endif
+    if (theApp.IsTaskbarInteractionEnabled())
+        theApp.GetITaskbarList3()->SetProgressValue(this->GetSafeHwnd(), position, length);
     int total_percent = position * 100 / length;
     static int last_percent = -1;
     if (last_percent != total_percent)

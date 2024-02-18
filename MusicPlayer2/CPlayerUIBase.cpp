@@ -154,7 +154,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
             CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
             if (pMainWindow != nullptr)
             {
-                pMainWindow->SetThumbnailClipArea(thumbnail_rect);
+                pMainWindow->TaskBarSetClipArea(thumbnail_rect);
             }
 
             last_width = m_draw_rect.Width();

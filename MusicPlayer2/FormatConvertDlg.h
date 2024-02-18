@@ -36,8 +36,6 @@ public:
     //工作线程函数
     static UINT ThreadFunc(LPVOID lpParam);
 
-    bool IsTaskbarListEnable() const;
-
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_FORMAT_CONVERT_DIALOG };
@@ -51,10 +49,6 @@ protected:
     CComboBox m_freq_comb;
     CBrowseEdit m_out_dir_edit;
     CBrowseEdit m_out_name_edit;
-
-//#ifndef COMPILE_IN_WIN_XP
-    ITaskbarList3* m_pTaskbar{ theApp.GetITaskbarList3() };          //用于支持任务栏显示播放进度
-//#endif
 
     vector<SongInfo> m_file_list;   // 要转换格式的文件列表
     wstring m_out_dir;              // 输出目录

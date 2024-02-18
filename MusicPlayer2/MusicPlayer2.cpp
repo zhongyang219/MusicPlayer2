@@ -279,11 +279,9 @@ BOOL CMusicPlayerApp::InitInstance()
     if (m_hot_key_setting_data.global_multimedia_key_enable && !CWinVersionHelper::IsWindows81OrLater())
         m_multimedia_key_hook = SetWindowsHookEx(WH_KEYBOARD_LL, CMusicPlayerApp::MultiMediaKeyHookProc, m_hInstance, 0);
 
-#ifndef COMPILE_IN_WIN_XP
     // 初始化ITaskbarList3
-    EnableTaskbarInteraction(TRUE);
-    m_pTaskbar = theApp.GetITaskbarList3();
-#endif
+    if (CWinVersionHelper::IsWindows7OrLater())
+        EnableTaskbarInteraction(TRUE);
 
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
@@ -875,10 +873,8 @@ int CMusicPlayerApp::ExitInstance()
             log_str += item + L';';
         WriteLog(log_str);
     }
-#ifndef COMPILE_IN_WIN_XP
     // 释放ITaskbarList3
-    theApp.ReleaseTaskBarRefs();
-#endif
+    ReleaseTaskBarRefs();
 
     return CWinApp::ExitInstance();
 }

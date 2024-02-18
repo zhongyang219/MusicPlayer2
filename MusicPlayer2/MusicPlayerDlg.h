@@ -45,7 +45,6 @@ public:
 
     static CMusicPlayerDlg* GetInstance();
 
-    bool IsTaskbarListEnable() const;
     HACCEL GetAccel() const { return m_hAccel; }
     CCortanaLyric& GetCortanaLyric() { return m_cortana_lyric; }
 
@@ -213,10 +212,16 @@ protected:
     void SetPlaylistVisible();
     void SetMenubarVisible();
 
-    void UpdateTaskBarProgress();	//更新任务栏按钮上的进度
-    void UpdatePlayPauseButton();		//根据当前播放状态更新“播放/暂停”按钮上的文字和图标
-    void SetThumbnailClipArea();		//设置任务栏缩略图的区域
-    void SetThumbnailClipArea(CRect rect);		//设置任务栏缩略图的区域
+    // 初始化程序任务栏信息，窗口创建后以及窗口SW_HIDE后恢复时调用
+    void TaskBarInit();
+
+    // 更新任务栏按钮上的播放进度与进度指示的颜色，平时由主定时器调用以保持进度更新
+    void UpdateTaskBarProgress(bool force = false) const;
+    // 根据当前播放状态更新“播放/暂停”按钮上的文字和图标（以及任务栏图标角标&按钮状态）
+    void UpdatePlayPauseButton();
+    // 设置任务栏缩略图的区域
+    void TaskBarSetClipArea(CRect rect);
+
     void EnablePlaylist(bool enable);		//设置启用或禁用播放列表控件
 
     void FirstRunCreateShortcut();            // 如果是首次运行那么提示用户是否创建桌面快捷方式
@@ -256,8 +261,6 @@ protected:
 
     bool IsFloatPlaylistExist();
     bool MoveFloatPlaylistPos();
-
-    void Show(bool show);
 
     void SaveUiData();
     void LoadUiData();
