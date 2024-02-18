@@ -6,15 +6,16 @@
 #include "Player.h"
 #include "FormatConvertDlg.h"
 #include "BassCore.h"
-#include "COSUPlayerHelper.h"
-#include "TagLibHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
 #include "FileNameFormDlg.h"
+#include "MP3EncodeCfgDlg.h"
+#include "WmaEncodeCfgDlg.h"
+#include "OggEncodeCfgDlg.h"
 #include "FlacEncodeCfgDlg.h"
 #include "FilterHelper.h"
-#include "WinVersionHelper.h"
 #include "IniHelper.h"
+#include "TagEditDlg.h"
 
 #define MAX_ALBUM_COVER_SIZE (128 * 1024)                           //编码器支持的最大专辑封面大小
 #define CONVERT_TEMP_ALBUM_COVER_NAME L"cover_R1hdyFy6CoEK7Gu8"     //临时的专辑封面文件名
@@ -46,24 +47,30 @@ CFormatConvertDlg::CFormatConvertDlg(const vector<SongInfo>& items, CWnd* pParen
     : CBaseDialog(IDD_FORMAT_CONVERT_DIALOG, pParent)
 {
     //获取文件列表
-    for (auto item : items)
+    for (SongInfo item : items)
     {
         item.Normalize();
-        if (CAudioCommon::GetAudioTypeByFileName(item.file_path) == AU_MIDI)
-        {
-            //如果文件是 MIDI 音乐，则把SF2音色库信息添加到注释信息
-            CString comment;
-            comment.Format(_T("Converted from MIDI by MusicPlayer2. SF2: %s"), CPlayer::GetInstance().GetSoundFontName().c_str());
-            item.comment = comment;
-        }
-        if (!CCommon::IsItemInVector(m_file_list, [&](const SongInfo& song)
-            {
-                if (!song.is_cue)
-                    return item.file_path == song.file_path;
-                else
-                    return (item.file_path == song.file_path && item.track == song.track);
-            }))
-            m_file_list.push_back(item);
+        m_file_list.push_back(std::move(item));
+    }
+    // 确保音频文件信息更新到媒体库，并解析cue，(对于大量不存在于媒体库的新文件此方法很慢)
+    int cnt{}, percent{};
+    bool exit_flag{ false };
+    CAudioCommon::GetAudioInfo(m_file_list, cnt, exit_flag, percent, MR_MIN_REQUIRED, false);
+    // 去重
+    std::unordered_set<SongKey> song_key;
+    song_key.reserve(m_file_list.size());
+    auto new_end = std::remove_if(m_file_list.begin(), m_file_list.end(),
+        [&](const SongInfo& song) { return !song_key.emplace(song).second; }); // emplace失败说明此项目已存在，返回true移除当前项目
+    m_file_list.erase(new_end, m_file_list.end());
+    // 加载歌曲信息（与播放列表一致）
+    CSongDataManager::GetInstance().LoadSongsInfo(m_file_list);
+
+    //如果文件是 MIDI 音乐，则把SF2音色库信息添加到注释信息
+    wstring midi_comment = L"Converted from MIDI by MusicPlayer2. SF2: " + CPlayer::GetInstance().GetSoundFontName();
+    for (auto& song : m_file_list)
+    {
+        if (CAudioCommon::GetAudioTypeByFileName(song.file_path) == AU_MIDI)
+            song.comment = midi_comment;
     }
 
     m_freq_map.emplace_back(L"8 kHz", 8000);
@@ -860,9 +867,9 @@ void CFormatConvertDlg::OnAddFile()
             pos += file_name.size() + 1;
             m_file_list.push_back(SongInfo(file_name));
         }
-        // 确保音频文件信息更新到媒体库，并解析cue，(对于大量不存在于媒体库的新文件此方法很慢)
-        int cnt, percent;
-        bool exit_flag;
+        // 音频文件信息更新到媒体库，并解析cue，(对于大量不存在于媒体库的新文件此方法很慢)
+        int cnt{}, percent{};
+        bool exit_flag{ false };
         CAudioCommon::GetAudioInfo(m_file_list, cnt, exit_flag, percent, MR_MIN_REQUIRED, false);
         // 去重
         std::unordered_set<SongKey> song_key;
@@ -872,6 +879,13 @@ void CFormatConvertDlg::OnAddFile()
         m_file_list.erase(new_end, m_file_list.end());
         // 加载歌曲信息（与播放列表一致）
         CSongDataManager::GetInstance().LoadSongsInfo(m_file_list);
+        //如果文件是 MIDI 音乐，则把SF2音色库信息添加到注释信息
+        wstring midi_comment = L"Converted from MIDI by MusicPlayer2. SF2: " + CPlayer::GetInstance().GetSoundFontName();
+        for (auto& song : m_file_list)
+        {
+            if (CAudioCommon::GetAudioTypeByFileName(song.file_path) == AU_MIDI)
+                song.comment = midi_comment;
+        }
         // 刷新显示
         ShowFileList();
     }

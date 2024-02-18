@@ -1,16 +1,9 @@
 ﻿#pragma once
-#include "ListCtrlEx.h"
-#include "AudioTag.h"
-#include "MP3EncodeCfgDlg.h"
-#include "OggEncodeCfgDlg.h"
-#include "WmaEncodeCfgDlg.h"
-#include "TagEditDlg.h"
-#include "FolderBrowserDlg.h"
-#include "PlayerProgressBar.h"
-#include <map>
-#include "BrowseEdit.h"
-#include "MusicPlayer2.h"
 #include "BaseDialog.h"
+#include "IPlayerCore.h"
+#include "ListCtrlEx.h"
+#include "PlayerProgressBar.h"
+#include "BrowseEdit.h"
 
 
 //单个文件转换进度的消息
