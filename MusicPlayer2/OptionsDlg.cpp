@@ -65,6 +65,9 @@ BOOL COptionsDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
+    // 禁用最大化按钮 (子窗口中动态布局->移动属性不为无的控件会在最大化时无视滚动量设置位置)
+    ModifyStyle(WS_MAXIMIZEBOX, 0);
+
     SetIcon(theApp.m_icon_set.setting.GetIcon(true), FALSE);
 
 	//创建子对话框

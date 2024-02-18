@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include"Common.h"
 #include "TabDlg.h"
 #include "BrowseEdit.h"
 #include "MyComboBox.h"
