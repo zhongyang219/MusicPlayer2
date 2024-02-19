@@ -68,9 +68,8 @@ bool CLyricDownloadDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 
 void CLyricDownloadDlg::SetID(wstring id)
 {
-    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(m_song) };
-    song_info.SetSongId(id);
-    CSongDataManager::GetInstance().AddItem(song_info);
+    m_song.SetSongId(id);
+    CSongDataManager::GetInstance().SetSongID(m_song, m_song.song_id);
 }
 
 void CLyricDownloadDlg::SaveConfig() const
@@ -434,9 +433,13 @@ UINT CLyricDownloadDlg::LyricSearchThreadFunc(LPVOID lpParam)
 {
     CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
 	SearchThreadInfo* pInfo = (SearchThreadInfo*)lpParam;
-	wstring result;
-	pInfo->rtn = CInternetCommon::HttpPost(pInfo->url, result);		//向网易云音乐的歌曲搜索API发送http的POST请求
-	if (theApp.m_lyric_download_dialog_exit) return 0;
+    wstring url = pInfo->url;
+    wstring result;
+    bool rtn = CInternetCommon::HttpPost(url, result);        //向网易云音乐的歌曲搜索API发送http的POST请求
+    if (theApp.m_lyric_download_dialog_exit) return 0;
+    // 此处（以及大部分网络相关）有线程安全问题，HttpPost可能卡30s网络超时，要解决此问题CInternetSession的封装应当提供退出flag参数
+    // 此时如果歌词下载窗口关闭则pInfo会是野指针（比如关闭再打开此对话框会使得上面的检查无效）
+    pInfo->rtn = rtn;
 	pInfo->result = result;
 	::PostMessage(pInfo->hwnd, WM_SEARCH_COMPLATE, 0, 0);		//搜索完成后发送一个搜索完成的消息
 
@@ -447,9 +450,12 @@ UINT CLyricDownloadDlg::LyricDownloadThreadFunc(LPVOID lpParam)
 {
     CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
 	DownloadThreadInfo* pInfo = (DownloadThreadInfo*)lpParam;
-	wstring result;
-	pInfo->success = CLyricDownloadCommon::DownloadLyric(pInfo->song_id, result, pInfo->download_translate);		//下载歌词
-	if (theApp.m_lyric_download_dialog_exit) return 0;
+    wstring song_id = pInfo->song_id;
+    bool download_translate = pInfo->download_translate;
+    wstring result;
+    bool rtn = CLyricDownloadCommon::DownloadLyric(song_id, result, download_translate);  //下载歌词
+    if (theApp.m_lyric_download_dialog_exit) return 0;
+    pInfo->success = rtn;
 	pInfo->result = result;
 	::PostMessage(pInfo->hwnd, WM_DOWNLOAD_COMPLATE, (WPARAM)pInfo->save_as, 0);		//下载完成后发送一个下载完成消息（wParam用于传递是否弹出“另存为”对话框）
 	return 0;

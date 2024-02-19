@@ -28,9 +28,11 @@ UINT CCoverDownloadDlg::SongSearchThreadFunc(LPVOID lpParam)
     CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     CCoverDownloadDlg* pThis = (CCoverDownloadDlg*)lpParam;
     wstring search_result;
-    pThis->m_search_rtn = CInternetCommon::HttpPost(pThis->m_search_url, search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
+    wstring m_search_url = pThis->m_search_url;
+    bool m_search_rtn = CInternetCommon::HttpPost(m_search_url, search_result);     //向网易云音乐的歌曲搜索API发送http的POST请求
     if (theApp.m_cover_download_dialog_exit)
         return 0;
+    pThis->m_search_rtn = m_search_rtn;
     pThis->m_search_result = search_result;
     ::PostMessage(pThis->m_hWnd, WM_SEARCH_COMPLATE, 0, 0);		//搜索完成后发送一个搜索完成的消息
     return 0;
