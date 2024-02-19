@@ -65,9 +65,6 @@ BOOL COptionsDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
-    // 禁用最大化按钮 (子窗口中动态布局->移动属性不为无的控件会在最大化时无视滚动量设置位置)
-    ModifyStyle(WS_MAXIMIZEBOX, 0);
-
     SetIcon(theApp.m_icon_set.setting.GetIcon(true), FALSE);
 
 	//创建子对话框
@@ -174,14 +171,10 @@ void COptionsDlg::OnSize(UINT nType, int cx, int cy)
     CBaseDialog::OnSize(nType, cx, cy);
     if (nType != SIZE_MINIMIZED)
     {
-        //为每个子窗口设置滚动信息
+        //为每个子窗口更新滚动信息
         for (size_t i = 0; i < m_tab_vect.size(); i++)
         {
-            m_tab_vect[i]->ResetScroll();
             m_tab_vect[i]->SetScrollbarInfo(m_tab.m_tab_rect.Height(), m_tab_height[i]);
         }
-
     }
-
-    // TODO: 在此处添加消息处理程序代码
 }

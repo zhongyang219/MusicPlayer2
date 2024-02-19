@@ -26,33 +26,32 @@ CWnd* CTabDlg::GetParentWindow()
 
 void CTabDlg::SetScrollbarInfo(int nPage, int nMax)
 {
-    //初始化滚动条
+    // 获取滚动条状态
     SCROLLINFO scrollinfo;
     GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-    scrollinfo.nPage = nPage;    //设置滑块大小
-    scrollinfo.nMin = 0;
-    scrollinfo.nMax = nMax;     //设置滚动条的最大位置
-    if (scrollinfo.nMax < 0)
-        scrollinfo.nMax = 0;
-    scrollinfo.nPos = scrollinfo.nMin;
-    m_last_pos = scrollinfo.nPos;
-    SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-
-    m_scroll_enable = true;
-}
-
-void CTabDlg::ResetScroll()
-{
     if (m_scroll_enable)
-    {
-        SCROLLINFO scrollinfo;
-        GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-        int step = scrollinfo.nPos - scrollinfo.nMin;
-        scrollinfo.nPos = scrollinfo.nMin;
-        m_last_pos = scrollinfo.nPos;
-        SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-        ScrollWindow(0, step);
-    }
+        m_last_pos = scrollinfo.nPos - scrollinfo.nMin;     // 如果已启用滚动则记录当前滚动位置
+    else
+        m_scroll_enable = true;                             // 否则启用滚动
+    int reset_pos = m_last_pos;
+    // 父窗口OnSize后的新滚动状态边界检查
+    if (nMax < 0) nMax = 0;
+    if (m_last_pos > nMax - nPage) m_last_pos = nMax - nPage;
+    if (m_last_pos < 0) m_last_pos = 0;
+    // 设置滚动条状态
+    scrollinfo.nMin = 0;                // 设置滚动内容起点在窗口中的pos
+    scrollinfo.nMax = nMax;             // 设置滚动内容终点在窗口中的pos
+    scrollinfo.nPage = nPage;           // 设置实际显示内容区域高度
+    scrollinfo.nPos = m_last_pos;       // 设置当前实际显示内容区域顶端pos
+    SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+    // 复位滚动
+    if (reset_pos != 0)
+        ScrollWindow(0, reset_pos);
+    // 代替框架做出OnSize的响应 (在SetScrollInfo决定并设置滚动条是否在新状态下显示之后)
+    CBaseDialog::ResizeDynamicLayout(); // 这个方法会无视滚动更新控件位置导致控件错位，在滚动为0时调用避开这个问题
+    // 执行滚动
+    if (m_last_pos != 0)
+        ScrollWindow(0, -m_last_pos);
 }
 
 void CTabDlg::ScrollWindowSimple(int step)
@@ -67,14 +66,13 @@ void CTabDlg::ScrollWindowSimple(int step)
     }
     if (scrollinfo.nPos + static_cast<int>(scrollinfo.nPage) > scrollinfo.nMax)  //此处一定要注意加上滑块的长度，再作判断
     {
-        step -= (scrollinfo.nMax - (scrollinfo.nPos + scrollinfo.nPage));       //如果向上滚动一个距离后大于滚动条的最大位置了，则修正step的值，使窗口滚动到最下方
+        step -= (scrollinfo.nMax - (scrollinfo.nPos + scrollinfo.nPage));       //如果向下滚动一个距离后大于滚动条的最大位置了，则修正step的值，使窗口滚动到最下方
         if (step > 0)
             step = 0;
         scrollinfo.nPos = scrollinfo.nMax - scrollinfo.nPage;
     }
     SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
     ScrollWindow(0, step);
-
 }
 
 BEGIN_MESSAGE_MAP(CTabDlg, CBaseDialog)
@@ -82,6 +80,17 @@ BEGIN_MESSAGE_MAP(CTabDlg, CBaseDialog)
     ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
+
+void CTabDlg::ResizeDynamicLayout()
+{
+    // m_pDynamicLayout->Adjust()会无视窗口滚动更新控件位置
+    // 之前在父窗口OnSize后重置不可靠（进入退出最大化和贴靠时没能正常工作），也没找到检出这两种特殊OnSize的方法
+    // 框架内部调用ResizeDynamicLayout太早，来不及先复位滚动，故覆写此虚方法介入
+
+    // 如果已启用滚动那么此处不调用基类使框架的处理无效，改为在父窗口的OnSize后自行调用
+    if (!m_scroll_enable)
+        CBaseDialog::ResizeDynamicLayout();
+}
 
 BOOL CTabDlg::OnInitDialog()
 {
@@ -145,10 +154,10 @@ void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
         case SB_PAGEUP:            //Scroll one page up.
             ScrollWindowSimple(unit * step * 5);
             break;
-        case SB_PAGEDOWN:        //Scroll one page down        
+        case SB_PAGEDOWN:        //Scroll one page down
             ScrollWindowSimple(-unit * step * 5);
             break;
-        case SB_ENDSCROLL:      //End scroll     
+        case SB_ENDSCROLL:      //End scroll
             break;
         case SB_THUMBPOSITION:  //Scroll to the absolute position. The current position is provided in nPos
             break;
