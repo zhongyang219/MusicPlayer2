@@ -504,9 +504,11 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
 
 bool CMusicPlayerCmdHelper::OnRating(const SongInfo& song, DWORD command)
 {
-    if (command - ID_RATING_1 <= 5)     //如果命令是歌曲分级（应确保分级命令的ID是连续的）
+    if ((command >= ID_RATING_1 && command <= ID_RATING_5) || command == ID_RATING_NONE)     //如果命令是歌曲分级（应确保分级命令的ID是连续的）
     {
-        int rating = command - ID_RATING_1 + 1;
+        int rating = 0;
+        if (command >= ID_RATING_1 && command <= ID_RATING_5)
+            rating = command - ID_RATING_1 + 1;
         SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
         song_info.rating = static_cast<BYTE>(rating);
         bool succeed{};

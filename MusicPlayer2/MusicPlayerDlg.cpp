@@ -1329,6 +1329,8 @@ void CMusicPlayerDlg::ThemeColorChanged()
 
 void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
 {
+    bool is_main_pop = IsMainWindowPopupMenu(); // 菜单是主窗口弹出的，视为选中当前播放，否则为播放列表弹出，选中项为播放列表选中状态
+
     //设置循环模式菜单的单选标记
     RepeatMode repeat_mode{ CPlayer::GetInstance().GetRepeatMode() };
     switch (repeat_mode)
@@ -1364,7 +1366,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     //bool rating_enable = false;     //分级是否可用
     bool single_selected = selete_valid && m_items_selected.size() < 2;     //只选中了一个
     SongInfo rating_file_songinfo;
-    if (IsMainWindowPopupMenu())
+    if (is_main_pop)
     {
         rating_file_songinfo = CPlayer::GetInstance().GetCurrentSongInfo();
     }
@@ -1372,7 +1374,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     {
         rating_file_songinfo = CPlayer::GetInstance().GetPlayList()[m_item_selected];
     }
-    if (IsMainWindowPopupMenu() || single_selected)
+    if (is_main_pop || single_selected)
     {
         SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(rating_file_songinfo) };
         // 对非cue且支持读取分级的本地音频获取分级
@@ -1432,7 +1434,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
         pMenu->CheckMenuRadioItem(ID_RATING_1, ID_RATING_NONE, ID_RATING_NONE, MF_BYCOMMAND | MF_CHECKED);
 
     //设置分级菜单的启用/禁用状态
-    bool rating_menu_emable{ IsMainWindowPopupMenu() || selete_valid };
+    bool rating_menu_emable{ is_main_pop || selete_valid };
     pMenu->EnableMenuItem(ID_RATING_1, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_RATING_2, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_RATING_3, MF_BYCOMMAND | (rating_menu_emable ? MF_ENABLED : MF_GRAYED));
@@ -1447,7 +1449,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (CPlayer::GetInstance().IsContainSubFolder() ? MF_CHECKED : MF_UNCHECKED));
 
     //设置“添加到播放列表”子菜单项的可用状态
-    bool add_to_valid{ IsMainWindowPopupMenu() ? true : selete_valid };
+    bool add_to_valid{ is_main_pop ? true : selete_valid };
     bool use_default_playlist{ CPlaylistMgr::Instance().m_cur_playlist_type == PT_DEFAULT };
     pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(playlist_mode && use_default_playlist) && add_to_valid ? MF_ENABLED : MF_GRAYED));
     bool use_faourite_playlist{ CPlaylistMgr::Instance().m_cur_playlist_type == PT_FAVOURITE };
@@ -3343,54 +3345,62 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         }
     }
 
-    auto getSelectedItems = [&](std::vector<SongInfo>& item_list)
+    // 这里应当先判断ID再调用IsMainWindowPopupMenu，避免程序初始化时的无关命令导致菜单全量创建
+    // 将菜单初始化延迟到用户使用菜单有助于提高启动速度
+
+    //响应播放列表右键菜单中的“添加到播放列表”
+    if ((command >= ID_ADD_TO_DEFAULT_PLAYLIST && command <= ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE) || command == ID_ADD_TO_OTHER_PLAYLIST)
     {
-        item_list.clear();
-        if (IsMainWindowPopupMenu())      //如果当前命令是从主界面右键菜单中弹出来的，则是添加正在播放的曲目到播放列表
+        auto getSelectedItems = [&](std::vector<SongInfo>& item_list)
+            {
+                item_list.clear();
+                if (IsMainWindowPopupMenu())      //如果当前命令是从主界面右键菜单中弹出来的，则是添加正在播放的曲目到播放列表
+                {
+                    item_list.push_back(CPlayer::GetInstance().GetCurrentSongInfo());
+                }
+                else        //否则是添加选中的曲目到播放列表
+                {
+                    for (auto i : m_items_selected)
+                    {
+                        if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
+                        {
+                            item_list.push_back(CPlayer::GetInstance().GetPlayList()[i]);
+                        }
+                    }
+                }
+            };
+        CMusicPlayerCmdHelper cmd_helper;
+        if (cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command))
+            m_pCurMenu = nullptr;
+    }
+    //响应主窗口右键菜单中的分级
+    if ((command >= ID_RATING_1 && command <= ID_RATING_5) || command == ID_RATING_NONE)    //如果命令是歌曲分级（应确保分级命令的ID是连续的）
+    {
+        bool rating_failed{ false };
+        CMusicPlayerCmdHelper cmd_helper;
+        if (IsMainWindowPopupMenu())
         {
-            item_list.push_back(CPlayer::GetInstance().GetCurrentSongInfo());
+            if (!cmd_helper.OnRating(CPlayer::GetInstance().GetCurrentSongInfo(), command))
+                rating_failed = true;
         }
-        else        //否则是添加选中的曲目到播放列表
+        //响应播放列表右键菜单中的分级
+        else
         {
-            for (auto i : m_items_selected)
+            for (int i : m_items_selected)
             {
                 if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
                 {
-                    item_list.push_back(CPlayer::GetInstance().GetPlayList()[i]);
+                    SongInfo& select_file = CPlayer::GetInstance().GetPlayList()[i];
+                    if (!cmd_helper.OnRating(select_file, command))
+                        rating_failed = true;
                 }
             }
         }
-
-    };
-    //响应播放列表右键菜单中的“添加到播放列表”
-    CMusicPlayerCmdHelper cmd_helper;
-    if (cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command))
-        m_pCurMenu = nullptr;
-
-    //响应主窗口右键菜单中的分级
-    bool rating_failed{ false };
-    if (IsMainWindowPopupMenu())
-    {
-        if (!cmd_helper.OnRating(CPlayer::GetInstance().GetCurrentSongInfo(), command))
-            rating_failed = true;
-    }
-    //响应播放列表右键菜单中的分级
-    else
-    {
-        for (int i : m_items_selected)
+        if (rating_failed)
         {
-            if (i >= 0 && i < CPlayer::GetInstance().GetSongNum())
-            {
-                SongInfo& select_file = CPlayer::GetInstance().GetPlayList()[i];
-                if (!cmd_helper.OnRating(select_file, command))
-                    rating_failed = true;
-            }
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_WRITE_FAILED");
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         }
-    }
-    if (rating_failed)
-    {
-        const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_WRITE_FAILED");
-        MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
     }
 
     return CMainDialogBase::OnCommand(wParam, lParam);
