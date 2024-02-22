@@ -30,7 +30,7 @@ public:
     bool Love();
     bool Unlove(wstring track, wstring artist);
     bool Unlove();
-    bool Scrobble(list<LastFMTrack>& tracks);
+    bool Scrobble(std::list<LastFMTrack>& tracks);
     bool Scrobble();
     bool PushCurrentTrackToCache();
     void AddCurrentPlayedTime(int millisec);

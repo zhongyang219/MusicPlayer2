@@ -677,7 +677,7 @@ void CMusicPlayerApp::GetDPIFromWindow(CWnd* pWnd)
 
 wstring CMusicPlayerApp::GetSystemInfoString()
 {
-    wstringstream wss;
+    std::wstringstream wss;
     wss << L"System Info:\r\n"
         << L"Windows Version: " << CWinVersionHelper::GetMajorVersion() << L'.' << CWinVersionHelper::GetMinorVersion()
         << L" build " << CWinVersionHelper::GetBuildNumber() << L"\r\n"

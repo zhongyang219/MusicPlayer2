@@ -10,12 +10,14 @@ enum class PlaybackStatus
     Paused = 4,
 };
 
+class MediaTransControlsImpl;
+
 class MediaTransControls {
 public:
     MediaTransControls();
     ~MediaTransControls();
     void SetEnabled(bool enable);
-    bool Init();
+    bool InitSMTC();
     void loadThumbnail(wstring fn);
     void loadThumbnail(const BYTE* content, size_t size);
     void loadThumbnailFromUrl(wstring url);
@@ -32,7 +34,6 @@ public:
 
 #ifndef DISABLE_MEDIA_TRANS_CONTROLS
 private:
-    class MediaTransControlsImpl;
     std::unique_ptr<MediaTransControlsImpl> pImpl;
 #endif
 };

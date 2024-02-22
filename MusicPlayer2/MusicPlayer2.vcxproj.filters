@@ -883,6 +883,9 @@
     <ClInclude Include="MenuMgr.h">
       <Filter>功能逻辑类\MenuMgr</Filter>
     </ClInclude>
+    <ClInclude Include="MediaTransControlsImpl.h">
+      <Filter>公共的类\MediaTransControls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1340,6 +1343,9 @@
     </ClCompile>
     <ClCompile Include="MenuMgr.cpp">
       <Filter>功能逻辑类\MenuMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaTransControlsImpl.cpp">
+      <Filter>公共的类\MediaTransControls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -235,7 +235,7 @@ void SongInfo::GetArtistList(vector<wstring>& artist_list) const
             index = artist.find(str, index + 1);
         }
     }
-    auto push_back_artist = [&](size_t _Off, size_t _Count = wstring::npos)
+    auto push_back_artist = [&](size_t _Off, size_t _Count = std::wstring::npos)
     {
         wstring temp = artist.substr(_Off, _Count);
         CCommon::StringNormalize(temp);

@@ -103,7 +103,7 @@ void CPlayer::Create()
     LoadConfig();
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
-    m_controls.Init();
+    m_controls.InitSMTC();
     bool change_to_default_playlist{ !m_playlist_mode && (m_recent_path.empty() || (!COSUPlayerHelper::IsOsuFolder(m_recent_path.front().path) && !CAudioCommon::IsPathContainsAudioFile(m_recent_path.front().path, m_recent_path.front().contain_sub_folder))) };
     // 如果文件夹模式且当前文件夹没有音频文件那么切换到默认播放列表，清理无效（空）文件夹会在启动时更新媒体库进行（如果启用remove_file_not_exist_when_update）
     if (change_to_default_playlist)
@@ -129,7 +129,7 @@ void CPlayer::CreateWithFiles(const vector<wstring>& files)
     LoadConfig();
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
-    m_controls.Init();
+    m_controls.InitSMTC();
     OpenFilesInDefaultPlaylist(files);
 }
 
@@ -140,7 +140,7 @@ void CPlayer::CreateWithPath(const wstring& path)
     LoadConfig();
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
-    m_controls.Init();
+    m_controls.InitSMTC();
     OpenFolder(path);
 }
 
@@ -151,7 +151,7 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
     LoadConfig();
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
-    m_controls.Init();
+    m_controls.InitSMTC();
     wstring playlist_path_{ playlist_path };
     OpenPlaylistFile(playlist_path_);
 }

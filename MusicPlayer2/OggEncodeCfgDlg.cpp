@@ -39,7 +39,7 @@ void COggEncodeCfgDlg::SetInfoText()
     case 10: rate = 500; break;
     }
     // wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_ENCODE_OPT_OGG_QUALITY_INFO", { m_encode_para.encode_quality, rate });
-    wstringstream wss;
+    std::wstringstream wss;
     wss << m_encode_para.encode_quality << L" (" << rate << L" kbps)";
     wstring info = wss.str();
     SetDlgItemTextW(IDC_INFO_STATIC, info.c_str());
