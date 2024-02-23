@@ -16,24 +16,21 @@ class MediaTransControls {
 public:
     MediaTransControls();
     ~MediaTransControls();
-    void SetEnabled(bool enable);
-    bool InitSMTC();
-    void loadThumbnail(wstring fn);
+    bool InitSMTC(bool enable);
+    void loadThumbnail(const wstring& fn);
     void loadThumbnail(const BYTE* content, size_t size);
-    void loadThumbnailFromUrl(wstring url);
     bool IsActive();
     void ClearAll();
     void UpdateControls(PlaybackStatus status);
     void UpdateControlsMetadata(const SongInfo& song);
-    /// Update duration of stream, in milliseconds
-    void UpdateDuration(int64_t duration);
     /// Update current time, in milliseconds
-    void UpdatePosition(int64_t postion);
+    void UpdatePosition(int64_t postion, bool force = false);
     /// Update current speed
     void UpdateSpeed(float speed);
 
 #ifndef DISABLE_MEDIA_TRANS_CONTROLS
 private:
-    std::unique_ptr<MediaTransControlsImpl> pImpl;
+    std::mutex m_mutex;     // 使用pImpl指针期间锁定此互斥量
+    std::unique_ptr<MediaTransControlsImpl> pImpl = nullptr;
 #endif
 };

@@ -29,61 +29,38 @@ using namespace ABI::Windows::Storage;
 using namespace Microsoft::WRL;
 
 
-MediaTransControlsImpl::MediaTransControlsImpl()
+MediaTransControlsImpl::MediaTransControlsImpl(HWND appWindow, std::function<void(SystemMediaTransportControlsButton)> ButtonCallback, std::function<void(INT64)> SeekCallback, std::function<void(double)> SetSpeedCallback)
 {
-}
-
-MediaTransControlsImpl::~MediaTransControlsImpl()
-{
-    if (controls && m_EventRegistrationToken.value) {
-        controls->remove_ButtonPressed(m_EventRegistrationToken);
-    }
-    if (controls2 && m_EventRegistrationToken2.value) {
-        controls2->remove_PlaybackPositionChangeRequested(m_EventRegistrationToken2);
-    }
-    if (controls2 && m_EventRegistrationToken3.value) {
-        controls2->remove_PlaybackRateChangeRequested(m_EventRegistrationToken3);
-    }
-}
-
-void MediaTransControlsImpl::SetEnabled(bool enable)
-{
-    m_enabled = enable;
-}
-
-bool MediaTransControlsImpl::InitSMTC(HWND appWindow, std::function<void(SystemMediaTransportControlsButton)> ButtonCallback, std::function<void(INT64)> SeekCallback, std::function<void(double)> SetSpeedCallback)
-{
-    if (!m_enabled || m_initailzed) return true;
     CComPtr<ISystemMediaTransportControlsInterop> op;
     HRESULT ret;
     if ((ret = GetActivationFactory(HStringReference(RuntimeClass_Windows_Media_SystemMediaTransportControls).Get(), &op)) != S_OK) {
         controls = nullptr;
-        return false;
+        return;
     }
     if ((ret = op->GetForWindow(appWindow, IID_PPV_ARGS(&controls))) != S_OK) {
         controls = nullptr;
-        return false;
+        return;
     }
     controls->put_PlaybackStatus(MediaPlaybackStatus::MediaPlaybackStatus_Closed);
     ret = controls->get_DisplayUpdater(&this->updater);
     ASSERT(ret == S_OK);
     if (ret != S_OK) {
         controls = nullptr;
-        return false;
+        return;
     }
     ret = updater->put_Type(MediaPlaybackType::MediaPlaybackType_Music);
     ASSERT(ret == S_OK);
     if (ret != S_OK) {
         controls = nullptr;
         updater = nullptr;
-        return false;
+        return;
     }
     ret = updater->get_MusicProperties(&music);
     ASSERT(ret == S_OK);
     if (ret != S_OK) {
         controls = nullptr;
         updater = nullptr;
-        return false;
+        return;
     }
     auto callbackButtonPressed = Callback<ABI::Windows::Foundation::ITypedEventHandler<SystemMediaTransportControls*, SystemMediaTransportControlsButtonPressedEventArgs*>>(
         [ButtonCallback](ISystemMediaTransportControls*, ISystemMediaTransportControlsButtonPressedEventArgs* pArgs) {
@@ -101,7 +78,7 @@ bool MediaTransControlsImpl::InitSMTC(HWND appWindow, std::function<void(SystemM
         controls = nullptr;
         updater = nullptr;
         music = nullptr;
-        return false;
+        return;
     }
     controls->put_IsPlayEnabled(true);
     controls->put_IsPauseEnabled(true);
@@ -110,7 +87,6 @@ bool MediaTransControlsImpl::InitSMTC(HWND appWindow, std::function<void(SystemM
     controls->put_IsNextEnabled(true);
     ret = controls->put_IsEnabled(true);
     ASSERT(ret == S_OK);
-    m_initailzed = true;
     ret = ActivateInstance(HStringReference(RuntimeClass_Windows_Media_SystemMediaTransportControlsTimelineProperties).Get(), &timeline);
     if (timeline && ret == S_OK) {
         timeline->put_StartTime(ABI::Windows::Foundation::TimeSpan{ 0 });
@@ -144,7 +120,23 @@ bool MediaTransControlsImpl::InitSMTC(HWND appWindow, std::function<void(SystemM
             });
         controls2->add_PlaybackRateChangeRequested(callbackPlaybackRateChangeRequested.Get(), &m_EventRegistrationToken3);
     }
-    return true;
+}
+
+MediaTransControlsImpl::~MediaTransControlsImpl()
+{
+    if (controls && m_EventRegistrationToken.value) {
+        controls->remove_ButtonPressed(m_EventRegistrationToken);
+    }
+    if (controls2 && m_EventRegistrationToken2.value) {
+        controls2->remove_PlaybackPositionChangeRequested(m_EventRegistrationToken2);
+    }
+    if (controls2 && m_EventRegistrationToken3.value) {
+        controls2->remove_PlaybackRateChangeRequested(m_EventRegistrationToken3);
+    }
+    if (updater)
+        updater->ClearAll();
+    if (controls)
+        controls->put_IsEnabled(false);
 }
 
 namespace {
@@ -167,9 +159,9 @@ namespace {
     }
 }
 
-void MediaTransControlsImpl::loadThumbnailFromFile(wstring file_path)
+void MediaTransControlsImpl::loadThumbnailFromFile(const wstring& file_path)
 {
-    if (!m_enabled || !file_path.length() || !updater) return;
+    if (!file_path.length() || !updater) return;
     HRESULT ret;
     CComPtr<IStorageFileStatics> sfs;
     if ((ret = GetActivationFactory(HStringReference(RuntimeClass_Windows_Storage_StorageFile).Get(), &sfs)) != S_OK) {
@@ -201,7 +193,7 @@ void MediaTransControlsImpl::loadThumbnailFromFile(wstring file_path)
 
 void MediaTransControlsImpl::loadThumbnailFromBuff(const BYTE* content, size_t size)
 {
-    if (!m_enabled || !content || !size || !updater) return;
+    if (!content || !size || !updater) return;
     ComPtr<Streams::IRandomAccessStream> s;
     HRESULT ret;
     if ((ret = ActivateInstance(HStringReference(RuntimeClass_Windows_Storage_Streams_InMemoryRandomAccessStream).Get(), s.GetAddressOf())) != S_OK) {
@@ -222,9 +214,9 @@ void MediaTransControlsImpl::loadThumbnailFromBuff(const BYTE* content, size_t s
     updater->Update();
 }
 
-void MediaTransControlsImpl::loadThumbnailFromUrl(wstring url)
+void MediaTransControlsImpl::loadThumbnailFromUrl(const wstring& url)
 {
-    if (!m_enabled || !url.length() || !updater) return;
+    if (!url.length() || !updater) return;
     HRESULT ret;
     CComPtr<ABI::Windows::Foundation::IUriRuntimeClassFactory> u;
     if ((ret = Windows::Foundation::GetActivationFactory(HStringReference(RuntimeClass_Windows_Foundation_Uri).Get(), &u)) != S_OK) {
@@ -249,8 +241,6 @@ void MediaTransControlsImpl::loadThumbnailFromUrl(wstring url)
 
 bool MediaTransControlsImpl::IsActive()
 {
-    if (!m_enabled)
-        return false;
     if (controls) {
         boolean enabled;
         HRESULT hr;
@@ -263,14 +253,12 @@ bool MediaTransControlsImpl::IsActive()
 
 void MediaTransControlsImpl::ClearAll()
 {
-    if (m_enabled && updater)
+    if (updater)
         updater->ClearAll();
 }
 
 void MediaTransControlsImpl::UpdateDuration(int64_t duration)
 {
-    if (!m_enabled)
-        return;
     HRESULT hr;
     if (timeline) {
         hr = timeline->put_EndTime(ABI::Windows::Foundation::TimeSpan{ duration * 10000 });
@@ -286,8 +274,6 @@ void MediaTransControlsImpl::UpdateDuration(int64_t duration)
 
 void MediaTransControlsImpl::UpdatePosition(int64_t postion)
 {
-    if (!m_enabled)
-        return;
     HRESULT hr;
     if (timeline) {
         hr = timeline->put_Position(ABI::Windows::Foundation::TimeSpan{ postion * 10000 });
@@ -301,7 +287,7 @@ void MediaTransControlsImpl::UpdatePosition(int64_t postion)
 
 void MediaTransControlsImpl::UpdateSpeed(float speed)
 {
-    if (m_enabled && controls2) {
+    if (controls2) {
         auto ret = controls2->put_PlaybackRate(speed);
         ASSERT(ret == S_OK);
     }
@@ -309,18 +295,20 @@ void MediaTransControlsImpl::UpdateSpeed(float speed)
 
 void MediaTransControlsImpl::UpdateControls(MediaPlaybackStatus status)
 {
-    if (m_enabled && controls)
+    if (controls)
         controls->put_PlaybackStatus(status);
 }
 
 void MediaTransControlsImpl::UpdateControlsMetadata(const wstring& title, const wstring& artist, const wstring& album_artist, const wstring& album_title, const vector<wstring>& genres, UINT track, UINT track_count)
 {
-    if (m_enabled && updater && music)
+    if (updater && music)
     {
         HRESULT ret = 0;
         ret = updater->put_Type(MediaPlaybackType::MediaPlaybackType_Music);
+        ASSERT(ret == S_OK);
         // 标题
         ret = music->put_Title(HStringReference(title.c_str()).Get());
+        ASSERT(ret == S_OK);
         // 艺术家
         ret = music->put_Artist(HStringReference(artist.c_str()).Get());
         ASSERT(ret == S_OK);

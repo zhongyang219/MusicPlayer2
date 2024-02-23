@@ -8,18 +8,16 @@ using ABI::Windows::Media::MediaPlaybackStatus;
 class MediaTransControlsImpl
 {
 public:
-    MediaTransControlsImpl();
-    ~MediaTransControlsImpl();
-
-    void SetEnabled(bool enable);
-    bool InitSMTC(HWND appWindow,
+    MediaTransControlsImpl(HWND appWindow,
         std::function<void(SystemMediaTransportControlsButton)> ButtonCallback,
         std::function<void(INT64)> SeekCallback,
         std::function<void(DOUBLE)> SetSpeedCallback
     );
-    void loadThumbnailFromFile(wstring file_path);
+    ~MediaTransControlsImpl();
+
+    void loadThumbnailFromFile(const wstring& file_path);
     void loadThumbnailFromBuff(const BYTE* content, size_t size);
-    void loadThumbnailFromUrl(wstring url);
+    void loadThumbnailFromUrl(const wstring& url);
     bool IsActive();
     void ClearAll();
     void UpdateDuration(int64_t duration);
@@ -29,8 +27,6 @@ public:
     void UpdateControlsMetadata(const wstring& title, const wstring& artist, const wstring& album_artist, const wstring& album_title, const vector<wstring>& genres, UINT track, UINT track_count);
 
 private:
-    bool m_initailzed = false;
-    bool m_enabled = true;
     CComPtr<ABI::Windows::Media::ISystemMediaTransportControlsTimelineProperties> timeline = nullptr;
     CComPtr<ABI::Windows::Media::ISystemMediaTransportControlsDisplayUpdater> updater = nullptr;
     Microsoft::WRL::ComPtr<ABI::Windows::Media::ISystemMediaTransportControls> controls = nullptr;

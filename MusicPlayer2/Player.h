@@ -340,7 +340,7 @@ public:
     void SlowDown();
     void SetOrignalSpeed();
     void SetSpeed(float speed);
-    float GetSpeed() { return m_speed; }
+    float GetSpeed() const { return m_speed; }
 
 private:
     // 获取CPlayer操作播放内核时产生的错误写入错误日志
@@ -514,11 +514,11 @@ public:
 
 
     MediaTransControls m_controls;
-    void UpdateControlsMetadata(SongInfo info);
-    void UpdateLastFMCurrentTrack(SongInfo info);
+    void UpdateLastFMCurrentTrack(const SongInfo& info);
 
+    // 更新SMTC封面，从路径为m_album_cover_path的图片文件
+    void MediaTransControlsLoadThumbnail();
 private:
-    void MediaTransControlsLoadThumbnail(std::wstring& file_path);
     void MediaTransControlsLoadThumbnailDefaultImage();
 
 public:

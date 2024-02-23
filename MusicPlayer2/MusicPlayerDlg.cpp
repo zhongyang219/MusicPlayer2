@@ -1151,6 +1151,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool playlist_item_height_changed{ theApp.m_media_lib_setting_data.playlist_item_height != optionDlg.m_media_lib_dlg.m_data.playlist_item_height };
     bool need_restart_player{ theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI != optionDlg.m_tab4_dlg.m_data.ffmpeg_core_enable_WASAPI
     || (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI && (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode != optionDlg.m_tab4_dlg.m_data.ffmpeg_core_enable_WASAPI_exclusive_mode)) };
+    bool SMTC_enable_changed{ theApp.m_play_setting_data.use_media_trans_control != optionDlg.m_tab4_dlg.m_data.use_media_trans_control };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1223,15 +1224,25 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         OnReloadLyric();
     }
 
-    //if (timer_interval_changed)
-    //{
-    //    KillTimer(TIMER_ID);
-    //    SetTimer(TIMER_ID, theApp.m_app_setting_data.ui_refresh_interval, NULL);
-    //    if (m_miniModeDlg.GetSafeHwnd() != NULL)
-    //    {
-    //        ::SendMessage(m_miniModeDlg.GetSafeHwnd(), WM_TIMER_INTERVAL_CHANGED, 0, 0);
-    //    }
-    //}
+    if (SMTC_enable_changed)
+    {
+        CPlayer::GetInstance().m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
+        if (theApp.m_play_setting_data.use_media_trans_control) // 如果设置从禁用更改为启用那么更新一次状态
+        {
+            PlaybackStatus status;
+            switch (CPlayer::GetInstance().GetPlayingState2())
+            {
+            case 0: status = PlaybackStatus::Stopped; break;
+            case 1: status = PlaybackStatus::Paused; break;
+            case 2: status = PlaybackStatus::Playing; break;
+            }
+            CPlayer::GetInstance().m_controls.UpdateControls(status);
+            CPlayer::GetInstance().m_controls.UpdateControlsMetadata(CPlayer::GetInstance().GetCurrentSongInfo());
+            CPlayer::GetInstance().m_controls.UpdatePosition(CPlayer::GetInstance().GetCurrentPosition(), true);
+            CPlayer::GetInstance().m_controls.UpdateSpeed(CPlayer::GetInstance().GetSpeed());
+            CPlayer::GetInstance().MediaTransControlsLoadThumbnail();
+        }
+    }
 
     if (notify_icon_changed)
     {
@@ -2450,10 +2461,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
 
         //获取频谱分析数据
         CPlayer::GetInstance().CalculateSpectralData();
-        //if (CPlayer::GetInstance().IsPlaying())
-        //{
-        //    CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
-        //}
+
 
         // 这里在更改播放状态，需要先取得锁，没有成功取得锁的话下次再试
         if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock())

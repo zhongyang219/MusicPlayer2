@@ -1148,7 +1148,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,40,146,8
     CONTROL         "Continue playing when switch playlist",IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,170,40,160,8
-    CONTROL         "Use system media transport controls (Need to restart)",IDC_USE_MEDIA_TRANS_CONTORL_CHECK,
+    CONTROL         "Use system media transport controls",IDC_USE_MEDIA_TRANS_CONTORL_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,52,316,8
     GROUPBOX        "Player Kernal",IDC_TXT_OPT_PLAY_CORE_STATIC,7,71,330,40
     CONTROL         "BASS",IDC_BASS_RADIO,"Button",BS_AUTORADIOBUTTON,14,84,146,8

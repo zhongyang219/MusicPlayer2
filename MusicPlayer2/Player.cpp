@@ -83,7 +83,6 @@ void CPlayer::IniPlayerCore()
 
         m_pCore->InitCore();
     }
-    m_controls.SetEnabled(theApp.m_play_setting_data.use_media_trans_control);
 }
 
 void CPlayer::UnInitPlayerCore()
@@ -103,7 +102,7 @@ void CPlayer::Create()
     LoadConfig();
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
-    m_controls.InitSMTC();
+    m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
     bool change_to_default_playlist{ !m_playlist_mode && (m_recent_path.empty() || (!COSUPlayerHelper::IsOsuFolder(m_recent_path.front().path) && !CAudioCommon::IsPathContainsAudioFile(m_recent_path.front().path, m_recent_path.front().contain_sub_folder))) };
     // 如果文件夹模式且当前文件夹没有音频文件那么切换到默认播放列表，清理无效（空）文件夹会在启动时更新媒体库进行（如果启用remove_file_not_exist_when_update）
     if (change_to_default_playlist)
@@ -129,7 +128,7 @@ void CPlayer::CreateWithFiles(const vector<wstring>& files)
     LoadConfig();
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
-    m_controls.InitSMTC();
+    m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
     OpenFilesInDefaultPlaylist(files);
 }
 
@@ -140,7 +139,7 @@ void CPlayer::CreateWithPath(const wstring& path)
     LoadConfig();
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
-    m_controls.InitSMTC();
+    m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
     OpenFolder(path);
 }
 
@@ -151,7 +150,7 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
     LoadConfig();
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
-    m_controls.InitSMTC();
+    m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
     wstring playlist_path_{ playlist_path };
     OpenPlaylistFile(playlist_path_);
 }
@@ -332,7 +331,7 @@ void CPlayer::IniPlaylistComplate()
         m_album_cover.Destroy();
         m_album_cover_blur.Destroy();
         m_Lyrics = CLyrics();
-        UpdateControlsMetadata(SongInfo());
+        m_controls.UpdateControlsMetadata(SongInfo());
         MediaTransControlsLoadThumbnailDefaultImage();
     }
 
@@ -493,7 +492,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         else
             m_pCore->ClearReverb();
         PostMessage(theApp.m_pMainWnd->m_hWnd, WM_MUSIC_STREAM_OPENED, 0, 0);
-        UpdateControlsMetadata(GetCurrentSongInfo());
+        m_controls.UpdateControlsMetadata(GetCurrentSongInfo());
         m_controls.UpdateControls(PlaybackStatus::Closed);          // OPEN时设置为停止，PLAY时再设置为PLAY
         m_enable_lastfm = theApp.m_media_lib_setting_data.enable_lastfm;
         if (m_enable_lastfm) {
@@ -1608,7 +1607,7 @@ void CPlayer::AfterRemoveSong(bool is_current)
             m_album_cover.Destroy();
             m_album_cover_blur.Destroy();
             m_Lyrics = CLyrics();
-            UpdateControlsMetadata(SongInfo());
+            m_controls.UpdateControlsMetadata(SongInfo());
             MediaTransControlsLoadThumbnailDefaultImage();
         }
         else    // 播放列表不为空时先确保索引有效再打开/播放（最接近的曲目）
@@ -2477,7 +2476,7 @@ void CPlayer::SearchAlbumCover()
         {
             m_album_cover.Load(m_album_cover_path.c_str());
             AlbumCoverResize();
-            MediaTransControlsLoadThumbnail(m_album_cover_path);
+            MediaTransControlsLoadThumbnail();
         }
     }
     m_inner_cover = !m_album_cover.IsNull();
@@ -2597,7 +2596,7 @@ void CPlayer::SearchOutAlbumCover()
         m_album_cover.Destroy();
     m_album_cover.Load(m_album_cover_path.c_str());
     AlbumCoverResize();
-    MediaTransControlsLoadThumbnail(m_album_cover_path);
+    MediaTransControlsLoadThumbnail();
 }
 
 bool CPlayer::IsOsuFile() const
@@ -2634,28 +2633,22 @@ bool CPlayer::IsFfmpegCore() const {
     return m_pCore ? m_pCore->GetCoreType() == PT_FFMPEG : false;
 }
 
-void CPlayer::UpdateControlsMetadata(SongInfo info)
+void CPlayer::MediaTransControlsLoadThumbnail()
 {
-    m_controls.UpdateDuration(info.length().toInt());
-    m_controls.UpdateControlsMetadata(info);
-}
-
-void CPlayer::MediaTransControlsLoadThumbnail(std::wstring& file_path)
-{
-    if (CCommon::FileExist(file_path))
+    if (CCommon::FileExist(m_album_cover_path))
     {
-        if (CCommon::IsFileHidden(file_path))
+        if (CCommon::IsFileHidden(m_album_cover_path))
         {
             //如果专辑封面图片文件已隐藏，先将文件复制到Temp目录，再取消隐藏属性
             wstring temp_img_path{ CCommon::GetTemplatePath() + ALBUM_COVER_TEMP_NAME2 };
-            CopyFile(file_path.c_str(), temp_img_path.c_str(), FALSE);
+            CopyFile(m_album_cover_path.c_str(), temp_img_path.c_str(), FALSE);
             CCommon::SetFileHidden(temp_img_path, false);
             m_controls.loadThumbnail(temp_img_path);
         }
         else
         {
             //专辑封面图片文件未隐藏
-            m_controls.loadThumbnail(file_path);
+            m_controls.loadThumbnail(m_album_cover_path);
         }
     }
     else
@@ -2675,7 +2668,7 @@ void CPlayer::MediaTransControlsLoadThumbnailDefaultImage()
     }
 }
 
-void CPlayer::UpdateLastFMCurrentTrack(SongInfo info) {
+void CPlayer::UpdateLastFMCurrentTrack(const SongInfo& info) {
     LastFMTrack track;
     track.ReadDataFrom(info);
     auto& current = theApp.m_lastfm.CurrentTrack();

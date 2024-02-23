@@ -8,7 +8,7 @@
 #include "WinVersionHelper.h"
 #include "resource.h"
 
-MediaTransControls::MediaTransControls() : pImpl(std::make_unique<MediaTransControlsImpl>())
+MediaTransControls::MediaTransControls()
 {
 }
 
@@ -16,13 +16,13 @@ MediaTransControls::~MediaTransControls()
 {
 }
 
-void MediaTransControls::SetEnabled(bool enable)
+bool MediaTransControls::InitSMTC(bool enable)
 {
-    pImpl->SetEnabled(enable);
-}
+    std::lock_guard<std::mutex> lock(m_mutex);
+    pImpl.reset();
+    if (!enable)
+        return true;
 
-bool MediaTransControls::InitSMTC()
-{
     /// Windows 8.1 or later is required
     if (!CWinVersionHelper::IsWindows81OrLater())
         return false;
@@ -59,12 +59,14 @@ bool MediaTransControls::InitSMTC()
         {
             CPlayer::GetInstance().SetSpeed(static_cast<float>(rate));
         };
-
-    return pImpl->InitSMTC(AfxGetMainWnd()->GetSafeHwnd(), ButtonCallback, SeekCallback, SetSpeedCallback);
+    pImpl = std::make_unique<MediaTransControlsImpl>(AfxGetMainWnd()->GetSafeHwnd(), ButtonCallback, SeekCallback, SetSpeedCallback);
+    return pImpl->IsActive();
 }
 
-void MediaTransControls::loadThumbnail(wstring fn)
+void MediaTransControls::loadThumbnail(const wstring& fn)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (!pImpl) return;
     auto i = fn.find(L"://");
     if (i != std::wstring::npos && i > 1)
         pImpl->loadThumbnailFromUrl(fn);
@@ -74,21 +76,29 @@ void MediaTransControls::loadThumbnail(wstring fn)
 
 void MediaTransControls::loadThumbnail(const BYTE* content, size_t size)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (!pImpl) return;
     pImpl->loadThumbnailFromBuff(content, size);
 }
 
 bool MediaTransControls::IsActive()
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (!pImpl) return false;
     return pImpl->IsActive();
 }
 
 void MediaTransControls::ClearAll()
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (!pImpl) return;
     pImpl->ClearAll();
 }
 
 void MediaTransControls::UpdateControls(PlaybackStatus status)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (!pImpl) return;
     MediaPlaybackStatus status_media{};
     switch (status)
     {
@@ -104,23 +114,30 @@ void MediaTransControls::UpdateControls(PlaybackStatus status)
 
 void MediaTransControls::UpdateControlsMetadata(const SongInfo& song)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (!pImpl) return;
     const wstring& title = (!song.IsTitleEmpty() || song.file_path.empty()) ? song.GetTitle() : song.GetFileName();
     vector<wstring> genres(1, song.GetGenre());
     pImpl->UpdateControlsMetadata(title, song.GetAlbum(), song.album_artist, song.GetAlbum(), genres, song.track, song.total_tracks);
+    pImpl->UpdateDuration(song.length().toInt());   // milliseconds
 }
 
-void MediaTransControls::UpdateDuration(int64_t duration)
+void MediaTransControls::UpdatePosition(int64_t postion, bool force)
 {
-    pImpl->UpdateDuration(duration);
-}
-
-void MediaTransControls::UpdatePosition(int64_t postion)
-{
+    // 降低更新频率，每秒更新一次，在我的系统（win10使用ModernFlyouts）实际最高有效值大概是500ms一次
+    static int64_t last{};
+    if (last == postion / 1000 && !force)
+        return;
+    last = postion / 1000;
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (!pImpl) return;
     pImpl->UpdatePosition(postion);
 }
 
 void MediaTransControls::UpdateSpeed(float speed)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (!pImpl) return;
     pImpl->UpdateSpeed(speed);
 }
 
@@ -129,15 +146,13 @@ void MediaTransControls::UpdateSpeed(float speed)
 MediaTransControls::MediaTransControls() {}
 MediaTransControls::~MediaTransControls() {}
 void MediaTransControls::SetEnabled(bool enable) {}
-bool MediaTransControls::InitSMTC() { return false; }
+bool MediaTransControls::InitSMTC(bool enable) { return false; }
 void MediaTransControls::loadThumbnail(wstring fn) {}
 void MediaTransControls::loadThumbnail(const BYTE* content, size_t size) {}
-void MediaTransControls::loadThumbnailFromUrl(wstring url) {}
 bool MediaTransControls::IsActive() { return false; }
 void MediaTransControls::ClearAll() {}
 void MediaTransControls::UpdateControls(PlaybackStatus status) {}
 void MediaTransControls::UpdateControlsMetadata(const SongInfo& song) {}
-void MediaTransControls::UpdateDuration(int64_t duration) {}
 void MediaTransControls::UpdatePosition(int64_t postion) {}
 void MediaTransControls::UpdateSpeed(float speed) {}
 
