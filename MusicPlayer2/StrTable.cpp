@@ -50,7 +50,7 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
         item.file_name = file_name;
         item.display_name = file.GetString(L"general", L"DISPLAY_NAME", file_name.c_str());
         item.bcp_47 = tag;
-        item.default_font_name = file.GetString(L"general", L"DEFAULT_FONT", L"Segoe UI");
+        item.default_font_name = file.GetString(L"general", L"DEFAULT_FONT", L"");    // 字体默认值为空（跟随系统）
         if (language_tag_setting == tag)
         {
             InitMapFromIniHelper(file);

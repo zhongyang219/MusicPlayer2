@@ -61,8 +61,8 @@ bool CHotKeySettingDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_HOOK_MULTI_MEDIA_KEY_ENABLE");
     SetDlgItemTextW(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK, temp.c_str());
     // IDC_HOT_KEY_LIST
-    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY");
-    SetDlgItemTextW(IDC_TXT_OPT_HOT_KEY_SHORTCUT_KEY_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_HOT_KEY_SHORTCUT_KEY_SEL_STATIC, temp.c_str());
     // IDC_HOTKEY1
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY_SET");
     SetDlgItemTextW(IDC_SET_BUTTON, temp.c_str());
