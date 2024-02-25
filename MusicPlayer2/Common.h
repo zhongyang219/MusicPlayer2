@@ -111,6 +111,9 @@ public:
 
     static bool CharIsNumber(wchar_t ch);
 
+    // 按换行分割字符串，自适应CR/LF/CRLF换行
+    static void StringSplitLine(const wstring& source_str, vector<wstring>& results, bool skip_empty = true, bool trim = true);
+
     //将一个字符串分割成若干个字符串
     //str: 原始字符串
     //div_ch: 用于分割的字符

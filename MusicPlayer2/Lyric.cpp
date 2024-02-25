@@ -30,13 +30,8 @@ CLyrics::CLyrics(const wstring& file_name, const LyricType& lyric_type) : m_file
 
 void CLyrics::LyricsFromRowString(const wstring& lyric_str, const LyricType& lyric_type)
 {
-    vector<wstring> results;
-    CCommon::StringSplit(lyric_str, L'\n', results, false);
-    for (auto& str : results)
-    {
-        CCommon::StringNormalize(str);
-        m_lyrics_str.push_back(str);
-    }
+    CCommon::StringSplitLine(lyric_str, m_lyrics_str, false, true);
+
     ASSERT(lyric_type != LyricType::LY_AUTO);
     // 按歌词类型调用解析方法
     if (lyric_type == LyricType::LY_LRC)

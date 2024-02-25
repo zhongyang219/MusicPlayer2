@@ -191,6 +191,40 @@ bool CCommon::CharIsNumber(wchar_t ch)
     return (ch >= L'0' && ch <= L'9');
 }
 
+void CCommon::StringSplitLine(const wstring& source_str, vector<wstring>& results, bool skip_empty, bool trim)
+{
+    results.clear();
+    if (source_str.empty())
+        return;
+
+    auto push_back_str = [&](const wchar_t* start, const wchar_t* end)
+        {
+            wstring tmp(start, end);
+            if (trim)
+                StringNormalize(tmp);
+            if (!skip_empty || !tmp.empty())
+                results.push_back(std::move(tmp));
+        };
+
+    const wchar_t* line_start_pos = source_str.data();
+    const wchar_t* cur_pos = line_start_pos;
+    const wchar_t* end_pos = line_start_pos + source_str.size();
+    while (cur_pos < end_pos)
+    {
+        if (*cur_pos == L'\r' || *cur_pos == L'\n')
+        {
+            push_back_str(line_start_pos, cur_pos);
+            ++cur_pos;                                          // 指针移动到下一个字符
+            if (*cur_pos == L'\n' && *(cur_pos - 1) == L'\r')   // 如果下一个字符是LF且位于CR后面那么跳过
+                ++cur_pos;
+            line_start_pos = cur_pos;
+        }
+        else
+            ++cur_pos;
+    }
+    push_back_str(line_start_pos, cur_pos);
+}
+
 void CCommon::StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& results, bool skip_empty, bool trim)
 {
     results.clear();
