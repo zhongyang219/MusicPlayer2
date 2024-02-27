@@ -140,7 +140,8 @@ private:
     HHOOK m_multimedia_key_hook = NULL;
 
     int m_dpi{};
-    bool m_song_data_modified{ false };
+
+    vector<wstring> m_def_lang_list;        // 线程启动时的默认UI语言列表（仅用于GetSystemInfoString）
 
     ULONG_PTR m_gdiplusToken;
     bool m_media_lib_updating{ false };

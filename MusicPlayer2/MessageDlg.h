@@ -48,5 +48,4 @@ protected:
 public:
     virtual BOOL OnInitDialog();
     afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
-    afx_msg void OnEnSetfocusHelpEdit();
 };

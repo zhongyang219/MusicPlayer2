@@ -14,7 +14,7 @@ public:
         wstring display_name;           // 在语言设置下拉菜单显示的字符串
         wstring bcp_47;                 // BCP-47代码
         wstring default_font_name;      // 默认字体
-        // vector<wstring> translator;
+        vector<wstring> translator;
     };
 public:
     // 初始化string table，同时也负责处理语言相关设置

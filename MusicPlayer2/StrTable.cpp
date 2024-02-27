@@ -19,24 +19,25 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
     bool expected = false;
     if (!initialized.compare_exchange_strong(expected, true))
         return false;
-    std::map<wstring, LanguageInfo> list;   // 使用map自动去重与排序
 
-    static const wstring MenuAppName = L"menu.";
-
-    auto InitMapFromIniHelper = [this](const CIniHelper& ini) {
+    auto InitMapFromIniHelper = [this](const CIniHelper& ini)
+    {
+        static const wstring MenuAppName = L"menu.";
         ini.GetAllKeyValues(L"text", m_text_string_table);
         ini.GetAllKeyValues(L"scintlla", m_scintilla_string_table);
-        const auto list = ini.GetAllAppName(MenuAppName);
+        const auto& list = ini.GetAllAppName(MenuAppName);
         for (const auto& item : list)
             ini.GetAllKeyValues(MenuAppName + item, m_menu_string_table[item]);
-        };
+    };
 
-    // 存在外部en-US文件时这里设置的list项目会被覆写（下面根据LanguageInfo.file_name是否为空判断是否存在外部英文翻译）
-    list.emplace(L"en-US", LanguageInfo{ L"", L"English <Default>", L"en-US", L"Segoe UI" });
-    // 加载内嵌资源作为默认值确保外部翻译文件不完整/不存在时的正常使用
-    CIniHelper default_ini(IDR_STRING_TABLE);
-    InitMapFromIniHelper(default_ini);
-    // 即使最终决定是en-US接下来也再加载一次外部翻译，使文本无须重新编译即可修改
+    std::map<wstring, LanguageInfo> list;   // 使用map自动去重与排序
+
+    {   // 加载内嵌资源作为默认值确保外部翻译文件不完整/不存在时的正常使用
+        // 存在外部en-US文件时这里设置的list项目会被覆写（下面根据LanguageInfo.file_name是否为空判断是否存在外部英文翻译）
+        list.emplace(L"en-US", LanguageInfo{ L"", L"English <Default>", L"en-US", L"Segoe UI", { L"<MusicPlayer2>" } });
+        CIniHelper default_ini(IDR_STRING_TABLE);
+        InitMapFromIniHelper(default_ini);
+    }   // 即使最终决定是en-US接下来也再加载一次外部翻译，使文本无须重新编译即可修改
 
     bool succeed{};
     vector<wstring> files;
@@ -51,6 +52,7 @@ bool StrTable::Init(const wstring& language_dir, wstring& language_tag_setting)
         item.display_name = file.GetString(L"general", L"DISPLAY_NAME", file_name.c_str());
         item.bcp_47 = tag;
         item.default_font_name = file.GetString(L"general", L"DEFAULT_FONT", L"");    // 字体默认值为空（跟随系统）
+        file.GetStringList(L"general", L"TRANSLATOR", item.translator, vector<wstring>{ L"<Unknown>" });
         if (language_tag_setting == tag)
         {
             InitMapFromIniHelper(file);

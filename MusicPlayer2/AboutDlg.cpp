@@ -309,9 +309,22 @@ void CAboutDlg::OnNMClickAcknowledgementSyslink(NMHDR* pNMHDR, LRESULT* pResult)
     // TODO: 在此添加控件通知处理程序代码
     CMessageDlg dlg(L"AcknowledgementDlg");
     dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_ACKNOWLEDGEMENT"));
-    wstring info = theApp.m_str_table.LoadText(L"TXT_ACKNOWLEDGEMENT_INFO") + L"\r\n";
-    info += CCommon::GetTextResource(IDR_ACKNOWLEDGEMENT, CodeType::UTF8_NO_BOM);
-    dlg.SetMessageText(info);
+    std::wstringstream wss;
+    wss << theApp.m_str_table.LoadText(L"TXT_ACKNOWLEDGEMENT_INFO") << L"\r\n"
+        << CCommon::GetTextResource(IDR_ACKNOWLEDGEMENT, CodeType::UTF8_NO_BOM);
+
+    // 这里排版需要重做
+    wss << L"\r\nTranslators\r\n------------------------";
+    const auto& lang_list = theApp.m_str_table.GetLanguageList();
+    // translator保证至少有一个元素
+    for (const auto& lang : lang_list)
+    {
+        wss << L"\r\n" << lang.display_name + L"(" + lang.file_name + L")    " << lang.translator.front();
+        for (auto iter = lang.translator.begin() + 1; iter != lang.translator.end(); ++iter)
+            wss << L"; " << *iter;
+    }
+
+    dlg.SetMessageText(wss.str());
     dlg.DoModal();
     *pResult = 0;
 }

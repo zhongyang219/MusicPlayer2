@@ -218,6 +218,8 @@ BOOL CMusicPlayerApp::InitInstance()
     LoadSongData();
     LoadLastFMData();
 
+    // 获取默认线程语言
+    CCommon::GetThreadLanguageList(m_def_lang_list);
     //初始化界面语言
     CCommon::SetThreadLanguageList(m_str_table.GetLanguageTag());
 
@@ -683,11 +685,9 @@ wstring CMusicPlayerApp::GetSystemInfoString()
         << L" build " << CWinVersionHelper::GetBuildNumber() << L"\r\n"
         << L"DPI: " << GetDPI() << L"\r\n";
 
-    vector<wstring> language_list;
-    CCommon::GetThreadLanguageList(language_list);
     wss << L"System Language List:\r\n";
-    for (wstring& str : language_list)
-        wss << str << L"\r\n";
+    for (const wstring& str : m_def_lang_list)
+        wss << str << L"; ";
 
     return std::move(wss).str();
 }
