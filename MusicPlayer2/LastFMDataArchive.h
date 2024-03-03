@@ -26,7 +26,7 @@ class LastFMTrack {
         void Clear();
         void SaveDataTo(CArchive &archive);
         void ReadDataFrom(CArchive &archive);
-        void ReadDataFrom(SongInfo info);
+        void ReadDataFrom(const SongInfo& info);
         bool operator==(const LastFMTrack& track);
         bool operator==(const SongInfo& info);
 };

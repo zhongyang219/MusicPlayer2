@@ -218,12 +218,16 @@ int CFfmpegCore::GetCurPosition() {
 
 int CFfmpegCore::GetSongLength() {
     if (IsSucceed() && handle) {
-        return static_cast<int>(ffmpeg_core_get_song_length(handle) / 1000);
+        int64_t length = ffmpeg_core_get_song_length(handle);
+        if (length != INT64_MIN)
+            return static_cast<int>(length / 1000);
+        else
+            return 0;
     } else return 0;
 }
 
 void CFfmpegCore::SetCurPosition(int position) {
-    if (IsSucceed() && handle) {
+    if (IsSucceed() && handle && GetSongLength() != 0) {    // 时长为0(获取失败)时seek(0)会卡死
         int re = ffmpeg_core_seek(handle, (int64_t)position * 1000);
         if (re) {
             err = re;
@@ -263,7 +267,13 @@ void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, in
     MusicInfoHandle* h = nullptr;
     int re = ffmpeg_core_info_open(file_path, &h);
     if (re || !h) return;
-    if (flag & AF_LENGTH) song_info.end_pos.fromInt(static_cast<int>(ffmpeg_core_info_get_song_length(h) / 1000));
+    if (flag & AF_LENGTH) {
+        int64_t length = ffmpeg_core_info_get_song_length(h);
+        if (length != INT64_MIN)
+            song_info.end_pos.fromInt(static_cast<int>(length / 1000));
+        else
+            song_info.end_pos.fromInt(0);
+    }
     if (flag & AF_CHANNEL_INFO) {
         song_info.freq = ffmpeg_core_info_get_freq(h);
         song_info.bits = ffmpeg_core_info_get_bits(h);
