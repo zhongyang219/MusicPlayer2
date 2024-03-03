@@ -123,8 +123,6 @@ public:
     afx_msg void OnBnClickedLowFreqInCenterCheck();
     afx_msg void OnBnClickedDefaultAlbumCoverHq();
     afx_msg void OnBnClickedRestoreDefaultButton();
-    afx_msg void OnEnKillfocusUiIntervalEdit();
-    afx_msg void OnDeltaposSpin(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnCbnSelchangeCombo1();
     afx_msg void OnPaint();
     afx_msg void OnBnClickedNotifyIconAutoAdaptCheck();

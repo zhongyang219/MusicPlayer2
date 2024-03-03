@@ -272,15 +272,15 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 
     EnableControl();
 
-    m_ffmpeg_cache_length.SetRange(1, 60);
+    m_ffmpeg_cache_length.SetRange(1, 60, 5);
     m_ffmpeg_cache_length.SetValue(theApp.m_play_setting_data.ffmpeg_core_cache_length);
-    m_ffmpeg_max_retry_count.SetRange(-1, SHORT_MAX);
+    m_ffmpeg_max_retry_count.SetRange(-1, 30);
     m_ffmpeg_max_retry_count.SetValue(theApp.m_play_setting_data.ffmpeg_core_max_retry_count);
-    m_ffmpeg_url_retry_interval.SetRange(1, 120);
+    m_ffmpeg_url_retry_interval.SetRange(1, 120, 5);
     m_ffmpeg_url_retry_interval.SetValue(theApp.m_play_setting_data.ffmpeg_core_url_retry_interval);
     CheckDlgButton(IDC_FFMPEG_ENABLE_WASAPI, theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI);
     CheckDlgButton(IDC_FFMPEG_ENABLE_WASAPI_EXCLUSIVE, theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode);
-    m_ffmpeg_max_wait_time.SetRange(100, 30000);
+    m_ffmpeg_max_wait_time.SetRange(100, 30000, 100);
     m_ffmpeg_max_wait_time.SetValue(theApp.m_play_setting_data.ffmpeg_core_max_wait_time);
 
     //设置控件不响应鼠标滚轮消息

@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "SpinEdit.h"
 
-
+#define SPIN_ID 3100
 // CSpinEdit
 
 IMPLEMENT_DYNAMIC(CSpinEdit, CEdit)
@@ -18,14 +18,16 @@ CSpinEdit::~CSpinEdit()
 {
 }
 
-void CSpinEdit::SetRange(short lower, short upper)
+void CSpinEdit::SetRange(short lower, short upper, short step)
 {
+    m_step = step;
     if (m_spin.GetSafeHwnd() != NULL)
         m_spin.SetRange(lower, upper);
 }
 
 void CSpinEdit::SetValue(int value)
 {
+    ASSERT(m_step != 0);    // 应当先设置Range
     if (m_spin.GetSafeHwnd() != NULL)
         m_spin.SetPos(value);
 }
@@ -47,6 +49,9 @@ void CSpinEdit::SetMouseWheelEnable(bool enable)
 
 BEGIN_MESSAGE_MAP(CSpinEdit, CEdit)
     ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CSpinEdit::OnTabletQuerysystemgesturestatus)
+    ON_NOTIFY(UDN_DELTAPOS, SPIN_ID, &CSpinEdit::OnDeltaposSpin)
+    ON_WM_KILLFOCUS()
+    ON_WM_ENABLE()
     ON_WM_SIZE()
 END_MESSAGE_MAP()
 
@@ -58,9 +63,9 @@ void CSpinEdit::PreSubclassWindow()
 {
     // TODO: 在此添加专用代码和/或调用基类
 
-    // 要求文本左对齐，右侧会被spin控件覆盖，只能输入数字
+    // 要求文本左对齐，右侧会被spin控件覆盖
     // WS_CLIPCHILDREN在绘制中排除子窗口区域，避免重叠的控件绘制闪烁
-    ModifyStyle(ES_CENTER | ES_RIGHT, ES_LEFT | ES_NUMBER | WS_CLIPCHILDREN);
+    ModifyStyle(ES_CENTER | ES_RIGHT, ES_LEFT | WS_CLIPCHILDREN);
     // 将spin创建为edit的子控件，因为CTabDlg不一定能正常滚动动态创建的子控件（Spin）
     // 准确的说是CWnd::ScrollWindow在窗口可见/不可见时对动态创建的子控件移动行为不一致（多半是这样）（具体参考wincore.cpp的实现）（在CTabDlg::OnTabEntered随意滚一下再滚回来窗口就能正常）
     // 我试着在这里保持与edit为兄弟关系的spin始终跟随edit但没有成功，只好将spin作为edit的子控件（子窗口受限于父窗口的ClientRect所以不能使用UDS_ALIGNRIGHT）
@@ -101,6 +106,40 @@ BOOL CSpinEdit::PreTranslateMessage(MSG* pMsg)
 afx_msg LRESULT CSpinEdit::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
 {
     return 0;
+}
+
+
+void CSpinEdit::OnDeltaposSpin(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    //这里响应微调按钮（spin button）点击上下按钮时的事件
+    LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+
+    int value = GetValue();
+    value += pNMUpDown->iDelta * m_step;
+    value /= m_step;
+    value *= m_step;
+    SetValue(value);
+    pNMUpDown->iDelta = 0;
+    *pResult = 0;
+}
+
+
+void CSpinEdit::OnKillFocus(CWnd* pNewWnd)
+{
+    CEdit::OnKillFocus(pNewWnd);
+
+    // TODO: 在此处添加消息处理程序代码
+    CString str;
+    GetWindowTextW(str);
+    int value = _ttoi(str.GetString());
+    SetValue(value);    // m_spin会检查并限制值范围以及更新CEdit控件文本
+}
+
+
+void CSpinEdit::OnEnable(BOOL bEnable)
+{
+    CEdit::OnEnable(bEnable);
+    m_spin.EnableWindow(bEnable);
 }
 
 

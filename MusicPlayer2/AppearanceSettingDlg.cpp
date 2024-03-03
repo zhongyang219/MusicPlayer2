@@ -312,8 +312,6 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_LOW_FREQ_IN_CENTER_CHECK, &CAppearanceSettingDlg::OnBnClickedLowFreqInCenterCheck)
     ON_BN_CLICKED(IDC_DEFAULT_ALBUM_COVER_HQ, &CAppearanceSettingDlg::OnBnClickedDefaultAlbumCoverHq)
     ON_BN_CLICKED(IDC_RESTORE_DEFAULT_BUTTON, &CAppearanceSettingDlg::OnBnClickedRestoreDefaultButton)
-    ON_EN_KILLFOCUS(IDC_UI_INTERVAL_EDIT, &CAppearanceSettingDlg::OnEnKillfocusUiIntervalEdit)
-    ON_NOTIFY(UDN_DELTAPOS, SPIN_ID, &CAppearanceSettingDlg::OnDeltaposSpin)
     ON_CBN_SELCHANGE(IDC_COMBO1, &CAppearanceSettingDlg::OnCbnSelchangeCombo1)
     ON_WM_PAINT()
     ON_BN_CLICKED(IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK, &CAppearanceSettingDlg::OnBnClickedNotifyIconAutoAdaptCheck)
@@ -427,7 +425,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
     m_default_cover_hq_chk.SetCheck(m_data.draw_album_high_quality);
 
-    m_ui_refresh_interval_edit.SetRange(MIN_UI_INTERVAL, MAX_UI_INTERVAL);
+    m_ui_refresh_interval_edit.SetRange(MIN_UI_INTERVAL, MAX_UI_INTERVAL, UI_INTERVAL_STEP);
     m_ui_refresh_interval_edit.SetValue(m_data.ui_refresh_interval);
 
     m_icon_select_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_NOTIFY_ICON_DEFAULT").c_str());
@@ -704,58 +702,6 @@ void CAppearanceSettingDlg::OnBnClickedRestoreDefaultButton()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_ui_refresh_interval_edit.SetValue(UI_INTERVAL_DEFAULT);
-}
-
-
-void CAppearanceSettingDlg::OnEnKillfocusUiIntervalEdit()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    CString str;
-    GetDlgItemText(IDC_UI_INTERVAL_EDIT, str);
-    int value = _ttoi(str.GetString());
-    if (value < MIN_UI_INTERVAL || value > MAX_UI_INTERVAL)
-    {
-        value = UI_INTERVAL_DEFAULT;
-    }
-    m_ui_refresh_interval_edit.SetValue(value);
-
-}
-
-void CAppearanceSettingDlg::OnDeltaposSpin(NMHDR* pNMHDR, LRESULT* pResult)
-{
-    //这里响应微调按钮（spin button）点击上下按钮时的事件，
-    //所有CSpinEdit类中的Spin按钮点击时的响应都在这里，因为这些Spin按钮的ID都是“SPIN_ID”。
-    //通过GetBuddy的返回值判断微调按钮是属于哪个EditBox的。
-
-    CSpinButtonCtrl* pSpin = (CSpinButtonCtrl*)CWnd::FromHandle(pNMHDR->hwndFrom);
-    if (pSpin == nullptr)
-        return;
-    CWnd* pEdit = pSpin->GetBuddy();
-    //设置点击“界面刷新时间间隔”微调按钮时的步长
-    if (pEdit == &m_ui_refresh_interval_edit)       //当用户点击了“界面刷新时间间隔”的微调按钮时
-    {
-        LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
-        if (pNMUpDown->iDelta == -1)
-        {
-            // 用户按下了spin控件的向下箭头
-            int value = m_ui_refresh_interval_edit.GetValue();
-            value -= UI_INTERVAL_STEP;
-            value /= UI_INTERVAL_STEP;
-            value *= UI_INTERVAL_STEP;
-            m_ui_refresh_interval_edit.SetValue(value);
-        }
-        else if (pNMUpDown->iDelta == 1)
-        {
-            // 用户按下了spin控件的向上箭头
-            int value = m_ui_refresh_interval_edit.GetValue();
-            value += UI_INTERVAL_STEP;
-            value /= UI_INTERVAL_STEP;
-            value *= UI_INTERVAL_STEP;
-            m_ui_refresh_interval_edit.SetValue(value);
-        }
-        pNMUpDown->iDelta = 0;
-    }
-    *pResult = 0;
 }
 
 

@@ -354,16 +354,16 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     CButton* setting_btn = (CButton*)(GetDlgItem(IDC_REFRESH_MEDIA_LIB_BUTTON));
     if (setting_btn != nullptr)
         setting_btn->SetIcon(theApp.m_icon_set.loop_playlist.GetIcon(true));
-    m_lastfm_least_perdur.SetRange(10, 90);
+    m_lastfm_least_perdur.SetRange(10, 90, 10);
     m_lastfm_least_perdur.SetValue(m_data.lastfm_least_perdur);
-    m_lastfm_least_dur.SetRange(10, 240);
+    m_lastfm_least_dur.SetRange(10, 240, 10);
     m_lastfm_least_dur.SetValue(m_data.lastfm_least_dur);
     m_lastfm_auto_scrobble_min.SetRange(1, 50);
     m_lastfm_auto_scrobble_min.SetValue(m_data.lastfm_auto_scrobble_min);
 
     m_playlist_item_height_edit.SetRange(MIN_PLAYLIST_ITEM_HEIGHT, MAX_PLAYLIST_ITEM_HEIGHT);
     m_playlist_item_height_edit.SetValue(m_data.playlist_item_height);
-    m_file_too_short_sec_edit.SetRange(1, 60);
+    m_file_too_short_sec_edit.SetRange(1, 60, 10);
     m_file_too_short_sec_edit.SetValue(m_data.file_too_short_sec);
 
     //设置控件不响应鼠标滚轮消息
