@@ -222,6 +222,12 @@ void CLyrics::DisposeLrc()
                         last_pos_end = index2;
                         time_w_ = time_w;
                     }
+                    if (index2 < static_cast<int>(text_str.size()))     // 如果最后的时间标签并非结尾，那么将text_str剩下的字符作为没有显式提供时长的一个匀速段加入
+                    {
+                        lyric.text += text_str.substr(index2);
+                        lyric.split.push_back(lyric.text.size());
+                        lyric.word_time.push_back(-1);
+                    }
                 }
                 else
                     lyric.text = text_str;
@@ -379,10 +385,16 @@ void CLyrics::NormalizeLyric()
     {
         auto& now{ m_lyrics[i] };
         auto& next{ m_lyrics[i + 1] };
+        if (!now.word_time.empty() && now.word_time.back() < 0)     // 若是逐字歌词且没有显式提供最后匀速段的持续时长
+        {                                                           // 这里认为其持续到下一行歌词开始
+            now.word_time.back() = next.time_start - now.time_start - std::accumulate(now.word_time.begin(), now.word_time.end() - 1, 0);
+            if (now.word_time.back() < 0)
+                now.word_time.back() = 0;
+        }
         if (now.time_span_raw != 0)                                 // 原始歌词有行持续时间
             now.time_span = now.time_span_raw;
         else if (!now.word_time.empty())                            // 否则累加字时间作为行持续时间
-            now.time_span = CCommon::SumVector(now.word_time);
+            now.time_span = std::accumulate(now.word_time.begin(), now.word_time.end(), 0);
         // time_span为0说明不是逐字歌词，使用下一行开始时间作为本行结束时间; 对逐字歌词检查并阻止time_start + time_span超过下一句的time_start，防止出现时轴重叠
         if (now.time_span == 0 || next.time_start - now.time_start < now.time_span)
             now.time_span = next.time_start - now.time_start;
@@ -390,10 +402,19 @@ void CLyrics::NormalizeLyric()
     if (m_lyrics.size() > 0)    // 填充最后一句
     {
         Lyric& now = m_lyrics[m_lyrics.size() - 1];
+        if (!now.word_time.empty() && now.word_time.back() < 0)     // 若是逐字歌词且没有显式提供最后匀速段的持续时长
+        {
+            if (now.word_time.size() >= 2)
+                now.word_time.back() = *(now.word_time.end() - 2);  // 使用前一个匀速段的持续时长
+            else
+                now.word_time.back() = 20000;                       // 20秒
+            if (now.word_time.back() < 0)
+                now.word_time.back() = 0;
+        }
         if (now.time_span_raw != 0)
             now.time_span = now.time_span_raw;
         else if (!now.word_time.empty())
-            now.time_span = CCommon::SumVector(now.word_time);
+            now.time_span = std::accumulate(now.word_time.begin(), now.word_time.end(), 0);
     }
 }
 
