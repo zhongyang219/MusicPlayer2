@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "TabDlg.h"
+#include "PlaylistMgr.h"
 #include "ListCtrlEx.h"
 #include "SearchEditCtrl.h"
 #include "MediaLibTabDlg.h"
@@ -65,9 +66,6 @@ private:
     CHorizontalSplitter m_splitter_ctrl;
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-
-    virtual void OnTabEntered() override;
 
     virtual const vector<SongInfo>& GetSongList() const override;
     virtual int GetItemSelected() const override;
@@ -76,8 +74,11 @@ protected:
     virtual void AfterDeleteFromDisk(const std::vector<SongInfo>& files) override;
     virtual wstring GetSelectedString() const override;
 
-    DECLARE_MESSAGE_MAP()
+    virtual void OnTabEntered() override;
+    virtual bool InitializeControls() override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
+    DECLARE_MESSAGE_MAP()
 private:
     // 根据关键字执行快速查找（更新m_search_result）
     void QuickSearch(const wstring& key_words);

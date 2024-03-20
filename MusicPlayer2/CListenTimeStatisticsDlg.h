@@ -1,10 +1,10 @@
 ﻿#pragma once
+#include "BaseDialog.h"
 #include "ListCtrlEx.h"
-
 
 // CListenTimeStatisticsDlg 对话框
 
-class CListenTimeStatisticsDlg : public CDialog
+class CListenTimeStatisticsDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CListenTimeStatisticsDlg)
 
@@ -40,10 +40,11 @@ protected:
 protected:
 	CListCtrlEx m_list_ctrl;
 
-	CSize m_min_size;
     vector<ListItem> m_data_list;
 
 protected:
+    virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	void ShowData(bool size_changed = true);
@@ -53,7 +54,6 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedExportButton();
-	afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
     afx_msg void OnBnClickedClearButton();
     afx_msg void OnHdnItemclickList1(NMHDR *pNMHDR, LRESULT *pResult);
 };

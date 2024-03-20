@@ -3,6 +3,8 @@
 #include "Common.h"
 #include "AudioCommon.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
+#include "CommonDialogMgr.h"
 
 CBASSMidiLibrary CBassCore::m_bass_midi_lib;
 CBassCore::MidiLyricInfo CBassCore::m_midi_lyric;
@@ -34,7 +36,7 @@ void CBassCore::InitCore()
     theApp.m_output_devices.clear();
     DeviceInfo device{};
     device.index = -1;
-    device.name = CCommon::LoadText(IDS_DEFAULT_OUTPUT_DEVICE);
+    device.name = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_NAME_BASS_DEFAULT");
     theApp.m_output_devices.push_back(device);
     while (true)
     {
@@ -78,7 +80,7 @@ void CBassCore::InitCore()
     //向支持的文件列表插入原生支持的文件格式
     CAudioCommon::m_surpported_format.clear();
     SupportedFormat format;
-    format.description = CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT);
+    format.description = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_BASE");
     format.extensions.insert(format.extensions.end(), theApp.m_nc_setting_data.default_file_type.begin(), theApp.m_nc_setting_data.default_file_type.end());
     for (const auto& f : theApp.m_nc_setting_data.default_file_type)
     {
@@ -132,7 +134,7 @@ void CBassCore::InitCore()
         if (format.description == L"MIDI")
         {
             m_bass_midi_lib.Init(plugin_dir + plugin_file);
-            m_sfont_name = CCommon::LoadText(_T("<"), IDS_NONE, _T(">"));
+            m_sfont_name = theApp.m_str_table.LoadText(L"UI_TXT_SF2_NAME_NONE");
             m_sfont.font = 0;
             if (m_bass_midi_lib.IsSucceed())
             {
@@ -149,10 +151,9 @@ void CBassCore::InitCore()
                     m_sfont.font = m_bass_midi_lib.BASS_MIDI_FontInit(sf2_path.c_str(), BASS_UNICODE);
                     if (m_sfont.font == 0)
                     {
-                        CString info;
-                        info = CCommon::LoadTextFormat(IDS_SOUND_FONT_LOAD_FAILED, { sf2_path });
-                        theApp.WriteLog(info.GetString());
-                        m_sfont_name = CCommon::LoadText(_T("<"), IDS_LOAD_FAILED, _T(">"));
+                        wstring info = theApp.m_str_table.LoadTextFormat(L"LOG_SF2_LOAD_FAILED", { sf2_path });
+                        theApp.WriteLog(info);
+                        m_sfont_name = theApp.m_str_table.LoadText(L"UI_TXT_SF2_NAME_FAILDE");
                     }
                     else
                     {
@@ -271,7 +272,7 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag
 {
     //获取长度
     if (flag&AF_LENGTH)
-        song_info.setLength(CBassCore::GetBASSSongLength(hStream));
+        song_info.end_pos = CBassCore::GetBASSSongLength(hStream);
     //获取比特率
     if(flag&AF_BITRATE)
     {
@@ -292,6 +293,7 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag
     {
         CAudioTag audio_tag(song_info, hStream);
         audio_tag.GetAudioTag();
+        audio_tag.GetAudioRating();
         //获取midi音乐的标题
         if (CBassCore::m_bass_midi_lib.IsSucceed() && audio_tag.GetAudioType() == AU_MIDI)
         {
@@ -299,7 +301,6 @@ void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag
             if (CBassCore::m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
             {
                 song_info.title = CCommon::StrToUnicode(mark.text);
-                song_info.info_acquired = true;
             }
         }
     }
@@ -532,8 +533,7 @@ bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, E
     HSTREAM hStream = BASS_StreamCreateFile(FALSE, song_info.file_path.c_str(), 0, 0, BASS_STREAM_DECODE/* | BASS_SAMPLE_FLOAT*/);
     if (hStream == 0)
     {
-        //::PostMessage(pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, file_index, CONVERT_ERROR_FILE_CONNOT_OPEN);
-        proc(CONVERT_ERROR_FILE_CONNOT_OPEN);
+        proc(CONVERT_ERROR_FILE_CANNOT_OPEN);
         return false;
     }
 
@@ -673,23 +673,19 @@ bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, E
         //如果出现了错误，则写入错误日志
         if (error != 0)
         {
-            CString log_str;
-            log_str = CCommon::LoadTextFormat(IDS_CONVERT_WMA_ERROR, { song_info.file_path });
+            wstring log_str = theApp.m_str_table.LoadTextFormat(L"LOG_BASS_FORMAT_CONVERT_ERROR", { song_info.file_path, L"WMA", error });
+            theApp.WriteLog(log_str);
             switch (error)
             {
             case BASS_ERROR_WMA:
-                log_str += CCommon::LoadText(IDS_NO_WMP9_OR_LATER);
                 error_code = CONVERT_ERROR_WMA_NO_WMP9_OR_LATER;
                 break;
             case BASS_ERROR_NOTAVAIL:
-                log_str += CCommon::LoadText(IDS_NO_SUPPORTED_ENCODER_WARNING);
                 error_code = CONVERT_ERROR_WMA_NO_SUPPORTED_ENCODER;
                 break;
             default:
-                log_str += CCommon::LoadText(IDS_UNKNOW_ERROR);
                 break;
             }
-            theApp.WriteLog(wstring(log_str));
         }
         if (hEncode == 0)
         {
@@ -758,9 +754,9 @@ bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, E
     if (encode_format == EncodeFormat::MP3)
     {
         CFilePathHelper out_file_path_helper{ dest_file_path };
-        CCommon::MoveAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_temp, out_file_path_helper.GetDir());
+        CommonDialogMgr::MoveAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_temp, out_file_path_helper.GetDir());
         if (CCommon::FileExist(out_file_path_helper.GetFilePath()))
-            CCommon::DeleteAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_helper.GetFilePath());
+            CommonDialogMgr::DeleteAFile(AfxGetMainWnd()->GetSafeHwnd(), out_file_path_helper.GetFilePath());
         CCommon::FileRename(out_file_path_helper.GetDir() + CONVERTING_TEMP_FILE_NAME, out_file_path_helper.GetFileName());
     }
     return true;
@@ -880,16 +876,17 @@ int CBassCore::GetErrorCode()
 
 std::wstring CBassCore::GetErrorInfo(int error_code)
 {
-    CString info = CCommon::LoadTextFormat(IDS_BASS_ERROR_LOG_INFO, { error_code, m_file_path });
-    return std::wstring(info);
+    // 这个方法获取写入错误日志的字符串，后面会附加CPlayer的方法名
+    wstring info = theApp.m_str_table.LoadTextFormat(L"LOG_BASS_ERROR", { error_code, m_file_path });
+    return info;
 }
 
 std::wstring CBassCore::GetErrorInfo()
 {
-    CString info = CCommon::LoadText(IDS_ERROR_CODE, _T(": "));
+    // 这个方法获取错误时状态栏显示的错误字符串“播放出错: <%1%>”
     int error_code = BASS_ErrorGetCode();
-    info += std::to_wstring(error_code).c_str();
-    return std::wstring(info);
+    wstring info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_PLAYSTATUS_ERROR_CORE_BASS", { error_code });
+    return info;
 }
 
 //int CBassCore::GetDeviceCount()

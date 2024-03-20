@@ -159,9 +159,6 @@
     <ClInclude Include="PlatWin.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>win32</Filter>
-    </ClInclude>
     <ClInclude Include="ScintillaWin.h">
       <Filter>win32</Filter>
     </ClInclude>

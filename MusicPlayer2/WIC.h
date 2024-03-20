@@ -1,4 +1,4 @@
-//Ê¹ÓÃ Windows Ó³Ïñ×é¼ş£¨WIC£©½«Í¼±ê£¨HICON£©×ª»»Îª¾ßÓĞÍ¸Ã÷¶ÈµÄPARGB32Î»Í¼£¬²¢Ìí¼Óµ½²Ëµ¥ÏîÖĞ
+ï»¿//ä½¿ç”¨ Windows æ˜ åƒç»„ä»¶ï¼ˆWICï¼‰å°†å›¾æ ‡ï¼ˆHICONï¼‰è½¬æ¢ä¸ºå…·æœ‰é€æ˜åº¦çš„PARGB32ä½å›¾ï¼Œå¹¶æ·»åŠ åˆ°èœå•é¡¹ä¸­
 //https://docs.microsoft.com/en-us/previous-versions/bb757020(v=msdn.10)
 
 #pragma once
@@ -12,7 +12,7 @@ private:
     HRESULT _hrOleInit{};
     IWICImagingFactory *m_pWICFactory{};
 
-    static CWICFactory m_instance;      //CWICFactoryÀàÎ¨Ò»µÄ¶ÔÏó
+    static CWICFactory m_instance;      //CWICFactoryç±»å”¯ä¸€çš„å¯¹è±¡
 
 private:
     CWICFactory();
@@ -24,15 +24,13 @@ public:
     CMenuIcon();
     ~CMenuIcon();
 
-    //ÏòÒ»¸ö²Ëµ¥ÏîÌí¼ÓÍ¼±ê
-    static HRESULT AddIconToMenuItem(HMENU hmenu, int iMenuItem, BOOL fByPosition, HICON hicon);
+    static HRESULT GetBitmapByIcon(HICON hicon, HBITMAP& hbmp);
 
 private:
     static HRESULT AddBitmapToMenuItem(HMENU hmenu, int iItem, BOOL fByPosition, HBITMAP hbmp);
     static void InitBitmapInfo(__out_bcount(cbInfo) BITMAPINFO *pbmi, ULONG cbInfo, LONG cx, LONG cy, WORD bpp);
     static HRESULT Create32BitHBITMAP(HDC hdc, const SIZE *psize, __deref_opt_out void **ppvBits, __out HBITMAP* phBmp);
-    static HRESULT GetBitmapByIcon(HICON hicon, HBITMAP& hbmp);
 
-    static std::map<HICON, HBITMAP> m_icon_map;
+    static std::map<HICON, CBitmap> m_icon_map;
 };
 

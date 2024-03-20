@@ -1,17 +1,17 @@
 ﻿#pragma once
+#include "BaseDialog.h"
 #include "PlayListCtrl.h"
 #include "StaticEx.h"
 #include "CPlayerUIBase.h"
 #include "PlayerToolBar.h"
 #include "SearchEditCtrl.h"
 #include "MenuEditCtrl.h"
-#include "HorizontalSplitter.h"
 
 #define WM_FLOAT_PLAYLIST_CLOSED (WM_USER+118)
 
 // CFloatPlaylistDlg 对话框
 
-class CFloatPlaylistDlg : public CDialog
+class CFloatPlaylistDlg : public CBaseDialog
 {
     DECLARE_DYNAMIC(CFloatPlaylistDlg)
 
@@ -38,16 +38,17 @@ public:
     void SetInitPoint(CPoint point);
 
 private:
-    CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
+    CPlayListCtrl m_playlist_ctrl;
     CStaticEx m_path_static;
     CMenuEditCtrl m_path_edit;
-    CButton m_set_path_button;
+    CButton m_media_lib_button;
     CSearchEditCtrl m_search_edit;
-    //CButton m_clear_search_button;
     CPlayerToolBar m_playlist_toolbar;
-    CHorizontalSplitter m_splitter_ctrl;
 
     SLayoutData m_layout;		//窗口布局的固定数据
+    int m_part_static_playlist_width{ theApp.DPI(32) };     // 这里的值是最小宽度，窗口init时会根据文字变大
+    int m_part_static_folder_width{ theApp.DPI(32) };       // 这里的值是最小宽度，窗口init时会根据文字变大
+    int m_medialib_btn_width{ theApp.DPI(64) };             // 这里的值是最小宽度，窗口init时会根据文字变大
 
     bool m_searched{ false };		//播放列表是否处于搜索状态
     int& m_item_selected;		//播放列表中鼠标选中的项目
@@ -59,6 +60,8 @@ private:
     bool Initilized() const;
 
 protected:
+    virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     DECLARE_MESSAGE_MAP()
@@ -68,11 +71,9 @@ public:
     afx_msg void OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnEnChangeSearchEdit();
-    //afx_msg void OnBnClickedClearSearchButton();
     virtual void OnCancel();
     afx_msg void OnClose();
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-    afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
     afx_msg void OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
@@ -85,6 +86,5 @@ protected:
     afx_msg LRESULT OnMainWindowActivated(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnDropFiles(HDROP hDropInfo);
-    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg BOOL OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct);
 };

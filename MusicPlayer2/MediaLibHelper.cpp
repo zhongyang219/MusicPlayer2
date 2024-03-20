@@ -1,8 +1,8 @@
 ﻿#include "stdafx.h"
 #include "MediaLibHelper.h"
 #include "MusicPlayer2.h"
-#include <set>
 #include "SongDataManager.h"
+#include "FilePathHelper.h"
 
 CMediaClassifier::CMediaClassifier(ClassificationType type, bool hide_only_one_classification)
     : m_type(type), m_hide_only_one_classification(hide_only_one_classification)
@@ -35,35 +35,41 @@ void CMediaClassifier::ClassifyMedia()
                 switch (m_type)
                 {
                 case CMediaClassifier::CT_ARTIST:
-                    song_info.second.GetArtistList(item_names, theApp.m_media_lib_setting_data.artist_split_ext);   // 有的歌曲可能有多个艺术家，将解析到的艺术家保存到vector里
+                {
+                    static const wstring& default_artist = theApp.m_str_table.LoadText(L"TXT_EMPTY_ARTIST");
+                    song_info.second.GetArtistList(item_names);   // 有的歌曲可能有多个艺术家，将解析到的艺术家保存到vector里
                     for (auto& item_name : item_names)
                         CCommon::StringNormalize(item_name);
-                    if (item_names.empty() || (item_names.size() == 1 && item_names[0] == CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString()))
+                    if (item_names.empty() || (item_names.size() == 1 && default_artist == item_names[0]))
                     {
                         item_names.clear();
                         item_names.push_back(std::wstring());
                     }
-                    break;
+                }
+                break;
                 case CMediaClassifier::CT_ALBUM:
                 {
+                    static const wstring& default_album = theApp.m_str_table.LoadText(L"TXT_EMPTY_ALBUM");
                     wstring str_album = song_info.second.album;
-                    if (str_album == CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
+                    if (default_album == str_album)
                         str_album.clear();
                     item_names.push_back(str_album);
                 }
                 break;
                 case CMediaClassifier::CT_GENRE:
                 {
+                    static const wstring& default_genre = theApp.m_str_table.LoadText(L"TXT_EMPTY_GENRE");
                     wstring str_genre = song_info.second.genre;
-                    if (str_genre == CCommon::LoadText(IDS_DEFAULT_GENRE).GetString())
+                    if (default_genre == str_genre)
                         str_genre.clear();
                     item_names.push_back(str_genre);
                 }
                 break;
                 case CMediaClassifier::CT_YEAR:
                 {
+                    static const wstring& default_year = theApp.m_str_table.LoadText(L"TXT_EMPTY_YEAR");
                     wstring str_year = song_info.second.get_year();
-                    if (str_year == CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
+                    if (default_year == str_year)
                         str_year.clear();
                     if (str_year.size() > 4)
                         str_year.resize(4);
@@ -106,7 +112,7 @@ void CMediaClassifier::ClassifyMedia()
                     if (song_info.second.rating >= 1 && song_info.second.rating <= 5)
                         str_type = std::to_wstring(song_info.second.rating);
                     else
-                        str_type = CCommon::LoadText(IDS_UNRATED).GetString();
+                        str_type = theApp.m_str_table.LoadText(L"TXT_EMPTY_RATED");
                     item_names.push_back(str_type);
                     break;
                 }

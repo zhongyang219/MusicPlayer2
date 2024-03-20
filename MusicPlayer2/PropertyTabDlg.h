@@ -1,13 +1,8 @@
 ﻿#pragma once
-#include "Time.h"
-#include "Common.h"
-#include "Player.h"
-#include "EditEx.h"
-#include "afxwin.h"
-#include "MyComboBox.h"
-#include "FilePathHelper.h"
 #include "TabDlg.h"
 #include "IPropertyTabDlg.h"
+#include "EditEx.h"
+#include "MyComboBox.h"
 
 // CPropertyTabDlg 对话框
 
@@ -68,6 +63,7 @@ protected:
     void ResetEditModified();
 
     virtual void OnTabEntered() override;      //当标签切换到当前窗口时被调用
+    virtual bool InitializeControls() override;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     void ModifyTagInfo(const SongInfo& song);

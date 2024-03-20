@@ -52,7 +52,7 @@ public:
     afx_msg void OnPlayAsNext();
     afx_msg void OnPlayItemInFolderMode();
     afx_msg void OnAddToNewPlaylist();
-    afx_msg void OnAddToNewPalylistAndPlay();
+    afx_msg void OnAddToNewPlaylistAndPlay();
     afx_msg void OnExploreOnline();
     afx_msg void OnExploreTrack();
     afx_msg void OnFormatConvert();

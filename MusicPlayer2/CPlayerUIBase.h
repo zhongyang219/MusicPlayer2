@@ -31,9 +31,8 @@ struct SLayoutData
     const int margin = theApp.DPI(4);                           //边缘的余量
     const int width_threshold = theApp.DPI(600);                //界面从普通界面模式切换到窄界面模式时界面宽度的阈值
     const int info_height = theApp.DPI(216);                    //窄界面模式时显示信息区域的高度
-    const int path_edit_height = theApp.DPI(32);                //前路径Edit控件区域的高度
+    const int path_edit_height = theApp.DPI(24);                //当前路径Edit控件的高度
     const int search_edit_height = theApp.DPI(26);              //歌曲搜索框Edit控件区域的高度
-    //const int select_folder_width = theApp.DPI(90);   //“选择文件夹”按钮的宽度
     const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };   //频谱分析区域的大小
     const int toolbar_height = theApp.DPI(24);                  //播放列表工具栏的高度
     const int titlabar_height = theApp.DPI(28);                 //标题栏的高度
@@ -110,7 +109,7 @@ public:
     bool PointInMenubarArea(CPoint point) const;
 
     //获取界面的名称
-    virtual CString GetUIName() { return CString(); }
+    virtual wstring GetUIName() { return wstring(); }
 
     enum class UiSize
     {
@@ -124,6 +123,10 @@ public:
     virtual void UiSizeChanged() {}
 
     static CString GetCmdShortcutKeyForTooltips(UINT id);      //获取用于显示在鼠标提示中的键盘快捷键
+
+protected:
+    // 将字符串形如“%(KEY_STR)”格式的字符替换成当前<language>.ini中对应id的字符串
+    static void ReplaceUiStringRes(wstring& str);
 
 public:
     enum BtnKey     //标识按钮的类型
@@ -149,7 +152,7 @@ public:
         BTN_PLAY_PAUSE,         //播放/暂停
         BTN_NEXT,               //下一曲
         BTN_SHOW_PLAYLIST,      //显示/隐藏播放列表
-        BTN_SELECT_FOLDER,      //媒体库
+        BTN_MEDIA_LIB,          //媒体库
         BTN_PROGRESS,           //进度条
         BTN_COVER,              //专辑封面
         BTN_FULL_SCREEN_TITLEBAR, //标题栏上的全屏显示按钮
@@ -214,6 +217,7 @@ protected:
     void DrawProgressBar(CRect rect, bool play_time_both_side = false);               //绘制进度条（包含时间）。play_time_both_side如果为true，则播放时间显示的进度条的两侧，否则显示在进度条的右侧
     void DrawProgess(CRect rect);                   //绘制进度条
     void DrawTranslateButton(CRect rect);
+    void DrawDesktopLyricButton(CRect rect);
     int DrawTopRightIcons(bool always_show_full_screen = false);            //绘制右上角的图标。返回总宽度
     void DrawCurrentTime();             //在右上角绘制当前系统时间
     void DrawAlbumCover(CRect rect);                //绘制专辑封面
@@ -303,9 +307,9 @@ protected:
 
     CToolTipCtrl m_tool_tip;
 
-    CString m_repeat_mode_tip;
-    CString m_info_tip;
-    CString m_cover_tip;
+    wstring m_repeat_mode_tip;
+    wstring m_info_tip;
+    wstring m_cover_tip;
 
     UIData& m_ui_data;
 

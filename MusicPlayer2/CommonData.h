@@ -1,9 +1,7 @@
 ﻿#pragma once
-#include "stdafx.h"
 #include "ColorConvert.h"
 #include "DrawCommon.h"
 #include "Common.h"
-#include "resource.h"
 
 namespace CONSTVAL
 {
@@ -127,19 +125,21 @@ struct FontSet
     UIFont font11;
     UIFont font12;           //界面4的歌曲标题
 
+    UIFont dlg;                 // 窗口控件字体
     UIFont lyric;				//歌词字体
     UIFont lyric_translate;		//歌词翻译的字体
     UIFont cortana;				//搜索框字体
     UIFont cortana_translate;	//搜索框翻译字体
 
 
-    void Init()
+    void Init(LPCTSTR font_name)
     {
-        font9.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font8.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font10.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font11.SetFont(11, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font12.SetFont(12, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font9.SetFont(9, font_name);
+        font8.SetFont(8, font_name);
+        font10.SetFont(10, font_name);
+        font11.SetFont(11, font_name);
+        font12.SetFont(12, font_name);
+        dlg.SetFont(9, font_name);
     }
 };
 
@@ -297,7 +297,7 @@ struct GeneralSettingData
     bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
     bool minimize_to_notify_icon{ false };		//是否最小到通知区图标
 
-    Language language;
+    wstring language_;                          // 这个是设置状态（空字符串为跟随系统）
     bool portable_mode{ false };                //如果为true，则程序所有数据都保存到exe所在目录下，否则保存到Appdata\Romaing目录下
 };
 
@@ -576,6 +576,13 @@ struct IconSet
     HICON hot_key;
     HICON fix;
 
+    // 歌词编辑窗口的菜单图标（仅16x16）
+    HICON le_add_tag;
+    HICON le_replace_tag;
+    HICON le_delete_tag;
+    HICON le_find;
+    HICON le_replace;
+
     HICON ok;
     IconRes locate;
     IconRes expand;
@@ -603,38 +610,17 @@ struct UIData
 };
 
 
-struct MenuSet
-{
-    CMenu m_main_menu;				//菜单栏上的菜单
-    CMenu m_list_popup_menu;		//播放列表右键菜单
-    CMenu m_main_menu_popup;		//按住Shift键时弹出的右键菜单
-    CMenu m_popup_menu;			    //歌词右键菜单
-    CMenu m_main_popup_menu;
-    CMenu m_playlist_btn_menu;		//播放列表按钮上的右键菜单
-    CMenu m_playlist_toolbar_menu;      //播放列表工具栏菜单
-    CMenu m_playlist_toolbar_popup_menu;    //播放列表工具栏弹出菜单
-    CMenu m_lyric_default_style;     //桌面歌词预设方案菜单
-    CMenu m_media_lib_popup_menu;
-    CMenu m_media_lib_folder_menu;      //媒体库-文件夹的右键菜单
-    CMenu m_media_lib_playlist_menu;      //媒体库-播放列表的右键菜单
-    CMenu m_notify_menu;                //通知区图标右键菜单
-    CMenu m_mini_mode_menu;             //迷你模式右键菜单
-    CMenu m_property_cover_menu;        //属性——专辑封面中的右键菜单
-    CMenu m_property_menu;
-    CMenu m_recent_folder_playlist_menu;
-};
-
 struct ImageSet
 {
-    Gdiplus::Image* default_cover{};
-    Gdiplus::Image* default_cover_not_played{};
-    string default_cover_data;
-    string default_cover_not_played_data;
+    Gdiplus::Image* default_cover_img{};
+    Gdiplus::Image* default_cover_not_played_img{};
+    string default_cover_img_data;
+    string default_cover_not_played_img_data;
 
     ~ImageSet()
     {
-        SAFE_DELETE(default_cover);
-        SAFE_DELETE(default_cover_not_played);
+        SAFE_DELETE(default_cover_img);
+        SAFE_DELETE(default_cover_not_played_img);
     }
 };
 
@@ -661,6 +647,7 @@ private:
 struct MediaUpdateThreadPara
 {
     int num_added{};                       //更新媒体库时新增（包括更新）的音频文件数量
-    int total_num{};
+    int process_percent{};                  // 更新媒体库进度%
     bool thread_exit{};             //如果为true，则线程应该退出
+    bool force;                     // 为true时无视修改时间强制刷新
 };

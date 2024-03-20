@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "afxdialogex.h"
+#include "BaseDialog.h"
 #include "IPlayerCore.h"
 
 
 // CFlacEncodeCfgDlg 对话框
 
-class CFlacEncodeCfgDlg : public CDialog
+class CFlacEncodeCfgDlg : public CBaseDialog
 {
     DECLARE_DYNAMIC(CFlacEncodeCfgDlg)
 
@@ -24,6 +24,10 @@ private:
     CSliderCtrl m_comp_level_slider;
 
 protected:
+    virtual CString GetDialogName() const override;
+    virtual bool IsRememberDialogSizeEnable() const { return false; };
+    virtual bool InitializeControls() override;
+
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void SetInfoText();
     void EnableControl();

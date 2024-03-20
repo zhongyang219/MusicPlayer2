@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "afxwin.h"
 #include "Common.h"
 #include "AudioCommon.h"
 #include "ListCtrlEx.h"
@@ -52,8 +51,9 @@ protected:
     // 计算列宽
     void CalculateColumeWidth(vector<int>& width);
     void SetListRowData(int index, const PathInfo& path_info);
-    virtual void OnTabEntered() override;
 
+    virtual void OnTabEntered() override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     DECLARE_MESSAGE_MAP()

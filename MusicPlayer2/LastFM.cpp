@@ -361,7 +361,7 @@ bool LastFM::Unlove() {
 
 #define RETURN_AND_RELEASE_MUTEX(value) return ReleaseMutex(mutex), value;
 
-bool LastFM::Scrobble(list<LastFMTrack>& tracks) {
+bool LastFM::Scrobble(std::list<LastFMTrack>& tracks) {
     DWORD dw = WaitForSingleObject(mutex, 1000);
     if (dw != WAIT_OBJECT_0) {
         return false;

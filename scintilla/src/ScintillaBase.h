@@ -8,9 +8,6 @@
 #ifndef SCINTILLABASE_H
 #define SCINTILLABASE_H
 
-#include <windows.h>
-#include <tchar.h>
-
 namespace Scintilla {
 
 class LexState;
@@ -33,6 +30,7 @@ protected:
 	};
 
 	int displayPopupMenu;
+    std::map<std::wstring, std::wstring>* menuStringTable = nullptr;
 	Menu popup;
 	AutoComplete ac;
 
@@ -83,7 +81,7 @@ protected:
 	void CallTipShow(Point pt, const char *defn);
 	virtual void CreateCallTipWindow(PRectangle rc) = 0;
 
-	virtual void AddToPopUp(LPCTSTR label, int cmd=0, bool enabled=true) = 0;
+	virtual void AddToPopUp(const wchar_t *label, int cmd=0, bool enabled=true) = 0;
 	bool ShouldDisplayPopup(Point ptInWindowCoordinates) const;
 	void ContextMenu(Point pt);
 

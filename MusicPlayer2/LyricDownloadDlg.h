@@ -1,8 +1,6 @@
 ﻿#pragma once
 #include "LyricDownloadCommon.h"
-#include "afxcmn.h"
 #include "Lyric.h"
-#include "afxwin.h"
 #include "ListCtrlEx.h"
 #include "SongInfo.h"
 #include "BaseDialog.h"
@@ -69,7 +67,6 @@ protected:
 	CodeType m_save_code{};		//保存的编码格式
 	int m_search_max_item{ 30 };		//查找歌曲时返回的最大数量
 
-	CMenu m_menu;
 	CListCtrlEx m_down_list_ctrl;
 	CButton m_download_translate_chk;
 	CComboBox m_save_code_combo;
@@ -90,6 +87,7 @@ protected:
     wstring GetSavedPath();
 
     virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 

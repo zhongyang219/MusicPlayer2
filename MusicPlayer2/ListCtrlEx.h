@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "afxcmn.h"
 #include "ColorConvert.h"
 
 //鼠标拖动完成向父窗口发送此消息，通过wPara传递拖放结束的位置

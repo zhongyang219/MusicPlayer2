@@ -1,35 +1,40 @@
 ﻿#pragma once
-
+#include "BaseDialog.h"
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
-class CAboutDlg : public CDialog
+class CAboutDlg : public CBaseDialog
 {
 public:
-	CAboutDlg();
+    CAboutDlg();
+    virtual ~CAboutDlg();
 
-	// 对话框数据
+    // 对话框数据
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ABOUTBOX };
+    enum { IDD = IDD_ABOUTBOX };
 #endif
 
 protected:
-	CToolTipCtrl m_tool_tip;		//鼠标指向时的工具提示
+    CToolTipCtrl m_tool_tip;        //鼠标指向时的工具提示
     CRect m_rc_pic;
     CImage m_about_pic;
+    int m_white_height{};           // 背景白色区域的高度
 
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual CString GetDialogName() const;
+    virtual bool IsRememberDialogSizeEnable() const override { return false; };
+    virtual bool InitializeControls() override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 // 实现
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
-	virtual BOOL OnInitDialog();
-	afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnNMClickGithubSyslink(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnNMClickDonateSyslink(NMHDR *pNMHDR, LRESULT *pResult);
+    virtual BOOL OnInitDialog();
+    afx_msg void OnNMClickSyslink1(NMHDR *pNMHDR, LRESULT *pResult);
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
+    afx_msg void OnNMClickSyslink2(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMClickGithubSyslink(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMClickDonateSyslink(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnPaint();
     afx_msg void OnNMClickLicenseSyslink(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);

@@ -16,7 +16,6 @@ public:
     void SaveToFile(const wstring& file_path, Type type = PL_PLAYLIST) const;
     const vector<SongInfo>& GetPlaylist() const;
     int AddSongsToPlaylist(const vector<SongInfo>& songs, bool insert_begin = false);
-    void FromSongList(const vector<SongInfo>& song_list);
     // 使用移动语义覆盖参数song_list，调用后此CPlaylistFile对象不再可用
     void MoveToSongList(vector<SongInfo>& song_list);
     bool IsSongInPlaylist(const SongInfo& song);
@@ -26,6 +25,7 @@ public:
     static bool IsPlaylistFile(const wstring& file_path);
     static bool IsPlaylistExt(wstring ext);
 
+    static void SavePlaylistToFile(const vector<SongInfo>& song_list, const wstring& file_path, Type type = PL_PLAYLIST);
 public:
     const static vector<wstring> m_surpported_playlist;     //支持的播放列表文件的扩展名列表
 

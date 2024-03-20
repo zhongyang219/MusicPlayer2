@@ -82,7 +82,6 @@
     <ClInclude Include="..\src\XPM.h" />
     <ClInclude Include="HanjaDic.h" />
     <ClInclude Include="PlatWin.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="ScintillaWin.h" />
   </ItemGroup>
   <ItemGroup>

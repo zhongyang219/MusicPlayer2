@@ -623,7 +623,7 @@ void UiElement::Button::Draw()
         ui->DrawTranslateButton(rect);
         break;
     case CPlayerUIBase::BTN_LRYIC:
-        ui->DrawTextButton(rect, ui->m_buttons[key], CCommon::LoadText(IDS_LRC), theApp.m_lyric_setting_data.show_desktop_lyric);
+        ui->DrawDesktopLyricButton(rect);
         break;
     case CPlayerUIBase::BTN_AB_REPEAT:
         ui->DrawABRepeatButton(rect);
@@ -673,7 +673,7 @@ void UiElement::Button::FromString(const std::string& key_type)
     else if (key_type == "favorite")
         key = CPlayerUIBase::BTN_FAVOURITE;
     else if (key_type == "mediaLib")
-        key = CPlayerUIBase::BTN_SELECT_FOLDER;
+        key = CPlayerUIBase::BTN_MEDIA_LIB;
     else if (key_type == "showPlaylist")
         key = CPlayerUIBase::BTN_SHOW_PLAYLIST;
     else if (key_type == "addToPlaylist")
@@ -792,13 +792,16 @@ std::wstring UiElement::Text::GetText() const
     case UiElement::Text::PlayTimeAndVolume:
         if (show_volume)
         {
-            CString str;
-            str.Format(CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
-            draw_text = str;
+            static const wstring& mute_str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE");
+            int volume = CPlayer::GetInstance().GetVolume();
+            if(volume <= 0)
+                draw_text = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { mute_str, L"" });
+            else
+                draw_text = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { volume, L"%" });
         }
         else
         {
-            draw_text = CPlayer::GetInstance().GetTimeString().c_str();
+            draw_text = CPlayer::GetInstance().GetTimeString();
         }
         break;
     default:
@@ -1024,9 +1027,9 @@ bool UiElement::Playlist::RButtunUp(CPoint point)
         mouse_pressed = false;
         CMenu* menu{};
         if (item_selected >= 0 && !scrollbar_rect.PtInRect(point))
-            menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+            menu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
         else
-            menu = &theApp.m_menu_set.m_playlist_toolbar_popup_menu;
+            menu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu);
         if (menu != nullptr)
         {
             CPoint cursor_pos;
@@ -1196,53 +1199,53 @@ void UiElement::ClassicalControlBar::Draw()
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name, CPlayerUIBase* ui)
 {
-    UiElement::Element* element{};
+    std::shared_ptr<UiElement::Element> element;
     if (name == "verticalLayout")
     {
-        UiElement::Layout* layout = new UiElement::Layout();
+        auto layout = std::make_shared<UiElement::Layout>();
         layout->type = UiElement::Layout::Vertical;
         element = layout;
     }
     else if (name == "horizontalLayout")
     {
-        UiElement::Layout* layout = new UiElement::Layout();
+        auto layout = std::make_shared<UiElement::Layout>();
         layout->type = UiElement::Layout::Horizontal;
         element = layout;
     }
     else if (name == "stackElement")
-        element = new UiElement::StackElement();
+        element = std::make_shared<UiElement::StackElement>();
     else if (name == "rectangle")
-        element = new UiElement::Rectangle();
+        element = std::make_shared<UiElement::Rectangle>();
     else if (name == "button")
-        element = new UiElement::Button();
+        element = std::make_shared<UiElement::Button>();
     else if (name == "text")
-        element = new UiElement::Text();
+        element = std::make_shared<UiElement::Text>();
     else if (name == "albumCover")
-        element = new UiElement::AlbumCover();
+        element = std::make_shared<UiElement::AlbumCover>();
     else if (name == "spectrum")
-        element = new UiElement::Spectrum();
+        element = std::make_shared<UiElement::Spectrum>();
     else if (name == "trackInfo")
-        element = new UiElement::TrackInfo();
+        element = std::make_shared<UiElement::TrackInfo>();
     else if (name == "toolbar")
-        element = new UiElement::Toolbar();
+        element = std::make_shared<UiElement::Toolbar>();
     else if (name == "progressBar")
-        element = new UiElement::ProgressBar();
+        element = std::make_shared<UiElement::ProgressBar>();
     else if (name == "lyrics")
-        element = new UiElement::Lyrics();
+        element = std::make_shared<UiElement::Lyrics>();
     else if (name == "volume")
-        element = new UiElement::Volume();
+        element = std::make_shared<UiElement::Volume>();
     else if (name == "beatIndicator")
-        element = new UiElement::BeatIndicator();
+        element = std::make_shared<UiElement::BeatIndicator>();
     else if (name == "playlist")
-        element = new UiElement::Playlist();
+        element = std::make_shared<UiElement::Playlist>();
     else if (name == "playlistIndicator")
-        element = new UiElement::PlaylistIndicator();
+        element = std::make_shared<UiElement::PlaylistIndicator>();
     else if (name == "classicalControlBar")
-        element = new UiElement::ClassicalControlBar();
+        element = std::make_shared<UiElement::ClassicalControlBar>();
     else if (name == "ui" || name == "root" || name == "placeHolder")
-        element = new UiElement::Element();
+        element = std::make_shared<UiElement::Element>();
 
     if (element != nullptr)
         element->SetUi(ui);
-    return std::shared_ptr<UiElement::Element>(element);
+    return element;
 }

@@ -1,10 +1,10 @@
-﻿m_cortana_hwnd = m_hCortanaBar;
-m_hCortanaStatic = m_hCortanaBar;
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "CortanaLyric.h"
 #include "SongInfoHelper.h"
 #include "CPlayerUIBase.h"
 #include "CPlayerUIHelper.h"
+#include "Player.h"
+#include "WinVersionHelper.h"
 
 CCriticalSection CCortanaLyric::m_critical;
 
@@ -92,7 +92,7 @@ void CCortanaLyric::Init()
             m_cover_width = min_conver_width;
 
         m_pDC = m_cortana_wnd->GetDC();
-        m_draw.Create(m_pDC, m_cortana_wnd);
+        m_draw.Create(m_pDC, m_cortana_wnd->GetFont());
 
 
         //获取用来检查小娜是否为深色模式的采样点的坐标
@@ -144,6 +144,8 @@ void CCortanaLyric::DrawInfo()
     CSingleLock sync(&m_critical, TRUE);
     bool is_midi_lyric = CPlayerUIHelper::IsMidiLyric();
 
+    static wstring str_now_playing{ theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PLAYING") + L": " };
+
     //不使用兼容模式显示歌词，直接在小娜搜索框内绘图
     if(!theApp.m_lyric_setting_data.cortana_lyric_compatible_mode || CWinVersionHelper::IsWindows11OrLater())   //Windows11无法使用兼容模式显示歌词
     {
@@ -185,19 +187,17 @@ void CCortanaLyric::DrawInfo()
                 }
                 else            //没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
                 {
-                    static int index{};
-                    static wstring song_name{};
+                    static SongInfo last_song_info;
+                    const SongInfo& song_info = CPlayer::GetInstance().GetCurrentSongInfo();
                     //如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
-                    static CString str_now_playing{ CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")) };
-                    if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
+                    if (!song_info.IsSameSong(last_song_info))
                     {
-                        DrawCortanaText((str_now_playing + CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), true, CPlayerUIHelper::GetScrollTextPixel());
-                        index = CPlayer::GetInstance().GetIndex();
-                        song_name = CPlayer::GetInstance().GetFileName();
+                        DrawCortanaText((str_now_playing + CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format)).c_str(), true, CPlayerUIHelper::GetScrollTextPixel());
+                        last_song_info = song_info;
                     }
                     else
                     {
-                        DrawCortanaText((str_now_playing + CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format).c_str()), false, CPlayerUIHelper::GetScrollTextPixel());
+                        DrawCortanaText((str_now_playing + CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format)).c_str(), false, CPlayerUIHelper::GetScrollTextPixel());
                     }
                 }
             }
@@ -239,15 +239,16 @@ void CCortanaLyric::DrawInfo()
             }
             else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())		//有歌词时显示歌词
             {
+                static const wstring& empty_lyric = theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE");
                 Time time{ CPlayer::GetInstance().GetCurrentPosition() };
                 str_disp = CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, false, false).text;
                 if (str_disp.empty())
-                    str_disp = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT);
+                    str_disp = empty_lyric;
             }
             else
             {
                 //没有歌词时显示当前播放歌曲的名称
-                str_disp = CCommon::LoadText(IDS_NOW_PLAYING, _T(": ")).GetString() + CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format);
+                str_disp = str_now_playing + CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format);
             }
 
             if(str_disp != str_disp_last)

@@ -3,15 +3,16 @@
 #include "Common.h"
 #include "FilePathHelper.h"
 #include "SongDataManager.h"
-#include <set>
 
-const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION, L".m3u", L".m3u8" };
+const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8" };
 
 /*
 播放列表文件格式说明
 每行一个曲目，每一行的格式为：
-文件路径|是否为cue音轨|cue音轨起始时间|cue音轨结束时间|标题|艺术家|唱片集|曲目序号|比特率|流派|年份|注释
+文件路径|是否为cue音轨|cue音轨起始时间|cue音轨结束时间|标题|艺术家|唱片集|曲目序号|比特率|流派|年份|注释|cue文件路径
+播放列表至少要保存能够在song_data.dat清空时原样恢复特定歌曲的项目
 目前除了cue音轨外，其他曲目只保存文件路径
+列表cue条目必要保存的项目有“文件路径”、“音轨号”、“cue文件路径”，但出于向后兼容考虑仍然保留其他项目（实际上不以这些项目为准，外部编辑会被忽略）
 */
 
 CPlaylistFile::CPlaylistFile()
@@ -51,25 +52,36 @@ void CPlaylistFile::LoadFromFile(const wstring & file_path)
     stream.close();
 }
 
-void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
+void CPlaylistFile::SaveToFile(const wstring& file_path, Type type) const
+{
+    SavePlaylistToFile(m_playlist, file_path, type);
+}
+
+void CPlaylistFile::SavePlaylistToFile(const vector<SongInfo>& song_list, const wstring& file_path, Type type)
 {
     ofstream stream{ file_path };
-    if(type == PL_PLAYLIST)
+    if (!stream.is_open())
+        return;
+    if (type == PL_PLAYLIST)
     {
-        for (const auto& item : m_playlist)
+        for (const auto& item : song_list)
         {
             if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             stream << CCommon::UnicodeToStr(item.file_path, CodeType::UTF8_NO_BOM);
             if (item.is_cue)
             {
+                // 出于向后兼容考虑必要这行代码，当song_list来自LoadFromFile加载的不记录cue_file_path的播放列表时item需要从媒体库加载cue_file_path
+                SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(item); // 从媒体库载入数据，媒体库不存在的话会原样返回item
                 CString buff;
-                buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d|%s|%s|%s", item.is_cue, item.start_pos.toInt(), item.end_pos.toInt(),
-                    DeleteInvalidCh(item.title).c_str(), DeleteInvalidCh(item.artist).c_str(), DeleteInvalidCh(item.album).c_str(),
-                    item.track, item.bitrate,
-                    DeleteInvalidCh(item.genre).c_str(), DeleteInvalidCh(item.get_year()).c_str(), DeleteInvalidCh(item.comment).c_str());
+                buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d|%s|%s|%s|%s", song.is_cue, song.start_pos.toInt(), song.end_pos.toInt(),
+                    DeleteInvalidCh(song.title).c_str(), DeleteInvalidCh(song.artist).c_str(), DeleteInvalidCh(song.album).c_str(),
+                    song.track, song.bitrate,
+                    DeleteInvalidCh(song.genre).c_str(), DeleteInvalidCh(song.get_year()).c_str(), DeleteInvalidCh(song.comment).c_str(),
+                    song.cue_file_path.c_str()
+                );
                 stream << CCommon::UnicodeToStr(buff.GetString(), CodeType::UTF8_NO_BOM);
             }
-            stream << std::endl;
+            stream << "\n"; // 使用std::endl会触发flush影响效率
         }
     }
     else if (type == PL_M3U || type == PL_M3U8)
@@ -78,28 +90,29 @@ void CPlaylistFile::SaveToFile(const wstring & file_path, Type type) const
         if (type == PL_M3U8)
             code_type = CodeType::UTF8_NO_BOM;
 
-        stream << "#EXTM3U" << std::endl;
+        stream << "#EXTM3U" << '\n';
         std::set<std::wstring> saved_cue_path;      //已经保存过的cue文件的路径
-        for (const auto& item : m_playlist)
+        for (const auto& item : song_list)
         {
             if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
-            if (item.is_cue)
+            // song_list可能来自LoadFromFile含有信息不足，此处先从媒体库载入最新数据，媒体库不存在的话会原样返回item
+            SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(item);
+            if (song.is_cue)
             {
                 //如果播放列表中的项目是cue，且该cue文件没有保存过，则将其保存
-                if (!item.cue_file_path.empty() && saved_cue_path.find(item.cue_file_path) == saved_cue_path.end())
+                if (!song.cue_file_path.empty() && saved_cue_path.find(song.cue_file_path) == saved_cue_path.end())
                 {
-                    stream << "#" << std::endl;
-                    stream << CCommon::UnicodeToStr(item.cue_file_path, code_type);
-                    saved_cue_path.insert(item.cue_file_path);
+                    stream << "#" << '\n';
+                    stream << CCommon::UnicodeToStr(song.cue_file_path, code_type) << '\n';
+                    saved_cue_path.insert(song.cue_file_path);
                 }
             }
             else
             {
                 CString buff;
-                SongInfo song = CSongDataManager::GetInstance().GetSongInfo(item.file_path); // m_playlist中只有file_path
                 buff.Format(_T("#EXTINF:%d,%s - %s"), song.length().toInt() / 1000, song.GetArtist().c_str(), song.GetTitle().c_str());
-                stream << CCommon::UnicodeToStr(buff.GetString(), code_type) << std::endl;
-                stream << CCommon::UnicodeToStr(song.file_path, code_type) << std::endl;
+                stream << CCommon::UnicodeToStr(buff.GetString(), code_type) << '\n';
+                stream << CCommon::UnicodeToStr(song.file_path, code_type) << '\n';
             }
         }
     }
@@ -124,11 +137,6 @@ int CPlaylistFile::AddSongsToPlaylist(const vector<SongInfo>& songs, bool insert
     if (insert_begin)   // 使用循环旋转将新增条目移动到开头而不是直接插入到开头，可对参数songs去重
         std::rotate(m_playlist.rbegin(), m_playlist.rbegin() + added, m_playlist.rend());
     return added;
-}
-
-void CPlaylistFile::FromSongList(const vector<SongInfo>& song_list)
-{
-    m_playlist = song_list;
 }
 
 void CPlaylistFile::MoveToSongList(vector<SongInfo>& song_list)
@@ -170,7 +178,7 @@ void CPlaylistFile::RemoveSong(const SongInfo& song)
 
 bool CPlaylistFile::IsPlaylistFile(const wstring& file_path)
 {
-    wstring file_extension = CFilePathHelper(file_path).GetFileExtension(false, true);
+    wstring file_extension = CFilePathHelper(file_path).GetFileExtension();
     return CCommon::IsItemInVector(m_surpported_playlist, file_extension);
 }
 
@@ -178,8 +186,8 @@ bool CPlaylistFile::IsPlaylistExt(wstring ext)
 {
     if (ext.empty())
         return false;
-    if (ext.front() != L'.')
-        ext = L'.' + ext;
+    if (ext.front() == L'.')
+        ext =  ext.substr(1);
     return CCommon::IsItemInVector(m_surpported_playlist, ext);
 }
 
@@ -217,10 +225,7 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
                 item.end_pos.fromInt(_wtoi(result[3].c_str()));
             //item.lengh = item.end_pos - item.start_pos;
             if (result.size() >= 5)
-            {
                 item.title = result[4];
-                item.info_acquired = true;
-            }
             if (result.size() >= 6)
                 item.artist = result[5];
             if (result.size() >= 7)
@@ -235,6 +240,8 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
                 item.SetYear(result[10].c_str());
             if (result.size() >= 12)
                 item.comment = result[11];
+            if (result.size() >= 13)
+                item.cue_file_path = result[12];
         }
         if(CCommon::IsPath(item.file_path)) // 绝对路径的语法检查
         {

@@ -21,7 +21,7 @@ public:
     void DrawLryicCommon(CRect rect, Alignment align = Alignment::AUTO);
 
     int GetLyricTextHeight() const;
-    virtual void Create(CDC* pDC, CWnd* pMainWnd /* = nullptr */) override;
+    virtual void Create(CDC* pDC, CFont* pFont/* = nullptr */) override;
     bool IsDrawMultiLine(int height) const;			//根据一个高度判断是否绘制多行歌词
     void SetForCortanaLyric(bool for_cortana_lyric = true);
 

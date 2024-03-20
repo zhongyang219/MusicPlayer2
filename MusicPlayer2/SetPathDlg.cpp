@@ -3,8 +3,8 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "SetPathDlg.h"
-#include "afxdialogex.h"
 #include "MusicPlayerCmdHelper.h"
 #include "RecentFolderAndPlaylist.h"
 
@@ -104,7 +104,7 @@ void CSetPathDlg::ShowPathList()
         if (m_search_result.empty())
         {
             m_path_list.InsertItem(0, _T(""));
-            m_path_list.SetItemText(0, 1, CCommon::LoadText(IDS_NO_RESULT_TO_SHOW));
+            m_path_list.SetItemText(0, 1, theApp.m_str_table.LoadText(L"TXT_PLAYLIST_CTRL_NO_RESULT_TO_SHOW").c_str());
             m_path_list.EnableWindow(FALSE);
             return;
         }
@@ -140,7 +140,7 @@ void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
     m_path_list.SetItemText(index, 2, path_info.path.c_str());
 
     if (path_info.contain_sub_folder)
-        m_path_list.SetItemText(index, 3, CCommon::LoadText(IDS_YES));
+        m_path_list.SetItemText(index, 3, theApp.m_str_table.LoadText(L"TXT_LIB_PAHT_IS_CONTAIN_SUB_FOLDER_YES").c_str());
     else
         m_path_list.SetItemText(index, 3, _T(""));
 
@@ -162,6 +162,25 @@ void CSetPathDlg::OnTabEntered()
     ShowPathList();
     m_list_selected = m_path_list.GetCurSel();
     SetButtonsEnable();
+}
+
+bool CSetPathDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_LIB_PATH_CURRENT_FOLDER");
+    SetDlgItemTextW(IDC_TXT_LIB_PATH_CURRENT_FOLDER_STATIC, temp.c_str());
+    // IDC_PATH_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_LIB_PATH_OPEN_NEW_FOLDER");
+    SetDlgItemTextW(IDC_OPEN_FOLDER, temp.c_str());
+    // IDC_SEARCH_EDIT
+    // IDC_PATH_LIST
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_LIB_PATH_CURRENT_FOLDER_STATIC },
+        { CtrlTextInfo::C0, IDC_PATH_EDIT },
+        { CtrlTextInfo::R1, IDC_OPEN_FOLDER, CtrlTextInfo::W32 }
+        });
+    return true;
 }
 
 void CSetPathDlg::DoDataExchange(CDataExchange* pDX)
@@ -208,20 +227,16 @@ BOOL CSetPathDlg::OnInitDialog()
     vector<int> width;
     CalculateColumeWidth(width);
     m_path_list.SetExtendedStyle(m_path_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    m_path_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);
-    m_path_list.InsertColumn(1, CCommon::LoadText(IDS_FOLDER), LVCFMT_LEFT, width[1]);
-    m_path_list.InsertColumn(2, CCommon::LoadText(IDS_PATH), LVCFMT_LEFT, width[2]);
-    m_path_list.InsertColumn(3, CCommon::LoadText(IDS_CONTAIN_SUB_FOLDER), LVCFMT_LEFT, width[3]);
-    m_path_list.InsertColumn(4, CCommon::LoadText(IDS_TRACK_PLAYED), LVCFMT_LEFT, width[4]);
-    m_path_list.InsertColumn(5, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width[5]);
-    m_path_list.InsertColumn(6, CCommon::LoadText(IDS_TOTAL_LENGTH), LVCFMT_LEFT, width[6]);
+    m_path_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, width[0]);
+    m_path_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_FOLDER").c_str(), LVCFMT_LEFT, width[1]);
+    m_path_list.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_PATH").c_str(), LVCFMT_LEFT, width[2]);
+    m_path_list.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_LIB_PAHT_IS_CONTAIN_SUB_FOLDER").c_str(), LVCFMT_LEFT, width[3]);
+    m_path_list.InsertColumn(4, theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TRACK").c_str(), LVCFMT_LEFT, width[4]);
+    m_path_list.InsertColumn(5, theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK").c_str(), LVCFMT_LEFT, width[5]);
+    m_path_list.InsertColumn(6, theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH").c_str(), LVCFMT_LEFT, width[6]);
 
-    m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
-
-    ////初始化提示信息
-    //m_Mytip.Create(this, TTS_ALWAYSTIP);
-    //m_Mytip.AddTool(GetDlgItem(IDC_CLEAR_BUTTON), CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT));
-    //m_Mytip.AddTool(&m_search_edit, CCommon::LoadText(IDS_INPUT_KEY_WORD));
+    wstring prompt_str = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT") + L"(F)";
+    m_search_edit.SetCueBanner(prompt_str.c_str(), TRUE);
 
     ////设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
     //m_path_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -251,7 +266,7 @@ void CSetPathDlg::OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult)
     SetButtonsEnable();
 
     //弹出右键菜单
-    CMenu* pContextMenu = theApp.m_menu_set.m_media_lib_folder_menu.GetSubMenu(0);  //获取第一个弹出菜单
+    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu);
     m_path_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;
@@ -284,7 +299,10 @@ void CSetPathDlg::OnOK()
     {
         PathInfo path_info = GetSelPath();
         if (!CPlayer::GetInstance().SetPath(path_info))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
         {
             CTabDlg::OnOK();
@@ -300,14 +318,17 @@ void CSetPathDlg::OnBnClickedOpenFolder()
 {
     // TODO: 在此添加控件通知处理程序代码
     static bool include_sub_dir{ false };
+    static CString include_sub_dir_str{ theApp.m_str_table.LoadText(L"TXT_FOLDER_BROWSER_INCLUDE_SUB_DIR").c_str() };
+    const wstring& title = theApp.m_str_table.LoadText(L"TITLE_FOLDER_BROWSER_SONG_SOURCE");
     // 这里原来使用WM_COMMAND, ID_FILE_OPEN_FOLDER但菜单命令无法返回用户是否点击“取消”
 #ifdef COMPILE_IN_WIN_XP
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-    folderPickerDlg.SetInfo(CCommon::LoadText(IDS_OPEN_FOLDER_INFO));
+    folderPickerDlg.SetInfo(title.c_str());
 #else
     CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
     CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
-    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, CCommon::LoadText(IDS_INCLUDE_SUB_DIR), include_sub_dir);     //在打开对话框中添加一个复选框
+    folderPickerDlg.m_ofn.lpstrTitle = title.c_str();
+    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, include_sub_dir_str, include_sub_dir);     //在打开对话框中添加一个复选框
 #endif
     if (folderPickerDlg.DoModal() == IDOK)
     {
@@ -317,7 +338,10 @@ void CSetPathDlg::OnBnClickedOpenFolder()
         include_sub_dir = (checked != FALSE);
 #endif
         if (!CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
         {
             CTabDlg::OnOK();
@@ -346,7 +370,10 @@ void CSetPathDlg::OnDeletePath()
         if (!CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetCurrentDir2() == del_path)
         {
             if (!CPlayer::GetInstance().RemoveCurPlaylistOrFolder())
-                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            }
         }
         else
         {
@@ -371,14 +398,14 @@ void CSetPathDlg::OnBrowsePath()
 void CSetPathDlg::OnClearInvalidPath()
 {
     // TODO: 在此添加命令处理程序代码
-    if (MessageBox(CCommon::LoadText(IDS_CLEAR_PATH_INQUARY), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
+    const wstring& inquary_info = theApp.m_str_table.LoadText(L"MSG_LIB_PATH_CLEAR_INQUARY");
+    if (MessageBox(inquary_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
         return;
     int cleard_cnt = CMusicPlayerCmdHelper::CleanUpRecentFolders();
     ShowPathList();     // 重新显示路径列表
     CRecentFolderAndPlaylist::Instance().Init();
-    CString info;
-    info = CCommon::LoadTextFormat(IDS_PATH_CLEAR_COMPLETE, { cleard_cnt });
-    MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
+    wstring complete_info = theApp.m_str_table.LoadTextFormat(L"MSG_LIB_PATH_CLEAR_COMPLETE", { cleard_cnt });
+    MessageBox(complete_info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
 }
 
 
@@ -457,7 +484,10 @@ void CSetPathDlg::OnContainSubFolder()
         if (!CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetCurrentDir2() == sel_path)
         {
             if (!CPlayer::GetInstance().SetContainSubFolder())
-                MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            }
         }
         else
         {

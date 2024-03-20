@@ -40,12 +40,13 @@ enum PlayingState       //正在播放标志
 //MP3编码参数
 struct MP3EncodePara
 {
-    int encode_type{ 0 };		//0:CBR, 1:ABR, 2:VBR, 3:自定义参数
-    wstring cbr_bitrate{ L"128" };		//CBR比特率
-    wstring abr_bitrate{ L"128" };		//ABR比特率
-    int vbr_quality{ 4 };		//VBR质量（0~9）
+    int encode_type{ 0 };               // 0:CBR, 1:ABR, 2:VBR, （更改：<3:自定义参数>不再使用，但加载配置时保持兼容）
+    int cbr_bitrate{ 128 };             // CBR比特率
+    int abr_bitrate{ 128 };             // ABR比特率
+    int vbr_quality{ 4 };               // VBR质量（0~9）
     bool joint_stereo{ true };
-    wstring cmd_para;		//命令行参数
+    bool user_define_para{ false };     // 使用用户自定义参数（此项不保存，当ini中cmd_para非空时加载为true）
+    wstring cmd_para;                   // 命令行参数
 };
 
 //wma 编码参数
@@ -74,7 +75,7 @@ struct FlacEncodePara
 enum class EncodeFormat { WAV, MP3, WMA, OGG, FLAC };
 
 //格式转换错误代码
-#define CONVERT_ERROR_FILE_CONNOT_OPEN (-1)			//源文件无法读取
+#define CONVERT_ERROR_FILE_CANNOT_OPEN (-1)	        //源文件无法读取
 #define CONVERT_ERROR_ENCODE_CHANNEL_FAILED (-2)	//编码通道创建失败
 #define CONVERT_ERROR_ENCODE_PARA_ERROR (-3)		//找不到编码器或编码器参数错误
 #define CONVERT_ERROR_MIDI_NO_SF2 (-4)				//没有MIDI音色库
@@ -109,8 +110,11 @@ public:
     virtual int GetCurPosition() = 0;               //获取当前播放进度，单位为毫秒
     virtual int GetSongLength() = 0;                //获取歌曲长度，单位为毫秒
     virtual void SetCurPosition(int position) = 0;  //设置播放进度，单位为毫秒
-    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) = 0;        //获取打开的音频的长度、比特率和标签信息，flag用于指定获取哪些信息
-    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) = 0;        //获取指定音频文件的长度、比特率和标签信息
+    // 获取打开的音频的长度、比特率和标签信息，flag用于指定获取哪些信息
+    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO | AF_CHANNEL_INFO) = 0;
+    // 获取file_path属性写入song_info，flag用于指定获取哪些信息（需要支持并发且不影响当前播放）
+    // AF_LENGTH读取文件时长直接写入end_pos，AF_BITRATE读取比特率，AF_TAG_INFO读取标签/分级，AF_CHANNEL_INFO读取采样率/位深度/通道数
+    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO | AF_CHANNEL_INFO) = 0;
 
     /**
      * @brief   音频编码的回调函数

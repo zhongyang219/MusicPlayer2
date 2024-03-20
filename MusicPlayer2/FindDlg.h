@@ -1,7 +1,5 @@
 ﻿#pragma once
-#include "afxcmn.h"
 #include "AudioCommon.h"
-#include "afxwin.h"
 #include "ListCtrlEx.h"
 #include "Common.h"
 #include "BaseDialog.h"
@@ -63,6 +61,7 @@ protected:
     CString m_selected_string;
 
     virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void ShowFindResult();
     void ShowFindInfo();
@@ -98,7 +97,7 @@ public:
     afx_msg void OnFormatConvert();
     afx_msg void OnItemProperty();
     virtual void OnOK();
-    afx_msg void OnAddToNewPalylistAndPlay();
+    afx_msg void OnAddToNewPlaylistAndPlay();
 private:
 public:
     afx_msg void OnInitMenu(CMenu* pMenu);

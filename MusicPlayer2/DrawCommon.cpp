@@ -23,12 +23,10 @@ CDrawCommon::~CDrawCommon()
         SAFE_DELETE(m_pGraphics);
 }
 
-void CDrawCommon::Create(CDC* pDC, CWnd* pMainWnd)
+void CDrawCommon::Create(CDC* pDC, CFont* pFont)
 {
     m_pDC = pDC;
-    m_pMainWnd = pMainWnd;
-    if (m_pMainWnd != nullptr)
-        m_pfont = m_pMainWnd->GetFont();
+    m_pfont = pFont;
     if (pDC != nullptr)
     {
         m_pGraphics = new Gdiplus::Graphics(pDC->GetSafeHdc());
@@ -36,12 +34,10 @@ void CDrawCommon::Create(CDC* pDC, CWnd* pMainWnd)
     }
 }
 
-void CDrawCommon::Create(CDC* pDC, Gdiplus::Graphics* pGraphics, CWnd* pMainWnd)
+void CDrawCommon::Create(CDC* pDC, Gdiplus::Graphics* pGraphics, CFont* pFont)
 {
     m_pDC = pDC;
-    m_pMainWnd = pMainWnd;
-    if (m_pMainWnd != nullptr)
-        m_pfont = m_pMainWnd->GetFont();
+    m_pfont = pFont;
     m_pGraphics = pGraphics;
     m_auto_destory_graphics = false;
 }
@@ -51,10 +47,10 @@ void CDrawCommon::Create(CDC* pDC, Gdiplus::Graphics* pGraphics, CWnd* pMainWnd)
 //  m_backColor = back_color;
 //}
 
-CFont* CDrawCommon::SetFont(CFont* pfont)
+CFont* CDrawCommon::SetFont(CFont* pFont)
 {
     CFont* pOldFont = m_pfont;
-    m_pfont = pfont;
+    m_pfont = pFont;
     return pOldFont;
 }
 
@@ -74,6 +70,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
     ASSERT(align != Alignment::AUTO);
     m_pDC->SetTextColor(color);
     m_pDC->SetBkMode(TRANSPARENT);
+    ASSERT(m_pfont != nullptr); // 请先设置字体
     if (m_pfont != nullptr)
         m_pDC->SelectObject(m_pfont);
     //设置绘图的剪辑区域
@@ -117,6 +114,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
     if (split < 0) split = 0;
     if (split > 1000) split = 1000;
     m_pDC->SetBkMode(TRANSPARENT);
+    ASSERT(m_pfont != nullptr); // 请先设置字体
     if (m_pfont != nullptr)
         m_pDC->SelectObject(m_pfont);
     CSize text_size;    //文本的大小
@@ -195,6 +193,7 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
     }
     m_pDC->SetTextColor(color);
     m_pDC->SetBkMode(TRANSPARENT);
+    ASSERT(m_pfont != nullptr); // 请先设置字体
     if (m_pfont != nullptr)
         m_pDC->SelectObject(m_pfont);
     CSize text_size;    //文本的大小
@@ -272,6 +271,7 @@ void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color
     }
     m_pDC->SetTextColor(color);
     m_pDC->SetBkMode(TRANSPARENT);
+    ASSERT(m_pfont != nullptr); // 请先设置字体
     if (m_pfont != nullptr)
         m_pDC->SelectObject(m_pfont);
     CSize text_size;    //文本的大小
@@ -614,6 +614,7 @@ CSize CDrawCommon::GetTextExtent(LPCTSTR str)
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return CSize();
+    ASSERT(m_pfont != nullptr); // 请先设置字体
     if (m_pfont != nullptr)
         m_pDC->SelectObject(m_pfont);
     return m_pDC->GetTextExtent(str);

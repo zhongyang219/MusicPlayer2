@@ -27,7 +27,7 @@ void CUserUi::LoadFromContents(const std::string& xml_contents)
     xml_doc.Parse(xml_contents.c_str());
     tinyxml2::XMLElement* root = xml_doc.RootElement();
     m_ui_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(root, "name"), CodeType::UTF8_NO_BOM);
-    CCommon::ReplaceUiStringRes(m_ui_name);
+    ReplaceUiStringRes(m_ui_name);
     std::string ui_index = CTinyXml2Helper::ElementAttribute(root, "index");
     if (!ui_index.empty())
         m_index = atoi(ui_index.c_str());
@@ -102,15 +102,15 @@ void CUserUi::ResetVolumeToPlayTime()
         });
 }
 
-void CUserUi::PlaylistLocateToCurrent()
+void CUserUi::PlaylistLocateToIndex(int index)
 {
     //遍历Playlist元素
-    IterateAllElements([this](UiElement::Element* element) ->bool
+    IterateAllElements([&](UiElement::Element* element) ->bool
     {
         UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
         if (playlist_element != nullptr)
         {
-            playlist_element->EnsureItemVisible(CPlayer::GetInstance().GetIndex());
+            playlist_element->EnsureItemVisible(index);
         }
         return false;
     });
@@ -206,9 +206,9 @@ std::shared_ptr<UiElement::Element> CUserUi::GetCurrentTypeUi() const
     return draw_element;
 }
 
-CString CUserUi::GetUIName()
+wstring CUserUi::GetUIName()
 {
-    return m_ui_name.c_str();
+    return m_ui_name;
 }
 
 bool CUserUi::LButtonUp(CPoint point)
@@ -436,7 +436,7 @@ bool CUserUi::DoubleClick(CPoint point)
 
 void CUserUi::UiSizeChanged()
 {
-    PlaylistLocateToCurrent();
+    PlaylistLocateToIndex(INT_MAX);
 }
 
 int CUserUi::GetUiIndex()
@@ -556,7 +556,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 //text
                 std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
                 text->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
-                CCommon::ReplaceUiStringRes(text->text);
+                ReplaceUiStringRes(text->text);
                 //alignment
                 std::string str_alignment = CTinyXml2Helper::ElementAttribute(xml_node, "alignment");
                 if (str_alignment == "left")

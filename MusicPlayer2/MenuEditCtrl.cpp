@@ -27,13 +27,10 @@ void CMenuEditCtrl::SetTooltopText(const CString& tooltip_text)
 void CMenuEditCtrl::OnBrowse()
 {
     PostMessage(WM_KILLFOCUS, 0, 0);
-    if (theApp.m_menu_set.m_recent_folder_playlist_menu.m_hMenu != 0)
-    {
-        CRect rect;
-        GetWindowRect(rect);
-        //ClientToScreen(rect);
-        theApp.m_menu_set.m_recent_folder_playlist_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rect.left, rect.bottom, AfxGetMainWnd());
-    }
+    CRect rect;
+    GetWindowRect(rect);
+    //ClientToScreen(rect);
+    theApp.m_menu_mgr.GetMenu(MenuMgr::RecentFolderPlaylistMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rect.left, rect.bottom, AfxGetMainWnd());
 }
 
 void CMenuEditCtrl::OnDrawBrowseButton(CDC* pDC, CRect rect, BOOL bIsButtonPressed, BOOL bIsButtonHot)
@@ -46,7 +43,7 @@ void CMenuEditCtrl::OnDrawBrowseButton(CDC* pDC, CRect rect, BOOL bIsButtonPress
     //使用双缓冲绘图
     CDrawDoubleBuffer drawDoubleBuffer(pDC, rect);
     CDrawCommon drawer;
-    drawer.Create(drawDoubleBuffer.GetMemDC(), this);
+    drawer.Create(drawDoubleBuffer.GetMemDC());
     CRect rc_draw{ rect };
     rc_draw.MoveToXY(0, 0);
     

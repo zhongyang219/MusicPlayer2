@@ -3,7 +3,6 @@
 #include "resource.h"
 #include "FilePathHelper.h"
 #include <random>
-#include <functional>
 #include <strsafe.h>
 // #include <pathcch.h>
 
@@ -39,11 +38,16 @@ CCommon::~CCommon()
 //	std::sort(files.begin(), files.end());		//对容器里的文件按名称排序
 //}
 
-bool CCommon::FileExist(const wstring& file)
+bool CCommon::FileExist(const wstring& file, bool is_case_sensitive)
 {
-    if (file == L"." || file == L"..")
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFileW(file.c_str(), &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE)  // 没有找到说明不区分大小写也没有匹配文件
         return false;
-    return (PathFileExists(file.c_str()) != 0);
+    FindClose(hFind);
+    if (is_case_sensitive)              // 如果需要区分大小写那么重新严格比较
+        return CFilePathHelper(file).GetFileName() == findFileData.cFileName;
+    return true;
 }
 
 bool CCommon::FolderExist(const wstring& file)
@@ -58,16 +62,31 @@ bool CCommon::IsFolder(const wstring& path)
     return (dwAttrib & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-unsigned __int64 CCommon::GetFileLastModified(const wstring& file_path)
+bool CCommon::CheckAndFixFile(wstring& file)
 {
-    WIN32_FIND_DATA ffd;
-    HANDLE hFind = FindFirstFile(file_path.c_str(), &ffd);
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFileW(file.c_str(), &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE)
+        return false;
     FindClose(hFind);
-    unsigned __int64 last_modified_time{};
-    last_modified_time = ffd.ftLastWriteTime.dwLowDateTime;
-    unsigned __int64 hight_date_time = ffd.ftLastWriteTime.dwHighDateTime;
-    last_modified_time |= (hight_date_time << 32);
-    return last_modified_time;
+    CFilePathHelper file_path(file);
+    file = file_path.GetDir() + findFileData.cFileName;  // 修正file的文件名大小写到与文件一致
+    return true;
+}
+
+bool CCommon::GetFileLastModified(const wstring& file_path, unsigned __int64& modified_time)
+{
+    // 使用GetFileAttributesEx，耗时大约为FindFirstFile的2/3
+    WIN32_FILE_ATTRIBUTE_DATA file_attributes;
+    if (GetFileAttributesEx(file_path.c_str(), GetFileExInfoStandard, &file_attributes))
+    {
+        ULARGE_INTEGER last_modified_time{};
+        last_modified_time.HighPart = file_attributes.ftLastWriteTime.dwHighDateTime;
+        last_modified_time.LowPart = file_attributes.ftLastWriteTime.dwLowDateTime;
+        modified_time = last_modified_time.QuadPart;
+        return true;
+    }
+    return false;
 }
 
 bool CCommon::IsFileHidden(const wstring& file_path)
@@ -170,6 +189,40 @@ bool CCommon::StrIsNumber(const wstring& str)
 bool CCommon::CharIsNumber(wchar_t ch)
 {
     return (ch >= L'0' && ch <= L'9');
+}
+
+void CCommon::StringSplitLine(const wstring& source_str, vector<wstring>& results, bool skip_empty, bool trim)
+{
+    results.clear();
+    if (source_str.empty())
+        return;
+
+    auto push_back_str = [&](const wchar_t* start, const wchar_t* end)
+        {
+            wstring tmp(start, end);
+            if (trim)
+                StringNormalize(tmp);
+            if (!skip_empty || !tmp.empty())
+                results.push_back(std::move(tmp));
+        };
+
+    const wchar_t* line_start_pos = source_str.data();
+    const wchar_t* cur_pos = line_start_pos;
+    const wchar_t* end_pos = line_start_pos + source_str.size();
+    while (cur_pos < end_pos)
+    {
+        if (*cur_pos == L'\r' || *cur_pos == L'\n')
+        {
+            push_back_str(line_start_pos, cur_pos);
+            ++cur_pos;                                          // 指针移动到下一个字符
+            if (*cur_pos == L'\n' && *(cur_pos - 1) == L'\r')   // 如果下一个字符是LF且位于CR后面那么跳过
+                ++cur_pos;
+            line_start_pos = cur_pos;
+        }
+        else
+            ++cur_pos;
+    }
+    push_back_str(line_start_pos, cur_pos);
 }
 
 void CCommon::StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& results, bool skip_empty, bool trim)
@@ -707,117 +760,18 @@ wstring CCommon::GetAppDataConfigDir()
 
 wstring CCommon::GetSpecialDir(int csidl)
 {
+    bool rtn{};
     LPITEMIDLIST ppidl;
-    TCHAR folder_dir[MAX_PATH];
+    wchar_t folder_dir[MAX_PATH];
     if (SHGetSpecialFolderLocation(NULL, csidl, &ppidl) == S_OK)
     {
-        SHGetPathFromIDList(ppidl, folder_dir);
+        rtn = SHGetPathFromIDListW(ppidl, folder_dir);
         CoTaskMemFree(ppidl);
     }
-    return wstring(folder_dir);
-}
-
-//int CCommon::GetListWidth(CListBox & list)
-//{
-//	CDC *pDC = list.GetDC();
-//	if (NULL == pDC)
-//	{
-//		return 0;
-//	}
-//	int nCount = list.GetCount();
-//	if (nCount < 1)
-//		return 0;
-//	int nMaxExtent = 0;
-//	CString szText;
-//	for (int i = 0; i < nCount; ++i)
-//	{
-//		list.GetText(i, szText);
-//		CSize &cs = pDC->GetTextExtent(szText);
-//		if (cs.cx > nMaxExtent)
-//		{
-//			nMaxExtent = cs.cx;
-//		}
-//	}
-//	return nMaxExtent;
-//}
-
-
-int CCommon::DeleteAFile(HWND hwnd, _tstring file)
-{
-    file.push_back(_T('\0'));	//pFrom必须以两个\0结尾
-    LPCTSTR strTitle = CCommon::LoadText(IDS_DELETE);	//文件删除进度对话框标题
-    SHFILEOPSTRUCT FileOp{};	//定义SHFILEOPSTRUCT结构对象
-    FileOp.hwnd = hwnd;
-    FileOp.wFunc = FO_DELETE;	//执行文件删除操作;
-    FileOp.pFrom = file.c_str();
-    FileOp.fFlags = FOF_ALLOWUNDO;	//此标志使删除文件备份到Windows回收站
-    FileOp.hNameMappings = NULL;
-    FileOp.lpszProgressTitle = strTitle;
-    return SHFileOperation(&FileOp);	//删除文件
-}
-
-int CCommon::DeleteFiles(HWND hwnd, const vector<_tstring>& files)
-{
-    _tstring file_list;
-    for (const auto& file : files)
-    {
-        file_list += file;
-        file_list.push_back(_T('\0'));
-    }
-    return DeleteAFile(hwnd, file_list);
-}
-
-int CCommon::CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to)
-{
-    file_from.push_back(_T('\0'));	//pFrom必须以两个\0结尾
-    file_to.push_back(_T('\0'));	//pTo必须以两个\0结尾
-    SHFILEOPSTRUCT FileOp{};
-    FileOp.hwnd = hwnd;
-    FileOp.wFunc = FO_COPY;
-    FileOp.pFrom = file_from.c_str();
-    FileOp.pTo = file_to.c_str();
-    FileOp.fFlags = FOF_ALLOWUNDO;
-    FileOp.hNameMappings = NULL;
-    static CString str_title = LoadText(IDS_COPY);
-    FileOp.lpszProgressTitle = str_title;
-    return SHFileOperation(&FileOp);
-}
-
-int CCommon::CopyFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to)
-{
-    _tstring file_list;
-    for (const auto& file : files)
-    {
-        file_list += file;
-        file_list.push_back(_T('\0'));
-    }
-    return CopyAFile(hwnd, file_list, file_to);
-}
-
-int CCommon::MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to)
-{
-    file_from.push_back(_T('\0'));	//pFrom必须以两个\0结尾
-    file_to.push_back(_T('\0'));	//pTo必须以两个\0结尾
-    SHFILEOPSTRUCT FileOp{};
-    FileOp.hwnd = hwnd;
-    FileOp.wFunc = FO_MOVE;
-    FileOp.pFrom = file_from.c_str();
-    FileOp.pTo = file_to.c_str();
-    FileOp.fFlags = FOF_ALLOWUNDO;
-    FileOp.hNameMappings = NULL;
-    FileOp.lpszProgressTitle = LoadText(IDS_MOVE);
-    return SHFileOperation(&FileOp);
-}
-
-int CCommon::MoveFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to)
-{
-    _tstring file_list;
-    for (const auto& file : files)
-    {
-        file_list += file;
-        file_list.push_back(_T('\0'));
-    }
-    return MoveAFile(hwnd, file_list, file_to);
+    ASSERT(rtn);
+    if (rtn)
+        return wstring(folder_dir);
+    return wstring();
 }
 
 bool CCommon::CreateDir(const _tstring& path)
@@ -1387,42 +1341,6 @@ void CCommon::IterateMenuItem(CMenu* pMenu, std::function<void(CMenu*, UINT)> fu
     }
 }
 
-CString CCommon::LoadText(UINT id, LPCTSTR back_str)
-{
-    CString str;
-    str.LoadString(id);
-    if (back_str != nullptr)
-        str += back_str;
-    return str;
-}
-
-CString CCommon::LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str)
-{
-    CString str;
-    str.LoadString(id);
-    if (back_str != nullptr)
-        str += back_str;
-    if (front_str != nullptr)
-        str = front_str + str;
-    return str;
-}
-
-CString CCommon::StringFormat(LPCTSTR format_str, const std::initializer_list<CVariant>& paras)
-{
-    CString str_rtn = format_str;
-    int index = 1;
-    for (const auto& para : paras)
-    {
-        CString para_str = para.ToString();
-        CString format_para;
-        format_para.Format(_T("<%%%d%%>"), index);
-        str_rtn.Replace(format_para, para_str);
-
-        index++;
-    }
-    return str_rtn;
-}
-
 bool CCommon::StringLeftMatch(const std::wstring& str, const std::wstring& matched_str)
 {
     if (str.size() < matched_str.size())
@@ -1430,48 +1348,55 @@ bool CCommon::StringLeftMatch(const std::wstring& str, const std::wstring& match
     return str.substr(0, matched_str.size()) == matched_str;
 }
 
-CString CCommon::LoadTextFormat(UINT id, const std::initializer_list<CVariant>& paras)
+bool CCommon::GetThreadLanguageList(vector<wstring>& language_tag)
 {
-    CString str;
-    str.LoadString(id);
-    return StringFormat(str.GetString(), paras);
+    language_tag.clear();
+    ULONG num{};
+    vector<wchar_t> buffer(LOCALE_NAME_MAX_LENGTH, L'\0');
+    ULONG buffer_size{ static_cast<ULONG>(buffer.size()) };
+    bool rtn = GetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, &num, buffer.data(), &buffer_size); // >=Windows Vista
+    if (!rtn) return false;
+    ASSERT(buffer_size <= LOCALE_NAME_MAX_LENGTH);
+    size_t pos{};
+    for (size_t i{}; i < buffer_size; ++i)
+    {
+        if (buffer[i] != L'\0' || pos == i)
+            continue;
+        wstring tmp(buffer.begin() + pos, buffer.begin() + i);
+        language_tag.push_back(tmp);
+        pos = i + 1;
+    }
+    ASSERT(language_tag.size() == num);
+    return true;
 }
 
-void CCommon::ReplaceUiStringRes(std::wstring& str)
+bool CCommon::SetThreadLanguageList(const vector<wstring>& language_tag)
 {
-    size_t index{};
-    while (true)
+    vector<wchar_t> buffer;
+    size_t buffer_size{ 1 };
+    for (const wstring& tag : language_tag)
     {
-        index = str.find(L"%(", index);
-        if (index == std::wstring::npos)
+        if (tag.empty()) continue;
+        buffer_size += tag.size() + 1;
+        if (buffer_size > LOCALE_NAME_MAX_LENGTH)
             break;
-        size_t right_bracket_index = str.find(L')', index + 2);
-        if (right_bracket_index == std::wstring::npos)
-            break;
-        int res_id = _wtoi(str.substr(index + 2, right_bracket_index - index - 2).c_str());
-        std::wstring res_str = LoadText(static_cast<UINT>(res_id)).GetString();
-        if (!res_str.empty())
-        {
-            str.replace(index, right_bracket_index - index + 1, res_str);
-            index += res_str.size();
-        }
-        else
-        {
-            index = right_bracket_index + 1;
-        }
+        buffer.insert(buffer.end(), tag.begin(), tag.end());
+        buffer.push_back(L'\0');
     }
+    if (buffer.empty()) // buffer为空时多插入一个\0确保双\0结尾（空buffer会重置之前设置的线程首选UI语言列表）
+        buffer.push_back(L'\0');
+    buffer.push_back(L'\0');
+    bool rtn = SetThreadPreferredUILanguages(MUI_LANGUAGE_NAME, buffer.data(), nullptr); // >=Windows Vista
+    return rtn;
 }
 
-
-void CCommon::SetThreadLanguage(Language language)
+wstring CCommon::GetSystemDefaultUIFont()
 {
-    switch (language)
-    {
-    case Language::ENGLISH: SetThreadUILanguage(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US)); break;
-    case Language::SIMPLIFIED_CHINESE: SetThreadUILanguage(MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED)); break;
-        //case Language::TRADITIONAL_CHINESE: SetThreadUILanguage(MAKELANGID(LANG_CHINESE, SUBLANG_CHINESE_TRADITIONAL)); break;
-    default: break;
-    }
+    NONCLIENTMETRICS metrics;
+    metrics.cbSize = sizeof(NONCLIENTMETRICS);
+    SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &metrics, 0);
+    wstring font_name = metrics.lfMessageFont.lfFaceName;
+    return font_name;
 }
 
 void CCommon::WStringCopy(wchar_t* str_dest, int dest_size, const wchar_t* str_source, int source_size)
@@ -1759,77 +1684,84 @@ bool CCommon::GetNumberBit(unsigned short num, int bit)
 std::string CCommon::GetTextResourceRawData(UINT id)
 {
     std::string res_data;
-    HRSRC hRes = FindResource(NULL, MAKEINTRESOURCE(id), _T("TEXT"));
-    if (hRes != NULL)
+    HINSTANCE hInstance = AfxGetResourceHandle();
+    HRSRC hRsrc = FindResource(NULL, MAKEINTRESOURCE(id), _T("TEXT"));
+    if (hRsrc != NULL)
     {
-        HGLOBAL hglobal = LoadResource(NULL, hRes);
-        if (hglobal != NULL)
+        HGLOBAL hGlobal = LoadResource(NULL, hRsrc);
+        if (hGlobal != NULL)
         {
-            res_data = (const char*)hglobal;
+            const char* pResource = static_cast<const char*>(LockResource(hGlobal));
+            if (pResource != NULL)
+            {
+                // 获取资源大小
+                DWORD dwSize = SizeofResource(hInstance, hRsrc);
+                // 将资源数据存储到std::string
+                return std::string(pResource, dwSize);
+            }
+            UnlockResource(hGlobal);
         }
     }
     return res_data;
 }
 
-CString CCommon::GetTextResource(UINT id, CodeType code_type)
+wstring CCommon::GetTextResource(UINT id, CodeType code_type)
 {
-    std::string res_data = GetTextResourceRawData(id);
-    res_data.push_back('\0');
-    CString res_str;
-    if (!res_data.empty())
-    {
-        if (code_type == CodeType::UTF16LE)
-        {
-            res_str = (const wchar_t*)res_data.c_str();
-        }
-        else
-        {
-            res_str = CCommon::StrToUnicode(res_data, code_type).c_str();
-        }
-    }
+    string res_data = GetTextResourceRawData(id);
+    wstring res_str = CCommon::StrToUnicode(res_data, code_type);
     return res_str;
 }
 
 Gdiplus::Image* CCommon::GetPngImageResource(UINT id)
 {
-    HINSTANCE hIns = AfxGetInstanceHandle();
-    HRSRC hRsrc = ::FindResource(hIns, MAKEINTRESOURCE(id), _T("PNG")); // type
-    if (!hRsrc)
-        return nullptr;
-    // load resource into memory
-    DWORD len = SizeofResource(hIns, hRsrc);
-    BYTE* lpRsrc = (BYTE*)LoadResource(hIns, hRsrc);
-    if (!lpRsrc)
-        return nullptr;
-    // Allocate global memory on which to create stream
-    HGLOBAL m_hMem = GlobalAlloc(GMEM_FIXED, len);
-    BYTE* pmem = (BYTE*)GlobalLock(m_hMem);
-    memcpy(pmem, lpRsrc, len);
-    IStream* pstm;
-    CreateStreamOnHGlobal(m_hMem, FALSE, &pstm);
-    // load from stream
-    Gdiplus::Image* lpImage = Gdiplus::Image::FromStream(pstm);
-    // free/release stuff
-    GlobalUnlock(m_hMem);
-    pstm->Release();
-    FreeResource(lpRsrc);
-    return lpImage;
+    Gdiplus::Image* pImage = nullptr;
+    HINSTANCE hInst = AfxGetResourceHandle();
+    if (HRSRC hRes = ::FindResource(hInst, MAKEINTRESOURCE(id), _T("PNG")))
+    {
+        DWORD imageSize = ::SizeofResource(hInst, hRes);
+        if (HGLOBAL hResData = ::LoadResource(hInst, hRes))
+        {
+            LPVOID pResourceData = ::LockResource(hResData);
+#ifdef COMPILE_IN_WIN_XP
+            if (HGLOBAL hBuffer = ::GlobalAlloc(GMEM_FIXED, imageSize))
+            {
+                ::CopyMemory(hBuffer, pResourceData, imageSize);
+                IStream* pStream = nullptr;
+                if (SUCCEEDED(::CreateStreamOnHGlobal(hBuffer, TRUE, &pStream)))
+                {
+                    pImage = Gdiplus::Image::FromStream(pStream);
+                    pStream->Release();
+                }
+                ::GlobalFree(hBuffer);  // 释放内存句柄
+            }
+#else       // 在缓冲区上创建内存流
+            if (IStream* pStream = SHCreateMemStream(static_cast<const BYTE*>(pResourceData), imageSize))
+            {
+                pImage = Gdiplus::Image::FromStream(pStream);
+                pStream->Release();
+            }
+#endif // COMPILE_IN_WIN_XP
+            ::FreeResource(hResData);
+        }
+    }
+    return pImage;
 }
 
 
 string CCommon::GetPngImageResourceData(UINT id)
 {
-    HINSTANCE hIns = AfxGetInstanceHandle();
-    HRSRC hRsrc = ::FindResource(hIns, MAKEINTRESOURCE(id), _T("PNG")); // type
-    if (!hRsrc)
-        return nullptr;
-    // load resource into memory
-    DWORD len = SizeofResource(hIns, hRsrc);
-    BYTE* lpRsrc = (BYTE*)LoadResource(hIns, hRsrc);
-    if (!lpRsrc)
-        return nullptr;
-    string data((const char*)lpRsrc, len);
-    FreeResource(lpRsrc);
+    string data;
+    HINSTANCE hInst = AfxGetResourceHandle();
+    if (HRSRC hRes = ::FindResource(hInst, MAKEINTRESOURCE(id), _T("PNG")))
+    {
+        DWORD imageSize = ::SizeofResource(hInst, hRes);
+        if (HGLOBAL hResData = ::LoadResource(hInst, hRes))
+        {
+            LPVOID pResourceData = ::LockResource(hResData);
+            data = string(static_cast<const char*>(pResourceData), imageSize);
+            ::FreeResource(hResData);
+        }
+    }
     return data;
 }
 
@@ -1888,11 +1820,17 @@ POINT CCommon::CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& scree
     return mov;
 }
 
-CString CCommon::GetLastCompileTime()
+wstring CCommon::GetLastCompileTime()
 {
-    CString compile_time = GetTextResource(IDR_COMPILE_TIME, CodeType::ANSI);
-    compile_time.Replace(_T("\r\n"), _T(""));
-    compile_time.Delete(compile_time.GetLength() - 1, 1);
+    wstring compile_time = GetTextResource(IDR_COMPILE_TIME, CodeType::ANSI);
+    size_t pos = compile_time.find(L"\r\n");
+    while (pos != wstring::npos)
+    {
+        compile_time.replace(pos, 2, L"");
+        pos = compile_time.find(L"\r\n");
+    }
+    if (!compile_time.empty())
+        compile_time.pop_back();
     return compile_time;
 }
 
@@ -1903,6 +1841,7 @@ unsigned __int64 CCommon::GetCurTimeElapse()
     CTime cur_time(sys_time);
     unsigned __int64 c_time = cur_time.GetTime();
     static unsigned __int64 last_time{};
+    // 此处用作排序时间戳，需要避免重复
     last_time = (last_time < c_time) ? c_time : (last_time + 1);
     return last_time;
 }

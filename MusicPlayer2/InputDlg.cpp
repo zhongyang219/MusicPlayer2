@@ -4,15 +4,14 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "InputDlg.h"
-#include "afxdialogex.h"
 
 
 // CInputDlg 对话框
 
-IMPLEMENT_DYNAMIC(CInputDlg, CDialog)
+IMPLEMENT_DYNAMIC(CInputDlg, CBaseDialog)
 
 CInputDlg::CInputDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_INPUT_DLG, pParent)
+	: CBaseDialog(IDD_INPUT_DLG, pParent)
 {
 
 }
@@ -41,13 +40,31 @@ CString CInputDlg::GetEditText() const
     return m_strEdit;
 }
 
+CString CInputDlg::GetDialogName() const
+{
+    return CString();
+}
+
+bool CInputDlg::InitializeControls()
+{
+    SetWindowTextW(m_strTitle);
+    SetDlgItemTextW(IDC_INFO_STATIC, m_strInfo);
+    SetDlgItemTextW(IDC_INPUT_EDIT, m_strEdit);
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CInputDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
 }
 
 
-BEGIN_MESSAGE_MAP(CInputDlg, CDialog)
+BEGIN_MESSAGE_MAP(CInputDlg, CBaseDialog)
 END_MESSAGE_MAP()
 
 
@@ -56,16 +73,13 @@ END_MESSAGE_MAP()
 
 BOOL CInputDlg::OnInitDialog()
 {
-    CDialog::OnInitDialog();
+    CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetWindowText(m_strTitle);
-    SetDlgItemText(IDC_INFO_STATIC, m_strInfo);
 
     CEdit* pEdit = (CEdit*)GetDlgItem(IDC_INPUT_EDIT);
     if(pEdit!=nullptr)
     {
-        pEdit->SetWindowText(m_strEdit);
         pEdit->SetFocus();		//初始时将焦点设置到输入框
         pEdit->SetSel(0, -1);
     }
@@ -80,5 +94,5 @@ void CInputDlg::OnOK()
     // TODO: 在此添加专用代码和/或调用基类
     GetDlgItemText(IDC_INPUT_EDIT, m_strEdit);
 
-    CDialog::OnOK();
+    CBaseDialog::OnOK();
 }

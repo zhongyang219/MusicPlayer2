@@ -4,15 +4,14 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "CDonateDlg.h"
-#include "afxdialogex.h"
 
 
 // CDonateDlg 对话框
 
-IMPLEMENT_DYNAMIC(CDonateDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CDonateDlg, CBaseDialog)
 
 CDonateDlg::CDonateDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_DONATE_DIALOG, pParent)
+    : CBaseDialog(IDD_DONATE_DIALOG, pParent)
 {
 
 }
@@ -21,14 +20,35 @@ CDonateDlg::~CDonateDlg()
 {
 }
 
+CString CDonateDlg::GetDialogName() const
+{
+    return L"DonateDlg";
+}
+
+bool CDonateDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_DONATE");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_DONATE_INFO");
+    SetDlgItemTextW(IDC_DONATE_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_CLOSE");
+    SetDlgItemTextW(IDCANCEL, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CDonateDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialogEx::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
 }
 
 
-BEGIN_MESSAGE_MAP(CDonateDlg, CDialogEx)
-	ON_WM_PAINT()
+BEGIN_MESSAGE_MAP(CDonateDlg, CBaseDialog)
+    ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -37,9 +57,10 @@ END_MESSAGE_MAP()
 
 BOOL CDonateDlg::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+    CBaseDialog::OnInitDialog();
 
-	// TODO:  在此添加额外的初始化
+    // TODO:  在此添加额外的初始化
+
     //计算两个二维码图片的位置
     CRect rect{};
     CWnd* pWnd = nullptr;
@@ -68,19 +89,19 @@ BOOL CDonateDlg::OnInitDialog()
     m_pic2_rect = rc_pic_area;
     m_pic2_rect.left = m_pic2_rect.right - (rc_pic_area.Width() / 2) + theApp.DPI(4);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // 异常: OCX 属性页应返回 FALSE
+    return TRUE;  // return TRUE unless you set the focus to a control
+                  // 异常: OCX 属性页应返回 FALSE
 }
 
 
 void CDonateDlg::OnPaint()
 {
-	CPaintDC dc(this); // device context for painting
-					   // TODO: 在此处添加消息处理程序代码
-					   // 不为绘图消息调用 CDialogEx::OnPaint()
+    CPaintDC dc(this); // device context for painting
+                       // TODO: 在此处添加消息处理程序代码
+                       // 不为绘图消息调用 CDialogEx::OnPaint()
 
-	CDrawCommon draw;
-	draw.Create(&dc, this);
+    CDrawCommon draw;
+    draw.Create(&dc);
     draw.DrawBitmap(IDB_DONATE, m_pic1_rect.TopLeft(), m_pic1_rect.Size(), CDrawCommon::StretchMode::FIT);
     draw.DrawBitmap(IDB_DONATE_WECHAT, m_pic2_rect.TopLeft(), m_pic2_rect.Size(), CDrawCommon::StretchMode::FIT);
 }

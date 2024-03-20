@@ -69,7 +69,7 @@ void CNotifyIcon::OnNotifyIcon(UINT msgId, HWND hMiniMode)
 		//在通知区点击右键弹出右键菜单
 		CPoint point;
 		GetCursorPos(&point);	//获取当前光标的位置
-		theApp.m_menu_set.m_notify_menu.GetSubMenu(0)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, theApp.m_pMainWnd); //在指定位置显示弹出菜单
+        theApp.m_menu_mgr.GetMenu(MenuMgr::NotifyMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, theApp.m_pMainWnd); //在指定位置显示弹出菜单
 	}
 	if (msgId == WM_LBUTTONDBLCLK)
 	{

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include <afxwin.h>
+
 class CMainDialogBase :
 	public CDialog
 {

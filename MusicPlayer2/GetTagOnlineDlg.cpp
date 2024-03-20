@@ -1,8 +1,6 @@
-#include "stdafx.h"
-#include "GetTagOnlineDlg.h"
-#include "Resource.h"
-#include "Player.h"
+ï»¿#include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "GetTagOnlineDlg.h"
 
 CGetTagOnlineDlg::CGetTagOnlineDlg(const SongInfo& song, CWnd * pParent)
     : CCoverDownloadDlg(pParent), m_song_info(song)
@@ -24,7 +22,6 @@ void CGetTagOnlineDlg::OnBnClickedDownloadSelected()
     if (m_item_selected < 0 || m_item_selected >= static_cast<int>(m_down_list.size()))
         return;
     m_item_info = m_down_list[m_item_selected];
-    CPlayer::GetInstance().SetRelatedSongID(m_item_info.id);		//½«Ñ¡ÖÐÏîÄ¿µÄ¸èÇúID¹ØÁªµ½¸èÇú
 
     if (m_pParentWnd != nullptr)
     {
@@ -43,14 +40,12 @@ BOOL CGetTagOnlineDlg::OnInitDialog()
 {
     CCoverDownloadDlg::OnInitDialog();
 
-    // TODO:  ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯
+    // TODO:  åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–
     SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
-    
-    SetWindowText(CCommon::LoadText(IDS_GET_TAG_ONLINE_TITLE));
 
-    CWnd* pGetInfoBtn = GetDlgItem(IDC_DOWNLOAD_SELECTED);
-    if (pGetInfoBtn != nullptr)
-        pGetInfoBtn->SetWindowText(CCommon::LoadText(IDS_GET_THIS));
+    SetWindowText(theApp.m_str_table.LoadText(L"TITLE_GET_TAG_ONLINE").c_str());
+
+    SetDlgItemTextW(IDC_DOWNLOAD_SELECTED, theApp.m_str_table.LoadText(L"TXT_GET_TAG_ONLINE_GET_THIS").c_str());
 
     ShowDlgCtrl(IDC_DOWNLOAD_OPTION_GROUPBOX, false);
     ShowDlgCtrl(IDC_COVER_LOCATION_STATIC, false);
@@ -58,5 +53,5 @@ BOOL CGetTagOnlineDlg::OnInitDialog()
     ShowDlgCtrl(IDC_SAVE_TO_ALBUM_FOLDER2, false);
 
     return TRUE;  // return TRUE unless you set the focus to a control
-                  // Òì³£: OCX ÊôÐÔÒ³Ó¦·µ»Ø FALSE
+                  // å¼‚å¸¸: OCX å±žæ€§é¡µåº”è¿”å›ž FALSE
 }

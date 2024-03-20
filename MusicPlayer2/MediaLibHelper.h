@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include <set>
 #include "SongInfo.h"
+#include "Common.h"
 
 #define STR_OTHER_CLASSIFY_TYPE L"eRk0Q6ov"
 

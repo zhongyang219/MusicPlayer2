@@ -90,7 +90,7 @@ BOOL CLyricsWindow::Create(LPCTSTR lpszClassName,int nWidth,int nHeight)
 {
 	if(!RegisterWndClass(lpszClassName))
 	{
-		TRACE("Class　Registration　Failedn");
+		TRACE(L"Class　Registration　Failedn");
 	}
 
 	//--------------------------------------------

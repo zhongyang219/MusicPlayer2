@@ -1,18 +1,15 @@
 ﻿#pragma once
 #include"Common.h"
 #include"Lyric.h"
-#include"SetPathDlg.h"
 #include"AudioTag.h"
 #include "FilePathHelper.h"
 #include "BASSMidiLibrary.h"
-//#include"MusicPlayerDlg.h"
 #include "GaussBlur.h"
 #include "PlaylistMgr.h"
 #include "IPlayerCore.h"
 #include "BassCore.h"
 #include "SpectralDataHelper.h"
 #include "MediaTransControls.h"
-#include <mutex>
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)         // 播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)      // 播放列表加载完成消息
@@ -52,8 +49,9 @@ public:
     //用于向初始化播放列表传递信息的结构体
     struct ThreadInfo
     {
-        bool refresh_info{};
+        MediaLibRefreshMode refresh_mode{};
         bool play{};                            // 加载完播放列表后是否立即播放
+        bool playlist_mode{};                   // 是否为播放列表模式
         int play_index{};                       // 播放索引，播放列表模式下需要在cue解析时维持其指向
         int process_percent{};
         wstring remove_list_path{};             // 进入初始化线程后通知主窗口移除此播放列表/文件夹
@@ -66,7 +64,7 @@ public:
     {
         ES_NO_ERROR,
         ES_FILE_NOT_EXIST,
-        ES_FILE_CONNOT_BE_OPEN
+        ES_FILE_CANNOT_BE_OPEN
     };
 
     enum ABRepeatMode       //AB循环的模式
@@ -172,8 +170,8 @@ private:
     // 此方法进行重新填充m_playlist以及一些共有操作，最后会启动初始化播放列表线程函数，调用前必须停止播放
     // 调用完此方法后请尽快返回并且尽量不要执行任何操作，应当提前进行或安排在IniPlaylistComplate中进行
     // 此方法返回后的任何修改数据的操作都应视为（实际上也是如此）与IniPlaylistThreadFunc及IniPlaylistComplate处于竞争状态
-    // play参数会传递到IniPlaylistComplate指示是否播放，refresh_info指示初始化线程总是重新从文件读取信息
-    void IniPlayList(bool play = false, bool refresh_info = false);
+    // play参数会传递到IniPlaylistComplate指示是否播放，refresh_info指示初始化线程刷新级别
+    void IniPlayList(bool play = false, MediaLibRefreshMode refresh_mode = MR_MIN_REQUIRED);
 
     //应用一个均衡器通道的增益
     void ApplyEqualizer(int channel, int gain);
@@ -324,7 +322,7 @@ public:
     int AddSongsToPlaylist(const vector<SongInfo>& songs);
 
     // 重新载入播放列表（没能取得播放状态锁返回false）
-    bool ReloadPlaylist(bool refresh_info = true);
+    bool ReloadPlaylist(MediaLibRefreshMode refresh_mode);
     // 翻转是否包含子文件夹设置，如果当前为文件夹模式则直接重新加载播放列表（没能取得播放状态锁返回false）
     bool SetContainSubFolder();
 
@@ -342,12 +340,16 @@ public:
     void SlowDown();
     void SetOrignalSpeed();
     void SetSpeed(float speed);
-    float GetSpeed() { return m_speed; }
+    float GetSpeed() const { return m_speed; }
 
-    //获取BASS音频库的错误
+private:
+    // 获取CPlayer操作播放内核时产生的错误写入错误日志
     bool GetPlayerCoreError(const wchar_t* function_name);
+
+public:
     //有错误时返回ture，否则返回false
     bool IsError() const;
+    // IsError()为true时获取状态栏显示的错误字符串
     std::wstring GetErrorInfo();
 
     // 通知主窗口当前播放歌曲改变需要更新显示（向主窗口发送消息）（原SetTitle）
@@ -388,8 +390,6 @@ public:
     wstring GetCurrentFilePath() const;
     //获取当前播放的曲目序号
     int GetIndex() const { return m_index; }
-    //获取正在播放文件的文件名（当前播放文件名为空时返回"没有找到文件" IDS_FILE_NOT_FOUND）
-    wstring GetFileName() const;
     //获取正在播放文件的显示名称
     wstring GetDisplayName() const;
     int GetVolume() const { return m_volume; }
@@ -397,7 +397,7 @@ public:
     CImage& GetAlbumCoverBlur();
     bool AlbumCoverExist();
     wstring GetAlbumCoverPath() const { return m_album_cover_path; }
-    int GetAlbumCoverType() const { return m_album_cover_type; }
+    wstring GetAlbumCoverType() const;
 
 private:
     // 下方播放列表移除歌曲方法中的共有部分
@@ -454,10 +454,6 @@ public:
     SongInfo& GetCurrentSongInfo2();
     //获取下一个要播放的曲目。如果返回的是空的SongInfo对象，则说明没有下一个曲目或下一个曲目不确定
     SongInfo GetNextTrack() const;
-    //为当前歌曲设置关联的网易云音乐歌曲ID
-    void SetRelatedSongID(wstring song_id);
-    //为第index首歌曲设置关联的网易云音乐歌曲ID
-    void SetRelatedSongID(int index, wstring song_id);
     //为当前歌曲设置“我喜欢”标记
     void SetFavourite(bool favourite);
     bool IsFavourite();
@@ -518,11 +514,11 @@ public:
 
 
     MediaTransControls m_controls;
-    void UpdateControlsMetadata(SongInfo info);
-    void UpdateLastFMCurrentTrack(SongInfo info);
+    void UpdateLastFMCurrentTrack(const SongInfo& info);
 
+    // 更新SMTC封面，从路径为m_album_cover_path的图片文件
+    void MediaTransControlsLoadThumbnail();
 private:
-    void MediaTransControlsLoadThumbnail(std::wstring& file_path);
     void MediaTransControlsLoadThumbnailDefaultImage();
 
 public:

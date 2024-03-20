@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ScintillaEditView.h"
 #include "Common.h"
+#include "MusicPlayer2.h"
 
 
 // CScintillaEditView
@@ -441,6 +442,9 @@ void CScintillaEditView::SetContextMenu(CMenu* pMenu, CWnd* pMenuOwner)
 {
     if (pMenu != nullptr)
     {
+        // 这里当前没有使用，使用的是Scintilla的默认右键菜单
+        // 我改了SCI_USEPOPUP的处理，使用lParam传递string table
+        // 如果真的要SendMessage(SCI_USEPOPUP, SC_POPUP_NEVER);记得改回去
         m_pMenu = pMenu;
         m_pContextMenuOwner = pMenuOwner;
         SendMessage(SCI_USEPOPUP, SC_POPUP_NEVER);
@@ -529,7 +533,9 @@ void CScintillaEditView::OnInitialUpdate()
 {
     CView::OnInitialUpdate();
 
-    // TODO: 在此添加专用代码和/或调用基类
+    const auto& str_table = theApp.m_str_table.GetScintillaStrMap();
+    SendMessage(SCI_USEPOPUP, SC_POPUP_ALL, reinterpret_cast<LPARAM>(&str_table)); // 设置右键菜单为启用，并传递string table
+
     SendMessage(SCI_SETCODEPAGE, SC_CP_UTF8);       //总是使用Unicode
     SendMessage(SCI_SETMARGINTYPEN, SCINTILLA_MARGIN_LINENUMBER, SC_MARGIN_NUMBER);
 

@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "CHotKeySettingDlg.h"
-#include "afxdialogex.h"
+#include "WinVersionHelper.h"
 
 
 // CHotKeySettingDlg 对话框
@@ -53,6 +53,23 @@ void CHotKeySettingDlg::ListClicked()
     //m_hot_key_ctrl.SetHotKey(hot_key.key, hot_key.Modifiers());
 }
 
+bool CHotKeySettingDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_HOOK_SHORTCUT_KEY_ENABLE");
+    SetDlgItemTextW(IDC_HOT_KEY_ENABLE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_HOOK_MULTI_MEDIA_KEY_ENABLE");
+    SetDlgItemTextW(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK, temp.c_str());
+    // IDC_HOT_KEY_LIST
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY_SEL");
+    SetDlgItemTextW(IDC_TXT_OPT_HOT_KEY_SHORTCUT_KEY_SEL_STATIC, temp.c_str());
+    // IDC_HOTKEY1
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY_SET");
+    SetDlgItemTextW(IDC_SET_BUTTON, temp.c_str());
+
+    return false;
+}
+
 void CHotKeySettingDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
@@ -69,7 +86,7 @@ BEGIN_MESSAGE_MAP(CHotKeySettingDlg, CTabDlg)
     ON_NOTIFY(NM_RCLICK, IDC_HOT_KEY_LIST, &CHotKeySettingDlg::OnNMRClickHotKeyList)
     ON_BN_CLICKED(IDC_HOT_KEY_ENABLE_CHECK, &CHotKeySettingDlg::OnBnClickedHotKeyEnableCheck)
     ON_WM_DESTROY()
-    ON_BN_CLICKED(IDC_ENABLE_GLABOL_MULTIMEDIA_KEY_CHECK, &CHotKeySettingDlg::OnBnClickedEnableGlabolMultimediaKeyCheck)
+    ON_BN_CLICKED(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK, &CHotKeySettingDlg::OnBnClickedEnableGlobalMultimediaKeyCheck)
 END_MESSAGE_MAP()
 
 
@@ -89,25 +106,29 @@ BOOL CHotKeySettingDlg::OnInitDialog()
 
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
-    m_toolTip.AddTool(GetDlgItem(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK), CCommon::LoadText(IDS_MULTI_MEDIA_KEY_TIP));
+    m_toolTip.AddTool(GetDlgItem(IDC_ENABLE_GLOBAL_MULTIMEDIA_KEY_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_HOT_KEY_HOOK_MULTI_MEDIA_KEY").c_str());
 
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
+    CRect rect;
+    m_key_list.GetWindowRect(rect);
+    int width0 = theApp.DPI(180);
+    int width1 = rect.Width() - width0 - theApp.DPI(20) - 1;    // 这里预留一个滚动条宽度但空白为两个，因为此子对话框高度不足tab滚动条没有显示，如果在OnSize重新设置就会正常了
     m_key_list.SetExtendedStyle(m_key_list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    m_key_list.InsertColumn(0, CCommon::LoadText(IDS_FUNCTION), LVCFMT_LEFT, theApp.DPI(130));
-    m_key_list.InsertColumn(1, CCommon::LoadText(IDS_SHORTCUT_KEY), LVCFMT_LEFT, theApp.DPI(170));
+    m_key_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_FUNCTION").c_str(), LVCFMT_LEFT, width0);
+    m_key_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SHORTCUT_KEY").c_str(), LVCFMT_LEFT, width1);
 
-    m_key_list.InsertItem(0, CCommon::LoadText(IDS_PLAY_PAUSE));
-    m_key_list.InsertItem(1, CCommon::LoadText(IDS_STOP));
-    m_key_list.InsertItem(2, CCommon::LoadText(IDS_FAST_FORWARD));
-    m_key_list.InsertItem(3, CCommon::LoadText(IDS_REWIND));
-    m_key_list.InsertItem(4, CCommon::LoadText(IDS_PREVIOUS));
-    m_key_list.InsertItem(5, CCommon::LoadText(IDS_NEXT));
-    m_key_list.InsertItem(6, CCommon::LoadText(IDS_VOLUME_UP));
-    m_key_list.InsertItem(7, CCommon::LoadText(IDS_VOLUME_DOWN));
-    m_key_list.InsertItem(8, CCommon::LoadText(IDS_EXIT));
-    m_key_list.InsertItem(9, CCommon::LoadText(IDS_SHOW_HIDE_PLAYER));
-    m_key_list.InsertItem(10, CCommon::LoadText(IDS_SHOW_HIDE_DESKTOP_LYRIC));
+    m_key_list.InsertItem(0, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_PLAY_PAUSE").c_str());
+    m_key_list.InsertItem(1, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_STOP").c_str());
+    m_key_list.InsertItem(2, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_FAST_FORWARD").c_str());
+    m_key_list.InsertItem(3, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_REWIND").c_str());
+    m_key_list.InsertItem(4, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_PREVIOUS").c_str());
+    m_key_list.InsertItem(5, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_NEXT").c_str());
+    m_key_list.InsertItem(6, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_VOLUME_UP").c_str());
+    m_key_list.InsertItem(7, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_VOLUME_DOWN").c_str());
+    m_key_list.InsertItem(8, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_EXIT").c_str());
+    m_key_list.InsertItem(9, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_PLAYER_SHOW_HIDE").c_str());
+    m_key_list.InsertItem(10, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_DESKTOP_LYRIC_SHOW_HIDE").c_str());
 
     ShowKeyList();
 
@@ -128,7 +149,8 @@ void CHotKeySettingDlg::OnBnClickedSetButton()
 
     if (modifiers == 0 && key_coke != 0)
     {
-        MessageBox(CCommon::LoadText(IDS_GLOBLE_HOT_KEY_WARNING), NULL, MB_ICONWARNING | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_HOT_KEY_GLOBLE_HOT_KEY_WARNING");
+        MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         return;
     }
 
@@ -174,7 +196,7 @@ void CHotKeySettingDlg::OnBnClickedHotKeyEnableCheck()
 
 
 
-void CHotKeySettingDlg::OnBnClickedEnableGlabolMultimediaKeyCheck()
+void CHotKeySettingDlg::OnBnClickedEnableGlobalMultimediaKeyCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.global_multimedia_key_enable = (m_enable_global_multimedia_key_check.GetCheck() != 0);

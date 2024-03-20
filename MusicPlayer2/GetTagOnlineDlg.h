@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CoverDownloadDlg.h"
 #include "InternetCommon.h"
 class CGetTagOnlineDlg : public CCoverDownloadDlg

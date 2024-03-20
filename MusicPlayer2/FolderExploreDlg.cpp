@@ -3,14 +3,15 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "FolderExploreDlg.h"
-#include "afxdialogex.h"
 #include "AudioCommon.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
 #include "Playlist.h"
 #include "AddToPlaylistDlg.h"
 #include "SongDataManager.h"
+#include "COSUPlayerHelper.h"
 
 
 // CFolderExploreDlg 对话框
@@ -84,16 +85,21 @@ void CFolderExploreDlg::ShowSongList()
     SetDlgItemText(IDC_PATH_STATIC, m_folder_path_selected.c_str());
 
     //获取歌曲列表
-    std::vector<SongInfo> files;
-    CAudioCommon::GetAudioFiles(m_folder_path_selected, files, 20000, false);
-    int index{};
-    CAudioCommon::GetCueTracks(files, CPlayer::GetInstance().GetPlayerCore(), index, false);
     m_right_items.clear();
-    for (const auto& file : files)
-    {
-        const SongInfo& song{ CSongDataManager::GetInstance().GetSongInfo3(file) };
-        m_right_items.push_back(song);
-    }
+
+    // 此处在主线程更新cue条目到媒体库并加载歌曲信息，如果有大量cue且没有提前“更新媒体库”第一次进行耗时可能很长
+    if (COSUPlayerHelper::IsOsuFolder(m_folder_path_selected))
+        COSUPlayerHelper::GetOSUAudioFiles(m_folder_path_selected, m_right_items);
+    else    // 播放左侧目录的OpenFolder包含子文件夹所以这里也包含子文件夹
+        CAudioCommon::GetAudioFiles(m_folder_path_selected, m_right_items, MAX_SONG_NUM, true);
+
+    bool exit_flag{};
+    int update_cnt{};
+    // 这里仍然使用GetCueTracks而不是GetAudioInfo是因为后者涉及忽略短文件设置，实际执行的OpenFolder无视设置加入短文件
+    // 我希望此处预览(至少数量上)与OpenFolder结果一致，但不希望只为看一下(预览)就把无关(短)文件加入媒体库
+    CAudioCommon::GetCueTracks(m_right_items, update_cnt, exit_flag, MR_MIN_REQUIRED);
+    // 加载歌曲信息
+    CSongDataManager::GetInstance().LoadSongsInfo(m_right_items);
 
     //显示到列表控件中
     m_list_data.clear();
@@ -221,7 +227,6 @@ BOOL CFolderExploreDlg::OnInitDialog()
     CMediaLibTabDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    CCommon::SetDialogFont(this, theApp.m_pMainWnd->GetFont());     //由于此对话框资源由不同语言共用，所以这里要设置一下字体
 
     //为树控件设置图标
     CImageList image_list;
@@ -251,15 +256,14 @@ BOOL CFolderExploreDlg::OnInitDialog()
     m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
     //CRect rc_song_list;
     //m_song_list_ctrl.GetWindowRect(rc_song_list);
-    m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, theApp.DPI(200));
-    m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(180));
-    m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
+    m_song_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_FILE_NAME").c_str(), LVCFMT_LEFT, theApp.DPI(200));
+    m_song_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_TITLE").c_str(), LVCFMT_LEFT, theApp.DPI(180));
+    m_song_list_ctrl.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_ARTIST").c_str(), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_ALBUM").c_str(), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(4, theApp.m_str_table.LoadText(L"TXT_FILE_PATH").c_str(), LVCFMT_LEFT, theApp.DPI(600));
     m_song_list_ctrl.SetCtrlAEnable(true);
 
-    m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_FORDER), TRUE);
-    //SetDlgItemText(IDC_SETTINGS_BUTTON, CCommon::LoadText(IDS_BTN_SETTINGS));
+    m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT_FORDER").c_str(), TRUE);
 
     //初始化分隔条
     m_splitter_ctrl.AttachCtrlAsLeftPane(IDC_FOLDER_EXPLORE_TREE);
@@ -298,7 +302,7 @@ void CFolderExploreDlg::OnNMRClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pRes
                 m_folder_explore_tree.GetWindowRect(window_rect);       //获取列表控件的矩形区域（以屏幕左上角为原点）
                 point.y = window_rect.top + item_rect.bottom;   //设置鼠标要弹出的y坐标为选中项目的下边框位置，防止右键菜单挡住选中的项目
             }
-            CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0);
+            CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibLeftMenu);
             pMenu->TrackPopupMenu(TPM_LEFTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
         }
     }
@@ -356,7 +360,7 @@ void CFolderExploreDlg::OnNMRClickSongList(NMHDR *pNMHDR, LRESULT *pResult)
     if(!m_right_selected_items.empty())
     {
         //弹出右键菜单
-        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {
@@ -421,7 +425,11 @@ void CFolderExploreDlg::OnOK()
     {
         wstring folder_path{ m_folder_explore_tree.GetItemPath(m_tree_item_selected) };
         if (!CPlayer::GetInstance().OpenFolder(folder_path, true, true))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
+        else
         {
             CTabDlg::OnOK();
             CWnd* pParent = GetParentWindow();

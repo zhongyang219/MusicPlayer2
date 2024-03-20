@@ -62,7 +62,7 @@ void CPlayerProgressBar::OnPaint()
     //双缓冲绘图
     CDrawDoubleBuffer drawDoubleBuffer(&dc, rect);
     CDrawCommon drawer;
-    drawer.Create(drawDoubleBuffer.GetMemDC(), this);
+    drawer.Create(drawDoubleBuffer.GetMemDC());
 
     //开始绘图
     int gap_width = rect.Width() / m_bar_count / 4;
