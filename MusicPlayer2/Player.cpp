@@ -1731,6 +1731,7 @@ int CPlayer::RemoveInvalidSongs()
     {
         if (!CCommon::FileExist(m_playlist[i].file_path) || m_playlist[i].length().isZero())
         {
+            m_playlist.erase(m_playlist.begin() + i);
             if (i == m_index)
                 rm_is_index = true;
             removed++;
@@ -1741,6 +1742,7 @@ int CPlayer::RemoveInvalidSongs()
     if (removed)
         AfterRemoveSong(rm_is_index);
 
+    GetPlayStatusMutex().unlock();
     return removed;
 }
 
