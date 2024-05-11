@@ -45,7 +45,7 @@ bool CFlacEncodeCfgDlg::InitializeControls()
     // IDCANCEL
 
     RepositionTextBasedControls({
-        { CtrlTextInfo::L1, IDC_SPECIFY_PARA_CHECK },
+        { CtrlTextInfo::L1, IDC_SPECIFY_PARA_CHECK, CtrlTextInfo::W16 },
         { CtrlTextInfo::C0, IDC_EDIT1 }
         }, CtrlTextInfo::W128);
     RepositionTextBasedControls({
@@ -63,22 +63,19 @@ void CFlacEncodeCfgDlg::DoDataExchange(CDataExchange* pDX)
 
 void CFlacEncodeCfgDlg::SetInfoText()
 {
-    CString comp_level;
-    comp_level.Format(_T("%d"), m_encode_para.compression_level);
-    SetDlgItemText(IDC_COMP_LEVEL_STATIC, comp_level);
+    wstring comp_level = std::to_wstring(m_encode_para.compression_level);
+    SetDlgItemTextW(IDC_COMP_LEVEL_STATIC, comp_level.c_str());
 
     //设置编码参数
-    CString str_cmd_para = _T("-") + comp_level;
-    m_encode_para.cmd_para = str_cmd_para.GetString();
-
-    SetDlgItemText(IDC_EDIT1, str_cmd_para);
+    if (!m_encode_para.user_define_para)
+        m_encode_para.cmd_para = L"-" + comp_level;
+    SetDlgItemTextW(IDC_EDIT1, m_encode_para.cmd_para.c_str());
 }
 
 void CFlacEncodeCfgDlg::EnableControl()
 {
-    CWnd* edit_control{ GetDlgItem(IDC_EDIT1) };
-    if (edit_control != nullptr)
-        edit_control->EnableWindow(m_encode_para.user_define_para);
+    EnableDlgCtrl(IDC_SLIDER1, !m_encode_para.user_define_para);
+    EnableDlgCtrl(IDC_EDIT1, m_encode_para.user_define_para);
 }
 
 
@@ -121,6 +118,7 @@ void CFlacEncodeCfgDlg::OnBnClickedSpecifyParaCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_encode_para.user_define_para = (IsDlgButtonChecked(IDC_SPECIFY_PARA_CHECK) != 0);
+    SetInfoText();
     EnableControl();
 }
 
