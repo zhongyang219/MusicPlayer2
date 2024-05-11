@@ -256,8 +256,13 @@ void CLyrics::DisposeLrcNetease()
         size_t index1{ m_lyrics_str[i].find(L"[", index) };                 // 网易的歌词非扩展lrc，如果出现第二段时间标签则放入下一行
         if (index1 != wstring::npos)
         {
-            m_lyrics_str.emplace(m_lyrics_str.begin() + i, m_lyrics_str[i].substr(0, index1));
-            m_lyrics_str[i + 1] = m_lyrics_str[i + 1].substr(index1);
+            // 判断是否为时间标签，避免误分割
+            size_t index2{ m_lyrics_str[i].find_first_not_of(L"[:.]0123456789-", index1) };
+            if (index2 != wstring::npos && index2 != index1 + 1)
+            {
+                m_lyrics_str.emplace(m_lyrics_str.begin() + i, m_lyrics_str[i].substr(0, index1));
+                m_lyrics_str[i + 1] = m_lyrics_str[i + 1].substr(index1);
+            }
         }
         // 有重复时间标签的（第一个内容空白，歌词在第二个里），此处将其内容合并。
         index = m_lyrics_str[i].rfind(L"]", index) + 1;                     // 避免截取到歌词开头的数字，同时也避开非时间标签的[id:xxx],[ti:xxx]等
