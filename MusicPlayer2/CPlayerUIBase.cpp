@@ -408,7 +408,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
 
             case BTN_SHOW_PLAYLIST:
                 m_buttons[BTN_SHOW_PLAYLIST].hover = false;
-                if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+                if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
                     theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FLOAT_PLAYLIST);
                 else
                     theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAYLIST);
@@ -1243,7 +1243,7 @@ void CPlayerUIBase::UpdateVolumeToolTip()
 void CPlayerUIBase::UpdatePlaylistBtnToolTip()
 {
     wstring tool_tip = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
-    if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
         tool_tip += GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST).GetString();
     else
         tool_tip += GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST).GetString();
@@ -2840,7 +2840,7 @@ void CPlayerUIBase::AddToolTips()
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
     if (!is_mini_mode)
     {
-        if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+        if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
             tip_str += GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST);
         else
             tip_str += GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST);

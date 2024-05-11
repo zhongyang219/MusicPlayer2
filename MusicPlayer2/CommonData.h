@@ -367,6 +367,7 @@ struct MediaLibSettingData
     bool insert_begin_of_playlist{ false };         // 向播放列表添加歌曲时插入开头而不是追加到末尾
     bool show_playlist_tooltip{};         //显示播放列表工具提示
     bool float_playlist_follow_main_wnd{};  //浮动播放列表跟随主窗口
+    bool playlist_btn_for_float_playlist{ false };      // 指定主界面中进度条右侧的“显示/隐藏播放列表”按钮的功能是否为显示浮动播放列表
     int playlist_item_height{ 24 };
     RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
     int display_item{};                 //媒体库显示的项目
@@ -394,7 +395,6 @@ struct NonCategorizedSettingData
 
     bool float_playlist{ false };		//浮动播放列表（不应该用此变量来判断浮动播放列表是否存在）
     CSize playlist_size{ 320, 530 };		//浮动播放列表的大小
-    bool playlist_btn_for_float_playlist{ false };		//指定主界面中进度条右侧的“显示/隐藏播放列表”按钮的功能是否为显示浮动播放列表
 
     int max_album_cover_size{ 800 };
     bool show_debug_info{ false };

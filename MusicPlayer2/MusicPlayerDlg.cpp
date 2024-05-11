@@ -342,7 +342,6 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"float_playlist", theApp.m_nc_setting_data.float_playlist);
     ini.WriteInt(L"config", L"float_playlist_width", theApp.m_nc_setting_data.playlist_size.cx);
     ini.WriteInt(L"config", L"float_playlist_height", theApp.m_nc_setting_data.playlist_size.cy);
-    ini.WriteBool(L"config", L"playlist_btn_for_float_playlist", theApp.m_nc_setting_data.playlist_btn_for_float_playlist);
 
     ini.WriteInt(L"config", L"lyric_save_policy", static_cast<int>(theApp.m_lyric_setting_data.lyric_save_policy));
     ini.WriteBool(L"config", L"use_inner_lyric_first", theApp.m_lyric_setting_data.use_inner_lyric_first);
@@ -500,6 +499,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"insert_begin_of_playlist", theApp.m_media_lib_setting_data.insert_begin_of_playlist);
     ini.WriteBool(L"media_lib", L"show_playlist_tooltip", theApp.m_media_lib_setting_data.show_playlist_tooltip);
     ini.WriteBool(L"media_lib", L"float_playlist_follow_main_wnd", theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd);
+    ini.WriteBool(L"config", L"playlist_btn_for_float_playlist", theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist);
     ini.WriteInt(L"media_lib", L"playlist_item_height", theApp.m_media_lib_setting_data.playlist_item_height);
     ini.WriteInt(L"media_lib", L"recent_played_range", static_cast<int>(theApp.m_media_lib_setting_data.recent_played_range));
     ini.WriteInt(L"media_lib", L"display_item", theApp.m_media_lib_setting_data.display_item);
@@ -531,7 +531,6 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.float_playlist = ini.GetBool(L"config", L"float_playlist", false);
     theApp.m_nc_setting_data.playlist_size.cx = ini.GetInt(L"config", L"float_playlist_width", theApp.DPI(320));
     theApp.m_nc_setting_data.playlist_size.cy = ini.GetInt(L"config", L"float_playlist_height", theApp.DPI(482));
-    theApp.m_nc_setting_data.playlist_btn_for_float_playlist = ini.GetBool(L"config", L"playlist_btn_for_float_playlist", false);
 
     theApp.m_lyric_setting_data.lyric_save_policy = static_cast<LyricSettingData::LyricSavePolicy>(ini.GetInt(L"config", L"lyric_save_policy", 2));
     theApp.m_lyric_setting_data.use_inner_lyric_first = ini.GetBool(L"config", L"use_inner_lyric_first", true);
@@ -713,6 +712,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.insert_begin_of_playlist = ini.GetBool(L"media_lib", L"insert_begin_of_playlist", false);
     theApp.m_media_lib_setting_data.show_playlist_tooltip = ini.GetBool(L"media_lib", L"show_playlist_tooltip", true);
     theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd = ini.GetBool(L"media_lib", L"float_playlist_follow_main_wnd", true);
+    theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist = ini.GetBool(L"config", L"playlist_btn_for_float_playlist", false);
     theApp.m_media_lib_setting_data.playlist_item_height = ini.GetInt(L"media_lib", L"playlist_item_height", 24);
     CCommon::SetNumRange(theApp.m_media_lib_setting_data.playlist_item_height, MIN_PLAYLIST_ITEM_HEIGHT, MAX_PLAYLIST_ITEM_HEIGHT);
     theApp.m_media_lib_setting_data.recent_played_range = static_cast<RecentPlayedRange>(ini.GetInt(L"media_lib", L"recent_played_range", 0));
@@ -1152,6 +1152,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool need_restart_player{ theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI != optionDlg.m_tab4_dlg.m_data.ffmpeg_core_enable_WASAPI
     || (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI && (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode != optionDlg.m_tab4_dlg.m_data.ffmpeg_core_enable_WASAPI_exclusive_mode)) };
     bool SMTC_enable_changed{ theApp.m_play_setting_data.use_media_trans_control != optionDlg.m_tab4_dlg.m_data.use_media_trans_control };
+    bool playlist_btn_changed{ theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist != optionDlg.m_media_lib_dlg.m_data.playlist_btn_for_float_playlist };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1229,7 +1230,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         CPlayer::GetInstance().m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
         if (theApp.m_play_setting_data.use_media_trans_control) // 如果设置从禁用更改为启用那么更新一次状态
         {
-            PlaybackStatus status;
+            PlaybackStatus status{};
             switch (CPlayer::GetInstance().GetPlayingState2())
             {
             case 0: status = PlaybackStatus::Stopped; break;
@@ -1308,6 +1309,8 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     DrawInfo(true);
     if (pCurUi != nullptr)
         pCurUi->UpdateToolTipPositionLater();
+    if (pCurUi != nullptr && playlist_btn_changed)
+        pCurUi->UpdatePlaylistBtnToolTip();
 }
 
 void CMusicPlayerDlg::ApplyThemeColor()
@@ -1576,7 +1579,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
         break;
     }
 
-    if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
         pMenu->CheckMenuRadioItem(ID_DOCKED_PLAYLIST, ID_FLOATED_PLAYLIST, ID_FLOATED_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
     else
         pMenu->CheckMenuRadioItem(ID_DOCKED_PLAYLIST, ID_FLOATED_PLAYLIST, ID_DOCKED_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
@@ -2409,7 +2412,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             //设置窗口不透明度
             SetTransparency();
 
-            if (theApp.m_nc_setting_data.float_playlist && theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+            if (theApp.m_nc_setting_data.float_playlist && theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
                 ShowFloatPlaylist();
 
             IniPlaylistPopupMenu();
@@ -4961,7 +4964,7 @@ void CMusicPlayerDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKe
 void CMusicPlayerDlg::OnShowPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    //if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    //if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
     //    ShowHideFloatPlaylist();
     //else
     //    ShowHidePlaylist();
@@ -5137,8 +5140,8 @@ void CMusicPlayerDlg::OnAlwaysOnTop()
 void CMusicPlayerDlg::OnFloatPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    //theApp.m_nc_setting_data.playlist_btn_for_float_playlist = !theApp.m_nc_setting_data.playlist_btn_for_float_playlist;
-    //if (theApp.m_nc_setting_data.playlist_btn_for_float_playlist)
+    //theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist = !theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist;
+    //if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
     //{
     //    //改为浮动播放列表时，如果显示了停靠的播放列表，则显示浮动播放列表，隐藏停靠播放列表
     //    if (theApp.m_ui_data.show_playlist)
@@ -5161,7 +5164,7 @@ void CMusicPlayerDlg::OnFloatPlaylist()
 void CMusicPlayerDlg::OnDockedPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_nc_setting_data.playlist_btn_for_float_playlist = false;
+    theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist = false;
     auto ui{ GetCurrentUi() };
     if (ui != nullptr)
         ui->UpdatePlaylistBtnToolTip();
@@ -5171,7 +5174,7 @@ void CMusicPlayerDlg::OnDockedPlaylist()
 void CMusicPlayerDlg::OnFloatedPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    theApp.m_nc_setting_data.playlist_btn_for_float_playlist = true;
+    theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist = true;
     auto ui{ GetCurrentUi() };
     if (ui != nullptr)
         ui->UpdatePlaylistBtnToolTip();

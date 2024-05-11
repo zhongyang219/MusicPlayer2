@@ -105,10 +105,12 @@ bool CMediaLibSettingDlg::InitializeControls()
     SetDlgItemTextW(IDC_DISABLE_DRAGE_SORT_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_INS_BEGIN");
     SetDlgItemTextW(IDC_INSERT_BEGIN_CHECK, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_SHOW_TOOLTIP");
-    SetDlgItemTextW(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_FLOAT_PLAYLIST_BY_DEFAULT");
+    SetDlgItemTextW(IDC_FLOAT_PLAYLIST_BY_DEFAULT_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_FLOAT_PLAYLIST_FOLLOW_MAIN_WND");
     SetDlgItemTextW(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_SHOW_TOOLTIP");
+    SetDlgItemTextW(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_PLAYLIST_DISPLAY_MODE");
     SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_PLAYLIST_DISPLAY_MODE_STATIC, temp.c_str());
     // IDC_PLAYLIST_DISPLAY_MODE_OMBO
@@ -190,15 +192,10 @@ bool CMediaLibSettingDlg::InitializeControls()
 void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_CLASSIFY_OTHER_CHECK, m_classify_other_chk);
     DDX_Control(pDX, IDC_DIR_LIST, m_dir_list_ctrl);
-    DDX_Control(pDX, IDC_UPDATE_MEDIA_LIB_CHK, m_update_media_lib_chk);
-    DDX_Control(pDX, IDC_DISABLE_DRAGE_SORT_CHECK, m_disable_drag_sort_chk);
     DDX_Control(pDX, IDC_PLAYLIST_DISPLAY_MODE_OMBO, m_playlist_display_mode_combo);
     DDX_Control(pDX, IDC_RECENT_PLAYED_RANGE_OMBO, m_recent_played_range_combo);
-    DDX_Control(pDX, IDC_IGNORE_TOO_SHORT_CHECK, m_ignore_too_short_chk);
     DDX_Control(pDX, IDC_FILE_TOO_SHORT_SEC_EDIT, m_file_too_short_sec_edit);
-    DDX_Control(pDX, IDC_INSERT_BEGIN_CHECK, m_insert_begin_chk);
     DDX_Control(pDX, IDC_ID3V2_TYPE_COMBO, m_id3v2_type_combo);
     DDX_Control(pDX, IDC_ENABLE_LASTFM, m_enable_lastfm);
     DDX_Control(pDX, IDC_LASTFM_STATUS, m_lastfm_status);
@@ -217,6 +214,14 @@ void CMediaLibSettingDlg::DoDataExchange(CDataExchange* pDX)
 
 void CMediaLibSettingDlg::GetDataFromUi()
 {
+    m_data.disable_delete_from_disk = (IsDlgButtonChecked(IDC_DISABLE_DELETE_FROM_DISK_CHECK) != 0);
+    m_data.hide_only_one_classification = (IsDlgButtonChecked(IDC_CLASSIFY_OTHER_CHECK) != 0);
+    m_data.file_too_short_sec = m_file_too_short_sec_edit.GetValue();
+
+    m_data.remove_file_not_exist_when_update = (IsDlgButtonChecked(IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK) != 0);
+    m_data.ignore_too_short_when_update = (IsDlgButtonChecked(IDC_IGNORE_TOO_SHORT_CHECK) != 0);
+    m_data.update_media_lib_when_start_up = (IsDlgButtonChecked(IDC_UPDATE_MEDIA_LIB_CHK) != 0);
+
     m_data.display_item = 0;
     if (IsDlgButtonChecked(IDC_ARTIST_CHECK))
         m_data.display_item |= MLDI_ARTIST;
@@ -238,12 +243,22 @@ void CMediaLibSettingDlg::GetDataFromUi()
         m_data.display_item |= MLDI_RECENT;
     if (IsDlgButtonChecked(IDC_FOLDER_EXPLORE_CHECK))
         m_data.display_item |= MLDI_FOLDER_EXPLORE;
+
+    m_data.disable_drag_sort = (IsDlgButtonChecked(IDC_DISABLE_DRAGE_SORT_CHECK) != 0);
+    m_data.insert_begin_of_playlist = (IsDlgButtonChecked(IDC_INSERT_BEGIN_CHECK) != 0);
+    m_data.playlist_btn_for_float_playlist = (IsDlgButtonChecked(IDC_FLOAT_PLAYLIST_BY_DEFAULT_CHECK) != 0);
+    m_data.float_playlist_follow_main_wnd = (IsDlgButtonChecked(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK) != 0);
+    m_data.show_playlist_tooltip = (IsDlgButtonChecked(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK) != 0);
+    m_data.display_format = static_cast<DisplayFormat>(m_playlist_display_mode_combo.GetCurSel());
+    m_data.playlist_item_height = m_playlist_item_height_edit.GetValue();
+    m_data.recent_played_range = static_cast<RecentPlayedRange>(m_recent_played_range_combo.GetCurSel());
+
+    int cur_index = m_id3v2_type_combo.GetCurSel();
+    m_data.write_id3_v2_3 = (cur_index == 0);
+
     m_data.lastfm_least_perdur = m_lastfm_least_perdur.GetValue();
     m_data.lastfm_least_dur = m_lastfm_least_dur.GetValue();
     m_data.lastfm_auto_scrobble_min = m_lastfm_auto_scrobble_min.GetValue();
-    m_data.playlist_item_height = m_playlist_item_height_edit.GetValue();
-    m_data.file_too_short_sec = m_file_too_short_sec_edit.GetValue();
-    m_data.remove_file_not_exist_when_update = (IsDlgButtonChecked(IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK));
 }
 
 // void CMediaLibSettingDlg::ApplyDataToUi()
@@ -252,21 +267,11 @@ void CMediaLibSettingDlg::GetDataFromUi()
 
 BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_WM_TIMER()
-    ON_BN_CLICKED(IDC_CLASSIFY_OTHER_CHECK, &CMediaLibSettingDlg::OnBnClickedClassifyOtherCheck)
     ON_BN_CLICKED(IDC_ADD_BUTTON, &CMediaLibSettingDlg::OnBnClickedAddButton)
     ON_BN_CLICKED(IDC_DELETE_BUTTON, &CMediaLibSettingDlg::OnBnClickedDeleteButton)
-    ON_BN_CLICKED(IDC_UPDATE_MEDIA_LIB_CHK, &CMediaLibSettingDlg::OnBnClickedUpdateMediaLibChk)
     ON_BN_CLICKED(IDC_CLEAN_DATA_FILE_BUTTON, &CMediaLibSettingDlg::OnBnClickedCleanDataFileButton)
     ON_BN_CLICKED(IDC_CLEAR_RECENT_PLAYED_LIST_BTN, &CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn)
-    ON_BN_CLICKED(IDC_DISABLE_DRAGE_SORT_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck)
-    ON_CBN_SELCHANGE(IDC_PLAYLIST_DISPLAY_MODE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo)
-    ON_CBN_SELCHANGE(IDC_RECENT_PLAYED_RANGE_OMBO, &CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo)
-    ON_BN_CLICKED(IDC_INSERT_BEGIN_CHECK, &CMediaLibSettingDlg::OnBnClickedInsertBeginCheck)
-    ON_CBN_SELCHANGE(IDC_ID3V2_TYPE_COMBO, &CMediaLibSettingDlg::OnCbnSelchangeId3v2TypeCombo)
     ON_BN_CLICKED(IDC_REFRESH_MEDIA_LIB_BUTTON, &CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton)
-    ON_BN_CLICKED(IDC_DISABLE_DELETE_FROM_DISK_CHECK, &CMediaLibSettingDlg::OnBnClickedDisableDeleteFromDiskCheck)
-    ON_BN_CLICKED(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, &CMediaLibSettingDlg::OnBnClickedShowPlaylistTooltipCheck)
-    ON_BN_CLICKED(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK, &CMediaLibSettingDlg::OnBnClickedFloatPlaylistFollowMainWndCheck)
     ON_BN_CLICKED(IDC_ENABLE_LASTFM, &CMediaLibSettingDlg::OnBnClickedEnableLastfm)
     ON_BN_CLICKED(IDC_LASTFM_LOGIN, &CMediaLibSettingDlg::OnBnClickedLastfmLogin)
     ON_BN_CLICKED(IDC_LASTFM_AUTO_SCROBBLE, &CMediaLibSettingDlg::OnBnClickedLastfmAutoScrobble)
@@ -274,7 +279,6 @@ BEGIN_MESSAGE_MAP(CMediaLibSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_LASTFM_ENABLE_HTTPS, &CMediaLibSettingDlg::OnBnClickedLastfmEnableHttps)
     ON_BN_CLICKED(IDC_LASTFM_ENABLE_NOWPLAYING, &CMediaLibSettingDlg::OnBnClickedLastfmEnableNowplaying)
     ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CMediaLibSettingDlg::OnEditBrowseChanged)
-    ON_BN_CLICKED(IDC_IGNORE_TOO_SHORT_CHECK, &CMediaLibSettingDlg::OnBnClickedIgnoreTooShortCheck)
 END_MESSAGE_MAP()
 
 
@@ -289,10 +293,9 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_data_size = CCommon::GetFileSize(theApp.m_song_data_path);
     ShowDataSizeInfo();
 
-    m_classify_other_chk.SetCheck(m_data.hide_only_one_classification);
-    //m_show_tree_tool_tips_chk.SetCheck(m_data.show_tree_tool_tips);
-    m_update_media_lib_chk.SetCheck(m_data.update_media_lib_when_start_up);
-    m_disable_drag_sort_chk.SetCheck(m_data.disable_drag_sort);
+    CheckDlgButton(IDC_CLASSIFY_OTHER_CHECK, m_data.hide_only_one_classification);
+    CheckDlgButton(IDC_UPDATE_MEDIA_LIB_CHK, m_data.update_media_lib_when_start_up);
+    CheckDlgButton(IDC_DISABLE_DRAGE_SORT_CHECK, m_data.disable_drag_sort);
     CheckDlgButton(IDC_DISABLE_DELETE_FROM_DISK_CHECK, m_data.disable_delete_from_disk);
     CheckDlgButton(IDC_REMOVE_FILE_NOT_EXIST_WHEN_UPDATE_CHECK, m_data.remove_file_not_exist_when_update);
 
@@ -311,7 +314,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     tip_str = theApp.m_str_table.LoadText(L"TIP_OPT_MEDIA_LIB_DATA_FILE_CLEAN");
     m_toolTip.AddTool(GetDlgItem(IDC_CLEAN_DATA_FILE_BUTTON), tip_str.c_str());
     tip_str = theApp.m_str_table.LoadText(L"TIP_OPT_MEDIA_LIB_AUTO_UPDATE_WHEN_STARTUP");
-    m_toolTip.AddTool(&m_update_media_lib_chk, tip_str.c_str());
+    m_toolTip.AddTool(GetDlgItem(IDC_UPDATE_MEDIA_LIB_CHK), tip_str.c_str());
     tip_str = theApp.m_str_table.LoadText(L"TIP_OPT_MEDIA_LIB_ARTIST_SPLIT_EXT");
     m_toolTip.AddTool(&m_artist_split_ext_edit, tip_str.c_str());
 
@@ -330,10 +333,11 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     m_recent_played_range_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_RECENT_PLAY_RANGE_LAST_YEAR").c_str());
     m_recent_played_range_combo.SetCurSel(static_cast<int>(m_data.recent_played_range));
 
-    m_insert_begin_chk.SetCheck(m_data.insert_begin_of_playlist);
-    m_ignore_too_short_chk.SetCheck(m_data.ignore_too_short_when_update);
-    CheckDlgButton(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, m_data.show_playlist_tooltip);
+    CheckDlgButton(IDC_INSERT_BEGIN_CHECK, m_data.insert_begin_of_playlist);
+    CheckDlgButton(IDC_IGNORE_TOO_SHORT_CHECK, m_data.ignore_too_short_when_update);
+    CheckDlgButton(IDC_FLOAT_PLAYLIST_BY_DEFAULT_CHECK, m_data.playlist_btn_for_float_playlist);
     CheckDlgButton(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK, m_data.float_playlist_follow_main_wnd);
+    CheckDlgButton(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, m_data.show_playlist_tooltip);
 
     CheckDlgButton(IDC_ARTIST_CHECK, m_data.display_item & MLDI_ARTIST);
     CheckDlgButton(IDC_ALBUM_CHECK, m_data.display_item & MLDI_ALBUM);
@@ -351,9 +355,8 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     int cur_index = m_data.write_id3_v2_3 ? 0 : 1;
     m_id3v2_type_combo.SetCurSel(cur_index);
 
-    CButton* setting_btn = (CButton*)(GetDlgItem(IDC_REFRESH_MEDIA_LIB_BUTTON));
-    if (setting_btn != nullptr)
-        setting_btn->SetIcon(theApp.m_icon_set.loop_playlist.GetIcon(true));
+    SetButtonIcon(IDC_REFRESH_MEDIA_LIB_BUTTON, theApp.m_icon_set.loop_playlist.GetIcon(true));
+
     m_lastfm_least_perdur.SetRange(10, 90, 10);
     m_lastfm_least_perdur.SetValue(m_data.lastfm_least_perdur);
     m_lastfm_least_dur.SetRange(10, 240, 10);
@@ -384,20 +387,6 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
 }
 
 
-void CMediaLibSettingDlg::OnBnClickedClassifyOtherCheck()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    m_data.hide_only_one_classification = (m_classify_other_chk.GetCheck() != 0);
-}
-
-
-//void CMediaLibSettingDlg::OnBnClickedShowTreeToolTipsCheck()
-//{
-//    // TODO: 在此添加控件通知处理程序代码
-//    m_data.show_tree_tool_tips = (m_show_tree_tool_tips_chk.GetCheck() != 0);
-//}
-
-
 void CMediaLibSettingDlg::OnBnClickedAddButton()
 {
     // TODO: 在此添加控件通知处理程序代码
@@ -423,13 +412,6 @@ void CMediaLibSettingDlg::OnBnClickedDeleteButton()
         m_data.media_folders.erase(m_data.media_folders.begin() + index);
         m_dir_list_ctrl.DeleteItem(index);
     }
-}
-
-
-void CMediaLibSettingDlg::OnBnClickedUpdateMediaLibChk()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    m_data.update_media_lib_when_start_up = (m_update_media_lib_chk.GetCheck() != 0);
 }
 
 
@@ -530,47 +512,11 @@ void CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn()
 }
 
 
-void CMediaLibSettingDlg::OnBnClickedDisableDrageSortCheck()
-{
-    // TODO: Add your control notification handler code here
-    m_data.disable_drag_sort = (m_disable_drag_sort_chk.GetCheck() != 0);
-}
-
-
-void CMediaLibSettingDlg::OnCbnSelchangePlaylistDisplayModeOmbo()
-{
-    // TODO: Add your control notification handler code here
-    m_data.display_format = static_cast<DisplayFormat>(m_playlist_display_mode_combo.GetCurSel());
-}
-
-
-void CMediaLibSettingDlg::OnCbnSelchangeRecentPlayedRangeOmbo()
-{
-    // TODO: Add your control notification handler code here
-    m_data.recent_played_range = static_cast<RecentPlayedRange>(m_recent_played_range_combo.GetCurSel());
-}
-
-
-void CMediaLibSettingDlg::OnBnClickedInsertBeginCheck()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    m_data.insert_begin_of_playlist = (m_insert_begin_chk.GetCheck() != 0);
-}
-
-
 void CMediaLibSettingDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
 
     CTabDlg::OnOK();
-}
-
-
-void CMediaLibSettingDlg::OnCbnSelchangeId3v2TypeCombo()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    int cur_index = m_id3v2_type_combo.GetCurSel();
-    m_data.write_id3_v2_3 = (cur_index == 0);
 }
 
 
@@ -586,26 +532,6 @@ void CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton()
     {
         theApp.StartUpdateMediaLib(true);  // 刷新媒体库按钮强制重新获取所有元数据
     }
-}
-
-
-void CMediaLibSettingDlg::OnBnClickedDisableDeleteFromDiskCheck()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    m_data.disable_delete_from_disk = (IsDlgButtonChecked(IDC_DISABLE_DELETE_FROM_DISK_CHECK) != 0);
-}
-
-
-void CMediaLibSettingDlg::OnBnClickedShowPlaylistTooltipCheck()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    m_data.show_playlist_tooltip = (IsDlgButtonChecked(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK) != 0);
-}
-
-
-void CMediaLibSettingDlg::OnBnClickedFloatPlaylistFollowMainWndCheck()
-{
-    m_data.float_playlist_follow_main_wnd = (IsDlgButtonChecked(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK) != 0);
 }
 
 
@@ -707,9 +633,3 @@ afx_msg LRESULT CMediaLibSettingDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM l
     return 0;
 }
 
-
-void CMediaLibSettingDlg::OnBnClickedIgnoreTooShortCheck()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    m_data.ignore_too_short_when_update = (m_ignore_too_short_chk.GetCheck() != 0);
-}

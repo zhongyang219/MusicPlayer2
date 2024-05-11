@@ -708,6 +708,7 @@
 #define IDC_TXT_LIB_PATH_CURRENT_FOLDER_STATIC 1358
 #define IDC_TXT_TAG_EDIT_PATH_STATIC    1359
 #define IDC_TXT_TAG_SEL_CLICK_BTN_SEL_STATIC 1360
+#define IDC_FLOAT_PLAYLIST_BY_DEFAULT_CHECK 1361
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -942,7 +943,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        592
 #define _APS_NEXT_COMMAND_VALUE         33464
-#define _APS_NEXT_CONTROL_VALUE         1361
+#define _APS_NEXT_CONTROL_VALUE         1362
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
