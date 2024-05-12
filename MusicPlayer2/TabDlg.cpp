@@ -72,6 +72,7 @@ void CTabDlg::ScrollWindowSimple(int step)
         scrollinfo.nPos = scrollinfo.nMax - scrollinfo.nPage;
     }
     SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+    m_last_pos = scrollinfo.nPos;
     ScrollWindow(0, step);
 }
 
@@ -139,8 +140,6 @@ void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
     if (m_scroll_enable)
     {
-        SCROLLINFO scrollinfo;
-        GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
         int unit = 1;
         int step = theApp.DPI(16);
         switch (nSBCode)
@@ -163,14 +162,16 @@ void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
             break;
         case SB_THUMBTRACK:                  //Drag scroll box to specified position. The current position is provided in nPos
         {
-            int y_amount = (m_last_pos - nPos)*unit;
+            SCROLLINFO scrollinfo;
+            GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
+            int y_amount = (m_last_pos - nPos) * unit;
+            m_last_pos = nPos;
             ScrollWindow(0, y_amount);
             scrollinfo.nPos = nPos;
             SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
         }
             break;
         }
-        m_last_pos = scrollinfo.nPos;
     }
     CBaseDialog::OnVScroll(nSBCode, nPos, pScrollBar);
 }
@@ -181,18 +182,8 @@ BOOL CTabDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     if (m_scroll_enable)
     {
-        int step = theApp.DPI(64);
-        if (zDelta > 0)
-        {
-            ScrollWindowSimple(step);
-        }
-        if (zDelta < 0)
-        {
-            ScrollWindowSimple(-step);
-        }
-        SCROLLINFO scrollinfo;
-        GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-        m_last_pos = scrollinfo.nPos;
+        int step = theApp.DPI(64) * zDelta / 120;
+        ScrollWindowSimple(step);
     }
 
     return CBaseDialog::OnMouseWheel(nFlags, zDelta, pt);
