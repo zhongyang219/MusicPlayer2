@@ -22,7 +22,7 @@ public:
     void SetScrollbarInfo(int nPage, int nMax);
 
 private:
-    void ScrollWindowSimple(int step);
+    void ScrollWindowSimple(int step, bool absolute = false);
 
     bool m_scroll_enable{ false };
     int m_last_pos{};

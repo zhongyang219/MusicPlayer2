@@ -54,21 +54,31 @@ void CTabDlg::SetScrollbarInfo(int nPage, int nMax)
         ScrollWindow(0, -m_last_pos);
 }
 
-void CTabDlg::ScrollWindowSimple(int step)
+void CTabDlg::ScrollWindowSimple(int step, bool absolute)
 {
     SCROLLINFO scrollinfo;
     GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-    scrollinfo.nPos -= step;
-    if (scrollinfo.nPos < scrollinfo.nMin)
+    if (step == INT_MAX)
+        step = scrollinfo.nPage;
+    if (step == INT_MIN)
+        step = -static_cast<int>(scrollinfo.nPage);
+    if (!absolute)
+        scrollinfo.nPos -= step;
+    else
     {
-        step = scrollinfo.nPos + step - scrollinfo.nMin;        //如果向上滚动一个距离后小于滚动条的最小位置了，则修正step的值，使窗口滚动到最上方
+        if (step < 0)               // 绝对位置时step为-1表示滚动到底部
+            step = scrollinfo.nMax - scrollinfo.nPage;
+        scrollinfo.nPos = step;     // 此时的stpe为目标绝对位置
+        step = m_last_pos - step;   // 将参数的绝对位置转换为偏移量继续处理
+    }
+    if (scrollinfo.nPos < scrollinfo.nMin)                                          // 限制nPos不小于最小值nMin
+    {
+        step -= scrollinfo.nMin - scrollinfo.nPos;
         scrollinfo.nPos = scrollinfo.nMin;
     }
-    if (scrollinfo.nPos + static_cast<int>(scrollinfo.nPage) > scrollinfo.nMax)  //此处一定要注意加上滑块的长度，再作判断
+    if (scrollinfo.nPos > scrollinfo.nMax - static_cast<int>(scrollinfo.nPage))     // 限制nPos不大于最大值nMax - nPage
     {
-        step -= (scrollinfo.nMax - (scrollinfo.nPos + scrollinfo.nPage));       //如果向下滚动一个距离后大于滚动条的最大位置了，则修正step的值，使窗口滚动到最下方
-        if (step > 0)
-            step = 0;
+        step += scrollinfo.nPos - (scrollinfo.nMax - scrollinfo.nPage);
         scrollinfo.nPos = scrollinfo.nMax - scrollinfo.nPage;
     }
     SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
@@ -140,36 +150,35 @@ void CTabDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
     if (m_scroll_enable)
     {
-        int unit = 1;
         int step = theApp.DPI(16);
         switch (nSBCode)
         {
-        case SB_LINEUP:          //Scroll one line up
-            ScrollWindowSimple(unit * step);
+        case SB_LINEUP:                         //Scroll one line up
+            ScrollWindowSimple(step);
             break;
-        case SB_LINEDOWN:           //Scroll one line down
-            ScrollWindowSimple(-unit * step);
+        case SB_LINEDOWN:                       //Scroll one line down
+            ScrollWindowSimple(-step);
             break;
-        case SB_PAGEUP:            //Scroll one page up.
-            ScrollWindowSimple(unit * step * 5);
+        case SB_PAGEUP:                         //Scroll one page up.
+            ScrollWindowSimple(INT_MAX);
             break;
-        case SB_PAGEDOWN:        //Scroll one page down
-            ScrollWindowSimple(-unit * step * 5);
+        case SB_PAGEDOWN:                       //Scroll one page down
+            ScrollWindowSimple(INT_MIN);
             break;
-        case SB_ENDSCROLL:      //End scroll
+        case SB_THUMBPOSITION:                  //Scroll to the absolute position. The current position is provided in nPos
             break;
-        case SB_THUMBPOSITION:  //Scroll to the absolute position. The current position is provided in nPos
+        case SB_THUMBTRACK:                     //Drag scroll box to specified position. The current position is provided in nPos
+            ScrollWindowSimple(nPos, true);
             break;
-        case SB_THUMBTRACK:                  //Drag scroll box to specified position. The current position is provided in nPos
-        {
-            SCROLLINFO scrollinfo;
-            GetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-            int y_amount = (m_last_pos - nPos) * unit;
-            m_last_pos = nPos;
-            ScrollWindow(0, y_amount);
-            scrollinfo.nPos = nPos;
-            SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
-        }
+        case SB_TOP:                            // 顶部
+            ScrollWindowSimple(0, true);
+            break;
+        case SB_BOTTOM:                         // 底部
+            ScrollWindowSimple(-1, true);
+            break;
+        case SB_ENDSCROLL:                      //End scroll
+            break;
+        default:
             break;
         }
     }
