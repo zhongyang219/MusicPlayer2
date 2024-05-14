@@ -161,7 +161,6 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_WM_RBUTTONUP()
     ON_COMMAND(ID_MINI_MODE_EXIT, &CMiniModeDlg::OnMiniModeExit)
     ON_WM_INITMENU()
-    ON_WM_MOUSEWHEEL()
     ON_WM_LBUTTONDBLCLK()
     ON_NOTIFY(NM_DBLCLK, IDC_LIST2, &CMiniModeDlg::OnNMDblclkList2)
     ON_NOTIFY(NM_RCLICK, IDC_LIST2, &CMiniModeDlg::OnNMRClickList2)
@@ -340,12 +339,9 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-void CMiniModeDlg::SetVolume(bool up)
+void CMiniModeDlg::SetVolume(int step)
 {
-    if (up)
-        CPlayer::GetInstance().MusicControl(Command::VOLUME_UP);
-    else
-        CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN);
+    CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, step);
 
     CUserUi* cur_ui{ dynamic_cast<CUserUi*>(GetCurUi()) };
     if (cur_ui != nullptr)
@@ -401,12 +397,12 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
         //按上下方向键调整音量
         if (pMsg->wParam == VK_UP)
         {
-            SetVolume(true);
+            SetVolume(theApp.m_nc_setting_data.volum_step);
             return TRUE;
         }
         if (pMsg->wParam == VK_DOWN)
         {
-            SetVolume(false);
+            SetVolume(-theApp.m_nc_setting_data.volum_step);
             return TRUE;
         }
 
@@ -449,12 +445,17 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
         }
     }
 
-    ////将此窗口的其他键盘消息转发给主窗口
-    //if (pMsg->message == WM_KEYDOWN)
-    //{
-    //    ::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, pMsg->wParam, pMsg->lParam);
-    //    return TRUE;
-    //}
+    if (pMsg->message == WM_MOUSEWHEEL)                         // 将滚轮消息转发给主窗口处理音量调整
+    {
+        CWnd* pMainWnd = AfxGetMainWnd();
+        if (pMainWnd)
+        {
+            POINT pt = { INT16_MAX, INT16_MAX };                // 修改pt参数为一个特殊值
+            LPARAM lParam = MAKELPARAM(pt.x, pt.y);
+            pMainWnd->SendMessage(WM_MOUSEWHEEL, pMsg->wParam, lParam);
+            return TRUE;
+        }
+    }
 
     if (pMsg->message == WM_MOUSEMOVE)
     {
@@ -540,22 +541,6 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
 
 
     theApp.m_pMainWnd->SendMessage(WM_SET_MENU_STATE, (WPARAM)pMenu);
-}
-
-
-BOOL CMiniModeDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
-{
-    // TODO: 在此添加消息处理程序代码和/或调用默认值
-    if (zDelta > 0)
-    {
-        SetVolume(true);
-    }
-    if (zDelta < 0)
-    {
-        SetVolume(false);
-    }
-
-    return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 

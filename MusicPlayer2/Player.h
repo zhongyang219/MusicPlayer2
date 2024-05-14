@@ -253,7 +253,7 @@ public:
     //使用指定播放列表文件来初始化CPlayer类
     void CreateWithPlaylist(const wstring& playlist_path);
     //控制音乐播放
-    void MusicControl(Command command, int volume_step = 2);
+    void MusicControl(Command command, int volume_step = 0);
     //判断当前音乐是否播放完毕
     bool SongIsOver() const;
     //从播放内核获取当前播放到的位置（更新m_current_position），调用需要取得播放状态锁

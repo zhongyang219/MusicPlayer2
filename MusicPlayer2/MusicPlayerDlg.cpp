@@ -845,6 +845,21 @@ bool CMusicPlayerDlg::IsMainWindowPopupMenu() const
         || m_pCurMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::MiniAreaMenu));
 }
 
+void CMusicPlayerDlg::AdjustVolume(int step)
+{
+    if (m_miniModeDlg.m_hWnd == NULL)
+    {
+        CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, step);
+        CUserUi* cur_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
+        if (cur_ui != nullptr)
+            cur_ui->VolumeAdjusted();
+    }
+    else
+    {
+        m_miniModeDlg.SetVolume(step);
+    }
+}
+
 int CMusicPlayerDlg::CalculatePlaylistWidth(int client_width)
 {
     int playlist_width = client_width * theApp.m_app_setting_data.playlist_width_percent / 100;
@@ -3095,21 +3110,22 @@ BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     CRect draw_rect{ 0,0,theApp.m_ui_data.draw_area_width, theApp.m_ui_data.draw_area_height };
+    bool from_desktop_lyric{ pt.x == INT16_MAX && pt.y == INT16_MAX };  // 从桌面歌词/迷你模式窗口转发
     ScreenToClient(&pt);
 
     if (m_pUI->MouseWheel(zDelta, pt))
         return TRUE;
 
-    if (draw_rect.PtInRect(pt))
+    if (draw_rect.PtInRect(pt) || from_desktop_lyric)
     {
-        if (zDelta > 0)
-        {
-            OnVolumeUp();
-        }
-        if (zDelta < 0)
-        {
-            OnVolumeDown();
-        }
+        static int nogori = 0;
+        if (nogori * zDelta < 0)    // 换向时清零累计值使得滚轮总是能够及时响应
+            nogori = 0;
+        // 在触控板下有必要处理zDelta，触控板驱动会通过较小的zDelta连发模拟惯性
+        // 每120的zDelta（即滚轮一格）音量调整百分之mouse_volum_step
+        nogori += zDelta * theApp.m_nc_setting_data.mouse_volum_step;
+        AdjustVolume(nogori / 120);
+        nogori = nogori % 120;
     }
 
     return CMainDialogBase::OnMouseWheel(nFlags, zDelta, pt);
@@ -4825,32 +4841,12 @@ void CMusicPlayerDlg::OnSwitchUi()
 
 void CMusicPlayerDlg::OnVolumeUp()
 {
-    if (m_miniModeDlg.m_hWnd == NULL)
-    {
-        CPlayer::GetInstance().MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
-        CUserUi* cur_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
-        if (cur_ui != nullptr)
-            cur_ui->VolumeAdjusted();
-    }
-    else
-    {
-        m_miniModeDlg.SetVolume(true);
-    }
+    AdjustVolume(theApp.m_nc_setting_data.volum_step);
 }
 
 void CMusicPlayerDlg::OnVolumeDown()
 {
-    if (m_miniModeDlg.m_hWnd == NULL)
-    {
-        CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
-        CUserUi* cur_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
-        if (cur_ui != nullptr)
-            cur_ui->VolumeAdjusted();
-    }
-    else
-    {
-        m_miniModeDlg.SetVolume(false);
-    }
+    AdjustVolume(-theApp.m_nc_setting_data.volum_step);
 }
 
 

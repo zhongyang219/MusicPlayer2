@@ -439,7 +439,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
 
     // VOLUME_UP和VOLUME_DOWN可在无法播放时使用
     // stop和close也可以在m_index失效无法播放时使用（RemoveSong(s)）
-    if (command != Command::VOLUME_UP && command != Command::VOLUME_DOWN && command != Command::STOP && command != Command::CLOSE)
+    if (command != Command::VOLUME_ADJ && command != Command::STOP && command != Command::CLOSE)
     {
         if (!CCommon::IsURL(GetCurrentFilePath()) && !CCommon::FileExist(GetCurrentFilePath()))
         {
@@ -570,23 +570,11 @@ void CPlayer::MusicControl(Command command, int volume_step)
         }
         MediaTransControlsLoadThumbnailDefaultImage();
         break;
-    case Command::VOLUME_UP:
-        if (m_volume < 100)
-        {
-            m_volume += volume_step;
-            if (m_volume > 100) m_volume = 100;
-            SetVolume();
-            //SaveConfig();
-        }
-        break;
-    case Command::VOLUME_DOWN:
-        if (m_volume > 0)
-        {
-            m_volume -= volume_step;
-            if (m_volume < 0) m_volume = 0;
-            SetVolume();
-            //SaveConfig();
-        }
+    case Command::VOLUME_ADJ:
+        m_volume += volume_step;
+        if (m_volume > 100) m_volume = 100;
+        if (m_volume < 0) m_volume = 0;
+        SetVolume();
         break;
     case Command::SEEK:		//定位到m_current_position的位置
         if (m_current_position > m_song_length)

@@ -453,7 +453,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
             case BTN_VOLUME_UP:
                 if (m_show_volume_adj)
                 {
-                    CPlayer::GetInstance().MusicControl(Command::VOLUME_UP, theApp.m_nc_setting_data.volum_step);
+                    CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, theApp.m_nc_setting_data.volum_step);
                     return true;
                 }
                 break;
@@ -461,7 +461,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
             case BTN_VOLUME_DOWN:
                 if (m_show_volume_adj)
                 {
-                    CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN, theApp.m_nc_setting_data.volum_step);
+                    CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, -theApp.m_nc_setting_data.volum_step);
                     return true;
                 }
                 break;

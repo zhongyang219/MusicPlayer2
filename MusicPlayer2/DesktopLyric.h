@@ -124,6 +124,5 @@ public:
     afx_msg void OnLyricDefaultStyle2();
     afx_msg void OnLyricDefaultStyle3();
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnInitMenu(CMenu* pMenu);
 };

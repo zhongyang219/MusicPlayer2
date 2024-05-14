@@ -31,7 +31,7 @@ public:
 
     void MoveWindowPos();
 
-    void SetVolume(bool up);	//
+    void SetVolume(int step);
     void SetTransparency();
 
     void SetDragEnable();
@@ -95,7 +95,6 @@ protected:
     afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnMiniModeExit();
     afx_msg void OnInitMenu(CMenu* pMenu);
-    afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
     afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
     afx_msg void OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult);

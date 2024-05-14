@@ -15,8 +15,7 @@ enum class Command
     PLAY_PAUSE,
     FF,	//快进
     REW,		//快倒
-    VOLUME_UP,
-    VOLUME_DOWN,
+    VOLUME_ADJ,
     SEEK
 };
 

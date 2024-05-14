@@ -193,6 +193,7 @@ private:
     void SetPlaylistSize(int cx, int cy, int playlist_width);		//设置播放列表的大小
     void SetDrawAreaSize(int cx, int cy, int playlist_width);
     void SetAlwaysOnTop();
+    void AdjustVolume(int step);
 
     bool IsMainWindowPopupMenu() const;      //当前弹出的右键是主窗口右键菜单还是播放列表右键菜单
 
