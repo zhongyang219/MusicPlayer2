@@ -17,6 +17,7 @@
 #include <cmath>
 #include <memory>
 #include <functional>
+#include <array>
 using std::ofstream;
 using std::ifstream;
 using std::string;

@@ -224,6 +224,8 @@ void CColorConvert::ReduceLuminance(COLORREF & color)
 	}
 }
 
+// 考虑改用CDrawingManager::SmartMixColors，CDrawingManager中也有各种HSL/HSV/RGB互转的静态方法
+// https://learn.microsoft.com/zh-cn/cpp/mfc/reference/cdrawingmanager-class?view=msvc-170
 COLORREF CColorConvert::GetGradientColor(COLORREF color1, COLORREF color2, int percent)
 {
     if (percent > 100)
