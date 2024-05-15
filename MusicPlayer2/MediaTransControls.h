@@ -31,6 +31,6 @@ public:
 #ifndef DISABLE_MEDIA_TRANS_CONTROLS
 private:
     std::mutex m_mutex;     // 使用pImpl指针期间锁定此互斥量
-    std::unique_ptr<MediaTransControlsImpl> pImpl = nullptr;
+    std::unique_ptr<MediaTransControlsImpl> pImpl;
 #endif
 };
