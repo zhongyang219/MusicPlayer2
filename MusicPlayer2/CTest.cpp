@@ -149,7 +149,7 @@ void CTest::TestCommon()
 void CTest::TestOSUFile()
 {
     COSUFile osu_file{ L"D:\\Program Files\\osu!\\Songs\\66385 u's - Snow halation\\u's - Snow halation (blissfulyoshi) [Insane].osu" };
-    wstring file_name = osu_file.GetAudioFile();
+    wstring file_name = osu_file.GetAudioFileName();
     int a = 0;
 
 }

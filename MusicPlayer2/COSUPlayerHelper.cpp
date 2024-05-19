@@ -67,8 +67,8 @@ void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<wstring>& files)
         CCommon::GetFiles(path + folder_name + L"\\*.osu", osu_list);
         if(!osu_list.empty())
         {
-            COSUFile osu_file{ (path + folder_name + L"\\" + osu_list.front()).c_str() };
-            wstring file_name = osu_file.GetAudioFile();
+            COSUFile osu_file{ (path + folder_name + L'\\' + osu_list.front()).c_str() };
+            wstring file_name = path + folder_name + L'\\' + osu_file.GetAudioFileName();
             // 这里的file_name大小写可能与实际文件不同会导致自动更新/播放时媒体库出现大小写各一份，这里统一以音频文件为准
             if (CCommon::CheckAndFixFile(file_name))
                 files.push_back(file_name);
@@ -193,7 +193,7 @@ COSUFile::COSUFile(const wchar_t * file_path)
     GetTag("[Events]", m_events_seg);
 }
 
-wstring COSUFile::GetAudioFile()
+wstring COSUFile::GetAudioFileName()
 {
     return GetTagItem("AudioFilename:", m_general_seg);
 }

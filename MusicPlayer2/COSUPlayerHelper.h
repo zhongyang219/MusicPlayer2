@@ -23,7 +23,7 @@ class COSUFile
 {
 public:
     COSUFile(const wchar_t* file_path);
-    wstring GetAudioFile();
+    wstring GetAudioFileName();
     wstring GetArtist();
     wstring GetTitle();
     wstring GetAlbum();
