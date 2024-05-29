@@ -95,6 +95,7 @@ protected:
     void CalculateNotifyIconPreviewRect();
 
     virtual void GetDataFromUi() override;
+    virtual void ApplyDataToUi() override;
 
     DECLARE_MESSAGE_MAP()
 public:

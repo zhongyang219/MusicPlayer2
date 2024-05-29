@@ -276,6 +276,11 @@ void CAppearanceSettingDlg::GetDataFromUi()
     m_data.show_maximize_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_MAXIMIZE_BTN_CHECK) != 0);
 }
 
+void CAppearanceSettingDlg::ApplyDataToUi()
+{
+    m_color_static.SetFillColor(theApp.m_app_setting_data.theme_color.original_color);
+}
+
 void CAppearanceSettingDlg::DrawColor()
 {
     m_color_static.SetFillColor(m_data.theme_color.original_color);
