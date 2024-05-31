@@ -150,6 +150,26 @@ bool SongInfo::ByYearDecending(const SongInfo& a, const SongInfo& b)
     return a.year > b.year;
 }
 
+bool SongInfo::ByListenTime(const SongInfo& a, const SongInfo& b)
+{
+    return a.listen_time < b.listen_time;
+}
+
+bool SongInfo::ByListenTimeDecending(const SongInfo& a, const SongInfo& b)
+{
+    return a.listen_time > b.listen_time;
+}
+
+bool SongInfo::ByModifiedTime(const SongInfo& a, const SongInfo& b)
+{
+    return a.modified_time < b.modified_time;
+}
+
+bool SongInfo::ByModifiedTimeDecending(const SongInfo& a, const SongInfo& b)
+{
+    return a.modified_time > b.modified_time;
+}
+
 bool SongInfo::ByLastPlay(const SongInfo& a, const SongInfo& b)
 {
     return a.last_played_time < b.last_played_time;

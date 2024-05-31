@@ -156,10 +156,13 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_WM_HOTKEY()
     ON_COMMAND(ID_RE_INI_BASS, &CMusicPlayerDlg::OnReIniBass)
     ON_COMMAND(ID_SORT_BY_FILE, &CMusicPlayerDlg::OnSortByFile)
+    ON_COMMAND(ID_SORT_BY_PATH, &CMusicPlayerDlg::OnSortByPath)
     ON_COMMAND(ID_SORT_BY_TITLE, &CMusicPlayerDlg::OnSortByTitle)
     ON_COMMAND(ID_SORT_BY_ARTIST, &CMusicPlayerDlg::OnSortByArtist)
     ON_COMMAND(ID_SORT_BY_ALBUM, &CMusicPlayerDlg::OnSortByAlbum)
     ON_COMMAND(ID_SORT_BY_TRACK, &CMusicPlayerDlg::OnSortByTrack)
+    ON_COMMAND(ID_SORT_BY_LISTEN_TIME, &CMusicPlayerDlg::OnSortByListenTime)
+    ON_COMMAND(ID_SORT_BY_MODIFIED_TIME, &CMusicPlayerDlg::OnSortByModifiedTime)
     ON_COMMAND(ID_DELETE_FROM_DISK, &CMusicPlayerDlg::OnDeleteFromDisk)
     ON_REGISTERED_MESSAGE(WM_TASKBARCREATED, &CMusicPlayerDlg::OnTaskbarcreated)
     ON_COMMAND(ID_DISP_FILE_NAME, &CMusicPlayerDlg::OnDispFileName)
@@ -288,13 +291,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_UNLINK_LYRIC, &CMusicPlayerDlg::OnUnlinkLyric)
     ON_COMMAND(ID_SHOW_DESKTOP_LYRIC, &CMusicPlayerDlg::OnShowDesktopLyric)
     ON_MESSAGE(WM_MAIN_WINDOW_ACTIVATED, &CMusicPlayerDlg::OnMainWindowActivated)
-    ON_COMMAND(ID_SORT_BY_MODIFIED_TIME, &CMusicPlayerDlg::OnSortByModifiedTime)
-    ON_COMMAND(ID_SORT_BY_PATH, &CMusicPlayerDlg::OnSortByPath)
     ON_COMMAND(ID_CONTAIN_SUB_FOLDER, &CMusicPlayerDlg::OnContainSubFolder)
     ON_MESSAGE(WM_GET_MUSIC_CURRENT_POSITION, &CMusicPlayerDlg::OnGetMusicCurrentPosition)
-    ON_COMMAND(ID_ACCENDING_ORDER, &CMusicPlayerDlg::OnAccendingOrder)
-    ON_COMMAND(ID_DESENDING_ORDER, &CMusicPlayerDlg::OnDesendingOrder)
-    ON_COMMAND(ID_INVERT_PLAYLIST, &CMusicPlayerDlg::OnInvertPlaylist)
     ON_COMMAND(ID_PLAY_RANDOM, &CMusicPlayerDlg::OnPlayRandom)
     ON_MESSAGE(WM_CURRENT_FILE_ALBUM_COVER_CHANGED, &CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged)
     ON_COMMAND(ID_RENAME, &CMusicPlayerDlg::OnRename)
@@ -1531,51 +1529,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     int ui_selected = GetUiSelected();
     pMenu->CheckMenuRadioItem(ID_SWITCH_UI + 1, ID_SWITCH_UI + m_ui_list.size(), ID_SWITCH_UI + 1 + ui_selected, MF_BYCOMMAND | MF_CHECKED);
 
-    //设置播放列表菜单中排序方式的单选标记
-    if (!CPlayer::GetInstance().IsPlaylistMode())
-    {
-        switch (CPlayer::GetInstance().m_sort_mode)
-        {
-        case SM_FILE:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_FILE, MF_BYCOMMAND | MF_CHECKED);
-            break;
-        case SM_PATH:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_PATH, MF_BYCOMMAND | MF_CHECKED);
-            break;
-        case SM_TITLE:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_TITLE, MF_BYCOMMAND | MF_CHECKED);
-            break;
-        case SM_ARTIST:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_ARTIST, MF_BYCOMMAND | MF_CHECKED);
-            break;
-        case SM_ALBUM:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_ALBUM, MF_BYCOMMAND | MF_CHECKED);
-            break;
-        case SM_TRACK:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_TRACK, MF_BYCOMMAND | MF_CHECKED);
-            break;
-        case SM_TIME:
-            pMenu->CheckMenuRadioItem(ID_SORT_BY_FILE, ID_SORT_BY_MODIFIED_TIME, ID_SORT_BY_MODIFIED_TIME, MF_BYCOMMAND | MF_CHECKED);
-            break;
-        }
-        if (CPlayer::GetInstance().m_descending)
-            pMenu->CheckMenuRadioItem(ID_ACCENDING_ORDER, ID_DESENDING_ORDER, ID_DESENDING_ORDER, MF_BYCOMMAND | MF_CHECKED);
-        else
-            pMenu->CheckMenuRadioItem(ID_ACCENDING_ORDER, ID_DESENDING_ORDER, ID_ACCENDING_ORDER, MF_BYCOMMAND | MF_CHECKED);
-    }
-    else
-    {
-        pMenu->CheckMenuItem(ID_SORT_BY_FILE, MF_UNCHECKED);
-        pMenu->CheckMenuItem(ID_SORT_BY_TITLE, MF_UNCHECKED);
-        pMenu->CheckMenuItem(ID_SORT_BY_ARTIST, MF_UNCHECKED);
-        pMenu->CheckMenuItem(ID_SORT_BY_ALBUM, MF_UNCHECKED);
-        pMenu->CheckMenuItem(ID_SORT_BY_TRACK, MF_UNCHECKED);
-        pMenu->CheckMenuItem(ID_ACCENDING_ORDER, MF_UNCHECKED);
-        pMenu->CheckMenuItem(ID_DESENDING_ORDER, MF_UNCHECKED);
-    }
-    pMenu->EnableMenuItem(ID_ACCENDING_ORDER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsPlaylistMode() ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_DESENDING_ORDER, MF_BYCOMMAND | (!CPlayer::GetInstance().IsPlaylistMode() ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_INVERT_PLAYLIST, MF_BYCOMMAND | (CPlayer::GetInstance().IsPlaylistMode() ? MF_ENABLED : MF_GRAYED));
+    // TODO: 设置播放列表菜单中排序方式的图标
+    // switch (CPlayer::GetInstance().m_sort_mode)
 
     //设置播放列表菜单中“播放列表显示样式”的单选标记
     switch (theApp.m_media_lib_setting_data.display_format)
@@ -3520,52 +3475,8 @@ void CMusicPlayerDlg::OnReIniBass()
 void CMusicPlayerDlg::OnSortByFile()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().m_sort_mode = SM_FILE;
-    CPlayer::GetInstance().SortPlaylist();
-    ShowPlayList();
-}
-
-
-void CMusicPlayerDlg::OnSortByTitle()
-{
-    // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().m_sort_mode = SM_TITLE;
-    CPlayer::GetInstance().SortPlaylist();
-    ShowPlayList();
-}
-
-
-void CMusicPlayerDlg::OnSortByArtist()
-{
-    // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().m_sort_mode = SM_ARTIST;
-    CPlayer::GetInstance().SortPlaylist();
-    ShowPlayList();
-}
-
-
-void CMusicPlayerDlg::OnSortByAlbum()
-{
-    // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().m_sort_mode = SM_ALBUM;
-    CPlayer::GetInstance().SortPlaylist();
-    ShowPlayList();
-}
-
-
-void CMusicPlayerDlg::OnSortByTrack()
-{
-    // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().m_sort_mode = SM_TRACK;
-    CPlayer::GetInstance().SortPlaylist();
-    ShowPlayList();
-}
-
-
-void CMusicPlayerDlg::OnSortByModifiedTime()
-{
-    // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().m_sort_mode = SM_TIME;
+    auto& sort_mode = CPlayer::GetInstance().m_sort_mode;
+    sort_mode = (sort_mode != SM_U_FILE) ? SM_U_FILE : SM_D_FILE;
     CPlayer::GetInstance().SortPlaylist();
     ShowPlayList();
 }
@@ -3574,7 +3485,68 @@ void CMusicPlayerDlg::OnSortByModifiedTime()
 void CMusicPlayerDlg::OnSortByPath()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().m_sort_mode = SM_PATH;
+    auto& sort_mode = CPlayer::GetInstance().m_sort_mode;
+    sort_mode = (sort_mode != SM_U_PATH) ? SM_U_PATH : SM_D_PATH;
+    CPlayer::GetInstance().SortPlaylist();
+    ShowPlayList();
+}
+
+
+void CMusicPlayerDlg::OnSortByTitle()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto& sort_mode = CPlayer::GetInstance().m_sort_mode;
+    sort_mode = (sort_mode != SM_U_TITLE) ? SM_U_TITLE : SM_D_TITLE;
+    CPlayer::GetInstance().SortPlaylist();
+    ShowPlayList();
+}
+
+
+void CMusicPlayerDlg::OnSortByArtist()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto& sort_mode = CPlayer::GetInstance().m_sort_mode;
+    sort_mode = (sort_mode != SM_U_ARTIST) ? SM_U_ARTIST : SM_D_ARTIST;
+    CPlayer::GetInstance().SortPlaylist();
+    ShowPlayList();
+}
+
+
+void CMusicPlayerDlg::OnSortByAlbum()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto& sort_mode = CPlayer::GetInstance().m_sort_mode;
+    sort_mode = (sort_mode != SM_U_ALBUM) ? SM_U_ALBUM : SM_D_ALBUM;
+    CPlayer::GetInstance().SortPlaylist();
+    ShowPlayList();
+}
+
+
+void CMusicPlayerDlg::OnSortByTrack()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto& sort_mode = CPlayer::GetInstance().m_sort_mode;
+    sort_mode = (sort_mode != SM_U_TRACK) ? SM_U_TRACK : SM_D_TRACK;
+    CPlayer::GetInstance().SortPlaylist();
+    ShowPlayList();
+}
+
+
+void CMusicPlayerDlg::OnSortByListenTime()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto& sort_mode = CPlayer::GetInstance().m_sort_mode;
+    sort_mode = (sort_mode != SM_D_LISTEN) ? SM_D_LISTEN : SM_U_LISTEN; // 这个特殊，第一次点击默认为降序
+    CPlayer::GetInstance().SortPlaylist();
+    ShowPlayList();
+}
+
+
+void CMusicPlayerDlg::OnSortByModifiedTime()
+{
+    // TODO: 在此添加命令处理程序代码
+    auto& sort_mode = CPlayer::GetInstance().m_sort_mode;
+    sort_mode = (sort_mode != SM_U_TIME) ? SM_U_TIME : SM_D_TIME;
     CPlayer::GetInstance().SortPlaylist();
     ShowPlayList();
 }
@@ -6063,44 +6035,6 @@ afx_msg LRESULT CMusicPlayerDlg::OnGetMusicCurrentPosition(WPARAM wParam, LPARAM
 {
     CPlayer::GetInstance().GetPlayerCoreCurrentPosition();
     return 0;
-}
-
-
-void CMusicPlayerDlg::OnAccendingOrder()
-{
-    // TODO: 在此添加命令处理程序代码
-    if (!CPlayer::GetInstance().IsPlaylistMode())
-    {
-        //文件夹模式下按升序排列
-        CPlayer::GetInstance().m_descending = false;
-        CPlayer::GetInstance().SortPlaylist();
-        ShowPlayList();
-    }
-}
-
-
-void CMusicPlayerDlg::OnDesendingOrder()
-{
-    // TODO: 在此添加命令处理程序代码
-    if (!CPlayer::GetInstance().IsPlaylistMode())
-    {
-        //文件夹模式下降序排列
-        CPlayer::GetInstance().m_descending = true;
-        CPlayer::GetInstance().SortPlaylist();
-        ShowPlayList();
-    }
-}
-
-
-void CMusicPlayerDlg::OnInvertPlaylist()
-{
-    // TODO: 在此添加命令处理程序代码
-    //播放列表模式下将播放列表倒序
-    if (CPlayer::GetInstance().IsPlaylistMode())
-    {
-        CPlayer::GetInstance().InvertPlaylist();
-        ShowPlayList();
-    }
 }
 
 

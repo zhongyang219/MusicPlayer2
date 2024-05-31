@@ -28,13 +28,24 @@ enum AudioType
 //排序方式
 enum SortMode
 {
-    SM_FILE,
-    SM_PATH,
-    SM_TITLE,
-    SM_ARTIST,
-    SM_ALBUM,
-    SM_TRACK,
-    SM_TIME     //修改日期
+    SM_U_FILE = 0,
+    SM_D_FILE,
+    SM_U_PATH,
+    SM_D_PATH,
+    SM_U_TITLE,
+    SM_D_TITLE,
+    SM_U_ARTIST,
+    SM_D_ARTIST,
+    SM_U_ALBUM,
+    SM_D_ALBUM,
+    SM_U_TRACK,
+    SM_D_TRACK,
+    SM_U_LISTEN,            // 累计播放时间 升序
+    SM_D_LISTEN,            // 累计播放时间 降序
+    SM_U_TIME,              // 修改日期 升序
+    SM_D_TIME,              // 修改日期 降序
+
+    SM_UNSORT = 100,        // 未排序（进入播放列表模式时总是设置为此排序方式，且不进行持久化）
 };
 
 
@@ -61,12 +72,7 @@ struct PathInfo
     int track_num{};		//路径中音频文件的数量
     int total_time{};		//路径中音频文件的总时间
     bool contain_sub_folder{};  //是否包含子文件夹
-    bool descending{};      //是否降序排列
     unsigned __int64 last_played_time{};    //上次播放的时间
-
-    //PathInfo(wstring _path, int _track, int _position, SortMode _sort_mode) :
-    //	path{ _path }, track{ _track }, position{ _position }, sort_mode{ _sort_mode }
-    //{}
 };
 
 //循环模式

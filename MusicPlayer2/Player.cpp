@@ -291,6 +291,16 @@ void CPlayer::IniPlaylistComplate()
 
     ASSERT(m_playing == 0);
     // 对播放列表排序
+    if (m_playlist_mode)                // 播放列表模式默认状态必须为未排序
+    {
+        ASSERT(m_sort_mode == SM_UNSORT);
+        m_sort_mode = SM_UNSORT;
+    }
+    else if (m_sort_mode == SM_UNSORT)  // 文件夹模式不允许为未排序
+    {
+        ASSERT(FALSE);
+        m_sort_mode = SM_U_FILE;
+    }
     if (!m_playlist_mode && m_playlist.size() > 1)
         SortPlaylist(true);
 
@@ -931,7 +941,6 @@ void CPlayer::SaveRecentInfoToFiles(bool save_playlist)
             path_info.track = m_index;
             path_info.position = m_current_position.toInt();
             path_info.sort_mode = m_sort_mode;
-            path_info.descending = m_descending;
             path_info.track_num = GetSongNum();
             path_info.total_time = m_total_time;
             path_info.contain_sub_folder = m_contain_sub_folder;
@@ -972,7 +981,6 @@ bool CPlayer::SetPath(const PathInfo& path_info, bool play)
     m_playlist_path.clear();
     m_playlist_mode = false;
     m_sort_mode = path_info.sort_mode;
-    m_descending = path_info.descending;
     m_contain_sub_folder = path_info.contain_sub_folder;
     m_index = path_info.track;
     m_current_position.fromInt(path_info.position);
@@ -990,8 +998,7 @@ bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     m_path = path;
     m_playlist_path.clear();
     m_playlist_mode = false;
-    m_sort_mode = SM_FILE;
-    m_descending = false;
+    m_sort_mode = SM_U_FILE;
     m_contain_sub_folder = contain_sub_folder;
     m_index = 0;
     m_current_position.fromInt(0);
@@ -1003,7 +1010,6 @@ bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     {
         const PathInfo& path_info = *iter;
         m_sort_mode = path_info.sort_mode;
-        m_descending = path_info.descending;
         m_index = path_info.track;
         m_current_position.fromInt(path_info.position);
     }
@@ -1020,8 +1026,7 @@ bool CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
     m_path.clear();
     m_playlist_path = playlist_path;
     m_playlist_mode = true;
-    m_sort_mode = SM_FILE;
-    m_descending = false;
+    m_sort_mode = SM_UNSORT;    // 播放列表模式下默认未排序
     m_contain_sub_folder = false;
     m_index = track;
     m_current_position.fromInt(position);
@@ -1071,8 +1076,7 @@ bool CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool pla
     m_path.clear();
     m_playlist_path = CPlaylistMgr::Instance().m_default_playlist.path;
     m_playlist_mode = true;
-    m_sort_mode = SM_FILE;
-    m_descending = false;
+    m_sort_mode = SM_UNSORT;    // 播放列表模式下默认未排序
     m_contain_sub_folder = false;
     m_index = 0;
     m_current_position.fromInt(0);
@@ -1098,8 +1102,7 @@ bool CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_in
     m_path.clear();
     m_playlist_path = CPlaylistMgr::Instance().m_temp_playlist.path;
     m_playlist_mode = true;
-    m_sort_mode = SM_FILE;
-    m_descending = false;
+    m_sort_mode = SM_UNSORT;    // 播放列表模式下默认未排序
     m_contain_sub_folder = false;
     m_index = play_index;
     m_current_position.fromInt(0);
@@ -1121,8 +1124,7 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     m_path = file_path.GetDir();
     m_playlist_path.clear();
     m_playlist_mode = false;
-    m_sort_mode = SM_FILE;
-    m_descending = false;
+    m_sort_mode = SM_U_FILE;
     m_contain_sub_folder = false;
     m_index = 0;
     m_current_position.fromInt(0);
@@ -1134,7 +1136,6 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     {
         const PathInfo& path_info = *iter;
         m_sort_mode = path_info.sort_mode;
-        m_descending = path_info.descending;
         m_contain_sub_folder = path_info.contain_sub_folder;
         m_index = path_info.track;
         m_current_position.fromInt(path_info.position);
@@ -1171,6 +1172,7 @@ int CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs)
     int added = playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.insert_begin_of_playlist);
     playlist.SaveToFile(m_playlist_path);
 
+    m_sort_mode = SM_UNSORT;        // 播放列表模式下的修改会失去排序状态
     m_index = 0;
     m_current_position.fromInt(0);
 
@@ -1183,6 +1185,7 @@ bool CPlayer::ReloadPlaylist(MediaLibRefreshMode refresh_mode)
     if (!BeforeIniPlayList(true, true))
         return false;
 
+    m_sort_mode = SM_UNSORT;        // 播放列表模式默认未排序
     m_index = 0;
     m_current_position.fromInt(0);
 
@@ -1222,8 +1225,7 @@ bool CPlayer::RemoveCurPlaylistOrFolder()
     m_path.clear();
     m_playlist_path = def_playlist.path;
     m_playlist_mode = true;
-    m_sort_mode = SM_FILE;
-    m_descending = false;
+    m_sort_mode = SM_UNSORT;        // 播放列表模式默认未排序
     m_contain_sub_folder = false;
     m_index = def_playlist.track;
     m_current_position.fromInt(def_playlist.position);
@@ -1767,6 +1769,7 @@ bool CPlayer::MoveUp(int first, int last)
     {
         std::swap(m_playlist[i - 1], m_playlist[i]);
     }
+    m_sort_mode = SM_UNSORT;        // 修改会失去排序状态
     OnPlaylistChange();
     SaveCurrentPlaylist();
     return true;
@@ -1791,6 +1794,7 @@ bool CPlayer::MoveDown(int first, int last)
     {
         std::swap(m_playlist[i], m_playlist[i - 1]);
     }
+    m_sort_mode = SM_UNSORT;        // 修改会失去排序状态
     OnPlaylistChange();
     SaveCurrentPlaylist();
     return true;
@@ -1864,6 +1868,7 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
     else
         m_index = iter_play - m_playlist.begin();
 
+    m_sort_mode = SM_UNSORT;        // 修改会失去排序状态
     OnPlaylistChange();
     SaveCurrentPlaylist();
     return dest_index;
@@ -2028,7 +2033,7 @@ void CPlayer::AddListenTime(int sec)
 {
     if (m_index >= 0 && m_index < GetSongNum())
     {
-        //m_playlist[m_index].listen_time += sec;
+        m_playlist[m_index].listen_time += sec; // m_playlist的信息不会保存到媒体库，此处仅为排序维护
         SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(m_playlist[m_index]) };
         song_info.listen_time += sec;
         CSongDataManager::GetInstance().AddItem(song_info);
@@ -2097,58 +2102,28 @@ void CPlayer::SortPlaylist(bool is_init)
     if (m_loading && !is_init) return;
     CWaitCursor wait_cursor;
     SongInfo current_song = GetCurrentSongInfo();
+    auto sort_fun = SongInfo::ByFileName;
     switch (m_sort_mode)
     {
-    case SM_FILE:
-        if (m_descending)
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileNameDecending);
-        else
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByFileName);
-        break;
-    case SM_PATH:
-        if (m_descending)
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPathDecending);
-        else
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByPath);
-        break;
-    case SM_TITLE:
-        if (m_descending)
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitleDecending);
-        else
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTitle);
-        break;
-    case SM_ARTIST:
-        if (m_descending)
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByArtistDecending);
-        else
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByArtist);
-        break;
-    case SM_ALBUM:
-        if (m_descending)
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByAlbumDecending);
-        else
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByAlbum);
-        break;
-    case SM_TRACK:
-        if (m_descending)
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrackDecending);
-        else
-            std::stable_sort(m_playlist.begin(), m_playlist.end(), SongInfo::ByTrack);
-        break;
-    case SM_TIME:
-        std::stable_sort(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& a, const SongInfo& b)
-            {
-                unsigned __int64 file_time_a = a.modified_time;
-                unsigned __int64 file_time_b = b.modified_time;
-                if (m_descending)
-                    return file_time_a > file_time_b;
-                else
-                    return file_time_a < file_time_b;
-            });
-        break;
-    default:
-        break;
+    case SM_U_FILE: sort_fun = SongInfo::ByFileName; break;
+    case SM_D_FILE: sort_fun = SongInfo::ByFileNameDecending; break;
+    case SM_U_PATH: sort_fun = SongInfo::ByPath; break;
+    case SM_D_PATH: sort_fun = SongInfo::ByPathDecending; break;
+    case SM_U_TITLE: sort_fun = SongInfo::ByTitle; break;
+    case SM_D_TITLE: sort_fun = SongInfo::ByTitleDecending; break;
+    case SM_U_ARTIST: sort_fun = SongInfo::ByArtist; break;
+    case SM_D_ARTIST: sort_fun = SongInfo::ByArtistDecending; break;
+    case SM_U_ALBUM: sort_fun = SongInfo::ByAlbum; break;
+    case SM_D_ALBUM: sort_fun = SongInfo::ByAlbumDecending; break;
+    case SM_U_TRACK: sort_fun = SongInfo::ByTrack; break;
+    case SM_D_TRACK: sort_fun = SongInfo::ByTrackDecending; break;
+    case SM_U_LISTEN: sort_fun = SongInfo::ByListenTime; break;
+    case SM_D_LISTEN: sort_fun = SongInfo::ByListenTimeDecending; break;
+    case SM_U_TIME: sort_fun = SongInfo::ByModifiedTime; break;
+    case SM_D_TIME: sort_fun = SongInfo::ByModifiedTimeDecending; break;
+    default: ASSERT(FALSE); break;
     }
+    std::stable_sort(m_playlist.begin(), m_playlist.end(), sort_fun);
 
     if (!is_init)   // 由初始化完成方法调用时不重新查找index
     {
@@ -2166,20 +2141,6 @@ void CPlayer::SortPlaylist(bool is_init)
     SaveCurrentPlaylist();
 }
 
-
-void CPlayer::InvertPlaylist()
-{
-    if (m_loading) return;
-
-    //播放列表倒序
-    std::reverse(m_playlist.begin(), m_playlist.end());
-    //当前播放曲目更改
-    m_index = m_playlist.size() - m_index - 1;
-
-    OnPlaylistChange();
-    SaveCurrentPlaylist();
-}
-
 void CPlayer::SaveRecentPath() const
 {
     // 打开或者新建文件
@@ -2193,7 +2154,7 @@ void CPlayer::SaveRecentPath() const
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    const unsigned int version{ 3u };
+    const unsigned int version{ 4u };
     ar << static_cast<unsigned int>(m_recent_path.size());		//写入m_recent_path容器的大小
     ar << version;     //写入文件的版本
     for (auto& path_info : m_recent_path)
@@ -2202,7 +2163,6 @@ void CPlayer::SaveRecentPath() const
             << path_info.track
             << path_info.position
             << static_cast<int>(path_info.sort_mode)
-            << static_cast<BYTE>(path_info.descending)
             << path_info.track_num
             << path_info.total_time
             << static_cast<BYTE>(path_info.contain_sub_folder)
@@ -2261,11 +2221,21 @@ void CPlayer::LoadRecentPath()
             ar >> path_info.position;
             ar >> sort_mode;
             path_info.sort_mode = static_cast<SortMode>(sort_mode);
-            if (version >= 2)
+            if (version >= 2 && version <= 3)   // 在版本4变量descending不再独立存储，功能整合到sort_mode内，这里做读取兼容
             {
                 BYTE descending;
                 ar >> descending;
-                path_info.descending = (descending != 0);
+                switch (sort_mode)
+                {
+                case 0: path_info.sort_mode = descending ? SM_D_FILE : SM_U_FILE; break;
+                case 1: path_info.sort_mode = descending ? SM_D_PATH : SM_U_PATH; break;
+                case 2: path_info.sort_mode = descending ? SM_D_TITLE : SM_U_TITLE; break;
+                case 3: path_info.sort_mode = descending ? SM_D_ARTIST : SM_U_ARTIST; break;
+                case 4: path_info.sort_mode = descending ? SM_D_ALBUM : SM_U_ALBUM; break;
+                case 5: path_info.sort_mode = descending ? SM_D_TRACK : SM_U_TRACK; break;
+                case 6: path_info.sort_mode = descending ? SM_D_TIME : SM_U_TIME; break;
+                default: break;
+                }
             }
             ar >> path_info.track_num;
             ar >> path_info.total_time;

@@ -327,6 +327,7 @@ void CSongDataManager::LoadSongInfo(SongInfo& song_info) const
         song_info.end_pos = temp.end_pos;
         song_info.bitrate = temp.bitrate;
         song_info.modified_time = temp.modified_time;
+        song_info.listen_time = temp.listen_time;
         song_info.freq = temp.freq;
         song_info.channels = temp.channels;
         song_info.bits = temp.bits;
@@ -348,6 +349,7 @@ void CSongDataManager::LoadSongsInfo(vector<SongInfo>& songs_info) const
             song_info.end_pos = temp.end_pos;
             song_info.bitrate = temp.bitrate;
             song_info.modified_time = temp.modified_time;
+            song_info.listen_time = temp.listen_time;
             song_info.freq = temp.freq;
             song_info.channels = temp.channels;
             song_info.bits = temp.bits;

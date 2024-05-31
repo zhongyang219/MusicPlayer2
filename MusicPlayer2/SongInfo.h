@@ -90,6 +90,12 @@ struct SongInfo
     //根据年份的比较函数，用于以年份排序
     static bool ByYear(const SongInfo& a, const SongInfo& b);
     static bool ByYearDecending(const SongInfo& a, const SongInfo& b);
+    //根据累计播放时间的比较函数，用于以累计播放时间排序
+    static bool ByListenTime(const SongInfo& a, const SongInfo& b);
+    static bool ByListenTimeDecending(const SongInfo& a, const SongInfo& b);
+    //根据文件修改时间的比较函数，用于以文件修改时间排序
+    static bool ByModifiedTime(const SongInfo& a, const SongInfo& b);
+    static bool ByModifiedTimeDecending(const SongInfo& a, const SongInfo& b);
     //根据最后播放时间的比较函数，用于以最后播放时间排序
     static bool ByLastPlay(const SongInfo& a, const SongInfo& b);
     static bool ByLastPlayDecending(const SongInfo& a, const SongInfo& b);

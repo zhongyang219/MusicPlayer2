@@ -321,10 +321,13 @@ protected:
     //afx_msg void OnStnClickedProgressStatic();
     afx_msg void OnReIniBass();
     afx_msg void OnSortByFile();
+    afx_msg void OnSortByPath();
     afx_msg void OnSortByTitle();
     afx_msg void OnSortByArtist();
     afx_msg void OnSortByAlbum();
     afx_msg void OnSortByTrack();
+    afx_msg void OnSortByListenTime();
+    afx_msg void OnSortByModifiedTime();
 public:
     afx_msg void OnDeleteFromDisk();
 protected:
@@ -483,15 +486,10 @@ public:
 protected:
     afx_msg LRESULT OnMainWindowActivated(WPARAM wParam, LPARAM lParam);
 public:
-    afx_msg void OnSortByModifiedTime();
-    afx_msg void OnSortByPath();
     afx_msg void OnContainSubFolder();
 protected:
     afx_msg LRESULT OnGetMusicCurrentPosition(WPARAM wParam, LPARAM lParam);
 public:
-    afx_msg void OnAccendingOrder();
-    afx_msg void OnDesendingOrder();
-    afx_msg void OnInvertPlaylist();
     afx_msg void OnPlayRandom();
 protected:
     afx_msg LRESULT OnCurrentFileAlbumCoverChanged(WPARAM wParam, LPARAM lParam);

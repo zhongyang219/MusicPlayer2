@@ -742,8 +742,9 @@
 #define ID_SORT_BY_ARTIST               32853
 #define ID_SORT_BY_ALBUM                32854
 #define ID_SORT_BY_TRACK                32855
-#define ID_SORT_BY_MODIFIED_TIME        32856
-#define ID_DELETE_FROM_DISK             32857
+#define ID_SORT_BY_LISTEN_TIME          32856
+#define ID_SORT_BY_MODIFIED_TIME        32857
+#define ID_DELETE_FROM_DISK             32861
 #define ID_DISP_FILE_NAME               32862
 #define ID_DISP_TITLE                   32863
 #define ID_DISP_ARTIST_TITLE            32864
@@ -885,9 +886,6 @@
 #define ID_UNLINK_LYRIC                 33184
 #define ID_SHOW_DESKTOP_LYRIC           33185
 #define ID_CONTAIN_SUB_FOLDER           33188
-#define ID_ACCENDING_ORDER              33191
-#define ID_DESENDING_ORDER              33192
-#define ID_INVERT_PLAYLIST              33194
 #define ID_HELP_UPDATE_LOG              33196
 #define ID_LD_RELATE                    33197
 #define ID_COVER_BROWSE                 33198

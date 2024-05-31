@@ -399,12 +399,8 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.APPEND_ITEM(ID_SORT_BY_ARTIST, NULL);
         menu.APPEND_ITEM(ID_SORT_BY_ALBUM, NULL);
         menu.APPEND_ITEM(ID_SORT_BY_TRACK, NULL);
+        menu.APPEND_ITEM(ID_SORT_BY_LISTEN_TIME, NULL);
         menu.APPEND_ITEM(ID_SORT_BY_MODIFIED_TIME, NULL);
-        menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_ACCENDING_ORDER, NULL);
-        menu.APPEND_ITEM(ID_DESENDING_ORDER, NULL);
-        menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_INVERT_PLAYLIST, NULL);
         break;
     case MenuMgr::MainPlaylistDispModeMenu:
         menu.CreateMenu(true, true);

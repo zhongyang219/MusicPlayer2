@@ -135,7 +135,6 @@ public:
     CLyrics m_Lyrics;               //歌词
 
     SortMode m_sort_mode;           //排序方式
-    bool m_descending{};            //是否降序排列
 
     bool m_loading{ false };        //如果正在载入播放列表，则为true
 
@@ -480,8 +479,6 @@ public:
 
     //播放列表按照m_sort_mode排序（当is_init为false时，排序后重新查找正在播放的歌曲）
     void SortPlaylist(bool is_init = false);
-    //将整个播放列表倒序
-    void InvertPlaylist();
     //获取专辑封面
     void SearchAlbumCover();
 private:
