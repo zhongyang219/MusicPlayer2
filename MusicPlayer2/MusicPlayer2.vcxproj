@@ -689,6 +689,7 @@
     <Image Include="res\toolbar1.bmp" />
     <Image Include="res\unlink.ico" />
     <Image Include="res\unlink_d.ico" />
+    <Image Include="res\up_d.ico" />
     <Image Include="res\volume0.ico" />
     <Image Include="res\volume0_d.ico" />
     <Image Include="res\volume1.ico" />

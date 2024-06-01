@@ -223,6 +223,7 @@
 #define IDR_UI1                         589
 #define IDR_UI2                         590
 #define IDR_STRING_TABLE                591
+#define IDI_UP_D                        592
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -939,7 +940,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        592
+#define _APS_NEXT_RESOURCE_VALUE        593
 #define _APS_NEXT_COMMAND_VALUE         33464
 #define _APS_NEXT_CONTROL_VALUE         1362
 #define _APS_NEXT_SYMED_VALUE           101

@@ -575,6 +575,7 @@ struct IconSet
     HICON reverb;
     HICON hot_key;
     HICON fix;
+    HICON up;
 
     // 歌词编辑窗口的菜单图标（仅16x16）
     HICON le_add_tag;

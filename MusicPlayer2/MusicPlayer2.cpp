@@ -630,6 +630,7 @@ void CMusicPlayerApp::LoadIconResource()
     m_icon_set.reverb = CDrawCommon::LoadIconResource(IDI_REVERB, DPI(16), DPI(16));
     m_icon_set.hot_key = CDrawCommon::LoadIconResource(IDI_HOT_KEY, DPI(16), DPI(16));
     m_icon_set.fix = CDrawCommon::LoadIconResource(IDI_FIX_D, DPI(16), DPI(16));
+    m_icon_set.up = CDrawCommon::LoadIconResource(IDI_UP_D, DPI(16), DPI(16));
 
     m_icon_set.le_add_tag = CDrawCommon::LoadIconResource(IDI_ADD_TAG, DPI(16), DPI(16));
     m_icon_set.le_replace_tag = CDrawCommon::LoadIconResource(IDI_REPLACE_TAG, DPI(16), DPI(16));

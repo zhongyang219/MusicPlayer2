@@ -1529,8 +1529,39 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     int ui_selected = GetUiSelected();
     pMenu->CheckMenuRadioItem(ID_SWITCH_UI + 1, ID_SWITCH_UI + m_ui_list.size(), ID_SWITCH_UI + 1 + ui_selected, MF_BYCOMMAND | MF_CHECKED);
 
-    // TODO: 设置播放列表菜单中排序方式的图标
-    // switch (CPlayer::GetInstance().m_sort_mode)
+    // 设置播放列表菜单中排序方式的图标
+    const CBitmap* bitmap_sort_up = theApp.m_menu_mgr.GetMenuBitmap(theApp.m_icon_set.up);
+    const CBitmap* bitmap_sort_down = theApp.m_menu_mgr.GetMenuBitmap(theApp.m_icon_set.expand.GetIcon(true));
+    std::array<const CBitmap*, 8> pSortBitmap{};
+    switch (CPlayer::GetInstance().m_sort_mode)
+    {
+    case SM_U_FILE: pSortBitmap[0] = bitmap_sort_up; break;
+    case SM_D_FILE: pSortBitmap[0] = bitmap_sort_down; break;
+    case SM_U_PATH: pSortBitmap[1] = bitmap_sort_up; break;
+    case SM_D_PATH: pSortBitmap[1] = bitmap_sort_down; break;
+    case SM_U_TITLE: pSortBitmap[2] = bitmap_sort_up; break;
+    case SM_D_TITLE: pSortBitmap[2] = bitmap_sort_down; break;
+    case SM_U_ARTIST: pSortBitmap[3] = bitmap_sort_up; break;
+    case SM_D_ARTIST: pSortBitmap[3] = bitmap_sort_down; break;
+    case SM_U_ALBUM: pSortBitmap[4] = bitmap_sort_up; break;
+    case SM_D_ALBUM: pSortBitmap[4] = bitmap_sort_down; break;
+    case SM_U_TRACK: pSortBitmap[5] = bitmap_sort_up; break;
+    case SM_D_TRACK: pSortBitmap[5] = bitmap_sort_down; break;
+    case SM_U_LISTEN: pSortBitmap[6] = bitmap_sort_up; break;
+    case SM_D_LISTEN: pSortBitmap[6] = bitmap_sort_down; break;
+    case SM_U_TIME: pSortBitmap[7] = bitmap_sort_up; break;
+    case SM_D_TIME: pSortBitmap[7] = bitmap_sort_down; break;
+    default: break;
+    }
+    pMenu->SetMenuItemBitmaps(ID_SORT_BY_FILE, MF_BYCOMMAND, pSortBitmap[0], NULL);
+    pMenu->SetMenuItemBitmaps(ID_SORT_BY_PATH, MF_BYCOMMAND, pSortBitmap[1], NULL);
+    pMenu->SetMenuItemBitmaps(ID_SORT_BY_TITLE, MF_BYCOMMAND, pSortBitmap[2], NULL);
+    pMenu->SetMenuItemBitmaps(ID_SORT_BY_ARTIST, MF_BYCOMMAND, pSortBitmap[3], NULL);
+    pMenu->SetMenuItemBitmaps(ID_SORT_BY_ALBUM, MF_BYCOMMAND, pSortBitmap[4], NULL);
+    pMenu->SetMenuItemBitmaps(ID_SORT_BY_TRACK, MF_BYCOMMAND, pSortBitmap[5], NULL);
+    pMenu->SetMenuItemBitmaps(ID_SORT_BY_LISTEN_TIME, MF_BYCOMMAND, pSortBitmap[6], NULL);
+    pMenu->SetMenuItemBitmaps(ID_SORT_BY_MODIFIED_TIME, MF_BYCOMMAND, pSortBitmap[7], NULL);
+
 
     //设置播放列表菜单中“播放列表显示样式”的单选标记
     switch (theApp.m_media_lib_setting_data.display_format)

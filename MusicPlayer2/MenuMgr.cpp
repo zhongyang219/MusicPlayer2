@@ -48,8 +48,7 @@ public:
 #ifndef COMPILE_IN_WIN_XP
         if (hicon)
         {
-            HBITMAP hbmp;
-            CMenuIcon::GetBitmapByIcon(hicon, hbmp);
+            HBITMAP hbmp = m_pMenuMgr->GetMenuBitmapHandle(hicon);
             if (hbmp)
             {
                 mii.fMask |= MIIM_BITMAP;
@@ -70,8 +69,7 @@ public:
 #ifndef COMPILE_IN_WIN_XP
         if (hicon)
         {
-            HBITMAP hbmp;
-            CMenuIcon::GetBitmapByIcon(hicon, hbmp);
+            HBITMAP hbmp = m_pMenuMgr->GetMenuBitmapHandle(hicon);
             if (hbmp)
             {
                 mii.fMask |= MIIM_BITMAP;
@@ -134,6 +132,79 @@ MenuMgr::MenuMgr()
 
 MenuMgr::~MenuMgr()
 {
+}
+
+typedef DWORD ARGB;
+
+HBITMAP MenuMgr::GetMenuBitmapHandle(HICON hIcon)
+{
+    if (auto pBitmap = GetMenuBitmap(hIcon))
+        return static_cast<HBITMAP>(pBitmap->GetSafeHandle());
+    return NULL;
+}
+
+const CBitmap* MenuMgr::GetMenuBitmap(HICON hIcon)
+{
+    if (hIcon == NULL)
+        return nullptr;
+
+    if (m_icon_bitmap_map[hIcon].GetSafeHandle())  // 已有bitmap时不再二次转换
+        return &m_icon_bitmap_map[hIcon];
+
+    IWICImagingFactory* pFactory = CWICFactory::GetWIC();
+    if (!pFactory)
+        return nullptr;
+
+    HBITMAP hBmp = NULL;
+    CComPtr<IWICBitmap> pBitmap;
+    HRESULT hr = pFactory->CreateBitmapFromHICON(hIcon, &pBitmap);
+    if (FAILED(hr))
+        return nullptr;
+
+    CComPtr<IWICFormatConverter> pConverter;
+    hr = pFactory->CreateFormatConverter(&pConverter);
+    if (FAILED(hr))
+        return nullptr;
+
+    hr = pConverter->Initialize(pBitmap, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.0f, WICBitmapPaletteTypeCustom);
+    if (FAILED(hr))
+        return nullptr;
+
+    UINT cx, cy;
+    hr = pConverter->GetSize(&cx, &cy);
+    if (FAILED(hr))
+        return nullptr;
+
+    BITMAPINFO bmi{};
+    bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmi.bmiHeader.biWidth = static_cast<LONG>(cx);
+    bmi.bmiHeader.biHeight = -static_cast<LONG>(cy); // Negative to indicate top-down bitmap
+    bmi.bmiHeader.biPlanes = 1;
+    bmi.bmiHeader.biBitCount = 32;
+    bmi.bmiHeader.biCompression = BI_RGB;
+
+    HDC hdcUsed = GetDC(NULL);
+    if (!hdcUsed)
+        return nullptr;
+    BYTE* pbBuffer = nullptr;
+    hBmp = CreateDIBSection(hdcUsed, &bmi, DIB_RGB_COLORS, reinterpret_cast<void**>(&pbBuffer), NULL, 0);
+    ReleaseDC(NULL, hdcUsed);
+    if (!hBmp)
+        return nullptr;
+
+    const UINT cbStride = cx * sizeof(ARGB);
+    const UINT cbBuffer = cy * cbStride;
+    hr = pConverter->CopyPixels(NULL, cbStride, cbBuffer, pbBuffer);
+
+    if (FAILED(hr))
+    {
+        DeleteObject(hBmp);
+        return nullptr;
+    }
+
+    m_icon_bitmap_map[hIcon].Attach(hBmp);
+
+    return &m_icon_bitmap_map[hIcon];
 }
 
 void MenuMgr::UpdateMenu(MenuType menu_type, const vector<MenuItem>& items)

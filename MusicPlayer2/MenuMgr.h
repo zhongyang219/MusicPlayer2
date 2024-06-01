@@ -6,6 +6,12 @@ public:
     MenuMgr();
     virtual ~MenuMgr();
 
+    HBITMAP GetMenuBitmapHandle(HICON hIcon);
+    const CBitmap* GetMenuBitmap(HICON hIcon);
+private:
+    std::map<HICON, CBitmap> m_icon_bitmap_map;
+
+public:
     enum MenuType
     {
         MainPopupMenu,                      // 主窗口（弹出菜单ver）（shift+右键）
@@ -89,7 +95,7 @@ public:
 private:
     class MenuBase;
     MenuBase& GetMenuBase(MenuType menu_type);
-    static void CreateMenu(MenuBase& menu_base);
+    void CreateMenu(MenuBase& menu_base);
 private:
     std::unique_ptr<MenuBase> m_menus[MenuMax];
 };

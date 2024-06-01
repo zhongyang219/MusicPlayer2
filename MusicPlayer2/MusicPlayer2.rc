@@ -391,6 +391,8 @@ IDI_EXPAND              ICON                    "res\\expand.ico"
 
 IDI_FIX_D               ICON                    "res\\fix_d.ico"
 
+IDI_UP_D                ICON                    "res\\up_d.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
