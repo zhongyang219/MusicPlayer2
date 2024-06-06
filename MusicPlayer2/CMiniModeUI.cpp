@@ -66,16 +66,16 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
     rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin);
     rc_tmp.right = rc_tmp.left + theApp.DPI(27);
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(22);
-    DrawUIButton(rc_tmp, m_buttons[BTN_PREVIOUS], theApp.m_icon_set.previous_new);
+    DrawUIButton(rc_tmp, BTN_PREVIOUS);
 
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
     if (CPlayer::GetInstance().IsPlaying())
-        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.pause_new);
+        DrawUIButton(rc_tmp, BTN_PLAY_PAUSE);
     else
-        DrawUIButton(rc_tmp, m_buttons[BTN_PLAY_PAUSE], theApp.m_icon_set.play_new);
+        DrawUIButton(rc_tmp, BTN_PLAY_PAUSE);
 
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-    DrawUIButton(rc_tmp, m_buttons[BTN_NEXT], theApp.m_icon_set.next_new);
+    DrawUIButton(rc_tmp, BTN_NEXT);
 
 
     //绘制频谱分析
@@ -143,22 +143,19 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
     rc_tmp.left = rc_tmp.right - theApp.DPI(20);
     rc_tmp.top = m_ui_data.margin;
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(20);
-    DrawTextButton(rc_tmp, m_buttons[BTN_CLOSE], _T("×"));
+    DrawUIButton(rc_tmp, BTN_CLOSE);
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    DrawUIButton(rc_tmp, m_buttons[BTN_MINI], theApp.m_icon_set.mini_restore);
+    DrawUIButton(rc_tmp, BTN_MINI);
 
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    DrawTextButton(rc_tmp, m_buttons[BTN_SHOW_PLAYLIST], _T("≡"));
+    DrawUIButton(rc_tmp, BTN_SHOW_PLAYLIST);
 
     //绘制右下角按钮
     rc_tmp.MoveToXY(m_ui_data.widnow_width - theApp.DPI(20) - m_ui_data.margin, m_ui_data.margin + theApp.DPI(20));
-    DrawUIButton(rc_tmp, m_buttons[BTN_MEDIA_LIB], theApp.m_icon_set.media_lib);
+    DrawUIButton(rc_tmp, BTN_MEDIA_LIB);
     rc_tmp.MoveToX(rc_tmp.left - rc_tmp.Width() - m_ui_data.margin);
-    if (CPlayer::GetInstance().IsFavourite())
-        DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.heart);
-    else
-        DrawUIButton(rc_tmp, m_buttons[BTN_FAVOURITE], theApp.m_icon_set.favourite);
+    DrawUIButton(rc_tmp, BTN_FAVOURITE);
 
     //绘制显示文本信息
     //rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin + theApp.DPI(22));

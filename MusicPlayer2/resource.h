@@ -215,7 +215,7 @@
 #define IDI_REVERB                      580
 #define IDI_HOT_KEY                     581
 #define IDI_MINI_RESTORE                582
-#define IDI_IDI_MINI_RESTORE_D          584
+#define IDI_MINI_RESTORE_D              584
 #define IDI_LOCATE                      585
 #define IDI_EXPAND                      586
 #define IDI_FIX_D                       587

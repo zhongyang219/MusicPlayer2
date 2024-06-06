@@ -14,6 +14,7 @@
 #include "LastFM.h"
 #include "StrTable.h"
 #include "MenuMgr.h"
+#include "IconMgr.h"
 
 
 // CMusicPlayerApp:
@@ -54,6 +55,8 @@ public:
     CAcceleratorRes m_accelerator_res;
 
     StrTable m_str_table;   // 实际上负责language manger
+    // IconMgr比MenuMgr先构造，后析构，虽然懒加载下不是必须不过语义应当如此
+    IconMgr m_icon_mgr;     // 负责图标句柄缓存与懒加载
     MenuMgr m_menu_mgr;
 
     UIData m_ui_data;

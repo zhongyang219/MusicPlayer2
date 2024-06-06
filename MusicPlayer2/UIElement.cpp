@@ -616,7 +616,6 @@ void UiElement::Rectangle::Draw()
 void UiElement::Button::Draw()
 {
     CalculateRect();
-    const IconRes& icon{ ui->GetBtnIcon(key, big_icon) };
     switch (key)
     {
     case CPlayerUIBase::BTN_TRANSLATE:
@@ -629,7 +628,7 @@ void UiElement::Button::Draw()
         ui->DrawABRepeatButton(rect);
         break;
     default:
-        ui->DrawUIButton(rect, ui->m_buttons[key], icon);
+        ui->DrawUIButton(rect, key, big_icon);
         break;
     }
     ui->ResetDrawArea();

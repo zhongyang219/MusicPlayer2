@@ -3,6 +3,7 @@
 #include "IPlayerUI.h"
 #include "CPlayerUIHelper.h"
 #include "CUIDrawer.h"
+#include "IconMgr.h"
 
 #define WM_MAIN_MENU_POPEDUP (WM_USER+117)      //显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
 
@@ -190,9 +191,9 @@ public:
         RCM_LIGHT
     };
 
-    //根据按钮的类型获取对应的图标
-    //big_icon: 某些按钮提供了不同的尺寸，如果为false，则图标大小为16x16，否则为20x20
-    IconRes GetBtnIcon(BtnKey key, bool big_icon = false);
+    // 获取参数按钮当前应当使用的图标类型
+    // 将BtnKey枚举和当前状态组合映射为IconMgr::IconType枚举
+    IconMgr::IconType GetBtnIconType(BtnKey key);
 
 protected:
     struct DrawData
@@ -236,13 +237,14 @@ protected:
     void DrawStackIndicator(UIButton indicator, int num, int index);
     void DrawUiMenuBar(CRect rect);
 
-    IconRes* GetRepeatModeIcon();       //获取当前循环模式的图标
-    IconRes* GetVolumeIcon();           //获取当前音量的图标
-    void DrawUiIcon(CRect rect, const IconRes& icon, bool dark);
-    void DrawUIButton(CRect rect, UIButton& btn, const IconRes& icon);
-    void DrawControlButton(CRect rect, UIButton& btn, const IconRes& icon);
-    void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool back_color = false);
-    void DrawControlBarBtn(CRect rect, UIButton& btn, const IconRes& icon);
+    // 实际绘制一个图标
+    void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
+    // 绘制一个UI按钮 (使用GetBtnIconType取得的图标)
+    void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false);
+    // 绘制一个工具条按钮（将rect四面缩小 DPI(2) 后调用DrawUIButton）
+    void DrawControlBarBtn(CRect rect, BtnKey btn_type);
+    // 绘制一个UI按钮，以text文本作为图标
+    void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool back_color = false);
 
     void ResetDrawArea();
 
@@ -273,7 +275,7 @@ protected:
     int DPI(double pixel) const;
     double DPIDouble(double pixel);
     double GetScrollTextPixel(bool slower = false);       //计算滚动文本一次滚动的像素值，如果slower为true，则滚动得稍微慢一点
-    int CalculateRoundRectRadius(CRect rect);        //计算绘制圆角矩形的半径
+    int CalculateRoundRectRadius(const CRect& rect);        //计算绘制圆角矩形的半径
 
     virtual bool IsDrawLargeIcon() const;        //是否绘制大图标
 

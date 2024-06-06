@@ -396,6 +396,9 @@
     <Filter Include="功能逻辑类\MenuMgr">
       <UniqueIdentifier>{737b0ae8-ac0c-4bf1-b335-f027bf625e43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\IconMgr">
+      <UniqueIdentifier>{90131507-09eb-4700-86d0-45b3402783f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -886,6 +889,9 @@
     <ClInclude Include="MediaTransControlsImpl.h">
       <Filter>公共的类\MediaTransControls</Filter>
     </ClInclude>
+    <ClInclude Include="IconMgr.h">
+      <Filter>功能逻辑类\IconMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1346,6 +1352,9 @@
     </ClCompile>
     <ClCompile Include="MediaTransControlsImpl.cpp">
       <Filter>公共的类\MediaTransControls</Filter>
+    </ClCompile>
+    <ClCompile Include="IconMgr.cpp">
+      <Filter>功能逻辑类\IconMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
