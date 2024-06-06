@@ -315,7 +315,7 @@ void CMiniModeUI::AddToolTips()
     AddMouseToolTip(BTN_PLAY_PAUSE, CPlayer::GetInstance().IsPlaying() ? theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE").c_str() : theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
     AddMouseToolTip(BTN_NEXT, theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT").c_str());
     AddMouseToolTip(BTN_SHOW_PLAYLIST, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE").c_str());
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_MINI_MODE).GetString();
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE_RTN") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_MINI_MODE).GetString();
     AddMouseToolTip(BTN_MINI, tip_str.c_str());
     AddMouseToolTip(BTN_CLOSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE").c_str());
     AddMouseToolTip(BTN_COVER, _T(""));
