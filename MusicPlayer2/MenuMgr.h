@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "IconMgr.h"
 
 class MenuMgr
 {
@@ -80,7 +81,7 @@ public:
     struct MenuItem
     {
         UINT id{ NULL };
-        HICON hicon{ NULL };
+        IconMgr::IconType icon_type{ IconMgr::IT_NO_ICON };
         wstring text;
     };
     // 更新菜单项

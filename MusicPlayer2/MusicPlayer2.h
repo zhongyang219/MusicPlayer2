@@ -64,7 +64,7 @@ public:
     FontSet m_font_set;			//字体资源
     ImageSet m_image_set;       //图片资源
 
-    int m_cmd;
+    int m_cmd{};
 
     int m_fps{};
 
@@ -98,7 +98,7 @@ public:
     int DPIRound(double pixel, double round = 0.5);		//对结果进行四舍五入处理
     void GetDPIFromWindow(CWnd* pWnd);
 
-    int GetDPI()
+    int GetDPI() const
     {
         return m_dpi;
     }
@@ -146,7 +146,7 @@ private:
 
     vector<wstring> m_def_lang_list;        // 线程启动时的默认UI语言列表（仅用于GetSystemInfoString）
 
-    ULONG_PTR m_gdiplusToken;
+    ULONG_PTR m_gdiplusToken{};
     bool m_media_lib_updating{ false };
     bool m_checking_update{ false };        //是否正在检查更新
 

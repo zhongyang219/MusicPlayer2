@@ -6,8 +6,9 @@ public:
     virtual ~IconMgr();
 
     enum IconType
-    {
+    {   // 命名以其(点击时的)功能为准
         IT_App,                     // 应用图标
+        IT_App_Monochrome,          // 应用图标(单色)
         IT_Stop,                    // 停止
         IT_Play,                    // 播放
         IT_Pause,                   // 暂停
@@ -29,7 +30,7 @@ public:
 
         IT_Play_Order,              // 顺序播放
         IT_Loop_Playlist,           // 列表循环
-        IT_loop_track,              // 单曲循环
+        IT_Loop_Track,              // 单曲循环
         IT_Play_Shuffle,            // 无序播放
         IT_Play_Random,             // 随机播放
         IT_Play_Track,              // 单曲播放
@@ -49,16 +50,62 @@ public:
         IT_Switch_Display,          // 切换显示（xml界面堆栈元素）
 
         IT_Folder,                  // 文件夹
-        IT_Lyric,                   // 歌词
-        IT_Playlist_Dock,           // 停靠播放列表/视图
-        IT_Help,                    // 帮助
-
+        IT_Music,                   // 音符/打开文件
+        IT_Link,                    // 曲别针/链接
+        IT_Exit,                    // 退出
+        IT_Rewind,                  // 快退
+        IT_Fast_Forward,            // 快进
+        IT_Speed_Up,                // 加速播放
+        IT_Slow_Down,               // 减速播放
+        IT_Add,                     // 添加
+        IT_Save,                    // 保存
+        IT_Save_As,                 // 另存为
+        IT_Sort_Mode,               // 排序模式
+        IT_Playlist_Display_Mode,   // 播放列表显示方式
         IT_Locate,                  // 定位
+        IT_Lyric,                   // 歌词
+        IT_Copy,                    // 复制
+        IT_Edit,                    // 编辑
+        IT_Unlink,                  // 取消关联
+        IT_Folder_Explore,          // 文件夹浏览/搜索
+        IT_Internal_Lyric,          // 内嵌歌词
+        IT_Download,                // 下载
+        IT_Download_Batch,          // 批量下载
+        IT_Playlist_Dock,           // 停靠播放列表/视图
+        IT_Playlist_Float,          // 浮动播放列表
+        IT_Pin,                     // 图钉/置顶
+        IT_Convert,                 // 格式转换
+        IT_Online,                  // 在线查看
+        IT_Shortcut,                // 快捷方式
+        IT_Album_Cover,             // 专辑封面
+        IT_Statistics,              // 统计
+        IT_File_Relate,             // 文件关联
+        IT_Help,                    // 帮助
+        IT_Fix,                     // 扳手/修复
+        IT_Star,                    // 星星/分级
+        IT_Artist,                  // 艺术家
+        IT_Album,                   // 专辑
+        IT_Double_Line,             // 双行
+        IT_Lock,                    // 锁/桌面歌词锁定
+        IT_Play_As_Next,            // 下一首播放
+        IT_Rename,                  // 重命名
+        IT_Play_In_Playlist,        // 添加到新播放列表并播放
+        IT_Play_In_Folder,          // 在文件夹模式中播放
+
+        IT_Le_Tag_Insert,           // Le 插入时间标签
+        IT_Le_Tag_Replace,          // Le 替换时间标签
+        IT_Le_Tag_Delete,           // Le 删除时间标签
+        IT_Le_Save,                 // Le 保存
+        IT_Le_Find,                 // Le 文本查找
+        IT_Le_Replace,              // Le 文本替换
 
         IT_Triangle_Left,           // 向左三角形
         IT_Triangle_Up,             // 向上三角形
         IT_Triangle_Right,          // 向右三角形
         IT_Triangle_Down,           // 向下三角形
+
+        IT_Ok,                      // 圆/确认
+        IT_Cancel,                  // 叉/取消
 
         IT_NO_ICON,
     };
@@ -84,6 +131,8 @@ public:
         IS_ORG_512,
     };
 
+    // 获取需要的图标，不要在代码中大量直接调用
+    // 请为同类调用提供一层包装以免之后修改困难
     HICON GetHICON(IconType type, IconStyle style = IS_Auto, IconSize size = IS_DPI_16);
 
     static CSize GetIconSize(IconSize size);
@@ -98,5 +147,6 @@ private:
     std::tuple<UINT, UINT, UINT, UINT> GetIconID(IconType type);
 
     std::map<int, HICON> m_icon_map;
+    std::shared_mutex m_shared_mutex;   // 线程同步对象
 };
 

@@ -21,8 +21,7 @@ public:
             m_menu.CreateMenu();
     }
 
-    // 可变参数列表宏至少要一个参数，所以hicon不能预设NULL，不使用时请指定NULL
-    void AppendItem(UINT wID, const wstring& id_text, HICON hicon, const wchar_t* text = nullptr)
+    void AppendItem(UINT wID, const wstring& id_text, IconMgr::IconType icon_type = IconMgr::IT_NO_ICON, const wchar_t* text = nullptr)
     {
         wstring menu_text;                      // mii使用其内部数据指针，此对象需要有效到api完成
         MENUITEMINFO mii = { sizeof(mii) };
@@ -46,6 +45,7 @@ public:
             mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
         }
 #ifndef COMPILE_IN_WIN_XP
+        HICON hicon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark);
         if (hicon)
         {
             HBITMAP hbmp = m_pMenuMgr->GetMenuBitmapHandle(hicon);
@@ -59,7 +59,7 @@ public:
         m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
     }
 
-    void AppendSubMenu(MenuMgr::MenuType sub_menu_type, HICON hicon)
+    void AppendSubMenu(MenuMgr::MenuType sub_menu_type, IconMgr::IconType icon_type = IconMgr::IT_NO_ICON)
     {
         MENUITEMINFO mii = { sizeof(mii) };
         mii.fMask = MIIM_STRING | MIIM_SUBMENU | MIIM_FTYPE;
@@ -67,6 +67,7 @@ public:
         wstring menu_text = theApp.m_str_table.LoadMenuText(MenuMgr::GetMenuNameStr(m_menu_type), MenuMgr::GetMenuNameStr(sub_menu_type));
         mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
 #ifndef COMPILE_IN_WIN_XP
+        HICON hicon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark);
         if (hicon)
         {
             HBITMAP hbmp = m_pMenuMgr->GetMenuBitmapHandle(hicon);
@@ -105,7 +106,7 @@ public:
         for (const auto& item : items)      // 插入新的外部提供菜单项
         {
             if (item.id != NULL)
-                AppendItem(item.id, empty, item.hicon, item.text.c_str());
+                AppendItem(item.id, empty, IconMgr::IT_NO_ICON, item.text.c_str());
             else
                 AppendSeparator();
         }
@@ -354,7 +355,7 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
     }
 }
 
-#define APPEND_ITEM(id, ...) AppendItem(id, L#id, __VA_ARGS__)
+#define EX_ID(id) id, L#id
 
 void MenuMgr::CreateMenu(MenuBase& menu)
 {
@@ -364,593 +365,593 @@ void MenuMgr::CreateMenu(MenuBase& menu)
     {
     case MenuMgr::MainPopupMenu:
         menu.CreateMenu(true, true);
-        menu.AppendSubMenu(MainFileMenu, theApp.m_icon_set.select_folder.GetIcon(true));
-        menu.AppendSubMenu(MainPlayCtrlMenu, theApp.m_icon_set.play_new.GetIcon(true));
-        menu.AppendSubMenu(MainPlaylistMenu, theApp.m_icon_set.show_playlist.GetIcon(true));
-        menu.AppendSubMenu(MainLyricMenu, theApp.m_icon_set.lyric.GetIcon(true));
-        menu.AppendSubMenu(MainViewMenu, theApp.m_icon_set.playlist_dock.GetIcon(true));
-        menu.AppendSubMenu(MainToolMenu, theApp.m_icon_set.setting.GetIcon(true));
-        menu.AppendSubMenu(MainHelpMenu, theApp.m_icon_set.help.GetIcon(true));
+        menu.AppendSubMenu(MainFileMenu, IconMgr::IconType::IT_Folder);
+        menu.AppendSubMenu(MainPlayCtrlMenu, IconMgr::IconType::IT_Play);
+        menu.AppendSubMenu(MainPlaylistMenu, IconMgr::IconType::IT_Playlist);
+        menu.AppendSubMenu(MainLyricMenu, IconMgr::IconType::IT_Lyric);
+        menu.AppendSubMenu(MainViewMenu, IconMgr::IconType::IT_Playlist_Dock);
+        menu.AppendSubMenu(MainToolMenu, IconMgr::IconType::IT_Setting);
+        menu.AppendSubMenu(MainHelpMenu, IconMgr::IconType::IT_Help);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MENU_EXIT, theApp.m_icon_set.exit);
+        menu.AppendItem(EX_ID(ID_MENU_EXIT), IconMgr::IconType::IT_Exit);
 #ifdef _DEBUG
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_TEST, NULL);
-        menu.APPEND_ITEM(ID_TEST_DIALOG, NULL);
+        menu.AppendItem(EX_ID(ID_TEST));
+        menu.AppendItem(EX_ID(ID_TEST_DIALOG));
 #endif
         break;
     case MenuMgr::MainMenu:
         menu.CreateMenu(false, true);
-        menu.AppendSubMenu(MainFileMenu, NULL);
-        menu.AppendSubMenu(MainPlayCtrlMenu, NULL);
-        menu.AppendSubMenu(MainPlaylistMenu, NULL);
-        menu.AppendSubMenu(MainLyricMenu, NULL);
-        menu.AppendSubMenu(MainViewMenu, NULL);
-        menu.AppendSubMenu(MainToolMenu, NULL);
-        menu.AppendSubMenu(MainHelpMenu, NULL);
+        menu.AppendSubMenu(MainFileMenu);
+        menu.AppendSubMenu(MainPlayCtrlMenu);
+        menu.AppendSubMenu(MainPlaylistMenu);
+        menu.AppendSubMenu(MainLyricMenu);
+        menu.AppendSubMenu(MainViewMenu);
+        menu.AppendSubMenu(MainToolMenu);
+        menu.AppendSubMenu(MainHelpMenu);
         break;
     case MenuMgr::MainFileMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_FILE_OPEN, theApp.m_icon_set.music);
-        menu.APPEND_ITEM(ID_FILE_OPEN_FOLDER, theApp.m_icon_set.select_folder.GetIcon(true));
-        menu.APPEND_ITEM(ID_FILE_OPEN_URL, theApp.m_icon_set.link.GetIcon(true));
-        menu.APPEND_ITEM(ID_FILE_OPEN_PLAYLIST, theApp.m_icon_set.show_playlist.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_FILE_OPEN), IconMgr::IconType::IT_Music);
+        menu.AppendItem(EX_ID(ID_FILE_OPEN_FOLDER), IconMgr::IconType::IT_Folder);
+        menu.AppendItem(EX_ID(ID_FILE_OPEN_URL), IconMgr::IconType::IT_Link);
+        menu.AppendItem(EX_ID(ID_FILE_OPEN_PLAYLIST), IconMgr::IconType::IT_Playlist);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MENU_EXIT, theApp.m_icon_set.exit);
+        menu.AppendItem(EX_ID(ID_MENU_EXIT), IconMgr::IconType::IT_Exit);
         break;
     case MenuMgr::MainPlayCtrlMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_PLAY_PAUSE, theApp.m_icon_set.play_pause);
-        menu.APPEND_ITEM(ID_STOP, theApp.m_icon_set.stop_new);
-        menu.APPEND_ITEM(ID_PREVIOUS, theApp.m_icon_set.previous_new.GetIcon(true));
-        menu.APPEND_ITEM(ID_NEXT, theApp.m_icon_set.next_new.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAY_PAUSE), IconMgr::IconType::IT_Play_Pause);
+        menu.AppendItem(EX_ID(ID_STOP), IconMgr::IconType::IT_Stop);
+        menu.AppendItem(EX_ID(ID_PREVIOUS), IconMgr::IconType::IT_Previous);
+        menu.AppendItem(EX_ID(ID_NEXT), IconMgr::IconType::IT_Next);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_REW, theApp.m_icon_set.rew_new);
-        menu.APPEND_ITEM(ID_FF, theApp.m_icon_set.ff_new);
+        menu.AppendItem(EX_ID(ID_REW), IconMgr::IconType::IT_Rewind);
+        menu.AppendItem(EX_ID(ID_FF), IconMgr::IconType::IT_Fast_Forward);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_SPEED_UP, theApp.m_icon_set.speed_up);
-        menu.APPEND_ITEM(ID_SLOW_DOWN, theApp.m_icon_set.slow_down);
-        menu.APPEND_ITEM(ID_ORIGINAL_SPEED, NULL);
+        menu.AppendItem(EX_ID(ID_SPEED_UP), IconMgr::IconType::IT_Speed_Up);
+        menu.AppendItem(EX_ID(ID_SLOW_DOWN), IconMgr::IconType::IT_Slow_Down);
+        menu.AppendItem(EX_ID(ID_ORIGINAL_SPEED));
         menu.AppendSeparator();
-        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu, NULL);
-        menu.AppendSubMenu(MainPlayCtrlAbRepeatMenu, NULL);
+        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu);
+        menu.AppendSubMenu(MainPlayCtrlAbRepeatMenu);
         break;
     case MenuMgr::MainPlayCtrlRepeatModeMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_PLAY_ORDER, theApp.m_icon_set.play_oder.GetIcon(true));
-        menu.APPEND_ITEM(ID_PLAY_SHUFFLE, theApp.m_icon_set.play_shuffle.GetIcon(true));
-        menu.APPEND_ITEM(ID_PLAY_RANDOM, theApp.m_icon_set.play_random.GetIcon(true));
-        menu.APPEND_ITEM(ID_LOOP_PLAYLIST, theApp.m_icon_set.loop_playlist.GetIcon(true));
-        menu.APPEND_ITEM(ID_LOOP_TRACK, theApp.m_icon_set.loop_track.GetIcon(true));
-        menu.APPEND_ITEM(ID_PLAY_TRACK, theApp.m_icon_set.play_track.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAY_ORDER), IconMgr::IconType::IT_Play_Order);
+        menu.AppendItem(EX_ID(ID_PLAY_SHUFFLE), IconMgr::IconType::IT_Play_Shuffle);
+        menu.AppendItem(EX_ID(ID_PLAY_RANDOM), IconMgr::IconType::IT_Play_Random);
+        menu.AppendItem(EX_ID(ID_LOOP_PLAYLIST), IconMgr::IconType::IT_Loop_Playlist);
+        menu.AppendItem(EX_ID(ID_LOOP_TRACK), IconMgr::IconType::IT_Loop_Track);
+        menu.AppendItem(EX_ID(ID_PLAY_TRACK), IconMgr::IconType::IT_Play_Track);
         break;
     case MenuMgr::MainPlayCtrlAbRepeatMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_AB_REPEAT, NULL);
+        menu.AppendItem(EX_ID(ID_AB_REPEAT));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_SET_A_POINT, NULL);
-        menu.APPEND_ITEM(ID_SET_B_POINT, NULL);
-        menu.APPEND_ITEM(ID_NEXT_AB_REPEAT, NULL);
-        menu.APPEND_ITEM(ID_RESET_AB_REPEAT, NULL);
+        menu.AppendItem(EX_ID(ID_SET_A_POINT));
+        menu.AppendItem(EX_ID(ID_SET_B_POINT));
+        menu.AppendItem(EX_ID(ID_NEXT_AB_REPEAT));
+        menu.AppendItem(EX_ID(ID_RESET_AB_REPEAT));
         break;
     case MenuMgr::MainPlaylistMenu:
         menu.CreateMenu(true, true);
-        menu.AppendSubMenu(MainPlaylistAddMenu, theApp.m_icon_set.add.GetIcon(true));
-        menu.AppendSubMenu(MainPlaylistDelMenu, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_RELOAD_PLAYLIST, theApp.m_icon_set.loop_playlist.GetIcon(true));
+        menu.AppendSubMenu(MainPlaylistAddMenu, IconMgr::IconType::IT_Add);
+        menu.AppendSubMenu(MainPlaylistDelMenu, IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_RELOAD_PLAYLIST), IconMgr::IconType::IT_Loop_Playlist);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_SAVE_AS_NEW_PLAYLIST, theApp.m_icon_set.save_new);
-        menu.APPEND_ITEM(ID_SAVE_CURRENT_PLAYLIST_AS, theApp.m_icon_set.save_as);
+        menu.AppendItem(EX_ID(ID_SAVE_AS_NEW_PLAYLIST), IconMgr::IconType::IT_Save);
+        menu.AppendItem(EX_ID(ID_SAVE_CURRENT_PLAYLIST_AS), IconMgr::IconType::IT_Save_As);
         menu.AppendSeparator();
-        menu.AppendSubMenu(MainPlaylistSortMenu, theApp.m_icon_set.sort.GetIcon(true));
-        menu.AppendSubMenu(MainPlaylistDispModeMenu, theApp.m_icon_set.display_mode.GetIcon(true));
+        menu.AppendSubMenu(MainPlaylistSortMenu, IconMgr::IconType::IT_Sort_Mode);
+        menu.AppendSubMenu(MainPlaylistDispModeMenu, IconMgr::IconType::IT_Playlist_Display_Mode);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_LOCATE_TO_CURRENT, theApp.m_icon_set.locate.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_LOCATE_TO_CURRENT), IconMgr::IconType::IT_Locate);
         break;
     case MenuMgr::MainPlaylistAddMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_PLAYLIST_ADD_FILE, theApp.m_icon_set.music);
-        menu.APPEND_ITEM(ID_PLAYLIST_ADD_FOLDER, theApp.m_icon_set.select_folder.GetIcon(true));
-        menu.APPEND_ITEM(ID_PLAYLIST_ADD_URL, theApp.m_icon_set.link.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAYLIST_ADD_FILE), IconMgr::IconType::IT_Music);
+        menu.AppendItem(EX_ID(ID_PLAYLIST_ADD_FOLDER), IconMgr::IconType::IT_Folder);
+        menu.AppendItem(EX_ID(ID_PLAYLIST_ADD_URL), IconMgr::IconType::IT_Link);
         break;
     case MenuMgr::MainPlaylistDelMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_REMOVE_FROM_PLAYLIST, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_DELETE_FROM_DISK, NULL);
+        menu.AppendItem(EX_ID(ID_REMOVE_FROM_PLAYLIST), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_EMPTY_PLAYLIST, NULL);
-        menu.APPEND_ITEM(ID_REMOVE_SAME_SONGS, NULL);
-        menu.APPEND_ITEM(ID_REMOVE_INVALID_ITEMS, NULL);
+        menu.AppendItem(EX_ID(ID_EMPTY_PLAYLIST));
+        menu.AppendItem(EX_ID(ID_REMOVE_SAME_SONGS));
+        menu.AppendItem(EX_ID(ID_REMOVE_INVALID_ITEMS));
         break;
     case MenuMgr::MainPlaylistSortMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_SORT_BY_FILE, NULL);
-        menu.APPEND_ITEM(ID_SORT_BY_PATH, NULL);
-        menu.APPEND_ITEM(ID_SORT_BY_TITLE, NULL);
-        menu.APPEND_ITEM(ID_SORT_BY_ARTIST, NULL);
-        menu.APPEND_ITEM(ID_SORT_BY_ALBUM, NULL);
-        menu.APPEND_ITEM(ID_SORT_BY_TRACK, NULL);
-        menu.APPEND_ITEM(ID_SORT_BY_LISTEN_TIME, NULL);
-        menu.APPEND_ITEM(ID_SORT_BY_MODIFIED_TIME, NULL);
+        menu.AppendItem(EX_ID(ID_SORT_BY_FILE));
+        menu.AppendItem(EX_ID(ID_SORT_BY_PATH));
+        menu.AppendItem(EX_ID(ID_SORT_BY_TITLE));
+        menu.AppendItem(EX_ID(ID_SORT_BY_ARTIST));
+        menu.AppendItem(EX_ID(ID_SORT_BY_ALBUM));
+        menu.AppendItem(EX_ID(ID_SORT_BY_TRACK));
+        menu.AppendItem(EX_ID(ID_SORT_BY_LISTEN_TIME));
+        menu.AppendItem(EX_ID(ID_SORT_BY_MODIFIED_TIME));
         break;
     case MenuMgr::MainPlaylistDispModeMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_DISP_FILE_NAME, NULL);
-        menu.APPEND_ITEM(ID_DISP_TITLE, NULL);
-        menu.APPEND_ITEM(ID_DISP_ARTIST_TITLE, NULL);
-        menu.APPEND_ITEM(ID_DISP_TITLE_ARTIST, NULL);
+        menu.AppendItem(EX_ID(ID_DISP_FILE_NAME));
+        menu.AppendItem(EX_ID(ID_DISP_TITLE));
+        menu.AppendItem(EX_ID(ID_DISP_ARTIST_TITLE));
+        menu.AppendItem(EX_ID(ID_DISP_TITLE_ARTIST));
         break;
     case MenuMgr::MainLyricMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_RELOAD_LYRIC, theApp.m_icon_set.loop_playlist.GetIcon(true));
-        menu.APPEND_ITEM(ID_COPY_CURRENT_LYRIC, theApp.m_icon_set.copy);
-        menu.APPEND_ITEM(ID_COPY_ALL_LYRIC, NULL);
-        menu.APPEND_ITEM(ID_EDIT_LYRIC, theApp.m_icon_set.edit.GetIcon(true));
-        menu.AppendSubMenu(MainLrcChConvMenu, NULL);
+        menu.AppendItem(EX_ID(ID_RELOAD_LYRIC), IconMgr::IconType::IT_Loop_Playlist);
+        menu.AppendItem(EX_ID(ID_COPY_CURRENT_LYRIC), IconMgr::IconType::IT_Copy);
+        menu.AppendItem(EX_ID(ID_COPY_ALL_LYRIC));
+        menu.AppendItem(EX_ID(ID_EDIT_LYRIC), IconMgr::IconType::IT_Edit);
+        menu.AppendSubMenu(MainLrcChConvMenu);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_SHOW_LYRIC_TRANSLATE, NULL);
-        menu.APPEND_ITEM(ID_SHOW_DESKTOP_LYRIC, NULL);
+        menu.AppendItem(EX_ID(ID_SHOW_LYRIC_TRANSLATE));
+        menu.AppendItem(EX_ID(ID_SHOW_DESKTOP_LYRIC));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_LYRIC_FORWARD, theApp.m_icon_set.lyric_forward.GetIcon(true));
-        menu.APPEND_ITEM(ID_LYRIC_DELAY, theApp.m_icon_set.lyric_delay.GetIcon(true));
-        menu.APPEND_ITEM(ID_SAVE_MODIFIED_LYRIC, theApp.m_icon_set.save_new);
+        menu.AppendItem(EX_ID(ID_LYRIC_FORWARD), IconMgr::IconType::IT_Triangle_Left);
+        menu.AppendItem(EX_ID(ID_LYRIC_DELAY), IconMgr::IconType::IT_Triangle_Right);
+        menu.AppendItem(EX_ID(ID_SAVE_MODIFIED_LYRIC), IconMgr::IconType::IT_Save);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_RELATE_LOCAL_LYRIC, theApp.m_icon_set.lyric.GetIcon(true));
-        menu.APPEND_ITEM(ID_DELETE_LYRIC, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_UNLINK_LYRIC, theApp.m_icon_set.unlink.GetIcon(true));
-        menu.APPEND_ITEM(ID_BROWSE_LYRIC, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.AppendSubMenu(MainLrcInnerLrcMenu, theApp.m_icon_set.internal_lyric);
+        menu.AppendItem(EX_ID(ID_RELATE_LOCAL_LYRIC), IconMgr::IconType::IT_Lyric);
+        menu.AppendItem(EX_ID(ID_DELETE_LYRIC), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_UNLINK_LYRIC), IconMgr::IconType::IT_Unlink);
+        menu.AppendItem(EX_ID(ID_BROWSE_LYRIC), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendSubMenu(MainLrcInnerLrcMenu, IconMgr::IconType::IT_Internal_Lyric);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_DOWNLOAD_LYRIC, theApp.m_icon_set.download);
-        menu.APPEND_ITEM(ID_LYRIC_BATCH_DOWNLOAD, theApp.m_icon_set.download1);
+        menu.AppendItem(EX_ID(ID_DOWNLOAD_LYRIC), IconMgr::IconType::IT_Download);
+        menu.AppendItem(EX_ID(ID_LYRIC_BATCH_DOWNLOAD), IconMgr::IconType::IT_Download_Batch);
         break;
     case MenuMgr::MainLrcChConvMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE, NULL);
-        menu.APPEND_ITEM(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE, NULL);
+        menu.AppendItem(EX_ID(ID_TRANSLATE_TO_SIMPLIFIED_CHINESE));
+        menu.AppendItem(EX_ID(ID_TRANSLATE_TO_TRANDITIONAL_CHINESE));
         break;
     case MenuMgr::MainLrcInnerLrcMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_EMBED_LYRIC_TO_AUDIO_FILE, NULL);
-        menu.APPEND_ITEM(ID_DELETE_LYRIC_FROM_AUDIO_FILE, NULL);
+        menu.AppendItem(EX_ID(ID_EMBED_LYRIC_TO_AUDIO_FILE));
+        menu.AppendItem(EX_ID(ID_DELETE_LYRIC_FROM_AUDIO_FILE));
         break;
     case MenuMgr::MainViewMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_SHOW_PLAYLIST, is_win11OrLater ? NULL : theApp.m_icon_set.playlist_dock.GetIcon(true));
-        menu.APPEND_ITEM(ID_FLOAT_PLAYLIST, is_win11OrLater ? NULL : theApp.m_icon_set.playlist_float);
-        menu.APPEND_ITEM(ID_USE_STANDARD_TITLE_BAR, NULL);
-        menu.APPEND_ITEM(ID_SHOW_MENU_BAR, is_win11OrLater ? NULL : theApp.m_icon_set.menu.GetIcon(true));
-        menu.APPEND_ITEM(ID_ALWAYS_SHOW_STATUS_BAR, NULL);
-        menu.APPEND_ITEM(ID_ALWAYS_ON_TOP, is_win11OrLater ? NULL : theApp.m_icon_set.pin);
+        menu.AppendItem(EX_ID(ID_SHOW_PLAYLIST), is_win11OrLater ? IconMgr::IconType::IT_NO_ICON : IconMgr::IconType::IT_Playlist_Dock);
+        menu.AppendItem(EX_ID(ID_FLOAT_PLAYLIST), is_win11OrLater ? IconMgr::IconType::IT_NO_ICON : IconMgr::IconType::IT_Playlist_Float);
+        menu.AppendItem(EX_ID(ID_USE_STANDARD_TITLE_BAR));
+        menu.AppendItem(EX_ID(ID_SHOW_MENU_BAR), is_win11OrLater ? IconMgr::IconType::IT_NO_ICON : IconMgr::IconType::IT_Menu);
+        menu.AppendItem(EX_ID(ID_ALWAYS_SHOW_STATUS_BAR));
+        menu.AppendItem(EX_ID(ID_ALWAYS_ON_TOP), is_win11OrLater ? IconMgr::IconType::IT_NO_ICON : IconMgr::IconType::IT_Pin);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MINI_MODE, theApp.m_icon_set.mini.GetIcon(true));
-        menu.APPEND_ITEM(ID_FULL_SCREEN, theApp.m_icon_set.full_screen1.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_MINI_MODE), IconMgr::IconType::IT_Mini_On);
+        menu.AppendItem(EX_ID(ID_FULL_SCREEN), IconMgr::IconType::IT_Full_Screen_On);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_DARK_MODE, theApp.m_icon_set.dark_mode.GetIcon(true));
-        menu.AppendSubMenu(MainViewSwitchUiMenu, theApp.m_icon_set.skin.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_DARK_MODE), IconMgr::IconType::IT_Dark_Mode_On);
+        menu.AppendSubMenu(MainViewSwitchUiMenu, IconMgr::IconType::IT_Skin);
         break;
     case MenuMgr::MainViewSwitchUiMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_SWITCH_UI, theApp.m_icon_set.skin.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_SWITCH_UI), IconMgr::IconType::IT_Skin);
         menu.AppendSeparator();
         menu.SetUpdatePos();            // 设置Update插入点
         break;
     case MenuMgr::MainToolMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_MEDIA_LIB, theApp.m_icon_set.media_lib.GetIcon(true));
-        menu.APPEND_ITEM(ID_FIND, theApp.m_icon_set.find_songs.GetIcon(true));
-        menu.APPEND_ITEM(ID_EXPLORE_PATH, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.APPEND_ITEM(ID_SONG_INFO, theApp.m_icon_set.info.GetIcon(true));
-        menu.APPEND_ITEM(ID_EQUALIZER, theApp.m_icon_set.eq.GetIcon(true));
-        menu.APPEND_ITEM(ID_FORMAT_CONVERT1, theApp.m_icon_set.convert);
-        menu.APPEND_ITEM(ID_CURRENT_EXPLORE_ONLINE, theApp.m_icon_set.online);
+        menu.AppendItem(EX_ID(ID_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
+        menu.AppendItem(EX_ID(ID_FIND), IconMgr::IconType::IT_Find);
+        menu.AppendItem(EX_ID(ID_EXPLORE_PATH), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_SONG_INFO), IconMgr::IconType::IT_Info);
+        menu.AppendItem(EX_ID(ID_EQUALIZER), IconMgr::IconType::IT_Equalizer);
+        menu.AppendItem(EX_ID(ID_FORMAT_CONVERT1), IconMgr::IconType::IT_Convert);
+        menu.AppendItem(EX_ID(ID_CURRENT_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_RE_INI_BASS, theApp.m_icon_set.loop_playlist.GetIcon(true));
-        menu.AppendSubMenu(MainToolCreateShortcutMenu, theApp.m_icon_set.shortcut);
+        menu.AppendItem(EX_ID(ID_RE_INI_BASS), IconMgr::IconType::IT_Loop_Playlist);
+        menu.AppendSubMenu(MainToolCreateShortcutMenu, IconMgr::IconType::IT_Shortcut);
         menu.AppendSeparator();
-        menu.AppendSubMenu(MainToolAlbumCoverMenu, theApp.m_icon_set.album_cover);
-        menu.AppendSubMenu(MainToolDelCurPlayingMenu, theApp.m_icon_set.close.GetIcon(true));
+        menu.AppendSubMenu(MainToolAlbumCoverMenu, IconMgr::IconType::IT_Album_Cover);
+        menu.AppendSubMenu(MainToolDelCurPlayingMenu, IconMgr::IconType::IT_Cancel);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_LISTEN_STATISTICS, theApp.m_icon_set.statistics);
-        menu.APPEND_ITEM(ID_TOOL_FILE_RELATE, theApp.m_icon_set.file_relate);
-        menu.APPEND_ITEM(ID_OPTION_SETTINGS, theApp.m_icon_set.setting.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_LISTEN_STATISTICS), IconMgr::IconType::IT_Statistics);
+        menu.AppendItem(EX_ID(ID_TOOL_FILE_RELATE), IconMgr::IconType::IT_File_Relate);
+        menu.AppendItem(EX_ID(ID_OPTION_SETTINGS), IconMgr::IconType::IT_Setting);
         break;
     case MenuMgr::MainToolCreateShortcutMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_CREATE_DESKTOP_SHORTCUT, NULL);
-        menu.APPEND_ITEM(ID_CREATE_PLAY_SHORTCUT, NULL);
-        menu.APPEND_ITEM(ID_CREATE_MINI_MODE_SHORT_CUT, NULL);
+        menu.AppendItem(EX_ID(ID_CREATE_DESKTOP_SHORTCUT));
+        menu.AppendItem(EX_ID(ID_CREATE_PLAY_SHORTCUT));
+        menu.AppendItem(EX_ID(ID_CREATE_MINI_MODE_SHORT_CUT));
         break;
     case MenuMgr::MainToolAlbumCoverMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_DOWNLOAD_ALBUM_COVER, theApp.m_icon_set.download);
-        menu.APPEND_ITEM(ID_ALBUM_COVER_SAVE_AS, theApp.m_icon_set.save_as);
-        menu.APPEND_ITEM(ID_DELETE_ALBUM_COVER, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_ALBUM_COVER_INFO, theApp.m_icon_set.album_cover);
+        menu.AppendItem(EX_ID(ID_DOWNLOAD_ALBUM_COVER), IconMgr::IconType::IT_Download);
+        menu.AppendItem(EX_ID(ID_ALBUM_COVER_SAVE_AS), IconMgr::IconType::IT_Save_As);
+        menu.AppendItem(EX_ID(ID_DELETE_ALBUM_COVER), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_ALBUM_COVER_INFO), IconMgr::IconType::IT_Album_Cover);
         break;
     case MenuMgr::MainToolDelCurPlayingMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_REMOVE_CURRENT_FROM_PLAYLIST, NULL);
-        menu.APPEND_ITEM(ID_DELETE_CURRENT_FROM_DISK, NULL);
+        menu.AppendItem(EX_ID(ID_REMOVE_CURRENT_FROM_PLAYLIST));
+        menu.AppendItem(EX_ID(ID_DELETE_CURRENT_FROM_DISK));
         break;
     case MenuMgr::MainHelpMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_HELP, theApp.m_icon_set.help.GetIcon(true), L"F1");
-        menu.APPEND_ITEM(ID_ONLINE_HELP, NULL);
-        menu.APPEND_ITEM(ID_HELP_FAQ, NULL);
-        menu.APPEND_ITEM(ID_HELP_CUSTOM_UI, NULL);
-        menu.APPEND_ITEM(ID_HELP_UPDATE_LOG, NULL);
-        menu.APPEND_ITEM(ID_SUPPORTED_FORMAT, NULL);
+        menu.AppendItem(EX_ID(ID_HELP), IconMgr::IconType::IT_Help, L"F1");
+        menu.AppendItem(EX_ID(ID_ONLINE_HELP));
+        menu.AppendItem(EX_ID(ID_HELP_FAQ));
+        menu.AppendItem(EX_ID(ID_HELP_CUSTOM_UI));
+        menu.AppendItem(EX_ID(ID_HELP_UPDATE_LOG));
+        menu.AppendItem(EX_ID(ID_SUPPORTED_FORMAT));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_APP_ABOUT, theApp.m_icon_set.app.GetIcon());
+        menu.AppendItem(EX_ID(ID_APP_ABOUT), IconMgr::IconType::IT_App);
         break;
     case MenuMgr::PlaylistToolBarMenu:
         menu.CreateMenu(true, true);
-        menu.AppendSubMenu(MainPlaylistAddMenu, theApp.m_icon_set.add.GetIcon(true));
-        menu.AppendSubMenu(MainPlaylistDelMenu, theApp.m_icon_set.close.GetIcon(true));
-        menu.AppendSubMenu(MainPlaylistSortMenu, theApp.m_icon_set.sort.GetIcon(true));
-        menu.AppendSubMenu(PlaylistToolBarListMenu, theApp.m_icon_set.show_playlist.GetIcon(true));
-        menu.AppendSubMenu(PlaylistToolBarEditMenu, theApp.m_icon_set.edit.GetIcon(true));
-        menu.AppendSubMenu(PlaylistToolBarFolderMenu, theApp.m_icon_set.select_folder.GetIcon(true));
+        menu.AppendSubMenu(MainPlaylistAddMenu, IconMgr::IconType::IT_Add);
+        menu.AppendSubMenu(MainPlaylistDelMenu, IconMgr::IconType::IT_Cancel);
+        menu.AppendSubMenu(MainPlaylistSortMenu, IconMgr::IconType::IT_Sort_Mode);
+        menu.AppendSubMenu(PlaylistToolBarListMenu, IconMgr::IconType::IT_Playlist);
+        menu.AppendSubMenu(PlaylistToolBarEditMenu, IconMgr::IconType::IT_Edit);
+        menu.AppendSubMenu(PlaylistToolBarFolderMenu, IconMgr::IconType::IT_Folder);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_LOCATE_TO_CURRENT, theApp.m_icon_set.locate.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_LOCATE_TO_CURRENT), IconMgr::IconType::IT_Locate);
         break;
     case MenuMgr::PlaylistToolBarListMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_RELOAD_PLAYLIST, theApp.m_icon_set.loop_playlist.GetIcon(true));
-        menu.APPEND_ITEM(ID_SAVE_AS_NEW_PLAYLIST, theApp.m_icon_set.save_new);
-        menu.APPEND_ITEM(ID_SAVE_CURRENT_PLAYLIST_AS, theApp.m_icon_set.save_as);
+        menu.AppendItem(EX_ID(ID_RELOAD_PLAYLIST), IconMgr::IconType::IT_Loop_Playlist);
+        menu.AppendItem(EX_ID(ID_SAVE_AS_NEW_PLAYLIST), IconMgr::IconType::IT_Save);
+        menu.AppendItem(EX_ID(ID_SAVE_CURRENT_PLAYLIST_AS), IconMgr::IconType::IT_Save_As);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_PLAYLIST_FIX_PATH_ERROR, theApp.m_icon_set.fix);
-        menu.AppendSubMenu(MainPlaylistDispModeMenu, theApp.m_icon_set.display_mode.GetIcon(true));
-        menu.APPEND_ITEM(ID_PLAYLIST_OPTIONS, theApp.m_icon_set.setting.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAYLIST_FIX_PATH_ERROR), IconMgr::IconType::IT_Fix);
+        menu.AppendSubMenu(MainPlaylistDispModeMenu, IconMgr::IconType::IT_Playlist_Display_Mode);
+        menu.AppendItem(EX_ID(ID_PLAYLIST_OPTIONS), IconMgr::IconType::IT_Setting);
         break;
     case MenuMgr::PlaylistToolBarEditMenu:
         menu.CreateMenu(true, true);
-        menu.AppendSubMenu(AddToPlaylistMenu, theApp.m_icon_set.add.GetIcon(true));
-        menu.APPEND_ITEM(ID_COPY_FILE_TO, NULL);
-        menu.APPEND_ITEM(ID_MOVE_FILE_TO, NULL);
+        menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
+        menu.AppendItem(EX_ID(ID_COPY_FILE_TO));
+        menu.AppendItem(EX_ID(ID_MOVE_FILE_TO));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MOVE_PLAYLIST_ITEM_UP, NULL);
-        menu.APPEND_ITEM(ID_MOVE_PLAYLIST_ITEM_DOWN, NULL);
+        menu.AppendItem(EX_ID(ID_MOVE_PLAYLIST_ITEM_UP));
+        menu.AppendItem(EX_ID(ID_MOVE_PLAYLIST_ITEM_DOWN));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_PLAYLIST_SELECT_ALL, NULL);
-        menu.APPEND_ITEM(ID_PLAYLIST_SELECT_NONE, NULL);
-        menu.APPEND_ITEM(ID_PLAYLIST_SELECT_REVERT, NULL);
+        menu.AppendItem(EX_ID(ID_PLAYLIST_SELECT_ALL));
+        menu.AppendItem(EX_ID(ID_PLAYLIST_SELECT_NONE));
+        menu.AppendItem(EX_ID(ID_PLAYLIST_SELECT_REVERT));
         break;
     case MenuMgr::PlaylistToolBarFolderMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_FILE_OPEN_FOLDER, theApp.m_icon_set.select_folder.GetIcon(true));
-        menu.APPEND_ITEM(ID_CONTAIN_SUB_FOLDER, NULL);
+        menu.AppendItem(EX_ID(ID_FILE_OPEN_FOLDER), IconMgr::IconType::IT_Folder);
+        menu.AppendItem(EX_ID(ID_CONTAIN_SUB_FOLDER));
         break;
     case MenuMgr::MainAreaMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_SONG_INFO, theApp.m_icon_set.info.GetIcon(true));
-        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu, NULL);
-        menu.AppendSubMenu(AddToPlaylistMenu, theApp.m_icon_set.add.GetIcon(true));
-        menu.AppendSubMenu(RateMenu, theApp.m_icon_set.star);
+        menu.AppendItem(EX_ID(ID_SONG_INFO), IconMgr::IconType::IT_Info);
+        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu);
+        menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
+        menu.AppendSubMenu(RateMenu, IconMgr::IconType::IT_Star);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MEDIA_LIB, theApp.m_icon_set.media_lib.GetIcon(true));
-        menu.APPEND_ITEM(ID_FIND, theApp.m_icon_set.find_songs.GetIcon(true));
-        menu.APPEND_ITEM(ID_EXPLORE_PATH, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.APPEND_ITEM(ID_EQUALIZER, theApp.m_icon_set.eq.GetIcon(true));
-        menu.APPEND_ITEM(ID_CURRENT_EXPLORE_ONLINE, theApp.m_icon_set.online);
+        menu.AppendItem(EX_ID(ID_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
+        menu.AppendItem(EX_ID(ID_FIND), IconMgr::IconType::IT_Find);
+        menu.AppendItem(EX_ID(ID_EXPLORE_PATH), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_EQUALIZER), IconMgr::IconType::IT_Equalizer);
+        menu.AppendItem(EX_ID(ID_CURRENT_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_DOWNLOAD_ALBUM_COVER, theApp.m_icon_set.album_cover);
-        menu.APPEND_ITEM(ID_ALBUM_COVER_SAVE_AS, theApp.m_icon_set.save_as);
-        menu.APPEND_ITEM(ID_DELETE_ALBUM_COVER, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, NULL);
-        menu.APPEND_ITEM(ID_ALBUM_COVER_INFO, theApp.m_icon_set.album_cover);
+        menu.AppendItem(EX_ID(ID_DOWNLOAD_ALBUM_COVER), IconMgr::IconType::IT_Album_Cover);
+        menu.AppendItem(EX_ID(ID_ALBUM_COVER_SAVE_AS), IconMgr::IconType::IT_Save_As);
+        menu.AppendItem(EX_ID(ID_DELETE_ALBUM_COVER), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER));
+        menu.AppendItem(EX_ID(ID_ALBUM_COVER_INFO), IconMgr::IconType::IT_Album_Cover);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_VIEW_ARTIST, theApp.m_icon_set.artist.GetIcon(true));
-        menu.APPEND_ITEM(ID_VIEW_ALBUM, theApp.m_icon_set.album.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_VIEW_ARTIST), IconMgr::IconType::IT_Artist);
+        menu.AppendItem(EX_ID(ID_VIEW_ALBUM), IconMgr::IconType::IT_Album);
         menu.AppendSeparator();
-        menu.AppendSubMenu(MainViewSwitchUiMenu, theApp.m_icon_set.skin.GetIcon(true));
-        menu.APPEND_ITEM(ID_OPTION_SETTINGS, theApp.m_icon_set.setting.GetIcon(true));
+        menu.AppendSubMenu(MainViewSwitchUiMenu, IconMgr::IconType::IT_Skin);
+        menu.AppendItem(EX_ID(ID_OPTION_SETTINGS), IconMgr::IconType::IT_Setting);
         break;
     case MenuMgr::MainAreaLrcMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_RELOAD_LYRIC, theApp.m_icon_set.loop_playlist.GetIcon(true));
-        menu.APPEND_ITEM(ID_COPY_CURRENT_LYRIC, theApp.m_icon_set.copy);
-        menu.APPEND_ITEM(ID_COPY_ALL_LYRIC, NULL);
-        menu.APPEND_ITEM(ID_EDIT_LYRIC, theApp.m_icon_set.edit.GetIcon(true));
-        menu.AppendSubMenu(MainLrcChConvMenu, NULL);
+        menu.AppendItem(EX_ID(ID_RELOAD_LYRIC), IconMgr::IconType::IT_Loop_Playlist);
+        menu.AppendItem(EX_ID(ID_COPY_CURRENT_LYRIC), IconMgr::IconType::IT_Copy);
+        menu.AppendItem(EX_ID(ID_COPY_ALL_LYRIC));
+        menu.AppendItem(EX_ID(ID_EDIT_LYRIC), IconMgr::IconType::IT_Edit);
+        menu.AppendSubMenu(MainLrcChConvMenu);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_SHOW_LYRIC_TRANSLATE, NULL);
-        menu.APPEND_ITEM(ID_SHOW_DESKTOP_LYRIC, NULL);
+        menu.AppendItem(EX_ID(ID_SHOW_LYRIC_TRANSLATE));
+        menu.AppendItem(EX_ID(ID_SHOW_DESKTOP_LYRIC));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_LYRIC_FORWARD, theApp.m_icon_set.lyric_forward.GetIcon(true));
-        menu.APPEND_ITEM(ID_LYRIC_DELAY, theApp.m_icon_set.lyric_delay.GetIcon(true));
-        menu.APPEND_ITEM(ID_SAVE_MODIFIED_LYRIC, theApp.m_icon_set.save_new);
+        menu.AppendItem(EX_ID(ID_LYRIC_FORWARD), IconMgr::IconType::IT_Triangle_Left);
+        menu.AppendItem(EX_ID(ID_LYRIC_DELAY), IconMgr::IconType::IT_Triangle_Right);
+        menu.AppendItem(EX_ID(ID_SAVE_MODIFIED_LYRIC), IconMgr::IconType::IT_Save);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_RELATE_LOCAL_LYRIC, theApp.m_icon_set.lyric.GetIcon(true));
-        menu.APPEND_ITEM(ID_DELETE_LYRIC, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_UNLINK_LYRIC, theApp.m_icon_set.unlink.GetIcon(true));
-        menu.APPEND_ITEM(ID_BROWSE_LYRIC, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.AppendSubMenu(MainLrcInnerLrcMenu, theApp.m_icon_set.internal_lyric);
+        menu.AppendItem(EX_ID(ID_RELATE_LOCAL_LYRIC), IconMgr::IconType::IT_Lyric);
+        menu.AppendItem(EX_ID(ID_DELETE_LYRIC), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_UNLINK_LYRIC), IconMgr::IconType::IT_Unlink);
+        menu.AppendItem(EX_ID(ID_BROWSE_LYRIC), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendSubMenu(MainLrcInnerLrcMenu, IconMgr::IconType::IT_Internal_Lyric);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_DOWNLOAD_LYRIC, theApp.m_icon_set.download);
-        menu.APPEND_ITEM(ID_LYRIC_BATCH_DOWNLOAD, theApp.m_icon_set.download1);
+        menu.AppendItem(EX_ID(ID_DOWNLOAD_LYRIC), IconMgr::IconType::IT_Download);
+        menu.AppendItem(EX_ID(ID_LYRIC_BATCH_DOWNLOAD), IconMgr::IconType::IT_Download_Batch);
         menu.AppendSeparator();
-        menu.AppendSubMenu(MainViewSwitchUiMenu, theApp.m_icon_set.skin.GetIcon(true));
-        menu.APPEND_ITEM(ID_OPTION_SETTINGS, theApp.m_icon_set.setting.GetIcon(true));
+        menu.AppendSubMenu(MainViewSwitchUiMenu, IconMgr::IconType::IT_Skin);
+        menu.AppendItem(EX_ID(ID_OPTION_SETTINGS), IconMgr::IconType::IT_Setting);
         break;
     case MenuMgr::MainAreaPlaylistBtnMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_DOCKED_PLAYLIST, NULL);
-        menu.APPEND_ITEM(ID_FLOATED_PLAYLIST, NULL);
+        menu.AppendItem(EX_ID(ID_DOCKED_PLAYLIST));
+        menu.AppendItem(EX_ID(ID_FLOATED_PLAYLIST));
         break;
     case MenuMgr::DlrcMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_PLAY_PAUSE, theApp.m_icon_set.play_pause);
-        menu.APPEND_ITEM(ID_STOP, theApp.m_icon_set.stop_new);
-        menu.APPEND_ITEM(ID_PREVIOUS, theApp.m_icon_set.previous_new.GetIcon(true));
-        menu.APPEND_ITEM(ID_NEXT, theApp.m_icon_set.next_new.GetIcon(true));
-        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu, NULL);
+        menu.AppendItem(EX_ID(ID_PLAY_PAUSE), IconMgr::IconType::IT_Play_Pause);
+        menu.AppendItem(EX_ID(ID_STOP), IconMgr::IconType::IT_Stop);
+        menu.AppendItem(EX_ID(ID_PREVIOUS), IconMgr::IconType::IT_Previous);
+        menu.AppendItem(EX_ID(ID_NEXT), IconMgr::IconType::IT_Next);
+        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_SHOW_MAIN_WINDOW, NULL);
-        menu.APPEND_ITEM(ID_LYRIC_DISPLAYED_DOUBLE_LINE, theApp.m_icon_set.double_line.GetIcon(true));
-        menu.APPEND_ITEM(ID_LYRIC_BACKGROUND_PENETRATE, theApp.m_icon_set.skin.GetIcon(true));
-        menu.APPEND_ITEM(ID_LOCK_DESKTOP_LRYIC, theApp.m_icon_set.lock.GetIcon(true));
-        menu.AppendSubMenu(DlrcDefMenu, theApp.m_icon_set.media_lib.GetIcon(true));
-        menu.APPEND_ITEM(ID_OPTION_SETTINGS, theApp.m_icon_set.setting.GetIcon(true));
-        menu.APPEND_ITEM(ID_CLOSE_DESKTOP_LYRIC, theApp.m_icon_set.close.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_SHOW_MAIN_WINDOW));
+        menu.AppendItem(EX_ID(ID_LYRIC_DISPLAYED_DOUBLE_LINE), IconMgr::IconType::IT_Double_Line);
+        menu.AppendItem(EX_ID(ID_LYRIC_BACKGROUND_PENETRATE), IconMgr::IconType::IT_Skin);
+        menu.AppendItem(EX_ID(ID_LOCK_DESKTOP_LRYIC), IconMgr::IconType::IT_Lock);
+        menu.AppendSubMenu(DlrcDefMenu, IconMgr::IconType::IT_Media_Lib);
+        menu.AppendItem(EX_ID(ID_OPTION_SETTINGS), IconMgr::IconType::IT_Setting);
+        menu.AppendItem(EX_ID(ID_CLOSE_DESKTOP_LYRIC), IconMgr::IconType::IT_Cancel);
         break;
     case MenuMgr::DlrcDefMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_LYRIC_DEFAULT_STYLE1, NULL);
-        menu.APPEND_ITEM(ID_LYRIC_DEFAULT_STYLE2, NULL);
-        menu.APPEND_ITEM(ID_LYRIC_DEFAULT_STYLE3, NULL);
+        menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE1));
+        menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE2));
+        menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE3));
         break;
     case MenuMgr::RecentFolderPlaylistMenu:
         menu.CreateMenu(true, false);
         menu.SetUpdatePos();            // 设置Update插入点
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MEDIA_LIB, theApp.m_icon_set.media_lib.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
         break;
     case MenuMgr::PlaylistMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_PLAY_ITEM, theApp.m_icon_set.play_new.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM), IconMgr::IconType::IT_Play);
         menu.SetDefaultItem();
-        menu.APPEND_ITEM(ID_PLAY_AS_NEXT, theApp.m_icon_set.play_as_next);
+        menu.AppendItem(EX_ID(ID_PLAY_AS_NEXT), IconMgr::IconType::IT_Play_As_Next);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_EXPLORE_ONLINE, theApp.m_icon_set.online);
-        menu.APPEND_ITEM(ID_FORMAT_CONVERT, theApp.m_icon_set.convert);
-        menu.AppendSubMenu(RateMenu, theApp.m_icon_set.star);
+        menu.AppendItem(EX_ID(ID_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
+        menu.AppendItem(EX_ID(ID_FORMAT_CONVERT), IconMgr::IconType::IT_Convert);
+        menu.AppendSubMenu(RateMenu, IconMgr::IconType::IT_Star);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_RELOAD_PLAYLIST, theApp.m_icon_set.loop_playlist.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_RELOAD_PLAYLIST), IconMgr::IconType::IT_Loop_Playlist);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_REMOVE_FROM_PLAYLIST, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_DELETE_FROM_DISK, NULL);
+        menu.AppendItem(EX_ID(ID_REMOVE_FROM_PLAYLIST), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK));
         menu.AppendSeparator();
-        menu.AppendSubMenu(AddToPlaylistMenu, theApp.m_icon_set.add.GetIcon(true));
-        menu.APPEND_ITEM(ID_COPY_FILE_TO, NULL);
-        menu.APPEND_ITEM(ID_MOVE_FILE_TO, NULL);
+        menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
+        menu.AppendItem(EX_ID(ID_COPY_FILE_TO));
+        menu.AppendItem(EX_ID(ID_MOVE_FILE_TO));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MOVE_PLAYLIST_ITEM_UP, NULL);
-        menu.APPEND_ITEM(ID_MOVE_PLAYLIST_ITEM_DOWN, NULL);
+        menu.AppendItem(EX_ID(ID_MOVE_PLAYLIST_ITEM_UP));
+        menu.AppendItem(EX_ID(ID_MOVE_PLAYLIST_ITEM_DOWN));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_PLAYLIST_VIEW_ARTIST, theApp.m_icon_set.artist.GetIcon(true));
-        menu.APPEND_ITEM(ID_PLAYLIST_VIEW_ALBUM, theApp.m_icon_set.album.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAYLIST_VIEW_ARTIST), IconMgr::IconType::IT_Artist);
+        menu.AppendItem(EX_ID(ID_PLAYLIST_VIEW_ALBUM), IconMgr::IconType::IT_Album);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_RENAME, theApp.m_icon_set.rename);
-        menu.APPEND_ITEM(ID_EXPLORE_TRACK, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.APPEND_ITEM(ID_ITEM_PROPERTY, theApp.m_icon_set.info.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_RENAME), IconMgr::IconType::IT_Rename);
+        menu.AppendItem(EX_ID(ID_EXPLORE_TRACK), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_ITEM_PROPERTY), IconMgr::IconType::IT_Info);
         break;
     case MenuMgr::RateMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_RATING_1, NULL);
-        menu.APPEND_ITEM(ID_RATING_2, NULL);
-        menu.APPEND_ITEM(ID_RATING_3, NULL);
-        menu.APPEND_ITEM(ID_RATING_4, NULL);
-        menu.APPEND_ITEM(ID_RATING_5, NULL);
+        menu.AppendItem(EX_ID(ID_RATING_1));
+        menu.AppendItem(EX_ID(ID_RATING_2));
+        menu.AppendItem(EX_ID(ID_RATING_3));
+        menu.AppendItem(EX_ID(ID_RATING_4));
+        menu.AppendItem(EX_ID(ID_RATING_5));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_RATING_NONE, NULL);
+        menu.AppendItem(EX_ID(ID_RATING_NONE));
         break;
     case MenuMgr::AddToPlaylistMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_ADD_TO_NEW_PLAYLIST, theApp.m_icon_set.add.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_ADD_TO_NEW_PLAYLIST), IconMgr::IconType::IT_Add);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_ADD_TO_DEFAULT_PLAYLIST, NULL);
-        menu.APPEND_ITEM(ID_ADD_TO_MY_FAVOURITE, theApp.m_icon_set.favourite.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_ADD_TO_DEFAULT_PLAYLIST));
+        menu.AppendItem(EX_ID(ID_ADD_TO_MY_FAVOURITE), IconMgr::IconType::IT_Favorite_On);
         menu.SetUpdatePos();            // 设置Update插入点
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_ADD_TO_OTHER_PLAYLIST, theApp.m_icon_set.show_playlist.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_ADD_TO_OTHER_PLAYLIST), IconMgr::IconType::IT_Playlist);
         break;
     case MenuMgr::MiniAreaMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_SONG_INFO, theApp.m_icon_set.info.GetIcon(true));
-        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu, NULL);
-        menu.AppendSubMenu(AddToPlaylistMenu, theApp.m_icon_set.add.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_SONG_INFO), IconMgr::IconType::IT_Info);
+        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu);
+        menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_DOWNLOAD_LYRIC, theApp.m_icon_set.download);
-        menu.APPEND_ITEM(ID_DOWNLOAD_ALBUM_COVER, theApp.m_icon_set.album_cover);
+        menu.AppendItem(EX_ID(ID_DOWNLOAD_LYRIC), IconMgr::IconType::IT_Download);
+        menu.AppendItem(EX_ID(ID_DOWNLOAD_ALBUM_COVER), IconMgr::IconType::IT_Album_Cover);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_ADD_REMOVE_FROM_FAVOURITE, theApp.m_icon_set.favourite.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_ADD_REMOVE_FROM_FAVOURITE), IconMgr::IconType::IT_Favorite_On);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MEDIA_LIB, theApp.m_icon_set.media_lib.GetIcon(true));
-        menu.APPEND_ITEM(ID_FIND, theApp.m_icon_set.find_songs.GetIcon(true));
-        menu.APPEND_ITEM(ID_EXPLORE_PATH, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.APPEND_ITEM(ID_EQUALIZER, theApp.m_icon_set.eq.GetIcon(true));
-        menu.APPEND_ITEM(ID_OPTION_SETTINGS, theApp.m_icon_set.setting.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
+        menu.AppendItem(EX_ID(ID_FIND), IconMgr::IconType::IT_Find);
+        menu.AppendItem(EX_ID(ID_EXPLORE_PATH), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_EQUALIZER), IconMgr::IconType::IT_Equalizer);
+        menu.AppendItem(EX_ID(ID_OPTION_SETTINGS), IconMgr::IconType::IT_Setting);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_SHOW_PLAY_LIST, is_win11OrLater ? NULL : theApp.m_icon_set.show_playlist.GetIcon(true), L"Ctrl+L");
-        menu.APPEND_ITEM(ID_MINI_MODE_ALWAYS_ON_TOP, is_win11OrLater ? NULL : theApp.m_icon_set.pin);
-        menu.AppendSubMenu(MiniModeSwitchUiMenu, theApp.m_icon_set.skin.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_SHOW_PLAY_LIST), is_win11OrLater ? IconMgr::IconType::IT_NO_ICON : IconMgr::IconType::IT_Playlist, L"Ctrl+L");
+        menu.AppendItem(EX_ID(ID_MINI_MODE_ALWAYS_ON_TOP), is_win11OrLater ? IconMgr::IconType::IT_NO_ICON : IconMgr::IconType::IT_Pin);
+        menu.AppendSubMenu(MiniModeSwitchUiMenu, IconMgr::IconType::IT_Skin);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MINI_MIDE_MINIMIZE, theApp.m_icon_set.minimize.GetIcon(true));
-        menu.APPEND_ITEM(IDOK, theApp.m_icon_set.mini_restore.GetIcon(true), L"Esc");
-        menu.APPEND_ITEM(ID_MINI_MODE_EXIT, theApp.m_icon_set.exit, L"Ctrl+X");
+        menu.AppendItem(EX_ID(ID_MINI_MIDE_MINIMIZE), IconMgr::IconType::IT_Minimize);
+        menu.AppendItem(EX_ID(IDOK), IconMgr::IconType::IT_Mini_Off, L"Esc");
+        menu.AppendItem(EX_ID(ID_MINI_MODE_EXIT), IconMgr::IconType::IT_Exit, L"Ctrl+X");
         break;
     case MenuMgr::MiniModeSwitchUiMenu:
         menu.CreateMenu(true, true);
-        menu.APPEND_ITEM(ID_MINIMODE_UI_DEFAULT, NULL);
+        menu.AppendItem(EX_ID(ID_MINIMODE_UI_DEFAULT));
         menu.SetUpdatePos();            // 设置Update插入点
         break;
     case MenuMgr::NotifyMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_PLAY_PAUSE, theApp.m_icon_set.play_pause);
-        menu.APPEND_ITEM(ID_PREVIOUS, theApp.m_icon_set.previous_new.GetIcon(true));
-        menu.APPEND_ITEM(ID_NEXT, theApp.m_icon_set.next_new.GetIcon(true));
-        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu, NULL);
-        menu.APPEND_ITEM(ID_MINIMODE_RESTORE, theApp.m_icon_set.mini.GetIcon(true));
-        menu.APPEND_ITEM(ID_SHOW_DESKTOP_LYRIC, theApp.m_icon_set.lyric.GetIcon(true));
-        menu.APPEND_ITEM(ID_LOCK_DESKTOP_LRYIC, theApp.m_icon_set.lock.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAY_PAUSE), IconMgr::IconType::IT_Play_Pause);
+        menu.AppendItem(EX_ID(ID_PREVIOUS), IconMgr::IconType::IT_Previous);
+        menu.AppendItem(EX_ID(ID_NEXT), IconMgr::IconType::IT_Next);
+        menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu);
+        menu.AppendItem(EX_ID(ID_MINIMODE_RESTORE), IconMgr::IconType::IT_Mini_Off);
+        menu.AppendItem(EX_ID(ID_SHOW_DESKTOP_LYRIC), IconMgr::IconType::IT_Lyric);
+        menu.AppendItem(EX_ID(ID_LOCK_DESKTOP_LRYIC), IconMgr::IconType::IT_Lock);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_OPTION_SETTINGS, theApp.m_icon_set.setting.GetIcon(true));
-        menu.APPEND_ITEM(ID_MENU_EXIT, theApp.m_icon_set.exit);
+        menu.AppendItem(EX_ID(ID_OPTION_SETTINGS), IconMgr::IconType::IT_Setting);
+        menu.AppendItem(EX_ID(ID_MENU_EXIT), IconMgr::IconType::IT_Exit);
         break;
     case MenuMgr::LibSetPathMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_PLAY_PATH, theApp.m_icon_set.play_new.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAY_PATH), IconMgr::IconType::IT_Play);
         menu.SetDefaultItem();
-        menu.APPEND_ITEM(ID_DELETE_PATH, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_BROWSE_PATH, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.APPEND_ITEM(ID_CONTAIN_SUB_FOLDER, NULL);
+        menu.AppendItem(EX_ID(ID_DELETE_PATH), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_BROWSE_PATH), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_CONTAIN_SUB_FOLDER));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_CLEAR_INVALID_PATH, NULL);
+        menu.AppendItem(EX_ID(ID_CLEAR_INVALID_PATH));
         break;
     case MenuMgr::LibPlaylistMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_PLAY_PLAYLIST, theApp.m_icon_set.play_new.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAY_PLAYLIST), IconMgr::IconType::IT_Play);
         menu.SetDefaultItem();
-        menu.APPEND_ITEM(ID_RENAME_PLAYLIST, theApp.m_icon_set.rename);
-        menu.APPEND_ITEM(ID_DELETE_PLAYLIST, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_SAVE_AS_NEW_PLAYLIST, theApp.m_icon_set.save_new);
-        menu.APPEND_ITEM(ID_PLAYLIST_SAVE_AS, theApp.m_icon_set.save_as);
+        menu.AppendItem(EX_ID(ID_RENAME_PLAYLIST), IconMgr::IconType::IT_Rename);
+        menu.AppendItem(EX_ID(ID_DELETE_PLAYLIST), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_SAVE_AS_NEW_PLAYLIST), IconMgr::IconType::IT_Save);
+        menu.AppendItem(EX_ID(ID_PLAYLIST_SAVE_AS), IconMgr::IconType::IT_Save_As);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_PLAYLIST_BROWSE_FILE, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.APPEND_ITEM(ID_PLAYLIST_FIX_PATH_ERROR, theApp.m_icon_set.fix);
+        menu.AppendItem(EX_ID(ID_PLAYLIST_BROWSE_FILE), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_PLAYLIST_FIX_PATH_ERROR), IconMgr::IconType::IT_Fix);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_NEW_PLAYLIST, theApp.m_icon_set.add.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_NEW_PLAYLIST), IconMgr::IconType::IT_Add);
         break;
     case MenuMgr::LibLeftMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_PLAY_ITEM, theApp.m_icon_set.play_new.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM), IconMgr::IconType::IT_Play);
         menu.SetDefaultItem();
-        menu.AppendSubMenu(AddToPlaylistMenu, theApp.m_icon_set.add.GetIcon(true));
-        menu.APPEND_ITEM(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY, theApp.m_icon_set.play_in_playlist);
+        menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
+        menu.AppendItem(EX_ID(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY), IconMgr::IconType::IT_Play_In_Playlist);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_COPY_TEXT, theApp.m_icon_set.copy);
+        menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
         break;
     case MenuMgr::LibRightMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_PLAY_ITEM, theApp.m_icon_set.play_new.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM), IconMgr::IconType::IT_Play);
         menu.SetDefaultItem();
-        menu.APPEND_ITEM(ID_PLAY_AS_NEXT, theApp.m_icon_set.play_as_next);
-        menu.APPEND_ITEM(ID_PLAY_ITEM_IN_FOLDER_MODE, theApp.m_icon_set.play_in_folder);
+        menu.AppendItem(EX_ID(ID_PLAY_AS_NEXT), IconMgr::IconType::IT_Play_As_Next);
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM_IN_FOLDER_MODE), IconMgr::IconType::IT_Play_In_Folder);
         menu.AppendSeparator();
-        menu.AppendSubMenu(AddToPlaylistMenu, theApp.m_icon_set.add.GetIcon(true));
-        menu.APPEND_ITEM(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY, theApp.m_icon_set.play_in_playlist);
+        menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
+        menu.AppendItem(EX_ID(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY), IconMgr::IconType::IT_Play_In_Playlist);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_EXPLORE_ONLINE, theApp.m_icon_set.online);
-        menu.APPEND_ITEM(ID_FORMAT_CONVERT, theApp.m_icon_set.convert);
-        menu.APPEND_ITEM(ID_EXPLORE_TRACK, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.APPEND_ITEM(ID_DELETE_FROM_DISK, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_ITEM_PROPERTY, theApp.m_icon_set.info.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
+        menu.AppendItem(EX_ID(ID_FORMAT_CONVERT), IconMgr::IconType::IT_Convert);
+        menu.AppendItem(EX_ID(ID_EXPLORE_TRACK), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_ITEM_PROPERTY), IconMgr::IconType::IT_Info);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_COPY_TEXT, theApp.m_icon_set.copy);
+        menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
         break;
     case MenuMgr::LeMenu:
         menu.CreateMenu(false, false);
-        menu.AppendSubMenu(LeFileMenu, NULL);
-        menu.AppendSubMenu(LeEditMenu, NULL);
-        menu.AppendSubMenu(LePlayCtrlMenu, NULL);
+        menu.AppendSubMenu(LeFileMenu);
+        menu.AppendSubMenu(LeEditMenu);
+        menu.AppendSubMenu(LePlayCtrlMenu);
         break;
     case MenuMgr::LeFileMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_LYRIC_OPEN, theApp.m_icon_set.music);
-        menu.APPEND_ITEM(ID_LYRIC_SAVE, theApp.m_icon_set.save_new, L"Ctrl+S");
-        menu.APPEND_ITEM(ID_LYRIC_SAVE_AS, theApp.m_icon_set.save_as);
+        menu.AppendItem(EX_ID(ID_LYRIC_OPEN), IconMgr::IconType::IT_Music);
+        menu.AppendItem(EX_ID(ID_LYRIC_SAVE), IconMgr::IconType::IT_Save, L"Ctrl+S");
+        menu.AppendItem(EX_ID(ID_LYRIC_SAVE_AS), IconMgr::IconType::IT_Save_As);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(IDCANCEL, theApp.m_icon_set.exit);
+        menu.AppendItem(EX_ID(IDCANCEL), IconMgr::IconType::IT_Exit);
         break;
     case MenuMgr::LeEditMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_LYRIC_INSERT_TAG, theApp.m_icon_set.le_add_tag, L"F8");
-        menu.APPEND_ITEM(ID_LYRIC_REPLACE_TAG, theApp.m_icon_set.le_replace_tag, L"F9");
-        menu.APPEND_ITEM(ID_LYRIC_DELETE_TAG, theApp.m_icon_set.le_delete_tag, L"Ctrl+Del");
+        menu.AppendItem(EX_ID(ID_LYRIC_INSERT_TAG), IconMgr::IconType::IT_Le_Tag_Insert, L"F8");
+        menu.AppendItem(EX_ID(ID_LYRIC_REPLACE_TAG), IconMgr::IconType::IT_Le_Tag_Replace, L"F9");
+        menu.AppendItem(EX_ID(ID_LYRIC_DELETE_TAG), IconMgr::IconType::IT_Le_Tag_Delete , L"Ctrl+Del");
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_LYRIC_FIND, theApp.m_icon_set.le_find, L"Ctrl+F");
-        menu.APPEND_ITEM(ID_LYRIC_REPLACE, theApp.m_icon_set.le_replace, L"Ctrl+H");
-        menu.APPEND_ITEM(ID_FIND_NEXT, NULL, L"F3");
+        menu.AppendItem(EX_ID(ID_LYRIC_FIND), IconMgr::IconType::IT_Le_Find, L"Ctrl+F");
+        menu.AppendItem(EX_ID(ID_LYRIC_REPLACE), IconMgr::IconType::IT_Le_Replace, L"Ctrl+H");
+        menu.AppendItem(EX_ID(ID_FIND_NEXT), IconMgr::IconType::IT_NO_ICON, L"F3");
         menu.AppendSeparator();
-        menu.AppendSubMenu(LeEditChConvMenu, NULL);
+        menu.AppendSubMenu(LeEditChConvMenu);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_LRYIC_MERGE_SAME_TIME_TAG, NULL);
-        menu.APPEND_ITEM(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION, NULL);
-        menu.AppendSubMenu(LeEditTagDislocMenu, NULL);
+        menu.AppendItem(EX_ID(ID_LRYIC_MERGE_SAME_TIME_TAG));
+        menu.AppendItem(EX_ID(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION));
+        menu.AppendSubMenu(LeEditTagDislocMenu);
         break;
     case MenuMgr::LeEditChConvMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_LE_TRANSLATE_TO_SIMPLIFIED_CHINESE, NULL);
-        menu.APPEND_ITEM(ID_LE_TRANSLATE_TO_TRANDITIONAL_CHINESE, NULL);
+        menu.AppendItem(EX_ID(ID_LE_TRANSLATE_TO_SIMPLIFIED_CHINESE));
+        menu.AppendItem(EX_ID(ID_LE_TRANSLATE_TO_TRANDITIONAL_CHINESE));
         break;
     case MenuMgr::LeEditTagDislocMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_LYRIC_TIME_TAG_FORWARD, NULL);
-        menu.APPEND_ITEM(ID_LYRIC_TIME_TAG_DELAY, NULL);
+        menu.AppendItem(EX_ID(ID_LYRIC_TIME_TAG_FORWARD));
+        menu.AppendItem(EX_ID(ID_LYRIC_TIME_TAG_DELAY));
         break;
     case MenuMgr::LePlayCtrlMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_PLAY_PAUSE, theApp.m_icon_set.play_pause, L"Ctrl+P");
-        menu.APPEND_ITEM(ID_REW, theApp.m_icon_set.rew_new, CAcceleratorRes::Key(VK_LEFT, true).ToString().c_str());
-        menu.APPEND_ITEM(ID_FF, theApp.m_icon_set.ff_new, CAcceleratorRes::Key(VK_RIGHT, true).ToString().c_str());
-        menu.APPEND_ITEM(ID_SEEK_TO_CUR_LINE, theApp.m_icon_set.locate.GetIcon(true), L"Ctrl+G");
+        menu.AppendItem(EX_ID(ID_PLAY_PAUSE), IconMgr::IconType::IT_Play_Pause, L"Ctrl+P");
+        menu.AppendItem(EX_ID(ID_REW), IconMgr::IconType::IT_Rewind, CAcceleratorRes::Key(VK_LEFT, true).ToString().c_str());
+        menu.AppendItem(EX_ID(ID_FF), IconMgr::IconType::IT_Fast_Forward, CAcceleratorRes::Key(VK_RIGHT, true).ToString().c_str());
+        menu.AppendItem(EX_ID(ID_SEEK_TO_CUR_LINE), IconMgr::IconType::IT_Locate, L"Ctrl+G");
         break;
     case MenuMgr::FcListMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_ADD_FILE, theApp.m_icon_set.add.GetIcon(true));
-        menu.APPEND_ITEM(ID_CLEAR_LIST, NULL);
+        menu.AppendItem(EX_ID(ID_ADD_FILE), IconMgr::IconType::IT_Add);
+        menu.AppendItem(EX_ID(ID_CLEAR_LIST));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_EDIT_TAG_INFO, theApp.m_icon_set.edit.GetIcon(true));
-        menu.APPEND_ITEM(ID_DELETE_SELECT, theApp.m_icon_set.close.GetIcon(true));
+        menu.AppendItem(EX_ID(ID_EDIT_TAG_INFO), IconMgr::IconType::IT_Edit);
+        menu.AppendItem(EX_ID(ID_DELETE_SELECT), IconMgr::IconType::IT_Cancel);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_MOVE_UP, NULL, CAcceleratorRes::Key(VK_UP, true).ToString().c_str());
-        menu.APPEND_ITEM(ID_MOVE_DOWN, NULL, CAcceleratorRes::Key(VK_DOWN, true).ToString().c_str());
+        menu.AppendItem(EX_ID(ID_MOVE_UP), IconMgr::IconType::IT_NO_ICON, CAcceleratorRes::Key(VK_UP, true).ToString().c_str());
+        menu.AppendItem(EX_ID(ID_MOVE_DOWN), IconMgr::IconType::IT_NO_ICON, CAcceleratorRes::Key(VK_DOWN, true).ToString().c_str());
         break;
     case MenuMgr::LdListMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_LD_LYRIC_DOWNLOAD, theApp.m_icon_set.download);
+        menu.AppendItem(EX_ID(ID_LD_LYRIC_DOWNLOAD), IconMgr::IconType::IT_Download);
         menu.SetDefaultItem();
-        menu.APPEND_ITEM(ID_LD_PREVIEW, NULL);
-        menu.APPEND_ITEM(ID_LD_LYRIC_SAVEAS, theApp.m_icon_set.save_as);
+        menu.AppendItem(EX_ID(ID_LD_PREVIEW));
+        menu.AppendItem(EX_ID(ID_LD_LYRIC_SAVEAS), IconMgr::IconType::IT_Save_As);
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_LD_COPY_TITLE, NULL);
-        menu.APPEND_ITEM(ID_LD_COPY_ARTIST, NULL);
-        menu.APPEND_ITEM(ID_LD_COPY_ALBUM, NULL);
-        menu.APPEND_ITEM(ID_LD_COPY_ID, NULL);
+        menu.AppendItem(EX_ID(ID_LD_COPY_TITLE));
+        menu.AppendItem(EX_ID(ID_LD_COPY_ARTIST));
+        menu.AppendItem(EX_ID(ID_LD_COPY_ALBUM));
+        menu.AppendItem(EX_ID(ID_LD_COPY_ID));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_LD_RELATE, NULL);
-        menu.APPEND_ITEM(ID_LD_VIEW_ONLINE, theApp.m_icon_set.online);
+        menu.AppendItem(EX_ID(ID_LD_RELATE));
+        menu.AppendItem(EX_ID(ID_LD_VIEW_ONLINE), IconMgr::IconType::IT_Online);
         break;
     case MenuMgr::OptDlrcDefStyleMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_LYRIC_DEFAULT_STYLE1, NULL);
-        menu.APPEND_ITEM(ID_LYRIC_DEFAULT_STYLE2, NULL);
-        menu.APPEND_ITEM(ID_LYRIC_DEFAULT_STYLE3, NULL);
+        menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE1));
+        menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE2));
+        menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE3));
         menu.AppendSeparator();
-        menu.AppendSubMenu(OptDlrcModDefStyleMenu, NULL);
+        menu.AppendSubMenu(OptDlrcModDefStyleMenu);
         break;
     case MenuMgr::OptDlrcModDefStyleMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_LYRIC_DEFAULT_STYLE1_MODIFY, NULL);
-        menu.APPEND_ITEM(ID_LYRIC_DEFAULT_STYLE2_MODIFY, NULL);
-        menu.APPEND_ITEM(ID_LYRIC_DEFAULT_STYLE3_MODIFY, NULL);
+        menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE1_MODIFY));
+        menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE2_MODIFY));
+        menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE3_MODIFY));
         menu.AppendSeparator();
-        menu.APPEND_ITEM(ID_RESTORE_DEFAULT_STYLE, NULL);
+        menu.AppendItem(EX_ID(ID_RESTORE_DEFAULT_STYLE));
         break;
     case MenuMgr::PropertyAdvMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_COPY_TEXT, NULL);
-        menu.APPEND_ITEM(ID_COPY_ALL_TEXT, NULL);
+        menu.AppendItem(EX_ID(ID_COPY_TEXT));
+        menu.AppendItem(EX_ID(ID_COPY_ALL_TEXT));
         break;
     case MenuMgr::PropertyCoverMenu:
         menu.CreateMenu(true, false);
-        menu.APPEND_ITEM(ID_COVER_BROWSE, theApp.m_icon_set.folder_explore.GetIcon(true));
-        menu.APPEND_ITEM(ID_COVER_DELETE, theApp.m_icon_set.close.GetIcon(true));
-        menu.APPEND_ITEM(ID_COVER_SAVE_AS, theApp.m_icon_set.save_as);
-        menu.APPEND_ITEM(ID_COMPRESS_SIZE, NULL);
+        menu.AppendItem(EX_ID(ID_COVER_BROWSE), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_COVER_DELETE), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_COVER_SAVE_AS), IconMgr::IconType::IT_Save_As);
+        menu.AppendItem(EX_ID(ID_COMPRESS_SIZE));
         break;
     default:
         ASSERT(false);                  // 参数错误或缺少case或缺少break

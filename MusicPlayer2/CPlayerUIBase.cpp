@@ -685,7 +685,7 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         case RepeatMode::RM_LOOP_PLAYLIST:
             return IconMgr::IconType::IT_Loop_Playlist;
         case RepeatMode::RM_LOOP_TRACK:
-            return IconMgr::IconType::IT_loop_track;
+            return IconMgr::IconType::IT_Loop_Track;
         case RepeatMode::RM_PLAY_SHUFFLE:
             return IconMgr::IconType::IT_Play_Shuffle;
         case RepeatMode::RM_PLAY_RANDOM:
@@ -2089,7 +2089,7 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     //绘制应用图标
     CRect rect_temp = rect;
     rect_temp.right = rect_temp.left + m_layout.titlabar_height;
-    DrawUiIcon(rect_temp, IconMgr::IconType::IT_App, IconMgr::IconStyle::IS_Color);
+    DrawUiIcon(rect_temp, IconMgr::IconType::IT_App);
 
     //绘制右侧图标
     rect_temp = rect;

@@ -14,6 +14,7 @@
 #include <deque>
 #include <list>
 #include <mutex>
+#include <shared_mutex>
 #include <cmath>
 #include <memory>
 #include <functional>

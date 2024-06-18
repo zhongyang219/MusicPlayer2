@@ -1783,7 +1783,7 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
         if (menu_list.size() >= ADD_TO_PLAYLIST_MAX_SIZE)
             break;
         UINT id = ID_ADD_TO_MY_FAVOURITE + 1 + menu_list.size();
-        menu_list.emplace_back(MenuMgr::MenuItem{ id, NULL, CFilePathHelper(item.path).GetFileNameWithoutExtension() });
+        menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IconType::IT_NO_ICON, CFilePathHelper(item.path).GetFileNameWithoutExtension() });
     }
     theApp.m_menu_mgr.UpdateMenu(MenuMgr::AddToPlaylistMenu, menu_list);
 }
@@ -1805,7 +1805,7 @@ void CMusicPlayerDlg::InitUiMenu()
         if (i == 2)
             menu_list.emplace_back(MenuMgr::MenuItem{});    // 在外部UI前插入一个分割条
         UINT id = ID_SWITCH_UI + i + 1;
-        menu_list.emplace_back(MenuMgr::MenuItem{ id, NULL, str_name });
+        menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IconType::IT_NO_ICON, str_name });
     }
     theApp.m_menu_mgr.UpdateMenu(MenuMgr::MainViewSwitchUiMenu, menu_list);
 }
@@ -6420,9 +6420,6 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, 
 {
     //初始化点击文件夹/播放列表右侧按钮弹出的菜单
     vector<MenuMgr::MenuItem> menu_list;
-    HICON playlist = theApp.m_icon_set.show_playlist.GetIcon(true);
-    HICON favourite = theApp.m_icon_set.favourite.GetIcon(true);
-    HICON folder = theApp.m_icon_set.select_folder.GetIcon(true);
     const auto& list = CRecentFolderAndPlaylist::Instance().GetItemList();
     for (const auto& item : list)
     {
@@ -6434,10 +6431,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, 
         if (item.is_playlist)
         {
             bool is_favourite{ item.playlist_info->path == CPlaylistMgr::Instance().m_favourite_playlist.path };
-            menu_list.emplace_back(MenuMgr::MenuItem{ id, is_favourite ? favourite : playlist, item.GetName() });
+            menu_list.emplace_back(MenuMgr::MenuItem{ id, is_favourite ? IconMgr::IconType::IT_Favorite_On : IconMgr::IconType::IT_Playlist, item.GetName() });
         }
         else
-            menu_list.emplace_back(MenuMgr::MenuItem{ id, folder, item.GetName() });
+            menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IconType::IT_Folder, item.GetName() });
     }
     theApp.m_menu_mgr.UpdateMenu(MenuMgr::RecentFolderPlaylistMenu, menu_list);
 
