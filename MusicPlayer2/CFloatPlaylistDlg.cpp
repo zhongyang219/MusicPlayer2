@@ -231,7 +231,7 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
     SetBackgroundColor(CONSTVAL::BACKGROUND_COLOR);
     UpdateStyles();
-    SetIcon(AfxGetApp()->LoadIcon(IDI_PLAYLIST_D), FALSE);
+    SetIcon(IconMgr::IconType::IT_Playlist, FALSE);
 
     // 为浮动播放列表禁用仅在主窗口使用的控件
     EnableDlgCtrl(IDC_HSPLITER_STATIC, false);

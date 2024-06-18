@@ -121,7 +121,7 @@ BOOL CFileRelateDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.file_relate, FALSE);
+    SetIcon(IconMgr::IconType::IT_File_Relate, FALSE);
 
     CRect rect;
     m_list_ctrl.GetWindowRect(rect);

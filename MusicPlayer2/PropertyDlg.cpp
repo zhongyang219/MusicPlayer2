@@ -113,11 +113,10 @@ BOOL CPropertyDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
-
-    m_previous_btn.SetIcon(theApp.m_icon_set.lyric_delay.GetIcon(true));
-    m_next_btn.SetIcon(theApp.m_icon_set.lyric_forward.GetIcon(true));
-    SetButtonIcon(IDC_SAVE_TO_FILE_BUTTON, theApp.m_icon_set.save_new);
+    SetIcon(IconMgr::IconType::IT_Info, FALSE);
+    SetButtonIcon(IDC_PREVIOUS_BUTTON, IconMgr::IconType::IT_Triangle_Left);
+    SetButtonIcon(IDC_NEXT_BUTTON, IconMgr::IconType::IT_Triangle_Right);
+    SetButtonIcon(IDC_SAVE_TO_FILE_BUTTON, IconMgr::IconType::IT_Save);
 
     //创建子对话框
     m_property_dlg.Create(IDD_PROPERTY_DIALOG);

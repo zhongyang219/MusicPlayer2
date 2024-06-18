@@ -49,7 +49,7 @@ BOOL CFileNameFormDlg::OnInitDialog()
     CTagSelBaseDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.tag, FALSE);
+    SetIcon(IconMgr::IconType::IT_Tag, FALSE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE

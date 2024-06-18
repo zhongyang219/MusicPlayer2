@@ -65,7 +65,7 @@ BOOL COptionsDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
-    SetIcon(theApp.m_icon_set.setting.GetIcon(true), FALSE);
+    SetIcon(IconMgr::IconType::IT_Setting, FALSE);
 
 	//创建子对话框
 	m_tab1_dlg.Create(IDD_LYRIC_SETTING_DIALOG);

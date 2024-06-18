@@ -56,7 +56,7 @@ BOOL CMessageDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);       // 设置小图标
+    SetIcon(IconMgr::IconType::IT_App, FALSE);      // 设置小图标
 
     ShowDlgCtrl(IDC_SYSLINK1, !m_link_text.empty());
 

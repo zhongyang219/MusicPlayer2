@@ -646,7 +646,7 @@ void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
         //如果有多个艺术家，弹出“选择艺术家”对话框
         CSelectItemDlg dlg(artist_list);
         dlg.SetTitle(theApp.m_str_table.LoadText(L"TITLE_SELECT_ARTIST").c_str());
-        dlg.SetDlgIcon(theApp.m_icon_set.artist.GetIcon());
+        dlg.SetDlgIcon(IconMgr::IconType::IT_Artist);
         if (dlg.DoModal() == IDOK)
             artist = dlg.GetSelectedItem();
         else

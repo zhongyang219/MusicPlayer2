@@ -138,9 +138,9 @@ BOOL CTagEditDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetButtonIcon(IDC_PREVIOUS_BUTTON, theApp.m_icon_set.lyric_delay.GetIcon(true));
-    SetButtonIcon(IDC_NEXT_BUTTON, theApp.m_icon_set.lyric_forward.GetIcon(true));
-    SetButtonIcon(IDC_SAVE_BUTTON, theApp.m_icon_set.save_new);
+    SetButtonIcon(IDC_PREVIOUS_BUTTON, IconMgr::IconType::IT_Triangle_Left);
+    SetButtonIcon(IDC_NEXT_BUTTON, IconMgr::IconType::IT_Triangle_Right);
+    SetButtonIcon(IDC_SAVE_BUTTON, IconMgr::IconType::IT_Save);
 
     //初始化流派列表
     CAudioCommon::EmulateGenre([&](const wstring& genre_str)

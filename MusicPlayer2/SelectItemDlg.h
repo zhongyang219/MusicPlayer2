@@ -19,7 +19,7 @@ public:
 
 public:
     void SetTitle(LPCTSTR title);
-    void SetDlgIcon(HICON icon);
+    void SetDlgIcon(IconMgr::IconType icon_type);
     wstring GetSelectedItem() const;
 
 private:
@@ -27,7 +27,7 @@ private:
     CString m_title;
     const vector<wstring>& m_items;
     int m_item_selected{ -1 };
-    HICON m_icon{};
+    IconMgr::IconType m_icon_type{ IconMgr::IconType::IT_NO_ICON };
 
 protected:
     virtual CString GetDialogName() const override;

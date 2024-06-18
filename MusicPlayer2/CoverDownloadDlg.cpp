@@ -120,7 +120,7 @@ CString CCoverDownloadDlg::GetDialogName() const
 
 bool CCoverDownloadDlg::InitializeControls()
 {
-    SetIcon(theApp.m_icon_set.album_cover, FALSE);
+    SetIcon(IconMgr::IconType::IT_Album_Cover, FALSE);
     wstring temp;
     temp = theApp.m_str_table.LoadText(L"TITLE_COVER_DL");
     SetWindowTextW(temp.c_str());
@@ -148,8 +148,8 @@ bool CCoverDownloadDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_SEL_DL");
     SetDlgItemTextW(IDC_DOWNLOAD_SELECTED, temp.c_str());
 
-    SetButtonIcon(IDC_SEARCH_BUTTON, theApp.m_icon_set.find_songs.GetIcon(true));
-    SetButtonIcon(IDC_DOWNLOAD_SELECTED, theApp.m_icon_set.download);
+    SetButtonIcon(IDC_SEARCH_BUTTON, IconMgr::IconType::IT_Find);
+    SetButtonIcon(IDC_DOWNLOAD_SELECTED, IconMgr::IconType::IT_Download);
 
     RepositionTextBasedControls({
         { CtrlTextInfo::L1, IDC_TXT_COVER_DL_TITLE_STATIC },

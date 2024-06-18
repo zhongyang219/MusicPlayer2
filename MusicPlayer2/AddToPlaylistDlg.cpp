@@ -75,7 +75,7 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), FALSE);		// 设置小图标
+    SetIcon(IconMgr::IconType::IT_Playlist, FALSE);     // 设置小图标
 
     m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
 

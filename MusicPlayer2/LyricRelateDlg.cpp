@@ -166,11 +166,11 @@ BOOL CLyricRelateDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.lyric.GetIcon(true), FALSE);
-    SetButtonIcon(IDC_LOCAL_SEARCH_BUTTON, theApp.m_icon_set.find_songs.GetIcon(true));
-    SetButtonIcon(IDC_BROWSE_BUTTON1, theApp.m_icon_set.folder_explore.GetIcon(true));
-    SetButtonIcon(IDC_DELETE_FILE_BUTTON, theApp.m_icon_set.close.GetIcon(true));
-    SetButtonIcon(IDC_DONOT_RELATE_BUTTON, theApp.m_icon_set.unlink.GetIcon(true));
+    SetIcon(IconMgr::IconType::IT_Lyric, FALSE);
+    SetButtonIcon(IDC_LOCAL_SEARCH_BUTTON, IconMgr::IconType::IT_Find);
+    SetButtonIcon(IDC_BROWSE_BUTTON1, IconMgr::IconType::IT_Folder_Explore);
+    SetButtonIcon(IDC_DELETE_FILE_BUTTON, IconMgr::IconType::IT_Cancel);
+    SetButtonIcon(IDC_DONOT_RELATE_BUTTON, IconMgr::IconType::IT_Unlink);
 
     wstring lyric_name;
     if (CPlayer::GetInstance().GetCurrentSongInfo().is_cue || CPlayer::GetInstance().IsOsuFile())

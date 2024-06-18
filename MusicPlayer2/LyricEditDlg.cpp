@@ -312,8 +312,8 @@ BOOL CLyricEditDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
     CenterWindow();
 
-    SetIcon(theApp.m_icon_set.edit.GetIcon(true), FALSE);
-    SetIcon(AfxGetApp()->LoadIcon(IDI_EDIT_D), TRUE);
+    SetIcon(IconMgr::IconType::IT_Edit, FALSE);
+    SetIcon(IconMgr::IconType::IT_Edit, TRUE);
 
     m_view = (CScintillaEditView*)RUNTIME_CLASS(CScintillaEditView)->CreateObject();
     m_view->Create(NULL, NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL, CalculateEditCtrlRect(), this, 3000);

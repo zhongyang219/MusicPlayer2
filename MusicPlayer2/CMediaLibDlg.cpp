@@ -88,12 +88,12 @@ BOOL CMediaLibDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
     ModifyStyle(0, WS_CLIPCHILDREN);
 
-    SetIcon(theApp.m_icon_set.media_lib.GetIcon(true), FALSE);
-    SetIcon(AfxGetApp()->LoadIcon(IDI_MEDIA_LIB_D), TRUE);
+    SetIcon(IconMgr::IconType::IT_Media_Lib, FALSE);
+    SetIcon(IconMgr::IconType::IT_Media_Lib, TRUE);
 
-    SetButtonIcon(IDC_MEDIA_LIB_SETTINGS_BTN, theApp.m_icon_set.setting.GetIcon(true));
-    SetButtonIcon(IDC_STATISTICS_INFO_BUTTON, theApp.m_icon_set.info.GetIcon(true));
-    SetButtonIcon(IDC_PLAY_SELECTED, theApp.m_icon_set.play_new.GetIcon(true));
+    SetButtonIcon(IDC_MEDIA_LIB_SETTINGS_BTN, IconMgr::IconType::IT_Setting);
+    SetButtonIcon(IDC_STATISTICS_INFO_BUTTON, IconMgr::IconType::IT_Info);
+    SetButtonIcon(IDC_PLAY_SELECTED, IconMgr::IconType::IT_Play);
 
     //为每个标签添加图标
     CImageList ImageList;

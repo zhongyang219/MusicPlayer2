@@ -25,9 +25,9 @@ void CEditStringListDlg::SetTitle(LPCTSTR title)
     m_title = title;
 }
 
-void CEditStringListDlg::SetDlgIcon(HICON icon)
+void CEditStringListDlg::SetDlgIcon(IconMgr::IconType icon_type)
 {
-    m_icon = icon;
+    m_icon_type = icon_type;
 }
 
 
@@ -70,10 +70,10 @@ BOOL CEditStringListDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    if (m_icon == NULL)
-        SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);
+    if (m_icon_type == IconMgr::IconType::IT_NO_ICON)
+        SetIcon(IconMgr::IconType::IT_App, FALSE);
     else
-        SetIcon(m_icon, FALSE);
+        SetIcon(m_icon_type, FALSE);
 
     for (const auto& str : m_items)
         m_list_ctrl.AddString(str.c_str());

@@ -303,10 +303,10 @@ BOOL CFormatConvertDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
     CenterWindow();
 
-    SetIcon(theApp.m_icon_set.convert, FALSE);
-    SetIcon(AfxGetApp()->LoadIcon(IDI_CONVERT_D), true);
-    SetButtonIcon(IDC_ENCODER_CONFIG_BUTTON, theApp.m_icon_set.setting.GetIcon(true));
-    SetButtonIcon(IDC_START_CONVERT_BUTTON, theApp.m_icon_set.convert);
+    SetIcon(IconMgr::IconType::IT_Convert, FALSE);
+    SetIcon(IconMgr::IconType::IT_Convert, TRUE);
+    SetButtonIcon(IDC_ENCODER_CONFIG_BUTTON, IconMgr::IconType::IT_Setting);
+    SetButtonIcon(IDC_START_CONVERT_BUTTON, IconMgr::IconType::IT_Convert);
 
     LoadConfig();
     LoadEncoderConfig();

@@ -216,10 +216,10 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	LoadConfig();
 
-    SetIcon(theApp.m_icon_set.download, FALSE);
-    SetButtonIcon(IDC_SEARCH_BUTTON2, theApp.m_icon_set.find_songs.GetIcon(true));
-    SetButtonIcon(IDC_DOWNLOAD_SELECTED, theApp.m_icon_set.download);
-    SetButtonIcon(IDC_SELECTED_SAVE_AS, theApp.m_icon_set.save_as);
+    SetIcon(IconMgr::IconType::IT_Download, FALSE);
+    SetButtonIcon(IDC_SEARCH_BUTTON2, IconMgr::IconType::IT_Find);
+    SetButtonIcon(IDC_DOWNLOAD_SELECTED, IconMgr::IconType::IT_Download);
+    SetButtonIcon(IDC_SELECTED_SAVE_AS, IconMgr::IconType::IT_Save_As);
 
     m_song = CPlayer::GetInstance().GetCurrentSongInfo();
 

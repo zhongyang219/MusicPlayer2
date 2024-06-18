@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "IconMgr.h"
 
 // CBaseDialog 对话框
 
@@ -33,11 +33,13 @@ private:
 
     static std::map<CString, HWND> m_unique_hwnd;        //针对每一个派生类的唯一的窗口句柄
 
-protected:
-    void SetButtonIcon(UINT id, HICON icon);
+public:
+    void SetIcon(IconMgr::IconType type, BOOL bBigIcon);
+    void SetButtonIcon(UINT id, IconMgr::IconType type);
     void ShowDlgCtrl(UINT id, bool show);
     void EnableDlgCtrl(UINT id, bool enable);
 
+protected:
     // 仅在InitializeControls期间可用，测量控件文本长度
     CRect GetTextExtent(const CString& text);
 

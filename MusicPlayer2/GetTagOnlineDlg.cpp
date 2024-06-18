@@ -41,7 +41,7 @@ BOOL CGetTagOnlineDlg::OnInitDialog()
     CCoverDownloadDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
+    SetIcon(IconMgr::IconType::IT_Info, FALSE);
 
     SetWindowText(theApp.m_str_table.LoadText(L"TITLE_GET_TAG_ONLINE").c_str());
 

@@ -62,7 +62,7 @@ BOOL CMediaLibStatisticsDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
+    SetIcon(IconMgr::IconType::IT_Info, FALSE);
 
     //初始化控件
     ShowDlgCtrl(IDOK, false);

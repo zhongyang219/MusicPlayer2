@@ -101,12 +101,20 @@ void CBaseDialog::ReLoadLayoutResource()
     }
 }
 
-void CBaseDialog::SetButtonIcon(UINT id, HICON icon)
+void CBaseDialog::SetIcon(IconMgr::IconType type, BOOL bBigIcon)
+{
+    if (bBigIcon)
+        CDialog::SetIcon(theApp.m_icon_mgr.GetHICON(type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_Default), TRUE);
+    else
+        CDialog::SetIcon(theApp.m_icon_mgr.GetHICON(type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16), FALSE);
+}
+
+void CBaseDialog::SetButtonIcon(UINT id, IconMgr::IconType type)
 {
     CWnd* dlgItem = GetDlgItem(id);
     CButton* close_btn = static_cast<CButton*>(dlgItem);
     if (close_btn != nullptr)
-        close_btn->SetIcon(icon);
+        close_btn->SetIcon(theApp.m_icon_mgr.GetHICON(type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16));
 }
 
 void CBaseDialog::ShowDlgCtrl(UINT id, bool show)
@@ -280,8 +288,8 @@ BOOL CBaseDialog::OnInitDialog()
     // 设置窗口字体
     CCommon::SetDialogFont(this, &theApp.m_font_set.dlg.GetFont());
     //为按钮添加图标
-    SetButtonIcon(IDCANCEL, theApp.m_icon_set.close.GetIcon(true));
-    SetButtonIcon(IDOK, theApp.m_icon_set.ok);
+    SetButtonIcon(IDCANCEL, IconMgr::IconType::IT_Cancel);
+    SetButtonIcon(IDOK, IconMgr::IconType::IT_Ok);
     // 设置按钮文本
     wstring temp;
     temp = theApp.m_str_table.LoadText(L"TXT_OK");

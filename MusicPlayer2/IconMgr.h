@@ -91,6 +91,7 @@ public:
         IT_Rename,                  // 重命名
         IT_Play_In_Playlist,        // 添加到新播放列表并播放
         IT_Play_In_Folder,          // 在文件夹模式中播放
+        IT_Tag,                     // 标签
 
         IT_Le_Tag_Insert,           // Le 插入时间标签
         IT_Le_Tag_Replace,          // Le 替换时间标签

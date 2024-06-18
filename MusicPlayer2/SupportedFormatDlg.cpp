@@ -60,7 +60,7 @@ BOOL CSupportedFormatDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetIcon(AfxGetApp()->LoadIcon(IDR_MAINFRAME), FALSE);       // 设置小图标
+    SetIcon(IconMgr::IconType::IT_App, FALSE);       // 设置小图标
     if (theApp.m_play_setting_data.use_ffmpeg)
         SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_FFMPEG").c_str());
     else if (theApp.m_play_setting_data.use_mci)

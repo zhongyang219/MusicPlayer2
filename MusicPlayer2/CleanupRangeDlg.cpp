@@ -61,7 +61,7 @@ BOOL CCleanupRangeDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);
+    SetIcon(IconMgr::IconType::IT_App, FALSE);
 
     m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_CHECKBOXES);
     m_list_ctrl.SetRowHeight(theApp.DPI(24));

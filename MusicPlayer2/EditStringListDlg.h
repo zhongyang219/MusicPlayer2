@@ -13,7 +13,7 @@ public:
     virtual ~CEditStringListDlg();
 
     void SetTitle(LPCTSTR title);
-    void SetDlgIcon(HICON icon);
+    void SetDlgIcon(IconMgr::IconType icon_type);
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -24,7 +24,7 @@ private:
     CEditableListBox m_list_ctrl;
     CString m_title;
     vector<wstring>& m_items;
-    HICON m_icon{};
+    IconMgr::IconType m_icon_type{ IconMgr::IconType::IT_NO_ICON };
 
 protected:
     virtual CString GetDialogName() const override;

@@ -49,7 +49,7 @@ BOOL CRenameDlg::OnInitDialog()
     CTagSelBaseDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.rename, FALSE);
+    SetIcon(IconMgr::IconType::IT_Rename, FALSE);
 
     if (!m_init_insert_formular.empty())
     {
