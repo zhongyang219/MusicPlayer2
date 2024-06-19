@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "IconMgr.h"
 
 // CTabCtrlEx
 
@@ -11,9 +11,10 @@ public:
 	CTabCtrlEx();
 	virtual ~CTabCtrlEx();
 
-	void AddWindow(CWnd* pWnd, LPCTSTR lable_text);		//向当前tab控件添加一个子窗口
+    void AddWindow(CWnd* pWnd, LPCTSTR lable_text, IconMgr::IconType icon_type);    //向当前tab控件添加一个子窗口
 	void SetCurTab(int index);
     CWnd* GetCurrentTab();
+    // 调整所有标签页大小兼执行设置图标
     void AdjustTabWindowSize();
 
 protected:
@@ -23,6 +24,7 @@ protected:
 
 protected:
 	vector<CWnd*> m_tab_list;		//保存tab控件每个子窗口的指针
+    vector<IconMgr::IconType> m_icon_list;
 public:
 	afx_msg void OnTcnSelchange(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual void PreSubclassWindow();

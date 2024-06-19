@@ -85,6 +85,12 @@ public:
         IT_Star,                    // 星星/分级
         IT_Artist,                  // 艺术家
         IT_Album,                   // 专辑
+        IT_Genre,                   // 流派
+        IT_Year,                    // 年份
+        IT_Bitrate,                 // 比特率
+        IT_History,                 // 最近播放
+        IT_Key_Board,               // 快捷键
+        IT_Reverb,                  // 混响
         IT_Double_Line,             // 双行
         IT_Lock,                    // 锁/桌面歌词锁定
         IT_Play_As_Next,            // 下一首播放

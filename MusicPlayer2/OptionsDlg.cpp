@@ -92,24 +92,12 @@ BOOL COptionsDlg::OnInitDialog()
 	}
 
 	//添加对话框
-	m_tab.AddWindow(&m_tab1_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_LRC").c_str());
-	m_tab.AddWindow(&m_tab2_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_APC").c_str());
-	m_tab.AddWindow(&m_tab3_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_DATA").c_str());
-	m_tab.AddWindow(&m_tab4_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_PLAY").c_str());
-	m_tab.AddWindow(&m_media_lib_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_MEDIA_LIB").c_str());
-	m_tab.AddWindow(&m_tab5_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_HOT_KEY").c_str());
-
-    //为每个标签添加图标
-    CImageList ImageList;
-    ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
-    ImageList.Add(theApp.m_icon_set.lyric.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.skin.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.setting.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.play_new.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.hot_key);
-    m_tab.SetImageList(&ImageList);
-    ImageList.Detach();
+    m_tab.AddWindow(&m_tab1_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_LRC").c_str(), IconMgr::IconType::IT_Lyric);
+    m_tab.AddWindow(&m_tab2_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_APC").c_str(), IconMgr::IconType::IT_Skin);
+    m_tab.AddWindow(&m_tab3_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_DATA").c_str(), IconMgr::IconType::IT_Setting);
+    m_tab.AddWindow(&m_tab4_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_PLAY").c_str(), IconMgr::IconType::IT_Play);
+    m_tab.AddWindow(&m_media_lib_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_MEDIA_LIB").c_str(), IconMgr::IconType::IT_Media_Lib);
+    m_tab.AddWindow(&m_tab5_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_HOT_KEY").c_str(), IconMgr::IconType::IT_Key_Board);
 
     m_tab.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
     m_tab.AdjustTabWindowSize();

@@ -60,7 +60,6 @@ public:
     MenuMgr m_menu_mgr;
 
     UIData m_ui_data;
-    IconSet m_icon_set;			//图标资源
     FontSet m_font_set;			//字体资源
     ImageSet m_image_set;       //图片资源
 

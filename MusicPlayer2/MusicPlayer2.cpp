@@ -512,139 +512,6 @@ void CMusicPlayerApp::LoadConfig()
 
 void CMusicPlayerApp::LoadIconResource()
 {
-#ifdef _DEBUG
-    m_icon_set.app.Load(IDI_APP_DEBUG, NULL, DPI(16));
-#else
-    m_icon_set.app.Load(IDR_MAINFRAME, NULL, DPI(16));
-#endif
-    m_icon_set.default_cover = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, 512, 512);
-    m_icon_set.default_cover_small = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER, DPI(32), DPI(32));
-    m_icon_set.default_cover_not_played = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER_NOT_PLAYED, 512, 512);
-    m_icon_set.default_cover_small_not_played = CDrawCommon::LoadIconResource(IDI_DEFAULT_COVER_NOT_PLAYED, DPI(32), DPI(32));
-    m_icon_set.default_cover_toolbar.Load(IDI_DEFAULT_COVER, IDI_DEFAULT_COVER, DPI(16));
-    m_icon_set.default_cover_toolbar_not_played.Load(IDI_DEFAULT_COVER_NOT_PLAYED, IDI_DEFAULT_COVER_NOT_PLAYED, DPI(16));
-    m_icon_set.skin.Load(IDI_SKIN, IDI_SKIN_D, DPI(16));
-    m_icon_set.eq.Load(IDI_EQ, IDI_EQ_D, DPI(16));
-    m_icon_set.setting.Load(IDI_SETTING, IDI_SETTING_D, DPI(16));
-    m_icon_set.mini.Load(IDI_MINI, IDI_MINI_D, DPI(16));
-    m_icon_set.play_oder.Load(IDI_PLAY_ORDER, IDI_PLAY_ORDER_D, DPI(16));
-    m_icon_set.play_shuffle.Load(IDI_PLAY_SHUFFLE, IDI_PLAY_SHUFFLE_D, DPI(16));
-    m_icon_set.play_random.Load(IDI_PLAY_RANDOM, IDI_PLAY_RANDOM_D, DPI(16));
-    m_icon_set.loop_playlist.Load(IDI_LOOP_PLAYLIST, IDI_LOOP_PLAYLIST_D, DPI(16));
-    m_icon_set.loop_track.Load(IDI_LOOP_TRACK, IDI_LOOP_TRACK_D, DPI(16));
-    m_icon_set.play_track.Load(IDI_PLAY_TRACK, IDI_PLAY_TRACK_D, DPI(16));
-    m_icon_set.info.Load(IDI_SONG_INFO, IDI_SONG_INFO_D, DPI(16));
-    m_icon_set.select_folder.Load(IDI_SELECT_FOLDER, IDI_SELECT_FOLDER_D, DPI(16));
-    m_icon_set.media_lib.Load(IDI_MEDIA_LIB, IDI_MEDIA_LIB_D, DPI(16));
-    m_icon_set.show_playlist.Load(IDI_PLAYLIST, IDI_PLAYLIST_D, DPI(16));
-    m_icon_set.find_songs.Load(IDI_FIND_SONGS, IDI_FIND_SONGS_D, DPI(16));
-    m_icon_set.full_screen.Load(IDI_FULL_SCREEN, IDI_FULL_SCREEN_D, DPI(16));
-    m_icon_set.full_screen1.Load(IDI_FULL_SCREEN1, IDI_FULL_SCREEN1_D, DPI(16));
-    m_icon_set.menu.Load(IDI_MENU, IDI_MENU_D, DPI(16));
-    m_icon_set.favourite.Load(IDI_FAVOURITE, IDI_FAVOURITE_D, DPI(16));
-    m_icon_set.heart.Load(IDI_HEART, NULL, DPI(16));
-    m_icon_set.double_line.Load(IDI_DOUBLE_LINE_D, NULL, DPI(16));
-    m_icon_set.lock.Load(IDI_LOCK_D, NULL, DPI(16));
-    m_icon_set.close.Load(IDI_CLOSE_D, NULL, DPI(16));
-    m_icon_set.edit.Load(IDI_EDIT_D, NULL, DPI(16));
-    m_icon_set.add.Load(IDI_ADD, IDI_ADD_D, DPI(16));
-    m_icon_set.artist.Load(IDI_ARTIST_D, NULL, DPI(16));
-    m_icon_set.album.Load(IDI_ALBUM_D, NULL, DPI(16));
-    m_icon_set.genre.Load(IDI_GENRE_D, NULL, DPI(16));
-    m_icon_set.year.Load(IDI_YEAR_D, NULL, DPI(16));
-    m_icon_set.folder_explore.Load(IDI_FOLDER_EXPLORE_D, NULL, DPI(16));
-    m_icon_set.lyric_forward.Load(IDI_LYRIC_FORWARD_D, NULL, DPI(16));
-    m_icon_set.lyric_delay.Load(IDI_LYRIC_DELAY_D, NULL, DPI(16));
-    m_icon_set.recent_songs.Load(IDI_RECENT_SONG_D, NULL, DPI(16));
-    m_icon_set.volume1.Load(IDI_VOLUME1, IDI_VOLUME1_D, DPI(16));
-    m_icon_set.volume2.Load(IDI_VOLUME2, IDI_VOLUME2_D, DPI(16));
-    m_icon_set.volume3.Load(IDI_VOLUME3, IDI_VOLUME3_D, DPI(16));
-    m_icon_set.volume0.Load(IDI_VOLUME0, IDI_VOLUME0_D, DPI(16));
-    m_icon_set.dark_mode.Load(IDI_LIGHT_MODE, IDI_DARK_MODE_D, DPI(16));
-
-    m_icon_set.previous.Load(IDI_PREVIOUS, NULL, DPI(16));
-    m_icon_set.play.Load(IDI_PLAY, NULL, DPI(16));
-    m_icon_set.pause.Load(IDI_PAUSE, NULL, DPI(16));
-    m_icon_set.next.Load(IDI_NEXT1, NULL, DPI(16));
-    m_icon_set.stop.Load(IDI_STOP, NULL, DPI(16));
-
-    //用于主界面的播放控制图标，大小为20像素
-    m_icon_set.play_l.Load(IDI_PLAY_NEW, IDI_PLAY_NEW_D, DPI(20));
-    m_icon_set.pause_l.Load(IDI_PAUSE_NEW, IDI_PAUSE_NEW_D, DPI(20));
-    m_icon_set.previous_l.Load(IDI_PREVIOUS_NEW, IDI_PREVIOUS_NEW_D, DPI(20));
-    m_icon_set.next_l.Load(IDI_NEXT_NEW, IDI_NEXT_NEW_D, DPI(20));
-    m_icon_set.stop_l.Load(IDI_STOP_NEW, IDI_STOP_NEW_D, DPI(20));
-
-    //用于迷你模式的播放控制图标，大小为16像素
-    m_icon_set.play_new.Load(IDI_PLAY_NEW, IDI_PLAY_NEW_D, DPI(16));
-    m_icon_set.pause_new.Load(IDI_PAUSE_NEW, IDI_PAUSE_NEW_D, DPI(16));
-    m_icon_set.previous_new.Load(IDI_PREVIOUS_NEW, IDI_PREVIOUS_NEW_D, DPI(16));
-    m_icon_set.next_new.Load(IDI_NEXT_NEW, IDI_NEXT_NEW_D, DPI(16));
-
-    m_icon_set.app_close.Load(IDI_CLOSE, IDI_CLOSE_D, DPI(16));
-    m_icon_set.maximize.Load(IDI_MAXIMIZE, IDI_MAXIMIZE_D, DPI(16));
-    m_icon_set.minimize.Load(IDI_MINIMIZE, IDI_MINIMIZE_D, DPI(16));
-    m_icon_set.restore.Load(IDI_RESTORE, IDI_RESTORE_D, DPI(16));
-    m_icon_set.sort.Load(IDI_SORT, IDI_SORT_D, DPI(16));
-    m_icon_set.display_mode.Load(IDI_DISPLAY_MODE, IDI_DISPLAY_MODE_D, DPI(16));
-    m_icon_set.link.Load(IDI_LINK, IDI_LINK_D, DPI(16));
-    m_icon_set.unlink.Load(IDI_UNLINK, IDI_UNLINK_D, DPI(16));
-    m_icon_set.switch_display.Load(IDI_SWITCH, IDI_SWITCH_D, DPI(16));
-    m_icon_set.help.Load(IDI_HELP, IDI_HELP_D, DPI(16));
-    m_icon_set.lyric.Load(IDI_LYRIC, IDI_LYRIC_D, DPI(16));
-    m_icon_set.playlist_dock.Load(IDI_PLAYLIST_DOCK, IDI_PLAYLIST_DOCK_D, DPI(16));
-    m_icon_set.mini_restore.Load(IDI_MINI_RESTORE, IDI_MINI_RESTORE_D, DPI(16));
-    m_icon_set.locate.Load(IDI_LOCATE, IDI_LOCATE_D, DPI(16));
-    m_icon_set.expand.Load(IDI_EXPAND, IDI_EXPAND_D, DPI(16));
-
-    //菜单图标
-    m_icon_set.stop_new = CDrawCommon::LoadIconResource(IDI_STOP_NEW_D, DPI(16), DPI(16));
-    m_icon_set.save_new = CDrawCommon::LoadIconResource(IDI_SAVE_NEW_D, DPI(16), DPI(16));
-    m_icon_set.save_as = CDrawCommon::LoadIconResource(IDI_SAVE_AS_D, DPI(16), DPI(16));
-    m_icon_set.music = CDrawCommon::LoadIconResource(IDI_MUSIC_D, DPI(16), DPI(16));
-    m_icon_set.file_relate = CDrawCommon::LoadIconResource(IDI_FILE_RELATE_D, DPI(16), DPI(16));
-    m_icon_set.online = CDrawCommon::LoadIconResource(IDI_ONLINE_D, DPI(16), DPI(16));
-    m_icon_set.play_pause = CDrawCommon::LoadIconResource(IDI_PLAY_PAUSE_D, DPI(16), DPI(16));
-    m_icon_set.convert = CDrawCommon::LoadIconResource(IDI_CONVERT_D, DPI(16), DPI(16));
-    m_icon_set.download = CDrawCommon::LoadIconResource(IDI_DOWNLOAD_D, DPI(16), DPI(16));
-    m_icon_set.download1 = CDrawCommon::LoadIconResource(IDI_DOWNLOAD1_D, DPI(16), DPI(16));
-    m_icon_set.ff_new = CDrawCommon::LoadIconResource(IDI_FF_NEW_D, DPI(16), DPI(16));
-    m_icon_set.rew_new = CDrawCommon::LoadIconResource(IDI_REW_NEW_D, DPI(16), DPI(16));
-    m_icon_set.playlist_float = CDrawCommon::LoadIconResource(IDI_PLAYLIST_FLOAT_D, DPI(16), DPI(16));
-    m_icon_set.statistics = CDrawCommon::LoadIconResource(IDI_STATISTICS_D, DPI(16), DPI(16));
-    m_icon_set.pin = CDrawCommon::LoadIconResource(IDI_PIN_D, DPI(16), DPI(16));
-    m_icon_set.exit = CDrawCommon::LoadIconResource(IDI_EXIT_D, DPI(16), DPI(16));
-    m_icon_set.album_cover = CDrawCommon::LoadIconResource(IDI_ALBUM_COVER_D, DPI(16), DPI(16));
-    m_icon_set.rename = CDrawCommon::LoadIconResource(IDI_RENAME_D, DPI(16), DPI(16));
-    m_icon_set.tag = CDrawCommon::LoadIconResource(IDI_TAG, DPI(16), DPI(16));
-    m_icon_set.star = CDrawCommon::LoadIconResource(IDI_STAR, DPI(16), DPI(16));
-    m_icon_set.internal_lyric = CDrawCommon::LoadIconResource(IDI_INTERNAL_LYRIC_D, DPI(16), DPI(16));
-    m_icon_set.speed_up = CDrawCommon::LoadIconResource(IDI_SPEED_UP_D, DPI(16), DPI(16));
-    m_icon_set.slow_down = CDrawCommon::LoadIconResource(IDI_SLOW_DOWN_D, DPI(16), DPI(16));
-    m_icon_set.shortcut = CDrawCommon::LoadIconResource(IDI_SHORTCUT_D, DPI(16), DPI(16));
-    m_icon_set.play_as_next = CDrawCommon::LoadIconResource(IDI_PLAY_AS_NEXT, DPI(16), DPI(16));
-    m_icon_set.play_in_playlist = CDrawCommon::LoadIconResource(IDI_PLAY_IN_PLAYLIST, DPI(16), DPI(16));
-    m_icon_set.copy = CDrawCommon::LoadIconResource(IDI_COPY, DPI(16), DPI(16));
-    m_icon_set.play_in_folder = CDrawCommon::LoadIconResource(IDI_PLAY_IN_FOLDER, DPI(16), DPI(16));
-    m_icon_set.bitrate = CDrawCommon::LoadIconResource(IDI_BITRATE, DPI(16), DPI(16));
-    m_icon_set.reverb = CDrawCommon::LoadIconResource(IDI_REVERB, DPI(16), DPI(16));
-    m_icon_set.hot_key = CDrawCommon::LoadIconResource(IDI_HOT_KEY, DPI(16), DPI(16));
-    m_icon_set.fix = CDrawCommon::LoadIconResource(IDI_FIX_D, DPI(16), DPI(16));
-    m_icon_set.up = CDrawCommon::LoadIconResource(IDI_UP_D, DPI(16), DPI(16));
-
-    m_icon_set.le_add_tag = CDrawCommon::LoadIconResource(IDI_ADD_TAG, DPI(16), DPI(16));
-    m_icon_set.le_replace_tag = CDrawCommon::LoadIconResource(IDI_REPLACE_TAG, DPI(16), DPI(16));
-    m_icon_set.le_delete_tag = CDrawCommon::LoadIconResource(IDI_DELETE_TAG, DPI(16), DPI(16));
-    m_icon_set.le_find = CDrawCommon::LoadIconResource(IDI_FIND, DPI(16), DPI(16));
-    m_icon_set.le_replace = CDrawCommon::LoadIconResource(IDI_REPLACE, DPI(16), DPI(16));
-
-    m_icon_set.ok = CDrawCommon::LoadIconResource(IDI_OK_D, DPI(16), DPI(16));
-
-    //加载通知区图标
-    m_icon_set.notify_icons[0] = m_icon_set.app.GetIcon();      //应用图标直接使用前面加载过的
-    m_icon_set.notify_icons[1] = CDrawCommon::LoadIconResource(IDI_APP_LIGHT, DPI(16), DPI(16));
-    m_icon_set.notify_icons[2] = CDrawCommon::LoadIconResource(IDI_APP_DARK, DPI(16), DPI(16));
-
     //加载图片资源
     m_image_set.default_cover_img = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
     m_image_set.default_cover_not_played_img = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED);
@@ -795,9 +662,16 @@ void CMusicPlayerApp::AutoSelectNotifyIcon()
 
 HICON CMusicPlayerApp::GetNotifyIncon(int index)
 {
-    if (index < 0 || index >= MAX_NOTIFY_ICON)
-        index = 0;
-    return m_icon_set.notify_icons[index];
+    static HICON hIcon_color = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_App, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_16);
+    static HICON hIcon_white = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_App_Monochrome, IconMgr::IconStyle::IS_OutlinedLight, IconMgr::IconSize::IS_DPI_16);
+    static HICON hIcon_black = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_App_Monochrome, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
+
+    if (index == 1)
+        return hIcon_white;
+    else if (index == 2)
+        return hIcon_black;
+    else
+        return hIcon_color;
 }
 
 bool CMusicPlayerApp::IsScintillaLoaded() const

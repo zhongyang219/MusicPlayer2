@@ -125,20 +125,10 @@ BOOL CPropertyDlg::OnInitDialog()
         m_advanced_dlg.Create(IDD_PROPERTY_ADVANCED_DIALOG);
 
     //添加对话框
-    m_tab_ctrl.AddWindow(&m_property_dlg, theApp.m_str_table.LoadText(L"TITLE_PROPERTY_DLG").c_str());
-    m_tab_ctrl.AddWindow(&m_album_cover_dlg, theApp.m_str_table.LoadText(L"TITLE_COVER_PROPERTY").c_str());
+    m_tab_ctrl.AddWindow(&m_property_dlg, theApp.m_str_table.LoadText(L"TITLE_PROPERTY_DLG").c_str(), IconMgr::IconType::IT_File_Relate);
+    m_tab_ctrl.AddWindow(&m_album_cover_dlg, theApp.m_str_table.LoadText(L"TITLE_COVER_PROPERTY").c_str(), IconMgr::IconType::IT_Album_Cover);
     if (!m_batch_edit)
-        m_tab_ctrl.AddWindow(&m_advanced_dlg, theApp.m_str_table.LoadText(L"TITLE_ADVANCED_PROPERTY").c_str());
-
-    //为每个标签添加图标
-    CImageList ImageList;
-    ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
-    ImageList.Add(theApp.m_icon_set.file_relate);
-    ImageList.Add(theApp.m_icon_set.album_cover);
-    if (!m_batch_edit)
-        ImageList.Add(theApp.m_icon_set.tag);
-    m_tab_ctrl.SetImageList(&ImageList);
-    ImageList.Detach();
+        m_tab_ctrl.AddWindow(&m_advanced_dlg, theApp.m_str_table.LoadText(L"TITLE_ADVANCED_PROPERTY").c_str(), IconMgr::IconType::IT_Tag);
 
     m_tab_ctrl.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
     m_tab_ctrl.AdjustTabWindowSize();

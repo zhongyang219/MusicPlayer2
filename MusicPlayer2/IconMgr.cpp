@@ -226,6 +226,18 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
         return { IDI_ARTIST_D, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Album:
         return { IDI_ALBUM_D, NULL, NULL, NULL };
+    case IconMgr::IconType::IT_Genre:
+        return { IDI_GENRE_D, NULL, NULL, NULL };
+    case IconMgr::IconType::IT_Year:
+        return { IDI_YEAR_D, NULL, NULL, NULL };
+    case IconMgr::IconType::IT_Bitrate:
+        return { IDI_BITRATE, NULL, NULL, NULL };
+    case IconMgr::IconType::IT_History:
+        return { IDI_RECENT_SONG_D, NULL, NULL, NULL };
+    case IconMgr::IconType::IT_Key_Board:
+        return { IDI_HOT_KEY, NULL, NULL, NULL };
+    case IconMgr::IconType::IT_Reverb:
+        return { IDI_REVERB, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Double_Line:
         return { IDI_DOUBLE_LINE_D, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Lock:

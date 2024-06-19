@@ -96,7 +96,7 @@ public:
         for (const auto& item : items)      // 插入新的外部提供菜单项
         {
             if (item.id != NULL)
-                AppendItem(item.id, empty, IconMgr::IT_NO_ICON, item.text.c_str());
+                AppendItem(item.id, empty, item.icon_type, item.text.c_str());
             else
                 AppendSeparator();
         }
