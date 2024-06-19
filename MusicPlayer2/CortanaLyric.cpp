@@ -327,8 +327,13 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
                 rc_icon.right = rc_icon.bottom = icon_side;
                 rc_icon.MoveToX(cover_rect.left + (cover_rect.Width() - icon_side) / 2);
                 rc_icon.MoveToY(cover_rect.top + (cover_rect.Height() - icon_side) / 2);
-                HICON icon{ CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.default_cover_small : theApp.m_icon_set.default_cover_small_not_played };
-                m_draw.DrawIcon(icon, rc_icon.TopLeft(), rc_icon.Size());
+
+                IconMgr::IconType icon_type = IconMgr::IconType::IT_Default_Cover_Stopped;
+                if (CPlayer::GetInstance().IsPlaying())
+                    icon_type = IconMgr::IconType::IT_Default_Cover_Playing;
+                HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_32);
+
+                m_draw.DrawIcon(hIcon, rc_icon.TopLeft(), rc_icon.Size());
             }
             else
             {

@@ -33,8 +33,6 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 
-    IconRes& GetIcon();
-
 private:
     ColorTable& m_theme_color;
     wstring m_btn_str;

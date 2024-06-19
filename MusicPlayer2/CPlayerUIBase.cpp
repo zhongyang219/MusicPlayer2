@@ -762,7 +762,7 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
     case BTN_APP_CLOSE:
         return IconMgr::IconType::IT_Close;
     case BTN_ADD_TO_PLAYLIST:
-        return IconMgr::IconType::IT_Playlist;
+        return IconMgr::IconType::IT_Add;
     case BTN_SWITCH_DISPLAY:
         return IconMgr::IconType::IT_Switch_Display;
     case BTN_DARK_LIGHT:    // 之前是一个IconRes的深浅色，现拆分为两个图标类型，将来如果换图标主题要轻松一些
@@ -2234,8 +2234,13 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
             int cover_side = min(rc_temp.Width(), rc_temp.Height());
             int x = rc_temp.left + (rc_temp.Width() - cover_side) / 2;
             int y = rc_temp.top + (rc_temp.Height() - cover_side) / 2;
-            HICON& icon{ CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.default_cover : theApp.m_icon_set.default_cover_not_played };
-            m_draw.DrawIcon(icon, CPoint(x, y), CSize(cover_side, cover_side));
+
+            IconMgr::IconType icon_type = IconMgr::IconType::IT_Default_Cover_Stopped;
+            if (CPlayer::GetInstance().IsPlaying())
+                icon_type = IconMgr::IconType::IT_Default_Cover_Playing;
+            HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_ORG_512);
+
+            m_draw.DrawIcon(hIcon, CPoint(x, y), CSize(cover_side, cover_side));
         }
     }
     ResetDrawArea();

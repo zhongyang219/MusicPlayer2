@@ -55,8 +55,12 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
             icon_rect.top = cover_rect.top + (cover_rect.Height() - icon_size.cy) / 2;
             icon_rect.bottom = icon_rect.top + icon_size.cy;
 
-            HICON& icon{ CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.default_cover_small : theApp.m_icon_set.default_cover_small_not_played };
-            m_draw.DrawIcon(icon, icon_rect.TopLeft(), icon_rect.Size());
+            IconMgr::IconType icon_type = IconMgr::IconType::IT_Default_Cover_Stopped;
+            if (CPlayer::GetInstance().IsPlaying())
+                icon_type = IconMgr::IconType::IT_Default_Cover_Playing;
+            HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_32);
+
+            m_draw.DrawIcon(hIcon, icon_rect.TopLeft(), icon_rect.Size());
         }
     }
     m_buttons[BTN_COVER].rect = cover_rect;

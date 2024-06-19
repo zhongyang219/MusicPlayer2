@@ -2,6 +2,7 @@
 #include "LyricsWindow.h"
 #include "CommonData.h"
 #include "IniHelper.h"
+#include "IconMgr.h"
 
 struct LyricStyle
 {
@@ -82,7 +83,7 @@ protected:
     //绘制工具条
     void DrawToolbar(Gdiplus::Graphics* pGraphics);
     //绘制工具条上的图标
-    void DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn, bool checked = false);
+    void DrawToolIcon(Gdiplus::Graphics* pGraphics, IconMgr::IconType icon_type, CRect rect, BtnKey btn, bool checked = false);
 
     virtual void PreDrawLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFont) override;
     virtual void AfterDrawLyric(Gdiplus::Graphics* pGraphics) override;

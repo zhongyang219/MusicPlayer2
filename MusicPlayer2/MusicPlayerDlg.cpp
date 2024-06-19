@@ -43,7 +43,7 @@ const UINT WM_TASKBARCREATED{ ::RegisterWindowMessage(_T("TaskbarCreated")) };  
 CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     : m_cmdLine{ cmdLine }, CMainDialogBase(IDD_MUSICPLAYER2_DIALOG, pParent)
 {
-    m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+    m_hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_App, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_Default);
     m_path_edit.SetTooltopText(theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST").c_str());
 
     //初始化UI
@@ -883,12 +883,12 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
         if (CPlayer::GetInstance().IsPlaylistMode())
         {
             pStatic->SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str());
-            pStatic->SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
+            pStatic->SetIcon(IconMgr::IconType::IT_Playlist);
         }
         else
         {
             pStatic->SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str());
-            pStatic->SetIcon(theApp.m_icon_set.select_folder.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
+            pStatic->SetIcon(IconMgr::IconType::IT_Folder);
         }
     };
     updatePathStatic(&m_path_static);
@@ -899,12 +899,12 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
+        m_playlist_toolbar.ModifyToolButton(0, IconMgr::IconType::IT_Add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
     }
     else
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_FOLDER");
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarFolderMenu), true);
+        m_playlist_toolbar.ModifyToolButton(0, IconMgr::IconType::IT_Folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarFolderMenu), true);
     }
 
     if (m_miniModeDlg.m_hWnd != NULL)
@@ -1053,25 +1053,27 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
 {
     if (theApp.IsTaskbarInteractionEnabled())
     {
+        HICON hIcon_play = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Play, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
+        HICON hIcon_pause = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Play_Pause, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
         if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
         {
             //更新任务栏缩略图上“播放/暂停”的图标
-            m_thumbButton[1].hIcon = theApp.m_icon_set.pause.GetIcon();
+            m_thumbButton[1].hIcon = hIcon_pause;
             wcscpy_s(m_thumbButton[1].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE").c_str());
             //更新任务按钮上的播放状态图标
             if (theApp.m_play_setting_data.show_playstate_icon)
-                theApp.GetITaskbarList3()->SetOverlayIcon(m_hWnd, theApp.m_icon_set.play.GetIcon(), L"");
+                theApp.GetITaskbarList3()->SetOverlayIcon(m_hWnd, hIcon_play, L"");
             else
                 theApp.GetITaskbarList3()->SetOverlayIcon(m_hWnd, NULL, L"");
         }
         else
         {
             //更新任务栏缩略图上“播放/暂停”的图标
-            m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
+            m_thumbButton[1].hIcon = hIcon_play;
             wcscpy_s(m_thumbButton[1].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
             //更新任务按钮上的播放状态图标
             if (theApp.m_play_setting_data.show_playstate_icon && CPlayer::GetInstance().GetPlayingState2() == 1)
-                theApp.GetITaskbarList3()->SetOverlayIcon(m_hWnd, theApp.m_icon_set.pause.GetIcon(), L"");
+                theApp.GetITaskbarList3()->SetOverlayIcon(m_hWnd, hIcon_pause, L"");
             else
                 theApp.GetITaskbarList3()->SetOverlayIcon(m_hWnd, NULL, L"");
         }
@@ -1530,8 +1532,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->CheckMenuRadioItem(ID_SWITCH_UI + 1, ID_SWITCH_UI + m_ui_list.size(), ID_SWITCH_UI + 1 + ui_selected, MF_BYCOMMAND | MF_CHECKED);
 
     // 设置播放列表菜单中排序方式的图标
-    const CBitmap* bitmap_sort_up = theApp.m_menu_mgr.GetMenuBitmap(theApp.m_icon_set.up);
-    const CBitmap* bitmap_sort_down = theApp.m_menu_mgr.GetMenuBitmap(theApp.m_icon_set.expand.GetIcon(true));
+    const CBitmap* bitmap_sort_up = theApp.m_menu_mgr.GetMenuBitmap(IconMgr::IconType::IT_Triangle_Up);
+    const CBitmap* bitmap_sort_down = theApp.m_menu_mgr.GetMenuBitmap(IconMgr::IconType::IT_Triangle_Down);
     std::array<const CBitmap*, 8> pSortBitmap{};
     switch (CPlayer::GetInstance().m_sort_mode)
     {
@@ -2002,12 +2004,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     // 设置此对话框的图标。当应用程序主窗口不是对话框时，框架将自动执行此操作
 
-#ifdef _DEBUG
-    SetIcon(theApp.m_icon_set.app.GetIcon(false, true), TRUE);          // 设置大图标
-#else
     SetIcon(m_hIcon, TRUE);         // 设置大图标
-#endif
-    SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);        // 设置小图标
+    SetIcon(m_hIcon, FALSE);        // 设置小图标
 
     // TODO: 在此添加额外的初始化代码
 
@@ -2084,7 +2082,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     SetMenubarVisible();
 
-    m_media_lib_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
+    m_media_lib_button.SetIcon(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Media_Lib, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16));
 
     wstring prompt_str = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT") + L"(F)";
     m_search_edit.SetCueBanner(prompt_str.c_str(), TRUE);
@@ -2099,19 +2097,19 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //上一曲按钮
     m_thumbButton[0].dwMask = dwMask;
     m_thumbButton[0].iId = IDT_PREVIOUS;
-    m_thumbButton[0].hIcon = theApp.m_icon_set.previous.GetIcon();
+    m_thumbButton[0].hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Previous, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
     wcscpy_s(m_thumbButton[0].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS").c_str());
     m_thumbButton[0].dwFlags = THBF_ENABLED;
     //播放/暂停按钮
     m_thumbButton[1].dwMask = dwMask;
     m_thumbButton[1].iId = IDT_PLAY_PAUSE;
-    m_thumbButton[1].hIcon = theApp.m_icon_set.play.GetIcon();
+    m_thumbButton[1].hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Play, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
     wcscpy_s(m_thumbButton[1].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
     m_thumbButton[1].dwFlags = THBF_ENABLED;
     //下一曲按钮
     m_thumbButton[2].dwMask = dwMask;
     m_thumbButton[2].iId = IDT_NEXT;
-    m_thumbButton[2].hIcon = theApp.m_icon_set.next.GetIcon();
+    m_thumbButton[2].hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Next, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
     wcscpy_s(m_thumbButton[2].szTip, theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT").c_str());
     m_thumbButton[2].dwFlags = THBF_ENABLED;
 #endif
@@ -2182,17 +2180,17 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     wstring menu_str;
     m_playlist_toolbar.SetIconSize(theApp.DPI(20));
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_DELETE");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistDelMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Cancel, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistDelMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_SORT");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistSortMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Sort_Mode, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistSortMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_LIST");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarListMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarListMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_EDIT");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarEditMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarEditMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT).GetString();
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, menu_str.c_str(), ID_LOCATE_TO_CURRENT);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Locate, nullptr, menu_str.c_str(), ID_LOCATE_TO_CURRENT);
 
     //初始化分隔条
     m_splitter_ctrl.RegAdjustLayoutCallBack(CMusicPlayerDlg::OnSplitterChanged);

@@ -45,15 +45,10 @@ public:
             mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
         }
 #ifndef COMPILE_IN_WIN_XP
-        HICON hicon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark);
-        if (hicon)
+        if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
         {
-            HBITMAP hbmp = m_pMenuMgr->GetMenuBitmapHandle(hicon);
-            if (hbmp)
-            {
-                mii.fMask |= MIIM_BITMAP;
-                mii.hbmpItem = hbmp;
-            }
+            mii.fMask |= MIIM_BITMAP;
+            mii.hbmpItem = hBmp;
         }
 #endif
         m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
@@ -67,15 +62,10 @@ public:
         wstring menu_text = theApp.m_str_table.LoadMenuText(MenuMgr::GetMenuNameStr(m_menu_type), MenuMgr::GetMenuNameStr(sub_menu_type));
         mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
 #ifndef COMPILE_IN_WIN_XP
-        HICON hicon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark);
-        if (hicon)
+        if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
         {
-            HBITMAP hbmp = m_pMenuMgr->GetMenuBitmapHandle(hicon);
-            if (hbmp)
-            {
-                mii.fMask |= MIIM_BITMAP;
-                mii.hbmpItem = hbmp;
-            }
+            mii.fMask |= MIIM_BITMAP;
+            mii.hbmpItem = hBmp;
         }
 #endif
         m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
@@ -137,17 +127,19 @@ MenuMgr::~MenuMgr()
 
 typedef DWORD ARGB;
 
-HBITMAP MenuMgr::GetMenuBitmapHandle(HICON hIcon)
+HBITMAP MenuMgr::GetMenuBitmapHandle(IconMgr::IconType icon_type)
 {
-    if (auto pBitmap = GetMenuBitmap(hIcon))
+    if (auto pBitmap = GetMenuBitmap(icon_type))
         return static_cast<HBITMAP>(pBitmap->GetSafeHandle());
     return NULL;
 }
 
-const CBitmap* MenuMgr::GetMenuBitmap(HICON hIcon)
+const CBitmap* MenuMgr::GetMenuBitmap(IconMgr::IconType icon_type)
 {
-    if (hIcon == NULL)
+    if (icon_type == IconMgr::IconType::IT_NO_ICON)
         return nullptr;
+
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark);
 
     if (m_icon_bitmap_map[hIcon].GetSafeHandle())  // 已有bitmap时不再二次转换
         return &m_icon_bitmap_map[hIcon];
@@ -637,7 +629,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_EQUALIZER), IconMgr::IconType::IT_Equalizer);
         menu.AppendItem(EX_ID(ID_CURRENT_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
         menu.AppendSeparator();
-        menu.AppendItem(EX_ID(ID_DOWNLOAD_ALBUM_COVER), IconMgr::IconType::IT_Album_Cover);
+        menu.AppendItem(EX_ID(ID_DOWNLOAD_ALBUM_COVER), IconMgr::IconType::IT_Download);
         menu.AppendItem(EX_ID(ID_ALBUM_COVER_SAVE_AS), IconMgr::IconType::IT_Save_As);
         menu.AppendItem(EX_ID(ID_DELETE_ALBUM_COVER), IconMgr::IconType::IT_Cancel);
         menu.AppendItem(EX_ID(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER));

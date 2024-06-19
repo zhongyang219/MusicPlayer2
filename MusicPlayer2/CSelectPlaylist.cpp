@@ -238,10 +238,7 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    CButton* new_btn = (CButton*)(GetDlgItem(IDC_NEW_PLAYLIST));
-    if (new_btn != nullptr)
-        new_btn->SetIcon(theApp.m_icon_set.add.GetIcon(true));
-
+    SetButtonIcon(IDC_NEW_PLAYLIST, IconMgr::IconType::IT_Add);
 
     //初始化播放列表控件
     vector<int> width;

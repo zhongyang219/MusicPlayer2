@@ -7,8 +7,8 @@ public:
     MenuMgr();
     virtual ~MenuMgr();
 
-    HBITMAP GetMenuBitmapHandle(HICON hIcon);
-    const CBitmap* GetMenuBitmap(HICON hIcon);
+    HBITMAP GetMenuBitmapHandle(IconMgr::IconType icon_type);
+    const CBitmap* GetMenuBitmap(IconMgr::IconType icon_type);
 private:
     std::map<HICON, CBitmap> m_icon_bitmap_map;
 

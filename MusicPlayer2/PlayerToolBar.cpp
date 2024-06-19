@@ -19,12 +19,12 @@ CPlayerToolBar::~CPlayerToolBar()
 {
 }
 
-void CPlayerToolBar::AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText)
+void CPlayerToolBar::AddToolButton(IconMgr::IconType icon_type, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText)
 {
     ToolBtn btn;
     btn.cmd_id = cmdId;
     btn.is_cmd = true;
-    btn.icon = icon;
+    btn.icon_type = icon_type;
     if (strText != nullptr)
         btn.text = strText;
     btn.show_text = showText;
@@ -33,12 +33,12 @@ void CPlayerToolBar::AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToo
     m_buttons.push_back(btn);
 }
 
-void CPlayerToolBar::AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu * pMenu, bool showText)
+void CPlayerToolBar::AddToolButton(IconMgr::IconType icon_type, LPCTSTR strText, LPCTSTR strToolTip, CMenu * pMenu, bool showText)
 {
     ToolBtn btn;
     btn.pMenu = pMenu;
     btn.is_cmd = false;
-    btn.icon = icon;
+    btn.icon_type = icon_type;
     if (strText != nullptr)
         btn.text = strText;
     btn.show_text = showText;
@@ -47,14 +47,14 @@ void CPlayerToolBar::AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToo
     m_buttons.push_back(btn);
 }
 
-void CPlayerToolBar::ModifyToolButton(int index, IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText /*= false*/)
+void CPlayerToolBar::ModifyToolButton(int index, IconMgr::IconType icon_type, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText /*= false*/)
 {
     if (index >= 0 && index < static_cast<int>(m_buttons.size()))
     {
         ToolBtn& btn{ m_buttons[index] };
         btn.pMenu = pMenu;
         btn.is_cmd = false;
-        btn.icon = icon;
+        btn.icon_type = icon_type;
         if (strText != nullptr)
             btn.text = strText;
         btn.show_text = showText;
@@ -67,14 +67,14 @@ void CPlayerToolBar::ModifyToolButton(int index, IconRes icon, LPCTSTR strText, 
     }
 }
 
-void CPlayerToolBar::ModifyToolButton(int index, IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText /*= false*/)
+void CPlayerToolBar::ModifyToolButton(int index, IconMgr::IconType icon_type, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText /*= false*/)
 {
     if (index >= 0 && index < static_cast<int>(m_buttons.size()))
     {
         ToolBtn& btn{ m_buttons[index] };
         btn.cmd_id = cmdId;
         btn.is_cmd = true;
-        btn.icon = icon;
+        btn.icon_type = icon_type;
         if (strText != nullptr)
             btn.text = strText;
         btn.show_text = showText;
@@ -211,9 +211,10 @@ void CPlayerToolBar::OnPaint()
                 }
             }
 
-            CRect rc_tmp = rc_icon;
+            HICON hIcon= theApp.m_icon_mgr.GetHICON(iter->icon_type);
+            CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
             //使图标在矩形中居中
-            CSize icon_size = iter->icon.GetSize();
+            CRect rc_tmp = rc_icon;
             if (draw_text)
                 rc_tmp.left = rc_icon.left + theApp.DPI(2);
             else
@@ -227,7 +228,7 @@ void CPlayerToolBar::OnPaint()
                 rc_tmp.MoveToY(rc_tmp.top + theApp.DPI(1));
             }
             drawer.SetDrawArea(rc_tmp);
-            drawer.DrawIcon(iter->icon.GetIcon(true), rc_tmp.TopLeft(), rc_tmp.Size());
+            drawer.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
             //绘制文本
             if (draw_text)
             {

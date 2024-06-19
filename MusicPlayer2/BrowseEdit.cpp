@@ -60,12 +60,16 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
         drawer.GetDC()->FillSolidRect(rc_draw, btn_color);
     }
 
-    auto& icon = GetIcon();
-    CSize icon_size = icon.GetSize();
+    IconMgr::IconType icon_type = IconMgr::IconType::IT_Folder;
+    if (m_Mode == BrowseMode_Default)
+        icon_type = IconMgr::IconType::IT_Edit;
+
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
+    CSize icon_size = theApp.m_icon_mgr.GetIconSize(IconMgr::IconSize::IS_DPI_16);
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + theApp.DPI(4);
     icon_top_left.y = rc_draw.top + (rc_draw.Height() - icon_size.cy) / 2;
-    drawer.DrawIcon(icon.GetIcon(true), icon_top_left, icon_size);
+    drawer.DrawIcon(hIcon, icon_top_left, icon_size);
 
     CRect rc_text = rc_draw;
     rc_text.left += theApp.DPI(20);
@@ -295,21 +299,6 @@ void CBrowseEdit::SetEditBrowseMode(EditBrowseMode browse_mode)
 void CBrowseEdit::SetPopupDlgTitle(const wstring& popup_dlg_title)
 {
     m_poopup_dlg_title = popup_dlg_title.c_str();
-}
-
-IconRes& CBrowseEdit::GetIcon()
-{
-    if (m_Mode == BrowseMode_Default)
-    {
-        //if (m_browse_mode == EditBrowseMode::RENAME)
-            return theApp.m_icon_set.edit;
-        //else
-        //    return theApp.
-    }
-    else
-    {
-        return theApp.m_icon_set.select_folder;
-    }
 }
 
 BEGIN_MESSAGE_MAP(CBrowseEdit, CMFCEditBrowseCtrl)

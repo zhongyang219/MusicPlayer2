@@ -78,12 +78,15 @@ void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPr
         drawer.GetDC()->FillSolidRect(rc_draw, btn_color);
     }
 
-    auto& icon{ m_draw_clear_btn ? theApp.m_icon_set.close : theApp.m_icon_set.find_songs };     //文本框为空时显示搜索图标，否则显示关闭图标
-    CSize icon_size = icon.GetSize();
+    IconMgr::IconType icon_type = IconMgr::IconType::IT_Find;
+    if (m_draw_clear_btn)   // 文本框为空时显示搜索图标，否则显示关闭图标
+        icon_type = IconMgr::IconType::IT_Cancel;
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type);
+    CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + (rc_draw.Width() - icon_size.cx) / 2;
     icon_top_left.y = rc_draw.top + (rc_draw.Height() - icon_size.cy) / 2;
-    drawer.DrawIcon(icon.GetIcon(true), icon_top_left, icon_size);
+    drawer.DrawIcon(hIcon, icon_top_left, icon_size);
 
     static bool last_draw_clear_btn{ false };
     if (last_draw_clear_btn != m_draw_clear_btn)

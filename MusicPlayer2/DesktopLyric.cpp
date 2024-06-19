@@ -308,32 +308,31 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
 
     if (!bLocked)
     {
-        DrawToolIcon(pGraphics, theApp.m_icon_set.app, rcIcon, BTN_APP);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_App, rcIcon, BTN_APP);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.stop, rcIcon, BTN_STOP);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Stop, rcIcon, BTN_STOP);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.previous, rcIcon, BTN_PREVIOUS);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Previous, rcIcon, BTN_PREVIOUS);
         rcIcon.MoveToX(rcIcon.right);
-        IconRes hPlayPauseIcon = (CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.pause : theApp.m_icon_set.play);
-        DrawToolIcon(pGraphics, hPlayPauseIcon, rcIcon, BTN_PLAY_PAUSE);
+        DrawToolIcon(pGraphics, CPlayer::GetInstance().IsPlaying() ? IconMgr::IconType::IT_Pause : IconMgr::IconType::IT_Play, rcIcon, BTN_PLAY_PAUSE);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Next, rcIcon, BTN_NEXT);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Setting, rcIcon, BTN_SETTING);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Media_Lib, rcIcon, BTN_DEFAULT_STYLE);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_delay, rcIcon, BTN_LYRIC_DELAY);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Triangle_Left, rcIcon, BTN_LYRIC_DELAY);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_forward, rcIcon, BTN_LYRIC_FORWARD);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Triangle_Right, rcIcon, BTN_LYRIC_FORWARD);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Double_Line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.skin, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Skin, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Lock, rcIcon, BTN_LOCK);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Cancel, rcIcon, BTN_CLOSE);
 
         bool lyric_disable{ CPlayer::GetInstance().m_Lyrics.IsEmpty() || CPlayerUIHelper::IsMidiLyric() };
         m_buttons[BTN_LYRIC_FORWARD].enable = !lyric_disable;
@@ -345,7 +344,7 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
         for (auto& btn : m_buttons)
         {
             if (btn.first == BTN_LOCK)
-                DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+                DrawToolIcon(pGraphics, IconMgr::IconType::IT_Lock, rcIcon, BTN_LOCK);
             else
                 btn.second = UIButton();
         }
@@ -358,7 +357,7 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
     }
 }
 
-void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn_key, bool checked)
+void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconMgr::IconType icon_type, CRect rect, BtnKey btn_key, bool checked)
 {
     rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
     auto& btn = m_buttons[btn_key];
@@ -399,9 +398,11 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
         }
     }
 
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
+    CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
+
     CRect rc_tmp = rect;
     //使图标在矩形中居中
-    CSize icon_size = icon.GetSize();
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
     rc_tmp.right = rc_tmp.left + icon_size.cx;
@@ -410,7 +411,7 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
     HDC hDC = pGraphics->GetHDC();
     CDrawCommon drawer;
     drawer.Create(CDC::FromHandle(hDC));
-    drawer.DrawIcon(icon.GetIcon(true), rc_tmp.TopLeft(), rc_tmp.Size());
+    drawer.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
     pGraphics->ReleaseHDC(hDC);
 }
 

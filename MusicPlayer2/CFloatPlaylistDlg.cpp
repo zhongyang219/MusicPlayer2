@@ -32,12 +32,12 @@ void CFloatPlaylistDlg::RefreshData()
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
+        m_playlist_toolbar.ModifyToolButton(0, IconMgr::IconType::IT_Add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
     }
     else
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_FOLDER");
-        m_playlist_toolbar.ModifyToolButton(0, theApp.m_icon_set.select_folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarFolderMenu), true);
+        m_playlist_toolbar.ModifyToolButton(0, IconMgr::IconType::IT_Folder, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarFolderMenu), true);
     }
     m_playlist_ctrl.SetCurSel(-1);
 }
@@ -232,14 +232,13 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     SetBackgroundColor(CONSTVAL::BACKGROUND_COLOR);
     UpdateStyles();
     SetIcon(IconMgr::IconType::IT_Playlist, FALSE);
+    SetButtonIcon(ID_MEDIA_LIB, IconMgr::IconType::IT_Media_Lib);
 
     // 为浮动播放列表禁用仅在主窗口使用的控件
     EnableDlgCtrl(IDC_HSPLITER_STATIC, false);
     ShowDlgCtrl(IDC_HSPLITER_STATIC, false);
     EnableDlgCtrl(IDC_UI_STATIC, false);
     ShowDlgCtrl(IDC_UI_STATIC, false);
-
-    m_media_lib_button.SetIcon(theApp.m_icon_set.media_lib.GetIcon(true));
 
     //设置窗口大小和位置
     if (CMusicPlayerDlg::IsPointValid(m_init_point))
@@ -257,29 +256,29 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
         m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str());
-        m_path_static.SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
+        m_path_static.SetIcon(IconMgr::IconType::IT_Playlist);
     }
     else
     {
         m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str());
-        m_path_static.SetIcon(theApp.m_icon_set.select_folder.GetIcon(true), theApp.m_icon_set.select_folder.GetSize());
+        m_path_static.SetIcon(IconMgr::IconType::IT_Folder);
     }
 
     //初始化播放列表工具栏
     wstring menu_str;
     m_playlist_toolbar.SetIconSize(theApp.DPI(20));
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_DELETE");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.close, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistDelMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Cancel, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistDelMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_SORT");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.sort, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistSortMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Sort_Mode, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistSortMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_LIST");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.show_playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarListMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Playlist, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarListMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_EDIT");
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarEditMenu), true);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Edit, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarEditMenu), true);
     menu_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT).GetString();
-    m_playlist_toolbar.AddToolButton(theApp.m_icon_set.locate, nullptr, menu_str.c_str(), ID_LOCATE_TO_CURRENT);
+    m_playlist_toolbar.AddToolButton(IconMgr::IconType::IT_Locate, nullptr, menu_str.c_str(), ID_LOCATE_TO_CURRENT);
 
     RefreshData();
     RefreshState();
