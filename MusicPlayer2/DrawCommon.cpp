@@ -701,11 +701,6 @@ void CDrawCommon::ImageResize(const wstring& path_src, const wstring& path_dest,
     ImageResize(imSrc, path_dest, size, type);
 }
 
-HICON CDrawCommon::LoadIconResource(UINT id, int width, int height)
-{
-    return (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(id), IMAGE_ICON, width, height, 0);
-}
-
 HBITMAP CDrawCommon::CopyBitmap(HBITMAP hSourceHbitmap)
 {
     CDC sourceDC;

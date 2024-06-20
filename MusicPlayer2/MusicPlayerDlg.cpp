@@ -43,7 +43,7 @@ const UINT WM_TASKBARCREATED{ ::RegisterWindowMessage(_T("TaskbarCreated")) };  
 CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     : m_cmdLine{ cmdLine }, CMainDialogBase(IDD_MUSICPLAYER2_DIALOG, pParent)
 {
-    m_hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_App, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_Default);
+    m_hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_App, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_32);
     m_path_edit.SetTooltopText(theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST").c_str());
 
     //初始化UI
@@ -1054,7 +1054,7 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
     if (theApp.IsTaskbarInteractionEnabled())
     {
         HICON hIcon_play = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Play, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
-        HICON hIcon_pause = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Play_Pause, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
+        HICON hIcon_pause = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Pause, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
         if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
         {
             //更新任务栏缩略图上“播放/暂停”的图标
@@ -1993,7 +1993,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     CMainDialogBase::OnInitDialog();
 
     // 载入图标资源
-    theApp.LoadIconResource();
+    theApp.LoadImgResource();
     // 载入字体资源
     theApp.m_font_set.Init(theApp.m_str_table.GetDefaultFontName().c_str());
 

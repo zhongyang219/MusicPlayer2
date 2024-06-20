@@ -363,24 +363,23 @@ BOOL CLyricEditDlg::OnInitDialog()
         return -1;      // fail to create
     }
     RepositionBars(AFX_IDW_CONTROLBAR_FIRST, AFX_IDW_CONTROLBAR_LAST, 0);
-    int icon_size = theApp.DPI(20);
-    if (icon_size < 32)
-        icon_size = CCommon::IconSizeNormalize(icon_size);
+
+    CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_20);
     CImageList ImageList;
-    ImageList.Create(icon_size, icon_size, ILC_COLOR32 | ILC_MASK, 2, 2);
+    ImageList.Create(icon_size.cx, icon_size.cy, ILC_COLOR32 | ILC_MASK, 2, 2);
 
     //通过ImageList对象加载图标作为工具栏的图标
     //添加图标
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_ADD_TAG, icon_size, icon_size));
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_REPLACE_TAG, icon_size, icon_size));
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_DELETE_TAG, icon_size, icon_size));
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_SAVE, icon_size, icon_size));
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_PLAY_PAUSE, icon_size, icon_size));
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_REW, icon_size, icon_size));
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_FF, icon_size, icon_size));
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_LOCATE_D, icon_size, icon_size));
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_FIND, icon_size, icon_size));
-    ImageList.Add(CDrawCommon::LoadIconResource(IDI_REPLACE, icon_size, icon_size));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Le_Tag_Insert, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_20));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Le_Tag_Replace, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_20));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Le_Tag_Delete, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_20));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Le_Save, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_20));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Play_Pause, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_20));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Rewind, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_20));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Fast_Forward, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_20));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Locate, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_20));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Le_Find, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_20));
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Le_Replace, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_20));
     m_wndToolBar.GetToolBarCtrl().SetImageList(&ImageList);
     ImageList.Detach();
     SetToolbarCmdEnable();

@@ -229,11 +229,12 @@ BOOL CFolderExploreDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
 
     //为树控件设置图标
-    CImageList image_list;
-    image_list.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
-    image_list.Add(CDrawCommon::LoadIconResource(IDI_EXPLORE_FOLDER, theApp.DPI(16), theApp.DPI(16)));
-    m_folder_explore_tree.SetImageList(&image_list, TVSIL_NORMAL);
-    image_list.Detach();
+    CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
+    CImageList ImageList;
+    ImageList.Create(icon_size.cx, icon_size.cy, ILC_COLOR32 | ILC_MASK, 2, 2);
+    ImageList.Add(theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Folder, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_16));
+    m_folder_explore_tree.SetImageList(&ImageList, TVSIL_NORMAL);
+    ImageList.Detach();
 
     //设置行高
     m_folder_explore_tree.SetItemHeight(theApp.DPI(22));
@@ -245,12 +246,6 @@ BOOL CFolderExploreDlg::OnInitDialog()
     //注意，在这里向左侧树填充数据可能会比较缓慢，因此放到OnTabEntered()函数中处理，
     //即只有当标签切换到“文件夹浏览”时才填充数据，以加载“媒体库”对话框的打开速度
     //ShowFolderTree();
-
-    ////
-    //CImageList image_list1;
-    //image_list1.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
-    //image_list1.Add(theApp.LoadIcon(IDI_FILE_ICON));
-    //m_song_list_ctrl.SetImageList(&image_list1, LVSIL_SMALL);
 
     //初始化右侧列表
     m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);

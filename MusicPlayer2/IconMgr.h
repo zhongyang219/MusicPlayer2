@@ -131,8 +131,7 @@ public:
 
     enum IconSize
     {
-        IS_Default,                 // SM_CXICON * SM_CYICON
-        IS_DPI_16,
+        IS_DPI_16,                  // SM_CXICON * SM_CYICON
         IS_DPI_16_Full_Screen,
         IS_DPI_20,
         IS_DPI_20_Full_Screen,

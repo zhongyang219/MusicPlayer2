@@ -59,7 +59,7 @@ CSize IconMgr::GetIconSize(IconSize size)
     case IS_DPI_20: case IS_DPI_20_Full_Screen: width = theApp.DPI(20); break;
     case IS_DPI_32: case IS_DPI_32_Full_Screen: width = theApp.DPI(32); break;
     case IS_ORG_512: width = 512; break;
-    default: width = 0; break;  // 系统默认图标大小 SM_CXICON * SM_CYICON, 此时返回0
+    default: width = theApp.DPI(16); break;  // 系统默认小图标大小 SM_CXICON * SM_CYICON
     }
     if (size == IS_DPI_16_Full_Screen || size == IS_DPI_20_Full_Screen || size == IS_DPI_32_Full_Screen)
         width = static_cast<int>(width * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);

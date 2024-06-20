@@ -88,7 +88,7 @@ public:
     void LoadConfig();
 
 
-    void LoadIconResource();
+    void LoadImgResource();
 
     int DPI(int pixel);		//将一个像素值进行DPI变换
     int DPI(double pixel);

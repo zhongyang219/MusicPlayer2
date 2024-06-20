@@ -510,7 +510,7 @@ void CMusicPlayerApp::LoadConfig()
         m_hot_key_setting_data.global_multimedia_key_enable = ini.GetBool(L"hot_key", L"global_multimedia_key_enable", false);
 }
 
-void CMusicPlayerApp::LoadIconResource()
+void CMusicPlayerApp::LoadImgResource()
 {
     //加载图片资源
     m_image_set.default_cover_img = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
