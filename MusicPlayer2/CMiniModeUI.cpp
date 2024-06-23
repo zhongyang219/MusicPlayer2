@@ -70,16 +70,13 @@ void CMiniModeUI::_DrawInfo(CRect draw_rect, bool reset)
     rc_tmp.MoveToXY(m_ui_data.window_height, m_ui_data.margin);
     rc_tmp.right = rc_tmp.left + theApp.DPI(27);
     rc_tmp.bottom = rc_tmp.top + theApp.DPI(22);
-    DrawUIButton(rc_tmp, BTN_PREVIOUS);
+    DrawUIButton(rc_tmp, BTN_PREVIOUS, true);
 
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-    if (CPlayer::GetInstance().IsPlaying())
-        DrawUIButton(rc_tmp, BTN_PLAY_PAUSE);
-    else
-        DrawUIButton(rc_tmp, BTN_PLAY_PAUSE);
+    DrawUIButton(rc_tmp, BTN_PLAY_PAUSE, true);
 
     rc_tmp.MoveToX(rc_tmp.right + m_ui_data.margin);
-    DrawUIButton(rc_tmp, BTN_NEXT);
+    DrawUIButton(rc_tmp, BTN_NEXT, true);
 
 
     //绘制频谱分析

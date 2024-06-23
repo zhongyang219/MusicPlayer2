@@ -71,7 +71,7 @@ void CStaticEx::OnPaint()
 	//绘制图标
     if (m_icon_type != IconMgr::IconType::IT_NO_ICON)
 	{
-        HICON hIcon = theApp.m_icon_mgr.GetHICON(m_icon_type);
+        HICON hIcon = theApp.m_icon_mgr.GetHICON(m_icon_type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
         CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
 		CRect rc_tmp = rect;
         rc_tmp.right = rc_tmp.left + icon_size.cx + theApp.DPI(4);

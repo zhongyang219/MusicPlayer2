@@ -131,20 +131,26 @@ public:
 
     enum IconSize
     {
-        IS_DPI_16,                  // SM_CXICON * SM_CYICON
+        IS_DPI_16,
         IS_DPI_16_Full_Screen,
         IS_DPI_20,
         IS_DPI_20_Full_Screen,
         IS_DPI_32,
         IS_DPI_32_Full_Screen,
         IS_ORG_512,
+        IS_ALL,
     };
 
     // 获取需要的图标，不要在代码中大量直接调用
     // 请为同类调用提供一层包装以免之后修改困难
     HICON GetHICON(IconType type, IconStyle style = IS_Auto, IconSize size = IS_DPI_16);
 
-    static CSize GetIconSize(IconSize size);
+    static CSize GetIconSize(IconSize size)
+    {
+        int width = GetIconWidth(size);
+        return CSize(width, width);
+    }
+    static int GetIconWidth(IconSize size);
 
 private:
 

@@ -285,9 +285,6 @@
     <Filter Include="对话框类\媒体库对话框\文件夹浏览">
       <UniqueIdentifier>{b109aca1-cfaf-4f5f-9612-96c66b07d09c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="公共的类\WICFactory">
-      <UniqueIdentifier>{cf55aa05-21b8-4cc2-acfd-17327505e681}</UniqueIdentifier>
-    </Filter>
     <Filter Include="资源文件\bitmaps">
       <UniqueIdentifier>{b15ef7d8-56db-471d-9986-4ca1ba98375a}</UniqueIdentifier>
     </Filter>
@@ -735,9 +732,6 @@
     </ClInclude>
     <ClInclude Include="SpinEdit.h">
       <Filter>派生的控件类\SpinEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="WIC.h">
-      <Filter>公共的类\WICFactory</Filter>
     </ClInclude>
     <ClInclude Include="LyricRelateDlg.h">
       <Filter>对话框类\LyricRelateDlg</Filter>
@@ -1199,9 +1193,6 @@
     </ClCompile>
     <ClCompile Include="SpinEdit.cpp">
       <Filter>派生的控件类\SpinEdit</Filter>
-    </ClCompile>
-    <ClCompile Include="WIC.cpp">
-      <Filter>公共的类\WICFactory</Filter>
     </ClCompile>
     <ClCompile Include="LyricRelateDlg.cpp">
       <Filter>对话框类\LyricRelateDlg</Filter>

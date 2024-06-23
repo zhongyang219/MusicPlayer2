@@ -211,7 +211,7 @@ void CPlayerToolBar::OnPaint()
                 }
             }
 
-            HICON hIcon= theApp.m_icon_mgr.GetHICON(iter->icon_type);
+            HICON hIcon= theApp.m_icon_mgr.GetHICON(iter->icon_type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
             CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
             //使图标在矩形中居中
             CRect rc_tmp = rc_icon;

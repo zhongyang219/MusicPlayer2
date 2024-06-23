@@ -43,7 +43,7 @@ const UINT WM_TASKBARCREATED{ ::RegisterWindowMessage(_T("TaskbarCreated")) };  
 CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     : m_cmdLine{ cmdLine }, CMainDialogBase(IDD_MUSICPLAYER2_DIALOG, pParent)
 {
-    m_hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_App, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_DPI_32);
+    m_hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_App, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_ALL);
     m_path_edit.SetTooltopText(theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST").c_str());
 
     //初始化UI

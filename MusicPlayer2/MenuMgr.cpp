@@ -1,7 +1,6 @@
 ﻿#include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "MenuMgr.h"
-#include "WIC.h"
 #include "WinVersionHelper.h"
 
 
@@ -139,63 +138,36 @@ const CBitmap* MenuMgr::GetMenuBitmap(IconMgr::IconType icon_type)
     if (icon_type == IconMgr::IconType::IT_NO_ICON)
         return nullptr;
 
-    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark);
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
+    // 取得默认图标尺寸（应该与GetSystemMetrics(SM_CXSMICON/SM_CYSMICON)相同）
+    auto[width, height] = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
 
     if (m_icon_bitmap_map[hIcon].GetSafeHandle())  // 已有bitmap时不再二次转换
         return &m_icon_bitmap_map[hIcon];
 
-    IWICImagingFactory* pFactory = CWICFactory::GetWIC();
-    if (!pFactory)
-        return nullptr;
-
-    HBITMAP hBmp = NULL;
-    CComPtr<IWICBitmap> pBitmap;
-    HRESULT hr = pFactory->CreateBitmapFromHICON(hIcon, &pBitmap);
-    if (FAILED(hr))
-        return nullptr;
-
-    CComPtr<IWICFormatConverter> pConverter;
-    hr = pFactory->CreateFormatConverter(&pConverter);
-    if (FAILED(hr))
-        return nullptr;
-
-    hr = pConverter->Initialize(pBitmap, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone, NULL, 0.0f, WICBitmapPaletteTypeCustom);
-    if (FAILED(hr))
-        return nullptr;
-
-    UINT cx, cy;
-    hr = pConverter->GetSize(&cx, &cy);
-    if (FAILED(hr))
-        return nullptr;
-
+    // 创建一个带Alpha通道的DIB节
     BITMAPINFO bmi{};
     bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bmi.bmiHeader.biWidth = static_cast<LONG>(cx);
-    bmi.bmiHeader.biHeight = -static_cast<LONG>(cy); // Negative to indicate top-down bitmap
+    bmi.bmiHeader.biWidth = width;
+    bmi.bmiHeader.biHeight = -height;       // 使用负高度以保证DIB的顶向下的排列
     bmi.bmiHeader.biPlanes = 1;
-    bmi.bmiHeader.biBitCount = 32;
+    bmi.bmiHeader.biBitCount = 32;          // 每像素32位，带Alpha通道
     bmi.bmiHeader.biCompression = BI_RGB;
 
-    HDC hdcUsed = GetDC(NULL);
-    if (!hdcUsed)
-        return nullptr;
-    BYTE* pbBuffer = nullptr;
-    hBmp = CreateDIBSection(hdcUsed, &bmi, DIB_RGB_COLORS, reinterpret_cast<void**>(&pbBuffer), NULL, 0);
-    ReleaseDC(NULL, hdcUsed);
-    if (!hBmp)
-        return nullptr;
+    void* pvBits;
+    HBITMAP hbm = CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, &pvBits, NULL, 0);
+    HDC hdcMem = CreateCompatibleDC(NULL);
+    HBITMAP hbmOld = (HBITMAP)SelectObject(hdcMem, hbm);
+    // 用透明背景填充位图
+    BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
+    AlphaBlend(hdcMem, 0, 0, width, height, hdcMem, 0, 0, width, height, bf);
+    // 将图标绘制到位图上
+    DrawIconEx(hdcMem, 0, 0, hIcon, width, height, 0, NULL, DI_NORMAL);
+    // 清理
+    SelectObject(hdcMem, hbmOld);
+    DeleteDC(hdcMem);
 
-    const UINT cbStride = cx * sizeof(ARGB);
-    const UINT cbBuffer = cy * cbStride;
-    hr = pConverter->CopyPixels(NULL, cbStride, cbBuffer, pbBuffer);
-
-    if (FAILED(hr))
-    {
-        DeleteObject(hBmp);
-        return nullptr;
-    }
-
-    m_icon_bitmap_map[hIcon].Attach(hBmp);
+    m_icon_bitmap_map[hIcon].Attach(hbm);
 
     return &m_icon_bitmap_map[hIcon];
 }

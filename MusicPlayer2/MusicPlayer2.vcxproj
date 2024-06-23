@@ -296,7 +296,6 @@
     <ClInclude Include="UIElement.h" />
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="UserUi.h" />
-    <ClInclude Include="WIC.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="DesktopLyric.h" />
     <ClInclude Include="DllLib.h" />
@@ -465,7 +464,6 @@
     <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="UserUi.cpp" />
-    <ClCompile Include="WIC.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />
     <ClCompile Include="DllLib.cpp" />
     <ClCompile Include="FolderExploreDlg.cpp" />

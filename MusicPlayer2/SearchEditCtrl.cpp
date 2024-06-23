@@ -81,7 +81,7 @@ void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPr
     IconMgr::IconType icon_type = IconMgr::IconType::IT_Find;
     if (m_draw_clear_btn)   // 文本框为空时显示搜索图标，否则显示关闭图标
         icon_type = IconMgr::IconType::IT_Cancel;
-    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type);
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
     CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + (rc_draw.Width() - icon_size.cx) / 2;

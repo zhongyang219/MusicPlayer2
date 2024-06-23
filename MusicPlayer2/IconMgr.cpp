@@ -42,16 +42,21 @@ HICON IconMgr::GetHICON(IconType type, IconStyle style, IconSize size)
         HICON hIcon = NULL;
         if (id)
         {
-            auto [cx, cy] = GetIconSize(size);
-            hIcon = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(id), IMAGE_ICON, cx, cy, cx ? 0 : LR_DEFAULTSIZE);
+            int width = GetIconWidth(size);
+            if (width)
+                hIcon = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(id), IMAGE_ICON, width, width, 0);
+            else
+                hIcon = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(id));  // 全量加载所有分辨率
         }
         m_icon_map.emplace(key, hIcon);         // 即使hIcon为NULL也保存, 这表示当前的图标不存在
         return hIcon;
     }
 }
 
-CSize IconMgr::GetIconSize(IconSize size)
+int IconMgr::GetIconWidth(IconSize size)
 {
+    if (size == IS_ALL)
+        return 0;
     int width;
     switch (size)
     {
@@ -65,7 +70,7 @@ CSize IconMgr::GetIconSize(IconSize size)
         width = static_cast<int>(width * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     if (width < 32)
         width = CCommon::IconSizeNormalize(width);
-    return CSize(width, width);
+    return width;
 }
 
 std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)

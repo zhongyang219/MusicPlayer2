@@ -103,8 +103,8 @@ void CBaseDialog::ReLoadLayoutResource()
 
 void CBaseDialog::SetIcon(IconMgr::IconType type, BOOL bBigIcon)
 {
-    if (bBigIcon)   // 大图标需要DPI32才足够清晰？
-        CDialog::SetIcon(theApp.m_icon_mgr.GetHICON(type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_32), TRUE);
+    if (bBigIcon)
+        CDialog::SetIcon(theApp.m_icon_mgr.GetHICON(type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_ALL), TRUE);
     else
         CDialog::SetIcon(theApp.m_icon_mgr.GetHICON(type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16), FALSE);
 }
