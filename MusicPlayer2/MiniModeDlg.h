@@ -48,6 +48,9 @@ protected:
     int m_position_x;
     int m_position_y;
 
+    int m_ui_width{};
+    int m_ui_height{};
+
     bool m_show_playlist{ false };		//是否显示播放列表
     LONG m_playlist_y_offset{};         //播放列表收起时窗口需要进行的y坐标偏移量
 

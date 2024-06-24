@@ -107,6 +107,8 @@ void CMiniModeDlg::AdjustWindowSize()
     //获取窗口大小
     int width{}, height{}, height_with_playlist{};
     CalculateWindowSize(width, height, height_with_playlist);
+    m_ui_width = width;
+    m_ui_height = height;
     if (width != 0 && height != 0)
     {
         SetWindowPos(nullptr, 0, 0, width, (m_show_playlist ? height_with_playlist : height), SWP_NOMOVE | SWP_NOZORDER);
@@ -257,14 +259,11 @@ BOOL CMiniModeDlg::OnInitDialog()
 
     m_show_playlist = false;
 
-    //获取窗口大小
-    int width{}, height{}, height_with_playlist{};
-    CalculateWindowSize(width, height, height_with_playlist);
-
     //初始化窗口位置
     if (m_position_x != -1 && m_position_y != -1)
         SetWindowPos(nullptr, m_position_x, m_position_y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
+    //获取窗口大小
     AdjustWindowSize();
 
     //设置定时器
@@ -447,13 +446,18 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
 
     if (pMsg->message == WM_MOUSEWHEEL)                         // 将滚轮消息转发给主窗口处理音量调整
     {
-        CWnd* pMainWnd = AfxGetMainWnd();
-        if (pMainWnd)
+        CRect rect{};
+        GetWindowRect(rect);
+        CRect m_ui_rect{ rect.left, rect.top, rect.left + m_ui_width, rect.top + m_ui_height };
+        if (m_ui_rect.PtInRect(pMsg->pt))   // 仅自绘区域可调整音量
         {
-            POINT pt = { INT16_MAX, INT16_MAX };                // 修改pt参数为一个特殊值
-            LPARAM lParam = MAKELPARAM(pt.x, pt.y);
-            pMainWnd->SendMessage(WM_MOUSEWHEEL, pMsg->wParam, lParam);
-            return TRUE;
+            if (CWnd* pMainWnd = AfxGetMainWnd())
+            {
+                POINT pt = { INT16_MAX, INT16_MAX };                // 修改pt参数为一个特殊值
+                LPARAM lParam = MAKELPARAM(pt.x, pt.y);
+                pMainWnd->SendMessage(WM_MOUSEWHEEL, pMsg->wParam, lParam);
+                return TRUE;
+            }
         }
     }
 
