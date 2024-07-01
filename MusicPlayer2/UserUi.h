@@ -8,7 +8,7 @@ class CUserUi :
 {
 public:
     CUserUi(CWnd* pMainWnd, const std::wstring& xml_path);
-    CUserUi(CWnd* pMainWnd);    //此构造函数不传递xml文件的路径，需要使用LoadFromContents函数直接读取xml文件的内容
+    CUserUi(CWnd* pMainWnd, UINT id);    //此构造函数不传递xml文件的路径，id为xml界面资源ID
     ~CUserUi();
 
     void LoadFromContents(const std::string& xml_contents);

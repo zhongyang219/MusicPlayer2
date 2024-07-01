@@ -2929,6 +2929,8 @@ IDR_UI1                 TEXT                    "skins\\ui1.xml"
 
 IDR_UI2                 TEXT                    "skins\\ui2.xml"
 
+IDR_MINI_UI0            TEXT                    "skins\\miniMode\\miniMode00.xml"
+
 IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement.txt"
 
 IDR_STRING_TABLE        TEXT                    "language\\English.ini"

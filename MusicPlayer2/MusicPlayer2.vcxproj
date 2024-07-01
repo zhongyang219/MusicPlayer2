@@ -304,7 +304,6 @@
     <ClInclude Include="LyricsWindow.h" />
     <ClInclude Include="MciCore.h" />
     <ClInclude Include="CMediaLibDlg.h" />
-    <ClInclude Include="CMiniModeUI.h" />
     <ClInclude Include="CNotifyIcon.h" />
     <ClInclude Include="CommonData.h" />
     <ClInclude Include="COSUPlayerHelper.h" />
@@ -471,7 +470,6 @@
     <ClCompile Include="LyricsWindow.cpp" />
     <ClCompile Include="MciCore.cpp" />
     <ClCompile Include="CMediaLibDlg.cpp" />
-    <ClCompile Include="CMiniModeUI.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
     <ClCompile Include="COSUPlayerHelper.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />
@@ -560,6 +558,7 @@
     <None Include="res\MusicPlayer2.rc2" />
     <None Include="skins\ui1.xml" />
     <None Include="skins\ui2.xml" />
+    <None Include="skins\miniMode\miniMode00.xml" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\about.bmp" />

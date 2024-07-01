@@ -48,12 +48,8 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
 
     //初始化UI
     //加载内置界面
-    std::shared_ptr<CUserUi> ui1 = std::make_shared<CUserUi>(&m_ui_static_ctrl);
-    std::shared_ptr<CUserUi> ui2 = std::make_shared<CUserUi>(&m_ui_static_ctrl);
-    ui1->LoadFromContents(CCommon::GetTextResourceRawData(IDR_UI1));
-    ui2->LoadFromContents(CCommon::GetTextResourceRawData(IDR_UI2));
-    m_ui_list.push_back(ui1);
-    m_ui_list.push_back(ui2);
+    m_ui_list.push_back(std::make_shared<CUserUi>(&m_ui_static_ctrl, IDR_UI1));
+    m_ui_list.push_back(std::make_shared<CUserUi>(&m_ui_static_ctrl, IDR_UI2));
 
     //加载skins目录下的用户自定义界面
     std::vector<std::shared_ptr<CUserUi>> user_ui_list_with_index;      //指定了序号的用户自定义界面

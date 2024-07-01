@@ -10,9 +10,11 @@ CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
     delete[] xml_contents;
 }
 
-CUserUi::CUserUi(CWnd* pMainWnd)
+CUserUi::CUserUi(CWnd* pMainWnd, UINT id)
     : CPlayerUIBase(theApp.m_ui_data, pMainWnd)
 {
+    string xml = CCommon::GetTextResourceRawData(id);
+    LoadFromContents(xml);
 }
 
 

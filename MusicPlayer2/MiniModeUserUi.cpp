@@ -6,6 +6,11 @@ CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
 {
 }
 
+CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, UINT id)
+    : CUserUi(pMainWnd, id)
+{
+}
+
 CMiniModeUserUi::~CMiniModeUserUi()
 {
 }

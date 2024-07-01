@@ -565,9 +565,6 @@
     <ClInclude Include="IPlayerUI.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
-    <ClInclude Include="CMiniModeUI.h">
-      <Filter>PlayerUI</Filter>
-    </ClInclude>
     <ClInclude Include="CHotkeyManager.h">
       <Filter>功能逻辑类\HotKeyManager</Filter>
     </ClInclude>
@@ -1035,9 +1032,6 @@
     <ClCompile Include="CPlayerUIBase.cpp">
       <Filter>PlayerUI</Filter>
     </ClCompile>
-    <ClCompile Include="CMiniModeUI.cpp">
-      <Filter>PlayerUI</Filter>
-    </ClCompile>
     <ClCompile Include="CHotkeyManager.cpp">
       <Filter>功能逻辑类\HotKeyManager</Filter>
     </ClCompile>
@@ -1365,6 +1359,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="skins\ui2.xml">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="skins\miniMode\miniMode00.xml">
       <Filter>资源文件</Filter>
     </None>
     <None Include="language\English.ini">
@@ -1883,7 +1880,7 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\up_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

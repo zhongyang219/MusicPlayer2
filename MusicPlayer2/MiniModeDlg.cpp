@@ -22,7 +22,7 @@ CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CWnd
     AfxRegisterClass(&wc);
 
     //初始化界面类
-    m_ui_list.push_back(std::make_shared<CMiniModeUI>(m_ui_data, this));
+    m_ui_list.push_back(std::make_shared<CMiniModeUserUi>(this, IDR_MINI_UI0)); // 默认界面
     std::vector<std::wstring> skin_files;
     CCommon::GetFiles(theApp.m_local_dir + L"skins\\miniMode\\*.xml", skin_files);
     for (const auto& file_name : skin_files)
@@ -68,19 +68,6 @@ CPlayerUIBase* CMiniModeDlg::GetCurUi()
     if (m_ui_index >= 0 && m_ui_index < static_cast<int>(m_ui_list.size()))
         return m_ui_list[m_ui_index].get();
     return nullptr;
-}
-
-void CMiniModeDlg::UpdateSongTipInfo()
-{
-    static const wstring& empty_name_str = theApp.m_str_table.LoadText(L"TXT_EMPTY_FILE_NAME");
-    const auto& song = CPlayer::GetInstance().GetCurrentSongInfo();
-    wstring song_tip_info = theApp.m_str_table.LoadTextFormat(L"UI_TIP_COVER_MINI_MODE", {
-        song.file_path.empty() ? empty_name_str : song.GetFileName(),
-        song.GetTitle(), song.GetArtist(), song.GetAlbum() });
-
-    CMiniModeUI* cur_ui{ dynamic_cast<CMiniModeUI*>(GetCurUi()) };
-    if (cur_ui != nullptr)
-        cur_ui->UpdateSongInfoTip(song_tip_info.c_str());
 }
 
 void CMiniModeDlg::SetTitle()
@@ -136,21 +123,11 @@ bool CMiniModeDlg::CalculateWindowSize(int& width, int& height, int& height_with
     CPlayerUIBase* cur_ui{ GetCurUi() };
     if (cur_ui == nullptr)
         return false;
-    CMiniModeUI* mini_mode_ui = dynamic_cast<CMiniModeUI*>(cur_ui);
-    if (mini_mode_ui != nullptr)
+    CMiniModeUserUi* user_ui = dynamic_cast<CMiniModeUserUi*>(cur_ui);
+    if (user_ui != nullptr)
     {
-        width = m_ui_data.widnow_width;
-        height = m_ui_data.window_height;
-        height_with_playlist = m_ui_data.window_height2;
-    }
-    else
-    {
-        CMiniModeUserUi* user_ui = dynamic_cast<CMiniModeUserUi*>(cur_ui);
-        if (user_ui != nullptr)
-        {
-            user_ui->GetUiSize(width, height);
-            height_with_playlist = height + theApp.DPI(292);
-        }
+        user_ui->GetUiSize(width, height);
+        height_with_playlist = height + theApp.DPI(292);
     }
     return true;
 }
@@ -191,20 +168,20 @@ void CMiniModeDlg::Init()
 
     // 初始化“mini模式切换界面”菜单
     vector<MenuMgr::MenuItem> menu_list;
-    menu_list.emplace_back(MenuMgr::MenuItem{});        // 插入一个分隔符 （这使得menu_list.size()可以作为序号使用）
-    for (auto& ui : m_ui_list)
+    menu_list.emplace_back(MenuMgr::MenuItem{});        // 插入一个分隔符
+    for (size_t i = 1; i < m_ui_list.size(); ++i)       // 跳过第一个默认界面
     {
-        // 转换到派生类以调用SetIndex/GetUIName （基于CMiniModeUI的默认ui会在这里失败）
-        if (auto ui_mini = std::dynamic_pointer_cast<CMiniModeUserUi>(ui))
+        // 转换到派生类以调用SetIndex/GetUIName
+        if (auto ui_mini = std::dynamic_pointer_cast<CMiniModeUserUi>(m_ui_list[i]))
         {
             ui_mini->SetIndex(menu_list.size());        // 设置界面序号
             wstring str_name = ui_mini->GetUIName();    // 获取界面的名称
             if (str_name.empty())                       // 如果名称为空（没有指定名称），则使用“迷你模式 + 数字”的默认名称
-                str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_MINI_DEFAULT", { menu_list.size() });
-            UINT id = ID_MINIMODE_UI_DEFAULT + menu_list.size();
+                str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_MINI_DEFAULT", { i });
+            UINT id = ID_MINIMODE_UI_DEFAULT + i;
             menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IconType::IT_NO_ICON, str_name });
 
-            if (ID_MINIMODE_UI_DEFAULT + menu_list.size() >= ID_MINIMODE_UI_MAX)
+            if (ID_MINIMODE_UI_DEFAULT + i >= ID_MINIMODE_UI_MAX)
                 break;
         }
     }
@@ -280,7 +257,6 @@ BOOL CMiniModeDlg::OnInitDialog()
     SetTransparency();
 
     m_show_playlist = false;
-    m_ui_data.m_show_volume = false;
     m_first_start = true;
 
     return TRUE;  // return TRUE unless you set the focus to a control
@@ -315,7 +291,6 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
         if (!song_info.IsSameSong(last_song_info))
         {
             last_song_info = song_info;
-            UpdateSongTipInfo();
             SetTitle();
             m_draw_reset = true;
         }
@@ -324,15 +299,9 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
     {
         if (m_first_start)
         {
-            UpdateSongTipInfo();
             SetTitle();
         }
         m_first_start = false;
-    }
-    if (nIDEvent == 11)
-    {
-        m_ui_data.m_show_volume = false;
-        KillTimer(11);
     }
     CDialogEx::OnTimer(nIDEvent);
 }
@@ -345,10 +314,6 @@ void CMiniModeDlg::SetVolume(int step)
     CUserUi* cur_ui{ dynamic_cast<CUserUi*>(GetCurUi()) };
     if (cur_ui != nullptr)
         cur_ui->VolumeAdjusted();
-
-    KillTimer(11);
-    SetTimer(11, 1500, NULL);		//显示音量后设置一个1500毫秒的定时器（音量显示保持1.5秒）
-    m_ui_data.m_show_volume = true;
 }
 
 void CMiniModeDlg::SetTransparency()

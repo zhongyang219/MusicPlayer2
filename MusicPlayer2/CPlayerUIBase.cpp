@@ -1561,7 +1561,7 @@ bool CPlayerUIBase::IsDrawLargeIcon() const
 
 bool CPlayerUIBase::IsMiniMode() const
 {
-    return (dynamic_cast<const CMiniModeUserUi*>(this) != nullptr) || (dynamic_cast<const CMiniModeUI*>(this) != nullptr);
+    return dynamic_cast<const CMiniModeUserUi*>(this) != nullptr;
 }
 
 bool CPlayerUIBase::IsDrawNarrowMode() const
