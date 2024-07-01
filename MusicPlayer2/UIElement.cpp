@@ -641,6 +641,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_MENU;
     else if (key_type == "miniMode")
         key = CPlayerUIBase::BTN_MINI;
+    else if (key_type == "miniModeClose")
+        key = CPlayerUIBase::BTN_CLOSE;
     else if (key_type == "fullScreen")
         key = CPlayerUIBase::BTN_FULL_SCREEN;
     else if (key_type == "repeatMode")
@@ -894,15 +896,45 @@ void UiElement::ProgressBar::Draw()
 void UiElement::Lyrics::Draw()
 {
     CalculateRect();
-    if (IsParentRectangle())      //如果父元素中包含了矩形元素，则即使在“外观设置”中勾选了“歌词界面背景”，也不再为歌词区域绘制半透明背景
+
+    CFont* lyric_font = &theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen);
+    CFont* lyric_tr_font = &theApp.m_font_set.lyric_translate.GetFont(theApp.m_ui_data.full_screen);
+
+    if (use_default_font)   // 目前这个bool有些冗余，当字体与字号在m_font_set中解耦后有用
     {
-        if (rect.Height() >= ui->DPI(4))
-            ui->m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align);
+        bool big_font = theApp.m_ui_data.full_screen;
+        switch (font_size)
+        {
+        case 8:
+            lyric_font = &theApp.m_font_set.font8.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font8.GetFont(big_font);
+            break;
+        case 9:
+            lyric_font = &theApp.m_font_set.font9.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font8.GetFont(big_font);
+            break;
+        case 10:
+            lyric_font = &theApp.m_font_set.font10.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font9.GetFont(big_font);
+            break;
+        case 11:
+            lyric_font = &theApp.m_font_set.font11.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font10.GetFont(big_font);
+            break;
+        case 12:
+            lyric_font = &theApp.m_font_set.font12.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font11.GetFont(big_font);
+            break;
+        default:
+            lyric_font = &theApp.m_font_set.font9.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font8.GetFont(big_font);
+            break;
+        }
     }
-    else
-    {
-        ui->DrawLyrics(rect);
-    }
+
+    //如果父元素中包含了矩形元素，则即使在“外观设置”中勾选了“歌词界面背景”，也不再为歌词区域绘制半透明背景
+    ui->DrawLyrics(rect, lyric_font, lyric_tr_font, (!no_background && !IsParentRectangle()));
+
     ui->ResetDrawArea();
     ui->m_draw_data.lyric_rect = rect;
     Element::Draw();

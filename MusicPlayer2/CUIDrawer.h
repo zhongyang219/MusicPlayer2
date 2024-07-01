@@ -18,6 +18,9 @@ public:
     CUIDrawer(UIColors& colors);
     ~CUIDrawer();
 
+    // 设置歌词&翻译字体
+    void SetLyricFont(CFont* lyric_font, CFont* lyric_tr_font);
+
     void DrawLryicCommon(CRect rect, Alignment align = Alignment::AUTO);
 
     int GetLyricTextHeight() const;
@@ -48,13 +51,13 @@ public:
     int DPI(int pixel);
 
 private:
-    CFont* SetLyricFont();
-    CFont* SetLyricFontTranslated();
     // 实际绘制双行歌词
     void DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, Alignment align, int progress, bool switch_flag, int fade_percent = 100);
 
 private:
     UIColors& m_colors;
+    CFont* m_lyric_font = nullptr;
+    CFont* m_lyric_tr_font = nullptr;
     bool m_for_cortana_lyric{ false };		//是否用于显示搜索框歌词
 };
 

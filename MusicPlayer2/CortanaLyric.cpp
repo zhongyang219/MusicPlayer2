@@ -152,6 +152,8 @@ void CCortanaLyric::DrawInfo()
         if (m_pDC != nullptr)
         {
             m_draw.SetFont(&theApp.m_font_set.cortana.GetFont());
+            // 设置m_draw的歌词字体，DrawLyricTextMultiLine / DrawLyricTextSingleLine依赖此状态
+            m_draw.SetLyricFont(&theApp.m_font_set.cortana.GetFont(), &theApp.m_font_set.cortana_translate.GetFont());
             //双缓冲绘图
             CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_cortana_rect);
             //使用m_draw绘图

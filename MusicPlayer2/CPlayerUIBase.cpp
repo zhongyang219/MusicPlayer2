@@ -2392,16 +2392,13 @@ void CPlayerUIBase::DrawABRepeatButton(CRect rect)
     m_draw.SetFont(pOldFont);
 }
 
-void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
+void CPlayerUIBase::DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background)
 {
     if (rect.Height() < DPI(4))
         return;
 
-    if (margin < 0)
-        margin = Margin();
-
     //填充歌词区域背景
-    if (theApp.m_app_setting_data.lyric_background)
+    if (with_background && theApp.m_app_setting_data.lyric_background)
     {
         BYTE alpha = 255;
         if (IsDrawBackgroundAlpha())
@@ -2417,11 +2414,11 @@ void CPlayerUIBase::DrawLyrics(CRect rect, int margin)
         }
     }
     //设置歌词文字区域
-    if (margin > 0)
-        rect.DeflateRect(margin, margin);
-    //CDrawCommon::SetDrawArea(pDC, lyric_area);
+    int margin = Margin();
+    rect.DeflateRect(margin, margin);
 
     //绘制歌词文本
+    m_draw.SetLyricFont(lyric_font, lyric_tr_font);
     m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align);
 }
 

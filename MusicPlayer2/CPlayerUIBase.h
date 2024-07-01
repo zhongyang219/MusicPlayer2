@@ -225,7 +225,7 @@ protected:
     void DrawAlbumCoverWithInfo(CRect rect);        //绘制专辑封面，并在上面绘制歌曲的标题和艺术家
     void DrawVolumeButton(CRect rect, bool adj_btn_top = false, bool show_text = true);     //adj_btn_top：点击后弹出的音量调整按钮是否在上方；show_text：是否显示文本
     void DrawABRepeatButton(CRect rect);
-    void DrawLyrics(CRect rect, int margin = -1);        //绘制歌词 rect：歌曲区域；margin歌词文本到歌词区域边框的边距
+    void DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background);        //绘制歌词 rect：歌曲区域；with_background是否绘制背景
     void DrawPlaylist(CRect rect, UiElement::Playlist* playlist_element, int item_height);                  //绘制播放列表
     void DrawCurrentPlaylistIndicator(CRect rect);      //绘制当前播放列表指示
     /**

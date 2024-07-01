@@ -13,6 +13,12 @@ CUIDrawer::~CUIDrawer()
 {
 }
 
+void CUIDrawer::SetLyricFont(CFont* lyric_font, CFont* lyric_tr_font)
+{
+    m_lyric_font = lyric_font;
+    m_lyric_tr_font = lyric_tr_font;
+}
+
 void CUIDrawer::DrawLryicCommon(CRect rect, Alignment align)
 {
     SetDrawArea(rect);
@@ -26,11 +32,10 @@ void CUIDrawer::DrawLryicCommon(CRect rect, Alignment align)
 int CUIDrawer::GetLyricTextHeight() const
 {
     //计算文本高度
-    if (!m_for_cortana_lyric)
-        m_pDC->SelectObject(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
-    else
-        m_pDC->SelectObject(&theApp.m_font_set.cortana.GetFont());
-    return m_pDC->GetTextExtent(L"文").cy;	//根据当前的字体设置计算文本的高度
+    CFont* pOldFont = m_pDC->SelectObject(m_lyric_font);
+    int height = m_pDC->GetTextExtent(L"文").cy;
+    m_pDC->SelectObject(pOldFont);
+    return height;  //根据当前的字体设置计算文本的高度
 }
 
 void CUIDrawer::Create(CDC* pDC, CFont* pFont)
@@ -68,7 +73,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     int lyric_height = GetLyricTextHeight() + line_space;			//文本高度加上行间距
     int lyric_height2 = lyric_height * 2 + line_space;		//包含翻译的歌词高度
 
-    CFont* pOldFont = SetLyricFont();
+    CFont* pOldFont = SetFont(m_lyric_font);
     if (CPlayer::GetInstance().IsPlaylistEmpty())   //当前播放为空时在歌词区域显示播放提示
     {
         CFont* font = SetFont(&theApp.m_font_set.font10.GetFont());
@@ -175,7 +180,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                     int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
                     COLORREF text_color = CColorConvert::GetGradientColor(m_colors.color_text_2, m_colors.color_text, fade_percent);
                     //绘制歌词文本
-                    SetLyricFont();
+                    SetFont(m_lyric_font);
                     if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
                         DrawWindowText(rect_text, lyric_i.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
                     else
@@ -183,13 +188,13 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                     //绘制翻译文本
                     if (!lyric_i.translate.empty() && theApp.m_lyric_setting_data.show_translate)
                     {
-                        SetLyricFontTranslated();
+                        SetFont(m_lyric_tr_font);
                         DrawWindowText(rect_translate, lyric_i.translate.c_str(), text_color, text_color, progress, align, true);
                     }
                 }
                 else		//绘制非正在播放的歌词
                 {
-                    SetLyricFont();
+                    SetFont(m_lyric_font);
                     COLORREF text_color;
                     if (i == lyric_index - 1 || (i == lyric_index && progress == 1000))         // 绘制正在取消高亮的歌词（这里实现一句歌词颜色从高亮缓慢变化到非高亮效果），逐字歌词最后一句在此处取消高亮
                     {
@@ -206,7 +211,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
                     //绘制翻译文本
                     if (!lyric_i.translate.empty() && theApp.m_lyric_setting_data.show_translate)
                     {
-                        SetLyricFontTranslated();
+                        SetFont(m_lyric_tr_font);
                         DrawWindowText(rect_translate, lyric_i.translate.c_str(), text_color, align, true);
                     }
                 }
@@ -218,7 +223,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
 
 void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line, Alignment align)
 {
-    CFont* pOldFont = SetLyricFont();
+    CFont* pOldFont = SetFont(m_lyric_font);
 
     if (CPlayerUIHelper::IsMidiLyric())
     {
@@ -286,11 +291,11 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
                 CRect translate_rect = lyric_rect;
                 translate_rect.MoveToY(lyric_rect.bottom);
 
-                SetLyricFontTranslated();
+                SetFont(m_lyric_tr_font);
                 DrawWindowText(translate_rect, current_lyric.translate.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
             }
             // 绘制单行歌词
-            SetLyricFont();
+            SetFont(m_lyric_font);
             if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
                 DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
             else if (0 < progress && progress < 1000)   // 仅高亮“正在进行”的歌词
@@ -436,7 +441,7 @@ int CUIDrawer::DPI(int pixel)
 
 void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyric, Alignment align, int progress, bool switch_flag, int fade_percent)
 {
-    CFont* pOldFont = SetLyricFont();
+    CFont* pOldFont = SetFont(m_lyric_font);
 
     CRect up_rect{ rect }, down_rect{ rect };       //上半部分和下半部分歌词的矩形区域
     up_rect.bottom = up_rect.top + (up_rect.Height() / 2);
@@ -470,20 +475,4 @@ void CUIDrawer::DrawLyricDoubleLine(CRect rect, LPCTSTR lyric, LPCTSTR next_lyri
         DrawWindowText(down_rect, lyric, color1, color2, progress, down_align);
     }
     SetFont(pOldFont);
-}
-
-CFont* CUIDrawer::SetLyricFont()
-{
-    if (!m_for_cortana_lyric)
-        return SetFont(&theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen));
-    else
-        return SetFont(&theApp.m_font_set.cortana.GetFont());
-}
-
-CFont* CUIDrawer::SetLyricFontTranslated()
-{
-    if (!m_for_cortana_lyric)
-        return SetFont(&theApp.m_font_set.lyric_translate.GetFont(theApp.m_ui_data.full_screen));
-    else
-        return SetFont(&theApp.m_font_set.cortana_translate.GetFont());
 }

@@ -303,6 +303,11 @@
                             <xs:documentation>迷你模式</xs:documentation>
                         </xs:annotation>
                     </xs:enumeration>
+                    <xs:enumeration value="miniModeClose">
+                        <xs:annotation>
+                            <xs:documentation>迷你模式界面中使用的关闭按钮</xs:documentation>
+                        </xs:annotation>
+                    </xs:enumeration>
                     <xs:enumeration value="fullScreen">
                         <xs:annotation>
                             <xs:documentation>全屏模式</xs:documentation>
@@ -686,6 +691,27 @@
             </xs:documentation>
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
+          <xs:attribute name="no_background" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>设置为true时总是不绘制歌词背景</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="use_default_font" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation>设置为true时歌词总是使用默认字体</xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="font_size" default="9">
+            <xs:annotation>
+                <xs:documentation>歌词字体大小，use_default_font为true时有效，仅支持8~12。默认大小为9。</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:restriction base="xs:int"><!--只允许8-12的整数-->
+                    <xs:minInclusive value="8"></xs:minInclusive>
+                    <xs:maxInclusive value="12"></xs:maxInclusive>
+                </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="volumeType">

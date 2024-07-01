@@ -726,6 +726,17 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_switch_display_btn", classicalControlBar->show_switch_display_btn);
             }
         }
+        //歌词
+        else if (item_name == "lyrics")
+        {
+            UiElement::Lyrics* lyrics = dynamic_cast<UiElement::Lyrics*>(element.get());
+            if (lyrics != nullptr)
+            {
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "no_background", lyrics->no_background);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "use_default_font", lyrics->use_default_font);
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", lyrics->font_size);
+            }
+        }
 
         //递归调用此函数创建子节点
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)
