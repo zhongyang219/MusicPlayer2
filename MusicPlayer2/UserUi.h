@@ -8,7 +8,7 @@ class CUserUi :
 {
 public:
     CUserUi(CWnd* pMainWnd, const std::wstring& xml_path);
-    CUserUi(CWnd* pMainWnd);    //此构造函数不传递xml文件的路径，需要使用LoadFromContents函数直接读取xml文件的内容
+    CUserUi(CWnd* pMainWnd, UINT id);    //此构造函数不传递xml文件的路径，id为xml界面资源ID
     ~CUserUi();
 
     void LoadFromContents(const std::string& xml_contents);
@@ -19,7 +19,7 @@ public:
     void IterateAllElementsInAllUi(std::function<bool(UiElement::Element*)> func);    //遍历每一个界面中的所有元素（包含big、narrow、small三个界面）
     void VolumeAdjusted();      //当音量调整时需要调用此函数
     void ResetVolumeToPlayTime();   //定时器SHOW_VOLUME_TIMER_ID响应时需要调用此函数
-    void PlaylistLocateToCurrent();     //播放列表控件使正在播放的曲目可见
+    void PlaylistLocateToIndex(int index);         // 播放列表控件使此索引的条目可见
     void SaveStatackElementIndex(CArchive& archive);
     void LoadStatackElementIndex(CArchive& archive);
 
@@ -27,7 +27,7 @@ public:
 
     // 通过 CPlayerUIBase 继承
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
-    virtual CString GetUIName() override;
+    virtual wstring GetUIName() override;
     virtual bool LButtonUp(CPoint point) override;
     virtual bool LButtonDown(CPoint point) override;
     virtual void MouseMove(CPoint point) override;

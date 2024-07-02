@@ -3,10 +3,13 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "LyricRelateDlg.h"
 #include "SongInfoHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
+#include "FilterHelper.h"
+#include "CommonDialogMgr.h"
 
 
 // CLyricRelateDlg 对话框
@@ -49,7 +52,7 @@ void CLyricRelateDlg::AddListRow(const wstring& lyric_path)
     bool is_related{ lyric_path == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file };
     if(is_related)
     {
-        m_result_list.SetItemText(index, 3, CCommon::LoadText(IDS_YES));
+        m_result_list.SetItemText(index, 3, theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_IS_RELATED_YES").c_str());
         m_result_list.SetHightItem(index);
     }
 }
@@ -93,6 +96,50 @@ CString CLyricRelateDlg::GetDialogName() const
     return _T("LyricRelateDlg");
 }
 
+bool CLyricRelateDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_LRC_RELATE");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_LRC_TITLE");
+    SetDlgItemTextW(IDC_TXT_LRC_RELATE_LRC_TITLE_STATIC, temp.c_str());
+    // IDC_LYRIC_NAME_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_FUZZY_MATCH");
+    SetDlgItemTextW(IDC_FUZZY_MATCH_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_SEARCH_LOCAL");
+    SetDlgItemTextW(IDC_LOCAL_SEARCH_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_SEARCH_RESULT");
+    SetDlgItemTextW(IDC_TXT_LRC_RELATE_SEARCH_RESULT_STATIC, temp.c_str());
+    // IDC_SEARCH_RESULT_LIST
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_BROWSE");
+    SetDlgItemTextW(IDC_BROWSE_BUTTON1, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_DEL_FILE");
+    SetDlgItemTextW(IDC_DELETE_FILE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_UNLINK");
+    SetDlgItemTextW(IDC_DONOT_RELATE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_SEL_LINK");
+    SetDlgItemTextW(IDOK, temp.c_str());
+    // IDCANCEL
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_LRC_RELATE_LRC_TITLE_STATIC },
+        { CtrlTextInfo::C0, IDC_LYRIC_NAME_EDIT },
+        { CtrlTextInfo::R1, IDC_FUZZY_MATCH_CHECK, CtrlTextInfo::W16 },
+        { CtrlTextInfo::R2, IDC_LOCAL_SEARCH_BUTTON, CtrlTextInfo::W32 }
+        }, CtrlTextInfo::W128);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::C0, IDC_SEARCH_RESULT_LIST },
+        { CtrlTextInfo::R1, IDC_BROWSE_BUTTON1, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R1, IDC_DELETE_FILE_BUTTON, CtrlTextInfo::W32 }
+        }, CtrlTextInfo::W256);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_DONOT_RELATE_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CLyricRelateDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);
@@ -119,11 +166,11 @@ BOOL CLyricRelateDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.lyric.GetIcon(true), FALSE);
-    SetButtonIcon(IDC_LOCAL_SEARCH_BUTTON, theApp.m_icon_set.find_songs.GetIcon(true));
-    SetButtonIcon(IDC_BROWSE_BUTTON1, theApp.m_icon_set.folder_explore.GetIcon(true));
-    SetButtonIcon(IDC_DELETE_FILE_BUTTON, theApp.m_icon_set.close.GetIcon(true));
-    SetButtonIcon(IDC_DONOT_RELATE_BUTTON, theApp.m_icon_set.unlink.GetIcon(true));
+    SetIcon(IconMgr::IconType::IT_Lyric, FALSE);
+    SetButtonIcon(IDC_LOCAL_SEARCH_BUTTON, IconMgr::IconType::IT_Find);
+    SetButtonIcon(IDC_BROWSE_BUTTON1, IconMgr::IconType::IT_Folder_Explore);
+    SetButtonIcon(IDC_DELETE_FILE_BUTTON, IconMgr::IconType::IT_Cancel);
+    SetButtonIcon(IDC_DONOT_RELATE_BUTTON, IconMgr::IconType::IT_Unlink);
 
     wstring lyric_name;
     if (CPlayer::GetInstance().GetCurrentSongInfo().is_cue || CPlayer::GetInstance().IsOsuFile())
@@ -142,10 +189,10 @@ BOOL CLyricRelateDlg::OnInitDialog()
     width[1] = rect.Width() * 3 / 10;
     width[2] = rect.Width() * 2 / 5;
     width[3] = rect.Width() - width[0] - width[1] - width[2] - theApp.DPI(20) - 1;
-    m_result_list.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width[0]);
-    m_result_list.InsertColumn(1, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, width[1]);
-    m_result_list.InsertColumn(2, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, width[2]);
-    m_result_list.InsertColumn(3, CCommon::LoadText(IDS_IS_RELATED), LVCFMT_LEFT, width[3]);
+    m_result_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, width[0]);
+    m_result_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_FILE_NAME").c_str(), LVCFMT_LEFT, width[1]);
+    m_result_list.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_FILE_PATH").c_str(), LVCFMT_LEFT, width[2]);
+    m_result_list.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_LRC_RELATE_IS_RELATED").c_str(), LVCFMT_LEFT, width[3]);
 
     SearchLyrics();
     ShowSearchResult();
@@ -166,9 +213,9 @@ void CLyricRelateDlg::OnBnClickedLocalSearchButton()
 void CLyricRelateDlg::OnBnClickedBrowseButton1()
 {
     // TODO: 在此添加控件通知处理程序代码
-    CString szFilter = CCommon::LoadText(IDS_LYRIC_FILE_FILTER);
+    wstring filter = FilterHelper::GetLyricFileFilter();
     //构造打开文件对话框
-    CFileDialog fileDlg(TRUE, NULL, NULL, 0, szFilter, this);
+    CFileDialog fileDlg(TRUE, NULL, NULL, 0, filter.c_str(), this);
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {
@@ -183,7 +230,7 @@ void CLyricRelateDlg::OnBnClickedDeleteFileButton()
     // TODO: 在此添加控件通知处理程序代码
     int index_selected = m_result_list.GetCurSel();
     wstring lyric_file = GetListRow(index_selected);
-    CCommon::DeleteAFile(m_hWnd, lyric_file);
+    CommonDialogMgr::DeleteAFile(m_hWnd, lyric_file);
     if (lyric_file == CPlayer::GetInstance().GetCurrentSongInfo().lyric_file)
     {
         //如果删除的是正在显示的歌词，则将其清除

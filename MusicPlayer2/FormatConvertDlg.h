@@ -1,16 +1,9 @@
 ﻿#pragma once
-#include "ListCtrlEx.h"
-#include "AudioTag.h"
-#include "MP3EncodeCfgDlg.h"
-#include "OggEncodeCfgDlg.h"
-#include "WmaEncodeCfgDlg.h"
-#include "TagEditDlg.h"
-#include "FolderBrowserDlg.h"
-#include "PlayerProgressBar.h"
-#include <map>
-#include "BrowseEdit.h"
-#include "MusicPlayer2.h"
 #include "BaseDialog.h"
+#include "IPlayerCore.h"
+#include "ListCtrlEx.h"
+#include "PlayerProgressBar.h"
+#include "BrowseEdit.h"
 
 
 //单个文件转换进度的消息
@@ -36,8 +29,6 @@ public:
     //工作线程函数
     static UINT ThreadFunc(LPVOID lpParam);
 
-    bool IsTaskbarListEnable() const;
-
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_FORMAT_CONVERT_DIALOG };
@@ -48,14 +39,9 @@ protected:
     CListCtrlEx m_file_list_ctrl;
     CComboBox m_encode_format_combo;
     CPlayerProgressBar m_progress_bar;
-    CMenu m_list_popup_menu;
     CComboBox m_freq_comb;
     CBrowseEdit m_out_dir_edit;
     CBrowseEdit m_out_name_edit;
-
-//#ifndef COMPILE_IN_WIN_XP
-    ITaskbarList3* m_pTaskbar{ theApp.GetITaskbarList3() };          //用于支持任务栏显示播放进度
-//#endif
 
     vector<SongInfo> m_file_list;   // 要转换格式的文件列表
     wstring m_out_dir;              // 输出目录
@@ -82,9 +68,10 @@ protected:
     wstring m_freq_sel{};       //采样频率下拉列表中的选中项
     bool m_open_output_dir{ false };	//转换完成后打开输出目录
 
-    std::map<wstring, int> m_freq_map;
+    vector<pair<wstring, int>> m_freq_map;
 
     virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     void LoadConfig();

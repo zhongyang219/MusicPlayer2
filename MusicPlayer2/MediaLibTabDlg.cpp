@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "MediaLibTabDlg.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
 #include "SongDataManager.h"
@@ -24,7 +25,7 @@ BEGIN_MESSAGE_MAP(CMediaLibTabDlg, CTabDlg)
     ON_COMMAND(ID_PLAY_ITEM, &CMediaLibTabDlg::OnPlayItem)
     ON_COMMAND(ID_PLAY_ITEM_IN_FOLDER_MODE, &CMediaLibTabDlg::OnPlayItemInFolderMode)
     ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CMediaLibTabDlg::OnAddToNewPlaylist)
-    ON_COMMAND(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, &CMediaLibTabDlg::OnAddToNewPalylistAndPlay)
+    ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY, &CMediaLibTabDlg::OnAddToNewPlaylistAndPlay)
     ON_COMMAND(ID_EXPLORE_ONLINE, &CMediaLibTabDlg::OnExploreOnline)
     ON_COMMAND(ID_EXPLORE_TRACK, &CMediaLibTabDlg::OnExploreTrack)
     ON_COMMAND(ID_FORMAT_CONVERT, &CMediaLibTabDlg::OnFormatConvert)
@@ -62,7 +63,7 @@ UINT CMediaLibTabDlg::ViewOnlineThreadFunc(LPVOID lpParam)
     CMediaLibTabDlg* pThis = (CMediaLibTabDlg*)(lpParam);
     if (pThis == nullptr)
         return 0;
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     //此命令用于跳转到歌曲对应的网易云音乐的在线页面
     if (pThis->GetItemSelected() >= 0)
     {
@@ -90,7 +91,10 @@ void CMediaLibTabDlg::OnOK()
         else
             ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(GetSongList(), GetItemSelected());
         if (!ok)
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
         {
             CTabDlg::OnOK();
@@ -143,7 +147,6 @@ void CMediaLibTabDlg::OnInitMenu(CMenu* pMenu)
     bool can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
         std::find_if(songs.begin(), songs.end(), [&](const SongInfo& song_info) { return song_info.is_cue || COSUPlayerHelper::IsOsuFile(song_info.file_path); }) != songs.end();
 
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);    // 左右菜单都有这一项
     pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (select_all_in_playing_list ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
 }
@@ -173,7 +176,10 @@ void CMediaLibTabDlg::OnPlayItemInFolderMode()
     if (sel_item >= 0 && sel_item < static_cast<int>(GetSongList().size()))
     {
         if (!CPlayer::GetInstance().OpenASongInFolderMode(GetSongList()[sel_item], true))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
             OnCancel();
     }
@@ -188,14 +194,17 @@ void CMediaLibTabDlg::OnAddToNewPlaylist()
 }
 
 
-void CMediaLibTabDlg::OnAddToNewPalylistAndPlay()
+void CMediaLibTabDlg::OnAddToNewPlaylistAndPlay()
 {
     // TODO: 在此添加命令处理程序代码
     wstring playlist_path;
     if (_OnAddToNewPlaylist(playlist_path))
     {
         if (!CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true))
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
         else
             OnCancel();
     }
@@ -273,5 +282,5 @@ void CMediaLibTabDlg::OnCopyText()
 {
     // TODO: 在此添加命令处理程序代码
     if (!CCommon::CopyStringToClipboard(GetSelectedString()))
-        MessageBox(CCommon::LoadText(IDS_COPY_CLIPBOARD_FAILED), NULL, MB_ICONWARNING);
+        MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
 }

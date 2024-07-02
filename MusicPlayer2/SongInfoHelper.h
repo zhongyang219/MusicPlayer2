@@ -5,7 +5,7 @@ class CSongInfoHelper
 {
 public:
     static CString GetBitrateString(const SongInfo& song);
-    static CString GetChannelsString(const SongInfo& song);
+    static wstring GetChannelsString(BYTE channels);
     static CString GetFreqString(const SongInfo& song);
     static CString GetBitsString(const SongInfo& song);
 

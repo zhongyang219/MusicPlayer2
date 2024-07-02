@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "MiniModeDlg.h"
-#include "afxdialogex.h"
 #include "MusicPlayerDlg.h"
 #include "MiniModeUserUi.h"
 #include "SongInfoHelper.h"
@@ -23,7 +22,7 @@ CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CWnd
     AfxRegisterClass(&wc);
 
     //初始化界面类
-    m_ui_list.push_back(std::make_shared<CMiniModeUI>(m_ui_data, this));
+    m_ui_list.push_back(std::make_shared<CMiniModeUserUi>(this, IDR_MINI_UI0)); // 默认界面
     std::vector<std::wstring> skin_files;
     CCommon::GetFiles(theApp.m_local_dir + L"skins\\miniMode\\*.xml", skin_files);
     for (const auto& file_name : skin_files)
@@ -71,25 +70,6 @@ CPlayerUIBase* CMiniModeDlg::GetCurUi()
     return nullptr;
 }
 
-void CMiniModeDlg::UpdateSongTipInfo()
-{
-    CString song_tip_info;
-    song_tip_info += CCommon::LoadText(IDS_NOW_PLAYING, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetFileName().c_str();
-    song_tip_info += _T("\r\n");
-    song_tip_info += CCommon::LoadText(IDS_TITLE, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].GetTitle().c_str();
-    song_tip_info += _T("\r\n");
-    song_tip_info += CCommon::LoadText(IDS_ARTIST, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].GetArtist().c_str();
-    song_tip_info += _T("\r\n");
-    song_tip_info += CCommon::LoadText(IDS_ALBUM, _T(": "));
-    song_tip_info += CPlayer::GetInstance().GetPlayList()[CPlayer::GetInstance().GetIndex()].GetAlbum().c_str();
-    CMiniModeUI* cur_ui{ dynamic_cast<CMiniModeUI*>(GetCurUi()) };
-    if (cur_ui != nullptr)
-        cur_ui->UpdateSongInfoTip(song_tip_info);
-}
-
 void CMiniModeDlg::SetTitle()
 {
     CString title;
@@ -114,6 +94,8 @@ void CMiniModeDlg::AdjustWindowSize()
     //获取窗口大小
     int width{}, height{}, height_with_playlist{};
     CalculateWindowSize(width, height, height_with_playlist);
+    m_ui_width = width;
+    m_ui_height = height;
     if (width != 0 && height != 0)
     {
         SetWindowPos(nullptr, 0, 0, width, (m_show_playlist ? height_with_playlist : height), SWP_NOMOVE | SWP_NOZORDER);
@@ -141,21 +123,11 @@ bool CMiniModeDlg::CalculateWindowSize(int& width, int& height, int& height_with
     CPlayerUIBase* cur_ui{ GetCurUi() };
     if (cur_ui == nullptr)
         return false;
-    CMiniModeUI* mini_mode_ui = dynamic_cast<CMiniModeUI*>(cur_ui);
-    if (mini_mode_ui != nullptr)
+    CMiniModeUserUi* user_ui = dynamic_cast<CMiniModeUserUi*>(cur_ui);
+    if (user_ui != nullptr)
     {
-        width = m_ui_data.widnow_width;
-        height = m_ui_data.window_height;
-        height_with_playlist = m_ui_data.window_height2;
-    }
-    else
-    {
-        CMiniModeUserUi* user_ui = dynamic_cast<CMiniModeUserUi*>(cur_ui);
-        if (user_ui != nullptr)
-        {
-            user_ui->GetUiSize(width, height);
-            height_with_playlist = height + theApp.DPI(292);
-        }
+        user_ui->GetUiSize(width, height);
+        height_with_playlist = height + theApp.DPI(292);
     }
     return true;
 }
@@ -168,12 +140,10 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_WM_RBUTTONUP()
     ON_COMMAND(ID_MINI_MODE_EXIT, &CMiniModeDlg::OnMiniModeExit)
     ON_WM_INITMENU()
-    ON_WM_MOUSEWHEEL()
     ON_WM_LBUTTONDBLCLK()
     ON_NOTIFY(NM_DBLCLK, IDC_LIST2, &CMiniModeDlg::OnNMDblclkList2)
     ON_NOTIFY(NM_RCLICK, IDC_LIST2, &CMiniModeDlg::OnNMRClickList2)
     ON_WM_PAINT()
-    //ON_STN_CLICKED(IDC_MINI_PROGRESS_STATIC, &CMiniModeDlg::OnStnClickedMiniProgressStatic)
     ON_WM_MOUSEMOVE()
     ON_WM_LBUTTONUP()
     ON_COMMAND(ID_SHOW_PLAY_LIST, &CMiniModeDlg::OnShowPlayList)
@@ -196,41 +166,27 @@ void CMiniModeDlg::Init()
     //载入配置
     LoadConfig();
 
-    //初始化“切换界面”菜单
-    CMenu* pMenu = theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0)->GetSubMenu(17);
-    ASSERT(pMenu != nullptr);
-    if (pMenu != nullptr)
+    // 初始化“mini模式切换界面”菜单
+    vector<MenuMgr::MenuItem> menu_list;
+    menu_list.emplace_back(MenuMgr::MenuItem{});        // 插入一个分隔符
+    for (size_t i = 1; i < m_ui_list.size(); ++i)       // 跳过第一个默认界面
     {
-        //将ID_MINIMODE_UI_DEFAULT后面的所有菜单项删除
-        int start_pos = 1;
-        while (pMenu->GetMenuItemCount() > start_pos)
+        // 转换到派生类以调用SetIndex/GetUIName
+        if (auto ui_mini = std::dynamic_pointer_cast<CMiniModeUserUi>(m_ui_list[i]))
         {
-            pMenu->DeleteMenu(start_pos, MF_BYPOSITION);
-        }
+            ui_mini->SetIndex(menu_list.size());        // 设置界面序号
+            wstring str_name = ui_mini->GetUIName();    // 获取界面的名称
+            if (str_name.empty())                       // 如果名称为空（没有指定名称），则使用“迷你模式 + 数字”的默认名称
+                str_name = theApp.m_str_table.LoadTextFormat(L"TXT_UI_NAME_MINI_DEFAULT", { i });
+            UINT id = ID_MINIMODE_UI_DEFAULT + i;
+            menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IconType::IT_NO_ICON, str_name });
 
-        std::vector<CMiniModeUserUi*> user_ui_list;
-        for (size_t i{}; i < m_ui_list.size(); i++)
-        {
-            CMiniModeUserUi* user_ui = dynamic_cast<CMiniModeUserUi*>(m_ui_list[i].get());
-            if (user_ui != nullptr)
-                user_ui_list.push_back(user_ui);
-        }
-
-        if (!user_ui_list.empty())
-            pMenu->AppendMenu(MF_SEPARATOR);
-
-        const int MINIMODE_UI_MAX = ID_MINIMODE_UI_MAX - ID_MINIMODE_UI_DEFAULT;
-        bool user_ui_separator_added{};
-        for (size_t i{}; i < user_ui_list.size() && i < MINIMODE_UI_MAX; i++)
-        {
-            user_ui_list[i]->SetIndex(i + 1);
-            CString str_name = user_ui_list[i]->GetUIName();   //获取界面的名称
-            if (str_name.IsEmpty())
-                str_name.Format(_T("%s %d"), CCommon::LoadText(IDS_MINI_MODE).GetString(), i + 1); //如果名称为空（没有指定名称），则使用“迷你模式 +数字”的默认名称
-
-            pMenu->AppendMenu(MF_STRING | MF_ENABLED, ID_MINIMODE_UI_DEFAULT + i + 1, str_name);
+            if (ID_MINIMODE_UI_DEFAULT + i >= ID_MINIMODE_UI_MAX)
+                break;
         }
     }
+    if (menu_list.size() > 1)                           // 如果只有一个分隔符就不更新
+        theApp.m_menu_mgr.UpdateMenu(MenuMgr::MiniModeSwitchUiMenu, menu_list);
 }
 
 void CMiniModeDlg::UpdatePlayPauseButton()
@@ -270,7 +226,7 @@ BOOL CMiniModeDlg::OnInitDialog()
     // 设置mini窗口为工具窗口使其不在多任务切换界面显示并可跨虚拟桌面
     SetWindowLongW(m_hWnd, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
 
-    m_playlist_ctrl.SetFont(theApp.m_pMainWnd->GetFont());
+    m_playlist_ctrl.SetFont(&theApp.m_font_set.dlg.GetFont());
 
     m_pDC = GetDC();
     for (auto& ui : m_ui_list)
@@ -280,14 +236,11 @@ BOOL CMiniModeDlg::OnInitDialog()
 
     m_show_playlist = false;
 
-    //获取窗口大小
-    int width{}, height{}, height_with_playlist{};
-    CalculateWindowSize(width, height, height_with_playlist);
-
     //初始化窗口位置
     if (m_position_x != -1 && m_position_y != -1)
         SetWindowPos(nullptr, m_position_x, m_position_y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
+    //获取窗口大小
     AdjustWindowSize();
 
     //设置定时器
@@ -304,7 +257,6 @@ BOOL CMiniModeDlg::OnInitDialog()
     SetTransparency();
 
     m_show_playlist = false;
-    m_ui_data.m_show_volume = false;
     m_first_start = true;
 
     return TRUE;  // return TRUE unless you set the focus to a control
@@ -333,16 +285,13 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
     if (nIDEvent == TIMER_ID_MINI)
     {
         //更新鼠标提示
-        static int index{};
-        static wstring song_name{};
+        static SongInfo last_song_info;
+        const SongInfo& song_info = CPlayer::GetInstance().GetCurrentSongInfo();
         //如果当前播放的歌曲发生变化，就更新鼠标提示信息
-        if (index != CPlayer::GetInstance().GetIndex() || song_name != CPlayer::GetInstance().GetFileName())
+        if (!song_info.IsSameSong(last_song_info))
         {
-            UpdateSongTipInfo();
+            last_song_info = song_info;
             SetTitle();
-            //m_Mytip.UpdateTipText(m_song_tip_info, this);
-            index = CPlayer::GetInstance().GetIndex();
-            song_name = CPlayer::GetInstance().GetFileName();
             m_draw_reset = true;
         }
     }
@@ -350,34 +299,21 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
     {
         if (m_first_start)
         {
-            UpdateSongTipInfo();
             SetTitle();
         }
         m_first_start = false;
-    }
-    if (nIDEvent == 11)
-    {
-        m_ui_data.m_show_volume = false;
-        KillTimer(11);
     }
     CDialogEx::OnTimer(nIDEvent);
 }
 
 
-void CMiniModeDlg::SetVolume(bool up)
+void CMiniModeDlg::SetVolume(int step)
 {
-    if (up)
-        CPlayer::GetInstance().MusicControl(Command::VOLUME_UP);
-    else
-        CPlayer::GetInstance().MusicControl(Command::VOLUME_DOWN);
+    CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, step);
 
     CUserUi* cur_ui{ dynamic_cast<CUserUi*>(GetCurUi()) };
     if (cur_ui != nullptr)
         cur_ui->VolumeAdjusted();
-
-    KillTimer(11);
-    SetTimer(11, 1500, NULL);		//显示音量后设置一个1500毫秒的定时器（音量显示保持1.5秒）
-    m_ui_data.m_show_volume = true;
 }
 
 void CMiniModeDlg::SetTransparency()
@@ -425,12 +361,12 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
         //按上下方向键调整音量
         if (pMsg->wParam == VK_UP)
         {
-            SetVolume(true);
+            SetVolume(theApp.m_nc_setting_data.volum_step);
             return TRUE;
         }
         if (pMsg->wParam == VK_DOWN)
         {
-            SetVolume(false);
+            SetVolume(-theApp.m_nc_setting_data.volum_step);
             return TRUE;
         }
 
@@ -460,7 +396,7 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
         {
             CRect rect;
             GetWindowRect(rect);
-            theApp.m_menu_set.m_main_popup_menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rect.left, rect.bottom, this);
+            theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rect.left, rect.bottom, this);
             return TRUE;
         }
 
@@ -473,12 +409,22 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
         }
     }
 
-    ////将此窗口的其他键盘消息转发给主窗口
-    //if (pMsg->message == WM_KEYDOWN)
-    //{
-    //    ::PostMessage(theApp.m_pMainWnd->m_hWnd, WM_KEYDOWN, pMsg->wParam, pMsg->lParam);
-    //    return TRUE;
-    //}
+    if (pMsg->message == WM_MOUSEWHEEL)                         // 将滚轮消息转发给主窗口处理音量调整
+    {
+        CRect rect{};
+        GetWindowRect(rect);
+        CRect m_ui_rect{ rect.left, rect.top, rect.left + m_ui_width, rect.top + m_ui_height };
+        if (m_ui_rect.PtInRect(pMsg->pt))   // 仅自绘区域可调整音量
+        {
+            if (CWnd* pMainWnd = AfxGetMainWnd())
+            {
+                POINT pt = { INT16_MAX, INT16_MAX };                // 修改pt参数为一个特殊值
+                LPARAM lParam = MAKELPARAM(pt.x, pt.y);
+                pMainWnd->SendMessage(WM_MOUSEWHEEL, pMsg->wParam, lParam);
+                return TRUE;
+            }
+        }
+    }
 
     if (pMsg->message == WM_MOUSEMOVE)
     {
@@ -525,11 +471,11 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
     GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标
     if (nFlags == MK_SHIFT)		//按住Shift键点击鼠标右键时，弹出系统菜单
     {
-        theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
+        theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
     }
     else
     {
-        CMenu* pContextMenu = theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0);
+        CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniAreaMenu);
         pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
     }
 
@@ -559,30 +505,11 @@ void CMiniModeDlg::OnInitMenu(CMenu* pMenu)
     pMenu->CheckMenuItem(ID_ADD_REMOVE_FROM_FAVOURITE, MF_BYCOMMAND | (CPlayer::GetInstance().IsFavourite() ? MF_CHECKED : MF_UNCHECKED));
     pMenu->CheckMenuItem(ID_MINI_MODE_ALWAYS_ON_TOP, MF_BYCOMMAND | (m_always_on_top ? MF_CHECKED : MF_UNCHECKED));
 
-    //设置播放列表右键菜单的默认菜单项
-    pMenu->SetDefaultItem(ID_PLAY_ITEM);
-
     //设置“切换界面”菜单的状态
     pMenu->CheckMenuRadioItem(ID_MINIMODE_UI_DEFAULT, ID_MINIMODE_UI_MAX, ID_MINIMODE_UI_DEFAULT + m_ui_index, MF_BYCOMMAND | MF_CHECKED);
 
 
     theApp.m_pMainWnd->SendMessage(WM_SET_MENU_STATE, (WPARAM)pMenu);
-}
-
-
-BOOL CMiniModeDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
-{
-    // TODO: 在此添加消息处理程序代码和/或调用默认值
-    if (zDelta > 0)
-    {
-        SetVolume(true);
-    }
-    if (zDelta < 0)
-    {
-        SetVolume(false);
-    }
-
-    return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 
@@ -616,7 +543,7 @@ void CMiniModeDlg::OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult)
     m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
     m_playlist_ctrl.GetItemSelected(m_items_selected);
 
-    CMenu* pContextMenu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
+    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
     m_playlist_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
     *pResult = 0;
 }
@@ -629,15 +556,6 @@ void CMiniModeDlg::OnPaint()
     // 不为绘图消息调用 CDialogEx::OnPaint()
     //m_ui.DrawInfo();
 }
-
-
-//void CMiniModeDlg::OnStnClickedMiniProgressStatic()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//	//int pos = m_progress_bar.GetPos();
-//	//int song_pos = static_cast<__int64>(pos) * CPlayer::GetInstance().GetSongLength() / 1000;
-//	//CPlayer::GetInstance().SeekTo(song_pos);
-//}
 
 
 void CMiniModeDlg::OnMouseMove(UINT nFlags, CPoint point)

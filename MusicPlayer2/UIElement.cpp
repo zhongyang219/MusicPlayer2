@@ -616,20 +616,19 @@ void UiElement::Rectangle::Draw()
 void UiElement::Button::Draw()
 {
     CalculateRect();
-    const IconRes& icon{ ui->GetBtnIcon(key, big_icon) };
     switch (key)
     {
     case CPlayerUIBase::BTN_TRANSLATE:
         ui->DrawTranslateButton(rect);
         break;
     case CPlayerUIBase::BTN_LRYIC:
-        ui->DrawTextButton(rect, ui->m_buttons[key], CCommon::LoadText(IDS_LRC), theApp.m_lyric_setting_data.show_desktop_lyric);
+        ui->DrawDesktopLyricButton(rect);
         break;
     case CPlayerUIBase::BTN_AB_REPEAT:
         ui->DrawABRepeatButton(rect);
         break;
     default:
-        ui->DrawUIButton(rect, ui->m_buttons[key], icon);
+        ui->DrawUIButton(rect, key, big_icon);
         break;
     }
     ui->ResetDrawArea();
@@ -642,6 +641,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_MENU;
     else if (key_type == "miniMode")
         key = CPlayerUIBase::BTN_MINI;
+    else if (key_type == "miniModeClose")
+        key = CPlayerUIBase::BTN_CLOSE;
     else if (key_type == "fullScreen")
         key = CPlayerUIBase::BTN_FULL_SCREEN;
     else if (key_type == "repeatMode")
@@ -673,7 +674,7 @@ void UiElement::Button::FromString(const std::string& key_type)
     else if (key_type == "favorite")
         key = CPlayerUIBase::BTN_FAVOURITE;
     else if (key_type == "mediaLib")
-        key = CPlayerUIBase::BTN_SELECT_FOLDER;
+        key = CPlayerUIBase::BTN_MEDIA_LIB;
     else if (key_type == "showPlaylist")
         key = CPlayerUIBase::BTN_SHOW_PLAYLIST;
     else if (key_type == "addToPlaylist")
@@ -792,13 +793,16 @@ std::wstring UiElement::Text::GetText() const
     case UiElement::Text::PlayTimeAndVolume:
         if (show_volume)
         {
-            CString str;
-            str.Format(CCommon::LoadText(IDS_VOLUME, _T(": %d%%")), CPlayer::GetInstance().GetVolume());
-            draw_text = str;
+            static const wstring& mute_str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE");
+            int volume = CPlayer::GetInstance().GetVolume();
+            if(volume <= 0)
+                draw_text = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { mute_str, L"" });
+            else
+                draw_text = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { volume, L"%" });
         }
         else
         {
-            draw_text = CPlayer::GetInstance().GetTimeString().c_str();
+            draw_text = CPlayer::GetInstance().GetTimeString();
         }
         break;
     default:
@@ -892,15 +896,45 @@ void UiElement::ProgressBar::Draw()
 void UiElement::Lyrics::Draw()
 {
     CalculateRect();
-    if (IsParentRectangle())      //如果父元素中包含了矩形元素，则即使在“外观设置”中勾选了“歌词界面背景”，也不再为歌词区域绘制半透明背景
+
+    CFont* lyric_font = &theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen);
+    CFont* lyric_tr_font = &theApp.m_font_set.lyric_translate.GetFont(theApp.m_ui_data.full_screen);
+
+    if (use_default_font)   // 目前这个bool有些冗余，当字体与字号在m_font_set中解耦后有用
     {
-        if (rect.Height() >= ui->DPI(4))
-            ui->m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align);
+        bool big_font = theApp.m_ui_data.full_screen;
+        switch (font_size)
+        {
+        case 8:
+            lyric_font = &theApp.m_font_set.font8.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font8.GetFont(big_font);
+            break;
+        case 9:
+            lyric_font = &theApp.m_font_set.font9.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font8.GetFont(big_font);
+            break;
+        case 10:
+            lyric_font = &theApp.m_font_set.font10.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font9.GetFont(big_font);
+            break;
+        case 11:
+            lyric_font = &theApp.m_font_set.font11.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font10.GetFont(big_font);
+            break;
+        case 12:
+            lyric_font = &theApp.m_font_set.font12.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font11.GetFont(big_font);
+            break;
+        default:
+            lyric_font = &theApp.m_font_set.font9.GetFont(big_font);
+            lyric_tr_font = &theApp.m_font_set.font8.GetFont(big_font);
+            break;
+        }
     }
-    else
-    {
-        ui->DrawLyrics(rect);
-    }
+
+    //如果父元素中包含了矩形元素，则即使在“外观设置”中勾选了“歌词界面背景”，也不再为歌词区域绘制半透明背景
+    ui->DrawLyrics(rect, lyric_font, lyric_tr_font, (!no_background && !IsParentRectangle()));
+
     ui->ResetDrawArea();
     ui->m_draw_data.lyric_rect = rect;
     Element::Draw();
@@ -1024,9 +1058,9 @@ bool UiElement::Playlist::RButtunUp(CPoint point)
         mouse_pressed = false;
         CMenu* menu{};
         if (item_selected >= 0 && !scrollbar_rect.PtInRect(point))
-            menu = theApp.m_menu_set.m_list_popup_menu.GetSubMenu(0);
+            menu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
         else
-            menu = &theApp.m_menu_set.m_playlist_toolbar_popup_menu;
+            menu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu);
         if (menu != nullptr)
         {
             CPoint cursor_pos;
@@ -1196,53 +1230,53 @@ void UiElement::ClassicalControlBar::Draw()
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name, CPlayerUIBase* ui)
 {
-    UiElement::Element* element{};
+    std::shared_ptr<UiElement::Element> element;
     if (name == "verticalLayout")
     {
-        UiElement::Layout* layout = new UiElement::Layout();
+        auto layout = std::make_shared<UiElement::Layout>();
         layout->type = UiElement::Layout::Vertical;
         element = layout;
     }
     else if (name == "horizontalLayout")
     {
-        UiElement::Layout* layout = new UiElement::Layout();
+        auto layout = std::make_shared<UiElement::Layout>();
         layout->type = UiElement::Layout::Horizontal;
         element = layout;
     }
     else if (name == "stackElement")
-        element = new UiElement::StackElement();
+        element = std::make_shared<UiElement::StackElement>();
     else if (name == "rectangle")
-        element = new UiElement::Rectangle();
+        element = std::make_shared<UiElement::Rectangle>();
     else if (name == "button")
-        element = new UiElement::Button();
+        element = std::make_shared<UiElement::Button>();
     else if (name == "text")
-        element = new UiElement::Text();
+        element = std::make_shared<UiElement::Text>();
     else if (name == "albumCover")
-        element = new UiElement::AlbumCover();
+        element = std::make_shared<UiElement::AlbumCover>();
     else if (name == "spectrum")
-        element = new UiElement::Spectrum();
+        element = std::make_shared<UiElement::Spectrum>();
     else if (name == "trackInfo")
-        element = new UiElement::TrackInfo();
+        element = std::make_shared<UiElement::TrackInfo>();
     else if (name == "toolbar")
-        element = new UiElement::Toolbar();
+        element = std::make_shared<UiElement::Toolbar>();
     else if (name == "progressBar")
-        element = new UiElement::ProgressBar();
+        element = std::make_shared<UiElement::ProgressBar>();
     else if (name == "lyrics")
-        element = new UiElement::Lyrics();
+        element = std::make_shared<UiElement::Lyrics>();
     else if (name == "volume")
-        element = new UiElement::Volume();
+        element = std::make_shared<UiElement::Volume>();
     else if (name == "beatIndicator")
-        element = new UiElement::BeatIndicator();
+        element = std::make_shared<UiElement::BeatIndicator>();
     else if (name == "playlist")
-        element = new UiElement::Playlist();
+        element = std::make_shared<UiElement::Playlist>();
     else if (name == "playlistIndicator")
-        element = new UiElement::PlaylistIndicator();
+        element = std::make_shared<UiElement::PlaylistIndicator>();
     else if (name == "classicalControlBar")
-        element = new UiElement::ClassicalControlBar();
+        element = std::make_shared<UiElement::ClassicalControlBar>();
     else if (name == "ui" || name == "root" || name == "placeHolder")
-        element = new UiElement::Element();
+        element = std::make_shared<UiElement::Element>();
 
     if (element != nullptr)
         element->SetUi(ui);
-    return std::shared_ptr<UiElement::Element>(element);
+    return element;
 }

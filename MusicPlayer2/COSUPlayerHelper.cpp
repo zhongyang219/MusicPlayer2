@@ -2,6 +2,7 @@
 #include "COSUPlayerHelper.h"
 #include "FilePathHelper.h"
 #include "AudioCommon.h"
+#include "Common.h"
 
 
 COSUPlayerHelper::COSUPlayerHelper()
@@ -26,7 +27,7 @@ bool COSUPlayerHelper::IsOsuFolder(const std::wstring & strPath)
     wstring parent_dir = path_helper.GetParentDir();
 
     //判断一个文件是否为osu的Songs目录：它的父级目录有osu!.exe文件且文件夹是Songs
-    return CCommon::FileExist(parent_dir + L"osu!.exe") && folder_path.substr(folder_path.size() - 6, 5) == L"Songs";
+    return folder_path.size() > 7 && folder_path.substr(folder_path.size() - 6, 5) == L"Songs" && CCommon::FileExist(parent_dir + L"osu!.exe");
 }
 
 bool COSUPlayerHelper::IsOsuFile(const std::wstring& strPath)
@@ -62,22 +63,15 @@ void COSUPlayerHelper::GetOSUAudioFiles(wstring path, vector<wstring>& files)
         if(folder_name == L"." || folder_name == L"..")
             continue;
 
-        std::vector<wstring> osu_list, song_list;
+        std::vector<wstring> osu_list;
         CCommon::GetFiles(path + folder_name + L"\\*.osu", osu_list);
-        CAudioCommon::GetAudioFiles(path + folder_name, song_list);
         if(!osu_list.empty())
         {
-            COSUFile osu_file{ (path + folder_name + L"\\" + osu_list.front()).c_str() };
-            wstring file_name = osu_file.GetAudioFile();
-            // 这里的file_name大小写可能与实际文件不同会导致自动更新/播放时媒体库出现大小写各一份，这里统一以音频文件为准（windows的文件存在api不区分大小写，两个都判存在
-            auto it = std::find_if(song_list.begin(), song_list.end(), [&file_name](const std::wstring& str)
-                {
-                    return CCommon::StringFindNoCase(str, file_name) != wstring::npos;
-                });
-            if (it != song_list.end())
-            {
-                files.push_back(*it);
-            }
+            COSUFile osu_file{ (path + folder_name + L'\\' + osu_list.front()).c_str() };
+            wstring file_name = path + folder_name + L'\\' + osu_file.GetAudioFileName();
+            // 这里的file_name大小写可能与实际文件不同会导致自动更新/播放时媒体库出现大小写各一份，这里统一以音频文件为准
+            if (CCommon::CheckAndFixFile(file_name))
+                files.push_back(file_name);
         }
     }
 }
@@ -199,7 +193,7 @@ COSUFile::COSUFile(const wchar_t * file_path)
     GetTag("[Events]", m_events_seg);
 }
 
-wstring COSUFile::GetAudioFile()
+wstring COSUFile::GetAudioFileName()
 {
     return GetTagItem("AudioFilename:", m_general_seg);
 }

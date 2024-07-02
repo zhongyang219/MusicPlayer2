@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Lyric.h"
 #include "FilePathHelper.h"
+#include "MusicPlayer2.h"
 
 const vector<wstring> CLyrics::m_surpported_lyric{ L"lrc", L"ksc" };
 
@@ -29,13 +30,8 @@ CLyrics::CLyrics(const wstring& file_name, const LyricType& lyric_type) : m_file
 
 void CLyrics::LyricsFromRowString(const wstring& lyric_str, const LyricType& lyric_type)
 {
-    vector<wstring> results;
-    CCommon::StringSplit(lyric_str, L'\n', results, false);
-    for (auto& str : results)
-    {
-        CCommon::StringNormalize(str);
-        m_lyrics_str.push_back(str);
-    }
+    CCommon::StringSplitLine(lyric_str, m_lyrics_str, false, true);
+
     ASSERT(lyric_type != LyricType::LY_AUTO);
     // 按歌词类型调用解析方法
     if (lyric_type == LyricType::LY_LRC)
@@ -226,6 +222,12 @@ void CLyrics::DisposeLrc()
                         last_pos_end = index2;
                         time_w_ = time_w;
                     }
+                    if (index2 < static_cast<int>(text_str.size()))     // 如果最后的时间标签并非结尾，那么将text_str剩下的字符作为没有显式提供时长的一个匀速段加入
+                    {
+                        lyric.text += text_str.substr(index2);
+                        lyric.split.push_back(lyric.text.size());
+                        lyric.word_time.push_back(-1);
+                    }
                 }
                 else
                     lyric.text = text_str;
@@ -254,8 +256,13 @@ void CLyrics::DisposeLrcNetease()
         size_t index1{ m_lyrics_str[i].find(L"[", index) };                 // 网易的歌词非扩展lrc，如果出现第二段时间标签则放入下一行
         if (index1 != wstring::npos)
         {
-            m_lyrics_str.emplace(m_lyrics_str.begin() + i, m_lyrics_str[i].substr(0, index1));
-            m_lyrics_str[i + 1] = m_lyrics_str[i + 1].substr(index1);
+            // 判断是否为时间标签，避免误分割
+            size_t index2{ m_lyrics_str[i].find_first_not_of(L"[:.]0123456789-", index1) };
+            if (index2 != wstring::npos && index2 != index1 + 1)
+            {
+                m_lyrics_str.emplace(m_lyrics_str.begin() + i, m_lyrics_str[i].substr(0, index1));
+                m_lyrics_str[i + 1] = m_lyrics_str[i + 1].substr(index1);
+            }
         }
         // 有重复时间标签的（第一个内容空白，歌词在第二个里），此处将其内容合并。
         index = m_lyrics_str[i].rfind(L"]", index) + 1;                     // 避免截取到歌词开头的数字，同时也避开非时间标签的[id:xxx],[ti:xxx]等
@@ -383,10 +390,16 @@ void CLyrics::NormalizeLyric()
     {
         auto& now{ m_lyrics[i] };
         auto& next{ m_lyrics[i + 1] };
+        if (!now.word_time.empty() && now.word_time.back() < 0)     // 若是逐字歌词且没有显式提供最后匀速段的持续时长
+        {                                                           // 这里认为其持续到下一行歌词开始
+            now.word_time.back() = next.time_start - now.time_start - std::accumulate(now.word_time.begin(), now.word_time.end() - 1, 0);
+            if (now.word_time.back() < 0)
+                now.word_time.back() = 0;
+        }
         if (now.time_span_raw != 0)                                 // 原始歌词有行持续时间
             now.time_span = now.time_span_raw;
         else if (!now.word_time.empty())                            // 否则累加字时间作为行持续时间
-            now.time_span = CCommon::SumVector(now.word_time);
+            now.time_span = std::accumulate(now.word_time.begin(), now.word_time.end(), 0);
         // time_span为0说明不是逐字歌词，使用下一行开始时间作为本行结束时间; 对逐字歌词检查并阻止time_start + time_span超过下一句的time_start，防止出现时轴重叠
         if (now.time_span == 0 || next.time_start - now.time_start < now.time_span)
             now.time_span = next.time_start - now.time_start;
@@ -394,10 +407,19 @@ void CLyrics::NormalizeLyric()
     if (m_lyrics.size() > 0)    // 填充最后一句
     {
         Lyric& now = m_lyrics[m_lyrics.size() - 1];
+        if (!now.word_time.empty() && now.word_time.back() < 0)     // 若是逐字歌词且没有显式提供最后匀速段的持续时长
+        {
+            if (now.word_time.size() >= 2)
+                now.word_time.back() = *(now.word_time.end() - 2);  // 使用前一个匀速段的持续时长
+            else
+                now.word_time.back() = 20000;                       // 20秒
+            if (now.word_time.back() < 0)
+                now.word_time.back() = 0;
+        }
         if (now.time_span_raw != 0)
             now.time_span = now.time_span_raw;
         else if (!now.word_time.empty())
-            now.time_span = CCommon::SumVector(now.word_time);
+            now.time_span = std::accumulate(now.word_time.begin(), now.word_time.end(), 0);
     }
 }
 
@@ -504,15 +526,16 @@ CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool ignore_blank, boo
     if (!blank2mark || blank_time < LYRIC_BLANK_IGNORE_TIME)    // 不添加进度符号
         return GetLyric(now_index);
     CLyrics::Lyric lyric = GetLyric(now_index);
+    const static wstring mark = theApp.m_str_table.LoadText(L"UI_LYRIC_MUSIC_SYMBOL") + L' ';
     if(!lyric.text.empty())                                     // 只对非空歌词添加，应对以多行空行结尾的歌词
-        lyric.text = L"♪♪♪ " + lyric.text;
+        lyric.text = mark + lyric.text;
     return lyric;
 }
 
 int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std::function<int(const wstring&)> measure) const
 {
     if (m_lyrics.empty()) return 0;
-    const wstring mark{ L"♪♪♪" };
+    const static wstring mark = theApp.m_str_table.LoadText(L"UI_LYRIC_MUSIC_SYMBOL");
 
     int lyric_current_time{};       // 当前所处匀速段已进行时间
     int lyric_last_time{};          // 当前所处匀速段总时常

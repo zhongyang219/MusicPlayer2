@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "CPlayerUIHelper.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 
 
 CPlayerUIHelper::CPlayerUIHelper()

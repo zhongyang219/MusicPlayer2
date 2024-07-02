@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "afxwin.h"
 #include "Time.h"
 #include "EditEx.h"
 #include "BaseDialog.h"
 #include "ScintillaEditView.h"
+#include "Lyric.h"
 
 const int WM_FINDREPLACE = ::RegisterWindowMessage(FINDMSGSTRING);	//将FINDMSGSTRING注册为WM_FINDREPLACE消息
 
@@ -37,7 +37,7 @@ protected:
     wstring m_lyric_path;		//歌词路径
     wstring m_original_lyric_path;	//原来的歌词（当前播放歌曲对应的歌词）的路径
     CodeType m_code_type;		//歌词编码
-    wstring m_current_song_name;	//正在播放的歌曲名
+    SongInfo m_current_edit_song;           // 启动歌词编辑的SongInfo
     CLyrics::LyricType m_lyric_type{};
     bool m_modified{ false };	//如果歌词已更改，则为true
     bool m_lyric_saved{ false };	//如果执行过保存操作，则为true
@@ -71,6 +71,7 @@ protected:
     void SetToolbarCmdEnable();
 
     virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     DECLARE_MESSAGE_MAP()

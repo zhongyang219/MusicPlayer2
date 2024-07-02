@@ -74,9 +74,6 @@
     <Filter Include="对话框类\格式转换相关对话框\编码选项对话框">
       <UniqueIdentifier>{6f54d060-c0cf-4263-b48a-d4ffdc8ab770}</UniqueIdentifier>
     </Filter>
-    <Filter Include="对话框类\RecorderDlg">
-      <UniqueIdentifier>{bc15dc8a-cf52-42cb-ac8f-03c1795d5ab6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="对话框类\SupportedFormatDlg">
       <UniqueIdentifier>{31a26140-6f82-4081-be3f-bd5bc3d369f6}</UniqueIdentifier>
     </Filter>
@@ -288,9 +285,6 @@
     <Filter Include="对话框类\媒体库对话框\文件夹浏览">
       <UniqueIdentifier>{b109aca1-cfaf-4f5f-9612-96c66b07d09c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="公共的类\WICFactory">
-      <UniqueIdentifier>{cf55aa05-21b8-4cc2-acfd-17327505e681}</UniqueIdentifier>
-    </Filter>
     <Filter Include="资源文件\bitmaps">
       <UniqueIdentifier>{b15ef7d8-56db-471d-9986-4ca1ba98375a}</UniqueIdentifier>
     </Filter>
@@ -302,9 +296,6 @@
     </Filter>
     <Filter Include="对话框类\BaseDialog">
       <UniqueIdentifier>{81418427-f8ce-49dc-bcfc-5dddf81f8459}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="对话框类\AlbumCoverInfoDlg">
-      <UniqueIdentifier>{92109bff-2233-4c79-afce-77656dc5e247}</UniqueIdentifier>
     </Filter>
     <Filter Include="公共的类\GdiPlusTool">
       <UniqueIdentifier>{a6f42418-9eb9-473e-ac6f-ed9d60ac79c7}</UniqueIdentifier>
@@ -320,9 +311,6 @@
     </Filter>
     <Filter Include="对话框类\PropertyDlg\GetTagOnline">
       <UniqueIdentifier>{82073554-8212-45d0-88a5-574a06218222}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="对话框类\PropertyDlg\TagFromFileName">
-      <UniqueIdentifier>{05e96306-45ad-47a7-90de-b6ecbdc11cad}</UniqueIdentifier>
     </Filter>
     <Filter Include="公共的类\ScintillaEditView">
       <UniqueIdentifier>{43bd891c-070b-43ea-8666-f78300c390b6}</UniqueIdentifier>
@@ -384,14 +372,35 @@
     <Filter Include="派生的控件类\EditableListBox">
       <UniqueIdentifier>{1dbd76ed-58fd-47e0-9639-4519ba00fbd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\StrTable">
+      <UniqueIdentifier>{c5c39608-c515-4919-a6ae-e23b96f114c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="公共的类\FilterHelper">
+      <UniqueIdentifier>{182f9a41-5bb3-4552-b8d4-5d143951d54a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="功能逻辑类\CTagSelBaseDlg">
+      <UniqueIdentifier>{89cbce5a-fb9c-46f0-bedc-fe582d9c3a36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\RenameDlg">
+      <UniqueIdentifier>{bd53f37c-760e-4eec-bf7b-755a87ca0565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\FileNameFormDlg">
+      <UniqueIdentifier>{1e50ecfe-c7d9-443c-96cb-cb748a7f1087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="对话框类\TagFromNameDlg">
+      <UniqueIdentifier>{5ce11d43-a74b-4aed-8ba7-26aa37b9e090}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="功能逻辑类\MenuMgr">
+      <UniqueIdentifier>{737b0ae8-ac0c-4bf1-b335-f027bf625e43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="功能逻辑类\IconMgr">
+      <UniqueIdentifier>{90131507-09eb-4700-86d0-45b3402783f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-    <Text Include="Help.txt" />
-    <Text Include="Help_en_us.txt" />
     <Text Include="compile_time.txt" />
     <Text Include="res\Acknowledgement.txt" />
-    <Text Include="res\Acknowledgement_en.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -538,9 +547,6 @@
     <ClInclude Include="GaussBlur.h">
       <Filter>公共的类\GaussBlur</Filter>
     </ClInclude>
-    <ClInclude Include="RecorderDlg.h">
-      <Filter>对话框类\RecorderDlg</Filter>
-    </ClInclude>
     <ClInclude Include="LyricSettingsDlg.h">
       <Filter>对话框类\选项设置对话框\LyricSettingsDlg</Filter>
     </ClInclude>
@@ -557,9 +563,6 @@
       <Filter>PlayerUI</Filter>
     </ClInclude>
     <ClInclude Include="IPlayerUI.h">
-      <Filter>PlayerUI</Filter>
-    </ClInclude>
-    <ClInclude Include="CMiniModeUI.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
     <ClInclude Include="CHotkeyManager.h">
@@ -727,17 +730,11 @@
     <ClInclude Include="SpinEdit.h">
       <Filter>派生的控件类\SpinEdit</Filter>
     </ClInclude>
-    <ClInclude Include="WIC.h">
-      <Filter>公共的类\WICFactory</Filter>
-    </ClInclude>
     <ClInclude Include="LyricRelateDlg.h">
       <Filter>对话框类\LyricRelateDlg</Filter>
     </ClInclude>
     <ClInclude Include="BaseDialog.h">
       <Filter>对话框类\BaseDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="AlbumCoverInfoDlg.h">
-      <Filter>对话框类\AlbumCoverInfoDlg</Filter>
     </ClInclude>
     <ClInclude Include="GdiPlusTool.h">
       <Filter>公共的类\GdiPlusTool</Filter>
@@ -774,9 +771,6 @@
     </ClInclude>
     <ClInclude Include="GetTagOnlineDlg.h">
       <Filter>对话框类\PropertyDlg\GetTagOnline</Filter>
-    </ClInclude>
-    <ClInclude Include="TagFromFileNameDlg.h">
-      <Filter>对话框类\PropertyDlg\TagFromFileName</Filter>
     </ClInclude>
     <ClInclude Include="PropertyAdvancedDlg.h">
       <Filter>对话框类\PropertyDlg</Filter>
@@ -858,6 +852,36 @@
     </ClInclude>
     <ClInclude Include="EditableListBox.h">
       <Filter>派生的控件类\EditableListBox</Filter>
+    </ClInclude>
+    <ClInclude Include="StrTable.h">
+      <Filter>功能逻辑类\StrTable</Filter>
+    </ClInclude>
+    <ClInclude Include="FilterHelper.h">
+      <Filter>公共的类\FilterHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonDialogMgr.h">
+      <Filter>公共的类\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TagSelBaseDlg.h">
+      <Filter>功能逻辑类\CTagSelBaseDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="RenameDlg.h">
+      <Filter>对话框类\RenameDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="TagFromNameDlg.h">
+      <Filter>对话框类\TagFromNameDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="FileNameFormDlg.h">
+      <Filter>对话框类\FileNameFormDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuMgr.h">
+      <Filter>功能逻辑类\MenuMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaTransControlsImpl.h">
+      <Filter>公共的类\MediaTransControls</Filter>
+    </ClInclude>
+    <ClInclude Include="IconMgr.h">
+      <Filter>功能逻辑类\IconMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -993,9 +1017,6 @@
     <ClCompile Include="GaussBlur.cpp">
       <Filter>公共的类\GaussBlur</Filter>
     </ClCompile>
-    <ClCompile Include="RecorderDlg.cpp">
-      <Filter>对话框类\RecorderDlg</Filter>
-    </ClCompile>
     <ClCompile Include="LyricSettingsDlg.cpp">
       <Filter>对话框类\选项设置对话框\LyricSettingsDlg</Filter>
     </ClCompile>
@@ -1009,9 +1030,6 @@
       <Filter>派生的控件类\CTabCtrlEx</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerUIBase.cpp">
-      <Filter>PlayerUI</Filter>
-    </ClCompile>
-    <ClCompile Include="CMiniModeUI.cpp">
       <Filter>PlayerUI</Filter>
     </ClCompile>
     <ClCompile Include="CHotkeyManager.cpp">
@@ -1170,17 +1188,11 @@
     <ClCompile Include="SpinEdit.cpp">
       <Filter>派生的控件类\SpinEdit</Filter>
     </ClCompile>
-    <ClCompile Include="WIC.cpp">
-      <Filter>公共的类\WICFactory</Filter>
-    </ClCompile>
     <ClCompile Include="LyricRelateDlg.cpp">
       <Filter>对话框类\LyricRelateDlg</Filter>
     </ClCompile>
     <ClCompile Include="BaseDialog.cpp">
       <Filter>对话框类\BaseDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="AlbumCoverInfoDlg.cpp">
-      <Filter>对话框类\AlbumCoverInfoDlg</Filter>
     </ClCompile>
     <ClCompile Include="GdiPlusTool.cpp">
       <Filter>公共的类\GdiPlusTool</Filter>
@@ -1214,9 +1226,6 @@
     </ClCompile>
     <ClCompile Include="GetTagOnlineDlg.cpp">
       <Filter>对话框类\PropertyDlg\GetTagOnline</Filter>
-    </ClCompile>
-    <ClCompile Include="TagFromFileNameDlg.cpp">
-      <Filter>对话框类\PropertyDlg\TagFromFileName</Filter>
     </ClCompile>
     <ClCompile Include="PropertyAdvancedDlg.cpp">
       <Filter>对话框类\PropertyDlg</Filter>
@@ -1299,6 +1308,39 @@
     <ClCompile Include="EditableListBox.cpp">
       <Filter>派生的控件类\EditableListBox</Filter>
     </ClCompile>
+    <ClCompile Include="StrTable.cpp">
+      <Filter>功能逻辑类\StrTable</Filter>
+    </ClCompile>
+    <ClCompile Include="SongInfo.cpp">
+      <Filter>公共的类\AudioCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="FilterHelper.cpp">
+      <Filter>公共的类\FilterHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonDialogMgr.cpp">
+      <Filter>公共的类\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="TagSelBaseDlg.cpp">
+      <Filter>功能逻辑类\CTagSelBaseDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="RenameDlg.cpp">
+      <Filter>对话框类\RenameDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="TagFromNameDlg.cpp">
+      <Filter>对话框类\TagFromNameDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="FileNameFormDlg.cpp">
+      <Filter>对话框类\FileNameFormDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuMgr.cpp">
+      <Filter>功能逻辑类\MenuMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaTransControlsImpl.cpp">
+      <Filter>公共的类\MediaTransControls</Filter>
+    </ClCompile>
+    <ClCompile Include="IconMgr.cpp">
+      <Filter>功能逻辑类\IconMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
@@ -1317,6 +1359,12 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="skins\ui2.xml">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="skins\miniMode\miniMode00.xml">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="language\English.ini">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
@@ -1829,7 +1877,10 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\fix_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\up_d.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
 </Project>

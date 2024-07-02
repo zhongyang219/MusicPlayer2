@@ -1,10 +1,11 @@
-#pragma once
+﻿#pragma once
 #include "UserUi.h"
 
 class CMiniModeUserUi : public CUserUi
 {
 public:
     CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path);
+    CMiniModeUserUi(CWnd* pMainWnd, UINT id);   // id为xml资源ID
     ~CMiniModeUserUi();
 
     bool GetUiSize(int& width, int& height);

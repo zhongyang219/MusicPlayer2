@@ -1,4 +1,3 @@
-感谢以下GitHub用户为本项目做出的贡献！
 @lrisora
 @lifegpc
 @VictoriousRaptor

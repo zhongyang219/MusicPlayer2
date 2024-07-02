@@ -60,6 +60,7 @@ protected:
 
     virtual SongInfo GetSongInfo() const;
     virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
 
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void ShowDownloadList();        //将搜索结果显示出来

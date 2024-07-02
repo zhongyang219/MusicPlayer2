@@ -431,7 +431,7 @@ class ScintillaWin :
 	bool CanPaste() override;
 	void Paste() override;
 	void CreateCallTipWindow(PRectangle rc) override;
-	void AddToPopUp(LPCTSTR label, int cmd = 0, bool enabled = true) override;
+	void AddToPopUp(const wchar_t *label, int cmd = 0, bool enabled = true) override;
 	void ClaimSelection() override;
 
 	void GetIntelliMouseParameters() noexcept;
@@ -2552,10 +2552,10 @@ void ScintillaWin::CreateCallTipWindow(PRectangle) {
 	}
 }
 
-void ScintillaWin::AddToPopUp(LPCTSTR label, int cmd, bool enabled) {
+void ScintillaWin::AddToPopUp(const wchar_t* label, int cmd, bool enabled) {
 	HMENU hmenuPopup = static_cast<HMENU>(popup.GetID());
 	if (!label[0])
-		::AppendMenu(hmenuPopup, MF_SEPARATOR, 0, _T(""));
+		::AppendMenu(hmenuPopup, MF_SEPARATOR, 0, L"");
 	else if (enabled)
 		::AppendMenu(hmenuPopup, MF_STRING, cmd, label);
 	else

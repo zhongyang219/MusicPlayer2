@@ -34,7 +34,7 @@ void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPr
     //使用双缓冲绘图
     CDrawDoubleBuffer drawDoubleBuffer(pDC, rect);
     CDrawCommon drawer;
-    drawer.Create(drawDoubleBuffer.GetMemDC(), this);
+    drawer.Create(drawDoubleBuffer.GetMemDC());
     CRect rc_draw{ rect };
     rc_draw.MoveToXY(0, 0);
 
@@ -78,12 +78,15 @@ void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPr
         drawer.GetDC()->FillSolidRect(rc_draw, btn_color);
     }
 
-    auto& icon{ m_draw_clear_btn ? theApp.m_icon_set.close : theApp.m_icon_set.find_songs };     //文本框为空时显示搜索图标，否则显示关闭图标
-    CSize icon_size = icon.GetSize();
+    IconMgr::IconType icon_type = IconMgr::IconType::IT_Find;
+    if (m_draw_clear_btn)   // 文本框为空时显示搜索图标，否则显示关闭图标
+        icon_type = IconMgr::IconType::IT_Cancel;
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
+    CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + (rc_draw.Width() - icon_size.cx) / 2;
     icon_top_left.y = rc_draw.top + (rc_draw.Height() - icon_size.cy) / 2;
-    drawer.DrawIcon(icon.GetIcon(true), icon_top_left, icon_size);
+    drawer.DrawIcon(hIcon, icon_top_left, icon_size);
 
     static bool last_draw_clear_btn{ false };
     if (last_draw_clear_btn != m_draw_clear_btn)
@@ -159,8 +162,8 @@ void CSearchEditCtrl::PreSubclassWindow()
     // TODO: 在此添加专用代码和/或调用基类
     m_tool_tip.Create(this, TTS_ALWAYSTIP);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
-    m_tool_tip.AddTool(this, CCommon::LoadText(IDS_CLEAR_SEARCH_RESULT), CRect(), 1);
-    m_tool_tip.AddTool(this, CCommon::LoadText(IDS_INPUT_KEY_WORD), CRect(), 2);
+    m_tool_tip.AddTool(this, theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str(), CRect(), 1);
+    m_tool_tip.AddTool(this, theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_INPUT").c_str(), CRect(), 2);
     UpdateToolTipPosition();
 
     CMFCEditBrowseCtrl::PreSubclassWindow();

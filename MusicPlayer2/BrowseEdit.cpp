@@ -5,7 +5,7 @@
 #include "BrowseEdit.h"
 #include "MusicPlayer2.h"
 #include "DrawCommon.h"
-#include "TagFromFileNameDlg.h"
+#include "FileNameFormDlg.h"
 #include "EditStringListDlg.h"
 
 // CBrowseEdit
@@ -26,7 +26,7 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
     //使用双缓冲绘图
     CDrawDoubleBuffer drawDoubleBuffer(pDC, rect);
     CDrawCommon drawer;
-    drawer.Create(drawDoubleBuffer.GetMemDC(), this);
+    drawer.Create(drawDoubleBuffer.GetMemDC(), GetFont());
     CRect rc_draw{ rect };
     rc_draw.MoveToXY(0, 0);
 
@@ -60,19 +60,23 @@ void CBrowseEdit::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPresse
         drawer.GetDC()->FillSolidRect(rc_draw, btn_color);
     }
 
-    auto& icon = GetIcon();
-    CSize icon_size = icon.GetSize();
+    IconMgr::IconType icon_type = IconMgr::IconType::IT_Folder;
+    if (m_Mode == BrowseMode_Default)
+        icon_type = IconMgr::IconType::IT_Edit;
+
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
+    CSize icon_size = theApp.m_icon_mgr.GetIconSize(IconMgr::IconSize::IS_DPI_16);
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + theApp.DPI(4);
     icon_top_left.y = rc_draw.top + (rc_draw.Height() - icon_size.cy) / 2;
-    drawer.DrawIcon(icon.GetIcon(true), icon_top_left, icon_size);
+    drawer.DrawIcon(hIcon, icon_top_left, icon_size);
 
     CRect rc_text = rc_draw;
     rc_text.left += theApp.DPI(20);
     COLORREF text_color = CColorConvert::m_gray_color.dark4;
     if (!IsWindowEnabled())
         text_color = CColorConvert::m_gray_color.dark1;
-    drawer.DrawWindowText(rc_text, m_btn_str, text_color, Alignment::CENTER, true);
+    drawer.DrawWindowText(rc_text, m_btn_str.c_str(), text_color, Alignment::CENTER, true);
 }
 
 
@@ -82,31 +86,26 @@ void CBrowseEdit::OnChangeLayout()
     ENSURE(GetSafeHwnd() != NULL);
 
     int btn_width;
-    CDrawCommon drawer;
-    drawer.Create(m_pDC, this);
     if (m_Mode == BrowseMode_Default)
-    {
-        //if (m_browse_mode == EditBrowseMode::RENAME)
-        m_btn_str = CCommon::LoadText(IDS_EDIT, _T("..."));
-        //else
-        //    m_btn_str = _T("");
-    }
+        m_btn_str = theApp.m_str_table.LoadText(L"TXT_BROWSE_EDIT_EDIT");
     else
-    {
-        m_btn_str = CCommon::LoadText(IDS_BROWSE, _T("..."));
-    }
+        m_btn_str = theApp.m_str_table.LoadText(L"TXT_BROWSE_EDIT_BROWSE");
 
     //如果编辑框的宽度小于一定值，则不显示按钮后面的文本
     CRect rect_client;
     GetClientRect(rect_client);
     if (rect_client.Width() < theApp.DPI(120))
     {
-        m_btn_str = _T("");
+        m_btn_str = L"";
         btn_width = theApp.DPI(24);
     }
     else
     {
-        btn_width = drawer.GetTextExtent(m_btn_str).cx + theApp.DPI(28);
+        CDC* pDC = GetDC();     // OnChangeLayout仅在设置浏览模式时被调用，不需要保持DC
+        CDrawCommon drawer;
+        drawer.Create(pDC, GetFont());
+        btn_width = drawer.GetTextExtent(m_btn_str.c_str()).cx + theApp.DPI(28);
+        ReleaseDC(pDC);
     }
     m_nBrowseButtonWidth = max(btn_width, m_sizeImage.cx + 8);
 
@@ -207,10 +206,9 @@ void CBrowseEdit::OnBrowse()
         {
             CString strFile;
             GetWindowText(strFile);
-
-            CTagFromFileNameDlg dlg;
+            // 这里无视m_poopup_dlg_title设置的对话框标题，如果有必要再加
+            CFileNameFormDlg dlg;
             dlg.SetInitInsertFormular(strFile.GetString());
-            dlg.SetDialogTitle(m_poopup_dlg_title.IsEmpty() ? CCommon::LoadText(IDS_SET_FILENAME_FORM) : m_poopup_dlg_title);
 
             if (dlg.DoModal() == IDOK && strFile != dlg.GetFormularSelected().c_str())
             {
@@ -242,8 +240,13 @@ void CBrowseEdit::OnBrowse()
                 SetModify(TRUE);
                 OnAfterUpdate();
             }
+
+            if (GetParent() != NULL)
+            {
+                GetParent()->RedrawWindow(NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+            }
         }
-        break;
+            break;
         case CBrowseEdit::EditBrowseMode::LIST2:
         {
             // 列表模式2 下，将编辑框的文本用""包裹后以逗号分隔后以列表的形式编辑
@@ -261,9 +264,15 @@ void CBrowseEdit::OnBrowse()
                 SetModify(TRUE);
                 OnAfterUpdate();
             }
+
+            if (GetParent() != NULL)
+            {
+                GetParent()->RedrawWindow(NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+            }
         }
-        break;
+            break;
         default:
+            ASSERT(false);
             break;
 
         }
@@ -287,51 +296,15 @@ void CBrowseEdit::SetEditBrowseMode(EditBrowseMode browse_mode)
     EnableBrowseButton(TRUE);       //将基类的编辑模式改成BrowseMode_Default
 }
 
-void CBrowseEdit::SetPopupDlgTitle(const CString& popup_dlg_title)
+void CBrowseEdit::SetPopupDlgTitle(const wstring& popup_dlg_title)
 {
-    m_poopup_dlg_title = popup_dlg_title;
-}
-
-IconRes& CBrowseEdit::GetIcon()
-{
-    if (m_Mode == BrowseMode_Default)
-    {
-        //if (m_browse_mode == EditBrowseMode::RENAME)
-            return theApp.m_icon_set.edit;
-        //else
-        //    return theApp.
-    }
-    else
-    {
-        return theApp.m_icon_set.select_folder;
-    }
+    m_poopup_dlg_title = popup_dlg_title.c_str();
 }
 
 BEGIN_MESSAGE_MAP(CBrowseEdit, CMFCEditBrowseCtrl)
-    ON_WM_DESTROY()
     ON_WM_NCLBUTTONDOWN()
     ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CBrowseEdit::OnTabletQuerysystemgesturestatus)
 END_MESSAGE_MAP()
-
-
-
-
-void CBrowseEdit::PreSubclassWindow()
-{
-    // TODO: 在此添加专用代码和/或调用基类
-    m_pDC = GetDC();
-
-    CMFCEditBrowseCtrl::PreSubclassWindow();
-}
-
-
-void CBrowseEdit::OnDestroy()
-{
-    CMFCEditBrowseCtrl::OnDestroy();
-
-    // TODO: 在此处添加消息处理程序代码
-    ReleaseDC(m_pDC);
-}
 
 
 void CBrowseEdit::OnNcLButtonDown(UINT nHitTest, CPoint point)

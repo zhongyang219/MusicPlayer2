@@ -1,9 +1,7 @@
 ﻿#pragma once
-#include "stdafx.h"
 #include "ColorConvert.h"
 #include "DrawCommon.h"
 #include "Common.h"
-#include "resource.h"
 
 namespace CONSTVAL
 {
@@ -127,19 +125,21 @@ struct FontSet
     UIFont font11;
     UIFont font12;           //界面4的歌曲标题
 
+    UIFont dlg;                 // 窗口控件字体
     UIFont lyric;				//歌词字体
     UIFont lyric_translate;		//歌词翻译的字体
     UIFont cortana;				//搜索框字体
     UIFont cortana_translate;	//搜索框翻译字体
 
 
-    void Init()
+    void Init(LPCTSTR font_name)
     {
-        font9.SetFont(9, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font8.SetFont(8, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font10.SetFont(10, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font11.SetFont(11, CCommon::LoadText(IDS_DEFAULT_FONT));
-        font12.SetFont(12, CCommon::LoadText(IDS_DEFAULT_FONT));
+        font9.SetFont(9, font_name);
+        font8.SetFont(8, font_name);
+        font10.SetFont(10, font_name);
+        font11.SetFont(11, font_name);
+        font12.SetFont(12, font_name);
+        dlg.SetFont(9, font_name);
     }
 };
 
@@ -297,7 +297,7 @@ struct GeneralSettingData
     bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
     bool minimize_to_notify_icon{ false };		//是否最小到通知区图标
 
-    Language language;
+    wstring language_;                          // 这个是设置状态（空字符串为跟随系统）
     bool portable_mode{ false };                //如果为true，则程序所有数据都保存到exe所在目录下，否则保存到Appdata\Romaing目录下
 };
 
@@ -367,6 +367,7 @@ struct MediaLibSettingData
     bool insert_begin_of_playlist{ false };         // 向播放列表添加歌曲时插入开头而不是追加到末尾
     bool show_playlist_tooltip{};         //显示播放列表工具提示
     bool float_playlist_follow_main_wnd{};  //浮动播放列表跟随主窗口
+    bool playlist_btn_for_float_playlist{ false };      // 指定主界面中进度条右侧的“显示/隐藏播放列表”按钮的功能是否为显示浮动播放列表
     int playlist_item_height{ 24 };
     RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
     int display_item{};                 //媒体库显示的项目
@@ -394,7 +395,6 @@ struct NonCategorizedSettingData
 
     bool float_playlist{ false };		//浮动播放列表（不应该用此变量来判断浮动播放列表是否存在）
     CSize playlist_size{ 320, 530 };		//浮动播放列表的大小
-    bool playlist_btn_for_float_playlist{ false };		//指定主界面中进度条右侧的“显示/隐藏播放列表”按钮的功能是否为显示浮动播放列表
 
     int max_album_cover_size{ 800 };
     bool show_debug_info{ false };
@@ -413,175 +413,6 @@ struct NonCategorizedSettingData
     };
 
     int debug_log{ 0 };     //是否写入日志信息
-};
-
-struct IconRes
-{
-private:
-    HICON hIcon{};
-    HICON hIconDark{};
-    HICON hIconLarge{};
-    HICON hIconDarkLarge{};
-    CSize iconSize{};
-    CSize iconSizeLarge{};
-
-public:
-    const HICON& GetIcon(bool dark = false, bool large = false) const
-    {
-        if (large)
-            return (dark && hIconDarkLarge != NULL ? hIconDarkLarge : hIconLarge);
-        else
-            return (dark && hIconDark != NULL ? hIconDark : hIcon);
-    }
-
-    void Load(UINT id, UINT id_dark, int size)
-    {
-        int size_large = static_cast<int>(size * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
-
-        if (size < 32)
-            size = CCommon::IconSizeNormalize(size);
-        if (size_large < 32)
-            size_large = CCommon::IconSizeNormalize(size_large);
-
-        if (id != 0)
-        {
-            hIcon = CDrawCommon::LoadIconResource(id, size, size);
-            hIconLarge = CDrawCommon::LoadIconResource(id, size_large, size_large);
-        }
-        if (id_dark != 0)
-        {
-            hIconDark = CDrawCommon::LoadIconResource(id_dark, size, size);
-            hIconDarkLarge = CDrawCommon::LoadIconResource(id_dark, size_large, size_large);
-        }
-        iconSize.cx = iconSize.cy = size;
-        iconSizeLarge.cx = iconSizeLarge.cy = size_large;
-    }
-
-    const CSize& GetSize(bool large = false) const
-    {
-        return (large ? iconSizeLarge : iconSize);
-    }
-};
-
-struct IconSet
-{
-    //界面图标
-    IconRes app;
-    HICON default_cover;
-    HICON default_cover_small;
-    HICON default_cover_not_played;
-    HICON default_cover_small_not_played;
-    IconRes default_cover_toolbar;
-    IconRes default_cover_toolbar_not_played;
-    IconRes skin;
-    IconRes eq;
-    IconRes setting;
-    IconRes mini;
-    IconRes play_oder;
-    IconRes play_shuffle;
-    IconRes play_random;
-    IconRes loop_playlist;
-    IconRes loop_track;
-    IconRes play_track;
-    IconRes previous;
-    IconRes play;
-    IconRes pause;
-    IconRes next;
-    IconRes stop;
-    IconRes info;
-    IconRes select_folder;
-    IconRes media_lib;
-    IconRes show_playlist;
-    IconRes find_songs;
-    IconRes full_screen;
-    IconRes full_screen1;
-    IconRes menu;
-    IconRes favourite;
-    IconRes heart;
-    IconRes double_line;
-    IconRes lock;
-    IconRes close;
-    IconRes edit;
-    IconRes add;
-    IconRes artist;
-    IconRes album;
-    IconRes genre;
-    IconRes year;
-    IconRes folder_explore;
-    IconRes lyric_forward;
-    IconRes lyric_delay;
-    IconRes recent_songs;
-    IconRes volume1;
-    IconRes volume2;
-    IconRes volume3;
-    IconRes volume0;
-
-    IconRes stop_l;
-    IconRes previous_l;
-    IconRes play_l;
-    IconRes pause_l;
-    IconRes next_l;
-
-    IconRes play_new;
-    IconRes pause_new;
-    IconRes previous_new;
-    IconRes next_new;
-
-    IconRes app_close;
-    IconRes maximize;
-    IconRes minimize;
-    IconRes restore;
-    IconRes sort;
-    IconRes display_mode;
-    IconRes link;
-    IconRes unlink;
-    IconRes switch_display;
-    IconRes lyric;
-    IconRes playlist_dock;
-    IconRes help;
-    IconRes dark_mode;
-    IconRes mini_restore;
-
-    //菜单图标（仅16x16）
-    HICON stop_new;
-    HICON save_new;
-    HICON save_as;
-    HICON music;
-    HICON file_relate;
-    HICON online;
-    HICON play_pause;
-    HICON convert;
-    HICON download;
-    HICON download1;
-    HICON ff_new;
-    HICON rew_new;
-    HICON playlist_float;
-    HICON statistics;
-    HICON pin;
-    HICON exit;
-    HICON album_cover;
-    HICON rename;
-    HICON tag;
-    HICON star;
-    HICON internal_lyric;
-    HICON speed_up;
-    HICON slow_down;
-    HICON shortcut;
-    HICON play_as_next;
-    HICON play_in_playlist;
-    HICON copy;
-    HICON play_in_folder;
-    HICON bitrate;
-    HICON reverb;
-    HICON hot_key;
-    HICON fix;
-
-    HICON ok;
-    IconRes locate;
-    IconRes expand;
-
-    //通知区图标
-    HICON notify_icons[MAX_NOTIFY_ICON];
 };
 
 
@@ -603,38 +434,17 @@ struct UIData
 };
 
 
-struct MenuSet
-{
-    CMenu m_main_menu;				//菜单栏上的菜单
-    CMenu m_list_popup_menu;		//播放列表右键菜单
-    CMenu m_main_menu_popup;		//按住Shift键时弹出的右键菜单
-    CMenu m_popup_menu;			    //歌词右键菜单
-    CMenu m_main_popup_menu;
-    CMenu m_playlist_btn_menu;		//播放列表按钮上的右键菜单
-    CMenu m_playlist_toolbar_menu;      //播放列表工具栏菜单
-    CMenu m_playlist_toolbar_popup_menu;    //播放列表工具栏弹出菜单
-    CMenu m_lyric_default_style;     //桌面歌词预设方案菜单
-    CMenu m_media_lib_popup_menu;
-    CMenu m_media_lib_folder_menu;      //媒体库-文件夹的右键菜单
-    CMenu m_media_lib_playlist_menu;      //媒体库-播放列表的右键菜单
-    CMenu m_notify_menu;                //通知区图标右键菜单
-    CMenu m_mini_mode_menu;             //迷你模式右键菜单
-    CMenu m_property_cover_menu;        //属性——专辑封面中的右键菜单
-    CMenu m_property_menu;
-    CMenu m_recent_folder_playlist_menu;
-};
-
 struct ImageSet
 {
-    Gdiplus::Image* default_cover{};
-    Gdiplus::Image* default_cover_not_played{};
-    string default_cover_data;
-    string default_cover_not_played_data;
+    Gdiplus::Image* default_cover_img{};
+    Gdiplus::Image* default_cover_not_played_img{};
+    string default_cover_img_data;
+    string default_cover_not_played_img_data;
 
     ~ImageSet()
     {
-        SAFE_DELETE(default_cover);
-        SAFE_DELETE(default_cover_not_played);
+        SAFE_DELETE(default_cover_img);
+        SAFE_DELETE(default_cover_not_played_img);
     }
 };
 
@@ -661,6 +471,7 @@ private:
 struct MediaUpdateThreadPara
 {
     int num_added{};                       //更新媒体库时新增（包括更新）的音频文件数量
-    int total_num{};
+    int process_percent{};                  // 更新媒体库进度%
     bool thread_exit{};             //如果为true，则线程应该退出
+    bool force;                     // 为true时无视修改时间强制刷新
 };

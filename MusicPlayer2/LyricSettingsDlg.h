@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "afxwin.h"
 #include "FolderBrowserDlg.h"
 #include "TabDlg.h"
 #include "ColorStaticEx.h"
@@ -75,8 +74,6 @@ protected:
     bool m_search_box_font_changed{ false };
     bool m_font_changed{ false };
 
-    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-    virtual BOOL OnInitDialog();
     void EnableControl();
     void EnableControlForDesktopLyric();
     void ApplyDefaultLyricStyle(const LyricStyleDefaultData& style);
@@ -84,12 +81,16 @@ protected:
     void SetSearchBoxTransparentInWhiteTheme(bool transparent);
     bool IsSearchBoxTransparentInWhiteTheme() const;
 
-    static CString GetFontInfoString(const FontInfo& font_info);
+    static wstring GetFontInfoString(const FontInfo& font_info);
 
     virtual void GetDataFromUi() override;
 
+    virtual bool InitializeControls() override;
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+
     DECLARE_MESSAGE_MAP()
 public:
+    virtual BOOL OnInitDialog();
     afx_msg void OnBnClickedKaraokeDisp();
     //afx_msg void OnBnClickedExploreLyricButton();
     virtual void OnCancel();
@@ -112,7 +113,6 @@ public:
     afx_msg void OnCbnSelchangeTextGradientCombo();
     afx_msg void OnCbnSelchangeHighlightGradientCombo();
     afx_msg void OnBnClickedLockDesktopLyricCheck();
-    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
     afx_msg void OnBnClickedHideLyricWithoutLyricCheck();
     afx_msg void OnBnClickedHideLyricPauseCheck();

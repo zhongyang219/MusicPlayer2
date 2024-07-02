@@ -26,6 +26,21 @@ CString CCleanupRangeDlg::GetDialogName() const
     return _T("CleanupRangeDlg");
 }
 
+bool CCleanupRangeDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_CLEAN_UP_RANGE");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_CLEAN_UP_RANGE_SEL");
+    SetDlgItemTextW(IDC_TXT_CLEAN_UP_RANGE_SEL_STATIC, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CCleanupRangeDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);
@@ -46,19 +61,19 @@ BOOL CCleanupRangeDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.app.GetIcon(), FALSE);
+    SetIcon(IconMgr::IconType::IT_App, FALSE);
 
     m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_CHECKBOXES);
     m_list_ctrl.SetRowHeight(theApp.DPI(24));
     m_list_ctrl.FillLeftSpaceAfterPaint(false);
 
-    m_list_ctrl.AddString(CCommon::LoadText(IDS_FILES_THAT_NOT_EXIST));
-    m_list_ctrl.AddString(CCommon::LoadText(IDS_FILES_NOT_IN_MEDIA_LIB_DIR));
-    m_list_ctrl.AddString(CCommon::LoadText(IDS_FILES_THAT_ERROR));
-    m_list_ctrl.AddString(CCommon::LoadText(IDS_FILES_TOO_SHORT));
+    m_list_ctrl.AddString(theApp.m_str_table.LoadText(L"TXT_CLEAN_UP_RANGE_FILES_THAT_NOT_EXIST").c_str());
+    m_list_ctrl.AddString(theApp.m_str_table.LoadText(L"TXT_CLEAN_UP_RANGE_FILES_NOT_IN_MEDIA_LIB_DIR").c_str());
+    m_list_ctrl.AddString(theApp.m_str_table.LoadText(L"TXT_CLEAN_UP_RANGE_FILES_THAT_ERROR").c_str());
+    m_list_ctrl.AddString(theApp.m_str_table.LoadText(L"TXT_CLEAN_UP_RANGE_FILES_TOO_SHORT").c_str());
     // 媒体库目录存在Songs文件夹的话再显示这个清理选项
     if (m_clean_file_non_main_in_osu_enable)
-        m_list_ctrl.AddString(CCommon::LoadText(IDS_FILES_NON_MAIN_IN_OSU));
+        m_list_ctrl.AddString(theApp.m_str_table.LoadText(L"TXT_CLEAN_UP_RANGE_FILES_NON_MAIN_IN_OSU").c_str());
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
@@ -77,7 +92,8 @@ void CCleanupRangeDlg::OnOK()
 
     if (!m_clean_file_not_exist && !m_clean_file_not_in_media_lib_dir && !m_clean_file_wrong && !m_clean_file_too_short && !m_clean_file_non_main_in_osu)
     {
-        MessageBox(CCommon::LoadText(IDS_CLEAN_UP_MEDIA_WARNING), NULL, MB_OK | MB_ICONWARNING);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_CLEAN_UP_RANGE_NOT_SELECT_WARNING");
+        MessageBox(info.c_str(), NULL, MB_OK | MB_ICONWARNING);
         return;
     }
 

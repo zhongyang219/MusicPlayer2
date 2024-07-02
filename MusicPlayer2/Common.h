@@ -2,7 +2,6 @@
 #pragma once
 #include "CVariant.h"
 #include <initializer_list>
-#include <functional>
 #include <numeric>
 #include <gdiplus.h>
 
@@ -16,8 +15,7 @@ enum class Command
     PLAY_PAUSE,
     FF,	//快进
     REW,		//快倒
-    VOLUME_UP,
-    VOLUME_DOWN,
+    VOLUME_ADJ,
     SEEK
 };
 
@@ -45,22 +43,14 @@ enum class CodeType
     AUTO
 };
 
-//语言
-enum class Language
-{
-    FOLLOWING_SYSTEM,		//跟随系统
-    ENGLISH,				//英语
-    SIMPLIFIED_CHINESE		//简体中文
-};
-
 class CCommon
 {
 public:
     CCommon();
     ~CCommon();
 
-    //判断文件是否存在
-    static bool FileExist(const wstring& file);
+    // 判断文件是否存在，file为文件绝对路径，is_case_sensitive为true时对文件名区分大小写（路径仍然不区分）
+    static bool FileExist(const wstring& file, bool is_case_sensitive = false);
 
     //判断文件夹是否存在
     static bool FolderExist(const wstring& file);
@@ -68,7 +58,10 @@ public:
     //判断是否是文件夹
     static bool IsFolder(const wstring& path);
 
-    static unsigned __int64 GetFileLastModified(const wstring& file_path);
+    // 判断文件是否存在，file为文件绝对路径，如果存在会更正文件名大小写到与实际文件一致
+    static bool CheckAndFixFile(wstring& file);
+
+    static bool GetFileLastModified(const wstring& file_path, unsigned __int64& modified_time);
 
     //判断文件是否隐藏
     static bool IsFileHidden(const wstring& file_path);
@@ -116,6 +109,9 @@ public:
     static bool StrIsNumber(const wstring& str);
 
     static bool CharIsNumber(wchar_t ch);
+
+    // 按换行分割字符串，自适应CR/LF/CRLF换行
+    static void StringSplitLine(const wstring& source_str, vector<wstring>& results, bool skip_empty = true, bool trim = true);
 
     //将一个字符串分割成若干个字符串
     //str: 原始字符串
@@ -196,7 +192,7 @@ public:
     //判断一个字符串是否符合绝对路径的格式（而不是判断路径是否有效）
     static bool IsPath(const wstring& str);
 
-    //删除一个字符串中指定的字符
+    //替换一个字符串中指定的字符
     static bool StringCharacterReplace(wstring& str, wchar_t ch, wchar_t ch_replaced);
 
     static void StringReplace(wstring& str, const wstring& str_old, const wstring& str_new);
@@ -219,27 +215,6 @@ public:
     //csidl: 含义同SHGetSpecialFolderLocation函数的参数
     static wstring GetSpecialDir(int csidl);
 
-    ////获取一个列表控件最大长度项目宽度的像素值
-    //static int GetListWidth(CListBox& list);
-
-    //删除一个文件
-    static int DeleteAFile(HWND hwnd, _tstring file);
-    //删除多个文件
-    static int DeleteFiles(HWND hwnd, const vector<_tstring>& files);
-
-    //复制一个文件
-    static int CopyAFile(HWND hwnd, _tstring file_from, _tstring file_to);
-    //复制多个文件
-    static int CopyFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to);
-
-    //移动一个文件
-    //file_from：要移动的文件的路径
-    //file_to：移动目标的目录的位置
-    static int MoveAFile(HWND hwnd, _tstring file_from, _tstring file_to);
-
-    //移动多个文件
-    static int MoveFiles(HWND hwnd, const vector<_tstring>& files, _tstring file_to);
-
     static bool CreateDir(const _tstring& path);
 
     //文件/文件夹重命名
@@ -260,7 +235,7 @@ public:
     //从剪贴板获取字符串
     static wstring GetStringFromClipboard();
 
-    //写入日志
+    // 写入日志(对同一日志文件并发写入会丢失，请确保参数path指定的文件同一时刻只有一个线程能够写入)
     static void WriteLog(const wchar_t* path, const wstring& content);
 
     // 将通过命令行参数传递过来的多个文件路径拆分，并保存到file容器里
@@ -310,10 +285,6 @@ public:
     template<class T, class Func>
     static bool IsItemInVector(const vector<T>& items, Func func);
 
-    // 累加vector内元素
-    template<typename T>
-    static T SumVector(vector<T>& vec);
-
     //判断文件名是末尾是否符合“(数字)”的形式
     //file_name: 要判断的文件名，不包含扩展名
     //number: 接收括号中的数字
@@ -332,7 +303,7 @@ public:
     //将hSrc中的所有菜单项添加到菜单hDst中（来自 https://blog.csdn.net/zgl7903/article/details/71077441）
     static int AppendMenuOp(HMENU hDst, HMENU hSrc);
 
-    //判断一个菜单项是否在菜单中（不检查子菜单）
+    //判断一个菜单项是否在菜单中（检查子菜单）
     static bool IsMenuItemInMenu(CMenu* pMenu, UINT id);
 
     //获取一个菜单项的序号
@@ -345,24 +316,17 @@ public:
      */
     static void IterateMenuItem(CMenu* pMenu, std::function<void(CMenu*, UINT)> func);
 
-    //从资源文件载入字符串。其中，front_str、back_str为载入字符串时需要在前面或后面添加的字符串
-    static CString LoadText(UINT id, LPCTSTR back_str = nullptr);
-    static CString LoadText(LPCTSTR front_str, UINT id, LPCTSTR back_str = nullptr);
-
-    //安全的格式化字符串，将format_str中形如<%序号%>的字符串替换成初始化列表paras中的元素，元素支持int/double/LPCTSTR/CString格式，序号从1开始
-    static CString StringFormat(LPCTSTR format_str, const std::initializer_list<CVariant>& paras);
-
     //判断str的左侧是否匹配matched_str
     static bool StringLeftMatch(const std::wstring& str, const std::wstring& matched_str);
 
-    //从资源文件中载入字符串，并将资源字符串中形如<%序号%>的字符串替换成可变参数列表中的参数
-    static CString LoadTextFormat(UINT id, const std::initializer_list<CVariant>& paras);
+    // 获取当前线程首选 UI 语言列表
+    static bool GetThreadLanguageList(vector<wstring>& language_tag);
 
-    //将字符串形如“%(数字)”格式的字符替换成字符串资源中对应id的字符串
-    static void ReplaceUiStringRes(std::wstring& str);
+    // 设置当前线程的线程首选 UI 语言
+    static bool SetThreadLanguageList(const vector<wstring>& language_tag);
 
-    //设置线程语言
-    static void SetThreadLanguage(Language language);
+    // 获取当前系统的默认UI字体
+    static wstring GetSystemDefaultUIFont();
 
     //安全的字符串复制函数
     static void WStringCopy(wchar_t* str_dest, int dest_size, const wchar_t* str_source, int source_size = INT_MAX);
@@ -450,7 +414,7 @@ public:
     static std::string GetTextResourceRawData(UINT id);
 
     //从资源加载自定义文本资源。id：资源的ID，code_type：文本的编码格式
-    static CString GetTextResource(UINT id, CodeType code_type);
+    static wstring GetTextResource(UINT id, CodeType code_type);
 
     //从资源加载png图片资源
     //https://www.cnblogs.com/a-live/p/3222567.html
@@ -467,7 +431,7 @@ public:
     static POINT CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& screen_rects);
 
     //从资源文件读取上次编译时间
-    static CString GetLastCompileTime();
+    static wstring GetLastCompileTime();
 
     static unsigned __int64 GetCurTimeElapse();
 
@@ -608,17 +572,6 @@ inline bool CCommon::IsItemInVector(const vector<T>& items, Func func)
             return true;
     }
     return false;
-}
-
-template<typename T>
-inline T CCommon::SumVector(vector<T>& vec)
-{
-    T sum{};
-    for (size_t i{}; i < vec.size(); ++i)
-    {
-        sum += vec[i];
-    }
-    return sum;
 }
 
 template<class T>

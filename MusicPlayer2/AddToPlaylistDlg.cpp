@@ -4,7 +4,8 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "AddToPlaylistDlg.h"
-#include "afxdialogex.h"
+#include "PlaylistMgr.h"
+#include "FilePathHelper.h"
 
 
 // CAddToPlaylistDlg 对话框
@@ -26,10 +27,23 @@ CString CAddToPlaylistDlg::GetDialogName() const
     return _T("AddToPlaylistDlg");
 }
 
+bool CAddToPlaylistDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_ADD_TO_PLAYLIST");
+    SetWindowTextW(temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CAddToPlaylistDlg::ShowList()
 {
     m_playlist_list_ctrl.DeleteAllItems();
-    auto data_list{ m_searched ? m_search_result : m_list };
+    auto& data_list{ m_searched ? m_search_result : m_list };
     for (const auto& item : data_list)
     {
         m_playlist_list_ctrl.AddString(item.c_str());
@@ -61,15 +75,15 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetIcon(theApp.m_icon_set.show_playlist.GetIcon(true), FALSE);		// 设置小图标
+    SetIcon(IconMgr::IconType::IT_Playlist, FALSE);     // 设置小图标
 
-    m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+    m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
 
     //初始化列表
     for (const auto& item : CPlaylistMgr::Instance().m_recent_playlists)
     {
         CFilePathHelper playlist_path{ item.path };
-        m_list.push_back(playlist_path.GetFileNameWithoutExtension().c_str());
+        m_list.push_back(playlist_path.GetFileNameWithoutExtension());
     }
     ShowList();
 

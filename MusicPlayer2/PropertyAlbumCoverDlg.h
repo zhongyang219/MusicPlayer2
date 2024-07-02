@@ -8,12 +8,12 @@
 
 class CPropertyAlbumCoverDlg : public CTabDlg, public IPropertyTabDlg
 {
-	DECLARE_DYNAMIC(CPropertyAlbumCoverDlg)
+    DECLARE_DYNAMIC(CPropertyAlbumCoverDlg)
 
 public:
-	CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, int& index, bool show_out_album_cover = false, bool read_only = false, CWnd* pParent = nullptr);   // 标准构造函数
-	CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, CWnd* pParent = nullptr);   //批量编辑
-	virtual ~CPropertyAlbumCoverDlg();
+    CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, int& index, bool show_out_album_cover = false, bool read_only = false, CWnd* pParent = nullptr);   // 标准构造函数
+    CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, CWnd* pParent = nullptr);   //批量编辑
+    virtual ~CPropertyAlbumCoverDlg();
 
     virtual void PagePrevious() override;
     virtual void PageNext() override;
@@ -22,7 +22,7 @@ public:
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_PROPERTY_ALBUM_COVER_DIALOG };
+    enum { IDD = IDD_PROPERTY_ALBUM_COVER_DIALOG };
 #endif
 
 protected:
@@ -41,7 +41,7 @@ protected:
 
     CListCtrlEx m_list_ctrl;
 
-    int& m_index;		//当前显示项目的曲目序号
+    int& m_index;       //当前显示项目的曲目序号
     vector<SongInfo>& m_all_song_info;
     bool m_read_only{};
     bool m_show_out_album_cover{};
@@ -75,9 +75,10 @@ protected:
     void DeleteLinkedPic(const wstring& file_path, const wstring& album_cover_path);
 
     virtual void OnTabEntered() override;      //当标签切换到当前窗口时被调用
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
     virtual BOOL OnInitDialog();
     afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);

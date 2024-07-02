@@ -1,5 +1,5 @@
 ﻿<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2101/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
-      name="%(528) 1">
+  index="1">
 
   <ui>
     <verticalLayout margin="4">
@@ -12,19 +12,19 @@
         <verticalLayout margin-left="4">
           <trackInfo/>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(161):"/>
+            <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
             <text type="title" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(164):"/>
+            <text width="54" type="userDefine" text="%(TXT_ARTIST):"/>
             <text type="artist" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(165):"/>
+            <text width="54" type="userDefine" text="%(TXT_ALBUM):"/>
             <text type="album" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(166):"/>
+            <text width="54" type="userDefine" text="%(TXT_UI_FORMAT):"/>
             <text type="format" style="scroll"/>
           </horizontalLayout>
         </verticalLayout>
@@ -36,7 +36,7 @@
       <stackElement>
         <verticalLayout>
           <horizontalLayout height="24" margin-left="6" margin-right="6">
-            <text type="userDefine" text="%(171):"/>
+            <text type="userDefine" text="%(TXT_UI_LYRIC_SHOW):"/>
             <placeHolder/>
             <button key="lyricTranslate" width="24" height="24"/>
           </horizontalLayout>
@@ -61,19 +61,19 @@
         <verticalLayout margin-left="4">
           <trackInfo/>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(161):"/>
+            <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
             <text type="title" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(164):"/>
+            <text width="54" type="userDefine" text="%(TXT_ARTIST):"/>
             <text type="artist" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(165):"/>
+            <text width="54" type="userDefine" text="%(TXT_ALBUM):"/>
             <text type="album" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(166):"/>
+            <text width="54" type="userDefine" text="%(TXT_UI_FORMAT):"/>
             <text type="format" style="scroll"/>
           </horizontalLayout>
         </verticalLayout>

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "CTabCtrlEx.h"
+#include "TabDlg.h"
 
 
 // CTabCtrlEx
@@ -19,7 +20,7 @@ CTabCtrlEx::~CTabCtrlEx()
 {
 }
 
-void CTabCtrlEx::AddWindow(CWnd* pWnd, LPCTSTR lable_text)
+void CTabCtrlEx::AddWindow(CWnd* pWnd, LPCTSTR lable_text, IconMgr::IconType icon_type)
 {
 	if (pWnd == nullptr || pWnd->GetSafeHwnd() == NULL)
 		return;
@@ -30,6 +31,8 @@ void CTabCtrlEx::AddWindow(CWnd* pWnd, LPCTSTR lable_text)
 	pWnd->MoveWindow(m_tab_rect);
 
 	m_tab_list.push_back(pWnd);
+    if (icon_type != IconMgr::IconType::IT_NO_ICON)
+        m_icon_list.push_back(icon_type);
 }
 
 void CTabCtrlEx::SetCurTab(int index)
@@ -74,6 +77,19 @@ void CTabCtrlEx::AdjustTabWindowSize()
     {
         m_tab_list[i]->MoveWindow(m_tab_rect);
     }
+    //为每个标签添加图标
+    if (m_icon_list.empty())
+        return;
+    CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
+    CImageList ImageList;
+    ImageList.Create(icon_size.cx, icon_size.cy, ILC_COLOR32 | ILC_MASK, 2, 2);
+    for (auto icon_type : m_icon_list)
+    {
+        HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
+        ImageList.Add(hIcon);
+    }
+    SetImageList(&ImageList);
+    ImageList.Detach();
 }
 
 void CTabCtrlEx::CalSubWindowSize()

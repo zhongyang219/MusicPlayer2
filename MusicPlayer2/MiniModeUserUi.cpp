@@ -6,6 +6,11 @@ CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
 {
 }
 
+CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, UINT id)
+    : CUserUi(pMainWnd, id)
+{
+}
+
 CMiniModeUserUi::~CMiniModeUserUi()
 {
 }
@@ -76,7 +81,7 @@ bool CMiniModeUserUi::LButtonUp(CPoint point)
                 btn.second.pressed = false;
                 CPoint point1;
                 GetCursorPos(&point1);
-                CMenu* pMenu = theApp.m_menu_set.m_mini_mode_menu.GetSubMenu(0)->GetSubMenu(17);
+                CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniModeSwitchUiMenu);
                 ASSERT(pMenu != nullptr);
                 if (pMenu != nullptr)
                     pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);

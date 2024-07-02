@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include "afxcmn.h"
-#include "afxwin.h"
 #include "Common.h"
 #include "DrawCommon.h"
 #include "ColorStatic.h"
@@ -85,6 +83,7 @@ protected:
     CBrowseEdit m_album_cover_name_edit;
     CBrowseEdit m_album_cover_path_edit;
 
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     void SetTransparency();
@@ -96,6 +95,7 @@ protected:
     void CalculateNotifyIconPreviewRect();
 
     virtual void GetDataFromUi() override;
+    virtual void ApplyDataToUi() override;
 
     DECLARE_MESSAGE_MAP()
 public:
@@ -111,9 +111,6 @@ public:
     afx_msg void OnStnClickedColorStatic7();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnBnClickedFollowSystemColorCheck();
-    virtual void OnCancel();
-    virtual void OnOK();
-    afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
     afx_msg void OnBnClickedShowAlbumCoverCheck();
     afx_msg void OnCbnSelchangeAlbumFitCombo();
     afx_msg void OnBnClickedAlbumCoverBackgroundCheck();
@@ -127,8 +124,6 @@ public:
     afx_msg void OnBnClickedLowFreqInCenterCheck();
     afx_msg void OnBnClickedDefaultAlbumCoverHq();
     afx_msg void OnBnClickedRestoreDefaultButton();
-    afx_msg void OnEnKillfocusUiIntervalEdit();
-    afx_msg void OnDeltaposSpin(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnCbnSelchangeCombo1();
     afx_msg void OnPaint();
     afx_msg void OnBnClickedNotifyIconAutoAdaptCheck();

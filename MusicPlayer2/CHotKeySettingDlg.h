@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CHotkeyManager.h"
 #include "TabDlg.h"
+#include "ListCtrlEx.h"
 
 
 // CHotKeySettingDlg 对话框
@@ -34,6 +35,7 @@ protected:
 	void EnableControl();
 	void ListClicked();
 
+    virtual bool InitializeControls() override;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
@@ -44,6 +46,6 @@ public:
 	afx_msg void OnNMClickHotKeyList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRClickHotKeyList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedHotKeyEnableCheck();
-	afx_msg void OnBnClickedEnableGlabolMultimediaKeyCheck();
+	afx_msg void OnBnClickedEnableGlobalMultimediaKeyCheck();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

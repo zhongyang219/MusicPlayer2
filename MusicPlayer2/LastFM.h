@@ -1,6 +1,5 @@
 #pragma once
 #include "LastFMDataArchive.h"
-#include <map>
 /// Can be obtained from https://www.last.fm/api/accounts/create
 #define LASTFM_API_KEY L"f2e8f3d36d2de514acc2b072762bb732"
 #define LASTFM_SHARED_SECRET L"a6b6804e2bc3a60732ac9c5719c52494"
@@ -31,7 +30,7 @@ public:
     bool Love();
     bool Unlove(wstring track, wstring artist);
     bool Unlove();
-    bool Scrobble(list<LastFMTrack>& tracks);
+    bool Scrobble(std::list<LastFMTrack>& tracks);
     bool Scrobble();
     bool PushCurrentTrackToCache();
     void AddCurrentPlayedTime(int millisec);

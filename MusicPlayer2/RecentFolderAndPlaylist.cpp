@@ -2,6 +2,7 @@
 #include "RecentFolderAndPlaylist.h"
 #include "FilePathHelper.h"
 #include "Player.h"
+#include "MusicPlayer2.h"
 
 CRecentFolderAndPlaylist CRecentFolderAndPlaylist::m_instance;
 
@@ -85,11 +86,11 @@ std::wstring CRecentFolderAndPlaylist::Item::GetName() const
             CFilePathHelper path_helper{ playlist_info->path };
             wstring playlist_name = path_helper.GetFileName();
             if (playlist_name == DEFAULT_PLAYLIST_NAME)
-                playlist_name = CCommon::LoadText(_T("["), IDS_DEFAULT, _T("]"));
+                playlist_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_DEFAULT");
             else if (playlist_name == FAVOURITE_PLAYLIST_NAME)
-                playlist_name = CCommon::LoadText(_T("["), IDS_MY_FAVURITE, _T("]"));
+                playlist_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_FAVOURITE");
             else if (playlist_name == TEMP_PLAYLIST_NAME)
-                playlist_name = CCommon::LoadText(_T("["), IDS_TEMP_PLAYLIST, _T("]"));
+                playlist_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_TEMP");
             else
                 playlist_name = path_helper.GetFileNameWithoutExtension();
             return playlist_name;

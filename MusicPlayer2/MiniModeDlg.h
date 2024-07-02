@@ -1,12 +1,9 @@
 ﻿#pragma once
 #include"Player.h"
-#include "afxwin.h"
 #include "PropertyDlg.h"
-#include "afxcmn.h"
 #include "PlayListCtrl.h"
 #include "ColorConvert.h"
 #include "DrawCommon.h"
-#include "CMiniModeUI.h"
 #include "CPlayerUIBase.h"
 
 // CMiniModeDlg 对话框
@@ -33,7 +30,7 @@ public:
 
     void MoveWindowPos();
 
-    void SetVolume(bool up);	//
+    void SetVolume(int step);
     void SetTransparency();
 
     void SetDragEnable();
@@ -50,13 +47,15 @@ protected:
     int m_position_x;
     int m_position_y;
 
+    int m_ui_width{};
+    int m_ui_height{};
+
     bool m_show_playlist{ false };		//是否显示播放列表
     LONG m_playlist_y_offset{};         //播放列表收起时窗口需要进行的y坐标偏移量
 
     int& m_item_selected;		//播放列表中鼠标选中的项目，引用MusicPlayerDlg类中的同名变量，当迷你窗口中播放列表选中的项目变化时，同步到主窗口中选中的项目
     vector<int>& m_items_selected;
 
-    CMiniModeUI::SMiniModeUIData m_ui_data;     //（仅用于默认的迷你模式界面）
     std::vector<std::shared_ptr<CPlayerUIBase>> m_ui_list;      //保存每个界面类的指针
     int m_ui_index{};
 
@@ -76,7 +75,6 @@ protected:
     void SaveConfig() const;
     void LoadConfig();
 
-    void UpdateSongTipInfo();
     void SetTitle();
     void SetAlwaysOnTop();
     void AdjustWindowSize();
@@ -97,13 +95,11 @@ protected:
     afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnMiniModeExit();
     afx_msg void OnInitMenu(CMenu* pMenu);
-    afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
     afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
     afx_msg void OnNMDblclkList2(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnPaint();
 public:
-    //afx_msg void OnStnClickedMiniProgressStatic();
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
     afx_msg void OnShowPlayList();

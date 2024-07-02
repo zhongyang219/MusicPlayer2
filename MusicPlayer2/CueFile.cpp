@@ -25,21 +25,6 @@ CCueFile::~CCueFile()
 {
 }
 
-void CCueFile::LoadContentsDirect(const std::wstring& cue_contets)
-{
-    m_file_content_wcs = cue_contets;
-    DoAnalysis();
-}
-
-// void CCueFile::SetTotalLength(Time length)
-// {
-//     if (!m_result.empty())
-//     {
-//         m_result.back().end_pos = length;
-//         m_result.back().lengh = Time(length - m_result.back().start_pos);
-//     }
-// }
-
 std::vector<SongInfo>& CCueFile::GetAnalysisResult()
 {
     return m_result;
@@ -191,7 +176,6 @@ void CCueFile::DoAnalysis()
     song_info_common.disc_num = static_cast<BYTE>(_wtoi(GetCommand(cue_head_contents, L"REM DISCNUMBER").c_str()));
     song_info_common.total_discs = static_cast<BYTE>(_wtoi(GetCommand(cue_head_contents, L"REM TOTALDISCS").c_str()));
     song_info_common.is_cue = true;
-    song_info_common.info_acquired = true;
 
     //查找所有属性
     FindAllProperty(cue_head_contents, m_cue_property_map);

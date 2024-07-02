@@ -3,9 +3,6 @@
 //
 
 #pragma once
-#include "afxwin.h"
-#include "afxcmn.h"
-//#include"Player.h"
 #include"PlayListCtrl.h"
 #include"FindDlg.h"
 #include"OptionsDlg.h"
@@ -15,14 +12,12 @@
 #include"LyricEditDlg.h"
 #include "LyricDownloadDlg.h"
 #include "LyricBatchDownloadDlg.h"
-//#include "EqualizerDlg.h"
 #include "SoundEffectDlg.h"
 #include "CortanaLyric.h"
 #include "FilePathHelper.h"
 #include "CoverDownloadCommon.h"
 #include "CoverDownloadDlg.h"
 #include "FormatConvertDlg.h"
-#include "RecorderDlg.h"
 #include "CNotifyIcon.h"
 #include "StaticEx.h"
 #include "CMainDialogBase.h"
@@ -35,6 +30,7 @@
 #include "MenuEditCtrl.h"
 #include "HorizontalSplitter.h"
 #include "powrprof.h"
+#include "CHotkeyManager.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -49,7 +45,6 @@ public:
 
     static CMusicPlayerDlg* GetInstance();
 
-    bool IsTaskbarListEnable() const;
     HACCEL GetAccel() const { return m_hAccel; }
     CCortanaLyric& GetCortanaLyric() { return m_cortana_lyric; }
 
@@ -77,16 +72,16 @@ protected:
     //用于支持鼠标指向列表中的项目时显示歌曲信息)
     CStaticEx m_path_static;
     CMenuEditCtrl m_path_edit;
-    CButton m_set_path_button;
+    CButton m_media_lib_button;
     CSearchEditCtrl m_search_edit;
     //CButton m_clear_search_button;
     CUIWindow m_ui_static_ctrl{ m_pUI };
 
 #ifndef COMPILE_IN_WIN_XP
-    ITaskbarList3* m_pTaskbar{ theApp.GetITaskbarList3() };         //用于支持任务栏显示播放进度
     THUMBBUTTON m_thumbButton[3]{};
 #endif
 
+    CHotkeyManager m_hot_key;
     CFindDlg m_findDlg;		//查找对话框
     HACCEL m_hAccel{};
 
@@ -104,7 +99,9 @@ protected:
     int m_window_height;	//窗口的高度
     CPoint m_desktop_lyric_pos{ -1, -1 };     //桌面歌词窗口的位置
     CSize m_desktop_lyric_size{ 0, 0 };
-    int m_medialib_btn_width{ theApp.DPI(70) };
+    int m_part_static_playlist_width{ theApp.DPI(32) };     // 这里的值是最小宽度，窗口init时会根据文字变大
+    int m_part_static_folder_width{ theApp.DPI(32) };       // 这里的值是最小宽度，窗口init时会根据文字变大
+    int m_medialib_btn_width{ theApp.DPI(64) };             // 这里的值是最小宽度，窗口init时会根据文字变大
 
     SLayoutData m_layout;		//窗口布局的固定数据
 
@@ -196,6 +193,7 @@ private:
     void SetPlaylistSize(int cx, int cy, int playlist_width);		//设置播放列表的大小
     void SetDrawAreaSize(int cx, int cy, int playlist_width);
     void SetAlwaysOnTop();
+    void AdjustVolume(int step);
 
     bool IsMainWindowPopupMenu() const;      //当前弹出的右键是主窗口右键菜单还是播放列表右键菜单
 
@@ -215,13 +213,19 @@ protected:
     void SetPlaylistVisible();
     void SetMenubarVisible();
 
-    void UpdateTaskBarProgress();	//更新任务栏按钮上的进度
-    void UpdatePlayPauseButton();		//根据当前播放状态更新“播放/暂停”按钮上的文字和图标
-    void SetThumbnailClipArea();		//设置任务栏缩略图的区域
-    void SetThumbnailClipArea(CRect rect);		//设置任务栏缩略图的区域
+    // 初始化程序任务栏信息，窗口创建后以及窗口SW_HIDE后恢复时调用
+    void TaskBarInit();
+
+    // 更新任务栏按钮上的播放进度与进度指示的颜色，平时由主定时器调用以保持进度更新
+    void UpdateTaskBarProgress(bool force = false) const;
+    // 根据当前播放状态更新“播放/暂停”按钮上的文字和图标（以及任务栏图标角标&按钮状态）
+    void UpdatePlayPauseButton();
+    // 设置任务栏缩略图的区域
+    void TaskBarSetClipArea(CRect rect);
+
     void EnablePlaylist(bool enable);		//设置启用或禁用播放列表控件
 
-    void CreateDesktopShortcut();		//用于在提示用户创建桌面快捷方式
+    void FirstRunCreateShortcut();            // 如果是首次运行那么提示用户是否创建桌面快捷方式
 
     void ApplySettings(const COptionsDlg& optionDlg);		//从选项设置对话框获取设置
     void ApplyThemeColor();			//应用主题颜色设置
@@ -259,8 +263,6 @@ protected:
     bool IsFloatPlaylistExist();
     bool MoveFloatPlaylistPos();
 
-    void Show(bool show);
-
     void SaveUiData();
     void LoadUiData();
 
@@ -283,7 +285,7 @@ protected:
     afx_msg void OnNext();
     afx_msg void OnRew();
     afx_msg void OnFF();
-    afx_msg void OnSetPath();
+    afx_msg void OnMediaLib();
     afx_msg void OnFind();
     afx_msg void OnExplorePath();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
@@ -319,10 +321,13 @@ protected:
     //afx_msg void OnStnClickedProgressStatic();
     afx_msg void OnReIniBass();
     afx_msg void OnSortByFile();
+    afx_msg void OnSortByPath();
     afx_msg void OnSortByTitle();
     afx_msg void OnSortByArtist();
     afx_msg void OnSortByAlbum();
     afx_msg void OnSortByTrack();
+    afx_msg void OnSortByListenTime();
+    afx_msg void OnSortByModifiedTime();
 public:
     afx_msg void OnDeleteFromDisk();
 protected:
@@ -334,11 +339,6 @@ public:
     afx_msg void OnDispTitleArtist();
     afx_msg void OnMiniMode();
 
-    afx_msg void OnBnClickedStop();
-    afx_msg void OnBnClickedPrevious();
-    afx_msg void OnBnClickedPlayPause();
-    afx_msg void OnBnClickedNext();
-    //	afx_msg void OnMove(int x, int y);
     afx_msg void OnReloadLyric();
     afx_msg void OnSongInfo();
     afx_msg void OnCopyCurrentLyric();
@@ -382,16 +382,10 @@ public:
     afx_msg void OnDeleteAlbumCover();
     afx_msg void OnCopyFileTo();
     afx_msg void OnMoveFileTo();
-protected:
-    //afx_msg LRESULT OnOpenFileCommandLine(WPARAM wParam, LPARAM lParam);
-public:
     afx_msg void OnFormatConvert();
     afx_msg void OnFormatConvert1();
 protected:
     afx_msg LRESULT OnSettingsApplied(WPARAM wParam, LPARAM lParam);
-public:
-    afx_msg void OnRecorder();
-protected:
     afx_msg LRESULT OnAlbumCoverDownloadComplete(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnColorizationColorChanged(DWORD dwColorizationColor, BOOL bOpacity);
@@ -492,15 +486,10 @@ public:
 protected:
     afx_msg LRESULT OnMainWindowActivated(WPARAM wParam, LPARAM lParam);
 public:
-    afx_msg void OnSortByModifiedTime();
-    afx_msg void OnSortByPath();
     afx_msg void OnContainSubFolder();
 protected:
     afx_msg LRESULT OnGetMusicCurrentPosition(WPARAM wParam, LPARAM lParam);
 public:
-    afx_msg void OnAccendingOrder();
-    afx_msg void OnDesendingOrder();
-    afx_msg void OnInvertPlaylist();
     afx_msg void OnPlayRandom();
 protected:
     afx_msg LRESULT OnCurrentFileAlbumCoverChanged(WPARAM wParam, LPARAM lParam);

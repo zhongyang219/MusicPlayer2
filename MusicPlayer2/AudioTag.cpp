@@ -3,6 +3,7 @@
 #include "TagLibHelper.h"
 #include "AudioTagOld.h"
 #include "CueFile.h"
+#include "FilePathHelper.h"
 
 CAudioTag::CAudioTag(SongInfo& song_info, HSTREAM hStream)
     :m_song_info{ song_info }, m_hStream{ hStream }
@@ -128,7 +129,6 @@ bool CAudioTag::GetAudioTag()
     CCommon::StringNormalize(m_song_info.album);
     CCommon::StringNormalize(m_song_info.genre);
     CCommon::StringNormalize(m_song_info.comment);
-    m_song_info.info_acquired = true;
     return succeed;
 }
 

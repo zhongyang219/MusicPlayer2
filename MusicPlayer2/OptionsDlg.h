@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "afxcmn.h"
 #include "LyricSettingsDlg.h"
 #include "AppearanceSettingDlg.h"
 #include "DataSettingsDlg.h"
@@ -42,6 +41,7 @@ protected:
     std::vector<int> m_tab_height;
 
     virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()

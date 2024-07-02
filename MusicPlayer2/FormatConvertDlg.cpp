@@ -3,16 +3,19 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "FormatConvertDlg.h"
-#include "afxdialogex.h"
 #include "BassCore.h"
-#include "COSUPlayerHelper.h"
-#include "WIC.h"
-#include "TagLibHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
-#include "PropertyDlgHelper.h"
+#include "FileNameFormDlg.h"
+#include "MP3EncodeCfgDlg.h"
+#include "WmaEncodeCfgDlg.h"
+#include "OggEncodeCfgDlg.h"
 #include "FlacEncodeCfgDlg.h"
+#include "FilterHelper.h"
+#include "IniHelper.h"
+#include "TagEditDlg.h"
 
 #define MAX_ALBUM_COVER_SIZE (128 * 1024)                           //编码器支持的最大专辑封面大小
 #define CONVERT_TEMP_ALBUM_COVER_NAME L"cover_R1hdyFy6CoEK7Gu8"     //临时的专辑封面文件名
@@ -44,33 +47,39 @@ CFormatConvertDlg::CFormatConvertDlg(const vector<SongInfo>& items, CWnd* pParen
     : CBaseDialog(IDD_FORMAT_CONVERT_DIALOG, pParent)
 {
     //获取文件列表
-    for (auto item : items)
+    for (SongInfo item : items)
     {
-        CAudioCommon::ClearDefaultTagStr(item);
-        if (CAudioCommon::GetAudioTypeByFileName(item.file_path) == AU_MIDI)
-        {
-            //如果文件是 MIDI 音乐，则把SF2音色库信息添加到注释信息
-            CString comment;
-            comment.Format(_T("Converted from MIDI by MusicPlayer2. SF2: %s"), CPlayer::GetInstance().GetSoundFontName().c_str());
-            item.comment = comment;
-        }
-        if (!CCommon::IsItemInVector(m_file_list, [&](const SongInfo& song)
-            {
-                if (!song.is_cue)
-                    return item.file_path == song.file_path;
-                else
-                    return (item.file_path == song.file_path && item.track == song.track);
-            }))
-            m_file_list.push_back(item);
+        item.Normalize();
+        m_file_list.push_back(std::move(item));
+    }
+    // 确保音频文件信息更新到媒体库，并解析cue，(对于大量不存在于媒体库的新文件此方法很慢)
+    int cnt{}, percent{};
+    bool exit_flag{ false };
+    CAudioCommon::GetAudioInfo(m_file_list, cnt, exit_flag, percent, MR_MIN_REQUIRED, false);
+    // 去重
+    std::unordered_set<SongKey> song_key;
+    song_key.reserve(m_file_list.size());
+    auto new_end = std::remove_if(m_file_list.begin(), m_file_list.end(),
+        [&](const SongInfo& song) { return !song_key.emplace(song).second; }); // emplace失败说明此项目已存在，返回true移除当前项目
+    m_file_list.erase(new_end, m_file_list.end());
+    // 加载歌曲信息（与播放列表一致）
+    CSongDataManager::GetInstance().LoadSongsInfo(m_file_list);
+
+    //如果文件是 MIDI 音乐，则把SF2音色库信息添加到注释信息
+    wstring midi_comment = L"Converted from MIDI by MusicPlayer2. SF2: " + CPlayer::GetInstance().GetSoundFontName();
+    for (auto& song : m_file_list)
+    {
+        if (CAudioCommon::GetAudioTypeByFileName(song.file_path) == AU_MIDI)
+            song.comment = midi_comment;
     }
 
-    m_freq_map[L"8 kHz"] = 8000;
-    m_freq_map[L"16 kHz"] = 16000;
-    m_freq_map[L"22 kHz"] = 22050;
-    m_freq_map[L"24 kHz"] = 24000;
-    m_freq_map[L"32 kHz"] = 32000;
-    m_freq_map[L"44.1 kHz"] = 44100;
-    m_freq_map[L"48 kHz"] = 48000;
+    m_freq_map.emplace_back(L"8 kHz", 8000);
+    m_freq_map.emplace_back(L"16 kHz", 16000);
+    m_freq_map.emplace_back(L"22 kHz", 22050);
+    m_freq_map.emplace_back(L"24 kHz", 24000);
+    m_freq_map.emplace_back(L"32 kHz", 32000);
+    m_freq_map.emplace_back(L"44.1 kHz", 44100);
+    m_freq_map.emplace_back(L"48 kHz", 48000);
 }
 
 CFormatConvertDlg::~CFormatConvertDlg()
@@ -82,6 +91,72 @@ CString CFormatConvertDlg::GetDialogName() const
 {
     return _T("FormatConvertDlg");
 
+}
+
+bool CFormatConvertDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_FORMAT_CONVERT");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OUT_FORMAT_SEL");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_OUT_FORMAT_SEL_STATIC, temp.c_str());
+    // IDC_OUT_FORMAT_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_SETTING");
+    SetDlgItemTextW(IDC_ENCODER_CONFIG_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_FILE_LIST");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_FILE_LIST_STATIC, temp.c_str());
+    // IDC_SONG_LIST1
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OPT");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_CHANGE_FREQ");
+    SetDlgItemTextW(IDC_CHANGE_FREQ_CHECK, temp.c_str());
+    // IDC_FREQ_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_COPY_TAG");
+    SetDlgItemTextW(IDC_COPY_TAG_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_COPY_COVER");
+    SetDlgItemTextW(IDC_COPY_ALBUM_COVER_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OUT_FILE_NAME");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_OUT_FILE_NAME_STATIC, temp.c_str());
+    // IDC_OUT_NAME_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_ADD_SERIAL_NUMBER");
+    SetDlgItemTextW(IDC_ADD_NUMBER_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_FILE_EXIST_SEL");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_FILE_EXIST_SEL_STATIC, temp.c_str());
+    // IDC_TARGET_FILE_EXIST_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OUT_DIR");
+    SetDlgItemTextW(IDC_TXT_FORMAT_CONVERT_OUT_DIR_STATIC, temp.c_str());
+    // IDC_OUT_DIR_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_OUT_DIR_OPEN_WHEN_COMPLETE");
+    SetDlgItemTextW(IDC_OPEN_TARGET_DIR_CHECK, temp.c_str());
+    temp = L"";
+    SetDlgItemTextW(IDC_PROGRESS_BAR, temp.c_str());    // 此控件持有的文本会影响接下来的重排，需要先清空
+    SetDlgItemTextW(IDC_PROGRESS_TEXT, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_START_CONVERT");
+    SetDlgItemTextW(IDC_START_CONVERT_BUTTON, temp.c_str());
+    // IDCANCEL
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_FORMAT_CONVERT_OUT_FORMAT_SEL_STATIC },
+        { CtrlTextInfo::C0, IDC_OUT_FORMAT_COMBO },
+        { CtrlTextInfo::R1, IDC_ENCODER_CONFIG_BUTTON, CtrlTextInfo::W32 }
+        }, CtrlTextInfo::W128);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L2, IDC_CHANGE_FREQ_CHECK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_FREQ_COMBO }
+        });
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_FORMAT_CONVERT_OUT_FILE_NAME_STATIC },
+        { CtrlTextInfo::C0, IDC_OUT_NAME_EDIT },
+        { CtrlTextInfo::L1, IDC_TXT_FORMAT_CONVERT_OUT_DIR_STATIC },
+        { CtrlTextInfo::C0, IDC_OUT_DIR_EDIT }
+        }, CtrlTextInfo::W128);
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_PROGRESS_BAR },
+        { CtrlTextInfo::C0, IDC_PROGRESS_TEXT },
+        { CtrlTextInfo::R1, IDC_START_CONVERT_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        }, CtrlTextInfo::W128);
+    return true;
 }
 
 void CFormatConvertDlg::DoDataExchange(CDataExchange* pDX)
@@ -108,7 +183,7 @@ void CFormatConvertDlg::LoadConfig()
     {
         m_out_dir = CCommon::GetSpecialDir(CSIDL_MYDOCUMENTS);
     }
-    m_out_name = ini.GetString(L"format_convert", L"out_name_formular", FORMULAR_ORIGINAL);
+    m_out_name = ini.GetString(L"format_convert", L"out_name_formular", CFileNameFormDlg::FORMULAR_ORIGINAL.c_str());
     m_convert_freq = ini.GetBool(L"format_convert", L"convert_freq", false);
     m_freq_sel = ini.GetString(L"format_convert", L"freq_sel", L"");
     m_open_output_dir = ini.GetBool(L"format_convert", L"open_output_dir", false);
@@ -135,11 +210,21 @@ void CFormatConvertDlg::LoadEncoderConfig()
     CIniHelper ini(theApp.m_config_dir + L"Encoder\\encoder.ini");
 
     m_mp3_encode_para.encode_type = ini.GetInt(L"mp3_encoder", L"encode_type", 0);
-    m_mp3_encode_para.cbr_bitrate = ini.GetString(L"mp3_encoder", L"cbr_bitrate", L"128");
-    m_mp3_encode_para.abr_bitrate = ini.GetString(L"mp3_encoder", L"abr_bitrate", L"128");
+    m_mp3_encode_para.cbr_bitrate = ini.GetInt(L"mp3_encoder", L"cbr_bitrate", 128);
+    m_mp3_encode_para.abr_bitrate = ini.GetInt(L"mp3_encoder", L"abr_bitrate", 128);
     m_mp3_encode_para.vbr_quality = ini.GetInt(L"mp3_encoder", L"vbr_quality", 4);
     m_mp3_encode_para.cmd_para = ini.GetString(L"mp3_encoder", L"cmd_para", L"");
     m_mp3_encode_para.joint_stereo = ini.GetBool(L"mp3_encoder", L"joint_stereo", true);
+    if (m_mp3_encode_para.encode_type == 3)    // 旧版兼容
+    {
+        m_mp3_encode_para.encode_type = 0;
+        m_mp3_encode_para.cmd_para.clear();
+    }
+    if (!m_mp3_encode_para.cmd_para.empty())
+    {
+        m_mp3_encode_para.user_define_para = true;
+    }
+    CMP3EncodeCfgDlg::EncodeParaToCmdline(m_mp3_encode_para);
 
     m_wma_encode_para.cbr = ini.GetBool(L"wma_encoder", L"cbr", true);
     m_wma_encode_para.cbr_bitrate = ini.GetInt(L"wma_encoder", L"cbr_bitrate", 64);
@@ -159,10 +244,10 @@ void CFormatConvertDlg::SaveEncoderConfig() const
     CIniHelper ini(encoder_dir + L"encoder.ini");
 
     ini.WriteInt(L"mp3_encoder", L"encode_type", m_mp3_encode_para.encode_type);
-    ini.WriteString(L"mp3_encoder", L"cbr_bitrate", m_mp3_encode_para.cbr_bitrate);
-    ini.WriteString(L"mp3_encoder", L"abr_bitrate", m_mp3_encode_para.abr_bitrate);
+    ini.WriteInt(L"mp3_encoder", L"cbr_bitrate", m_mp3_encode_para.cbr_bitrate);
+    ini.WriteInt(L"mp3_encoder", L"abr_bitrate", m_mp3_encode_para.abr_bitrate);
     ini.WriteInt(L"mp3_encoder", L"vbr_quality", m_mp3_encode_para.vbr_quality);
-    ini.WriteString(L"mp3_encoder", L"cmd_para", m_mp3_encode_para.cmd_para);
+    ini.WriteString(L"mp3_encoder", L"cmd_para", m_mp3_encode_para.user_define_para ? m_mp3_encode_para.cmd_para : L"");
     ini.WriteBool(L"mp3_encoder", L"joint_stereo", m_mp3_encode_para.joint_stereo);
 
     ini.WriteBool(L"wma_encoder", L"cbr", m_wma_encode_para.cbr);
@@ -218,10 +303,10 @@ BOOL CFormatConvertDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
     CenterWindow();
 
-    SetIcon(theApp.m_icon_set.convert, FALSE);
-    SetIcon(AfxGetApp()->LoadIcon(IDI_CONVERT_D), true);
-    SetButtonIcon(IDC_ENCODER_CONFIG_BUTTON, theApp.m_icon_set.setting.GetIcon(true));
-    SetButtonIcon(IDC_START_CONVERT_BUTTON, theApp.m_icon_set.convert);
+    SetIcon(IconMgr::IconType::IT_Convert, FALSE);
+    SetIcon(IconMgr::IconType::IT_Convert, TRUE);
+    SetButtonIcon(IDC_ENCODER_CONFIG_BUTTON, IconMgr::IconType::IT_Setting);
+    SetButtonIcon(IDC_START_CONVERT_BUTTON, IconMgr::IconType::IT_Convert);
 
     LoadConfig();
     LoadEncoderConfig();
@@ -230,13 +315,6 @@ BOOL CFormatConvertDlg::OnInitDialog()
     if (!CPlayer::GetInstance().GetPlayerCore()->IsFreqConvertAvailable())
         m_convert_freq = false;
 
-    //初始化菜单
-    m_list_popup_menu.LoadMenu(IDR_FORMAT_CONVERT_POPUP_MENU);
-    CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_ADD_FILE, FALSE, theApp.m_icon_set.add.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_EDIT_TAG_INFO, FALSE, theApp.m_icon_set.edit.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_list_popup_menu.GetSafeHmenu(), ID_DELETE_SELECT, FALSE, theApp.m_icon_set.close.GetIcon(true));
-
-
     //初始化文件列表
     CRect rect;
     m_file_list_ctrl.GetWindowRect(rect);
@@ -244,9 +322,9 @@ BOOL CFormatConvertDlg::OnInitDialog()
     width1 = rect.Width() - width0 - width2 - theApp.DPI(20) - 1;
     //插入列
     m_file_list_ctrl.SetExtendedStyle(m_file_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    m_file_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_NUMBER), LVCFMT_LEFT, width0);		//插入第1列
-    m_file_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_FILE_NAME), LVCFMT_LEFT, width1);		//插入第2列
-    m_file_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_CONVERTING_STATE), LVCFMT_LEFT, width2);		//插入第3列
+    m_file_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, width0);
+    m_file_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_FILE_NAME").c_str(), LVCFMT_LEFT, width1);
+    m_file_list_ctrl.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS").c_str(), LVCFMT_LEFT, width2);
     //插入项目
     ShowFileList();
     //设置主题颜色
@@ -254,7 +332,7 @@ BOOL CFormatConvertDlg::OnInitDialog()
 
     //初始化转换格式的下拉列表
     m_encode_format_combo.AddString(_T("WAV"));
-    m_encode_format_combo.AddString(CCommon::LoadText(IDS_MP3_LAME_ENCODER));
+    m_encode_format_combo.AddString(theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_ENCODER_NAME_MP3_LAME").c_str());
     m_encode_format_combo.AddString(_T("WMA"));
     m_encode_format_combo.AddString(_T("OGG"));
     m_encode_format_combo.AddString(_T("FLAC"));
@@ -265,19 +343,23 @@ BOOL CFormatConvertDlg::OnInitDialog()
     ((CButton*)GetDlgItem(IDC_COPY_ALBUM_COVER_CHECK))->SetCheck(m_write_album_cover);
     ((CButton*)GetDlgItem(IDC_ADD_NUMBER_CHECK))->SetCheck(m_add_file_serial_num);
     CComboBox* file_exist_combo = (CComboBox*)GetDlgItem(IDC_TARGET_FILE_EXIST_COMBO);
-    file_exist_combo->AddString(CCommon::LoadText(IDS_AUTO_RENAME));
-    file_exist_combo->AddString(CCommon::LoadText(IDS_IGNORE));
-    file_exist_combo->AddString(CCommon::LoadText(IDS_OVERWRITE));
+    file_exist_combo->AddString(theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_FILE_EXIST_AUTO_RENAME").c_str());
+    file_exist_combo->AddString(theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_FILE_EXIST_IGNORE").c_str());
+    file_exist_combo->AddString(theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_FILE_EXIST_OVERWRITE").c_str());
     file_exist_combo->SetCurSel(m_file_exist_action);
     ((CButton*)GetDlgItem(IDC_OPEN_TARGET_DIR_CHECK))->SetCheck(m_open_output_dir);
 
-
-    for (const auto& item : m_freq_map)
-        m_freq_comb.AddString(item.first.c_str());
-    if (m_freq_sel.empty())
-        m_freq_comb.SelectString(0, _T("44.1 kHz"));
-    else
-        m_freq_comb.SelectString(0, m_freq_sel.c_str());
+    int freq_comb_sel{ -1 };
+    for (size_t i{}; i < m_freq_map.size(); ++i)
+    {
+        m_freq_comb.AddString(m_freq_map[i].first.c_str());
+        if (m_freq_map[i].first == m_freq_sel)
+            freq_comb_sel = i;
+        if (m_freq_map[i].second == 44100)          // 默认值
+            m_freq_comb.SetCurSel(i);
+    }
+    if (freq_comb_sel != -1)
+        m_freq_comb.SetCurSel(freq_comb_sel);
     m_freq_comb.EnableWindow(m_convert_freq);
     ((CButton*)GetDlgItem(IDC_CHANGE_FREQ_CHECK))->SetCheck(m_convert_freq);
 
@@ -287,8 +369,7 @@ BOOL CFormatConvertDlg::OnInitDialog()
     if (!m_out_dir.empty() && m_out_dir.back() != L'\\')
         m_out_dir.push_back(L'\\');
     m_out_dir_edit.SetWindowText(m_out_dir.c_str());
-    m_out_dir_edit.EnableFolderBrowseButton(CCommon::LoadText(IDS_SELECT_OUTPUT_FOLDER));
-    SetDlgItemText(IDC_PROGRESS_TEXT, _T(""));
+    m_out_dir_edit.EnableFolderBrowseButton(theApp.m_str_table.LoadText(L"TITLE_FOLDER_BROWSER_OUTPUT_FOLDER").c_str());
     m_progress_bar.SetBackgroundColor(GetSysColor(COLOR_BTNFACE));
     m_progress_bar.ShowWindow(SW_HIDE);
 
@@ -307,14 +388,8 @@ BOOL CFormatConvertDlg::OnInitDialog()
 void CFormatConvertDlg::EnableControls(bool enable)
 {
     GetDlgItem(IDC_OUT_FORMAT_COMBO)->EnableWindow(enable);
-    //GetDlgItem(IDC_BROWSE_BUTTON)->EnableWindow(enable);
     GetDlgItem(IDC_START_CONVERT_BUTTON)->EnableWindow(enable);
     GetDlgItem(IDC_ENCODER_CONFIG_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_ADD_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_DELETE_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_CLEAR_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_MOVE_UP_BUTTON)->EnableWindow(enable);
-    //GetDlgItem(IDC_MOVE_DOWN_BUTTON)->EnableWindow(enable);
     GetDlgItem(IDC_COPY_TAG_CHECK)->EnableWindow(enable);
     GetDlgItem(IDC_TARGET_FILE_EXIST_COMBO)->EnableWindow(enable);
     GetDlgItem(IDC_COPY_ALBUM_COVER_CHECK)->EnableWindow(enable);
@@ -376,8 +451,8 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
         out_file_path += index_str;
     }
 
-    // 按照格式字符串生成输出文件名
-    out_file_path += CPropertyDlgHelper::FileNameFromTag(pthis->m_out_name, song_info);
+    // 按照格式字符串生成输出文件名(这里缺少长度检查)
+    out_file_path += CFileNameFormDlg::FileNameFromTag(pthis->m_out_name, song_info);
 
     // 按照输出格式添加后缀
     switch (pthis->m_encode_format)
@@ -489,25 +564,23 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
 
 void CFormatConvertDlg::SetProgressInfo(int progress)
 {
-    CString info;
+    wstring info;
     if (progress >= 100)
-        info = CCommon::LoadText(IDS_COMPLEATE);
+        info = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_PROGRESS_INFO_COMPLEATE");
     else
-        info = CCommon::LoadTextFormat(IDS_PROGRESS_INFO, { progress });
-    SetDlgItemText(IDC_PROGRESS_TEXT, info);
+        info = theApp.m_str_table.LoadTextFormat(L"TXT_FORMAT_CONVERT_PROGRESS_INFO", { progress });
+    SetDlgItemText(IDC_PROGRESS_TEXT, info.c_str());
 }
 
 int CFormatConvertDlg::GetFreq()
 {
-    CString str;
-    m_freq_comb.GetWindowText(str);
-
-    return m_freq_map[str.GetString()];
+    int sel_index = m_freq_comb.GetCurSel();
+    return m_freq_map[sel_index].second;
 }
 
 UINT CFormatConvertDlg::ThreadFunc(LPVOID lpParam)
 {
-    CCommon::SetThreadLanguage(theApp.m_general_setting_data.language);
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     CFormatConvertDlg* pThis{ (CFormatConvertDlg*)lpParam };
     for (size_t i{}; i < pThis->m_file_list.size(); i++)
     {
@@ -519,11 +592,6 @@ UINT CFormatConvertDlg::ThreadFunc(LPVOID lpParam)
     }
     ::PostMessage(pThis->GetSafeHwnd(), WM_CONVERT_COMPLETE, 0, 0);
     return 0;
-}
-
-bool CFormatConvertDlg::IsTaskbarListEnable() const
-{
-    return CWinVersionHelper::IsWindows7OrLater() && m_pTaskbar != nullptr;
 }
 
 
@@ -544,25 +612,25 @@ void CFormatConvertDlg::OnBnClickedStartConvertButton()
     if (!m_encoder_succeed)
     {
         CBassCore* bass_core = dynamic_cast<CBassCore*>(CPlayer::GetInstance().GetPlayerCore());
-        CString info;
+        wstring info;
         if (bass_core != nullptr)
-            info = CCommon::LoadTextFormat(IDS_BASS_ENCODER_LOAD_ERROR, { bass_core->GetEncoderDir() + L"bassenc.dll" });
+            info = theApp.m_str_table.LoadTextFormat(L"MSG_FORMAT_CONVERT_BASS_LOAD_ERROR", { bass_core->GetEncoderDir() + L"bassenc.dll" });
         else
-            info = CCommon::LoadText(IDS_IDS_ENCODER_INIT_ERROR);
-        MessageBox(info, NULL, MB_ICONERROR | MB_OK);
+            info = theApp.m_str_table.LoadText(L"MSG_FORMAT_CONVERT_INIT_ERROR");
+        MessageBox(info.c_str(), NULL, MB_ICONERROR | MB_OK);
         return;
     }
 
     if (m_out_dir.empty())
     {
-        MessageBox(CCommon::LoadText(IDS_SET_OUTPUT_DIR_INFO), NULL, MB_ICONWARNING | MB_OK);
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_FORMAT_CONVERT_SET_OUTPUT_DIR");
+        MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
         return;
     }
     else if (!CCommon::FolderExist(m_out_dir))
     {
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_OUTPUT_DIR_NOT_EXIST, { m_out_dir });
-        MessageBox(info, NULL, MB_ICONWARNING | MB_OK);
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_FORMAT_CONVERT_OUTPUT_DIR_NOT_EXIST", { m_out_dir });
+        MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
     }
 
     //先清除“状态”一列的内容
@@ -576,91 +644,55 @@ void CFormatConvertDlg::OnBnClickedStartConvertButton()
     //创建格式转换的工作线程
     m_pThread = AfxBeginThread(ThreadFunc, this);
     m_thread_runing = true;
-#ifndef COMPILE_IN_WIN_XP
-    if (IsTaskbarListEnable())
-        m_pTaskbar->SetProgressState(this->GetSafeHwnd(), TBPF_INDETERMINATE);
-#endif
+    if (theApp.IsTaskbarInteractionEnabled())
+        theApp.GetITaskbarList3()->SetProgressState(this->GetSafeHwnd(), TBPF_INDETERMINATE);
 }
-
-
-//void CFormatConvertDlg::OnBnClickedBrowseButton()
-//{
-//	// TODO: 在此添加控件通知处理程序代码
-//#ifdef COMPILE_IN_WIN_XP
-//	CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-//	folderPickerDlg.SetInfo(CCommon::LoadText(IDS_SELECT_OUTPUT_FOLDER));
-//#else
-//	CFolderPickerDialog folderPickerDlg(m_out_dir.c_str());
-//	folderPickerDlg.m_ofn.lpstrTitle = CCommon::LoadText(IDS_SELECT_OUTPUT_FOLDER);		//设置对话框标题
-//#endif // COMPILE_IN_WIN_XP
-//	if (folderPickerDlg.DoModal() == IDOK)
-//	{
-//		m_out_dir = folderPickerDlg.GetPathName();
-//		if (m_out_dir.back() != L'\\') m_out_dir.push_back(L'\\');	//确保路径末尾有反斜杠
-//		SetDlgItemText(IDC_OUT_DIR_EDIT, m_out_dir.c_str());
-//	}
-//
-//}
 
 
 afx_msg LRESULT CFormatConvertDlg::OnConvertProgress(WPARAM wParam, LPARAM lParam)
 {
-    CString percent_str;
+    wstring status_str;
     int percent = (int)lParam;
     if (percent == 0)
         m_file_list_ctrl.EnsureVisible(wParam, FALSE);		//转换开始时，确保当前列表项可见
     if (percent < 0)
     {
         //显示错误信息
-        percent_str += CCommon::LoadText(IDS_ERROR);
-        percent_str += L": ";
-        if (percent == CONVERT_ERROR_FILE_CONNOT_OPEN)
-            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_FILE_CONNOT_OPEN);
+        if (percent == CONVERT_ERROR_FILE_CANNOT_OPEN)
+            status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_ERROR_FILE_CANNOT_OPEN");
         else if (percent == CONVERT_ERROR_ENCODE_CHANNEL_FAILED)
-            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED);
+            status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_ERROR_ENCODE_CHANNEL_FAILED");
         else if (percent == CONVERT_ERROR_ENCODE_PARA_ERROR)
-            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_PARA_ERROR);
+            status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_ERROR_ENCODE_PARA_ERROR");
         else if (percent == CONVERT_ERROR_MIDI_NO_SF2)
-            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_MIDI_NO_SF2);
+            status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_ERROR_MIDI_NO_SF2");
         else if (percent == CONVERT_ERROR_WMA_NO_WMP9_OR_LATER)
-        {
-            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED);
-            percent_str += _T(": ");
-            percent_str += CCommon::LoadText(IDS_NO_WMP9_OR_LATER);
-        }
+            status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_ERROR_NO_WMP9_OR_LATER");
         else if (percent == CONVERT_ERROR_WMA_NO_SUPPORTED_ENCODER)
-        {
-            percent_str += CCommon::LoadText(IDS_CONVERT_ERROR_ENCODE_CHANNEL_FAILED);
-            percent_str += _T(": ");
-            percent_str += CCommon::LoadText(IDS_NO_SUPPORTED_ENCODER_WARNING);
-        }
+            status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_ERROR_NO_SUPPORTED_ENCODER");
         else
-            percent_str += std::to_wstring(percent).c_str();
+            status_str = theApp.m_str_table.LoadTextFormat(L"TXT_FORMAT_CONVERT_STAUS_ERROR_OTHER", { percent });
     }
     else if (percent == 101)
     {
-        percent_str = CCommon::LoadText(IDS_COMPLEATE);
+        status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_COMPLEATE");
     }
     else if (percent == 102)
     {
-        percent_str = CCommon::LoadText(IDS_SKIPED1);
+        status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_SKIPED");
     }
     else
     {
-        percent_str.Format(_T("%d%%"), (int)lParam);
+        status_str = std::to_wstring(static_cast<int>(lParam)) + L'%';
     }
-    m_file_list_ctrl.SetItemText(wParam, 2, percent_str);
+    m_file_list_ctrl.SetItemText(wParam, 2, status_str.c_str());
 
     //总体的进度
     int position, length;
     length = m_file_list.size() * 100;
     position = wParam * 100 + percent;
-#ifndef COMPILE_IN_WIN_XP
-    if (IsTaskbarListEnable())
-    {
-        m_pTaskbar->SetProgressValue(this->GetSafeHwnd(), position, length);
-    }
-#endif
+    if (theApp.IsTaskbarInteractionEnabled())
+        theApp.GetITaskbarList3()->SetProgressValue(this->GetSafeHwnd(), position, length);
     int total_percent = position * 100 / length;
     static int last_percent = -1;
     if (last_percent != total_percent)
@@ -803,7 +835,7 @@ void CFormatConvertDlg::OnNMRClickSongList1(NMHDR* pNMHDR, LRESULT* pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
-    CMenu* pContextMenu = m_list_popup_menu.GetSubMenu(0); //获取第一个弹出菜单
+    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::FcListMenu);
     m_file_list_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;
@@ -816,74 +848,47 @@ void CFormatConvertDlg::OnAddFile()
     if (m_thread_runing)
         return;
     //设置过滤器
-    wstring filter(CCommon::LoadText(IDS_ALL_SUPPORTED_FORMAT, _T("|")));
-    for (const auto& ext : CAudioCommon::m_all_surpported_extensions)
-    {
-        filter += L"*.";
-        filter += ext;
-        filter.push_back(L';');
-    }
-    filter.pop_back();
-    filter.push_back(L'|');
-    for (const auto& format : CAudioCommon::m_surpported_format)
-    {
-        filter += format.description;
-        filter.push_back(L'|');
-        filter += format.extensions_list;
-        filter.push_back(L'|');
-    }
-    filter += CCommon::LoadText(IDS_ALL_FILES, _T("|*.*||"));
+    wstring filter = FilterHelper::GetAudioFileFilter();
     //构造打开文件对话框
     CFileDialog fileDlg(TRUE, NULL, NULL, OFN_ALLOWMULTISELECT, filter.c_str(), this);
     //设置保存文件名的字符缓冲的大小为128kB（如果以平均一个文件名长度为32字节计算，最多可以打开大约4096个文件）
     fileDlg.m_ofn.nMaxFile = 128 * 1024;
-    LPTSTR ch = new TCHAR[fileDlg.m_ofn.nMaxFile];
-    fileDlg.m_ofn.lpstrFile = ch;
-    //对内存块清零
-    ZeroMemory(fileDlg.m_ofn.lpstrFile, sizeof(TCHAR) * fileDlg.m_ofn.nMaxFile);
+    std::vector<wchar_t> buffer(fileDlg.m_ofn.nMaxFile);
+    fileDlg.m_ofn.lpstrFile = buffer.data();
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {
-        POSITION posFile = fileDlg.GetStartPosition();
-        while (posFile != NULL)
+        wchar_t* pos = buffer.data();
+        wchar_t* end = pos + buffer.size();
+        while (pos < end && *pos != L'\0')
         {
-            SongInfo item;
-            CString file_path = fileDlg.GetNextPathName(posFile);
-            item = CSongDataManager::GetInstance().GetSongInfo(wstring(file_path));
-            if (!item.info_acquired)	//如果歌曲没有获取过信息，则重新获取
-            {
-                HSTREAM hStream;
-                hStream = BASS_StreamCreateFile(FALSE, item.file_path.c_str(), 0, 0, BASS_SAMPLE_FLOAT);
-                BASS_CHANNELINFO channel_info;
-                BASS_ChannelGetInfo(hStream, &channel_info);
-                if (CAudioCommon::GetAudioTypeByBassChannel(channel_info.ctype) != AU_MIDI)
-                {
-                    bool is_osu = COSUPlayerHelper::IsOsuFile(item.file_path);
-                    if (is_osu)
-                    {
-                        item.file_path = item.file_path;
-                        COSUPlayerHelper::GetOSUAudioTitleArtist(item);
-                    }
-                    else
-                    {
-                        CBassCore::GetBASSAudioInfo(hStream, item);
-                    }
-                    //CPlayer::AcquireSongInfo(hStream, item.file_path, item);
-                }
-                BASS_StreamFree(hStream);
-            }
-            if (!CCommon::IsItemInVector(m_file_list, [&](const SongInfo song)
-                {
-                    if (!song.is_cue)
-                        return item.file_path == song.file_path;
-                    else
-                        return (item.file_path == song.file_path && item.track == song.track);
-                }))
-                m_file_list.push_back(item);
+            wstring file_name(pos);
+            // 将指针移动到下一个文件名的起始位置
+            pos += file_name.size() + 1;
+            m_file_list.push_back(SongInfo(file_name));
         }
+        // 音频文件信息更新到媒体库，并解析cue，(对于大量不存在于媒体库的新文件此方法很慢)
+        int cnt{}, percent{};
+        bool exit_flag{ false };
+        CAudioCommon::GetAudioInfo(m_file_list, cnt, exit_flag, percent, MR_MIN_REQUIRED, false);
+        // 去重
+        std::unordered_set<SongKey> song_key;
+        song_key.reserve(m_file_list.size());
+        auto new_end = std::remove_if(m_file_list.begin(), m_file_list.end(),
+            [&](const SongInfo& song) { return !song_key.emplace(song).second; }); // emplace失败说明此项目已存在，返回true移除当前项目
+        m_file_list.erase(new_end, m_file_list.end());
+        // 加载歌曲信息（与播放列表一致）
+        CSongDataManager::GetInstance().LoadSongsInfo(m_file_list);
+        //如果文件是 MIDI 音乐，则把SF2音色库信息添加到注释信息
+        wstring midi_comment = L"Converted from MIDI by MusicPlayer2. SF2: " + CPlayer::GetInstance().GetSoundFontName();
+        for (auto& song : m_file_list)
+        {
+            if (CAudioCommon::GetAudioTypeByFileName(song.file_path) == AU_MIDI)
+                song.comment = midi_comment;
+        }
+        // 刷新显示
         ShowFileList();
     }
-    delete[] ch;
 }
 
 
@@ -1032,7 +1037,10 @@ void CFormatConvertDlg::OnBnClickedChangeFreqCheck()
         m_convert_freq = false;
         CBassCore* bass_core = dynamic_cast<CBassCore*>(CPlayer::GetInstance().GetPlayerCore());
         if (bass_core != nullptr)
-            MessageBox(CCommon::LoadTextFormat(IDS_BASS_MIX_LOAD_ERROR, { bass_core->GetEncoderDir() + L"bassmix.dll" }), NULL, MB_ICONWARNING | MB_OK);
+        {
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_FORMAT_CONVERT_BASS_MIX_LOAD_ERROR", { bass_core->GetEncoderDir() + L"bassmix.dll" });
+            MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+        }
         pBtn->SetCheck(FALSE);
     }
 

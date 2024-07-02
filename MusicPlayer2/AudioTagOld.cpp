@@ -1,5 +1,7 @@
 ﻿#include "stdafx.h"
 #include "AudioTagOld.h"
+#include "FilePathHelper.h"
+#include "Common.h"
 
 const string jpg_head{ '\xff', '\xd8', '\xff' };
 const string jpg_tail{ '\xff', '\xd9' };
@@ -57,16 +59,14 @@ wstring CAudioTagOld::GetAudioLyric()
 	return wstring();
 }
 
-bool CAudioTagOld::WriteMp3Tag(LPCTSTR file_path, const SongInfo & song_info, bool & text_cut_off)
+bool CAudioTagOld::WriteMp3Tag(LPCTSTR file_path, SongInfo song_info, bool & text_cut_off)
 {
-	string title, artist, album, year, comment;
-	if (song_info.title != CCommon::LoadText(IDS_DEFAULT_TITLE).GetString())
-		title = CCommon::UnicodeToStr(song_info.title, CodeType::ANSI);
-	if (song_info.artist != CCommon::LoadText(IDS_DEFAULT_ARTIST).GetString())
-		artist = CCommon::UnicodeToStr(song_info.artist, CodeType::ANSI);
-	if (song_info.album != CCommon::LoadText(IDS_DEFAULT_ALBUM).GetString())
-		album = CCommon::UnicodeToStr(song_info.album, CodeType::ANSI);
-	//if (song_info.year != CCommon::LoadText(IDS_DEFAULT_YEAR).GetString())
+    song_info.Normalize();
+    string title, artist, album, year, comment;
+    title = CCommon::UnicodeToStr(song_info.title, CodeType::ANSI);
+    artist = CCommon::UnicodeToStr(song_info.artist, CodeType::ANSI);
+    album = CCommon::UnicodeToStr(song_info.album, CodeType::ANSI);
+
 	year = CCommon::UnicodeToStr(song_info.get_year(), CodeType::ANSI);
 	comment = CCommon::UnicodeToStr(song_info.comment, CodeType::ANSI);
 	TAG_ID3V1 id3{};

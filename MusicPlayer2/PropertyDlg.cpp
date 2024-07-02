@@ -3,8 +3,8 @@
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 #include "PropertyDlg.h"
-#include "afxdialogex.h"
 
 
 // CPropertyDlg 对话框
@@ -59,6 +59,32 @@ CString CPropertyDlg::GetDialogName() const
     return _T("PropertyDlg");
 }
 
+bool CPropertyDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_PROPERTY_PARENT");
+    SetWindowTextW(temp.c_str());
+    // IDC_TAB1
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_PARENT_PREVIOUS");
+    SetDlgItemTextW(IDC_PREVIOUS_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_PARENT_NEXT");
+    SetDlgItemTextW(IDC_NEXT_BUTTON, temp.c_str());
+    // IDC_ITEM_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_PROPERTY_PARENT_SAVE_TO_FILE");
+    SetDlgItemTextW(IDC_SAVE_TO_FILE_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_CLOSE");
+    SetDlgItemTextW(IDCANCEL, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L2, IDC_PREVIOUS_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_NEXT_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::C0, IDC_ITEM_STATIC },
+        { CtrlTextInfo::R1, IDC_SAVE_TO_FILE_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
+}
+
 void CPropertyDlg::DoDataExchange(CDataExchange* pDX)
 {
     CBaseDialog::DoDataExchange(pDX);
@@ -87,11 +113,10 @@ BOOL CPropertyDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    SetIcon(theApp.m_icon_set.info.GetIcon(true), FALSE);
-
-    m_previous_btn.SetIcon(theApp.m_icon_set.lyric_delay.GetIcon(true));
-    m_next_btn.SetIcon(theApp.m_icon_set.lyric_forward.GetIcon(true));
-    SetButtonIcon(IDC_SAVE_TO_FILE_BUTTON, theApp.m_icon_set.save_new);
+    SetIcon(IconMgr::IconType::IT_Info, FALSE);
+    SetButtonIcon(IDC_PREVIOUS_BUTTON, IconMgr::IconType::IT_Triangle_Left);
+    SetButtonIcon(IDC_NEXT_BUTTON, IconMgr::IconType::IT_Triangle_Right);
+    SetButtonIcon(IDC_SAVE_TO_FILE_BUTTON, IconMgr::IconType::IT_Save);
 
     //创建子对话框
     m_property_dlg.Create(IDD_PROPERTY_DIALOG);
@@ -100,20 +125,10 @@ BOOL CPropertyDlg::OnInitDialog()
         m_advanced_dlg.Create(IDD_PROPERTY_ADVANCED_DIALOG);
 
     //添加对话框
-    m_tab_ctrl.AddWindow(&m_property_dlg, CCommon::LoadText(IDS_FILE_PROPERTY));
-    m_tab_ctrl.AddWindow(&m_album_cover_dlg, CCommon::LoadText(IDS_ALBUM_COVER));
+    m_tab_ctrl.AddWindow(&m_property_dlg, theApp.m_str_table.LoadText(L"TITLE_PROPERTY_DLG").c_str(), IconMgr::IconType::IT_File_Relate);
+    m_tab_ctrl.AddWindow(&m_album_cover_dlg, theApp.m_str_table.LoadText(L"TITLE_COVER_PROPERTY").c_str(), IconMgr::IconType::IT_Album_Cover);
     if (!m_batch_edit)
-        m_tab_ctrl.AddWindow(&m_advanced_dlg, CCommon::LoadText(IDS_ADVANCED_PROPERTY));
-
-    //为每个标签添加图标
-    CImageList ImageList;
-    ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
-    ImageList.Add(theApp.m_icon_set.file_relate);
-    ImageList.Add(theApp.m_icon_set.album_cover);
-    if (!m_batch_edit)
-        ImageList.Add(theApp.m_icon_set.tag);
-    m_tab_ctrl.SetImageList(&ImageList);
-    ImageList.Detach();
+        m_tab_ctrl.AddWindow(&m_advanced_dlg, theApp.m_str_table.LoadText(L"TITLE_ADVANCED_PROPERTY").c_str(), IconMgr::IconType::IT_Tag);
 
     m_tab_ctrl.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
     m_tab_ctrl.AdjustTabWindowSize();
@@ -135,14 +150,10 @@ BOOL CPropertyDlg::OnInitDialog()
 
     if (m_batch_edit)
     {
+        SetWindowText(theApp.m_str_table.LoadTextFormat(L"TITLE_PROPERTY_PARENT_BATCH", { m_song_num }).c_str());
         ShowDlgCtrl(IDC_PREVIOUS_BUTTON, false);
         ShowDlgCtrl(IDC_NEXT_BUTTON, false);
         ShowDlgCtrl(IDC_ITEM_STATIC, false);
-
-        CString str_title;
-        GetWindowText(str_title);
-        str_title += CCommon::LoadTextFormat(IDS_PROPERTY_TITLE_INFO, { m_song_num });
-        SetWindowText(str_title);
     }
 
     return TRUE;  // return TRUE unless you set the focus to a control
@@ -163,17 +174,23 @@ void CPropertyDlg::OnBnClickedSaveToFileButton()
             m_modified = true;
             if (m_batch_edit)
             {
-                CString info = CCommon::LoadTextFormat(IDS_TAG_BATCH_EDIT_INFO, { saved_num });
-                MessageBox(info, NULL, MB_ICONINFORMATION | MB_OK);
+                wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PROPERTY_PARENT_TAG_BATCH_EDIT_SAVE_INFO", { saved_num });
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
             }
             else
             {
                 if (saved_num == 0)
-                    MessageBox(CCommon::LoadText(IDS_CANNOT_WRITE_TO_FILE), NULL, MB_ICONWARNING | MB_OK);
+                {
+                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_WRITE_FAILED");
+                    MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+                }
             }
         }
         else
-            MessageBox(CCommon::LoadText(IDS_WAIT_AND_RETRY), NULL, MB_ICONINFORMATION | MB_OK);
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        }
     }
 }
 

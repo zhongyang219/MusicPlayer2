@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "OptionsDlg.h"
-#include "afxdialogex.h"
 
 
 // COptionsDlg 对话框
@@ -24,6 +23,22 @@ COptionsDlg::~COptionsDlg()
 CString COptionsDlg::GetDialogName() const
 {
     return _T("OptionsDlg");
+}
+
+bool COptionsDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_OPT");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_APPLY");
+    SetDlgItemTextW(IDC_APPLY_BUTTON, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R3, IDC_APPLY_BUTTON, CtrlTextInfo::W32 }
+        });
+    return true;
 }
 
 void COptionsDlg::DoDataExchange(CDataExchange* pDX)
@@ -50,7 +65,7 @@ BOOL COptionsDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 
-    SetIcon(theApp.m_icon_set.setting.GetIcon(true), FALSE);
+    SetIcon(IconMgr::IconType::IT_Setting, FALSE);
 
 	//创建子对话框
 	m_tab1_dlg.Create(IDD_LYRIC_SETTING_DIALOG);
@@ -77,24 +92,12 @@ BOOL COptionsDlg::OnInitDialog()
 	}
 
 	//添加对话框
-	m_tab.AddWindow(&m_tab1_dlg, CCommon::LoadText(IDS_LYRIC_SETTINGS));
-	m_tab.AddWindow(&m_tab2_dlg, CCommon::LoadText(IDS_APPEARANCE_SETTINGS));
-	m_tab.AddWindow(&m_tab3_dlg, CCommon::LoadText(IDS_GENERAL_SETTINGS));
-	m_tab.AddWindow(&m_tab4_dlg, CCommon::LoadText(IDS_PLAY_SETTINGS));
-	m_tab.AddWindow(&m_media_lib_dlg, CCommon::LoadText(IDS_MEDIA_LIB));
-	m_tab.AddWindow(&m_tab5_dlg, CCommon::LoadText(IDS_GLOBLE_HOTKEY));
-
-    //为每个标签添加图标
-    CImageList ImageList;
-    ImageList.Create(theApp.DPI(16), theApp.DPI(16), ILC_COLOR32 | ILC_MASK, 2, 2);
-    ImageList.Add(theApp.m_icon_set.lyric.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.skin.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.setting.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.play_new.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.media_lib.GetIcon(true));
-    ImageList.Add(theApp.m_icon_set.hot_key);
-    m_tab.SetImageList(&ImageList);
-    ImageList.Detach();
+    m_tab.AddWindow(&m_tab1_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_LRC").c_str(), IconMgr::IconType::IT_Lyric);
+    m_tab.AddWindow(&m_tab2_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_APC").c_str(), IconMgr::IconType::IT_Skin);
+    m_tab.AddWindow(&m_tab3_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_DATA").c_str(), IconMgr::IconType::IT_Setting);
+    m_tab.AddWindow(&m_tab4_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_PLAY").c_str(), IconMgr::IconType::IT_Play);
+    m_tab.AddWindow(&m_media_lib_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_MEDIA_LIB").c_str(), IconMgr::IconType::IT_Media_Lib);
+    m_tab.AddWindow(&m_tab5_dlg, theApp.m_str_table.LoadText(L"TITLE_OPT_HOT_KEY").c_str(), IconMgr::IconType::IT_Key_Board);
 
     m_tab.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
     m_tab.AdjustTabWindowSize();
@@ -156,14 +159,10 @@ void COptionsDlg::OnSize(UINT nType, int cx, int cy)
     CBaseDialog::OnSize(nType, cx, cy);
     if (nType != SIZE_MINIMIZED)
     {
-        //为每个子窗口设置滚动信息
+        //为每个子窗口更新滚动信息
         for (size_t i = 0; i < m_tab_vect.size(); i++)
         {
-            m_tab_vect[i]->ResetScroll();
             m_tab_vect[i]->SetScrollbarInfo(m_tab.m_tab_rect.Height(), m_tab_height[i]);
         }
-
     }
-
-    // TODO: 在此处添加消息处理程序代码
 }

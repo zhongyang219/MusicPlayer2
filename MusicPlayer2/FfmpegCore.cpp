@@ -4,6 +4,7 @@
 #include "AudioCommon.h"
 #include "Common.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 
 #define ft2ts(t) (((size_t)t.dwHighDateTime << 32) | (size_t)t.dwLowDateTime)
 
@@ -14,8 +15,8 @@ CFfmpegCore::CFfmpegCore() {
     err = 0;
     Init(L"ffmpeg_core.dll");
     if (!IsSucceed()) {
-        CString strInfo = CCommon::LoadText(IDS_FFMPEG_INIT_FAILED);
-        theApp.WriteLog(wstring(strInfo));
+        const wstring& info = theApp.m_str_table.LoadText(L"LOG_FFMPEG_INIT_FAILED");
+        theApp.WriteLog(info);
     }
 }
 
@@ -28,7 +29,7 @@ void CFfmpegCore::InitCore() {
     if (IsSucceed()) {
         CAudioCommon::m_surpported_format.clear();
         CAudioCommon::m_all_surpported_extensions.clear();
-        CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"mp3 wma wav m4a ogg oga flac ape mp2 mp1 opus ape cda aif aiff cue mp4 mkv mka m2ts", CCommon::LoadText(IDS_BASIC_AUDIO_FORMAT)));
+        CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"mp3 wma wav m4a ogg oga flac ape mp2 mp1 opus ape cda aif aiff cue mp4 mkv mka m2ts", theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_BASE").c_str()));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"3gp 3g2 mj2 psp m4b ism ismv isma f4v", L"3gp"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"aa", L"Audible Format 2, 3, and 4"));
         CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(L"aac", L"AAC (Advanced Audio Coding)"));
@@ -62,7 +63,7 @@ void CFfmpegCore::InitCore() {
 
         if (!theApp.m_nc_setting_data.user_defined_type_ffmpeg.empty())
         {
-            CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(theApp.m_nc_setting_data.user_defined_type_ffmpeg, CCommon::LoadText(IDS_OTHER_FORMATS)));
+            CAudioCommon::m_surpported_format.push_back(CAudioCommon::CreateSupportedFormat(theApp.m_nc_setting_data.user_defined_type_ffmpeg, theApp.m_str_table.LoadText(L"TXT_FILE_TYPE_FFMPEG_USER_DEFINE").c_str()));
         }
 
         for (const auto& item : CAudioCommon::m_surpported_format)
@@ -81,7 +82,7 @@ void CFfmpegCore::InitCore() {
         auto devices = GetAudioDevices();
         DeviceInfo d;
         d.index = -1;
-        d.name = CCommon::LoadText(IDS_SDL_DEFAULT_DEVICE);
+        d.name = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_NAME_SDL_DEFAULT");
         d.driver = L"";
         d.flags = 0;
         theApp.m_output_devices.clear();
@@ -217,12 +218,16 @@ int CFfmpegCore::GetCurPosition() {
 
 int CFfmpegCore::GetSongLength() {
     if (IsSucceed() && handle) {
-        return static_cast<int>(ffmpeg_core_get_song_length(handle) / 1000);
+        int64_t length = ffmpeg_core_get_song_length(handle);
+        if (length != INT64_MIN)
+            return static_cast<int>(length / 1000);
+        else
+            return 0;
     } else return 0;
 }
 
 void CFfmpegCore::SetCurPosition(int position) {
-    if (IsSucceed() && handle) {
+    if (IsSucceed() && handle && GetSongLength() != 0) {    // 时长为0(获取失败)时seek(0)会卡死
         int re = ffmpeg_core_seek(handle, (int64_t)position * 1000);
         if (re) {
             err = re;
@@ -232,7 +237,7 @@ void CFfmpegCore::SetCurPosition(int position) {
 
 void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
     if (!handle || !IsSucceed()) return;
-    if (flag & AF_LENGTH) song_info.setLength(GetSongLength());
+    if (flag & AF_LENGTH) song_info.end_pos.fromInt(GetSongLength());
     if (flag & AF_CHANNEL_INFO) {
         song_info.freq = ffmpeg_core_get_freq(handle);
         song_info.bits = ffmpeg_core_get_bits(handle);
@@ -243,6 +248,7 @@ void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
     }
     if (flag & AF_TAG_INFO) {
         CAudioTag audio_tag(song_info);
+        audio_tag.GetAudioRating();
         if (!audio_tag.GetAudioTag())       //如果taglib获取信息失败，则使用ffmpeg获取标签信息
         {
             song_info.title = GetTitle();
@@ -261,7 +267,13 @@ void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, in
     MusicInfoHandle* h = nullptr;
     int re = ffmpeg_core_info_open(file_path, &h);
     if (re || !h) return;
-    if (flag & AF_LENGTH) song_info.setLength(static_cast<int>(ffmpeg_core_info_get_song_length(h) / 1000));
+    if (flag & AF_LENGTH) {
+        int64_t length = ffmpeg_core_info_get_song_length(h);
+        if (length != INT64_MIN)
+            song_info.end_pos.fromInt(static_cast<int>(length / 1000));
+        else
+            song_info.end_pos.fromInt(0);
+    }
     if (flag & AF_CHANNEL_INFO) {
         song_info.freq = ffmpeg_core_info_get_freq(h);
         song_info.bits = ffmpeg_core_info_get_bits(h);
@@ -274,6 +286,7 @@ void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, in
         if (song_info.file_path.empty())
             song_info.file_path = file_path;
         CAudioTag audio_tag(song_info);
+        audio_tag.GetAudioRating();
         if (!audio_tag.GetAudioTag())       //如果taglib获取信息失败，则使用ffmpeg获取标签信息
         {
             song_info.title = GetTitle(h);

@@ -11,39 +11,34 @@
 
 #include "targetver.h"
 
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // 某些 CString 构造函数将是显式的
+// 使用 CString 构造函数将是显式的
+#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS
 
 // 关闭 MFC 对某些常见但经常可放心忽略的警告消息的隐藏
 #define _AFX_ALL_WARNINGS
 
-#include <afxwin.h>         // MFC 核心组件和标准组件
-#include <afxext.h>         // MFC 扩展
-
-
-#include <afxdisp.h>        // MFC 自动化类
-
-
+// 包含 MFC 核心组件和标准组件的头文件
+#include <afxwin.h>
+// 包含 MFC 扩展的头文件
+#include <afxext.h>
+// 包含 MFC 自动化类的头文件
+#include <afxdisp.h>
 
 #ifndef _AFX_NO_OLE_SUPPORT
-#include <afxdtctl.h>           // MFC 对 Internet Explorer 4 公共控件的支持
+// MFC 对 Internet Explorer 4 公共控件的支持
+#include <afxdtctl.h>
 #endif
+
 #ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>             // MFC 对 Windows 公共控件的支持
-#endif // _AFX_NO_AFXCMN_SUPPORT
-
-#include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
-
-#include "Define.h"
-#include <afxcontrolbars.h>
-#include <afxwin.h>
-#include <afxwin.h>
-#include <afxwin.h>
-#include <afxwin.h>
-#include <afxcontrolbars.h>
-#include <afxwin.h>
-#include <afxwin.h>
+// MFC 对 Windows 公共控件的支持
 #include <afxcmn.h>
+#endif
 
+// MFC 功能区和控件条的支持
+#include <afxcontrolbars.h>
+
+// 自定义头文件
+#include "Define.h"
 
 
 #ifdef _UNICODE
@@ -55,5 +50,3 @@
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #endif
 #endif
-
-

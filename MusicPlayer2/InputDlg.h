@@ -1,9 +1,9 @@
 ﻿#pragma once
-
+#include "BaseDialog.h"
 
 // CInputDlg 对话框
 
-class CInputDlg : public CDialog
+class CInputDlg : public CBaseDialog
 {
 	DECLARE_DYNAMIC(CInputDlg)
 
@@ -22,6 +22,8 @@ public:
     CString GetEditText() const;
 
 protected:
+    virtual CString GetDialogName() const override;
+    virtual bool InitializeControls() override;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 private:

@@ -90,7 +90,7 @@ BOOL CLyricsWindow::Create(LPCTSTR lpszClassName,int nWidth,int nHeight)
 {
 	if(!RegisterWndClass(lpszClassName))
 	{
-		TRACE("Class　Registration　Failedn");
+		TRACE(L"Class　Registration　Failedn");
 	}
 
 	//--------------------------------------------
@@ -430,36 +430,36 @@ void CLyricsWindow::DrawHighlightLyrics(Gdiplus::Graphics* pGraphics,Gdiplus::Gr
 //创建渐变画刷
 Gdiplus::Brush* CLyricsWindow::CreateGradientBrush(LyricsGradientMode TextGradientMode,Gdiplus::Color& Color1,Gdiplus::Color& Color2, Gdiplus::RectF& dstRect)
 {
-	Gdiplus::PointF pt1;
-	Gdiplus::PointF pt2;
-	Gdiplus::Brush* pBrush=NULL;
-	switch (TextGradientMode)
-	{
-	case LyricsGradientMode_Two://两色渐变
-		{
-			Gdiplus::PointF point1(dstRect.X,dstRect.Y);
-			Gdiplus::PointF point2(dstRect.X,dstRect.Y+dstRect.Height);
-			pBrush=new Gdiplus::LinearGradientBrush(point1,point2,Color1,Color2);
-			((Gdiplus::LinearGradientBrush*)pBrush)->SetWrapMode(Gdiplus::WrapModeTileFlipXY);
-			break;
-		}
+    // 单色画刷
+    if (TextGradientMode != LyricsGradientMode_Two && TextGradientMode != LyricsGradientMode_Three)
+    {
+        Gdiplus::SolidBrush* pSolidBrush = new Gdiplus::SolidBrush(Color1);
+        return static_cast<Gdiplus::Brush*>(pSolidBrush);
+    }
 
-	case LyricsGradientMode_Three://三色渐变
-		{
-			Gdiplus::PointF point1(dstRect.X,dstRect.Y);
-			Gdiplus::PointF point2(dstRect.X,dstRect.Y+dstRect.Height/2);
-			pBrush=new Gdiplus::LinearGradientBrush(point1,point2,Color1,Color2);
-			((Gdiplus::LinearGradientBrush*)pBrush)->SetWrapMode(Gdiplus::WrapModeTileFlipXY);
-			break;
-		}
+    Gdiplus::PointF point1(dstRect.X, dstRect.Y);
+    Gdiplus::PointF point2(dstRect.X, dstRect.Y);
+    if (TextGradientMode == LyricsGradientMode_Two)
+        point2.Y += dstRect.Height;
+    else
+        point2.Y += dstRect.Height / 2;     // 这里的三色渐变是靠环绕模式对映
 
-	default://无渐变
-		{
-			pBrush=new Gdiplus::SolidBrush(Color1);
-			break;
-		}
-	}
-	return pBrush;
+    // 创建线性渐变画刷
+    Gdiplus::LinearGradientBrush* pLinearGradientBrush = new Gdiplus::LinearGradientBrush(point1, point2, Gdiplus::Color(), Gdiplus::Color());
+    // 定义插值点的数量, 创建颜色和位置的向量
+    const int colorCount = 10;
+    std::array<Gdiplus::Color, colorCount> colors{};
+    std::array<Gdiplus::REAL, colorCount> positions{};
+    for (int i = 0; i < colorCount; ++i)
+    {   // CDrawingManager::SmartMixColors产生的渐变色更好，GDI+默认的渐变色有很多灰色
+        COLORREF interpolatedColor = CDrawingManager::SmartMixColors(Color1.ToCOLORREF(), Color2.ToCOLORREF(), 1.0, colorCount - i, i);
+        colors[i].SetFromCOLORREF(interpolatedColor);
+        positions[i] = static_cast<Gdiplus::REAL>(i) / (colorCount - 1);
+    }
+    // 设置插值颜色
+    pLinearGradientBrush->SetInterpolationColors(colors.data(), positions.data(), colorCount);
+    pLinearGradientBrush->SetWrapMode(Gdiplus::WrapModeTileFlipXY);// 设置环绕模式
+    return static_cast<Gdiplus::Brush*>(pLinearGradientBrush);
 }
 
 //设置歌词颜色

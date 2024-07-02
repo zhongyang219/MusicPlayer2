@@ -97,7 +97,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0804</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
@@ -127,7 +127,7 @@
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0804</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
@@ -159,7 +159,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -175,7 +175,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0804</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
@@ -193,7 +193,7 @@
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -209,7 +209,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
-      <Culture>0x0804</Culture>
+      <Culture>0x0409</Culture>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
@@ -219,17 +219,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="compile_time.txt" />
-    <Text Include="Help.txt" />
-    <Text Include="Help_en_us.txt" />
     <Text Include="ReadMe.txt" />
     <Text Include="res\Acknowledgement.txt" />
-    <Text Include="res\Acknowledgement_en.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="AcceleratorRes.h" />
     <ClInclude Include="AddToPlaylistDlg.h" />
-    <ClInclude Include="AlbumCoverInfoDlg.h" />
     <ClInclude Include="AllMediaDlg.h" />
     <ClInclude Include="AppearanceSettingDlg.h" />
     <ClInclude Include="AudioCommon.h" />
@@ -253,6 +249,7 @@
     <ClInclude Include="CListBoxEnhanced.h" />
     <ClInclude Include="CListenTimeStatisticsDlg.h" />
     <ClInclude Include="CMMNotificationClient.h" />
+    <ClInclude Include="CommonDialogMgr.h" />
     <ClInclude Include="CUIDrawer.h" />
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
@@ -260,9 +257,12 @@
     <ClInclude Include="EditableListBox.h" />
     <ClInclude Include="EditStringListDlg.h" />
     <ClInclude Include="FfmpegCore.h" />
+    <ClInclude Include="FileNameFormDlg.h" />
+    <ClInclude Include="FilterHelper.h" />
     <ClInclude Include="FlacEncodeCfgDlg.h" />
     <ClInclude Include="GetTagOnlineDlg.h" />
     <ClInclude Include="HorizontalSplitter.h" />
+    <ClInclude Include="IconMgr.h" />
     <ClInclude Include="IPropertyTabDlg.h" />
     <ClInclude Include="LastFM.h" />
     <ClInclude Include="LastFMDataArchive.h" />
@@ -270,13 +270,16 @@
     <ClInclude Include="md5.h" />
     <ClInclude Include="MediaLibStatisticsDlg.h" />
     <ClInclude Include="MediaTransControls.h" />
+    <ClInclude Include="MediaTransControlsImpl.h" />
     <ClInclude Include="MenuEditCtrl.h" />
+    <ClInclude Include="MenuMgr.h" />
     <ClInclude Include="MiniModeUserUi.h" />
     <ClInclude Include="PropertyAdvancedDlg.h" />
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
     <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="PropertyDlgHelper.h" />
     <ClInclude Include="RecentFolderAndPlaylist.h" />
+    <ClInclude Include="RenameDlg.h" />
     <ClInclude Include="ScintillaEditView.h" />
     <ClInclude Include="SelectItemDlg.h" />
     <ClInclude Include="SliderCtrlEx.h" />
@@ -284,14 +287,15 @@
     <ClInclude Include="SongInfoHelper.h" />
     <ClInclude Include="SpectralDataHelper.h" />
     <ClInclude Include="SpinEdit.h" />
-    <ClInclude Include="TagFromFileNameDlg.h" />
+    <ClInclude Include="StrTable.h" />
+    <ClInclude Include="TagFromNameDlg.h" />
+    <ClInclude Include="TagSelBaseDlg.h" />
     <ClInclude Include="TagLibHelper.h" />
     <ClInclude Include="TinyXml2Helper.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
     <ClInclude Include="UIElement.h" />
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="UserUi.h" />
-    <ClInclude Include="WIC.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="DesktopLyric.h" />
     <ClInclude Include="DllLib.h" />
@@ -300,7 +304,6 @@
     <ClInclude Include="LyricsWindow.h" />
     <ClInclude Include="MciCore.h" />
     <ClInclude Include="CMediaLibDlg.h" />
-    <ClInclude Include="CMiniModeUI.h" />
     <ClInclude Include="CNotifyIcon.h" />
     <ClInclude Include="CommonData.h" />
     <ClInclude Include="COSUPlayerHelper.h" />
@@ -327,7 +330,6 @@
     <ClInclude Include="Playlist.h" />
     <ClInclude Include="PlaylistMgr.h" />
     <ClInclude Include="PlaySettingsDlg.h" />
-    <ClInclude Include="RecorderDlg.h" />
     <ClInclude Include="GaussBlur.h" />
     <ClInclude Include="IniHelper.h" />
     <ClInclude Include="RegFileRelate.h" />
@@ -386,7 +388,6 @@
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="AcceleratorRes.cpp" />
     <ClCompile Include="AddToPlaylistDlg.cpp" />
-    <ClCompile Include="AlbumCoverInfoDlg.cpp" />
     <ClCompile Include="AllMediaDlg.cpp" />
     <ClCompile Include="AppearanceSettingDlg.cpp" />
     <ClCompile Include="AudioCommon.cpp" />
@@ -410,6 +411,7 @@
     <ClCompile Include="CListenTimeStatisticsDlg.cpp" />
     <ClCompile Include="CMMNotificationClient.cpp" />
     <ClCompile Include="CommonData.cpp" />
+    <ClCompile Include="CommonDialogMgr.cpp" />
     <ClCompile Include="CUIDrawer.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />
@@ -417,30 +419,39 @@
     <ClCompile Include="EditableListBox.cpp" />
     <ClCompile Include="EditStringListDlg.cpp" />
     <ClCompile Include="FfmpegCore.cpp" />
+    <ClCompile Include="FileNameFormDlg.cpp" />
+    <ClCompile Include="FilterHelper.cpp" />
     <ClCompile Include="FlacEncodeCfgDlg.cpp" />
     <ClCompile Include="GetTagOnlineDlg.cpp" />
     <ClCompile Include="HorizontalSplitter.cpp" />
+    <ClCompile Include="IconMgr.cpp" />
     <ClCompile Include="LastFM.cpp" />
     <ClCompile Include="LastFMDataArchive.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
     <ClCompile Include="MediaTransControls.cpp" />
+    <ClCompile Include="MediaTransControlsImpl.cpp" />
     <ClCompile Include="MenuEditCtrl.cpp" />
+    <ClCompile Include="MenuMgr.cpp" />
     <ClCompile Include="MiniModeUserUi.cpp" />
     <ClCompile Include="PropertyAdvancedDlg.cpp" />
     <ClCompile Include="PropertyAlbumCoverDlg.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />
     <ClCompile Include="PropertyDlgHelper.cpp" />
     <ClCompile Include="RecentFolderAndPlaylist.cpp" />
+    <ClCompile Include="RenameDlg.cpp" />
     <ClCompile Include="ScintillaEditView.cpp" />
     <ClCompile Include="SelectItemDlg.cpp" />
     <ClCompile Include="SliderCtrlEx.cpp" />
     <ClCompile Include="SongDataManager.cpp" />
+    <ClCompile Include="SongInfo.cpp" />
     <ClCompile Include="SongInfoHelper.cpp" />
     <ClCompile Include="SpectralDataHelper.cpp" />
     <ClCompile Include="SpinEdit.cpp" />
-    <ClCompile Include="TagFromFileNameDlg.cpp" />
+    <ClCompile Include="StrTable.cpp" />
+    <ClCompile Include="TagFromNameDlg.cpp" />
+    <ClCompile Include="TagSelBaseDlg.cpp" />
     <ClCompile Include="TagLibHelper.cpp" />
     <ClCompile Include="TinyXml2Helper.cpp" />
     <ClCompile Include="tinyxml2\tinyxml2.cpp">
@@ -452,7 +463,6 @@
     <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="UserUi.cpp" />
-    <ClCompile Include="WIC.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />
     <ClCompile Include="DllLib.cpp" />
     <ClCompile Include="FolderExploreDlg.cpp" />
@@ -460,7 +470,6 @@
     <ClCompile Include="LyricsWindow.cpp" />
     <ClCompile Include="MciCore.cpp" />
     <ClCompile Include="CMediaLibDlg.cpp" />
-    <ClCompile Include="CMiniModeUI.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
     <ClCompile Include="COSUPlayerHelper.cpp" />
     <ClCompile Include="CoverDownloadCommon.cpp" />
@@ -484,7 +493,6 @@
     <ClCompile Include="Playlist.cpp" />
     <ClCompile Include="PlaylistMgr.cpp" />
     <ClCompile Include="PlaySettingsDlg.cpp" />
-    <ClCompile Include="RecorderDlg.cpp" />
     <ClCompile Include="GaussBlur.cpp" />
     <ClCompile Include="IniHelper.cpp" />
     <ClCompile Include="RegFileRelate.cpp" />
@@ -545,10 +553,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LICENSE" />
+    <None Include="language\English.ini" />
     <None Include="res\drag.cur" />
     <None Include="res\MusicPlayer2.rc2" />
     <None Include="skins\ui1.xml" />
     <None Include="skins\ui2.xml" />
+    <None Include="skins\miniMode\miniMode00.xml" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\about.bmp" />
@@ -678,6 +688,7 @@
     <Image Include="res\toolbar1.bmp" />
     <Image Include="res\unlink.ico" />
     <Image Include="res\unlink_d.ico" />
+    <Image Include="res\up_d.ico" />
     <Image Include="res\volume0.ico" />
     <Image Include="res\volume0_d.ico" />
     <Image Include="res\volume1.ico" />

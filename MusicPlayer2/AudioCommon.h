@@ -1,12 +1,6 @@
 ﻿//此类用于定义音频信息相关的全局函数
 #pragma once
-#include "Time.h"
-#include "Common.h"
-#include "FilePathHelper.h"
-#include "Resource.h"
 #include "SongInfo.h"
-#include "IPlayerCore.h"
-#include <functional>
 
 //音频文件类型
 enum AudioType
@@ -34,13 +28,24 @@ enum AudioType
 //排序方式
 enum SortMode
 {
-    SM_FILE,
-    SM_PATH,
-    SM_TITLE,
-    SM_ARTIST,
-    SM_ALBUM,
-    SM_TRACK,
-    SM_TIME     //修改日期
+    SM_U_FILE = 0,
+    SM_D_FILE,
+    SM_U_PATH,
+    SM_D_PATH,
+    SM_U_TITLE,
+    SM_D_TITLE,
+    SM_U_ARTIST,
+    SM_D_ARTIST,
+    SM_U_ALBUM,
+    SM_D_ALBUM,
+    SM_U_TRACK,
+    SM_D_TRACK,
+    SM_U_LISTEN,            // 累计播放时间 升序
+    SM_D_LISTEN,            // 累计播放时间 降序
+    SM_U_TIME,              // 修改日期 升序
+    SM_D_TIME,              // 修改日期 降序
+
+    SM_UNSORT = 100,        // 未排序（进入播放列表模式时总是设置为此排序方式，且不进行持久化）
 };
 
 
@@ -67,12 +72,7 @@ struct PathInfo
     int track_num{};		//路径中音频文件的数量
     int total_time{};		//路径中音频文件的总时间
     bool contain_sub_folder{};  //是否包含子文件夹
-    bool descending{};      //是否降序排列
     unsigned __int64 last_played_time{};    //上次播放的时间
-
-    //PathInfo(wstring _path, int _track, int _position, SortMode _sort_mode) :
-    //	path{ _path }, track{ _track }, position{ _position }, sort_mode{ _sort_mode }
-    //{}
 };
 
 //循环模式
@@ -85,6 +85,14 @@ enum RepeatMode
     RM_LOOP_TRACK,		//单曲循环
     RM_PLAY_TRACK,      //单曲播放
     RM_MAX
+};
+
+// 读取音频文件元数据方法GetAudioInfo和GetCueTracks的刷新级别
+enum MediaLibRefreshMode
+{
+    MR_MIN_REQUIRED,        // 仅获取不存在于媒体库的条目(最小化文件读取，最快但不保证最新)
+    MR_FILE_MODIFICATION,   // 重新获取修改时间与媒体库记录不同的条目(需要读取修改时间略耗时)
+    MR_FOECE_FULL           // 强制重新获取所有条目
 };
 
 
@@ -124,11 +132,11 @@ public:
     //查找path目录下的所有歌词文件，并将文件名保存到files容器中
     static void GetLyricFiles(wstring path, vector<wstring>& files);
 
-    // 处理files容器中的cue文件，并将每段分轨作为一个曲目添加到files容器中，同时维护播放索引位置
-    // 返回files内仅file_path,track,is_cue是保证正确的，其他项目均不可靠
-    // 获取到的标签、时长信息已写入媒体库，调用后请从媒体库重新读取
-    // refresh_info为true时对媒体库内已存在项目重新获取标签、时长（仅文件夹模式有效）
-    static void GetCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index, bool refresh_info);
+    // 处理files内所有cue相关条目的获取信息/拆分/移除关联音频，更新信息到媒体库，仅维护files到可转换SongDataMapKey的程度
+    static void GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, MediaLibRefreshMode refresh_mode);
+    // 处理files内所有条目的获取信息，更新到媒体库（内部调用GetCueTracks），仅维护files到可转换SongDataMapKey的程度
+    // ignore_short为true时不保存短歌曲到媒体库且会移除files中的短歌曲（不包含cue）
+    static void GetAudioInfo(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, int& process_percent, MediaLibRefreshMode refresh_mode, bool ignore_short = false);
 
     //获得标准流派信息
     static wstring GetGenre(BYTE genre);
@@ -154,11 +162,6 @@ public:
     //将音轨序号转换成数字
     static CString TrackToString(BYTE track);
 
-    //清除歌曲信息中的<>内的默认字符串
-    static void ClearDefaultTagStr(SongInfo& song_info);
-
-    static wstring GetFileDlgFilter();
-
     //返回一个SupportedFormat
     //exts: 格式的扩展名，多个扩展名用空格分隔
     //description：格式的描述
@@ -176,6 +179,6 @@ public:
     static vector<wstring> m_all_surpported_extensions;		//全部支持的文件格式扩展名
 
 protected:
-    //获取音频文件的内嵌cue文件，并将每段分轨作为一个曲目添加到files容器中
-    static void GetInnerCueTracks(vector<SongInfo>& files, IPlayerCore* pPlayerCore, int& index, bool refresh_info);
+    // 寻找并修复音频路径不正确的cue track，参数是一个cue的文件解析结果
+    static void FixErrorCueAudioPath(vector<SongInfo>& files);
 };

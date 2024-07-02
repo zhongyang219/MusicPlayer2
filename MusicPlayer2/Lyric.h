@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include"Common.h"
 #include"Time.h"
+#include "Common.h"
 
 class CLyrics
 {

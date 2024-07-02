@@ -4,10 +4,8 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "FileRelateDlg.h"
-#include "afxdialogex.h"
 #include "AudioCommon.h"
 #include "RegFileRelate.h"
-#include <set>
 #include "Playlist.h"
 
 
@@ -28,6 +26,25 @@ CFileRelateDlg::~CFileRelateDlg()
 CString CFileRelateDlg::GetDialogName() const
 {
     return _T("FileRelateDlg");
+}
+
+bool CFileRelateDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_FILE_RELATE");
+    SetWindowTextW(temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FILE_RELATE_SEL_DEFAULT");
+    SetDlgItemTextW(IDC_DEFAULT_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_FILE_RELATE_SEL_ALL");
+    SetDlgItemTextW(IDC_SELECT_ALL_CHECK, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L2, IDC_DEFAULT_BUTTON, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_SELECT_ALL_CHECK, CtrlTextInfo::W16 },
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
+        });
+    return true;
 }
 
 void CFileRelateDlg::DoDataExchange(CDataExchange* pDX)
@@ -104,16 +121,16 @@ BOOL CFileRelateDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-    SetIcon(theApp.m_icon_set.file_relate, FALSE);
-    
+    SetIcon(IconMgr::IconType::IT_File_Relate, FALSE);
+
     CRect rect;
     m_list_ctrl.GetWindowRect(rect);
 
     m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
     int width0 = theApp.DPI(120);
     int width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
-    m_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_FORMAT), LVCFMT_LEFT, width0);
-    m_list_ctrl.InsertColumn(1,CCommon::LoadText(IDS_DESCRIPTION), LVCFMT_LEFT, width1);
+    m_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_FILE_RELATE_FORMAT").c_str(), LVCFMT_LEFT, width0);
+    m_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_FILE_RELATE_DESCRIPTION").c_str(), LVCFMT_LEFT, width1);
 
     RefreshList();
 

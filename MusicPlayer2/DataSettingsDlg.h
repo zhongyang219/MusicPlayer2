@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include"Common.h"
 #include "TabDlg.h"
 #include "BrowseEdit.h"
 #include "MyComboBox.h"
@@ -33,6 +32,7 @@ private:
     void EnableControl();
 
 protected:
+    virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     virtual void GetDataFromUi() override;
     virtual void ApplyDataToUi() override;
@@ -40,7 +40,6 @@ protected:
     DECLARE_MESSAGE_MAP()
 public:
     virtual BOOL OnInitDialog();
-    //afx_msg void OnBnClickedId3v2FirstCheck();
     afx_msg void OnBnClickedCoverAutoDownloadCheck();
     afx_msg void OnBnClickedLyricAutoDownloadCheck();
     afx_msg void OnBnClickedCheckUpdateCheck();

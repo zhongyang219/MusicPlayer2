@@ -43,14 +43,12 @@ public:
     };
 
     CDrawCommon();
-    ~CDrawCommon();
+    virtual ~CDrawCommon(); // 基类析构方法需要是虚方法
 
-    virtual void Create(CDC* pDC, CWnd* pMainWnd = nullptr);
-    void Create(CDC* pDC, Gdiplus::Graphics* pGraphics, CWnd* pMainWnd = nullptr);
-    //void SetBackColor(COLORREF back_color);		//设置绘制文本时填充的背景颜色
-    //COLORREF GetBackColor() const { return m_backColor; }
-    CFont* SetFont(CFont* pfont);		//设置绘制文本的字体（返回原来的字体）
-	CFont* GetFont() { return m_pfont; }
+    virtual void Create(CDC* pDC, CFont* pFont = nullptr);
+    void Create(CDC* pDC, Gdiplus::Graphics* pGraphics, CFont* pFont = nullptr);
+    CFont* SetFont(CFont* pFont);       // 设置绘制文本的字体（返回原来的字体）
+    CFont* GetFont() { return m_pfont; }
     void SetDC(CDC* pDC);		//设置绘图的DC
     CDC* GetDC()
     {
@@ -137,8 +135,6 @@ public:
     static void ImageResize(const CImage& img_src, const wstring& path_dest, int size, ImageType type);
     static void ImageResize(const wstring& path_src, const wstring& path_dest, int size, ImageType type);
 
-    static HICON LoadIconResource(UINT id, int width, int height);
-
     //复制一个bitmap (http://wupei.j2megame.org/archives/86) 
     //(这两个函数未测试成功，复制的图片为全黑色，原因暂时未知，后面再调查)
     static HBITMAP CopyBitmap(HBITMAP hSourceHbitmap);
@@ -154,8 +150,6 @@ public:
 
 protected:
     CDC* m_pDC{};		//用于绘图的CDC类的指针
-    CWnd* m_pMainWnd{};	//绘图窗口的句柄
-    //COLORREF m_backColor{ RGB(255,255,255) };
     CFont* m_pfont{};
     Gdiplus::Graphics* m_pGraphics{};
     bool m_auto_destory_graphics{};     //是否自动析构Graphics对象，如果Graphics对象是内部创建的，则为true，如果是从外面传过来的，则为false

@@ -2,7 +2,6 @@
 #include "LastFMDataArchive.h"
 #include "MusicPlayer2.h"
 #include <time.h>
-#include "AudioTag.h"
 
 void LastFMTrack::Clear() {
     artist = L"";
@@ -52,7 +51,7 @@ void LastFMTrack::ReadDataFrom(CArchive& ar) {
     duration.fromInt((int)d);
 }
 
-void LastFMTrack::ReadDataFrom(SongInfo info) {
+void LastFMTrack::ReadDataFrom(const SongInfo& info) {
     Clear();
     if (!info.artist.empty()) {
         artist = info.artist;
@@ -68,14 +67,7 @@ void LastFMTrack::ReadDataFrom(SongInfo info) {
     }
     trackNumber = info.track;
     duration = info.length();
-    CAudioTag tag(info);
-    std::map<wstring, wstring> property_map;
-    tag.GetAudioTagPropertyMap(property_map);
-    for (const auto& prop : property_map) {
-        if (prop.first == L"ALBUMARTIST") {
-            albumArtist = prop.second;
-        }
-    }
+    albumArtist = info.album_artist;
 }
 
 bool LastFMTrack::operator==(const LastFMTrack& track) {
@@ -158,9 +150,8 @@ void LastFMDataArchive::LoadData(wstring path) {
             cached_tracks.push_back(track);
         }
     } catch (CArchiveException* exception) {
-        CString info;
-        info = CCommon::LoadTextFormat(IDS_SERIALIZE_ERROR, { path, exception->m_cause });
-        theApp.WriteLog(wstring{ info });
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SERIALIZE_ERROR", { path, exception->m_cause });
+        theApp.WriteLog(info);
     }
     ar.Close();
     file.Close();

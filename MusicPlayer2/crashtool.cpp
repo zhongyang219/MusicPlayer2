@@ -35,7 +35,7 @@ public:
             return;
         }
 
-		m_dumpFile = szDumpFile;
+        m_dumpFile = szDumpFile;
 
         MINIDUMP_EXCEPTION_INFORMATION ExpParam;
         ExpParam.ThreadId = ::GetCurrentThreadId();
@@ -47,30 +47,28 @@ public:
         ::CloseHandle(hDumpFile);
     }
 
-	void ShowCrashInfo()
-	{
-		//写入错误日志
-		CString log_info = CCommon::LoadTextFormat(IDS_CRASH_ERROR_LOG_INFO, { m_dumpFile });
-		theApp.WriteLog(wstring(log_info));
+    void ShowCrashInfo()
+    {
+        // 写入错误日志
+        wstring log_info = theApp.m_str_table.LoadTextFormat(L"LOG_CRASH_ERROR", { m_dumpFile });
+        theApp.WriteLog(log_info);
 
-		//显示错误信息对话框
-		CMessageDlg dlg;
-		dlg.SetWindowTitle(CCommon::LoadText(IDS_ERROR1));
-		dlg.SetInfoText(CCommon::LoadText(IDS_ERROR_MESSAGE));
+        // 显示错误信息对话框
+        // 之后应改用独立的对话框，不依赖CMessageDlg
+        CMessageDlg dlg(L"CrashDlg");
+        dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_CRASH_REPOART"));
+        dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_CRASH_REPOART_ERROR_MESSAGE"));
+        wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_CRASH_REPOART_CRASH_INFO", { m_dumpFile, theApp.GetSystemInfoString() });
+        dlg.SetMessageText(info);
 
-		CString info = CCommon::LoadTextFormat(IDS_CRASH_INFO, { m_dumpFile });
-		info += _T("\r\n");
-		info += theApp.GetSystemInfoString();
-		dlg.SetMessageText(info);
+        //设置图标(此功能已从CMessageDlg移除)
+        // HICON hIcon;
+        // HRESULT hr = LoadIconWithScaleDown(NULL, IDI_ERROR, theApp.DPI(32), theApp.DPI(32), &hIcon);
+        // if (SUCCEEDED(hr))
+        //     dlg.SetMessageIcon(hIcon);
 
-        //设置图标
-        HICON hIcon;
-        HRESULT hr = LoadIconWithScaleDown(NULL, IDI_ERROR, theApp.DPI(32), theApp.DPI(32), &hIcon);
-        if (SUCCEEDED(hr))
-            dlg.SetMessageIcon(hIcon);
-
-		dlg.DoModal();
-	}
+        dlg.DoModal();
+    }
 
 private:
     void GetAppPath()
@@ -99,7 +97,7 @@ private:
     wchar_t m_szDumpFilePath[MAX_PATH];
     wchar_t m_szModuleFileName[MAX_PATH];
 
-	CString m_dumpFile;
+    CString m_dumpFile;
 };
 
 namespace CRASHREPORT
@@ -109,7 +107,7 @@ namespace CRASHREPORT
         ::SetErrorMode(0); //使用默认的
         CCrashReport cr;
         cr.CreateMiniDump(pEP);
-		cr.ShowCrashInfo();
+        cr.ShowCrashInfo();
         return EXCEPTION_CONTINUE_SEARCH;
     }
 

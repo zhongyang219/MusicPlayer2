@@ -28,23 +28,18 @@ public:
     virtual void OnBrowse() override;
     virtual void OnAfterUpdate() override;
     void SetEditBrowseMode(EditBrowseMode browse_mode);
-    void SetPopupDlgTitle(const CString& popup_dlg_title);
+    void SetPopupDlgTitle(const wstring& popup_dlg_title);
 
 protected:
 	DECLARE_MESSAGE_MAP()
 
-    IconRes& GetIcon();
-
 private:
     ColorTable& m_theme_color;
-    CString m_btn_str;
-    CDC* m_pDC{};
+    wstring m_btn_str;
     EditBrowseMode m_browse_mode;       //自定义的编辑模式，当基类的m_Mode设置为BrowseMode_Default时使用
     CString m_poopup_dlg_title;         //弹出对话框的标题
 
-    virtual void PreSubclassWindow();
 public:
-    afx_msg void OnDestroy();
     afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
 protected:
     afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);

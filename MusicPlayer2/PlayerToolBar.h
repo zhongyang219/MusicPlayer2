@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CommonData.h"
+#include "IconMgr.h"
 
 // CPlayerToolBar
 // 自绘的工具栏
@@ -12,23 +13,23 @@ public:
 	virtual ~CPlayerToolBar();
 
     // 添加一个按钮，点击后执行一个命令
-    // IconRes icon: 图标资源
+    // IconMgr::IconType icon_type: 图标类型
     // LPCTSTR strText: 图标右侧的文本
     // LPCTSTR strToolTip: 鼠标提示的文本
     // UINT cmdId: 点击后执行的命令ID
     // bool showText: 是否在图标右侧显示文本
-    void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText = false);
+    void AddToolButton(IconMgr::IconType icon_type, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText = false);
 
     // 添加一个按钮，点击后弹出菜单
-    // IconRes icon: 图标资源
+    // IconMgr::IconType icon_type: 图标类型
     // LPCTSTR strText: 图标右侧的文本
     // LPCTSTR strToolTip: 鼠标提示的文本
     // CMenu * pMenu: 点击后弹出的菜单
     // bool showText: 是否在图标右侧显示文本
-    void AddToolButton(IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText = false);
+    void AddToolButton(IconMgr::IconType icon_type, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText = false);
 
-    void ModifyToolButton(int index, IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText = false);
-    void ModifyToolButton(int index, IconRes icon, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText = false);
+    void ModifyToolButton(int index, IconMgr::IconType icon_type, LPCTSTR strText, LPCTSTR strToolTip, UINT cmdId, bool showText = false);
+    void ModifyToolButton(int index, IconMgr::IconType icon_type, LPCTSTR strText, LPCTSTR strToolTip, CMenu* pMenu, bool showText = false);
 
     void SetIconSize(int size);
     void SetCmdReciveWindow(CWnd* pWnd);        //设置响应工具按钮命令的窗口，如果不设置，则为工具栏的父窗口
@@ -36,7 +37,7 @@ public:
 protected:
     struct ToolBtn
     {
-        IconRes icon;           //图标
+        IconMgr::IconType icon_type;    //图标类型
         CString text;           //显示文本
         bool show_text = false; //是否显示文本
         UINT cmd_id;            //点击后发送的命令ID

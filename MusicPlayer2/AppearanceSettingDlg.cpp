@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "AppearanceSettingDlg.h"
-#include "afxdialogex.h"
+#include "FilterHelper.h"
 
 
 // CAppearanceSettingDlg 对话框
@@ -19,6 +19,137 @@ CAppearanceSettingDlg::CAppearanceSettingDlg(CWnd* pParent /*=NULL*/)
 
 CAppearanceSettingDlg::~CAppearanceSettingDlg()
 {
+}
+
+bool CAppearanceSettingDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_VISUAL_EFFECTS");
+    SetDlgItemTextW(IDC_VISUAL_EFFECTS_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_SPECTRUM_SHOW");
+    SetDlgItemTextW(IDC_SHOW_SPECTRUM_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_SPECTRUM_LOW_FREQ_IN_CENTER");
+    SetDlgItemTextW(IDC_LOW_FREQ_IN_CENTER_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_SPECTRUM_HEIGHT");
+    SetDlgItemTextW(IDC_TXT_SPECTRUM_HIGHT_STATIC, temp.c_str());
+    // IDC_SPECTRUM_HEIGHT_SLIDER
+    // IDC_SPECTRUM_HEIGHT_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_SHOW");
+    SetDlgItemTextW(IDC_SHOW_ALBUM_COVER_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_FIT");
+    SetDlgItemTextW(IDC_TXT_COVER_FIT_STATIC, temp.c_str());
+    // IDC_ALBUM_FIT_COMBO
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_LYRIC_BG");
+    SetDlgItemTextW(IDC_LYRIC_BACKGROUND_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_ROUND_CORNERS");
+    SetDlgItemTextW(IDC_BTN_ROUND_CORNERS_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_DARK_MODE");
+    SetDlgItemTextW(IDC_DARK_MODE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_MAIN_WINDOW_TRANSPARENCY");
+    SetDlgItemTextW(IDC_TXT_TRANSPARENT_STATIC, temp.c_str());
+    // IDC_TRANSPARENT_SLIDER
+    // IDC_TRANSPARENT_STATIC
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_BG_SETTING");
+    SetDlgItemTextW(IDC_TXT_BG_SETTING_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_BG_ENABLE");
+    SetDlgItemTextW(IDC_ENABLE_BACKGROUND_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_BG_USE_DESKTOP");
+    SetDlgItemTextW(IDC_USE_DESKTOP_BACKGROUND_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_BG_TRANSPARENCY");
+    SetDlgItemTextW(IDC_TXT_BG_TRANSPARENCY_STATIC, temp.c_str());
+    // IDC_BACKGROUND_TRANSPARENCY_SLIDER
+    // IDC_BACKGROUND_TRANSPARENCY_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_BG_USE_COVER");
+    SetDlgItemTextW(IDC_ALBUM_COVER_BACKGROUND_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_BG_GAUSS_BLUR");
+    SetDlgItemTextW(IDC_BACKGROUND_GAUSS_BLUR_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_BG_GAUSS_BLUR_RADIUS");
+    SetDlgItemTextW(IDC_TXT_GAUSS_BLUR_RADIUS_STATIC, temp.c_str());
+    // IDC_GAUSS_BLURE_RADIUS_SLIDER
+    // IDC_GAUSS_BLUR_RADIUS_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_BG_DEFAULT_IMAGE");
+    SetDlgItemTextW(IDC_TXT_DEFAULT_BG_PATH_EDIT_STATIC, temp.c_str());
+    // IDC_DEFAULT_BACKGROUND_PATH_EDIT
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_OPT");
+    SetDlgItemTextW(IDC_TXT_COVER_OPT_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_USE_INNER_FIRST");
+    SetDlgItemTextW(IDC_USE_INNER_IMAGE_FIRST_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_OUT_IMAGE_ALLOW");
+    SetDlgItemTextW(IDC_USE_OUT_IMAGE_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_OUT_IMAGE_FILE_NAME");
+    SetDlgItemTextW(IDC_TXT_EXT_COVER_FILE_NAME_STATIC, temp.c_str());
+    // IDC_DEFAULT_COVER_NAME_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_OUT_FOLDER");
+    SetDlgItemTextW(IDC_TXT_EXT_COVER_FOLDER_STATIC, temp.c_str());
+    // IDC_ALBUM_COVER_PATH_EDIT
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COLOR_THEME");
+    SetDlgItemTextW(IDC_TXT_THEME_COLOR_STATIC, temp.c_str());
+    // IDC_COLOR_STATIC
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COLOR_PRESET");
+    SetDlgItemTextW(IDC_PRESET_COLOR_STATIC, temp.c_str());
+    // IDC_COLOR_STATIC2
+    // IDC_COLOR_STATIC3
+    // IDC_COLOR_STATIC4
+    // IDC_COLOR_STATIC5
+    // IDC_COLOR_STATIC6
+    // IDC_COLOR_STATIC7
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COLOR_MORE");
+    SetDlgItemTextW(IDC_SET_PROGRESS_COLOR_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COLOR_FOLLOW_SYSTEM");
+    SetDlgItemTextW(IDC_FOLLOW_SYSTEM_COLOR_CHECK, temp.c_str());
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_STATUS_BAR");
+    SetDlgItemTextW(IDC_TXT_STATUS_BAR_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_ALWAYS_SHOW_STATUS_BAR");
+    SetDlgItemTextW(IDC_ALWAYS_SHOW_STATUSBAR_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_SHOW_NEXT_TRACK");
+    SetDlgItemTextW(IDC_SHOW_NEXT_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_SHOW_FPS");
+    SetDlgItemTextW(IDC_SHOW_FPS_CHECK, temp.c_str());
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR");
+    SetDlgItemTextW(IDC_TXT_TITLE_BAR_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_USE_SYSTEM_TITLE_BAR");
+    SetDlgItemTextW(IDC_SHOW_SYSTEM_TITLEBAR_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_SEL");
+    SetDlgItemTextW(IDC_TXT_TITLE_BAR_BTN_SEL_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_SETTING");
+    SetDlgItemTextW(IDC_SHOW_SETTINGS_BTN_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_SKIN");
+    SetDlgItemTextW(IDC_SHOW_SKIN_BTN_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_MINI_MODE");
+    SetDlgItemTextW(IDC_SHOW_MINI_MODE_BTN_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_FULLSCREEN");
+    SetDlgItemTextW(IDC_SHOW_FULLSCREEN_BTN_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_MINIMIZE");
+    SetDlgItemTextW(IDC_SHOW_MINIMIZE_BTN_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_MAXIMIZE");
+    SetDlgItemTextW(IDC_SHOW_MAXIMIZE_BTN_CHECK, temp.c_str());
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_NOTIFY_ICON");
+    SetDlgItemTextW(IDC_NA_ICO_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_NOTIFY_ICON_PREVIEW");
+    SetDlgItemTextW(IDC_PREVIEW_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_NOTIFY_ICON_SEL");
+    SetDlgItemTextW(IDC_TXT_NA_ICO_SEL_STATIC, temp.c_str());
+    // IDC_COMBO1
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_NOTIFY_ICON_AUTO_ADAPT");
+    SetDlgItemTextW(IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK, temp.c_str());
+
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_ADVANCED");
+    SetDlgItemTextW(IDC_TXT_ADV_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_UI_REFRESH_INTERVAL");
+    SetDlgItemTextW(IDC_TXT_UI_INTERVAL_STATIC, temp.c_str());
+    // IDC_UI_INTERVAL_EDIT
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_UI_REFRESH_INTERVAL_RESTORE");
+    SetDlgItemTextW(IDC_RESTORE_DEFAULT_BUTTON, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_HQ");
+    SetDlgItemTextW(IDC_DEFAULT_ALBUM_COVER_HQ, temp.c_str());
+
+    return true;
 }
 
 void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
@@ -145,6 +276,11 @@ void CAppearanceSettingDlg::GetDataFromUi()
     m_data.show_maximize_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_MAXIMIZE_BTN_CHECK) != 0);
 }
 
+void CAppearanceSettingDlg::ApplyDataToUi()
+{
+    m_color_static.SetFillColor(theApp.m_app_setting_data.theme_color.original_color);
+}
+
 void CAppearanceSettingDlg::DrawColor()
 {
     m_color_static.SetFillColor(m_data.theme_color.original_color);
@@ -168,10 +304,6 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_STN_CLICKED(IDC_COLOR_STATIC6, &CAppearanceSettingDlg::OnStnClickedColorStatic6)
     ON_STN_CLICKED(IDC_COLOR_STATIC7, &CAppearanceSettingDlg::OnStnClickedColorStatic7)
     ON_BN_CLICKED(IDC_FOLLOW_SYSTEM_COLOR_CHECK, &CAppearanceSettingDlg::OnBnClickedFollowSystemColorCheck)
-    //ON_EN_CHANGE(IDC_FONT_NAME_EDIT, &CAppearanceSettingDlg::OnEnChangeFontNameEdit)
-    //ON_EN_CHANGE(IDC_FONT_SIZE_EDIT, &CAppearanceSettingDlg::OnEnChangeLineSpaceEdit)
-    //ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN1, &CAppearanceSettingDlg::OnDeltaposSpin1)
-    ON_WM_CTLCOLOR()
     ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_CHECK, &CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck)
     ON_CBN_SELCHANGE(IDC_ALBUM_FIT_COMBO, &CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo)
     ON_BN_CLICKED(IDC_ALBUM_COVER_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedAlbumCoverBackgroundCheck)
@@ -185,8 +317,6 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_LOW_FREQ_IN_CENTER_CHECK, &CAppearanceSettingDlg::OnBnClickedLowFreqInCenterCheck)
     ON_BN_CLICKED(IDC_DEFAULT_ALBUM_COVER_HQ, &CAppearanceSettingDlg::OnBnClickedDefaultAlbumCoverHq)
     ON_BN_CLICKED(IDC_RESTORE_DEFAULT_BUTTON, &CAppearanceSettingDlg::OnBnClickedRestoreDefaultButton)
-    ON_EN_KILLFOCUS(IDC_UI_INTERVAL_EDIT, &CAppearanceSettingDlg::OnEnKillfocusUiIntervalEdit)
-    ON_NOTIFY(UDN_DELTAPOS, SPIN_ID, &CAppearanceSettingDlg::OnDeltaposSpin)
     ON_CBN_SELCHANGE(IDC_COMBO1, &CAppearanceSettingDlg::OnCbnSelchangeCombo1)
     ON_WM_PAINT()
     ON_BN_CLICKED(IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK, &CAppearanceSettingDlg::OnBnClickedNotifyIconAutoAdaptCheck)
@@ -232,13 +362,13 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
-    m_toolTip.AddTool(&m_color_static, CCommon::LoadText(IDS_CURRENT_COLOR));
-    m_toolTip.AddTool(&m_color_static1, CCommon::LoadText(IDS_LIGNT_BLUE));
-    m_toolTip.AddTool(&m_color_static2, CCommon::LoadText(IDS_GREEN));
-    m_toolTip.AddTool(&m_color_static3, CCommon::LoadText(IDS_ORANGE));
-    m_toolTip.AddTool(&m_color_static4, CCommon::LoadText(IDS_CYAN_GREEN));
-    m_toolTip.AddTool(&m_color_static5, CCommon::LoadText(IDS_PINK));
-    m_toolTip.AddTool(&m_color_static6, CCommon::LoadText(IDS_LIGHT_PURPLE));
+    m_toolTip.AddTool(&m_color_static, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_CURRENT").c_str());
+    m_toolTip.AddTool(&m_color_static1, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_LIGNT_BLUE").c_str());
+    m_toolTip.AddTool(&m_color_static2, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_GREEN").c_str());
+    m_toolTip.AddTool(&m_color_static3, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_ORANGE").c_str());
+    m_toolTip.AddTool(&m_color_static4, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_CYAN_GREEN").c_str());
+    m_toolTip.AddTool(&m_color_static5, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_PINK").c_str());
+    m_toolTip.AddTool(&m_color_static6, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_LIGHT_PURPLE").c_str());
 
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -258,18 +388,18 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
 
     //
     m_show_album_cover_chk.SetCheck(m_data.show_album_cover);
-    m_album_cover_fit_combo.AddString(CCommon::LoadText(IDS_STRETCH));
-    m_album_cover_fit_combo.AddString(CCommon::LoadText(IDS_FILL));
-    m_album_cover_fit_combo.AddString(CCommon::LoadText(IDS_ADAPT));
+    m_album_cover_fit_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_FIT_STRETCH").c_str());
+    m_album_cover_fit_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_FIT_FILL").c_str());
+    m_album_cover_fit_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_COVER_FIT_ADAPT").c_str());
     m_album_cover_fit_combo.SetCurSel(static_cast<int>(m_data.album_cover_fit));
-    m_toolTip.AddTool(&m_album_cover_fit_combo, CCommon::LoadText(IDS_COVER_FIT_TIP_INFO));
-    m_toolTip.AddTool(&m_use_out_image_chk, CCommon::LoadText(IDS_USE_OUT_IMAGE_TIP_INFO));
-    m_toolTip.AddTool(&m_album_cover_name_edit, CCommon::LoadText(IDS_DEFAULT_COVER_NAME_TIP_INFO));
-    m_toolTip.AddTool(&m_album_cover_path_edit, CCommon::LoadText(IDS_ALBUM_COVER_PATH_EDIT_TIP_INFO));
+    m_toolTip.AddTool(&m_album_cover_fit_combo, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COVER_FIT").c_str());
+    m_toolTip.AddTool(&m_use_out_image_chk, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COVER_OUT_IMAGE_ALLOW").c_str());
+    m_toolTip.AddTool(&m_album_cover_name_edit, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COVER_OUT_IMAGE_FILE_NAME").c_str());
+    m_toolTip.AddTool(&m_album_cover_path_edit, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COVER_OUT_FOLDER").c_str());
 
     m_album_cover_name_edit.SetWindowTextW(CCommon::StringMerge(m_data.default_album_name, L',').c_str());
     m_album_cover_name_edit.SetEditBrowseMode(CBrowseEdit::EditBrowseMode::LIST);
-    m_album_cover_name_edit.SetPopupDlgTitle(CCommon::LoadText(IDS_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME));
+    m_album_cover_name_edit.SetPopupDlgTitle(theApp.m_str_table.LoadText(L"TITLE_BROWSE_EDIT_SET_MULTI_OUT_ALBUM_COVER_FILE_NAME"));
     m_album_cover_path_edit.SetWindowTextW(m_data.album_cover_path.c_str());
 
     m_enable_background_chk.SetCheck(m_data.enable_background);
@@ -294,18 +424,18 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_low_freq_in_center_chk.SetCheck(m_data.spectrum_low_freq_in_center);
 
     m_default_background_edit.SetWindowText(m_data.default_background.c_str());
-    CString szFilter = CCommon::LoadText(IDS_IMAGE_FILE_FILTER);
-    m_default_background_edit.EnableFileBrowseButton(NULL, szFilter);
+    wstring img_fliter = FilterHelper::GetImageFileFilter();
+    m_default_background_edit.EnableFileBrowseButton(NULL, img_fliter.c_str());
     CheckDlgButton(IDC_USE_DESKTOP_BACKGROUND_CHECK, m_data.use_desktop_background);
 
     m_default_cover_hq_chk.SetCheck(m_data.draw_album_high_quality);
 
-    m_ui_refresh_interval_edit.SetRange(MIN_UI_INTERVAL, MAX_UI_INTERVAL);
+    m_ui_refresh_interval_edit.SetRange(MIN_UI_INTERVAL, MAX_UI_INTERVAL, UI_INTERVAL_STEP);
     m_ui_refresh_interval_edit.SetValue(m_data.ui_refresh_interval);
 
-    m_icon_select_combo.AddString(CCommon::LoadText(IDS_DEFAULT_ICON));
-    m_icon_select_combo.AddString(CCommon::LoadText(IDS_LIGHT_ICON));
-    m_icon_select_combo.AddString(CCommon::LoadText(IDS_DARK_ICON));
+    m_icon_select_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_NOTIFY_ICON_DEFAULT").c_str());
+    m_icon_select_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_NOTIFY_ICON_LIGHT").c_str());
+    m_icon_select_combo.AddString(theApp.m_str_table.LoadText(L"TXT_OPT_APC_NOTIFY_ICON_DARK").c_str());
     m_icon_select_combo.SetCurSel(m_data.notify_icon_selected);
 
     m_notify_icon_auto_adapt_chk.SetCheck(m_data.notify_icon_auto_adapt);
@@ -408,7 +538,7 @@ void CAppearanceSettingDlg::OnBnClickedSetThemeButton()
         //if (m_data.theme_color.original_color == 0)
         //	MessageBox(_T("警告：将主题颜色设置成黑色会使播放列表中正在播放的项目看不见！"), NULL, MB_ICONWARNING);
         //if(m_data.theme_color.original_color == RGB(255,255,255))
-        //	MessageBox(CCommon::LoadText(IDS_WHITE_THEME_COLOR_WARNING), NULL, MB_ICONWARNING);
+        //	MessageBox(WHITE_THEME_COLOR_WARNING), NULL, MB_ICONWARNING);
         m_color_static.SetFillColor(m_data.theme_color.original_color);
         //设置了“更多颜色”之后，取消“跟随系统主题色”复选按钮的选中
         m_data.theme_color_follow_system = false;
@@ -480,55 +610,6 @@ void CAppearanceSettingDlg::OnBnClickedFollowSystemColorCheck()
     // TODO: 在此添加控件通知处理程序代码
     m_data.theme_color_follow_system = (m_follow_system_color_check.GetCheck() != 0);
     //GetDlgItem(IDC_SET_PROGRESS_COLOR_BUTTON)->EnableWindow(!m_data.theme_color_follow_system);
-}
-
-
-void CAppearanceSettingDlg::OnCancel()
-{
-    // TODO: 在此添加专用代码和/或调用基类
-
-    //CTabDlg::OnCancel();
-}
-
-
-void CAppearanceSettingDlg::OnOK()
-{
-    // TODO: 在此添加专用代码和/或调用基类
-
-    //CTabDlg::OnOK();
-}
-
-
-//void CAppearanceSettingDlg::OnEnChangeFontNameEdit()
-//{
-//	// TODO:  如果该控件是 RICHEDIT 控件，它将不
-//	// 发送此通知，除非重写 CTabDlg::OnInitDialog()
-//	// 函数并调用 CRichEditCtrl().SetEventMask()，
-//	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
-//
-//	// TODO:  在此添加控件通知处理程序代码
-//	CString font_name;
-//	GetDlgItemText(IDC_FONT_NAME_EDIT, font_name);
-//	m_font = font_name;
-//	m_font_changed = true;
-//}
-
-
-
-HBRUSH CAppearanceSettingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-    HBRUSH hbr = CTabDlg::OnCtlColor(pDC, pWnd, nCtlColor);
-
-    // TODO:  在此更改 DC 的任何特性
-    if (pWnd == &m_transparency_slid || pWnd == &m_spectrum_height_slid || pWnd == &m_back_transparency_slid || pWnd == &m_gauss_blur_radius_sld)		//设置滑动条控件的背景色为白色
-    {
-        static HBRUSH brush{};
-        if (brush == NULL)
-            brush = CreateSolidBrush(m_background_color);
-        return brush;
-    }
-    // TODO:  如果默认的不是所需画笔，则返回另一个画笔
-    return hbr;
 }
 
 
@@ -629,58 +710,6 @@ void CAppearanceSettingDlg::OnBnClickedRestoreDefaultButton()
 }
 
 
-void CAppearanceSettingDlg::OnEnKillfocusUiIntervalEdit()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    CString str;
-    GetDlgItemText(IDC_UI_INTERVAL_EDIT, str);
-    int value = _ttoi(str.GetString());
-    if (value < MIN_UI_INTERVAL || value > MAX_UI_INTERVAL)
-    {
-        value = UI_INTERVAL_DEFAULT;
-    }
-    m_ui_refresh_interval_edit.SetValue(value);
-
-}
-
-void CAppearanceSettingDlg::OnDeltaposSpin(NMHDR* pNMHDR, LRESULT* pResult)
-{
-    //这里响应微调按钮（spin button）点击上下按钮时的事件，
-    //所有CSpinEdit类中的Spin按钮点击时的响应都在这里，因为这些Spin按钮的ID都是“SPIN_ID”。
-    //通过GetBuddy的返回值判断微调按钮是属于哪个EditBox的。
-
-    CSpinButtonCtrl* pSpin = (CSpinButtonCtrl*)CWnd::FromHandle(pNMHDR->hwndFrom);
-    if (pSpin == nullptr)
-        return;
-    CWnd* pEdit = pSpin->GetBuddy();
-    //设置点击“界面刷新时间间隔”微调按钮时的步长
-    if (pEdit == &m_ui_refresh_interval_edit)       //当用户点击了“界面刷新时间间隔”的微调按钮时
-    {
-        LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
-        if (pNMUpDown->iDelta == -1)
-        {
-            // 用户按下了spin控件的向下箭头
-            int value = m_ui_refresh_interval_edit.GetValue();
-            value -= UI_INTERVAL_STEP;
-            value /= UI_INTERVAL_STEP;
-            value *= UI_INTERVAL_STEP;
-            m_ui_refresh_interval_edit.SetValue(value);
-        }
-        else if (pNMUpDown->iDelta == 1)
-        {
-            // 用户按下了spin控件的向上箭头
-            int value = m_ui_refresh_interval_edit.GetValue();
-            value += UI_INTERVAL_STEP;
-            value /= UI_INTERVAL_STEP;
-            value *= UI_INTERVAL_STEP;
-            m_ui_refresh_interval_edit.SetValue(value);
-        }
-        pNMUpDown->iDelta = 0;
-    }
-    *pResult = 0;
-}
-
-
 void CAppearanceSettingDlg::OnCbnSelchangeCombo1()
 {
     // TODO: 在此添加控件通知处理程序代码
@@ -697,7 +726,7 @@ void CAppearanceSettingDlg::OnPaint()
 
     CalculateNotifyIconPreviewRect();
     CDrawCommon drawer;
-    drawer.Create(&dc, this);
+    drawer.Create(&dc);
     CBitmap& bitmap{ m_data.notify_icon_selected == 2 ? m_preview_light : m_preview_dark };
     //绘制背景
     drawer.DrawBitmap(bitmap, m_notify_icon_preview.TopLeft(), m_notify_icon_preview.Size(), CDrawCommon::StretchMode::STRETCH);

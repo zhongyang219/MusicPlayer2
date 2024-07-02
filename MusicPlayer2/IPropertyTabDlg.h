@@ -1,4 +1,6 @@
 #pragma once
+#include "TabDlg.h"
+
 class IPropertyTabDlg
 {
 public:

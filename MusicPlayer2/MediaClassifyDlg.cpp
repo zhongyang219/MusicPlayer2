@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "MediaClassifyDlg.h"
-#include "afxdialogex.h"
 #include "Playlist.h"
 #include "InputDlg.h"
 #include "MusicPlayerCmdHelper.h"
@@ -22,13 +21,13 @@ CMediaClassifyDlg::CMediaClassifyDlg(CMediaClassifier::ClassificationType type, 
     m_classifer(type, theApp.m_media_lib_setting_data.hide_only_one_classification)
 {
     if (m_type == CMediaClassifier::CT_ARTIST)
-        m_default_str = CCommon::LoadText(IDS_DEFAULT_ARTIST);
+        m_default_str = theApp.m_str_table.LoadText(L"TXT_EMPTY_ARTIST");
     else if (m_type == CMediaClassifier::CT_ALBUM)
-        m_default_str = CCommon::LoadText(IDS_DEFAULT_ALBUM);
+        m_default_str = theApp.m_str_table.LoadText(L"TXT_EMPTY_ALBUM");
     else if (m_type == CMediaClassifier::CT_GENRE)
-        m_default_str = CCommon::LoadText(IDS_DEFAULT_GENRE);
+        m_default_str = theApp.m_str_table.LoadText(L"TXT_EMPTY_GENRE");
     else if (m_type == CMediaClassifier::CT_YEAR)
-        m_default_str = CCommon::LoadText(IDS_DEFAULT_YEAR);
+        m_default_str = theApp.m_str_table.LoadText(L"TXT_EMPTY_YEAR");
 }
 
 CMediaClassifyDlg::~CMediaClassifyDlg()
@@ -71,7 +70,7 @@ bool CMediaClassifyDlg::SetLeftListSel(const wstring& item)
             if (m_type == CMediaClassifier::CT_ARTIST)
             {
                 vector<wstring> artist_list;
-                song.GetArtistList(artist_list, theApp.m_media_lib_setting_data.artist_split_ext);
+                song.GetArtistList(artist_list);
                 if (CCommon::IsItemInVector(artist_list, item))
                 {
                     other_index = i;
@@ -153,9 +152,8 @@ void CMediaClassifyDlg::ShowClassifyList()
     auto iter = media_list.find(STR_OTHER_CLASSIFY_TYPE);
     if (iter != media_list.end())
     {
-        CString item_name = CCommon::LoadText(_T("<"), IDS_OTHER, _T(">"));
         CListCtrlEx::RowData row_data;
-        row_data[0] = wstring(item_name);
+        row_data[0] = theApp.m_str_table.LoadText(L"TXT_CLASSIFY_OTHER");
         row_data[1] = std::to_wstring(iter->second.size());
         m_list_data_left.push_back(std::move(row_data));
     }
@@ -204,7 +202,7 @@ CString CMediaClassifyDlg::GetClassifyListSelectedString(int index) const
     CString str_selected = m_classify_list_ctrl.GetItemText(index, 0);
     if (str_selected == m_default_str.c_str())
         str_selected.Empty();
-    if (str_selected == CCommon::LoadText(_T("<"), IDS_OTHER, _T(">")))
+    if (str_selected == theApp.m_str_table.LoadText(L"TXT_CLASSIFY_OTHER").c_str())
         str_selected = STR_OTHER_CLASSIFY_TYPE;
     return str_selected;
 }
@@ -421,62 +419,60 @@ BOOL CMediaClassifyDlg::OnInitDialog()
 
     // TODO:  在此添加额外的初始化
 
-    CCommon::SetDialogFont(this, theApp.m_pMainWnd->GetFont());     //由于此对话框资源由不同语言共用，所以这里要设置一下字体
-
     //初始化左侧列表
     m_classify_list_ctrl.SetExtendedStyle(m_classify_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    CString title_name;
+    wstring title_name;
     if (m_type == CMediaClassifier::CT_ARTIST)
-        title_name = CCommon::LoadText(IDS_ARTIST);
+        title_name = theApp.m_str_table.LoadText(L"TXT_ARTIST");
     else if (m_type == CMediaClassifier::CT_ALBUM)
-        title_name = CCommon::LoadText(IDS_ALBUM);
+        title_name = theApp.m_str_table.LoadText(L"TXT_ALBUM");
     else if (m_type == CMediaClassifier::CT_GENRE)
-        title_name = CCommon::LoadText(IDS_GENRE);
+        title_name = theApp.m_str_table.LoadText(L"TXT_GENRE");
     else if (m_type == CMediaClassifier::CT_YEAR)
-        title_name = CCommon::LoadText(IDS_YEAR);
+        title_name = theApp.m_str_table.LoadText(L"TXT_YEAR");
     else if (m_type == CMediaClassifier::CT_TYPE)
-        title_name = CCommon::LoadText(IDS_FILE_TYPE);
+        title_name = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
     else if (m_type == CMediaClassifier::CT_BITRATE)
-        title_name = CCommon::LoadText(IDS_BITRATE);
+        title_name = theApp.m_str_table.LoadText(L"TXT_BITRATE");
     else if (m_type == CMediaClassifier::CT_RATING)
-        title_name = CCommon::LoadText(IDS_RATING);
+        title_name = theApp.m_str_table.LoadText(L"TXT_RATING");
     CRect rc_classify_list;
     m_classify_list_ctrl.GetWindowRect(rc_classify_list);
     std::vector<int> width;
     CalculateClassifyListColumeWidth(width);
-    m_classify_list_ctrl.InsertColumn(0, title_name, LVCFMT_LEFT, width[0]);
-    m_classify_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_TRACK_TOTAL_NUM), LVCFMT_LEFT, width[1]);
+    m_classify_list_ctrl.InsertColumn(0, title_name.c_str(), LVCFMT_LEFT, width[0]);
+    m_classify_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK").c_str(), LVCFMT_LEFT, width[1]);
     //ShowClassifyList();
 
     //初始化右侧列表
     m_song_list_ctrl.SetExtendedStyle(m_song_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
     //CRect rc_song_list;
     //m_song_list_ctrl.GetWindowRect(rc_song_list);
-    m_song_list_ctrl.InsertColumn(0, CCommon::LoadText(IDS_TITLE), LVCFMT_LEFT, theApp.DPI(150));
-    m_song_list_ctrl.InsertColumn(1, CCommon::LoadText(IDS_ARTIST), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(2, CCommon::LoadText(IDS_ALBUM), LVCFMT_LEFT, theApp.DPI(150));
-    m_song_list_ctrl.InsertColumn(3, CCommon::LoadText(IDS_TRACK_NUM), LVCFMT_LEFT, theApp.DPI(60));
-    m_song_list_ctrl.InsertColumn(4, CCommon::LoadText(IDS_GENRE), LVCFMT_LEFT, theApp.DPI(100));
-    m_song_list_ctrl.InsertColumn(5, CCommon::LoadText(IDS_BITRATE), LVCFMT_LEFT, theApp.DPI(60));
-    m_song_list_ctrl.InsertColumn(6, CCommon::LoadText(IDS_FILE_PATH), LVCFMT_LEFT, theApp.DPI(600));
+    m_song_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_TITLE").c_str(), LVCFMT_LEFT, theApp.DPI(150));
+    m_song_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_ARTIST").c_str(), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_ALBUM").c_str(), LVCFMT_LEFT, theApp.DPI(150));
+    m_song_list_ctrl.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_TRACK_NUM").c_str(), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(4, theApp.m_str_table.LoadText(L"TXT_GENRE").c_str(), LVCFMT_LEFT, theApp.DPI(100));
+    m_song_list_ctrl.InsertColumn(5, theApp.m_str_table.LoadText(L"TXT_BITRATE").c_str(), LVCFMT_LEFT, theApp.DPI(60));
+    m_song_list_ctrl.InsertColumn(6, theApp.m_str_table.LoadText(L"TXT_FILE_PATH").c_str(), LVCFMT_LEFT, theApp.DPI(600));
     m_song_list_ctrl.SetCtrlAEnable(true);
 
     if (m_type == CMediaClassifier::CT_ARTIST)
-        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ARTIST), TRUE);
+        m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT_ARTIST").c_str(), TRUE);
     else if (m_type == CMediaClassifier::CT_ALBUM)
-        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_ALBUM), TRUE);
+        m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT_ALBUM").c_str(), TRUE);
     else if (m_type == CMediaClassifier::CT_GENRE)
-        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_GENRE), TRUE);
+        m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT_GENRE").c_str(), TRUE);
     else if (m_type == CMediaClassifier::CT_YEAR)
-        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_YEAR), TRUE);
+        m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT_YEAR").c_str(), TRUE);
     else if (m_type == CMediaClassifier::CT_TYPE)
-        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_FILE_TYPE), TRUE);
+        m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT_FILE_TYPE").c_str(), TRUE);
     else if (m_type == CMediaClassifier::CT_BITRATE)
-        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_BITRATE), TRUE);
+        m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT_BITRATE").c_str(), TRUE);
     else if (m_type == CMediaClassifier::CT_RATING)
         m_search_edit.EnableWindow(FALSE);
     else
-        m_search_edit.SetCueBanner(CCommon::LoadText(IDS_SEARCH_HERE), TRUE);
+        m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
 
     //初始化分隔条
     m_splitter_ctrl.AttachCtrlAsLeftPane(IDC_CLASSIFY_LIST);
@@ -506,7 +502,7 @@ void CMediaClassifyDlg::OnNMRClickClassifyList(NMHDR* pNMHDR, LRESULT* pResult)
     if (!m_left_selected_items.empty())
     {
         //弹出右键菜单
-        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(0);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibLeftMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {
@@ -570,7 +566,7 @@ void CMediaClassifyDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
     if (!m_right_selected_items.empty())
     {
         //弹出右键菜单
-        CMenu* pMenu = theApp.m_menu_set.m_media_lib_popup_menu.GetSubMenu(1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {
@@ -580,39 +576,6 @@ void CMediaClassifyDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
 
     *pResult = 0;
 }
-
-
-//void CMediaClassifyDlg::OnInitMenu(CMenu* pMenu)
-//{
-//    CMediaLibTabDlg::OnInitMenu(pMenu);
-//
-//    //bool select_valid;
-//    //if (m_left_selected)
-//    //    select_valid = !m_left_selected_items.empty();
-//    //else
-//    //    select_valid = !m_right_selected_items.empty();
-//
-//    //pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_PLAY_ITEM_IN_FOLDER_MODE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE; id++)
-//    //{
-//    //    pMenu->EnableMenuItem(id, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //}
-//    //pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_ADD_TO_NEW_PALYLIST_AND_PLAY, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_EXPLORE_ONLINE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_FORMAT_CONVERT, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_EXPLORE_TRACK, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//    //pMenu->EnableMenuItem(ID_ITEM_PROPERTY, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
-//
-//    pMenu->SetDefaultItem(ID_PLAY_ITEM);
-//
-//    // TODO: 在此处添加消息处理程序代码
-//}
-
-
 
 
 void CMediaClassifyDlg::OnNMDblclkClassifyList(NMHDR* pNMHDR, LRESULT* pResult)

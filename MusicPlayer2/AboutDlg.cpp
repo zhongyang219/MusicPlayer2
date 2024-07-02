@@ -3,18 +3,82 @@
 #include "AboutDlg.h"
 #include "CDonateDlg.h"
 #include "MessageDlg.h"
-#include "GdiPlusTool.h"
 
-CAboutDlg::CAboutDlg() : CDialog(IDD_ABOUTBOX)
+CAboutDlg::CAboutDlg()
+    : CBaseDialog(IDD_ABOUTBOX)
 {
+}
+
+CAboutDlg::~CAboutDlg()
+{
+}
+
+CString CAboutDlg::GetDialogName() const
+{
+    return L"AboutDlg";
+}
+
+bool CAboutDlg::InitializeControls()
+{
+    wstring temp;
+    temp = theApp.m_str_table.LoadText(L"TITLE_ABOUTBOX");
+    SetWindowTextW(temp.c_str());
+    temp = L"MusicPlayer2，V" APP_VERSION;
+
+#ifdef COMPILE_IN_WIN_XP
+    temp += L" (For WinXP)";
+#endif // COMPILE_FOR_WINXP
+
+#ifdef _M_X64
+    temp += L" (x64)";
+#endif
+
+#ifdef _DEBUG
+    temp += L" (Debug)";
+#endif
+
+    SetDlgItemTextW(IDC_STATIC_VERSION, temp.c_str());
+    temp = L"Copyright (C) 2017-" COPY_RIGHT_YEAR L" By ZhongYang\r\n";
+    temp += theApp.m_str_table.LoadTextFormat(L"TXT_ABOUTBOX_LAST_BUILD_DATE", { CCommon::GetLastCompileTime() });
+    SetDlgItemTextW(IDC_STATIC_COPYRIGHT, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_THIRD_PARTY_LIB");
+    SetDlgItemTextW(IDC_STATIC_THIRD_PARTY_LIB, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_OTHER_SOFTWARE");
+    SetDlgItemTextW(IDC_STATIC_OTHER_SOFTWARE, temp.c_str());
+    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_CONTRACT_AUTHOR") + L"</a>";
+    SetDlgItemTextW(IDC_SYSLINK1, temp.c_str());
+    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_CHECK_UPDATE") + L"</a>";
+    SetDlgItemTextW(IDC_SYSLINK2, temp.c_str());
+    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_GITHUB") + L"</a>";
+    SetDlgItemTextW(IDC_GITHUB_SYSLINK, temp.c_str());
+    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_LICENSE") + L"</a>";
+    SetDlgItemTextW(IDC_LICENSE_SYSLINK, temp.c_str());
+    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_DONATE") + L"</a>";
+    SetDlgItemTextW(IDC_DONATE_SYSLINK, temp.c_str());
+    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_ACKNOWLEDGEMENT") + L"</a>";
+    SetDlgItemTextW(IDC_ACKNOWLEDGEMENT_SYSLINK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OK");
+    SetDlgItemTextW(IDOK, temp.c_str());
+
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L2, IDC_SYSLINK1, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L1, IDC_SYSLINK2, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L2, IDC_GITHUB_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L1, IDC_LICENSE_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L2, IDC_DONATE_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L1, IDC_ACKNOWLEDGEMENT_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 }
+        });
+
+    return true;
 }
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CDialog::DoDataExchange(pDX);
+    CBaseDialog::DoDataExchange(pDX);
 }
 
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
+BEGIN_MESSAGE_MAP(CAboutDlg, CBaseDialog)
     ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CAboutDlg::OnNMClickSyslink1)
     ON_NOTIFY(NM_CLICK, IDC_SYSLINK2, &CAboutDlg::OnNMClickSyslink2)
     ON_NOTIFY(NM_CLICK, IDC_GITHUB_SYSLINK, &CAboutDlg::OnNMClickGithubSyslink)
@@ -34,45 +98,21 @@ END_MESSAGE_MAP()
 
 BOOL CAboutDlg::OnInitDialog()
 {
-    CDialog::OnInitDialog();
+    CBaseDialog::OnInitDialog();
 
-    // TODO:  在此添加额外的初始化
-
-    CString version_info;
-    GetDlgItemText(IDC_STATIC_VERSION, version_info);
-    version_info.Replace(_T("<version>"), APP_VERSION);
-#ifdef COMPILE_IN_WIN_XP
-    version_info += _T(" (For WinXP)");
-#endif // COMPILE_FOR_WINXP
-
-#ifdef _M_X64
-    version_info += _T(" (x64)");
-#endif
-
-#ifdef _DEBUG
-    version_info += _T(" (Debug)");
-#endif
-
-    SetDlgItemText(IDC_STATIC_VERSION, version_info);
-
-    //设置最后编译日期
-    CString temp_str;
-    GetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
-    CString compile_time = CCommon::GetLastCompileTime();
-    temp_str.Replace(_T("<compile_date>"), compile_time);
-    temp_str.Replace(_T("<year>"), COPY_RIGHT_YEAR);
-    SetDlgItemText(IDC_STATIC_COPYRIGHT, temp_str);
+    // 设置背景色为白色，为使用CBaseDialog::OnCtlColor需要此初始化
+    SetBackgroundColor(GetSysColor(COLOR_WINDOW));
 
     m_tool_tip.Create(this);
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), CCommon::LoadText(IDS_SEND_EMAIL_TO_ATHOUR, _T("\r\nmailto:zhongyang219@hotmail.com")));
-    m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), CCommon::LoadText(IDS_GOTO_GITHUB, _T("\r\nhttps://github.com/zhongyang219/MusicPlayer2")));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_BASS), _T("http://www.un4seen.com/bass.html"));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TAGLIB), _T("http://taglib.org/"));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TINYXML2), _T("https://github.com/leethomason/tinyxml2"));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SCINTILLA), _T("https://www.scintilla.org/index.html"));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TRAFFICMONITOR), CCommon::LoadText(IDS_TRAFFICMONITOR_DESCRIPTION, _T("\r\nhttps://github.com/zhongyang219/TrafficMonitor")));
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SIMPLENOTEPAD), CCommon::LoadText(IDS_SIMPLENOTEPAD_DESCRIPTION, _T("\r\nhttps://github.com/zhongyang219/SimpleNotePad")));
-    m_tool_tip.SetDelayTime(300);	//设置延迟
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_SEND_EMAIL_TO_ATHOUR") + L"\r\nmailto:zhongyang219@hotmail.com").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_GOTO_GITHUB") + L"\r\nhttps://github.com/zhongyang219/MusicPlayer2").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_BASS), L"http://www.un4seen.com/bass.html");
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TAGLIB), L"http://taglib.org/");
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TINYXML2), L"https://github.com/leethomason/tinyxml2");
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SCINTILLA), L"https://www.scintilla.org/index.html");
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TRAFFICMONITOR), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_TRAFFICMONITOR_DESCRIPTION") + L"\r\nhttps://github.com/zhongyang219/TrafficMonitor").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SIMPLENOTEPAD), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_SIMPLENOTEPAD_DESCRIPTION") + L"\r\nhttps://github.com/zhongyang219/SimpleNotePad").c_str());
+    m_tool_tip.SetDelayTime(300);   //设置延迟
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
 
     //设置图片的位置
@@ -84,6 +124,10 @@ BOOL CAboutDlg::OnInitDialog()
     m_rc_pic.bottom = rect.top - theApp.DPI(6);
     if (m_rc_pic.Height() <= 0)
         m_rc_pic.bottom = m_rc_pic.top + theApp.DPI(50);
+    // 计算背景白色区域高度
+    ::GetWindowRect(GetDlgItem(IDC_SYSLINK1)->GetSafeHwnd(), rect);
+    ScreenToClient(rect);
+    m_white_height = rect.top - theApp.DPI(6);
 
     //载入图片
     m_about_pic.LoadFromResource(AfxGetResourceHandle(), IDB_DEFAULT_COVER);
@@ -96,7 +140,7 @@ void CAboutDlg::OnNMClickSyslink1(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
     //点击了“联系作者”
-    ShellExecute(NULL, _T("open"), _T("mailto:zhongyang219@hotmail.com"), NULL, NULL, SW_SHOW);	//打开超链接
+    ShellExecute(NULL, _T("open"), _T("mailto:zhongyang219@hotmail.com"), NULL, NULL, SW_SHOW); //打开超链接
     *pResult = 0;
 }
 
@@ -111,7 +155,7 @@ void CAboutDlg::OnNMClickSyslink2(NMHDR* pNMHDR, LRESULT* pResult)
 void CAboutDlg::OnNMClickGithubSyslink(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/"), NULL, NULL, SW_SHOW);	//打开超链接
+    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/"), NULL, NULL, SW_SHOW);   //打开超链接
     *pResult = 0;
 }
 
@@ -124,14 +168,14 @@ BOOL CAboutDlg::PreTranslateMessage(MSG* pMsg)
 
     //if (pMsg->message == WM_KEYDOWN)
     //{
-    //	if ((GetKeyState(VK_CONTROL) & 0x80) && (GetKeyState(VK_SHIFT) & 0x8000) && pMsg->wParam == 'Z')
-    //	{
-    //		CTest::Test();
-    //	}
+    //  if ((GetKeyState(VK_CONTROL) & 0x80) && (GetKeyState(VK_SHIFT) & 0x8000) && pMsg->wParam == 'Z')
+    //  {
+    //      CTest::Test();
+    //  }
     //}
 
 
-    return CDialog::PreTranslateMessage(pMsg);
+    return CBaseDialog::PreTranslateMessage(pMsg);
 }
 
 
@@ -150,9 +194,9 @@ void CAboutDlg::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
                        // TODO: 在此处添加消息处理程序代码
-                       // 不为绘图消息调用 CDialog::OnPaint()
+                       // 不为绘图消息调用 CBaseDialog::OnPaint()
     CDrawCommon draw;
-    draw.Create(&dc, this);
+    draw.Create(&dc);
     //填充背景
     draw.GetDC()->FillSolidRect(m_rc_pic, RGB(212, 230, 255));
 
@@ -165,9 +209,9 @@ void CAboutDlg::OnPaint()
 void CAboutDlg::OnNMClickLicenseSyslink(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    CMessageDlg dlg;
-    dlg.SetWindowTitle(CCommon::LoadText(IDS_LICENSE));
-    dlg.SetInfoText(CCommon::LoadText(IDS_LICENSE_EXPLAIN));
+    CMessageDlg dlg(L"LicenseDlg");
+    dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_LICENSE"));
+    dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_LICENSE_EXPLAIN"));
     dlg.SetMessageText(CCommon::GetTextResource(IDR_LICENSE, CodeType::UTF8_NO_BOM));
     dlg.DoModal();
     *pResult = 0;
@@ -180,59 +224,42 @@ BOOL CAboutDlg::OnEraseBkgnd(CDC* pDC)
 
     CRect draw_rect;
     GetClientRect(draw_rect);
+    int client_bottom = draw_rect.bottom;
+    //绘制白色背景
+    draw_rect.bottom = m_white_height;
     pDC->FillSolidRect(draw_rect, GetSysColor(COLOR_WINDOW));
 
-    //绘制白色背景
-    int white_height;       //白色区域的高度
-    CRect rc_ok{};
-    ::GetWindowRect(GetDlgItem(IDOK)->GetSafeHwnd(), rc_ok);
-    ScreenToClient(rc_ok);
-    white_height = rc_ok.top - theApp.DPI(6);
-
     //绘制“确定”按钮上方的分割线
-    CRect rc_line{ draw_rect };
-    rc_line.top = white_height;
-    rc_line.bottom = white_height + theApp.DPI(1);
-    pDC->FillSolidRect(rc_line, RGB(210, 210, 210));
+    draw_rect.top = draw_rect.bottom;
+    draw_rect.bottom = draw_rect.top + max(theApp.DPI(1), 1);
+    pDC->FillSolidRect(draw_rect, RGB(210, 210, 210));
 
     //绘制灰色背景
-    CRect rc_gray{ rc_line };
-    rc_gray.top = rc_line.bottom;
-    rc_gray.bottom = draw_rect.bottom;
-    pDC->FillSolidRect(rc_gray, GetSysColor(COLOR_BTNFACE));
+    draw_rect.top = draw_rect.bottom;
+    draw_rect.bottom = client_bottom;
+    pDC->FillSolidRect(draw_rect, GetSysColor(COLOR_BTNFACE));
 
     return TRUE;
-    //return CDialog::OnEraseBkgnd(pDC);
 }
 
 
 HBRUSH CAboutDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-    HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-
-    // TODO:  在此更改 DC 的任何特性
-    UINT ctrl_id = pWnd->GetDlgCtrlID();
-    if (ctrl_id == IDC_STATIC_VERSION || ctrl_id == IDC_STATIC_COPYRIGHT || ctrl_id == IDC_STATIC
-        || ctrl_id == IDC_SYSLINK_BASS || ctrl_id == IDC_SYSLINK_TAGLIB || ctrl_id == IDC_SYSLINK_TINYXML2 || ctrl_id == IDC_SYSLINK_SCINTILLA
-        || ctrl_id == IDC_SYSLINK_TRAFFICMONITOR || ctrl_id == IDC_SYSLINK_SIMPLENOTEPAD)
-    {
-        static HBRUSH hBackBrush{};
-        if (hBackBrush == NULL)
-            hBackBrush = CreateSolidBrush(GetSysColor(COLOR_WINDOW));
-        pDC->SetBkColor(GetSysColor(COLOR_WINDOW));
-        return hBackBrush;
-    }
-
-
-    // TODO:  如果默认的不是所需画笔，则返回另一个画笔
-    return hbr;
+    CRect rect;
+    ::GetWindowRect(pWnd->GetSafeHwnd(), rect);
+    ScreenToClient(rect);
+    // 如果控件在白色区域那么使用CBaseDialog的方法修改控件背景色，灰色区域使用原版CDialog的方法
+    if (rect.top < m_white_height)
+        return CBaseDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+    else
+        return CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
 }
 
 
 void CAboutDlg::OnNMClickSyslinkBass(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    ShellExecute(NULL, _T("open"), _T("http://www.un4seen.com/bass.html"), NULL, NULL, SW_SHOW);	//打开超链接
+    ShellExecute(NULL, _T("open"), _T("http://www.un4seen.com/bass.html"), NULL, NULL, SW_SHOW);    //打开超链接
     *pResult = 0;
 }
 
@@ -240,7 +267,7 @@ void CAboutDlg::OnNMClickSyslinkBass(NMHDR* pNMHDR, LRESULT* pResult)
 void CAboutDlg::OnNMClickSyslinkTaglib(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    ShellExecute(NULL, _T("open"), _T("http://taglib.org/"), NULL, NULL, SW_SHOW);	//打开超链接
+    ShellExecute(NULL, _T("open"), _T("http://taglib.org/"), NULL, NULL, SW_SHOW);  //打开超链接
     *pResult = 0;
 }
 
@@ -248,7 +275,7 @@ void CAboutDlg::OnNMClickSyslinkTaglib(NMHDR* pNMHDR, LRESULT* pResult)
 void CAboutDlg::OnNMClickSyslinkTinyxml2(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    ShellExecute(NULL, _T("open"), _T("https://github.com/leethomason/tinyxml2"), NULL, NULL, SW_SHOW);	//打开超链接
+    ShellExecute(NULL, _T("open"), _T("https://github.com/leethomason/tinyxml2"), NULL, NULL, SW_SHOW); //打开超链接
     *pResult = 0;
 }
 
@@ -256,7 +283,7 @@ void CAboutDlg::OnNMClickSyslinkTinyxml2(NMHDR* pNMHDR, LRESULT* pResult)
 void CAboutDlg::OnNMClickSyslinkScintilla(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    ShellExecute(NULL, _T("open"), _T("https://www.scintilla.org/index.html"), NULL, NULL, SW_SHOW);	//打开超链接
+    ShellExecute(NULL, _T("open"), _T("https://www.scintilla.org/index.html"), NULL, NULL, SW_SHOW);    //打开超链接
     *pResult = 0;
 }
 
@@ -264,7 +291,7 @@ void CAboutDlg::OnNMClickSyslinkScintilla(NMHDR* pNMHDR, LRESULT* pResult)
 void CAboutDlg::OnNMClickSyslinkTrafficmonitor(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/TrafficMonitor"), NULL, NULL, SW_SHOW);	//打开超链接
+    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/TrafficMonitor"), NULL, NULL, SW_SHOW);  //打开超链接
     *pResult = 0;
 }
 
@@ -272,7 +299,7 @@ void CAboutDlg::OnNMClickSyslinkTrafficmonitor(NMHDR* pNMHDR, LRESULT* pResult)
 void CAboutDlg::OnNMClickSyslinkSimplenotepad(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/SimpleNotePad"), NULL, NULL, SW_SHOW);	//打开超链接
+    ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/SimpleNotePad"), NULL, NULL, SW_SHOW);   //打开超链接
     *pResult = 0;
 }
 
@@ -280,9 +307,24 @@ void CAboutDlg::OnNMClickSyslinkSimplenotepad(NMHDR* pNMHDR, LRESULT* pResult)
 void CAboutDlg::OnNMClickAcknowledgementSyslink(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
-    CMessageDlg dlg;
-    dlg.SetWindowTitle(CCommon::LoadText(IDS_ACKNOWLEDGEMENT));
-    dlg.SetMessageText(CCommon::GetTextResource(IDR_ACKNOWLEDGEMENT, CodeType::UTF8_NO_BOM));
+    CMessageDlg dlg(L"AcknowledgementDlg");
+    dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_ACKNOWLEDGEMENT"));
+    std::wstringstream wss;
+    wss << theApp.m_str_table.LoadText(L"TXT_ACKNOWLEDGEMENT_INFO") << L"\r\n"
+        << CCommon::GetTextResource(IDR_ACKNOWLEDGEMENT, CodeType::UTF8_NO_BOM);
+
+    // 这里排版需要重做
+    wss << L"\r\nTranslators\r\n------------------------";
+    const auto& lang_list = theApp.m_str_table.GetLanguageList();
+    // translator保证至少有一个元素
+    for (const auto& lang : lang_list)
+    {
+        wss << L"\r\n" << lang.display_name + L"(" + lang.file_name + L")    " << lang.translator.front();
+        for (auto iter = lang.translator.begin() + 1; iter != lang.translator.end(); ++iter)
+            wss << L"; " << *iter;
+    }
+
+    dlg.SetMessageText(wss.str());
     dlg.DoModal();
     *pResult = 0;
 }

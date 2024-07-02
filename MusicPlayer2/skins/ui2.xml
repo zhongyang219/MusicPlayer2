@@ -1,6 +1,6 @@
 ﻿<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2101/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
-      name="%(528) 2">
-  
+      index="2">
+
   <ui type="big">
     <verticalLayout>
       <trackInfo height="20" margin="4" margin-bottom="0"/>

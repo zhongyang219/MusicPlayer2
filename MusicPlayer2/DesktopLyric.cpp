@@ -3,10 +3,8 @@
 #include "MusicPlayer2.h"
 #include "SongInfoHelper.h"
 #include "GdiPlusTool.h"
-#include "Define.h"
 #include "CPlayerUIHelper.h"
 #include "MusicPlayerDlg.h"
-#include "WIC.h"
 
 CDesktopLyric::CDesktopLyric()
 {
@@ -27,40 +25,18 @@ BEGIN_MESSAGE_MAP(CDesktopLyric, CLyricsWindow)
     ON_WM_SIZING()
     ON_WM_RBUTTONUP()
     ON_WM_GETMINMAXINFO()
-    //    ON_MESSAGE(WM_INITMENU, &CDesktopLyric::OnInitmenu)
     ON_WM_TIMER()
 
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE1, &CDesktopLyric::OnLyricDefaultStyle1)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE2, &CDesktopLyric::OnLyricDefaultStyle2)
     ON_COMMAND(ID_LYRIC_DEFAULT_STYLE3, &CDesktopLyric::OnLyricDefaultStyle3)
     ON_WM_LBUTTONDBLCLK()
-    ON_WM_MOUSEWHEEL()
     ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 void CDesktopLyric::Create()
 {
     CLyricsWindow::Create(theApp.DPI(150));
-
-    m_popupMenu.LoadMenu(IDR_DESKTOP_LYRIC_POPUP_MENU);
-
-    //为右键添加图标
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_PAUSE, FALSE, theApp.m_icon_set.play_pause);
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_STOP, FALSE, theApp.m_icon_set.stop_new);
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PREVIOUS, FALSE, theApp.m_icon_set.previous_new.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_NEXT, FALSE, theApp.m_icon_set.next_new.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_ORDER, FALSE, theApp.m_icon_set.play_oder.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_SHUFFLE, FALSE, theApp.m_icon_set.play_shuffle.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_RANDOM, FALSE, theApp.m_icon_set.play_random.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOOP_PLAYLIST, FALSE, theApp.m_icon_set.loop_playlist.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOOP_TRACK, FALSE, theApp.m_icon_set.loop_track.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_PLAY_TRACK, FALSE, theApp.m_icon_set.play_track.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LYRIC_DISPLAYED_DOUBLE_LINE, FALSE, theApp.m_icon_set.double_line.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LYRIC_BACKGROUND_PENETRATE, FALSE, theApp.m_icon_set.skin.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_LOCK_DESKTOP_LRYIC, FALSE, theApp.m_icon_set.lock.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSubMenu(0)->GetSafeHmenu(), 10, TRUE, theApp.m_icon_set.media_lib.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_OPTION_SETTINGS, FALSE, theApp.m_icon_set.setting.GetIcon(true));
-    CMenuIcon::AddIconToMenuItem(m_popupMenu.GetSafeHmenu(), ID_CLOSE_DESKTOP_LYRIC, FALSE, theApp.m_icon_set.close.GetIcon(true));
 
     //初始化提示信息
     m_tool_tip.Create(this, TTS_ALWAYSTIP);
@@ -116,14 +92,15 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
             }
         ) };
         // TRACE("progress %d\n", progress);
+        static const wstring& empty_lyric = theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE_2");
         if (is_lyric_empty)
-            lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+            lyric.text = empty_lyric;
 
         if (theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line)
         {
             CLyrics::Lyric next_lyric{ now_lyrics.GetLyric(time, true, ignore_blank, karaoke) };
             if (next_lyric.text.empty())
-                next_lyric.text = CCommon::LoadText(IDS_DEFAULT_LYRIC_TEXT_CORTANA);
+                next_lyric.text = empty_lyric;
             SetNextLyric(next_lyric.text.c_str());
         }
 
@@ -331,32 +308,31 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
 
     if (!bLocked)
     {
-        DrawToolIcon(pGraphics, theApp.m_icon_set.app, rcIcon, BTN_APP);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_App, rcIcon, BTN_APP);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.stop, rcIcon, BTN_STOP);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Stop, rcIcon, BTN_STOP);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.previous, rcIcon, BTN_PREVIOUS);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Previous, rcIcon, BTN_PREVIOUS);
         rcIcon.MoveToX(rcIcon.right);
-        IconRes hPlayPauseIcon = (CPlayer::GetInstance().IsPlaying() ? theApp.m_icon_set.pause : theApp.m_icon_set.play);
-        DrawToolIcon(pGraphics, hPlayPauseIcon, rcIcon, BTN_PLAY_PAUSE);
+        DrawToolIcon(pGraphics, CPlayer::GetInstance().IsPlaying() ? IconMgr::IconType::IT_Pause : IconMgr::IconType::IT_Play, rcIcon, BTN_PLAY_PAUSE);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.next, rcIcon, BTN_NEXT);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Next, rcIcon, BTN_NEXT);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.setting, rcIcon, BTN_SETTING);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Setting, rcIcon, BTN_SETTING);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.media_lib, rcIcon, BTN_DEFAULT_STYLE);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Media_Lib, rcIcon, BTN_DEFAULT_STYLE);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_delay, rcIcon, BTN_LYRIC_DELAY);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Triangle_Left, rcIcon, BTN_LYRIC_DELAY);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lyric_forward, rcIcon, BTN_LYRIC_FORWARD);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Triangle_Right, rcIcon, BTN_LYRIC_FORWARD);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.double_line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Double_Line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.skin, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Skin, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Lock, rcIcon, BTN_LOCK);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, theApp.m_icon_set.close, rcIcon, BTN_CLOSE);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Cancel, rcIcon, BTN_CLOSE);
 
         bool lyric_disable{ CPlayer::GetInstance().m_Lyrics.IsEmpty() || CPlayerUIHelper::IsMidiLyric() };
         m_buttons[BTN_LYRIC_FORWARD].enable = !lyric_disable;
@@ -368,7 +344,7 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
         for (auto& btn : m_buttons)
         {
             if (btn.first == BTN_LOCK)
-                DrawToolIcon(pGraphics, theApp.m_icon_set.lock, rcIcon, BTN_LOCK);
+                DrawToolIcon(pGraphics, IconMgr::IconType::IT_Lock, rcIcon, BTN_LOCK);
             else
                 btn.second = UIButton();
         }
@@ -381,7 +357,7 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
     }
 }
 
-void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRect rect, BtnKey btn_key, bool checked)
+void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconMgr::IconType icon_type, CRect rect, BtnKey btn_key, bool checked)
 {
     rect.DeflateRect(theApp.DPI(2), theApp.DPI(2));
     auto& btn = m_buttons[btn_key];
@@ -422,9 +398,11 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
         }
     }
 
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_Filled, IconMgr::IconSize::IS_DPI_16);
+    CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
+
     CRect rc_tmp = rect;
     //使图标在矩形中居中
-    CSize icon_size = icon.GetSize();
     rc_tmp.left = rect.left + (rect.Width() - icon_size.cx) / 2;
     rc_tmp.top = rect.top + (rect.Height() - icon_size.cy) / 2;
     rc_tmp.right = rc_tmp.left + icon_size.cx;
@@ -433,28 +411,36 @@ void CDesktopLyric::DrawToolIcon(Gdiplus::Graphics* pGraphics, IconRes icon, CRe
     HDC hDC = pGraphics->GetHDC();
     CDrawCommon drawer;
     drawer.Create(CDC::FromHandle(hDC));
-    drawer.DrawIcon(icon.GetIcon(true), rc_tmp.TopLeft(), rc_tmp.Size());
+    drawer.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
     pGraphics->ReleaseHDC(hDC);
 }
 
 void CDesktopLyric::AddToolTips()
 {
-    AddMouseToolTip(BTN_APP, CCommon::LoadText(IDS_MAIN_MENU));
-    AddMouseToolTip(BTN_STOP, CCommon::LoadText(IDS_STOP));
-    AddMouseToolTip(BTN_PREVIOUS, CCommon::LoadText(IDS_PREVIOUS));
-    AddMouseToolTip(BTN_PLAY_PAUSE, CCommon::LoadText(IDS_PLAY_PAUSE));
-    AddMouseToolTip(BTN_NEXT, CCommon::LoadText(IDS_NEXT));
-    AddMouseToolTip(BTN_SETTING, CCommon::LoadText(IDS_SETTINGS));
-    AddMouseToolTip(BTN_LYRIC_FORWARD, CCommon::LoadText(IDS_LYRIC_FORWARD));
-    AddMouseToolTip(BTN_LYRIC_DELAY, CCommon::LoadText(IDS_LYRIC_DELAY));
-    AddMouseToolTip(BTN_DEFAULT_STYLE, CCommon::LoadText(IDS_DEFAULT_STYLE));
-    AddMouseToolTip(BTN_DOUBLE_LINE, CCommon::LoadText(IDS_LYRIC_DOUBLE_LINE));
-    AddMouseToolTip(BTN_BACKGROUND_PENETRATE, CCommon::LoadText(IDS_LYRIC_BACKGROUND_PENETRATE));
+    wstring tip_str;
+    AddMouseToolTip(BTN_APP, theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAIN_MENU").c_str());
+    AddMouseToolTip(BTN_STOP, theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP").c_str());
+    AddMouseToolTip(BTN_PREVIOUS, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS").c_str());
+    AddMouseToolTip(BTN_PLAY_PAUSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_PAUSE").c_str());
+    AddMouseToolTip(BTN_NEXT, theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT").c_str());
+    AddMouseToolTip(BTN_SETTING, theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING").c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_FORWARD");
+    AddMouseToolTip(BTN_LYRIC_FORWARD, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_DELAY");
+    AddMouseToolTip(BTN_LYRIC_DELAY, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_DEFAULT_STYLE");
+    AddMouseToolTip(BTN_DEFAULT_STYLE, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_DOUBLE_LINE");
+    AddMouseToolTip(BTN_DOUBLE_LINE, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_BACKGROUND_PENETRATE");
+    AddMouseToolTip(BTN_BACKGROUND_PENETRATE, tip_str.c_str());
     if (theApp.m_lyric_setting_data.desktop_lyric_data.lock_desktop_lyric)
-        AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_ULOCK_DESKTOP_LYRIC));
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_UNLOCK");
     else
-        AddMouseToolTip(BTN_LOCK, CCommon::LoadText(IDS_LOCK_DESKTOP_LYRIC));
-    AddMouseToolTip(BTN_CLOSE, CCommon::LoadText(IDS_CLOSE_DESKTOP_LYRIC));
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_LOCK");
+    AddMouseToolTip(BTN_LOCK, tip_str.c_str());
+    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC_CLOSE");
+    AddMouseToolTip(BTN_CLOSE, tip_str.c_str());
 
     m_tool_tip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 }
@@ -570,7 +556,7 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
                 CPoint cur_point;
                 GetCursorPos(&cur_point);
                 m_bMenuPopedUp = true;
-                theApp.m_menu_set.m_main_menu_popup.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cur_point.x, cur_point.y, this);
+                theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cur_point.x, cur_point.y, this);
                 m_bMenuPopedUp = false;
             }
             return;
@@ -609,7 +595,7 @@ void CDesktopLyric::OnLButtonUp(UINT nFlags, CPoint point)
                 cur_point.y = m_buttons[BTN_DEFAULT_STYLE].rect.bottom - m_frameSize.cy;
                 ClientToScreen(&cur_point);
                 m_bMenuPopedUp = true;
-                CMenu* pMenu = theApp.m_menu_set.m_lyric_default_style.GetSubMenu(0);
+                CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::DlrcDefMenu);
                 if (pMenu != nullptr)
                     pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cur_point.x, cur_point.y, this);
                 m_bMenuPopedUp = false;
@@ -715,7 +701,7 @@ void CDesktopLyric::OnRButtonUp(UINT nFlags, CPoint point)
     m_bMenuPopedUp = true;
     CPoint point1;		//定义一个用于确定光标位置的位置
     GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-    CMenu* pMenu = m_popupMenu.GetSubMenu(0);
+    CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::DlrcMenu);
     if (pMenu != NULL)
         pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
     m_bMenuPopedUp = false;
@@ -727,8 +713,9 @@ BOOL CDesktopLyric::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
-    if (CCommon::IsMenuItemInMenu(m_popupMenu.GetSubMenu(0), command) || CCommon::IsMenuItemInMenu(&theApp.m_menu_set.m_main_menu, command))
-        AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//将菜单命令转发到主窗口
+    if (CCommon::IsMenuItemInMenu(theApp.m_menu_mgr.GetMenu(MenuMgr::DlrcMenu), command)
+        || CCommon::IsMenuItemInMenu(theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu), command))
+        AfxGetMainWnd()->SendMessage(WM_COMMAND, wParam, lParam);		//将未处理的菜单命令转发到主窗口
 
     return CLyricsWindow::OnCommand(wParam, lParam);
 }
@@ -744,18 +731,23 @@ void CDesktopLyric::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 }
 
 
-//afx_msg LRESULT CDesktopLyric::OnInitmenu(WPARAM wParam, LPARAM lParam)
-//{
-//    AfxGetMainWnd()->SendMessage(WM_INITMENU, wParam, lParam);        //将WM_INITMENU消息转发到主窗口
-//    return 0;
-//}
-
-
 BOOL CDesktopLyric::PreTranslateMessage(MSG* pMsg)
 {
     // TODO: 在此添加专用代码和/或调用基类
     if (pMsg->message == WM_MOUSEMOVE)
         m_tool_tip.RelayEvent(pMsg);
+
+    if (pMsg->message == WM_MOUSEWHEEL)                         // 将滚轮消息转发给主窗口处理音量调整
+    {
+        CWnd* pMainWnd = AfxGetMainWnd();
+        if (pMainWnd)
+        {
+            POINT pt = { INT16_MAX, INT16_MAX };                // 修改pt参数为一个特殊值
+            LPARAM lParam = MAKELPARAM(pt.x, pt.y);
+            pMainWnd->SendMessage(WM_MOUSEWHEEL, pMsg->wParam, lParam);
+            return TRUE;
+        }
+    }
 
     return CLyricsWindow::PreTranslateMessage(pMsg);
 }
@@ -831,22 +823,6 @@ void CDesktopLyric::OnLButtonDblClk(UINT nFlags, CPoint point)
     AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_SHOW_MAIN_WINDOW);
 
     CLyricsWindow::OnLButtonDblClk(nFlags, point);
-}
-
-
-BOOL CDesktopLyric::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
-{
-    // TODO: 在此添加消息处理程序代码和/或调用默认值
-    if (zDelta > 0)
-    {
-        AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_VOLUME_UP);
-    }
-    if (zDelta < 0)
-    {
-        AfxGetMainWnd()->SendMessage(WM_COMMAND, ID_VOLUME_DOWN);
-    }
-
-    return CLyricsWindow::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 

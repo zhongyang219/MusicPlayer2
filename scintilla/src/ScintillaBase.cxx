@@ -59,52 +59,11 @@
 #include "ScintillaBase.h"
 
 #include "ExternalLexer.h"
-#include "../win32/resource.h"
 
 #undef max
 #undef min
 
 using namespace Scintilla;
-
-static std::wstring LoadStringRes(UINT id, const wchar_t* back_str = nullptr)
-{
-    wchar_t buf[256];
-    HMODULE hModule = GetModuleHandle(_T("SciLexer.dll"));
-    LoadStringW(hModule, id, buf, 256);
-    std::wstring result = buf;
-    if (result.empty())
-    {
-        switch (id)
-        {
-        case IDS_UNDO:
-            result = L"Undo";
-            break;
-        case IDS_REDO:
-            result = L"Rndo";
-            break;
-        case IDS_CUT:
-            result = L"Cut";
-            break;
-        case IDS_COPY:
-            result = L"Copy";
-            break;
-        case IDS_PASTE:
-            result = L"Paste";
-            break;
-        case IDS_DELETE:
-            result = L"Clear";
-            break;
-        case IDS_SELECT_ALL:
-            result = L"Select All";
-            break;
-        default:
-            break;
-        }
-    }
-    if (back_str != nullptr)
-        result += back_str;
-    return result;
-}
 
 ScintillaBase::ScintillaBase() {
 	displayPopupMenu = SC_POPUP_ALL;
@@ -555,19 +514,36 @@ bool ScintillaBase::ShouldDisplayPopup(Point ptInWindowCoordinates) const {
 }
 
 void ScintillaBase::ContextMenu(Point pt) {
+    auto LoadText = [this](const std::wstring& key) -> std::wstring {
+        if (menuStringTable != nullptr) {
+            auto it = menuStringTable->find(key);
+            if (it != menuStringTable->end()) {
+                return it->second;
+            }
+        }
+        return L"";
+    };  // 此方法依赖menuStringTable，不适合作为全局函数
 	if (displayPopupMenu) {
 		const bool writable = !WndProc(SCI_GETREADONLY, 0, 0);
 		popup.CreatePopUp();
-		AddToPopUp(LoadStringRes(IDS_UNDO, _T("\tCtrl+Z")).c_str(), idcmdUndo, writable && pdoc->CanUndo());
-		AddToPopUp(LoadStringRes(IDS_REDO, _T("\tCtrl+Y")).c_str(), idcmdRedo, writable && pdoc->CanRedo());
-		AddToPopUp(_T(""));
-		AddToPopUp(LoadStringRes(IDS_CUT, _T("\tCtrl+X")).c_str(), idcmdCut, writable && !sel.Empty());
-        AddToPopUp(LoadStringRes(IDS_COPY, _T("\tCtrl+C")).c_str(), idcmdCopy, !sel.Empty());
-		AddToPopUp(LoadStringRes(IDS_PASTE, _T("\tCtrl+V")).c_str(), idcmdPaste, writable && WndProc(SCI_CANPASTE, 0, 0));
-		AddToPopUp(LoadStringRes(IDS_DELETE).c_str(), idcmdDelete, writable && !sel.Empty());
-		AddToPopUp(_T(""));
-		AddToPopUp(LoadStringRes(IDS_SELECT_ALL, _T("\tCtrl+A")).c_str(), idcmdSelectAll);
-		popup.Show(pt, wMain);
+        std::wstring temp;
+        temp = LoadText(L"TXT_SCI_UNDO");
+        AddToPopUp(((temp.empty() ? L"Undo" : temp) + L"\tCtrl+Z").c_str(), idcmdUndo, writable&& pdoc->CanUndo());
+        temp = LoadText(L"TXT_SCI_REDO");
+        AddToPopUp(((temp.empty() ? L"Redo" : temp) + L"\tCtrl+Y").c_str(), idcmdRedo, writable && pdoc->CanRedo());
+        AddToPopUp(L"");
+        temp = LoadText(L"TXT_SCI_CUT");
+        AddToPopUp(((temp.empty() ? L"Cut" : temp) + L"\tCtrl+X").c_str(), idcmdCut, writable && !sel.Empty());
+        temp = LoadText(L"TXT_SCI_COPY");
+        AddToPopUp(((temp.empty() ? L"Copy" : temp) + L"\tCtrl+C").c_str(), idcmdCopy, !sel.Empty());
+        temp = LoadText(L"TXT_SCI_PASTE");
+        AddToPopUp(((temp.empty() ? L"Paste" : temp) + L"\tCtrl+V").c_str(), idcmdPaste, writable && WndProc(SCI_CANPASTE, 0, 0));
+        temp = LoadText(L"TXT_SCI_DELETE");
+        AddToPopUp((temp.empty() ? L"Clear" : temp).c_str(), idcmdDelete, writable && !sel.Empty());
+        AddToPopUp(L"");
+        temp = LoadText(L"TXT_SCI_SELECT_ALL");
+        AddToPopUp(((temp.empty() ? L"Select All" : temp) + L"\tCtrl+A").c_str(), idcmdSelectAll);
+        popup.Show(pt, wMain);
 	}
 }
 
@@ -1111,6 +1087,7 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 
 	case SCI_USEPOPUP:
 		displayPopupMenu = static_cast<int>(wParam);
+        menuStringTable = reinterpret_cast<std::map<std::wstring, std::wstring>*>(lParam);
 		break;
 
 	case SCI_SETLEXER:

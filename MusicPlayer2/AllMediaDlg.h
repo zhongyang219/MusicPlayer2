@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "TabDlg.h"
 #include "ListCtrlEx.h"
 #include "SearchEditCtrl.h"
 #include "MediaLibTabDlg.h"

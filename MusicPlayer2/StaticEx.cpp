@@ -37,10 +37,9 @@ CString CStaticEx::GetWindowText() const
     return str;
 }
 
-void CStaticEx::SetIcon(HICON hIcon, CSize size)
+void CStaticEx::SetIcon(IconMgr::IconType icon_type)
 {
-	m_hIcon = hIcon;
-	m_icon_size = size;
+    m_icon_type = icon_type;
 }
 
 BEGIN_MESSAGE_MAP(CStaticEx, CStatic)
@@ -55,7 +54,7 @@ void CStaticEx::OnPaint()
 					   // 不为绘图消息调用 CStatic::OnPaint()
 
 	CDrawCommon draw;
-	draw.Create(&dc, this);
+	draw.Create(&dc, GetFont());
 
 	CRect rect;
 	GetClientRect(rect);
@@ -70,17 +69,18 @@ void CStaticEx::OnPaint()
 	CRect rc_text = rect;
 
 	//绘制图标
-	bool draw_icon = (m_hIcon != NULL && m_icon_size.cx > 0 && m_icon_size.cy > 0);
-	if (draw_icon)
+    if (m_icon_type != IconMgr::IconType::IT_NO_ICON)
 	{
+        HICON hIcon = theApp.m_icon_mgr.GetHICON(m_icon_type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
+        CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
 		CRect rc_tmp = rect;
-		rc_tmp.right = rc_tmp.left + m_icon_size.cx + theApp.DPI(4);
+        rc_tmp.right = rc_tmp.left + icon_size.cx + theApp.DPI(4);
 		rc_text.left = rc_tmp.right;
 		CPoint icon_left_top;
-		icon_left_top.x = rc_tmp.left + (rc_tmp.Width() - m_icon_size.cx) / 2;
-		icon_left_top.y = rc_tmp.top + (rc_tmp.Height() - m_icon_size.cy) / 2;
+        icon_left_top.x = rc_tmp.left + (rc_tmp.Width() - icon_size.cx) / 2;
+        icon_left_top.y = rc_tmp.top + (rc_tmp.Height() - icon_size.cy) / 2;
 		draw.SetDrawArea(rc_tmp);
-		draw.DrawIcon(m_hIcon, icon_left_top, m_icon_size);
+        draw.DrawIcon(hIcon, icon_left_top, icon_size);
 	}
 
 	//绘制文本

@@ -18,21 +18,21 @@ CString CSongInfoHelper::GetBitrateString(const SongInfo& song)
     return str;
 }
 
-CString CSongInfoHelper::GetChannelsString(const SongInfo& song)
+wstring CSongInfoHelper::GetChannelsString(BYTE channels)
 {
-    CString chans_str;
-    if (song.channels == 0)
-        chans_str = _T("-");
-    if (song.channels == 1)
-        chans_str = CCommon::LoadText(IDS_MONO);
-    else if (song.channels == 2)
-        chans_str = CCommon::LoadText(IDS_STEREO);
-    else if (song.channels == 6)
-        chans_str = CCommon::LoadText(_T("5.1 "), IDS_CHANNEL);
-    else if (song.channels == 8)
-        chans_str = CCommon::LoadText(_T("7.1 "), IDS_CHANNEL);
-    else if (song.channels > 2)
-        chans_str.Format(CCommon::LoadText(_T("%d "), IDS_CHANNEL), song.channels);
+    wstring chans_str;
+    if (channels == 0)
+        chans_str = L"-";
+    if (channels == 1)
+        chans_str = theApp.m_str_table.LoadText(L"UI_TXT_CHANNEL_MONO");
+    else if (channels == 2)
+        chans_str = theApp.m_str_table.LoadText(L"UI_TXT_CHANNEL_STEREO");
+    else if (channels == 6)
+        chans_str = theApp.m_str_table.LoadText(L"UI_TXT_CHANNEL_5_1");
+    else if (channels == 8)
+        chans_str = theApp.m_str_table.LoadText(L"UI_TXT_CHANNEL_7_1");
+    else if (channels > 2)
+        chans_str = theApp.m_str_table.LoadTextFormat(L"UI_TXT_CHANNEL_OTHER", { channels });
     return chans_str;
 }
 
@@ -50,7 +50,7 @@ CString CSongInfoHelper::GetBitsString(const SongInfo& song)
 {
     CString bits;
     if (song.bits == 0)
-        bits = CCommon::LoadText(IDS_UNDEFINED);
+        bits = theApp.m_str_table.LoadText(L"TXT_PROPERTY_DLG_FILE_BIT_DEPTH_UNDEFINED").c_str();
     else
         bits.Format(_T("%d Bit"), song.bits);
     return bits;
@@ -108,37 +108,17 @@ std::wstring CSongInfoHelper::GetDisplayStr(const SongInfo& song_info, DisplayFo
 std::wstring CSongInfoHelper::GetPlaylistItemToolTip(const SongInfo& song_info, bool show_title, bool show_full_path)
 {
     std::wstring str_tip;
-    if (show_title)	
-    {
-        str_tip += GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format);
-        str_tip += _T("\r\n");
-    }
+    if (show_title)
+        str_tip += GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format) + L"\r\n";
     if (show_full_path)
-    {
-        str_tip += CCommon::LoadText(IDS_PATH, _T(": "));
-        str_tip += song_info.file_path.c_str();
-    }
+        str_tip += theApp.m_str_table.LoadText(L"TXT_PATH") + L": " + song_info.file_path + L"\r\n";
     else
-    {
-        str_tip += CCommon::LoadText(IDS_FILE_NAME, _T(": "));
-        str_tip += song_info.GetFileName().c_str();
-    }
-    str_tip += _T("\r\n");
+        str_tip += theApp.m_str_table.LoadText(L"TXT_FILE_NAME") + L": " + song_info.GetFileName() + L"\r\n";
 
-    str_tip += CCommon::LoadText(IDS_TITLE, _T(": "));
-    str_tip += song_info.GetTitle().c_str();
-    str_tip += _T("\r\n");
+    str_tip += theApp.m_str_table.LoadText(L"TXT_TITLE") + L": " + song_info.GetTitle() + L"\r\n";
+    str_tip += theApp.m_str_table.LoadText(L"TXT_ARTIST") + L": " + song_info.GetArtist() + L"\r\n";
+    str_tip += theApp.m_str_table.LoadText(L"TXT_ALBUM") + L": " + song_info.GetAlbum() + L"\r\n";
+    str_tip += theApp.m_str_table.LoadText(L"TXT_BITRATE") + L": " + std::to_wstring(song_info.bitrate) + L"kbps";
 
-    str_tip += CCommon::LoadText(IDS_ARTIST, _T(": "));
-    str_tip += song_info.GetArtist().c_str();
-    str_tip += _T("\r\n");
-
-    str_tip += CCommon::LoadText(IDS_ALBUM, _T(": "));
-    str_tip += song_info.GetAlbum().c_str();
-    str_tip += _T("\r\n");
-
-    CString str_bitrate;
-    str_bitrate.Format(CCommon::LoadText(IDS_BITRATE, _T(": %dkbps")), song_info.bitrate);
-    str_tip += str_bitrate;
     return str_tip;
 }
