@@ -758,13 +758,13 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line) const
     return lyric_string;
 }
 
-void CLyrics::SaveLyric2()
+void CLyrics::SaveLyric2(bool lyric_and_traslation_in_same_line)
 {
     if (m_lyrics.size() == 0) return;   // 没有歌词时直接返回
 
     // 保存歌词到文件，将偏移量存入每个时间标签
     bool char_connot_convert;
-    string lyric_str = CCommon::UnicodeToStr(GetLyricsString2(), m_code_type, &char_connot_convert);
+    string lyric_str = CCommon::UnicodeToStr(GetLyricsString2(lyric_and_traslation_in_same_line), m_code_type, &char_connot_convert);
     ASSERT(!char_connot_convert);
     ofstream out_put{ m_file, std::ios::binary };
     out_put << lyric_str;

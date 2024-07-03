@@ -707,7 +707,7 @@ BEGIN
     LTEXT           "",IDC_COLOR_STATIC7,183,293,12,11,NOT WS_GROUP | WS_TABSTOP,WS_EX_STATICEDGE
     PUSHBUTTON      "More Color...",IDC_SET_PROGRESS_COLOR_BUTTON,260,291,70,14
     CONTROL         "Follow the system theme color",IDC_FOLLOW_SYSTEM_COLOR_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,313,180,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,313,180,8
     GROUPBOX        "Status bar",IDC_TXT_STATUS_BAR_STATIC,7,331,330,35,WS_GROUP
     CONTROL         "Always show status bar",IDC_ALWAYS_SHOW_STATUSBAR_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,342,316,8
@@ -771,7 +771,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,208,210,50,14
 END
 
-IDD_DATA_SETTINGS_DIALOG DIALOGEX 0, 0, 344, 241
+IDD_DATA_SETTINGS_DIALOG DIALOGEX 0, 0, 344, 281
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
@@ -794,7 +794,7 @@ BEGIN
     CONTROL         "Minimize to notification area",IDC_MINIMIZE_TO_NOTIFY_RADIO,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP,157,74,173,8
     CONTROL         "Exit the program",IDC_EXIT_PROGRAM_RADIO,"Button",BS_AUTORADIOBUTTON,157,86,173,8
-    GROUPBOX        "Automatic Download Settings",IDC_TXT_OPT_DATA_AUTO_DL_SETTING_STATIC,7,103,330,87
+    GROUPBOX        "Automatic Download Settings",IDC_TXT_OPT_DATA_AUTO_DL_SETTING_STATIC,7,103,330,121
     CONTROL         "Automatically download when lyric is not exist",IDC_LYRIC_AUTO_DOWNLOAD_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,114,316,8
     LTEXT           "Automatically Download Lyrics Save Location:",IDC_TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_SEL_STATIC,14,125,316,8
@@ -803,19 +803,24 @@ BEGIN
     CONTROL         "Save to lyrics directory",IDC_SAVE_TO_LYRIC_FOLDER,
                     "Button",BS_AUTORADIOBUTTON,21,135,119,8
     CONTROL         "Automatically download when album cover is not exist",IDC_COVER_AUTO_DOWNLOAD_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,146,316,8
-    LTEXT           "Automatically Download Album Cover Save Location:",IDC_TXT_OPT_DATA_AUTO_DL_COVER_SAVE_SEL_STATIC,14,156,316,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,179,316,8
+    LTEXT           "Automatically Download Album Cover Save Location:",IDC_TXT_OPT_DATA_AUTO_DL_COVER_SAVE_SEL_STATIC,14,189,316,8
     CONTROL         "Save to the same directory as the song",IDC_SAVE_TO_SONG_FOLDER3,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,150,167,180,8
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,150,200,180,8
     CONTROL         "Save to album cover directory",IDC_SAVE_TO_ALBUM_FOLDER3,
-                    "Button",BS_AUTORADIOBUTTON,21,167,119,8
+                    "Button",BS_AUTORADIOBUTTON,21,200,119,8
     CONTROL         "Download automatically only when the song information is complete",IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,178,316,8
-    GROUPBOX        "MIDI Setting",IDC_TXT_OPT_DATA_MIDI_SETTING_STATIC,7,195,330,39
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,211,316,8
+    GROUPBOX        "MIDI Setting",IDC_TXT_OPT_DATA_MIDI_SETTING_STATIC,7,229,330,39
     CONTROL         "Display the inner lyric in MIDI music first",IDC_MIDI_USE_INNER_LYRIC_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,206,316,8
-    RTEXT           "MIDI sound font path:",IDC_TXT_OPT_DATA_MIDI_SF2_PATH_STATIC,14,219,126,8
-    CONTROL         "",IDC_SF2_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,150,218,180,12
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,240,316,8
+    RTEXT           "MIDI sound font path:",IDC_TXT_OPT_DATA_MIDI_SF2_PATH_STATIC,14,253,126,8
+    CONTROL         "",IDC_SF2_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,150,252,180,12
+    LTEXT           "Download Lyrics Translation Format:",IDC_DOWN_LOAD_LYRIC_TRANSLATION_FORMAT_STATIC,14,146,316,8
+    CONTROL         "Lyric text and translation in the &same line",IDC_LYRIC_AND_TRANSLATION_IN_SAME_LINE_RADIO,
+                    "Button",BS_AUTORADIOBUTTON,21,156,309,10
+    CONTROL         "Lyric text and translation in &different lines with the same time tag",IDC_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE_RADIO,
+                    "Button",BS_AUTORADIOBUTTON,21,167,309,10
 END
 
 IDD_EQUALIZER_DIALOG DIALOGEX 0, 0, 299, 107
@@ -1692,7 +1697,7 @@ BEGIN
         VERTGUIDE, 157
         VERTGUIDE, 330
         TOPMARGIN, 4
-        BOTTOMMARGIN, 234
+        BOTTOMMARGIN, 274
     END
 
     IDD_EQUALIZER_DIALOG, DIALOG
@@ -2163,7 +2168,7 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     80, 0, 20, 0,
-    40, 0, 60, 0,
+    0, 0, 60, 0,
     0, 0, 100, 0,
     0, 0, 100, 0,
     0, 0, 40, 0,
@@ -2248,7 +2253,10 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 100, 0,
     0, 0, 44, 0,
-    44, 0, 56, 0
+    44, 0, 56, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0
 END
 
 IDD_EQUALIZER_DIALOG AFX_DIALOG_LAYOUT

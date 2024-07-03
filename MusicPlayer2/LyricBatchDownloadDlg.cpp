@@ -417,7 +417,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         if (pInfo->download_translate)
         {
             CLyrics lyrics{ lyric_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
-            lyrics.SaveLyric2();
+            lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
         }
 
     }

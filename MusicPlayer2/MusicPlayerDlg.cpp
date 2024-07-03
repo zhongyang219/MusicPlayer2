@@ -448,6 +448,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"general", L"auto_download_only_tag_full", theApp.m_general_setting_data.auto_download_only_tag_full);
     ini.WriteBool(L"general", L"save_lyric_to_song_folder", theApp.m_general_setting_data.save_lyric_to_song_folder);
     ini.WriteBool(L"general", L"save_album_to_song_folder", theApp.m_general_setting_data.save_album_to_song_folder);
+    ini.WriteBool(L"general", L"download_lyric_text_and_translation_in_same_line", theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
     ini.WriteString(L"general", L"sf2_path", theApp.m_general_setting_data.sf2_path);
     ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_general_setting_data.midi_use_inner_lyric);
     ini.WriteBool(L"general", L"minimize_to_notify_icon", theApp.m_general_setting_data.minimize_to_notify_icon);
@@ -642,6 +643,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_general_setting_data.auto_download_only_tag_full = ini.GetBool(L"general", L"auto_download_only_tag_full", 1);
     theApp.m_general_setting_data.save_lyric_to_song_folder = ini.GetBool(L"general", L"save_lyric_to_song_folder", true);
     theApp.m_general_setting_data.save_album_to_song_folder = ini.GetBool(L"general", L"save_album_to_song_folder", true);
+    theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line = ini.GetBool(L"general", L"download_lyric_text_and_translation_in_same_line", true);
     theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
     theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(L"general", L"midi_use_inner_lyric", 0);
     theApp.m_general_setting_data.minimize_to_notify_icon = ini.GetBool(L"general", L"minimize_to_notify_icon", false);
@@ -4304,7 +4306,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         out_put.close();
         //处理歌词翻译
         CLyrics lyrics{ lyric_path.GetFilePath(), CLyrics::LyricType::LY_LRC_NETEASE };     // 打开网易云半json的原始歌词
-        lyrics.SaveLyric2();                                                                // 保存为lrc格式
+        lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);                                                                // 保存为lrc格式
 
         CPlayer::GetInstance().IniLyrics(lyric_path.GetFilePath());
     }

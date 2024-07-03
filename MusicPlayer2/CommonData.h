@@ -291,6 +291,7 @@ struct GeneralSettingData
     bool auto_download_only_tag_full{ true };	//仅在歌曲信息完整时自动下载
     bool save_lyric_to_song_folder{ true };     // 将自动下载的歌词文件保存在歌曲文件夹
     bool save_album_to_song_folder{ true };     // 将自动下载的封面文件保存在歌曲文件夹
+    bool download_lyric_text_and_translation_in_same_line{ true };  //下载的歌词原文和翻译在同一行
     bool check_update_when_start{ true };		//是否在程序启动时检查更新
     int update_source{};                        //更新源。0: GitHub; 1: Gitee
     wstring sf2_path;							//MIDI音色库路径

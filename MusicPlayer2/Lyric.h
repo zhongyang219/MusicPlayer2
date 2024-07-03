@@ -135,7 +135,8 @@ public:
     int GetLyricCount() const{ return static_cast<int>(m_lyrics.size()); }
 
     // 保存歌词（将歌词偏移保存到每个时间标签中）
-    void SaveLyric2();
+    // lyric_and_traslation_in_same_line：歌词和翻译在同一行中，使用" / "分隔。如果为false，则歌词和翻译为两行具有相同时间标签的歌词
+    void SaveLyric2(bool lyric_and_traslation_in_same_line = true);
 
     // 先进行按时间排序，如果歌词中有相同时间标签的歌词，则将第二行视作第一行的翻译进行合并，参数为允许误差(ms)
     void CombineSameTimeLyric(int error = 0);

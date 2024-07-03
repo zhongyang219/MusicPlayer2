@@ -611,7 +611,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 		if (m_download_translate)
 		{
 			CLyrics lyrics{ saved_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
-			lyrics.SaveLyric2();
+			lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
 		}
 
 		if (m_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()))		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
@@ -652,7 +652,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 			if (m_download_translate)
 			{
 				CLyrics lyrics{ saved_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
-				lyrics.SaveLyric2();
+				lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
 			}
 
             if (m_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()))		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
@@ -825,7 +825,7 @@ void CLyricDownloadDlg::OnLdPreview()
 
 	CLyrics lyrics;
 	lyrics.LyricsFromRowString(result, CLyrics::LyricType::LY_LRC_NETEASE);
-	result = lyrics.GetLyricsString2();
+	result = lyrics.GetLyricsString2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
 
     // 显示预览窗口
     CMessageDlg dlg(L"LrcPreviewDlg");
