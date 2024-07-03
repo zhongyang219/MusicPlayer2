@@ -660,7 +660,7 @@ wstring CLyrics::GetLyricsString() const
     return lyric_string;
 }
 
-wstring CLyrics::GetLyricsString2() const
+wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line) const
 {
     wstring lyric_string{};
     if (m_lyric_type == LyricType::LY_LRC || m_lyric_type == LyricType::LY_LRC_NETEASE)
@@ -670,12 +670,10 @@ wstring CLyrics::GetLyricsString2() const
         if (m_ar_tag) lyric_string += (L"[ar:" + m_ar + L"]\r\n");
         if (m_al_tag) lyric_string += (L"[al:" + m_al + L"]\r\n");
         if (m_by_tag) lyric_string += (L"[by:" + m_by + L"]\r\n");
-        wchar_t time_buff[16];
         for (const auto& a_lyric : m_lyrics)
         {
             Time a_time{ a_lyric.time_start };
-            swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
-            wstring line_str{ time_buff };
+            wstring line_str{ a_time.toLyricTimeTag()};
             size_t split_num{ min(a_lyric.split.size(), a_lyric.word_time.size()) };    // 避免原始歌词不标准可能导致的索引越界
             if (split_num > 0)  // 以扩展lrc形式存储逐字信息，舍弃行时长time_span
             {
@@ -686,8 +684,7 @@ wstring CLyrics::GetLyricsString2() const
                     else
                         line_str += a_lyric.text.substr(a_lyric.split[i - 1], a_lyric.split[i] - a_lyric.split[i - 1]);
                     a_time += a_lyric.word_time[i];
-                    swprintf_s(time_buff, L"[%.2d:%.2d.%.2d]", a_time.min, a_time.sec, a_time.msec / 10);
-                    line_str += time_buff;
+                    line_str += a_time.toLyricTimeTag();
                 }
             }
             else
@@ -696,8 +693,19 @@ wstring CLyrics::GetLyricsString2() const
             }
             if (!a_lyric.translate.empty())
             {
-                line_str += L" / ";
-                line_str += a_lyric.translate;
+                //歌词和翻译在同一行，在" / "后面添加翻译
+                if (lyric_and_traslation_in_same_line)
+                {
+                    line_str += L" / ";
+                    line_str += a_lyric.translate;
+                }
+                //歌词和翻译在不同行，为翻译添加一行新的歌词
+                else
+                {
+                    line_str += L"\r\n";
+                    line_str += Time(a_lyric.time_start).toLyricTimeTag();
+                    line_str += a_lyric.translate;
+                }
             }
             lyric_string += (line_str + L"\r\n");
         }
@@ -773,6 +781,7 @@ void CLyrics::CombineSameTimeLyric(int error)
         {
             m_lyrics[i].translate = m_lyrics[i + 1].text;
             m_lyrics.erase(m_lyrics.begin() + i + 1);   // 删除后面一句歌词
+            m_text_and_translatein_in_same_line = false;
         }
     }
 }

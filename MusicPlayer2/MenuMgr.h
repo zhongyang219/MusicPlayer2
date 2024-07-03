@@ -66,6 +66,7 @@ public:
         LeEditMenu,                         // 歌词编辑对话框->窗口菜单->子菜单"编辑"
         LeEditChConvMenu,                   // 歌词编辑对话框->窗口菜单->子菜单"编辑"->子菜单"繁简转换"
         LeEditTagDislocMenu,                // 歌词编辑对话框->窗口菜单->子菜单"编辑"->子菜单"时间标签错位"
+        LeEditTranslateFormatConvertMenu,   // 歌词编辑对话框->窗口菜单->子菜单"编辑"->子菜单"翻译格式转换"
         LePlayCtrlMenu,                     // 歌词编辑对话框->窗口菜单->子菜单"播放控制"
 
         FcListMenu,                         // 转换格式对话框->列表控件
