@@ -37,9 +37,14 @@ bool CAboutDlg::InitializeControls()
     temp += L" (Debug)";
 #endif
 
+    wstring time_str, hash_str;
+    CCommon::GetLastCompileTime(time_str, hash_str);
+    if (!hash_str.empty())
+        temp += L"   (" + hash_str + L")";
+
     SetDlgItemTextW(IDC_STATIC_VERSION, temp.c_str());
     temp = L"Copyright (C) 2017-" COPY_RIGHT_YEAR L" By ZhongYang\r\n";
-    temp += theApp.m_str_table.LoadTextFormat(L"TXT_ABOUTBOX_LAST_BUILD_DATE", { CCommon::GetLastCompileTime() });
+    temp += theApp.m_str_table.LoadTextFormat(L"TXT_ABOUTBOX_LAST_BUILD_DATE", { time_str });
     SetDlgItemTextW(IDC_STATIC_COPYRIGHT, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_THIRD_PARTY_LIB");
     SetDlgItemTextW(IDC_STATIC_THIRD_PARTY_LIB, temp.c_str());

@@ -431,7 +431,7 @@ public:
     static POINT CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& screen_rects);
 
     //从资源文件读取上次编译时间
-    static wstring GetLastCompileTime();
+    static void GetLastCompileTime(wstring& time_str, wstring& hash_str);
 
     static unsigned __int64 GetCurTimeElapse();
 
