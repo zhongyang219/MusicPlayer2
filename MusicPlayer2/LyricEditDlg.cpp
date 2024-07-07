@@ -299,6 +299,8 @@ BEGIN_MESSAGE_MAP(CLyricEditDlg, CBaseDialog)
     ON_COMMAND(ID_LYRIC_TIME_TAG_DELAY, &CLyricEditDlg::OnLyricTimeTagDelay)
     ON_COMMAND(ID_SEEK_TO_CUR_LINE, &CLyricEditDlg::OnSeekToCurLine)
     ON_WM_INITMENU()
+    ON_COMMAND(ID_LYRIC_AND_TRANSLATION_IN_SAME_LINE, &CLyricEditDlg::OnLyricAndTranslationInSameLine)
+    ON_COMMAND(ID_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE, &CLyricEditDlg::OnLyricAndTranslationInDifferentLine)
 END_MESSAGE_MAP()
 
 
@@ -953,7 +955,7 @@ void CLyricEditDlg::OnLyricSwapTextAndTranslation()
     CLyrics lyrics;
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.SwapTextAndTranslation();
-    m_lyric_string = lyrics.GetLyricsString2();
+    m_lyric_string = lyrics.GetLyricsString2(lyrics.IsTextAndTranslationInSameLine());
     {
         CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
         m_view->SetTextW(m_lyric_string);
@@ -969,7 +971,7 @@ void CLyricEditDlg::OnLyricTimeTagForward()
     CLyrics lyrics;
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.TimeTagForward();
-    m_lyric_string = lyrics.GetLyricsString2();
+    m_lyric_string = lyrics.GetLyricsString2(lyrics.IsTextAndTranslationInSameLine());
     {
         CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
         m_view->SetTextW(m_lyric_string);
@@ -985,7 +987,7 @@ void CLyricEditDlg::OnLyricTimeTagDelay()
     CLyrics lyrics;
     lyrics.LyricsFromRowString(m_lyric_string);
     lyrics.TimeTagDelay();
-    m_lyric_string = lyrics.GetLyricsString2();
+    m_lyric_string = lyrics.GetLyricsString2(lyrics.IsTextAndTranslationInSameLine());
     {
         CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
         m_view->SetTextW(m_lyric_string);
@@ -1056,6 +1058,32 @@ void CLyricEditDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_FORWARD, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_DELAY, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
 
+}
+
+void CLyricEditDlg::OnLyricAndTranslationInSameLine()
+{
+    CLyrics lyrics;
+    lyrics.LyricsFromRowString(m_lyric_string);
+    m_lyric_string = lyrics.GetLyricsString2(true);
+    {
+        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+        m_view->SetTextW(m_lyric_string);
+    }
+    m_modified = true;
+    UpdateStatusbarInfo();
+}
+
+void CLyricEditDlg::OnLyricAndTranslationInDifferentLine()
+{
+    CLyrics lyrics;
+    lyrics.LyricsFromRowString(m_lyric_string);
+    m_lyric_string = lyrics.GetLyricsString2(false);
+    {
+        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+        m_view->SetTextW(m_lyric_string);
+    }
+    m_modified = true;
+    UpdateStatusbarInfo();
 }
 
 void CLyricEditDlg::SetToolbarCmdEnable()

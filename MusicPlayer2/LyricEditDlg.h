@@ -111,4 +111,6 @@ public:
     virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
     afx_msg void OnSeekToCurLine();
     afx_msg void OnInitMenu(CMenu* pMenu);
+    afx_msg void OnLyricAndTranslationInSameLine();
+    afx_msg void OnLyricAndTranslationInDifferentLine();
 };

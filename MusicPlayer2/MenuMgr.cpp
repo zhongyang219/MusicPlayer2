@@ -299,6 +299,8 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
         return L"LE_EDIT_CH_CONV";
     case MenuMgr::LeEditTagDislocMenu:
         return L"LE_EDIT_TAG_DISLOC";
+    case MenuMgr::LeEditTranslateFormatConvertMenu:
+        return L"LE_EDIT_TRANSLATE_FORMAT_CONVERT";
     case MenuMgr::LePlayCtrlMenu:
         return L"LE_PLAY_CTRL";
     case MenuMgr::FcListMenu:
@@ -845,6 +847,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_LRYIC_MERGE_SAME_TIME_TAG));
         menu.AppendItem(EX_ID(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION));
         menu.AppendSubMenu(LeEditTagDislocMenu);
+        menu.AppendSubMenu(LeEditTranslateFormatConvertMenu);
         break;
     case MenuMgr::LeEditChConvMenu:
         menu.CreateMenu(true, false);
@@ -855,6 +858,11 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.CreateMenu(true, false);
         menu.AppendItem(EX_ID(ID_LYRIC_TIME_TAG_FORWARD));
         menu.AppendItem(EX_ID(ID_LYRIC_TIME_TAG_DELAY));
+        break;
+    case MenuMgr::LeEditTranslateFormatConvertMenu:
+        menu.CreateMenu(true, false);
+        menu.AppendItem(EX_ID(ID_LYRIC_AND_TRANSLATION_IN_SAME_LINE));
+        menu.AppendItem(EX_ID(ID_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE));
         break;
     case MenuMgr::LePlayCtrlMenu:
         menu.CreateMenu(true, false);

@@ -77,6 +77,8 @@ protected:
     // 与实际窗口大小相关的初始化（比如表格列宽）应在派生类的OnInitDialog进行
     virtual bool InitializeControls() { return false; };   // 此处最好是纯虚方法但迁移需要时间
 
+    void SetDlgControlText(int id, const wchar_t* key);
+
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     DECLARE_MESSAGE_MAP()

@@ -69,6 +69,11 @@ bool CDataSettingsDlg::InitializeControls()
     SetDlgItemTextW(IDC_SAVE_TO_SONG_FOLDER, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_LYRIC_DIR");
     SetDlgItemTextW(IDC_SAVE_TO_LYRIC_FOLDER, temp.c_str());
+
+    SetDlgControlText(IDC_DOWN_LOAD_LYRIC_TRANSLATION_FORMAT_STATIC, L"TXT_OPT_DATA_DL_LYRIC_TRANSLATION_FORMAT");
+    SetDlgControlText(IDC_LYRIC_AND_TRANSLATION_IN_SAME_LINE_RADIO, L"TXT_OPT_DATA_DL_LYRIC_AND_TRANSLATION_IN_SAME_LINE");
+    SetDlgControlText(IDC_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE_RADIO, L"TXT_OPT_DATA_DL_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE");
+
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_COVER");
     SetDlgItemTextW(IDC_COVER_AUTO_DOWNLOAD_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_COVER_SAVE_SEL");
@@ -102,6 +107,7 @@ void CDataSettingsDlg::GetDataFromUi()
     m_data.minimize_to_notify_icon = (((CButton*)GetDlgItem(IDC_MINIMIZE_TO_NOTIFY_RADIO))->GetCheck() != 0);
     m_data.save_lyric_to_song_folder = (((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->GetCheck() != 0);
     m_data.save_album_to_song_folder = (((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER3))->GetCheck() != 0);
+    m_data.download_lyric_text_and_translation_in_same_line = (IsDlgButtonChecked(IDC_LYRIC_AND_TRANSLATION_IN_SAME_LINE_RADIO) != 0);
 
     //获取语言的设置
     int sel_language = m_language_combo.GetCurSel();
@@ -186,6 +192,10 @@ BOOL CDataSettingsDlg::OnInitDialog()
     ((CButton*)GetDlgItem(IDC_LYRIC_AUTO_DOWNLOAD_CHECK))->SetCheck(m_data.auto_download_lyric);
     ((CButton*)GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK))->SetCheck(m_data.auto_download_only_tag_full);
     ((CButton*)GetDlgItem(IDC_CHECK_UPDATE_CHECK))->SetCheck(m_data.check_update_when_start);
+
+    CheckDlgButton(IDC_LYRIC_AND_TRANSLATION_IN_SAME_LINE_RADIO, m_data.download_lyric_text_and_translation_in_same_line);
+    CheckDlgButton(IDC_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE_RADIO, !m_data.download_lyric_text_and_translation_in_same_line);
+
     m_sf2_path_edit.SetWindowText(m_data.sf2_path.c_str());
     wstring sf2_filter = FilterHelper::GetSF2FileFilter();
     m_sf2_path_edit.EnableFileBrowseButton(L"SF2", sf2_filter.c_str());

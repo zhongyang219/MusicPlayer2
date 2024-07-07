@@ -122,7 +122,7 @@ public:
     //将时间转换成字符串（格式：分:秒）
     wstring toString(bool no_zero = true) const
     {
-        wchar_t buff[16];
+        wchar_t buff[16]{};
         if (no_zero && *this == Time{ 0,0,0 })
             wcscpy_s(buff, L"-:--");
         else
@@ -133,7 +133,7 @@ public:
     //将时间转换成字符串（格式：分:秒.毫秒）
     wstring toString2(bool no_zero = true) const
     {
-        wchar_t buff[16];
+        wchar_t buff[16]{};
         if (no_zero && *this == Time{ 0,0,0 })
             wcscpy_s(buff, L"-:--");
         else
@@ -147,11 +147,18 @@ public:
         int hour, min1;
         hour = min / 60;
         min1 = min % 60;
-        wchar_t buff[16];
+        wchar_t buff[16]{};
         if (no_zero && *this == Time{ 0,0,0 })
             wcscpy_s(buff, L"-:--:--");
         else
             swprintf_s(buff, L"%d:%.2d:%.2d", hour, min1, sec);
+        return wstring(buff);
+    }
+
+    wstring toLyricTimeTag() const
+    {
+        wchar_t buff[16]{};
+        swprintf_s(buff, L"[%.2d:%.2d.%.2d]", min, sec, msec / 10);
         return wstring(buff);
     }
 

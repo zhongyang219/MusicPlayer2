@@ -57,6 +57,8 @@ private:
     bool m_modified{ false };                  // 歌词是否已经修改
     bool m_translate{ false };                 // 歌词是否包含翻译
 
+    bool m_text_and_translatein_in_same_line{ true };  //原文和翻译是否在同一行歌词中
+
 public:
     // 判断文件是否为歌词文件
     static bool FileIsLyric(const wstring& file_name);
@@ -119,7 +121,8 @@ public:
     // 返回所有歌词的字符串，原始样式，包含全部标签（提供给歌词编辑使用）
     wstring GetLyricsString() const;
     // 返回所有歌词的字符串，以保存的样式，包含全部标签（将歌词偏移保存到每个时间标签中）
-    wstring GetLyricsString2() const;
+    // lyric_and_traslation_in_same_line：歌词和翻译在同一行中，使用" / "分隔。如果为false，则歌词和翻译为两行具有相同时间标签的歌词
+    wstring GetLyricsString2(bool lyric_and_traslation_in_same_line = true) const;
 
     // 返回歌词修改标志
     bool IsModified() const { return m_modified; }
@@ -132,7 +135,8 @@ public:
     int GetLyricCount() const{ return static_cast<int>(m_lyrics.size()); }
 
     // 保存歌词（将歌词偏移保存到每个时间标签中）
-    void SaveLyric2();
+    // lyric_and_traslation_in_same_line：歌词和翻译在同一行中，使用" / "分隔。如果为false，则歌词和翻译为两行具有相同时间标签的歌词
+    void SaveLyric2(bool lyric_and_traslation_in_same_line = true);
 
     // 先进行按时间排序，如果歌词中有相同时间标签的歌词，则将第二行视作第一行的翻译进行合并，参数为允许误差(ms)
     void CombineSameTimeLyric(int error = 0);
@@ -159,4 +163,6 @@ public:
 
     // 中文繁简转换
     void ChineseConvertion(bool simplified);
+
+    bool IsTextAndTranslationInSameLine() const { return m_text_and_translatein_in_same_line; }
 };
