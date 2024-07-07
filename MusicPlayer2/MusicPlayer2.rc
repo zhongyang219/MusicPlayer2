@@ -798,10 +798,15 @@ BEGIN
     CONTROL         "Automatically download when lyric is not exist",IDC_LYRIC_AUTO_DOWNLOAD_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,114,316,8
     LTEXT           "Automatically Download Lyrics Save Location:",IDC_TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_SEL_STATIC,14,125,316,8
-    CONTROL         "Save to the same directory as the song",IDC_SAVE_TO_SONG_FOLDER,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,150,135,180,8
     CONTROL         "Save to lyrics directory",IDC_SAVE_TO_LYRIC_FOLDER,
                     "Button",BS_AUTORADIOBUTTON,21,135,119,8
+    CONTROL         "Save to the same directory as the song",IDC_SAVE_TO_SONG_FOLDER,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,150,135,180,8
+    LTEXT           "Download Lyrics Translation Format:",IDC_DOWN_LOAD_LYRIC_TRANSLATION_FORMAT_STATIC,14,146,316,8
+    CONTROL         "Lyric text and translation in the &same line",IDC_LYRIC_AND_TRANSLATION_IN_SAME_LINE_RADIO,
+                    "Button",BS_AUTORADIOBUTTON,21,156,309,10
+    CONTROL         "Lyric text and translation in &different lines with the same time tag",IDC_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE_RADIO,
+                    "Button",BS_AUTORADIOBUTTON,21,167,309,10
     CONTROL         "Automatically download when album cover is not exist",IDC_COVER_AUTO_DOWNLOAD_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,179,316,8
     LTEXT           "Automatically Download Album Cover Save Location:",IDC_TXT_OPT_DATA_AUTO_DL_COVER_SAVE_SEL_STATIC,14,189,316,8
@@ -816,11 +821,6 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,240,316,8
     RTEXT           "MIDI sound font path:",IDC_TXT_OPT_DATA_MIDI_SF2_PATH_STATIC,14,253,126,8
     CONTROL         "",IDC_SF2_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,150,252,180,12
-    LTEXT           "Download Lyrics Translation Format:",IDC_DOWN_LOAD_LYRIC_TRANSLATION_FORMAT_STATIC,14,146,316,8
-    CONTROL         "Lyric text and translation in the &same line",IDC_LYRIC_AND_TRANSLATION_IN_SAME_LINE_RADIO,
-                    "Button",BS_AUTORADIOBUTTON,21,156,309,10
-    CONTROL         "Lyric text and translation in &different lines with the same time tag",IDC_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE_RADIO,
-                    "Button",BS_AUTORADIOBUTTON,21,167,309,10
 END
 
 IDD_EQUALIZER_DIALOG DIALOGEX 0, 0, 299, 107
@@ -2243,20 +2243,20 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 100, 0,
     0, 0, 100, 0,
-    44, 0, 56, 0,
-    0, 0, 44, 0,
-    0, 0, 100, 0,
-    0, 0, 100, 0,
-    44, 0, 56, 0,
-    0, 0, 44, 0,
-    0, 0, 100, 0,
-    0, 0, 100, 0,
-    0, 0, 100, 0,
     0, 0, 44, 0,
     44, 0, 56, 0,
     0, 0, 100, 0,
     0, 0, 100, 0,
-    0, 0, 100, 0
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    44, 0, 56, 0,
+    0, 0, 44, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 44, 0,
+    44, 0, 56, 0
 END
 
 IDD_EQUALIZER_DIALOG AFX_DIALOG_LAYOUT
