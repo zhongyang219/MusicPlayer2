@@ -220,23 +220,23 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
     case IconMgr::IconType::IT_Statistics:
         return { IDI_STATISTICS_D, NULL, NULL, NULL };
     case IconMgr::IconType::IT_File_Relate:
-        return { IDI_FILE_RELATE_D, NULL, NULL, NULL };
+        return { IDI_FILE_RELATE_D, IDI_FILE_RELATE, NULL, NULL };
     case IconMgr::IconType::IT_Help:
         return { IDI_HELP_D, IDI_HELP, NULL, NULL };
     case IconMgr::IconType::IT_Fix:
         return { IDI_FIX_D, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Star:
-        return { IDI_STAR, NULL, NULL, NULL };
+        return { IDI_STAR_D, IDI_STAR, NULL, NULL };
     case IconMgr::IconType::IT_Artist:
-        return { IDI_ARTIST_D, NULL, NULL, NULL };
+        return { IDI_ARTIST_D, IDI_ARTIST, NULL, NULL };
     case IconMgr::IconType::IT_Album:
-        return { IDI_ALBUM_D, NULL, NULL, NULL };
+        return { IDI_ALBUM_D, IDI_ALBUM, NULL, NULL };
     case IconMgr::IconType::IT_Genre:
-        return { IDI_GENRE_D, NULL, NULL, NULL };
+        return { IDI_GENRE_D, IDI_GENRE, NULL, NULL };
     case IconMgr::IconType::IT_Year:
-        return { IDI_YEAR_D, NULL, NULL, NULL };
+        return { IDI_YEAR_D, IDI_YEAR, NULL, NULL };
     case IconMgr::IconType::IT_Bitrate:
-        return { IDI_BITRATE, NULL, NULL, NULL };
+        return { IDI_BITRATE_D, IDI_BITRATE, NULL, NULL };
     case IconMgr::IconType::IT_History:
         return { IDI_RECENT_SONG_D, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Key_Board:

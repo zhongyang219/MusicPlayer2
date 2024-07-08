@@ -393,6 +393,20 @@ IDI_FIX_D               ICON                    "res\\fix_d.ico"
 
 IDI_UP_D                ICON                    "res\\up_d.ico"
 
+IDI_ARTIST              ICON                    "res\\artist.ico"
+
+IDI_ALBUM               ICON                    "res\\album.ico"
+
+IDI_GENRE               ICON                    "res\\genre.ico"
+
+IDI_YEAR                ICON                    "res\\year.ico"
+
+IDI_FILE_RELATE         ICON                    "res\\file_relate.ico"
+
+IDI_BITRATE_D           ICON                    "res\\bitrate_d.ico"
+
+IDI_STAR_D              ICON                    "res\\star_d.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
