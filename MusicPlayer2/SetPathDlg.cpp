@@ -140,7 +140,7 @@ void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
     m_path_list.SetItemText(index, 2, path_info.path.c_str());
 
     if (path_info.contain_sub_folder)
-        m_path_list.SetItemText(index, 3, theApp.m_str_table.LoadText(L"TXT_LIB_PAHT_IS_CONTAIN_SUB_FOLDER_YES").c_str());
+        m_path_list.SetItemText(index, 3, theApp.m_str_table.LoadText(L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER_YES").c_str());
     else
         m_path_list.SetItemText(index, 3, _T(""));
 
@@ -230,7 +230,7 @@ BOOL CSetPathDlg::OnInitDialog()
     m_path_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, width[0]);
     m_path_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_FOLDER").c_str(), LVCFMT_LEFT, width[1]);
     m_path_list.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_PATH").c_str(), LVCFMT_LEFT, width[2]);
-    m_path_list.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_LIB_PAHT_IS_CONTAIN_SUB_FOLDER").c_str(), LVCFMT_LEFT, width[3]);
+    m_path_list.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER").c_str(), LVCFMT_LEFT, width[3]);
     m_path_list.InsertColumn(4, theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TRACK").c_str(), LVCFMT_LEFT, width[4]);
     m_path_list.InsertColumn(5, theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK").c_str(), LVCFMT_LEFT, width[5]);
     m_path_list.InsertColumn(6, theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH").c_str(), LVCFMT_LEFT, width[6]);
@@ -398,8 +398,8 @@ void CSetPathDlg::OnBrowsePath()
 void CSetPathDlg::OnClearInvalidPath()
 {
     // TODO: 在此添加命令处理程序代码
-    const wstring& inquary_info = theApp.m_str_table.LoadText(L"MSG_LIB_PATH_CLEAR_INQUARY");
-    if (MessageBox(inquary_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
+    const wstring& inquiry_info = theApp.m_str_table.LoadText(L"MSG_LIB_PATH_CLEAR_INQUIRY");
+    if (MessageBox(inquiry_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
         return;
     int cleard_cnt = CMusicPlayerCmdHelper::CleanUpRecentFolders();
     ShowPathList();     // 重新显示路径列表

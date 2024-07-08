@@ -101,7 +101,7 @@ bool CMediaLibSettingDlg::InitializeControls()
     SetDlgItemTextW(IDC_FOLDER_EXPLORE_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_PLAYLIST_OPT");
     SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_PLAYLIST_OPT_STATIC, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_DISABLE_DRAGE_SORT");
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_DISABLE_DRAG_SORT");
     SetDlgItemTextW(IDC_DISABLE_DRAGE_SORT_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_INS_BEGIN");
     SetDlgItemTextW(IDC_INSERT_BEGIN_CHECK, temp.c_str());
@@ -503,7 +503,7 @@ void CMediaLibSettingDlg::OnBnClickedClearRecentPlayedListBtn()
     // TODO: 在此添加控件通知处理程序代码
 
     //清除歌曲的上次播放时间
-    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_MEDIA_LIB_RECENT_PLAY_CLEAR_INQUARY");
+    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_MEDIA_LIB_RECENT_PLAY_CLEAR_INQUIRY");
     if (MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_YESNO) == IDYES)
     {
         CSongDataManager::GetInstance().ClearLastPlayedTime();

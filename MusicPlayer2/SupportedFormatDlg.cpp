@@ -28,7 +28,7 @@ CString CSupportedFormatDlg::GetDialogName() const
 
 bool CSupportedFormatDlg::InitializeControls()
 {
-    SetWindowTextW(theApp.m_str_table.LoadText(L"TITLE_SUPPORTTED_FORMAT").c_str());
+    SetWindowTextW(theApp.m_str_table.LoadText(L"TITLE_SUPPORTED_FORMAT").c_str());
     // IDC_INFO_STATIC
     // IDC_FORMAT_LIST
     // IDOK
@@ -62,11 +62,11 @@ BOOL CSupportedFormatDlg::OnInitDialog()
 
     SetIcon(IconMgr::IconType::IT_App, FALSE);       // 设置小图标
     if (theApp.m_play_setting_data.use_ffmpeg)
-        SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_FFMPEG").c_str());
+        SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTED_FORMAT_CORE_INFO_FFMPEG").c_str());
     else if (theApp.m_play_setting_data.use_mci)
-        SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_MCI").c_str());
+        SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTED_FORMAT_CORE_INFO_MCI").c_str());
     else
-        SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_CORE_INFO_BASS").c_str());
+        SetDlgItemTextW(IDC_INFO_STATIC, theApp.m_str_table.LoadText(L"TXT_SUPPORTED_FORMAT_CORE_INFO_BASS").c_str());
 
     //初始化列表
     //m_format_list.SetColor(theApp.m_app_setting_data.theme_color);
@@ -82,16 +82,16 @@ BOOL CSupportedFormatDlg::OnInitDialog()
         width1 = rect.Width() / 3;
         width2 = rect.Width() - width1 - width0 - theApp.DPI(20) - 1;
 
-        m_format_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FILE_NAME").c_str(), LVCFMT_LEFT, width0);
-        m_format_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FORMAT_PROVIDED").c_str(), LVCFMT_LEFT, width1);
-        m_format_list.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FILE_EXTENSION").c_str(), LVCFMT_LEFT, width2);
+        m_format_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SUPPORTED_FORMAT_PLUGIN_FILE_NAME").c_str(), LVCFMT_LEFT, width0);
+        m_format_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_SUPPORTED_FORMAT_PLUGIN_FORMAT_PROVIDED").c_str(), LVCFMT_LEFT, width1);
+        m_format_list.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_SUPPORTED_FORMAT_PLUGIN_FILE_EXTENSION").c_str(), LVCFMT_LEFT, width2);
     }
     else
     {
         width0 = rect.Width() / 2;
         width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
-        m_format_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FORMAT_PROVIDED").c_str(), LVCFMT_LEFT, width0);
-        m_format_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_SUPPORTTED_FORMAT_PLUGIN_FILE_EXTENSION").c_str(), LVCFMT_LEFT, width1);
+        m_format_list.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SUPPORTED_FORMAT_PLUGIN_FORMAT_PROVIDED").c_str(), LVCFMT_LEFT, width0);
+        m_format_list.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_SUPPORTED_FORMAT_PLUGIN_FILE_EXTENSION").c_str(), LVCFMT_LEFT, width1);
     }
 
     int index = 0;

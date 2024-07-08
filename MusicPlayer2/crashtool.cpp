@@ -56,9 +56,9 @@ public:
         // 显示错误信息对话框
         // 之后应改用独立的对话框，不依赖CMessageDlg
         CMessageDlg dlg(L"CrashDlg");
-        dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_CRASH_REPOART"));
-        dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_CRASH_REPOART_ERROR_MESSAGE"));
-        wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_CRASH_REPOART_CRASH_INFO", { m_dumpFile, theApp.GetSystemInfoString() });
+        dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_CRASH_REPORT"));
+        dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_CRASH_REPORT_ERROR_MESSAGE"));
+        wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_CRASH_REPORT_CRASH_INFO", { m_dumpFile, theApp.GetSystemInfoString() });
         dlg.SetMessageText(info);
 
         //设置图标(此功能已从CMessageDlg移除)

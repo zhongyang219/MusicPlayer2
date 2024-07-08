@@ -59,8 +59,8 @@ bool CDataSettingsDlg::InitializeControls()
     SetDlgItemTextW(IDC_MINIMIZE_TO_NOTIFY_RADIO, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_CLOSE_MAIN_WINDOW_EXIT");
     SetDlgItemTextW(IDC_EXIT_PROGRAM_RADIO, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_SETTING");
-    SetDlgItemTextW(IDC_TXT_OPT_DATA_AUTO_DL_SETTING_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_DL_SETTING");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_DL_SETTING_STATIC, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_LYRIC");
     SetDlgItemTextW(IDC_LYRIC_AUTO_DOWNLOAD_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_SEL");
@@ -70,9 +70,9 @@ bool CDataSettingsDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_LYRIC_DIR");
     SetDlgItemTextW(IDC_SAVE_TO_LYRIC_FOLDER, temp.c_str());
 
-    SetDlgControlText(IDC_DOWN_LOAD_LYRIC_TRANSLATION_FORMAT_STATIC, L"TXT_OPT_DATA_DL_LYRIC_TRANSLATION_FORMAT");
-    SetDlgControlText(IDC_LYRIC_AND_TRANSLATION_IN_SAME_LINE_RADIO, L"TXT_OPT_DATA_DL_LYRIC_AND_TRANSLATION_IN_SAME_LINE");
-    SetDlgControlText(IDC_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE_RADIO, L"TXT_OPT_DATA_DL_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE");
+    SetDlgControlText(IDC_DOWN_LOAD_LYRIC_TRANSLATION_FORMAT_STATIC, L"TXT_OPT_DATA_DL_LYRIC_TRANSLATION_FORMAT_SEL");
+    SetDlgControlText(IDC_LYRIC_AND_TRANSLATION_IN_SAME_LINE_RADIO, L"TXT_OPT_DATA_DL_LYRIC_TRANSLATION_FORMAT_SAME_LINE");
+    SetDlgControlText(IDC_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE_RADIO, L"TXT_OPT_DATA_DL_LYRIC_TRANSLATION_FORMAT_DIFFERENT_LINE");
 
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_COVER");
     SetDlgItemTextW(IDC_COVER_AUTO_DOWNLOAD_CHECK, temp.c_str());
@@ -240,7 +240,7 @@ BOOL CDataSettingsDlg::OnInitDialog()
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
     m_toolTip.AddTool(GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_AUTO_DL_ONLY_WHEN_TAG_FULL").c_str());
     //m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("需要额外的音色库才能播放 MIDI 音乐。"));
-    m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_MIDI_INNER_LYRIC_FIRSR").c_str());
+    m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_MIDI_INNER_LYRIC_FIRST").c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_APPDATA_RADIO), theApp.m_appdata_dir.c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_PROGRAM_DIR_RADIO), theApp.m_module_dir.c_str());
 

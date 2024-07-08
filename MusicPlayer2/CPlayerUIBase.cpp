@@ -1326,7 +1326,7 @@ void CPlayerUIBase::SetRepeatModeToolTipText()
     auto repeat_mode = CPlayer::GetInstance().GetRepeatMode();
     switch (repeat_mode)
     {
-    case RM_PLAY_ORDER: mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_OREDE");break;
+    case RM_PLAY_ORDER: mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_ORDER");break;
     case RM_PLAY_SHUFFLE:  mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_SHUFFLE"); break;
     case RM_PLAY_RANDOM: mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_RANDOM"); break;
     case RM_LOOP_PLAYLIST: mode_str = theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_PLAYLIST"); break;
@@ -1341,7 +1341,7 @@ void CPlayerUIBase::SetSongInfoToolTipText()
 {
     const SongInfo& songInfo = CPlayer::GetInstance().GetCurrentSongInfo();
 
-    m_info_tip = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PROPETRY") + GetCmdShortcutKeyForTooltips(ID_SONG_INFO).GetString() + L"\r\n";
+    m_info_tip = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PROPERTY") + GetCmdShortcutKeyForTooltips(ID_SONG_INFO).GetString() + L"\r\n";
     m_info_tip += theApp.m_str_table.LoadText(L"TXT_TITLE") + L": " + songInfo.GetTitle() + L"\r\n";
     m_info_tip += theApp.m_str_table.LoadText(L"TXT_ARTIST") + L": " + songInfo.GetArtist() + L"\r\n";
     m_info_tip += theApp.m_str_table.LoadText(L"TXT_ALBUM") + L": " + songInfo.GetAlbum();

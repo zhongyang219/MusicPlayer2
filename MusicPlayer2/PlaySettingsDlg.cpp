@@ -128,7 +128,7 @@ bool CPlaySettingsDlg::InitializeControls()
     SetDlgItemTextW(IDC_SOUND_FADE_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_CONTINUE_WHEN_SWITCH_PLAYLIST");
     SetDlgItemTextW(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_USE_MEDIA_TRANS_CONTORL");
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_USE_MEDIA_TRANS_CONTROL");
     SetDlgItemTextW(IDC_USE_MEDIA_TRANS_CONTORL_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_CORE");
     SetDlgItemTextW(IDC_TXT_OPT_PLAY_CORE_STATIC, temp.c_str());

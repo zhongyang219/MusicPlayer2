@@ -315,7 +315,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         bool lyric_exist = CCommon::FileExist(lyric_path) || (!pInfo->playlist->at(i).lyric_file.empty());
         if (pInfo->skip_exist && lyric_exist)                   //如果设置了跳过已存在歌词的曲目，并且歌词已经存在，则跳过它
         {
-            pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_SKIPED").c_str());
+            pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_SKIPPED").c_str());
             continue;
         }
 
@@ -407,11 +407,11 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
             if (char_cannot_convert)
                 pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_ENCODE_WARNING").c_str());    //char_cannot_convert为true，则说明有无法转换的Unicode字符
             else
-                pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_SUCCESSED").c_str());
+                pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_SUCCEEDED").c_str());
         }
         else
         {
-            pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_SUCCESSED").c_str());
+            pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_SUCCEEDED").c_str());
         }
 
         if (pInfo->download_translate)

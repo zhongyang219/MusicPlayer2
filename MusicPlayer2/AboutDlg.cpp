@@ -50,7 +50,7 @@ bool CAboutDlg::InitializeControls()
     SetDlgItemTextW(IDC_STATIC_THIRD_PARTY_LIB, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_OTHER_SOFTWARE");
     SetDlgItemTextW(IDC_STATIC_OTHER_SOFTWARE, temp.c_str());
-    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_CONTRACT_AUTHOR") + L"</a>";
+    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_CONTACT_AUTHOR") + L"</a>";
     SetDlgItemTextW(IDC_SYSLINK1, temp.c_str());
     temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_CHECK_UPDATE") + L"</a>";
     SetDlgItemTextW(IDC_SYSLINK2, temp.c_str());
@@ -109,7 +109,7 @@ BOOL CAboutDlg::OnInitDialog()
     SetBackgroundColor(GetSysColor(COLOR_WINDOW));
 
     m_tool_tip.Create(this);
-    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_SEND_EMAIL_TO_ATHOUR") + L"\r\nmailto:zhongyang219@hotmail.com").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_SEND_EMAIL_TO_AUTHOR") + L"\r\nmailto:zhongyang219@hotmail.com").c_str());
     m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_GOTO_GITHUB") + L"\r\nhttps://github.com/zhongyang219/MusicPlayer2").c_str());
     m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_BASS), L"http://www.un4seen.com/bass.html");
     m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TAGLIB), L"http://taglib.org/");

@@ -566,7 +566,7 @@ void CFormatConvertDlg::SetProgressInfo(int progress)
 {
     wstring info;
     if (progress >= 100)
-        info = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_PROGRESS_INFO_COMPLEATE");
+        info = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_PROGRESS_INFO_COMPLETE");
     else
         info = theApp.m_str_table.LoadTextFormat(L"TXT_FORMAT_CONVERT_PROGRESS_INFO", { progress });
     SetDlgItemText(IDC_PROGRESS_TEXT, info.c_str());
@@ -675,11 +675,11 @@ afx_msg LRESULT CFormatConvertDlg::OnConvertProgress(WPARAM wParam, LPARAM lPara
     }
     else if (percent == 101)
     {
-        status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_COMPLEATE");
+        status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_COMPLETE");
     }
     else if (percent == 102)
     {
-        status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_SKIPED");
+        status_str = theApp.m_str_table.LoadText(L"TXT_FORMAT_CONVERT_STAUS_SKIPPED");
     }
     else
     {
