@@ -396,6 +396,9 @@
     <Filter Include="功能逻辑类\IconMgr">
       <UniqueIdentifier>{90131507-09eb-4700-86d0-45b3402783f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\MediaLibPlaylistMgr">
+      <UniqueIdentifier>{34986fd2-2b87-409a-9c31-df09aa5c3ae0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -883,6 +886,9 @@
     <ClInclude Include="IconMgr.h">
       <Filter>功能逻辑类\IconMgr</Filter>
     </ClInclude>
+    <ClInclude Include="MediaLibPlaylistMgr.h">
+      <Filter>功能逻辑类\PlaylistMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1340,6 +1346,9 @@
     </ClCompile>
     <ClCompile Include="IconMgr.cpp">
       <Filter>功能逻辑类\IconMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaLibPlaylistMgr.cpp">
+      <Filter>功能逻辑类\PlaylistMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

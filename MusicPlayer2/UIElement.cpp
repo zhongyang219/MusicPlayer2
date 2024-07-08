@@ -1039,7 +1039,7 @@ void UiElement::Playlist::MouseMove(CPoint point)
                 {
                     last_item_index = i;
                     const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[i];
-                    bool show_full_path = (CPlayer::GetInstance().IsPlaylistMode() || CPlayer::GetInstance().IsContainSubFolder());
+                    bool show_full_path = (!CPlayer::GetInstance().IsFolderMode() || CPlayer::GetInstance().IsContainSubFolder());
                     std::wstring str_tip = CSongInfoHelper::GetPlaylistItemToolTip(song_info, true, show_full_path);
 
                     ui->UpdateMouseToolTip(PLAYLIST_TOOLTIP_INDEX, str_tip.c_str());

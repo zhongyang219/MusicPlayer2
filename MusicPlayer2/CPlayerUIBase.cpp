@@ -4,6 +4,7 @@
 #include "MiniModeUserUi.h"
 #include "SongInfoHelper.h"
 #include "UIElement.h"
+#include "MediaLibPlaylistMgr.h"
 
 CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
     : m_ui_data(ui_data), m_pMainWnd(pMainWnd)
@@ -2450,7 +2451,7 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
                 break;
             CRect rect_item{ playlist_element->item_rects[i] };
             rect_item.right -= SCROLLBAR_WIDTH;      //留出一定距离用于绘制滚动条
-            //如果绘制的行在播放列表区域之个，则不绘制该行
+            //如果绘制的行在播放列表区域之外，则不绘制该行
             if (!(rect_item & rect).IsRectEmpty())
             {
                 COLORREF back_color{};
@@ -2581,17 +2582,29 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
 
 void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect)
 {
+    IconMgr::IconType icon_type{};
+    wstring str;
+    if (CPlayer::GetInstance().IsPlaylistMode())
+    {
+        icon_type = IconMgr::IconType::IT_Playlist;
+        str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST");
+    }
+    else if (CPlayer::GetInstance().IsFolderMode())
+    {
+        icon_type = IconMgr::IconType::IT_Folder;
+        str = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER");
+    }
+    else
+    {
+        auto type = CPlayer::GetInstance().GetMediaLibPlaylistType();
+        icon_type = CMediaLibPlaylistMgr::GetIcon(type);
+        str = CMediaLibPlaylistMgr::GetTypeName(type);
+    }
     //绘制图标
-    IconMgr::IconType icon_type = CPlayer::GetInstance().IsPlaylistMode() ? IconMgr::IconType::IT_Playlist : IconMgr::IconType::IT_Folder;
     CRect rect_icon{ rect };
     rect_icon.right = rect_icon.left + DPI(26);
     DrawUiIcon(rect_icon, icon_type);
     //绘制文本
-    wstring str;
-    if (CPlayer::GetInstance().IsPlaylistMode())
-        str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST");
-    else
-        str = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER");
     CRect rect_text{ rect };
     rect_text.left = rect_icon.right;
     rect_text.right = rect_text.left + m_draw.GetTextExtent(str.c_str()).cx;

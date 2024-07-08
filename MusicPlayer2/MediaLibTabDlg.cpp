@@ -87,9 +87,17 @@ void CMediaLibTabDlg::OnOK()
     {
         bool ok{};
         if (songs.size() > 1 || CFilePathHelper(songs[0].file_path).GetFileExtension() == L"cue")   // 为兼容可存在.cue文件的旧媒体库保留
+        {
+            CMediaClassifier::ClassificationType type = GetClassificationType();
+            if (type != CMediaClassifier::CT_NONE)
+                ok = CPlayer::GetInstance().OpenSongsInMediaLibPlaylist(type, GetClassificationItemName(), GetItemSelected());
+            else
             ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
+        }
         else
+        {
             ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(GetSongList(), GetItemSelected());
+        }
         if (!ok)
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");

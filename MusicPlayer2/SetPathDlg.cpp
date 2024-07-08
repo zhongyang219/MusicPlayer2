@@ -68,7 +68,7 @@ PathInfo CSetPathDlg::GetSelPath() const
 
 bool CSetPathDlg::SelectedCanPlay() const
 {
-    return SelectValid() && (CPlayer::GetInstance().IsPlaylistMode() || GetSelPath().path != CPlayer::GetInstance().GetCurrentDir2());
+    return SelectValid() && (!CPlayer::GetInstance().IsFolderMode() || GetSelPath().path != CPlayer::GetInstance().GetCurrentDir2());
 }
 
 void CSetPathDlg::SetButtonsEnable()
@@ -157,7 +157,7 @@ void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
 
 void CSetPathDlg::OnTabEntered()
 {
-    if (!CPlayer::GetInstance().IsPlaylistMode())
+    if (CPlayer::GetInstance().IsFolderMode())
         m_path_name.SetWindowText(CPlayer::GetInstance().GetCurrentDir2().c_str());
     ShowPathList();
     m_list_selected = m_path_list.GetCurSel();
@@ -367,7 +367,7 @@ void CSetPathDlg::OnDeletePath()
     {
         wstring del_path = GetSelPath().path;
         // 如果是当前播放则使用CPlayer成员方法处理
-        if (!CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetCurrentDir2() == del_path)
+        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == del_path)
         {
             if (!CPlayer::GetInstance().RemoveCurPlaylistOrFolder())
             {
@@ -481,7 +481,7 @@ void CSetPathDlg::OnContainSubFolder()
         wstring sel_path = GetSelPath().path;       // 当前选中项
 
         // 如果是当前播放则使用CPlayer成员方法更改（会启动播放列表初始化）不需要操作CPlayer::GetInstance().GetRecentPath()
-        if (!CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetCurrentDir2() == sel_path)
+        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == sel_path)
         {
             if (!CPlayer::GetInstance().SetContainSubFolder())
             {

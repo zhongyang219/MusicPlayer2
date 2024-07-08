@@ -196,7 +196,7 @@ void CPlayListCtrl::OnMouseMove(UINT nFlags, CPoint point)
 				int strWidth = GetStringWidth(dis_str) + theApp.DPI(10);		//获取要显示当前字符串的最小宽度
 				int columnWidth = GetColumnWidth(1);	//获取鼠标指向列的宽度
                 bool show_title = (columnWidth < strWidth);		//当单元格内的的字符无法显示完全时在提示的第1行显示单元格内文本
-                bool show_full_path = (CPlayer::GetInstance().IsPlaylistMode() || CPlayer::GetInstance().IsContainSubFolder());
+                bool show_full_path = (!CPlayer::GetInstance().IsFolderMode() || CPlayer::GetInstance().IsContainSubFolder());
                 CString str_tip = CSongInfoHelper::GetPlaylistItemToolTip(m_all_song_info[song_index], show_title, show_full_path).c_str();
 
 				m_toolTip.SetMaxTipWidth(theApp.DPI(400));		//设置提示信息的宽度，以支持提示换行

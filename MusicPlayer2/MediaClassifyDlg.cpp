@@ -322,6 +322,16 @@ wstring CMediaClassifyDlg::GetNewPlaylistName() const
     return default_name;
 }
 
+CMediaClassifier::ClassificationType CMediaClassifyDlg::GetClassificationType() const
+{
+    return m_type;
+}
+
+std::wstring CMediaClassifyDlg::GetClassificationItemName() const
+{
+    return m_classify_selected;
+}
+
 void CMediaClassifyDlg::CalculateClassifyListColumeWidth(std::vector<int>& width)
 {
     CRect rect;

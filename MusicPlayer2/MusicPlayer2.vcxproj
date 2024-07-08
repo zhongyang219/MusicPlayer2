@@ -268,6 +268,7 @@
     <ClInclude Include="LastFMDataArchive.h" />
     <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="md5.h" />
+    <ClInclude Include="MediaLibPlaylistMgr.h" />
     <ClInclude Include="MediaLibStatisticsDlg.h" />
     <ClInclude Include="MediaTransControls.h" />
     <ClInclude Include="MediaTransControlsImpl.h" />
@@ -429,6 +430,7 @@
     <ClCompile Include="LastFMDataArchive.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="md5.cpp" />
+    <ClCompile Include="MediaLibPlaylistMgr.cpp" />
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
     <ClCompile Include="MediaTransControls.cpp" />
     <ClCompile Include="MediaTransControlsImpl.cpp" />

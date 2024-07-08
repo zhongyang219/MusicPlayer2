@@ -608,7 +608,7 @@ void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_sho
         CCommon::DeleteModelessDialog(pPlayerDlg->m_pMediaLibDlg);
         int tab_index = cur_tab;
         if (tab_index < 0)
-            tab_index = CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0;
+            tab_index = CPlayer::GetInstance().IsFolderMode() ? 0 : 1;
         pPlayerDlg->m_pMediaLibDlg = new CMediaLibDlg(tab_index);
         pPlayerDlg->m_pMediaLibDlg->SetTabForceShow(tab_force_show);
         pPlayerDlg->m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG/*, GetDesktopWindow()*/);

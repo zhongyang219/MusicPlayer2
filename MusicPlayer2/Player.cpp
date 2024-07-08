@@ -12,6 +12,7 @@
 #include "RecentFolderAndPlaylist.h"
 #include <random>
 #include "IniHelper.h"
+#include "MediaLibPlaylistMgr.h"
 
 CPlayer CPlayer::m_instance;
 
@@ -102,17 +103,23 @@ void CPlayer::Create()
     LoadConfig();
     LoadRecentPath();
     CPlaylistMgr::Instance().LoadPlaylistData();
+    CMediaLibPlaylistMgr::Instance().LoadPlaylistData();
     m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
-    bool change_to_default_playlist{ !m_playlist_mode && (m_recent_path.empty() || (!COSUPlayerHelper::IsOsuFolder(m_recent_path.front().path) && !CAudioCommon::IsPathContainsAudioFile(m_recent_path.front().path, m_recent_path.front().contain_sub_folder))) };
+    bool change_to_default_playlist{ m_playlist_mode == PM_FOLDER && (m_recent_path.empty() || (!COSUPlayerHelper::IsOsuFolder(m_recent_path.front().path) && !CAudioCommon::IsPathContainsAudioFile(m_recent_path.front().path, m_recent_path.front().contain_sub_folder)))};
     // 如果文件夹模式且当前文件夹没有音频文件那么切换到默认播放列表，清理无效（空）文件夹会在启动时更新媒体库进行（如果启用remove_file_not_exist_when_update）
     if (change_to_default_playlist)
     {
         const PlaylistInfo& playlist_info = CPlaylistMgr::Instance().m_default_playlist;
         SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position);
     }
-    else if (!m_playlist_mode)
+    else if (m_playlist_mode == PM_FOLDER)
     {
         SetPath(m_recent_path.front());
+    }
+    else if (m_playlist_mode == PM_MEDIA_LIB)
+    {
+        auto playlist_info = CMediaLibPlaylistMgr::Instance().GetCurrentPlaylistInfo();
+        OpenSongsInMediaLibPlaylist(playlist_info.medialib_type, playlist_info.path, playlist_info.track, playlist_info.position);
     }
     else
     {
@@ -159,12 +166,19 @@ void CPlayer::IniPlayList(bool play, MediaLibRefreshMode refresh_mode)
 {
     m_no_use = SongInfo{};  // 安全起见，防止意外写入被应用
     m_playlist.clear();
-    if (m_playlist_mode)
+    //播放列表模式下
+    if (m_playlist_mode == PM_PLAYLIST)
     {
         CPlaylistMgr::Instance().UpdateCurrentPlaylistType(m_playlist_path);
         CPlaylistFile playlist;
         playlist.LoadFromFile(m_playlist_path);
         playlist.MoveToSongList(m_playlist);
+    }
+    //媒体库播放列表模式下
+    else if (m_playlist_mode == PM_MEDIA_LIB)
+    {
+        //根据类型和名称获取音频文件列表
+        m_playlist = CMediaLibPlaylistMgr::Instance().GetSongList(m_media_lib_playlist_type, m_media_lib_playlist_name);
     }
     else
     {
@@ -291,7 +305,7 @@ void CPlayer::IniPlaylistComplate()
 
     ASSERT(m_playing == 0);
     // 对播放列表排序
-    if (m_playlist_mode)                // 播放列表模式默认状态必须为未排序
+    if (m_playlist_mode == PM_PLAYLIST)                // 播放列表模式默认状态必须为未排序
     {
         ASSERT(m_sort_mode == SM_UNSORT);
         m_sort_mode = SM_UNSORT;
@@ -301,7 +315,7 @@ void CPlayer::IniPlaylistComplate()
         ASSERT(FALSE);
         m_sort_mode = SM_U_FILE;
     }
-    if (!m_playlist_mode && m_playlist.size() > 1)
+    if (m_playlist_mode == PM_FOLDER && m_playlist.size() > 1)
         SortPlaylist(true);
 
     if (!IsPlaylistEmpty())         // 播放列表初始化完成，根据m_index,m_current_position,m_thread_info.play还原播放状态
@@ -361,7 +375,10 @@ void CPlayer::IniPlaylistComplate()
     if (!m_thread_info.remove_list_path.empty() && CCommon::IsFolder(m_thread_info.remove_list_path))
         CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
     // 刷新媒体库标签页（需要在SaveRecentInfoToFiles()之后，GetPlayStatusMutex().unlock()之前进行）
-    CMusicPlayerCmdHelper::RefreshMediaTabData(m_playlist_mode ? CMusicPlayerCmdHelper::ML_PLAYLIST : CMusicPlayerCmdHelper::ML_FOLDER);
+    if (m_playlist_mode == PM_FOLDER)
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
+    else if (m_playlist_mode == PM_PLAYLIST)
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
 
     m_thread_info = ThreadInfo();
     // 检查过了只是保险起见
@@ -919,7 +936,7 @@ void CPlayer::SaveRecentInfoToFiles(bool save_playlist)
         initialized = true;
         return;
     }
-    if (m_playlist_mode)
+    if (m_playlist_mode == PM_PLAYLIST)
     {
         if (save_playlist)
             SaveCurrentPlaylist();
@@ -927,7 +944,13 @@ void CPlayer::SaveRecentInfoToFiles(bool save_playlist)
         CPlaylistMgr::Instance().EmplacePlaylist(m_playlist_path, m_index, m_current_position.toInt(), song_num, m_total_time, CCommon::GetCurTimeElapse());
         CPlaylistMgr::Instance().SavePlaylistData();
     }
-    else
+    else if (m_playlist_mode == PM_MEDIA_LIB)
+    {
+        int song_num = IsPlaylistEmpty() ? 0 : GetSongNum();
+        CMediaLibPlaylistMgr::Instance().EmplaceMediaLibPlaylist(m_media_lib_playlist_type, m_media_lib_playlist_name, m_index, m_current_position.toInt(), song_num, m_total_time, CCommon::GetCurTimeElapse(), m_sort_mode);
+        CMediaLibPlaylistMgr::Instance().SavePlaylistData();
+    }
+    else if (m_playlist_mode == PM_FOLDER)
     {
         for (size_t i{ 0 }; i < m_recent_path.size(); i++)
         {
@@ -979,7 +1002,7 @@ bool CPlayer::SetPath(const PathInfo& path_info, bool play)
 
     m_path = path_info.path;
     m_playlist_path.clear();
-    m_playlist_mode = false;
+    m_playlist_mode = PM_FOLDER;
     m_sort_mode = path_info.sort_mode;
     m_contain_sub_folder = path_info.contain_sub_folder;
     m_index = path_info.track;
@@ -997,7 +1020,7 @@ bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     // 按照新文件夹设置
     m_path = path;
     m_playlist_path.clear();
-    m_playlist_mode = false;
+    m_playlist_mode = PM_FOLDER;
     m_sort_mode = SM_U_FILE;
     m_contain_sub_folder = contain_sub_folder;
     m_index = 0;
@@ -1025,7 +1048,7 @@ bool CPlayer::SetPlaylist(const wstring& playlist_path, int track, int position,
 
     m_path.clear();
     m_playlist_path = playlist_path;
-    m_playlist_mode = true;
+    m_playlist_mode = PM_PLAYLIST;
     m_sort_mode = SM_UNSORT;    // 播放列表模式下默认未排序
     m_contain_sub_folder = false;
     m_index = track;
@@ -1075,7 +1098,7 @@ bool CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool pla
 
     m_path.clear();
     m_playlist_path = CPlaylistMgr::Instance().m_default_playlist.path;
-    m_playlist_mode = true;
+    m_playlist_mode = PM_PLAYLIST;
     m_sort_mode = SM_UNSORT;    // 播放列表模式下默认未排序
     m_contain_sub_folder = false;
     m_index = 0;
@@ -1101,7 +1124,7 @@ bool CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_in
 
     m_path.clear();
     m_playlist_path = CPlaylistMgr::Instance().m_temp_playlist.path;
-    m_playlist_mode = true;
+    m_playlist_mode = PM_PLAYLIST;
     m_sort_mode = SM_UNSORT;    // 播放列表模式下默认未排序
     m_contain_sub_folder = false;
     m_index = play_index;
@@ -1123,7 +1146,7 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     CFilePathHelper file_path(song.file_path);
     m_path = file_path.GetDir();
     m_playlist_path.clear();
-    m_playlist_mode = false;
+    m_playlist_mode = PM_FOLDER;
     m_sort_mode = SM_U_FILE;
     m_contain_sub_folder = false;
     m_index = 0;
@@ -1149,6 +1172,30 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     return true;
 }
 
+bool CPlayer::OpenSongsInMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index, bool play)
+{
+    if (!BeforeIniPlayList())
+        return false;
+
+    m_path.clear();
+    m_playlist_path.clear();
+    m_playlist_mode = PM_MEDIA_LIB;
+    m_sort_mode = SM_U_FILE;
+    m_media_lib_playlist_name = name;
+    m_media_lib_playlist_type = type;
+    auto playlistInfo = CMediaLibPlaylistMgr::Instance().FindItem(type, name);
+    if (!playlistInfo.isEmpty())
+    {
+        m_sort_mode = playlistInfo.sort_mode;
+        m_index = playlistInfo.track;
+        m_current_position.fromInt(playlistInfo.position);
+    }
+
+    IniPlayList(play);
+    return true;
+
+}
+
 int CPlayer::AddFilesToPlaylist(const vector<wstring>& files)
 {
     vector<SongInfo> songs(files.size());
@@ -1160,7 +1207,7 @@ int CPlayer::AddFilesToPlaylist(const vector<wstring>& files)
 int CPlayer::AddSongsToPlaylist(const vector<SongInfo>& songs)
 {
     // 此方法仅限已处于播放列表模式时使用
-    if (!m_playlist_mode || m_playlist_path.empty()) return -2;
+    if (m_playlist_mode != PM_PLAYLIST || m_playlist_path.empty()) return -2;
     // 这里有必要暂时关闭，故保存播放状态，AddSongsToPlaylist可能将歌曲插入到开头导致index不再准确
     // 待到将来万一m_playlist的多线程问题彻底修好以后或许可以做不停止的重新初始化
     if (!BeforeIniPlayList(true, true))
@@ -1195,7 +1242,7 @@ bool CPlayer::ReloadPlaylist(MediaLibRefreshMode refresh_mode)
 
 bool CPlayer::SetContainSubFolder()
 {
-    if (!IsPlaylistMode())
+    if (m_playlist_mode == PM_FOLDER)
     {
         m_contain_sub_folder = !m_contain_sub_folder;
         if (ReloadPlaylist(MR_MIN_REQUIRED))
@@ -1214,17 +1261,20 @@ bool CPlayer::RemoveCurPlaylistOrFolder()
     if (!BeforeIniPlayList(true))
         return false;
 
+    if (m_playlist_mode == PM_MEDIA_LIB)
+        return false;
+
     // 在列表初始化线程中通知主窗口移除当前列表
-    if (m_playlist_mode)
+    if (m_playlist_mode == PM_PLAYLIST)
         m_thread_info.remove_list_path = m_playlist_path;
-    else
+    else if (m_playlist_mode == PM_FOLDER)
         m_thread_info.remove_list_path = m_path;
 
     const PlaylistInfo& def_playlist = CPlaylistMgr::Instance().m_default_playlist;
 
     m_path.clear();
     m_playlist_path = def_playlist.path;
-    m_playlist_mode = true;
+    m_playlist_mode = PM_PLAYLIST;
     m_sort_mode = SM_UNSORT;        // 播放列表模式默认未排序
     m_contain_sub_folder = false;
     m_index = def_playlist.track;
@@ -1357,7 +1407,7 @@ void CPlayer::SaveConfig() const
     ini.WriteBool(L"config", L"lyric_fuzzy_match", theApp.m_lyric_setting_data.lyric_fuzzy_match);
     ini.WriteString(L"config", L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
     ini.WriteString(L"config", L"album_cover_path", theApp.m_app_setting_data.album_cover_path);
-    ini.WriteBool(L"config", L"playlist_mode", m_playlist_mode);
+    ini.WriteInt(L"config", L"playlist_mode", m_playlist_mode);
     ini.WriteDouble(L"config", L"speed", m_speed);
 
     //保存均衡器设定
@@ -1405,7 +1455,7 @@ void CPlayer::LoadConfig()
         theApp.m_app_setting_data.album_cover_path.append(1, L'\\');
 
     bool playlist_mode_default = !CCommon::FileExist(theApp.m_recent_path_dat_path);
-    m_playlist_mode = ini.GetBool(L"config", L"playlist_mode", playlist_mode_default);
+    m_playlist_mode = static_cast<PlaylistMode>(ini.GetInt(L"config", L"playlist_mode", playlist_mode_default));
     m_speed = static_cast<float>(ini.GetDouble(L"config", L"speed", 1));
     if (m_speed < MIN_PLAY_SPEED || m_speed > MAX_PLAY_SPEED)
         m_speed = 1;
@@ -1496,7 +1546,7 @@ wstring CPlayer::GetCurrentDir() const
 
 wstring CPlayer::GetCurrentDir2() const
 {
-    if (m_playlist_mode)
+    if (m_playlist_mode == PM_PLAYLIST || m_playlist_mode == PM_MEDIA_LIB)
         return GetCurrentDir();
     else
         return m_path;
@@ -1504,7 +1554,7 @@ wstring CPlayer::GetCurrentDir2() const
 
 wstring CPlayer::GetCurrentFolderOrPlaylistName() const
 {
-    if (m_playlist_mode)
+    if (m_playlist_mode == PM_PLAYLIST)
     {
         CFilePathHelper file_path{ m_playlist_path };
         wstring playlist_name = file_path.GetFileName();
@@ -1516,6 +1566,10 @@ wstring CPlayer::GetCurrentFolderOrPlaylistName() const
             return theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_TEMP");
         else
             return file_path.GetFileNameWithoutExtension();
+    }
+    else if (m_playlist_mode == PM_MEDIA_LIB)
+    {
+        return m_media_lib_playlist_name;
     }
     else
     {
@@ -1625,7 +1679,10 @@ void CPlayer::AfterRemoveSong(bool is_current)
     AfterSetTrack();
     SaveRecentInfoToFiles();
     // 文件夹模式“从磁盘删除”时刷新媒体库路径标签页否则刷新播放列表标签页
-    CMusicPlayerCmdHelper::RefreshMediaTabData(m_playlist_mode ? CMusicPlayerCmdHelper::ML_PLAYLIST : CMusicPlayerCmdHelper::ML_FOLDER);
+    if (m_playlist_mode == PM_PLAYLIST)
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_PLAYLIST);
+    else if (m_playlist_mode == PM_FOLDER)
+        CMusicPlayerCmdHelper::RefreshMediaTabData(CMusicPlayerCmdHelper::ML_FOLDER);
 }
 
 bool CPlayer::RemoveSong(int index, bool skip_locking)
@@ -1679,7 +1736,7 @@ void CPlayer::RemoveSongs(vector<int> indexes, bool skip_locking)
 int CPlayer::RemoveSameSongs()
 {
     if (GetSongNum() < 2) return 0;                             // 播放列表为空或仅含有一个元素则返回
-    if (!m_playlist_mode) return 0;                             // 不是播放列表模式返回
+    if (m_playlist_mode != PM_PLAYLIST) return 0;               // 不是播放列表模式返回
     if (m_loading) return 0;                                    // 播放列表载入中返回
     if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return 0;  // 取得播放状态锁失败返回
 
@@ -1711,7 +1768,7 @@ int CPlayer::RemoveSameSongs()
 int CPlayer::RemoveInvalidSongs()
 {
     if (IsPlaylistEmpty()) return 0;                            // 播放列表为空或仅含有一个元素则返回
-    if (!m_playlist_mode) return 0;                             // 不是播放列表模式返回
+    if (m_playlist_mode != PM_PLAYLIST) return 0;               // 不是播放列表模式返回
     if (m_loading) return 0;                                    // 播放列表载入中返回
     if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return 0;  // 取得播放状态锁失败返回
 
@@ -1739,7 +1796,7 @@ int CPlayer::RemoveInvalidSongs()
 void CPlayer::ClearPlaylist()
 {
     if (IsPlaylistEmpty()) return;                          // 播放列表为空（或有一个占位SongInfo）返回
-    if (!m_playlist_mode) return;                           // 不是播放列表模式返回
+    if (m_playlist_mode != PM_PLAYLIST) return;             // 不是播放列表模式返回
     if (m_loading) return;                                  // 播放列表载入中返回
     if (!GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;  // 取得播放状态锁失败返回
 
@@ -1754,7 +1811,7 @@ bool CPlayer::MoveUp(int first, int last)
 {
     if (m_loading)
         return false;
-    if (!m_playlist_mode)
+    if (m_playlist_mode != PM_PLAYLIST)
         return false;
 
     if (first <= 0 || last >= GetSongNum() || last < first)
@@ -1779,7 +1836,7 @@ bool CPlayer::MoveDown(int first, int last)
 {
     if (m_loading)
         return false;
-    if (!m_playlist_mode)
+    if (m_playlist_mode != PM_PLAYLIST)
         return false;
 
     if (first < 0 || last >= GetSongNum() - 1 || last < first)
@@ -1804,7 +1861,7 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
 {
     if (m_loading)
         return -1;
-    if (!m_playlist_mode)
+    if (m_playlist_mode != PM_PLAYLIST)
         return -1;
 
     if (std::find(indexes.begin(), indexes.end(), dest) != indexes.end())
@@ -2020,7 +2077,7 @@ void CPlayer::SetFavourite(bool favourite)
 
 bool CPlayer::IsFavourite()
 {
-    if (m_playlist_mode && CPlaylistMgr::Instance().m_cur_playlist_type == PT_FAVOURITE)
+    if (m_playlist_mode == PM_PLAYLIST && CPlaylistMgr::Instance().m_cur_playlist_type == PT_FAVOURITE)
         return true;
     if (m_index >= 0 && m_index < GetSongNum())
     {
@@ -2268,7 +2325,7 @@ void CPlayer::LoadRecentPath()
 
 void CPlayer::SaveCurrentPlaylist()
 {
-    if (m_playlist_mode)
+    if (m_playlist_mode == PM_PLAYLIST)
         CPlaylistFile::SavePlaylistToFile(m_playlist, m_playlist_path);
 }
 
@@ -2562,6 +2619,26 @@ void CPlayer::SearchOutAlbumCover()
 bool CPlayer::IsOsuFile() const
 {
     return m_is_osu;
+}
+
+bool CPlayer::IsPlaylistMode() const
+{
+    return m_playlist_mode == PM_PLAYLIST;
+}
+
+bool CPlayer::IsFolderMode() const
+{
+    return m_playlist_mode == PM_FOLDER;
+}
+
+bool CPlayer::IsMediaLibMode() const
+{
+    return m_playlist_mode == PM_MEDIA_LIB;
+}
+
+CMediaClassifier::ClassificationType CPlayer::GetMediaLibPlaylistType() const
+{
+    return m_media_lib_playlist_type;
 }
 
 bool CPlayer::IsPlaylistEmpty() const

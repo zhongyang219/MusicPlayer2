@@ -5,7 +5,7 @@
 #include "MusicPlayer2.h"
 #include "CFloatPlaylistDlg.h"
 #include "MusicPlayerDlg.h"
-
+#include "MediaLibPlaylistMgr.h"
 
 // CFloatPlaylistDlg 对话框
 
@@ -29,7 +29,7 @@ void CFloatPlaylistDlg::RefreshData()
     m_path_edit.SetWindowText(CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str());
 
     //播放列表模式下，播放列表工具栏第一个菜单为“添加”，文件夹模式下为“文件夹”
-    if (CPlayer::GetInstance().IsPlaylistMode())
+    if (!CPlayer::GetInstance().IsFolderMode())
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
         m_playlist_toolbar.ModifyToolButton(0, IconMgr::IconType::IT_Add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
@@ -258,10 +258,16 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
         m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str());
         m_path_static.SetIcon(IconMgr::IconType::IT_Playlist);
     }
-    else
+    else if (CPlayer::GetInstance().IsFolderMode())
     {
         m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str());
         m_path_static.SetIcon(IconMgr::IconType::IT_Folder);
+    }
+    else
+    {
+        auto type = CPlayer::GetInstance().GetMediaLibPlaylistType();
+        m_path_static.SetWindowText(CMediaLibPlaylistMgr::GetTypeName(type).c_str());
+        m_path_static.SetIcon(CMediaLibPlaylistMgr::GetIcon(type));
     }
 
     //初始化播放列表工具栏

@@ -29,6 +29,7 @@
 #include "FilterHelper.h"
 #include "CommonDialogMgr.h"
 #include "WinVersionHelper.h"
+#include "MediaLibPlaylistMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -883,10 +884,16 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
             pStatic->SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str());
             pStatic->SetIcon(IconMgr::IconType::IT_Playlist);
         }
-        else
+        else if(CPlayer::GetInstance().IsFolderMode())
         {
             pStatic->SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str());
             pStatic->SetIcon(IconMgr::IconType::IT_Folder);
+        }
+        else
+        {
+            auto type = CPlayer::GetInstance().GetMediaLibPlaylistType();
+            pStatic->SetWindowText(CMediaLibPlaylistMgr::GetTypeName(type).c_str());
+            pStatic->SetIcon(CMediaLibPlaylistMgr::GetIcon(type));
         }
     };
     updatePathStatic(&m_path_static);
@@ -894,7 +901,7 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
         updatePathStatic(&m_pFloatPlaylistDlg->GetPathStatic());
 
     //播放列表模式下，播放列表工具栏第一个菜单为“添加”，文件夹模式下为“文件夹”
-    if (CPlayer::GetInstance().IsPlaylistMode())
+    if (!CPlayer::GetInstance().IsFolderMode())
     {
         const wstring& menu_str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_TOOLBAR_ADD");
         m_playlist_toolbar.ModifyToolButton(0, IconMgr::IconType::IT_Add, menu_str.c_str(), menu_str.c_str(), theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlaylistAddMenu), true);
@@ -1195,7 +1202,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         if (media_lib_display_item_changed)     //如果媒体库显示项目发生发改变，则关闭媒体库对话框然后重新打开
         {
             CCommon::DeleteModelessDialog(m_pMediaLibDlg);
-            int cur_tab{ CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0 };
+            int cur_tab{ CPlayer::GetInstance().IsFolderMode() ? 0 : 1 };
             m_pMediaLibDlg = new CMediaLibDlg(cur_tab);
             m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG/*, GetDesktopWindow()*/);
             m_pMediaLibDlg->ShowWindow(SW_SHOW);
@@ -1452,7 +1459,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_REMOVE_INVALID_ITEMS, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_FIX_PATH_ERROR, MF_BYCOMMAND | (playlist_mode ? MF_ENABLED : MF_GRAYED));
 
-    pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (!playlist_mode ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (CPlayer::GetInstance().IsFolderMode() ? MF_ENABLED : MF_GRAYED));
 
     //设置分级菜单的选中
     if (rating >= 1 && rating <= 5)
@@ -5770,7 +5777,7 @@ void CMusicPlayerDlg::OnSaveCurrentPlaylistAs()
 {
     // TODO: 在此添加命令处理程序代码
     wstring playlist_name = CPlayer::GetInstance().GetCurrentFolderOrPlaylistName();
-    if (!CPlayer::GetInstance().IsPlaylistMode())
+    if (CPlayer::GetInstance().IsFolderMode())
     {
         playlist_name = CFilePathHelper(playlist_name).GetFolderName();
     }
