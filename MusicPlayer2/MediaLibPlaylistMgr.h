@@ -36,6 +36,8 @@ public:
     MediaLibPlaylistInfo FindItem(CMediaClassifier::ClassificationType type, const wstring& name) const;
     MediaLibPlaylistInfo GetCurrentPlaylistInfo() const;
 
+    const std::deque<MediaLibPlaylistInfo>& GetAllItems() const { return m_media_lib_playlist; }
+
     void SavePlaylistData();
     void LoadPlaylistData();
 

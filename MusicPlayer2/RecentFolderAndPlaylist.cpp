@@ -3,6 +3,7 @@
 #include "FilePathHelper.h"
 #include "Player.h"
 #include "MusicPlayer2.h"
+#include "MediaLibPlaylistMgr.h"
 
 CRecentFolderAndPlaylist CRecentFolderAndPlaylist::m_instance;
 
@@ -29,6 +30,10 @@ void CRecentFolderAndPlaylist::Init()
     for (auto& item : recent_playlist.m_recent_playlists)
         m_list.emplace_back(&item);
 
+    //添加最近播放媒体库项目
+    for (const auto& item : CMediaLibPlaylistMgr::Instance().GetAllItems())
+        m_list.emplace_back(&item);
+
     //添加最近播放文件夹
     for (auto& item : recent_folder)
         m_list.emplace_back(&item);
@@ -50,36 +55,62 @@ const std::vector<CRecentFolderAndPlaylist::Item>& CRecentFolderAndPlaylist::Get
 
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
+bool CRecentFolderAndPlaylist::Item::IsPlaylist() const
+{
+    return item_type == PLAYLIST;
+}
+
+bool CRecentFolderAndPlaylist::Item::IsFolder() const
+{
+    return item_type == FOLDER;
+}
+
+bool CRecentFolderAndPlaylist::Item::IsMedialib() const
+{
+    return item_type == MEDIA_LIB;
+}
+
 CRecentFolderAndPlaylist::Item::Item(const PathInfo* _folder_info)
 {
-    is_playlist = false;
+    item_type = Item::FOLDER;
     folder_info = _folder_info;
 }
 
 CRecentFolderAndPlaylist::Item::Item(const PlaylistInfo* _playlist_info)
 {
-    is_playlist = true;
+    item_type = Item::PLAYLIST;
     playlist_info = _playlist_info;
+}
+
+CRecentFolderAndPlaylist::Item::Item(const MediaLibPlaylistInfo* _medialib_info)
+{
+    item_type = Item::MEDIA_LIB;
+    medialib_info = _medialib_info;
 }
 
 unsigned __int64 CRecentFolderAndPlaylist::Item::LastPlayedTime() const
 {
-    if (is_playlist)
+    if (item_type == Item::PLAYLIST)
     {
         if (playlist_info != nullptr)
             return playlist_info->last_played_time;
     }
-    else
+    else if (item_type == Item::FOLDER)
     {
         if (folder_info != nullptr)
             return folder_info->last_played_time;
+    }
+    else if (item_type == Item::MEDIA_LIB)
+    {
+        if (medialib_info != nullptr)
+            return medialib_info->last_played_time;
     }
     return 0;
 }
 
 std::wstring CRecentFolderAndPlaylist::Item::GetName() const
 {
-    if (is_playlist)
+    if (item_type == Item::PLAYLIST)
     {
         if (playlist_info != nullptr)
         {
@@ -96,7 +127,7 @@ std::wstring CRecentFolderAndPlaylist::Item::GetName() const
             return playlist_name;
         }
     }
-    else
+    else if (item_type == Item::FOLDER)
     {
         if (folder_info != nullptr)
         {
@@ -107,6 +138,13 @@ std::wstring CRecentFolderAndPlaylist::Item::GetName() const
             return path_name;
         }
     }
+    else if (item_type == Item::MEDIA_LIB)
+    {
+        if (medialib_info != nullptr)
+        {
+            return medialib_info->path;
+        }
+    }
     return wstring();
 }
 
@@ -114,10 +152,16 @@ bool CRecentFolderAndPlaylist::Item::IsItemCurrentPlaying() const
 {
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
-        return is_playlist && playlist_info != nullptr && playlist_info->path == CPlayer::GetInstance().GetPlaylistPath();
+        return item_type == Item::PLAYLIST && playlist_info != nullptr && playlist_info->path == CPlayer::GetInstance().GetPlaylistPath();
     }
-    else
+    else if (CPlayer::GetInstance().IsFolderMode())
     {
-        return !is_playlist && folder_info != nullptr && folder_info->path == CPlayer::GetInstance().GetCurrentDir2();
+        return item_type == Item::FOLDER && folder_info != nullptr && folder_info->path == CPlayer::GetInstance().GetCurrentDir2();
     }
+    else if (CPlayer::GetInstance().IsMediaLibMode())
+    {
+        return item_type == Item::MEDIA_LIB && medialib_info != nullptr && medialib_info->medialib_type == CPlayer::GetInstance().GetMediaLibPlaylistType()
+            && medialib_info->path == CPlayer::GetInstance().GetCurrentFolderOrPlaylistName();
+    }
+    return false;
 }

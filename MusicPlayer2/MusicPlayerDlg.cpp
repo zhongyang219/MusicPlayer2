@@ -3335,7 +3335,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
             auto& item = CRecentFolderAndPlaylist::Instance().GetItemList()[index];
             if (!item.IsItemCurrentPlaying())
             {
-                if (item.is_playlist)
+                if (item.IsPlaylist())
                 {
                     if (item.playlist_info != nullptr)
                     {
@@ -3346,11 +3346,22 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                         }
                     }
                 }
-                else
+                else if (item.IsFolder())
                 {
                     if (item.folder_info != nullptr)
                     {
                         if (!CPlayer::GetInstance().SetPath(*item.folder_info))
+                        {
+                            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                        }
+                    }
+                }
+                else if (item.IsMedialib())
+                {
+                    if (item.medialib_info != nullptr)
+                    {
+                        if (!CPlayer::GetInstance().SetMediaLibPlaylist(item.medialib_info->medialib_type, item.medialib_info->path, item.medialib_info->track, item.medialib_info->position))
                         {
                             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
                             MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
@@ -6431,13 +6442,20 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, 
         if (menu_list.size() >= RECENT_FOLDER_PLAYLIST_MAX_SIZE)
             break;
         UINT id = ID_RECENT_FOLDER_PLAYLIST_MENU_START + menu_list.size();
-        if (item.is_playlist)
+        if (item.IsPlaylist())
         {
             bool is_favourite{ item.playlist_info->path == CPlaylistMgr::Instance().m_favourite_playlist.path };
             menu_list.emplace_back(MenuMgr::MenuItem{ id, is_favourite ? IconMgr::IconType::IT_Favorite_On : IconMgr::IconType::IT_Playlist, item.GetName() });
         }
-        else
+        else if (item.IsFolder())
+        {
             menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IconType::IT_Folder, item.GetName() });
+        }
+        else if (item.IsMedialib())
+        {
+            auto icon_type = CMediaLibPlaylistMgr::GetIcon(item.medialib_info->medialib_type);
+            menu_list.emplace_back(MenuMgr::MenuItem{ id, icon_type, item.GetName() });
+        }
     }
     theApp.m_menu_mgr.UpdateMenu(MenuMgr::RecentFolderPlaylistMenu, menu_list);
 
