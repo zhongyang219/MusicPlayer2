@@ -1186,7 +1186,7 @@ bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, con
     m_index = 0;
     m_current_position.fromInt(0);
     auto playlistInfo = CMediaLibPlaylistMgr::Instance().FindItem(type, name);
-    if (!playlistInfo.isEmpty())
+    if (playlistInfo.isValid())
     {
         m_sort_mode = playlistInfo.sort_mode;
         m_index = playlistInfo.track;

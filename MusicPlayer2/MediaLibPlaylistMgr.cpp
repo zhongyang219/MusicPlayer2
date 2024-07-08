@@ -16,9 +16,9 @@ bool MediaLibPlaylistInfo::operator<(const MediaLibPlaylistInfo& other) const
         return path < other.path;
 }
 
-bool MediaLibPlaylistInfo::isEmpty() const
+bool MediaLibPlaylistInfo::isValid() const
 {
-    return path.empty();
+    return !path.empty() && (medialib_type >= 0 && medialib_type < CMediaClassifier::CT_MAX);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -31,28 +31,6 @@ CMediaLibPlaylistMgr& CMediaLibPlaylistMgr::Instance()
 
 std::vector<SongInfo> CMediaLibPlaylistMgr::GetSongList(CMediaClassifier::ClassificationType type, const std::wstring& name)
 {
-    //if (type == CMediaClassifier::CT_NONE)
-    //{
-    //    std::vector<SongInfo> song_list;
-    //    CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map) {
-    //        for (const auto& song : song_data_map)
-    //            song_list.push_back(song.second);
-    //    });
-    //    return song_list;
-    //}
-    //else
-    //{
-    //    auto iter = m_classifier_map.find(type);
-    //    if (iter == m_classifier_map.end())
-    //    {
-    //        m_classifier_map.emplace(type, CMediaClassifier(type, theApp.m_media_lib_setting_data.hide_only_one_classification));
-    //    }
-    //    auto& classifier = m_classifier_map[type];
-    //    if (!classifier.IsClassified())
-    //        classifier.ClassifyMedia();
-    //    return classifier.GetMeidaList()[name];
-    //}
-
     CMediaClassifier classifier(type);
     classifier.ClassifyMedia();
     return  classifier.GetMeidaList()[name];
@@ -201,8 +179,8 @@ void CMediaLibPlaylistMgr::LoadPlaylistData()
             int sort_mode{};
             path_info.sort_mode = static_cast<SortMode>(sort_mode);
 
-            if (!path_info.isEmpty())
-            m_media_lib_playlist.push_back(path_info);
+            if (path_info.isValid())
+                m_media_lib_playlist.push_back(path_info);
         }
     }
     catch (CArchiveException* exception)

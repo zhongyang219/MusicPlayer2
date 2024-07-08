@@ -17,7 +17,7 @@ struct MediaLibPlaylistInfo : public PlaylistInfo
     SortMode sort_mode{};	//排序方式
     bool operator==(const MediaLibPlaylistInfo& other) const;
     bool operator<(const MediaLibPlaylistInfo& other) const;
-    bool isEmpty() const;
+    bool isValid() const;
 };
 
 
