@@ -177,6 +177,7 @@ void CMediaLibPlaylistMgr::LoadPlaylistData()
             ar >> medialib_type;
             path_info.medialib_type = static_cast<CMediaClassifier::ClassificationType>(medialib_type);
             int sort_mode{};
+            ar >> sort_mode;
             path_info.sort_mode = static_cast<SortMode>(sort_mode);
 
             if (path_info.isValid())
