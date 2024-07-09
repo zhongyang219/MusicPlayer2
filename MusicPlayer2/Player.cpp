@@ -119,7 +119,7 @@ void CPlayer::Create()
     else if (m_playlist_mode == PM_MEDIA_LIB)
     {
         auto playlist_info = CMediaLibPlaylistMgr::Instance().GetCurrentPlaylistInfo();
-        SetMediaLibPlaylist(playlist_info.medialib_type, playlist_info.path, playlist_info.track, theApp.m_play_setting_data.auto_play_when_start);
+        SetMediaLibPlaylist(playlist_info.medialib_type, playlist_info.path, -1, theApp.m_play_setting_data.auto_play_when_start);
     }
     else
     {
@@ -1191,6 +1191,12 @@ bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, con
         m_sort_mode = playlistInfo.sort_mode;
         m_index = playlistInfo.track;
         m_current_position.fromInt(playlistInfo.position);
+    }
+    //指定了播放曲目
+    if (play_index >= 0)
+    {
+        m_index = play_index;
+        m_current_position.fromInt(0);
     }
 
     IniPlayList(play);

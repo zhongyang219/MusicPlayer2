@@ -325,7 +325,8 @@ public:
     bool OpenASongInFolderMode(const SongInfo& song, bool play = false);
 
     //切换到媒体库模式
-    bool SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index = 0, bool play = true);
+    //play_index为-1表示按上次播放的曲目播放，如果为大于等于0的值，则视为播放指定曲目，并从头播放
+    bool SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index = -1, bool play = true);
 
     // 向当前播放列表添加文件，仅在播放列表模式可用，返回成功添加的数量（拒绝重复曲目）
     // 由于cue解析问题，请在判断需要“添加歌曲”而不是“添加文件”时尽量使用CPlayer::AddSongs代替此方法而不是使用path构建SongInfo

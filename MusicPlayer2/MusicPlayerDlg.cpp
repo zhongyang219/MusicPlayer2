@@ -3361,7 +3361,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
                 {
                     if (item.medialib_info != nullptr)
                     {
-                        if (!CPlayer::GetInstance().SetMediaLibPlaylist(item.medialib_info->medialib_type, item.medialib_info->path, item.medialib_info->track))
+                        if (!CPlayer::GetInstance().SetMediaLibPlaylist(item.medialib_info->medialib_type, item.medialib_info->path))
                         {
                             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
                             MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
