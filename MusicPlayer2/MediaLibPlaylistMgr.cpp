@@ -18,7 +18,7 @@ bool MediaLibPlaylistInfo::operator<(const MediaLibPlaylistInfo& other) const
 
 bool MediaLibPlaylistInfo::isValid() const
 {
-    return !path.empty() && (medialib_type >= 0 && medialib_type < CMediaClassifier::CT_MAX);
+    return (!path.empty() || track_num > 0) && (medialib_type >= 0 && medialib_type < CMediaClassifier::CT_MAX);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ CMediaLibPlaylistMgr& CMediaLibPlaylistMgr::Instance()
 
 std::vector<SongInfo> CMediaLibPlaylistMgr::GetSongList(CMediaClassifier::ClassificationType type, const std::wstring& name)
 {
-    CMediaClassifier classifier(type);
+    CMediaClassifier classifier(type, theApp.m_media_lib_setting_data.hide_only_one_classification);
     classifier.ClassifyMedia();
     const auto& song_list{ classifier.GetMeidaList()[name] };
     if (song_list.empty())
@@ -84,11 +84,27 @@ SortMode CMediaLibPlaylistMgr::GetDefaultSortMode(CMediaClassifier::Classificati
         return SM_U_PATH;
 }
 
+std::wstring CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(CMediaClassifier::ClassificationType type, const std::wstring medialib_item_name)
+{
+    //显示名称为<其他>时
+    if (medialib_item_name == STR_OTHER_CLASSIFY_TYPE)
+        return theApp.m_str_table.LoadText(L"TXT_CLASSIFY_OTHER");
+    //显示名称为<未知xxx>时
+    if (medialib_item_name.empty())
+    {
+        switch (type)
+        {
+        case CMediaClassifier::CT_ARTIST: return theApp.m_str_table.LoadText(L"TXT_EMPTY_ARTIST");
+        case CMediaClassifier::CT_ALBUM: return theApp.m_str_table.LoadText(L"TXT_EMPTY_ALBUM");
+        case CMediaClassifier::CT_GENRE: return theApp.m_str_table.LoadText(L"TXT_EMPTY_GENRE");
+        case CMediaClassifier::CT_YEAR: return theApp.m_str_table.LoadText(L"TXT_EMPTY_YEAR");
+        }
+    }
+    return medialib_item_name;
+}
+
 void CMediaLibPlaylistMgr::EmplaceMediaLibPlaylist(CMediaClassifier::ClassificationType type, const wstring& name, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time, SortMode sort_mode)
 {
-    if (name.empty())
-        return;
-
     MediaLibPlaylistInfo playlist_info;
     playlist_info.path = name;
     playlist_info.track = track;
@@ -105,7 +121,7 @@ void CMediaLibPlaylistMgr::EmplaceMediaLibPlaylist(CMediaClassifier::Classificat
             m_media_lib_playlist.erase(m_media_lib_playlist.begin() + i);   //如果媒体库项目已经在列表中，就先把它列表中删除
     }
 
-    if (!m_empty_items.contains(playlist_info))
+    if (playlist_info.isValid() && !m_empty_items.contains(playlist_info))
         m_media_lib_playlist.push_front(playlist_info);                       //如果媒体库项目不是空的，就插入到m_recent_playlists的前面
 }
 

@@ -142,7 +142,7 @@ std::wstring CRecentFolderAndPlaylist::Item::GetName() const
     {
         if (medialib_info != nullptr)
         {
-            return medialib_info->path;
+            return CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(medialib_info->medialib_type, medialib_info->path);
         }
     }
     return wstring();
@@ -161,7 +161,7 @@ bool CRecentFolderAndPlaylist::Item::IsItemCurrentPlaying() const
     else if (CPlayer::GetInstance().IsMediaLibMode())
     {
         return item_type == Item::MEDIA_LIB && medialib_info != nullptr && medialib_info->medialib_type == CPlayer::GetInstance().GetMediaLibPlaylistType()
-            && medialib_info->path == CPlayer::GetInstance().GetCurrentFolderOrPlaylistName();
+            && medialib_info->path == CPlayer::GetInstance().GetMedialibItemName();
     }
     return false;
 }

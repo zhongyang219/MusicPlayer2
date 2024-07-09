@@ -33,6 +33,8 @@ public:
     static IconMgr::IconType GetIcon(CMediaClassifier::ClassificationType type);
     static std::wstring GetTypeName(CMediaClassifier::ClassificationType type);
     static SortMode GetDefaultSortMode(CMediaClassifier::ClassificationType type);
+    //获取一个媒体库项目的显示名称（仅当媒体库项目为“<未知艺术家>”、“<其他>”等时需要特殊处理）
+    static std::wstring GetMediaLibItemDisplayName(CMediaClassifier::ClassificationType type, const std::wstring medialib_item_name);
 
     void EmplaceMediaLibPlaylist(CMediaClassifier::ClassificationType type, const wstring& name, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time, SortMode sort_mode);
     MediaLibPlaylistInfo FindItem(CMediaClassifier::ClassificationType type, const wstring& name) const;

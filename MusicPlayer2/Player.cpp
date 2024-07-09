@@ -1577,7 +1577,7 @@ wstring CPlayer::GetCurrentFolderOrPlaylistName() const
     }
     else if (m_playlist_mode == PM_MEDIA_LIB)
     {
-        return m_media_lib_playlist_name;
+        return CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(m_media_lib_playlist_type, m_media_lib_playlist_name);
     }
     else
     {

@@ -412,6 +412,8 @@ public:
     bool AlbumCoverExist();
     wstring GetAlbumCoverPath() const { return m_album_cover_path; }
     wstring GetAlbumCoverType() const;
+    //媒体库模式下获取当前播放媒体库项目的名称
+    wstring GetMedialibItemName() const { return m_media_lib_playlist_name; }
 
 private:
     // 下方播放列表移除歌曲方法中的共有部分
