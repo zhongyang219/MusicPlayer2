@@ -315,7 +315,7 @@ void CPlayer::IniPlaylistComplate()
         ASSERT(FALSE);
         m_sort_mode = SM_U_FILE;
     }
-    if (m_playlist_mode == PM_FOLDER && m_playlist.size() > 1)
+    if ((m_playlist_mode == PM_FOLDER || m_playlist_mode == PM_MEDIA_LIB) && m_playlist.size() > 1)
         SortPlaylist(true);
 
     if (!IsPlaylistEmpty())         // 播放列表初始化完成，根据m_index,m_current_position,m_thread_info.play还原播放状态
