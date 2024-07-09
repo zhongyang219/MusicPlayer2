@@ -119,7 +119,7 @@ void CPlayer::Create()
     else if (m_playlist_mode == PM_MEDIA_LIB)
     {
         auto playlist_info = CMediaLibPlaylistMgr::Instance().GetCurrentPlaylistInfo();
-        SetMediaLibPlaylist(playlist_info.medialib_type, playlist_info.path, playlist_info.track, playlist_info.position);
+        SetMediaLibPlaylist(playlist_info.medialib_type, playlist_info.path, playlist_info.track, theApp.m_play_setting_data.auto_play_when_start);
     }
     else
     {
