@@ -310,7 +310,7 @@ void CPlayer::IniPlaylistComplate()
         ASSERT(m_sort_mode == SM_UNSORT);
         m_sort_mode = SM_UNSORT;
     }
-    else if (m_sort_mode == SM_UNSORT)  // 文件夹模式不允许为未排序
+    else if (m_playlist_mode == PM_FOLDER && m_sort_mode == SM_UNSORT)  // 文件夹模式不允许为未排序
     {
         ASSERT(FALSE);
         m_sort_mode = SM_U_FILE;
@@ -1180,7 +1180,7 @@ bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, con
     m_path.clear();
     m_playlist_path.clear();
     m_playlist_mode = PM_MEDIA_LIB;
-    m_sort_mode = SM_U_FILE;
+    m_sort_mode = CMediaLibPlaylistMgr::GetDefaultSortMode(type);
     m_media_lib_playlist_name = name;
     m_media_lib_playlist_type = type;
     m_index = 0;

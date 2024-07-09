@@ -66,6 +66,16 @@ std::wstring CMediaLibPlaylistMgr::GetTypeName(CMediaClassifier::ClassificationT
     return std::wstring();
 }
 
+SortMode CMediaLibPlaylistMgr::GetDefaultSortMode(CMediaClassifier::ClassificationType type)
+{
+    //唱片集默认按音轨号排序
+    if (type == CMediaClassifier::CT_ALBUM)
+        return SM_U_TRACK;
+    //其他默认按路径排序
+    else
+        return SM_U_PATH;
+}
+
 void CMediaLibPlaylistMgr::EmplaceMediaLibPlaylist(CMediaClassifier::ClassificationType type, const wstring& name, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time, SortMode sort_mode)
 {
     if (name.empty())

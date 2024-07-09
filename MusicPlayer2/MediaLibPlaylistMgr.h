@@ -31,6 +31,7 @@ public:
     static std::vector<SongInfo> GetSongList(CMediaClassifier::ClassificationType type, const std::wstring& name);
     static IconMgr::IconType GetIcon(CMediaClassifier::ClassificationType type);
     static std::wstring GetTypeName(CMediaClassifier::ClassificationType type);
+    static SortMode GetDefaultSortMode(CMediaClassifier::ClassificationType type);
 
     void EmplaceMediaLibPlaylist(CMediaClassifier::ClassificationType type, const wstring& name, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time, SortMode sort_mode);
     MediaLibPlaylistInfo FindItem(CMediaClassifier::ClassificationType type, const wstring& name) const;
