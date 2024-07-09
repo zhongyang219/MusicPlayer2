@@ -110,6 +110,9 @@ public:
 
     static bool CharIsNumber(wchar_t ch);
 
+    //将字符串转换成整数，从字符串中提取第最先出现的数字
+    static int StringToInt(const wstring& str);
+
     // 按换行分割字符串，自适应CR/LF/CRLF换行
     static void StringSplitLine(const wstring& source_str, vector<wstring>& results, bool skip_empty = true, bool trim = true);
 
