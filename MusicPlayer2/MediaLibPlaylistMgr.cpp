@@ -33,7 +33,15 @@ std::vector<SongInfo> CMediaLibPlaylistMgr::GetSongList(CMediaClassifier::Classi
 {
     CMediaClassifier classifier(type);
     classifier.ClassifyMedia();
-    return  classifier.GetMeidaList()[name];
+    const auto& song_list{ classifier.GetMeidaList()[name] };
+    if (song_list.empty())
+    {
+        MediaLibPlaylistInfo empty_item;
+        empty_item.path = name;
+        empty_item.medialib_type = type;
+        m_instance.m_empty_items.insert(empty_item);
+    }
+    return song_list;
 }
 
 IconMgr::IconType CMediaLibPlaylistMgr::GetIcon(CMediaClassifier::ClassificationType type)
@@ -94,10 +102,11 @@ void CMediaLibPlaylistMgr::EmplaceMediaLibPlaylist(CMediaClassifier::Classificat
     for (size_t i{ 0 }; i < m_media_lib_playlist.size(); i++)
     {
         if (playlist_info == m_media_lib_playlist[i])
-            m_media_lib_playlist.erase(m_media_lib_playlist.begin() + i);   // 如果当前路径已经在列表中，就把它列表中删除
+            m_media_lib_playlist.erase(m_media_lib_playlist.begin() + i);   //如果媒体库项目已经在列表中，就先把它列表中删除
     }
 
-    m_media_lib_playlist.push_front(playlist_info);                       // 当前路径插入到m_recent_playlists的前面
+    if (!m_empty_items.contains(playlist_info))
+        m_media_lib_playlist.push_front(playlist_info);                       //如果媒体库项目不是空的，就插入到m_recent_playlists的前面
 }
 
 MediaLibPlaylistInfo CMediaLibPlaylistMgr::GetCurrentPlaylistInfo() const

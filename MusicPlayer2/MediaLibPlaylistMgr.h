@@ -5,6 +5,7 @@
 #include "CommonData.h"
 #include <deque>
 #include <map>
+#include <set>
 #include "IconMgr.h"
 #include "AudioCommon.h"
 
@@ -48,7 +49,7 @@ private:
 
     static CMediaLibPlaylistMgr m_instance;     //此类唯一的对象
     std::deque<MediaLibPlaylistInfo> m_media_lib_playlist;
-
+    std::set<MediaLibPlaylistInfo> m_empty_items;   //如果一个媒体库库项目下面没有任何曲目，则会被保存到这里
 
 };
 
