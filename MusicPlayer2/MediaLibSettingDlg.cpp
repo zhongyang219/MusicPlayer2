@@ -547,7 +547,7 @@ void CMediaLibSettingDlg::OnBnClickedLastfmLogin() {
     if (!token.empty() && !url.empty())
     {
         ShellExecuteW(nullptr, L"open", url.c_str(), nullptr, nullptr, SW_SHOW);
-        const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_LAST_FM_LOGIN");
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_LAST_FM_LOGIN_PROMPT");
         if (MessageBoxW(info.c_str(), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
         {
             if (theApp.m_lastfm.GetSession(token))
@@ -558,7 +558,7 @@ void CMediaLibSettingDlg::OnBnClickedLastfmLogin() {
             }
         }
     }
-    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_LAST_FM_LOGIN");
+    const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_LAST_FM_LOGIN_FAILED");
     MessageBoxW(info.c_str(), NULL, MB_ICONERROR | MB_OK);
     return;
 }
