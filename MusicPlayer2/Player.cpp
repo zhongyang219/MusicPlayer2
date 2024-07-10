@@ -1240,7 +1240,8 @@ bool CPlayer::ReloadPlaylist(MediaLibRefreshMode refresh_mode)
     if (!BeforeIniPlayList(true, true))
         return false;
 
-    m_sort_mode = SM_UNSORT;        // 播放列表模式默认未排序
+    if (IsPlaylistMode())
+        m_sort_mode = SM_UNSORT;        // 播放列表模式默认未排序
     m_index = 0;
     m_current_position.fromInt(0);
 
