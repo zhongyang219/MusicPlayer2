@@ -191,6 +191,30 @@ bool CCommon::CharIsNumber(wchar_t ch)
     return (ch >= L'0' && ch <= L'9');
 }
 
+int CCommon::StringToInt(const wstring& str)
+{
+    size_t start{ std::wstring::npos };
+    size_t end{ std::wstring::npos };
+    for (size_t i{}; i < str.size(); i++)
+    {
+        //标记第一个数字的位置
+        if (CharIsNumber(str[i]) && start == std::wstring::npos)
+            start = i;
+        //标记找到第一个数字后第一个不是数字的位置
+        if (start != std::wstring::npos && !CharIsNumber(str[i]))
+        {
+            end = i;
+            break;
+        }
+    }
+    if (start < str.size() && end > start)
+    {
+        wstring num_str = str.substr(start, end - start);
+        return _wtoi(num_str.c_str());
+    }
+    return 0;
+}
+
 void CCommon::StringSplitLine(const wstring& source_str, vector<wstring>& results, bool skip_empty, bool trim)
 {
     results.clear();

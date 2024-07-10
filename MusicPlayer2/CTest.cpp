@@ -51,7 +51,8 @@ void CTest::Test()
     //TestRating();
 
     //TestCueSave();
-    TestFilePathHelper();
+    //TestFilePathHelper();
+    TestStringToInt();
 }
 
 void CTest::TestStringMatch()
@@ -245,4 +246,20 @@ void CTest::TestFilePathHelper()
     ASSERT(file_name_whthout_extension == L"efg");
     ASSERT(file_dir == L"C:\\abc.d\\");
     ASSERT(folder_name == L"abc.d");
+}
+
+void CTest::TestStringToInt()
+{
+    wstring str1 = L"abc0234ttyyhh";
+    int n1 = CCommon::StringToInt(str1);
+    ASSERT(n1 == 234);
+    wstring str2 = L"abc056";
+    int n2 = CCommon::StringToInt(str2);
+    ASSERT(n2 == 56);
+    wstring str3 = L"876rrtyhfg345hg";
+    int n3 = CCommon::StringToInt(str3);
+    ASSERT(n3 == 876);
+    wstring str4 = L"sdfoeoirglksf6";
+    int n4 = CCommon::StringToInt(str4);
+    ASSERT(n4 == 6);
 }

@@ -608,7 +608,7 @@ void CMusicPlayerCmdHelper::ShowMediaLib(int cur_tab /*= -1*/, int tab_force_sho
         CCommon::DeleteModelessDialog(pPlayerDlg->m_pMediaLibDlg);
         int tab_index = cur_tab;
         if (tab_index < 0)
-            tab_index = CPlayer::GetInstance().IsPlaylistMode() ? 1 : 0;
+            tab_index = CPlayer::GetInstance().IsFolderMode() ? 0 : 1;
         pPlayerDlg->m_pMediaLibDlg = new CMediaLibDlg(tab_index);
         pPlayerDlg->m_pMediaLibDlg->SetTabForceShow(tab_force_show);
         pPlayerDlg->m_pMediaLibDlg->Create(IDD_MEDIA_LIB_DIALOG/*, GetDesktopWindow()*/);
@@ -710,6 +710,46 @@ int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
         }
     }
     return fixed_count;
+}
+
+void CMusicPlayerCmdHelper::OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item)
+{
+    if (item != nullptr && !item->IsItemCurrentPlaying())
+    {
+        if (item->IsPlaylist())
+        {
+            if (item->playlist_info != nullptr)
+            {
+                if (!CPlayer::GetInstance().SetPlaylist(item->playlist_info->path, item->playlist_info->track, item->playlist_info->position))
+                {
+                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                    AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                }
+            }
+        }
+        else if (item->IsFolder())
+        {
+            if (item->folder_info != nullptr)
+            {
+                if (!CPlayer::GetInstance().SetPath(*item->folder_info))
+                {
+                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                    AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                }
+            }
+        }
+        else if (item->IsMedialib())
+        {
+            if (item->medialib_info != nullptr)
+            {
+                if (!CPlayer::GetInstance().SetMediaLibPlaylist(item->medialib_info->medialib_type, item->medialib_info->path, -1, false))
+                {
+                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                    AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                }
+            }
+        }
+    }
 }
 
 void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)

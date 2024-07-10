@@ -98,6 +98,7 @@ BOOL CMusicPlayerApp::InitInstance()
     m_song_data_path = m_config_dir + L"song_data.dat";
     m_recent_path_dat_path = m_config_dir + L"recent_path.dat";
     m_recent_playlist_data_path = m_config_dir + L"playlist\\recent_playlist.dat";
+    m_recent_medialib_playlist_path = m_config_dir + L"recent_medialib_item.dat";
     m_desktop_path = CCommon::GetDesktopPath();
     m_lastfm_path = m_config_dir + L"lastfm.dat";
     m_ui_data_path = m_config_dir + L"user_ui.dat";

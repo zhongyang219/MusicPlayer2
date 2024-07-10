@@ -10,39 +10,39 @@
 
 class CPlayListCtrl : public CListCtrlEx
 {
-	DECLARE_DYNAMIC(CPlayListCtrl)
+    DECLARE_DYNAMIC(CPlayListCtrl)
 
 public:
-	CPlayListCtrl(const vector<SongInfo>& all_song_info);
-	virtual ~CPlayListCtrl();
+    CPlayListCtrl(const vector<SongInfo>& all_song_info);
+    virtual ~CPlayListCtrl();
 
-	void ShowPlaylist(DisplayFormat display_format, bool search_result = false);		//显示播放列表
-	void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找，查找文件名、歌曲标题、艺术家和唱片集，将找到的曲目的序号保存在m_search_result中
-	void GetItemSelectedSearched(vector<int>& item_selected);		//获取处于搜索状态下播放列表选中的项目
+    void ShowPlaylist(DisplayFormat display_format, bool search_result = false);		//显示播放列表
+    void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找，查找文件名、歌曲标题、艺术家和唱片集，将找到的曲目的序号保存在m_search_result中
+    void GetItemSelectedSearched(vector<int>& item_selected);		//获取处于搜索状态下播放列表选中的项目
     virtual void ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd) override;
 
-	void AdjustColumnWidth();
+    void AdjustColumnWidth();
 
-    virtual bool SetRowHeight(int height) override;
-
-protected:
-
-	CToolTipCtrl m_toolTip;		//文本提示类
-	int m_nItem;				//存放行号
-	//int m_nSubItem;			//存放列号
-
-	const vector<SongInfo>& m_all_song_info;		//储存播放列表中所有歌曲的信息
-	vector<int> m_search_result;					//储存快速搜索结果的歌曲序号
-	bool m_searched{ false };
-	ListData m_list_data;
+    bool SetRowHeight(int height);
 
 protected:
-	void CalculateColumeWidth(vector<int>& width);
 
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+    CToolTipCtrl m_toolTip;		//文本提示类
+    int m_nItem;				//存放行号
+    //int m_nSubItem;			//存放列号
 
-	DECLARE_MESSAGE_MAP()
-	virtual void PreSubclassWindow();
-	afx_msg void OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult);
+    const vector<SongInfo>& m_all_song_info;		//储存播放列表中所有歌曲的信息
+    vector<int> m_search_result;					//储存快速搜索结果的歌曲序号
+    bool m_searched{ false };
+    ListData m_list_data;
+
+protected:
+    void CalculateColumeWidth(vector<int>& width);
+
+    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+    virtual BOOL PreTranslateMessage(MSG* pMsg);
+
+    DECLARE_MESSAGE_MAP()
+    virtual void PreSubclassWindow();
+    afx_msg void OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult);
 };

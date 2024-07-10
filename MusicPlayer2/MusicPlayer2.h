@@ -35,6 +35,7 @@ public:
     wstring m_song_data_path;	//储存所有歌曲信息数据文件的路径
     wstring m_recent_path_dat_path;	//"recent_path.dat"文件的路径
     wstring m_recent_playlist_data_path;
+    wstring m_recent_medialib_playlist_path;
     wstring m_desktop_path;		//桌面的路径
     wstring m_module_path_reg;  //程序exe文件的路径
     //wstring m_temp_path;		//临时文件夹的路径

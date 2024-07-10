@@ -225,6 +225,14 @@
 #define IDR_STRING_TABLE                591
 #define IDI_UP_D                        592
 #define IDR_MINI_UI0                    593
+#define IDI_ARTIST                      594
+#define IDI_ALBUM                       595
+#define IDI_GENRE                       596
+#define IDI_YEAR                        597
+#define IDI_FILE_RELATE                 598
+#define IDI_BITRATE_D                   599
+#define IDI_STAR_D                      600
+#define IDI_MORE_D                      601
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -941,13 +949,14 @@
 #define ID_PLAYLIST_BROWSE_FILE         33463
 #define ID_LYRIC_AND_TRANSLATION_IN_SAME_LINE 33464
 #define ID_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE 33465
+#define ID_MORE_RECENT_ITEMS            33466
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        594
-#define _APS_NEXT_COMMAND_VALUE         33466
+#define _APS_NEXT_RESOURCE_VALUE        602
+#define _APS_NEXT_COMMAND_VALUE         33467
 #define _APS_NEXT_CONTROL_VALUE         1365
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "SongInfo.h"
 #include "FormatConvertDlg.h"
+#include "RecentFolderAndPlaylist.h"
+
 class CMusicPlayerCmdHelper
 {
 public:
@@ -67,6 +69,9 @@ public:
 
     //修正播放列表中的错误的路径
     int FixPlaylistPathError(const std::wstring& path);
+
+    //响应播放列表上方下拉列表项
+    void OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item);
 
 protected:
     void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);

@@ -2,6 +2,7 @@
 #include "TabDlg.h"
 #include "SongInfo.h"
 #include "ListCtrlEx.h"
+#include "MediaLibHelper.h"
 
 class CMediaLibTabDlg : public CTabDlg
 {
@@ -29,6 +30,9 @@ protected:
     virtual wstring GetSelectedString() const = 0;
     // _OnAddToNewPlaylist以此方法获取建议的新播放列表名称
     virtual wstring GetNewPlaylistName() const { return L""; };
+
+    virtual CMediaClassifier::ClassificationType GetClassificationType() const { return CMediaClassifier::CT_NONE; }
+    virtual std::wstring GetClassificationItemName() const { return std::wstring(); }
 
     DECLARE_MESSAGE_MAP()
 

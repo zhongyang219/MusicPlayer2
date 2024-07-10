@@ -10,6 +10,7 @@
 #include "PropertyDlg.h"
 #include "AddToPlaylistDlg.h"
 #include "SongDataManager.h"
+#include "Player.h"
 
 
 // CMediaClassifyDlg 对话框
@@ -167,6 +168,8 @@ void CMediaClassifyDlg::ShowSongList()
 
     m_list_data_right.clear();
     m_right_items.clear();
+    int highlight_item{ -1 };
+    int right_index{ 0 };
     for (int index : m_left_selected_items)
     {
         CString str_selected = GetClassifyListSelectedString(index);
@@ -178,6 +181,11 @@ void CMediaClassifyDlg::ShowSongList()
             {
                 const SongInfo& song{ CSongDataManager::GetInstance().GetSongInfo3(item) };
                 m_right_items.push_back(song);  // 更新显示列表同时存储一份右侧列表SongInfo
+
+                //判断正在播放项
+                if (song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()))
+                    highlight_item = right_index;
+
                 CListCtrlEx::RowData row_data;
                 row_data[COL_TITLE] = song.GetTitle();
                 row_data[COL_ARTIST] = song.GetArtist();
@@ -190,11 +198,18 @@ void CMediaClassifyDlg::ShowSongList()
                 row_data[COL_BITRATE] = (song.bitrate == 0 ? L"-" : std::to_wstring(song.bitrate));
                 row_data[COL_PATH] = song.file_path;
                 m_list_data_right.push_back(std::move(row_data));
+
+                right_index++;
             }
         }
     }
 
     m_song_list_ctrl.SetListData(&m_list_data_right);
+    if (CPlayer::GetInstance().IsMediaLibMode())
+    {
+        m_song_list_ctrl.SetHightItem(highlight_item);
+        m_song_list_ctrl.EnsureVisible(highlight_item, FALSE);
+    }
 }
 
 CString CMediaClassifyDlg::GetClassifyListSelectedString(int index) const
@@ -308,6 +323,11 @@ void CMediaClassifyDlg::OnTabEntered()
         CWaitCursor wait_cursor;
         m_classifer.ClassifyMedia();
         ShowClassifyList();
+
+        //设置左侧列表默认选中项
+        if (CPlayer::GetInstance().IsMediaLibMode())
+            SetLeftListSel(CPlayer::GetInstance().GetMedialibItemName());
+
         m_initialized = true;
     }
 }
@@ -320,6 +340,16 @@ wstring CMediaClassifyDlg::GetNewPlaylistName() const
         default_name = m_classify_selected;
     CCommon::FileNameNormalize(default_name);
     return default_name;
+}
+
+CMediaClassifier::ClassificationType CMediaClassifyDlg::GetClassificationType() const
+{
+    return m_type;
+}
+
+std::wstring CMediaClassifyDlg::GetClassificationItemName() const
+{
+    return m_classify_selected;
 }
 
 void CMediaClassifyDlg::CalculateClassifyListColumeWidth(std::vector<int>& width)
