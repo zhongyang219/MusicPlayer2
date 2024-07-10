@@ -87,7 +87,7 @@ void CSelectPlaylistDlg::ShowSongList()
 {
     CWaitCursor wait_cursor;
     m_list_data.clear();
-    int hight_item{ -1 };
+    int highlight_item{ -1 };
     if (LeftSelectValid())
     {
         PlaylistInfo playlist_info = GetSelectedPlaylist();
@@ -95,7 +95,7 @@ void CSelectPlaylistDlg::ShowSongList()
         playlist_file.LoadFromFile(playlist_info.path);
         // 如果是当前播放列表则设置当前播放高亮
         if (CPlayer::GetInstance().IsPlaylistMode() && GetSelectedPlaylist().path == CPlayer::GetInstance().GetPlaylistPath())
-            hight_item = playlist_file.GetSongIndexInPlaylist(CPlayer::GetInstance().GetCurrentSongInfo());
+            highlight_item = playlist_file.GetSongIndexInPlaylist(CPlayer::GetInstance().GetCurrentSongInfo());
         playlist_file.MoveToSongList(m_cur_song_list);
 
         CSongDataManager::GetInstance().LoadSongsInfo(m_cur_song_list);  // 从媒体库加载歌曲属性
@@ -129,7 +129,8 @@ void CSelectPlaylistDlg::ShowSongList()
         }
     }
     m_song_list_ctrl.SetListData(&m_list_data);
-    m_song_list_ctrl.SetHightItem(hight_item);
+    m_song_list_ctrl.SetHightItem(highlight_item);
+    m_song_list_ctrl.EnsureVisible(highlight_item, FALSE);
 }
 
 void CSelectPlaylistDlg::LeftListClicked(int index)

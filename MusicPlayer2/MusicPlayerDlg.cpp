@@ -2772,7 +2772,22 @@ void CMusicPlayerDlg::OnFF()
 void CMusicPlayerDlg::OnMediaLib()
 {
     CMusicPlayerCmdHelper helper;
-    helper.ShowMediaLib();
+    int cur_tab{ -1 };
+    //媒体库模式下设置打开媒体库对话框时显示的标签页
+    if (CPlayer::GetInstance().IsMediaLibMode())
+    {
+        switch (CPlayer::GetInstance().GetMediaLibPlaylistType())
+        {
+        case CMediaClassifier::CT_ARTIST: cur_tab = 2; break;
+        case CMediaClassifier::CT_ALBUM: cur_tab = 3; break;
+        case CMediaClassifier::CT_GENRE: cur_tab = 4; break;
+        case CMediaClassifier::CT_YEAR: cur_tab = 5; break;
+        case CMediaClassifier::CT_TYPE: cur_tab = 6; break;
+        case CMediaClassifier::CT_BITRATE: cur_tab = 7; break;
+        case CMediaClassifier::CT_RATING: cur_tab = 8; break;
+        }
+    }
+    helper.ShowMediaLib(cur_tab);
 }
 
 
