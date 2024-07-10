@@ -3,6 +3,7 @@
 #include "PlayerToolBar.h"
 #include "PlayerProgressBar.h"
 #include "BrowseEdit.h"
+#include "ListCtrlEx.h"
 
 // CTestDlg 对话框
 
@@ -39,6 +40,7 @@ private:
     CBitmap bitmap;
     CBitmap bitmap_copy;
 
+    CListCtrlEx m_list_ctrl;
 
 public:
     virtual BOOL OnInitDialog();

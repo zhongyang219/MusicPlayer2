@@ -1888,5 +1888,23 @@
     <Image Include="res\up_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\album.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\artist.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\bitrate_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\genre.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\star_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\year.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

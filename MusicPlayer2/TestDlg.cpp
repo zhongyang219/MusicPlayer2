@@ -5,6 +5,7 @@
 #include "MusicPlayer2.h"
 #include "TestDlg.h"
 #include "FilterHelper.h"
+#include "IconMgr.h"
 
 // CTestDlg 对话框
 
@@ -37,6 +38,7 @@ void CTestDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_TEST_TOOLBAR, m_toolbar);
     DDX_Control(pDX, IDC_TEST_PROGRESS_BAR, m_progress_bar);
     DDX_Control(pDX, IDC_MFCEDITBROWSE1, m_browse_edit);
+    DDX_Control(pDX, IDC_LIST1, m_list_ctrl);
 }
 
 
@@ -70,10 +72,10 @@ BOOL CTestDlg::OnInitDialog()
     wstring sf2_filter = FilterHelper::GetSF2FileFilter();;
     m_browse_edit.EnableFileBrowseButton(_T("SF2"), sf2_filter.c_str());
 
-    m_image.Load(_T("D:\\Temp\\Desktop\\AlbumCover - 曲婉婷 - Love Birds.jpg"));
-    int width = m_image.GetWidth();
-    int height = m_image.GetHeight();
-    m_pImage = new Gdiplus::Image(L"D:\\Temp\\Desktop\\AlbumCover - 曲婉婷 - Love Birds.jpg");
+    //m_image.Load(_T("D:\\Temp\\Desktop\\AlbumCover - 曲婉婷 - Love Birds.jpg"));
+    //int width = m_image.GetWidth();
+    //int height = m_image.GetHeight();
+    //m_pImage = new Gdiplus::Image(L"D:\\Temp\\Desktop\\AlbumCover - 曲婉婷 - Love Birds.jpg");
 
     //m_pImage = CCommon::GetPngImageResource(IDB_DEFAULT_ALBUM_COVER);
 
@@ -99,6 +101,23 @@ BOOL CTestDlg::OnInitDialog()
 
     //CDrawCommon::SaveBitmap(bitmap_copy, L"D:\\Temp\\test_after.bmp");
 
+    //初始化ListCtrl
+    m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
+    m_list_ctrl.InsertColumn(0, _T("第一列"), LVCFMT_LEFT, theApp.DPI(120));
+    m_list_ctrl.InsertColumn(1, _T("第二列"), LVCFMT_LEFT, theApp.DPI(120));
+    m_list_ctrl.FillLeftSpaceAfterPaint(false);
+
+    //设置图标列表
+    m_list_ctrl.SetItemIcon(0, theApp.m_icon_mgr.GetHICON(IconMgr::IT_Artist, IconMgr::IconStyle::IS_OutlinedDark));
+    m_list_ctrl.SetItemIcon(1, theApp.m_icon_mgr.GetHICON(IconMgr::IT_Album, IconMgr::IconStyle::IS_OutlinedDark));
+    m_list_ctrl.SetItemIcon(2, theApp.m_icon_mgr.GetHICON(IconMgr::IT_Genre, IconMgr::IconStyle::IS_OutlinedDark));
+
+    //插入列
+    m_list_ctrl.InsertItem(0, _T("00"), 0);
+    m_list_ctrl.InsertItem(1, _T("01"), 1);
+    m_list_ctrl.InsertItem(2, _T("02"), 2);
+
+    m_list_ctrl.SetRowHeight(theApp.DPI(24), theApp.DPI(18));
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE

@@ -567,10 +567,13 @@
     <Image Include="res\add.ico" />
     <Image Include="res\AddTag.ico" />
     <Image Include="res\add_d.ico" />
+    <Image Include="res\album.ico" />
     <Image Include="res\album_cover.ico" />
     <Image Include="res\album_d.ico" />
+    <Image Include="res\artist.ico" />
     <Image Include="res\artist_d.ico" />
     <Image Include="res\bitrate.ico" />
+    <Image Include="res\bitrate_d.ico" />
     <Image Include="res\close.ico" />
     <Image Include="res\close_d.ico" />
     <Image Include="res\convert.ico" />
@@ -607,6 +610,7 @@
     <Image Include="res\Find.ico" />
     <Image Include="res\fix_d.ico" />
     <Image Include="res\folder_explore_d.ico" />
+    <Image Include="res\genre.ico" />
     <Image Include="res\genre_d.ico" />
     <Image Include="res\heart.ico" />
     <Image Include="res\help.ico" />
@@ -681,6 +685,7 @@
     <Image Include="res\sort_d.ico" />
     <Image Include="res\speed_up_d.ico" />
     <Image Include="res\star.ico" />
+    <Image Include="res\star_d.ico" />
     <Image Include="res\statistics_d.ico" />
     <Image Include="res\stop_dark.ico" />
     <Image Include="res\stop_white.ico" />
@@ -699,6 +704,7 @@
     <Image Include="res\volume2_d.ico" />
     <Image Include="res\volume3.ico" />
     <Image Include="res\volume3_d.ico" />
+    <Image Include="res\year.ico" />
     <Image Include="res\year_d.ico" />
     <Image Include="res\上一曲.ico" />
     <Image Include="res\下一曲.ico" />
