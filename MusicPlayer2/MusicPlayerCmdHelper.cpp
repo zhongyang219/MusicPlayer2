@@ -742,7 +742,7 @@ void CMusicPlayerCmdHelper::OnRecentItemSelected(const CRecentFolderAndPlaylist:
         {
             if (item->medialib_info != nullptr)
             {
-                if (!CPlayer::GetInstance().SetMediaLibPlaylist(item->medialib_info->medialib_type, item->medialib_info->path, -1, false))
+                if (!CPlayer::GetInstance().SetMediaLibPlaylist(item->medialib_info->medialib_type, item->medialib_info->path))
                 {
                     const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
                     AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);

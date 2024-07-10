@@ -119,7 +119,7 @@ void CPlayer::Create()
     else if (m_playlist_mode == PM_MEDIA_LIB)
     {
         auto playlist_info = CMediaLibPlaylistMgr::Instance().GetCurrentPlaylistInfo();
-        SetMediaLibPlaylist(playlist_info.medialib_type, playlist_info.path, -1, theApp.m_play_setting_data.auto_play_when_start);
+        SetMediaLibPlaylist(playlist_info.medialib_type, playlist_info.path);
     }
     else
     {
@@ -1172,9 +1172,9 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     return true;
 }
 
-bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index, bool play)
+bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index, bool play, bool force)
 {
-    if (!BeforeIniPlayList(true))
+    if (!BeforeIniPlayList(!force))
         return false;
 
     m_path.clear();
