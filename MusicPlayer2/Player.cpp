@@ -1174,7 +1174,7 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
 
 bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index, bool play)
 {
-    if (!BeforeIniPlayList())
+    if (!BeforeIniPlayList(true))
         return false;
 
     m_path.clear();
