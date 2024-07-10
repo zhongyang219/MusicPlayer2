@@ -30,6 +30,7 @@
 #include "CommonDialogMgr.h"
 #include "WinVersionHelper.h"
 #include "MediaLibPlaylistMgr.h"
+#include "MoreRecentItemDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -316,6 +317,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_PLAYLIST_FIX_PATH_ERROR, &CMusicPlayerDlg::OnPlaylistFixPathError)
     ON_WM_POWERBROADCAST()
     ON_MESSAGE(WM_SET_UI_FORCE_FRESH_FLAG, &CMusicPlayerDlg::OnSetUiForceFreshFlag)
+    ON_COMMAND(ID_MORE_RECENT_ITEMS, &CMusicPlayerDlg::OnMoreRecentItems)
 END_MESSAGE_MAP()
 
 
@@ -3348,42 +3350,8 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
         if (index >= 0 && index < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()))
         {
             auto& item = CRecentFolderAndPlaylist::Instance().GetItemList()[index];
-            if (!item.IsItemCurrentPlaying())
-            {
-                if (item.IsPlaylist())
-                {
-                    if (item.playlist_info != nullptr)
-                    {
-                        if (!CPlayer::GetInstance().SetPlaylist(item.playlist_info->path, item.playlist_info->track, item.playlist_info->position))
-                        {
-                            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-                        }
-                    }
-                }
-                else if (item.IsFolder())
-                {
-                    if (item.folder_info != nullptr)
-                    {
-                        if (!CPlayer::GetInstance().SetPath(*item.folder_info))
-                        {
-                            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-                        }
-                    }
-                }
-                else if (item.IsMedialib())
-                {
-                    if (item.medialib_info != nullptr)
-                    {
-                        if (!CPlayer::GetInstance().SetMediaLibPlaylist(item.medialib_info->medialib_type, item.medialib_info->path, -1, false))
-                        {
-                            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-                        }
-                    }
-                }
-            }
+            CMusicPlayerCmdHelper helper;
+            helper.OnRecentItemSelected(&item);
         }
     }
 
@@ -6521,4 +6489,15 @@ afx_msg LRESULT CMusicPlayerDlg::OnSetUiForceFreshFlag(WPARAM wParam, LPARAM lPa
 {
     m_ui_thread_para.ui_force_refresh = true;
     return 0;
+}
+
+void CMusicPlayerDlg::OnMoreRecentItems()
+{
+    CMoreRecentItemDlg dlg;
+    if (dlg.DoModal() == IDOK)
+    {
+        const CRecentFolderAndPlaylist::Item* item = dlg.GetSelectedItem();
+        CMusicPlayerCmdHelper helper;
+        helper.OnRecentItemSelected(item);
+    }
 }

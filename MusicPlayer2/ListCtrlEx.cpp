@@ -164,6 +164,7 @@ void CListCtrlEx::SetMouseWheelEnable(bool enable)
 void CListCtrlEx::SetItemIcon(int item, HICON icon)
 {
     m_icons[item] = icon;
+    m_fill_left_space_after_paint = false;  //设置了图标后将m_fill_left_space_after_paint置为false，以确保图标部分背景显示正常
 }
 
 void CListCtrlEx::SetListData(ListData* pListData)

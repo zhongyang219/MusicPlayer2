@@ -529,4 +529,5 @@ public:
     afx_msg UINT OnPowerBroadcast(UINT nPowerEvent, LPARAM nEventData);
 protected:
     afx_msg LRESULT OnSetUiForceFreshFlag(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnMoreRecentItems();
 };

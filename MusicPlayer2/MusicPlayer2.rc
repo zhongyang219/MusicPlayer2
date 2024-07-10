@@ -407,6 +407,8 @@ IDI_BITRATE_D           ICON                    "res\\bitrate_d.ico"
 
 IDI_STAR_D              ICON                    "res\\star_d.ico"
 
+IDI_MORE_D              ICON                    "res\\more_d.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

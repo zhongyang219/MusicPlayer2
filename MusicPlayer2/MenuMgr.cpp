@@ -673,6 +673,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.CreateMenu(true, false);
         menu.SetUpdatePos();            // 设置Update插入点
         menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_MORE_RECENT_ITEMS), IconMgr::IconType::IT_More);
         menu.AppendItem(EX_ID(ID_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
         break;
     case MenuMgr::PlaylistMenu:

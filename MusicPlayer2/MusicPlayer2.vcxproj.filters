@@ -396,6 +396,9 @@
     <Filter Include="功能逻辑类\IconMgr">
       <UniqueIdentifier>{90131507-09eb-4700-86d0-45b3402783f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\MoreRecentItemDlg">
+      <UniqueIdentifier>{8275f9f7-1539-4d8d-a8b6-95119418eb6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -886,6 +889,9 @@
     <ClInclude Include="MediaLibPlaylistMgr.h">
       <Filter>功能逻辑类\PlaylistMgr</Filter>
     </ClInclude>
+    <ClInclude Include="MoreRecentItemDlg.h">
+      <Filter>对话框类\MoreRecentItemDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1346,6 +1352,9 @@
     </ClCompile>
     <ClCompile Include="MediaLibPlaylistMgr.cpp">
       <Filter>功能逻辑类\PlaylistMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="MoreRecentItemDlg.cpp">
+      <Filter>对话框类\MoreRecentItemDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1904,6 +1913,9 @@
       <Filter>资源文件\Icons</Filter>
     </Image>
     <Image Include="res\year.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\more_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
