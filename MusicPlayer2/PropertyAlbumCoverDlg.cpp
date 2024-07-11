@@ -524,8 +524,8 @@ void CPropertyAlbumCoverDlg::OnBnClickedDeleteButton()
     // TODO: 在此添加控件通知处理程序代码
     if (IsShowOutAlbumCover() && !m_batch_edit)
     {
-        wstring inquary_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUARY", { m_out_img_path });
-        if (MessageBox(inquary_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
+        wstring inquiry_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUIRY", { m_out_img_path });
+        if (MessageBox(inquiry_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
         {
             if (CommonDialogMgr::DeleteAFile(theApp.m_pMainWnd->GetSafeHwnd(), m_out_img_path) != 0)
             {

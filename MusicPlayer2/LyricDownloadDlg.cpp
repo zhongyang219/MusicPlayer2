@@ -602,7 +602,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
         wstring saved_path = GetSavedPath();
 		if (CCommon::FileExist(saved_path))
 		{
-            const wstring& info = theApp.m_str_table.LoadText(L"MSG_LYRIC_OVERWRITE_INQUARY");
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_LYRIC_OVERWRITE_INQUIRY");
             if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) == IDCANCEL)
 				return 0;
 		}

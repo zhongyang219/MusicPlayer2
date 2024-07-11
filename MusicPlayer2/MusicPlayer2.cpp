@@ -205,7 +205,7 @@ BOOL CMusicPlayerApp::InitInstance()
                 LoadConfig();
                 m_str_table.Init(m_local_dir + L"language\\", m_general_setting_data.language_);
                 CCommon::SetThreadLanguageList(m_str_table.GetLanguageTag());
-                const wstring& info = theApp.m_str_table.LoadText(L"MSG_APP_RUNING_INFO");
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_APP_RUNNING_INFO");
                 AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
             }
             return FALSE;		//退出当前程序

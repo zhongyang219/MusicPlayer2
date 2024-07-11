@@ -1844,18 +1844,13 @@ POINT CCommon::CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& scree
     return mov;
 }
 
-wstring CCommon::GetLastCompileTime()
+void CCommon::GetLastCompileTime(wstring& time_str, wstring& hash_str)
 {
     wstring compile_time = GetTextResource(IDR_COMPILE_TIME, CodeType::ANSI);
     size_t pos = compile_time.find(L"\r\n");
-    while (pos != wstring::npos)
-    {
-        compile_time.replace(pos, 2, L"");
-        pos = compile_time.find(L"\r\n");
-    }
-    if (!compile_time.empty())
-        compile_time.pop_back();
-    return compile_time;
+    time_str = compile_time.substr(0, pos);
+    if (compile_time.size() > pos + 10)                 // 如果hash存在
+        hash_str = compile_time.substr(pos + 2, 8);     // 截取hash前8位
 }
 
 unsigned __int64 CCommon::GetCurTimeElapse()

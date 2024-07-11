@@ -380,7 +380,7 @@ void CTagSelBaseDlg::OnCbnSelchangeCombo1()
     int cur_sel = m_format_combo.GetCurSel();
     if (cur_sel == m_format_combo.GetCount() - 1)
     {
-        const wstring& info = theApp.m_str_table.LoadText(L"MSG_TAG_SEL_CLEAR_HISTORY_INQUARY");
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_TAG_SEL_CLEAR_HISTORY_INQUIRY");
         if (MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
         {
             m_default_formular = default_formular;

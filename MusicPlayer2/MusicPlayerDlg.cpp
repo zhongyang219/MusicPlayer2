@@ -1124,7 +1124,7 @@ void CMusicPlayerDlg::FirstRunCreateShortcut()
     //如果目录下没有recent_path和song_data文件，就判断为是第一次运行程序，提示用户是否创建桌面快捷方式
     if (!CCommon::FileExist(theApp.m_song_data_path) && !CCommon::FileExist(theApp.m_recent_path_dat_path))
     {
-        const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUARY_FIRST");
+        const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUIRY_FIRST");
         if (MessageBox(create_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
         {
             if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("MusicPlayer2.lnk")))
@@ -3588,7 +3588,7 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 
     if (m_item_selected < 0 || m_item_selected >= CPlayer::GetInstance().GetSongNum())
         return;
-    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUARY", { m_items_selected.size() });
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUIRY", { m_items_selected.size() });
     if (MessageBoxW(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK) return;
     // 以下操作可能涉及MusicControl，先取得锁
     if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
@@ -4575,7 +4575,7 @@ void CMusicPlayerDlg::OnDeleteAlbumCover()
     if (is_inner_cover)
         delete_info = theApp.m_str_table.LoadText(L"MSG_DELETE_INNER_COVER_INQUERY");
     else
-        delete_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUARY", { CPlayer::GetInstance().GetAlbumCoverPath() });
+        delete_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUIRY", { CPlayer::GetInstance().GetAlbumCoverPath() });
     if (MessageBox(delete_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
         bool result{ false };
@@ -5052,7 +5052,7 @@ void CMusicPlayerDlg::OnCreatePlayShortcut()
 {
     // TODO: 在此添加命令处理程序代码
 
-    const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUARY_PLAY_CONTROL");
+    const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUIRY_PLAY_CONTROL");
     if (MessageBox(create_info.c_str(), NULL, MB_ICONQUESTION | MB_OKCANCEL) == IDOK)
     {
         bool success = true;
@@ -5833,7 +5833,7 @@ void CMusicPlayerDlg::OnSaveAsNewPlaylist()
 
 void CMusicPlayerDlg::OnCreateDesktopShortcut()
 {
-    const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUARY_DESKTOP");
+    const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUIRY_DESKTOP");
     if (MessageBox(create_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
     {
         if (CCommon::CreateFileShortcut(theApp.m_desktop_path.c_str(), NULL, _T("MusicPlayer2.lnk")))
@@ -5852,7 +5852,7 @@ void CMusicPlayerDlg::OnCreateDesktopShortcut()
 
 void CMusicPlayerDlg::OnCreateMiniModeShortCut()
 {
-    const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUARY_MINIMODE");
+    const wstring& create_info = theApp.m_str_table.LoadText(L"MSG_SHORTCUT_INQUIRY_MINIMODE");
     if (MessageBox(create_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
     {
         wstring file_name = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE") + L".lnk";
@@ -5891,7 +5891,7 @@ void CMusicPlayerDlg::OnDeleteCurrentFromDisk()
     wstring file_path = song.file_path;
     if (file_path.empty() || song.is_cue || COSUPlayerHelper::IsOsuFile(file_path))
         return;
-    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUARY", { file_path });
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUIRY", { file_path });
     if (MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
         return;
     if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
@@ -6454,8 +6454,8 @@ void CMusicPlayerDlg::OnPlayAsNext() {
 
 void CMusicPlayerDlg::OnPlaylistFixPathError()
 {
-    const wstring& inquary_info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_FIX_ERROR_PATH_INQUARY");
-    if (MessageBox(inquary_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+    const wstring& inquiry_info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_FIX_ERROR_PATH_INQUIRY");
+    if (MessageBox(inquiry_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
     {
         CMusicPlayerCmdHelper helper(this);
         int fixed_count = helper.FixPlaylistPathError(CPlayer::GetInstance().GetPlaylistPath());

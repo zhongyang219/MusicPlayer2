@@ -89,7 +89,7 @@ void CMediaLibTabDlg::OnOK()
         CMediaClassifier::ClassificationType type = GetClassificationType();
         if (type != CMediaClassifier::CT_NONE)
         {
-            ok = CPlayer::GetInstance().SetMediaLibPlaylist(type, GetClassificationItemName(), GetItemSelected());
+            ok = CPlayer::GetInstance().SetMediaLibPlaylist(type, GetClassificationItemName(), GetItemSelected(), true, true);
         }
         else
         {

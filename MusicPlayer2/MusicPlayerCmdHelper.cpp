@@ -204,7 +204,7 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
     if (theApp.m_media_lib_setting_data.disable_delete_from_disk)
         return false;
 
-    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUARY", { files.size() });
+    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUIRY", { files.size() });
     if (GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
         return false;
 
@@ -742,7 +742,7 @@ void CMusicPlayerCmdHelper::OnRecentItemSelected(const CRecentFolderAndPlaylist:
         {
             if (item->medialib_info != nullptr)
             {
-                if (!CPlayer::GetInstance().SetMediaLibPlaylist(item->medialib_info->medialib_type, item->medialib_info->path, -1, false))
+                if (!CPlayer::GetInstance().SetMediaLibPlaylist(item->medialib_info->medialib_type, item->medialib_info->path))
                 {
                     const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
                     AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);

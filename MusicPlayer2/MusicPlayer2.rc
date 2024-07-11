@@ -811,7 +811,7 @@ BEGIN
     CONTROL         "Minimize to notification area",IDC_MINIMIZE_TO_NOTIFY_RADIO,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP,157,74,173,8
     CONTROL         "Exit the program",IDC_EXIT_PROGRAM_RADIO,"Button",BS_AUTORADIOBUTTON,157,86,173,8
-    GROUPBOX        "Automatic Download Settings",IDC_TXT_OPT_DATA_AUTO_DL_SETTING_STATIC,7,103,330,121
+    GROUPBOX        "Automatic Download Settings",IDC_TXT_OPT_DATA_DL_SETTING_STATIC,7,103,330,121
     CONTROL         "Automatically download when lyric is not exist",IDC_LYRIC_AUTO_DOWNLOAD_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,114,316,8
     LTEXT           "Automatically Download Lyrics Save Location:",IDC_TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_SEL_STATIC,14,125,316,8
@@ -827,10 +827,10 @@ BEGIN
     CONTROL         "Automatically download when album cover is not exist",IDC_COVER_AUTO_DOWNLOAD_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,179,316,8
     LTEXT           "Automatically Download Album Cover Save Location:",IDC_TXT_OPT_DATA_AUTO_DL_COVER_SAVE_SEL_STATIC,14,189,316,8
-    CONTROL         "Save to the same directory as the song",IDC_SAVE_TO_SONG_FOLDER3,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,150,200,180,8
     CONTROL         "Save to album cover directory",IDC_SAVE_TO_ALBUM_FOLDER3,
                     "Button",BS_AUTORADIOBUTTON,21,200,119,8
+    CONTROL         "Save to the same directory as the song",IDC_SAVE_TO_SONG_FOLDER3,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,150,200,180,8
     CONTROL         "Download automatically only when the song information is complete",IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,211,316,8
     GROUPBOX        "MIDI Setting",IDC_TXT_OPT_DATA_MIDI_SETTING_STATIC,7,229,330,39
@@ -2268,8 +2268,8 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 100, 0,
     0, 0, 100, 0,
-    44, 0, 56, 0,
     0, 0, 44, 0,
+    44, 0, 56, 0,
     0, 0, 100, 0,
     0, 0, 100, 0,
     0, 0, 100, 0,

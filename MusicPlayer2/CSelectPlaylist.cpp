@@ -529,7 +529,7 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
         wstring new_path = CCommon::FileRename(sel_playlist_path, new_playlist_name);   //播放列表后命名后的路径
         if (new_path.empty())
         {
-            const wstring& info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_REMANE_FAILED");
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_RENANE_FAILED");
             MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
             return;
         }
@@ -780,8 +780,8 @@ void CSelectPlaylistDlg::OnPlaylistFixPathError()
 {
     if (LeftSelectValid())
     {
-        const wstring& inquary_info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_FIX_ERROR_PATH_INQUARY");
-        if (MessageBox(inquary_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+        const wstring& inquiry_info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_FIX_ERROR_PATH_INQUIRY");
+        if (MessageBox(inquiry_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
         {
             PlaylistInfo playlist_info{ GetSelectedPlaylist() };
             CMusicPlayerCmdHelper helper;
