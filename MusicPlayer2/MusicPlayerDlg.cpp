@@ -765,7 +765,7 @@ void CMusicPlayerDlg::SetPlaylistSize(int cx, int cy, int playlist_width)
 
     // 设置IDC_PATH_STATIC/IDC_PATH_EDIT/ID_MEDIA_LIB的位置和大小
     int edit_height = m_layout.path_edit_height;
-    CRect rect_static{ rect_base.left, rect_base.top, rect_base.left + max(m_part_static_playlist_width, m_part_static_folder_width), rect_base.top + edit_height };
+    CRect rect_static{ rect_base.left, rect_base.top, rect_base.left + m_part_static_width, rect_base.top + edit_height};
     CRect rect_media_lib{ rect_base.right - m_medialib_btn_width, rect_base.top - 1, rect_base.right, rect_base.top + edit_height + 1 };
     CRect rect_edit{ rect_static.right + m_layout.margin, rect_base.top, rect_media_lib.left - m_layout.margin, rect_base.top + edit_height };
     m_path_static.MoveWindow(rect_static);
@@ -2062,17 +2062,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     CRect text_size;
     CDC* pDC = GetDC();
     pDC->SelectObject(&theApp.m_font_set.dlg.GetFont());
-    // "播放列表:"宽度（含图标）
-    text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str();
-    pDC->DrawTextW(text, &text_size, DT_CALCRECT);
-    if (m_part_static_playlist_width < text_size.Width() + theApp.DPI(20))
-        m_part_static_playlist_width = min(text_size.Width() + theApp.DPI(20), theApp.DPI(150));
-    // "文件夹:"宽度（含图标）
     text = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str();
     m_path_static.SetWindowTextW(text);
-    pDC->DrawTextW(text, &text_size, DT_CALCRECT);
-    if (m_part_static_folder_width < text_size.Width() + theApp.DPI(20))
-        m_part_static_folder_width = min(text_size.Width() + theApp.DPI(20), theApp.DPI(150));
     // 媒体库按钮宽度
     text = theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str();
     m_media_lib_button.SetWindowTextW(text);
@@ -4097,6 +4088,10 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
             first_init = false;
         }
     }
+
+    m_part_static_width = UpdatePlaylistCtrlPosition(this, &m_path_static, &m_path_edit);
+    if (IsFloatPlaylistExist())
+        UpdatePlaylistCtrlPosition(m_pFloatPlaylistDlg, &m_pFloatPlaylistDlg->GetPathStatic(), &m_pFloatPlaylistDlg->GetPathEdit());
 
     return 0;
 }
@@ -6420,6 +6415,42 @@ bool CMusicPlayerDlg::MoveFloatPlaylistPos()
 bool CMusicPlayerDlg::IsPointValid(CPoint point)
 {
     return (point.x != INT_MAX && point.y != INT_MAX && point.x != INT_MIN && point.y != INT_MAX);
+}
+
+int CMusicPlayerDlg::UpdatePlaylistCtrlPosition(CWnd* pParent, CWnd* pStatic, CWnd* pEdit)
+{
+    if (!IsWindow(pParent->GetSafeHwnd()) || !IsWindow(pStatic->GetSafeHwnd()) || !IsWindow(pEdit->GetSafeHwnd()))
+        return 0;
+
+    //计算CStatic控件的宽度
+    int static_width = theApp.DPI(20);
+    std::wstring static_text;
+    if (CPlayer::GetInstance().IsFolderMode())
+        static_text = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER");
+    else if (CPlayer::GetInstance().IsPlaylistMode())
+        static_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST");
+    else if (CPlayer::GetInstance().IsMediaLibMode())
+        static_text = CMediaLibPlaylistMgr::GetTypeName(CPlayer::GetInstance().GetMediaLibPlaylistType());
+    CDC* pDC = pParent->GetDC();
+    pDC->SelectObject(&theApp.m_font_set.dlg.GetFont());
+    static_width += pDC->GetTextExtent(static_text.c_str()).cx;
+    pParent->ReleaseDC(pDC);
+
+    if (!static_text.empty())
+        static_width += theApp.DPI(4);
+
+    //获取两个控件原来的位置
+    CRect static_rect;
+    CRect edit_rect;
+    pStatic->GetWindowRect(static_rect);
+    pEdit->GetWindowRect(edit_rect);
+    pParent->ScreenToClient(&static_rect);
+    pParent->ScreenToClient(&edit_rect);
+    //计算static控件原来的宽度和要设置的宽度的差
+    int width_diff = static_rect.Width() - static_width;
+    pStatic->SetWindowPos(nullptr, 0, 0, static_width, static_rect.Height(), SWP_NOMOVE | SWP_NOZORDER);
+    pEdit->SetWindowPos(nullptr, edit_rect.left - width_diff, edit_rect.top, edit_rect.Width() + width_diff, edit_rect.Height(), SWP_NOZORDER);
+    return static_width;
 }
 
 afx_msg LRESULT CMusicPlayerDlg::OnRecentFolderOrPlaylistChanged(WPARAM wParam, LPARAM lParam)

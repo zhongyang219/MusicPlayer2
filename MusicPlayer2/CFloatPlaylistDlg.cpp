@@ -47,8 +47,12 @@ void CFloatPlaylistDlg::ReSizeControl(int cx, int cy)
     CRect rect_base{ m_layout.margin, m_layout.margin, cx - m_layout.margin, cy - m_layout.margin };
 
     // 设置IDC_PATH_STATIC/IDC_PATH_EDIT/ID_MEDIA_LIB的位置和大小
+    int static_width = theApp.DPI(32);
+    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pDlg != nullptr)
+        static_width = pDlg->GetPathStaticWidth();
     int edit_height = m_layout.path_edit_height;
-    CRect rect_static{ rect_base.left, rect_base.top, rect_base.left + max(m_part_static_playlist_width, m_part_static_folder_width), rect_base.top + edit_height };
+    CRect rect_static{ rect_base.left, rect_base.top, rect_base.left + static_width, rect_base.top + edit_height };
     CRect rect_media_lib{ rect_base.right - m_medialib_btn_width, rect_base.top - 1, rect_base.right, rect_base.top + edit_height + 1 };
     CRect rect_edit{ rect_static.right + m_layout.margin, rect_base.top, rect_media_lib.left - m_layout.margin, rect_base.top + edit_height };
     m_path_static.MoveWindow(rect_static);
@@ -174,15 +178,8 @@ bool CFloatPlaylistDlg::InitializeControls()
     SetWindowTextW(theApp.m_str_table.LoadText(L"TXT_PLAYLIST").c_str());
     // 测量受翻译字符串影响的控件所需宽度，并应用翻译字符串到控件
     CString text;
-    // "播放列表:"宽度（含图标）
-    text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str();
-    int playlist_width = (std::min)(GetTextExtent(text).Width() + theApp.DPI(20), theApp.DPI(150));
-    m_part_static_playlist_width = (std::max)(m_part_static_playlist_width, playlist_width);
-    // "文件夹:"宽度（含图标）
     text = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str();
     m_path_static.SetWindowTextW(text);
-    int folder_width = (std::min)(GetTextExtent(text).Width() + theApp.DPI(20), theApp.DPI(150));
-    m_part_static_folder_width = (std::max)(m_part_static_folder_width, folder_width);
     // 媒体库按钮宽度
     text = theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str();
     m_media_lib_button.SetWindowTextW(text);

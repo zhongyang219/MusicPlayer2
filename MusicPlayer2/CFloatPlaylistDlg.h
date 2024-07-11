@@ -46,8 +46,6 @@ private:
     CPlayerToolBar m_playlist_toolbar;
 
     SLayoutData m_layout;		//窗口布局的固定数据
-    int m_part_static_playlist_width{ theApp.DPI(32) };     // 这里的值是最小宽度，窗口init时会根据文字变大
-    int m_part_static_folder_width{ theApp.DPI(32) };       // 这里的值是最小宽度，窗口init时会根据文字变大
     int m_medialib_btn_width{ theApp.DPI(64) };             // 这里的值是最小宽度，窗口init时会根据文字变大
 
     bool m_searched{ false };		//播放列表是否处于搜索状态
