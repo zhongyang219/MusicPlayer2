@@ -2062,7 +2062,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     CRect text_size;
     CDC* pDC = GetDC();
     pDC->SelectObject(&theApp.m_font_set.dlg.GetFont());
-    text = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str();
+    text = theApp.m_str_table.LoadText(L"TXT_FOLDER").c_str();
     m_path_static.SetWindowTextW(text);
     // 媒体库按钮宽度
     text = theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str();

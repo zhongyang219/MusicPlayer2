@@ -178,7 +178,7 @@ bool CFloatPlaylistDlg::InitializeControls()
     SetWindowTextW(theApp.m_str_table.LoadText(L"TXT_PLAYLIST").c_str());
     // 测量受翻译字符串影响的控件所需宽度，并应用翻译字符串到控件
     CString text;
-    text = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str();
+    text = theApp.m_str_table.LoadText(L"TXT_FOLDER").c_str();
     m_path_static.SetWindowTextW(text);
     // 媒体库按钮宽度
     text = theApp.m_str_table.LoadText(L"UI_TXT_BTN_MEDIA_LIB").c_str();
