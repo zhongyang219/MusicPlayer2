@@ -284,8 +284,7 @@ void CAllMediaDlg::OnOK()
         //所有曲目使用媒体库模式播放
         if (m_type == DT_ALL_MEDIA)
         {
-            //TODO: 这里需要指定播放选中曲目
-            ok = CPlayer::GetInstance().SetMediaLibPlaylist(CMediaClassifier::CT_NONE, std::wstring());
+            ok = CPlayer::GetInstance().SetMediaLibPlaylist(CMediaClassifier::CT_NONE, std::wstring(), -1, songs.front(), true, true);
         }
         else
         {

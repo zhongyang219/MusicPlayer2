@@ -1172,7 +1172,7 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     return true;
 }
 
-bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index, bool play, bool force)
+bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index, const SongInfo& play_song, bool play, bool force)
 {
     if (!BeforeIniPlayList(!force))
         return false;
@@ -1192,8 +1192,15 @@ bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, con
         m_index = playlistInfo.track;
         m_current_position.fromInt(playlistInfo.position);
     }
-    //指定了播放曲目
-    if (play_index >= 0)
+    //通过play_song指定了播放曲目
+    if (!play_song.IsEmpty())
+    {
+        m_current_song_tmp = play_song;
+        m_current_song_playing_tmp = play;
+        m_current_position.fromInt(0);
+    }
+    //通过play_index指定了播放曲目
+    else if (play_index >= 0)
     {
         m_index = play_index;
         m_current_position.fromInt(0);

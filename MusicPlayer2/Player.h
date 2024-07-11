@@ -326,8 +326,9 @@ public:
 
     //切换到媒体库模式
     //play_index为-1表示按上次播放状态还原(默认为0)，如果为大于等于0的值，则视为从头播放指定曲目; play用来设置是否立即播放
+    //play_song用于指定要播放的曲目，如果指定了play_song，则忽略play_index参数
     //force为false时列表初始化完成后会尝试执行切换播放列表时继续播放
-    bool SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index = -1, bool play = false, bool force = false);
+    bool SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index = -1, const SongInfo& play_song = SongInfo(), bool play = false, bool force = false);
 
     // 向当前播放列表添加文件，仅在播放列表模式可用，返回成功添加的数量（拒绝重复曲目）
     // 由于cue解析问题，请在判断需要“添加歌曲”而不是“添加文件”时尽量使用CPlayer::AddSongs代替此方法而不是使用path构建SongInfo
