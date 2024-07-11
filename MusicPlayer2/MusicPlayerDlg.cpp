@@ -6439,6 +6439,9 @@ int CMusicPlayerDlg::UpdatePlaylistCtrlPosition(CWnd* pParent, CWnd* pStatic, CW
     if (!static_text.empty())
         static_width += theApp.DPI(4);
 
+    if (static_width > theApp.DPI(150))
+        static_width = theApp.DPI(150);
+
     //获取两个控件原来的位置
     CRect static_rect;
     CRect edit_rect;
