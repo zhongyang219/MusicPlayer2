@@ -2587,12 +2587,12 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect)
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
         icon_type = IconMgr::IconType::IT_Playlist;
-        str = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST");
+        str = theApp.m_str_table.LoadText(L"TXT_PLAYLIST");
     }
     else if (CPlayer::GetInstance().IsFolderMode())
     {
         icon_type = IconMgr::IconType::IT_Folder;
-        str = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER");
+        str = theApp.m_str_table.LoadText(L"TXT_FOLDER");
     }
     else
     {

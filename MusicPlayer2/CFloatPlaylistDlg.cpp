@@ -252,12 +252,12 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
 
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
-        m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str());
+        m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"TXT_PLAYLIST").c_str());
         m_path_static.SetIcon(IconMgr::IconType::IT_Playlist);
     }
     else if (CPlayer::GetInstance().IsFolderMode())
     {
-        m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str());
+        m_path_static.SetWindowText(theApp.m_str_table.LoadText(L"TXT_FOLDER").c_str());
         m_path_static.SetIcon(IconMgr::IconType::IT_Folder);
     }
     else

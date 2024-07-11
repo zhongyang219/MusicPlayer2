@@ -883,12 +883,12 @@ void CMusicPlayerDlg::ShowPlayList(bool highlight_visible)
     {
         if (CPlayer::GetInstance().IsPlaylistMode())
         {
-            pStatic->SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST").c_str());
+            pStatic->SetWindowText(theApp.m_str_table.LoadText(L"TXT_PLAYLIST").c_str());
             pStatic->SetIcon(IconMgr::IconType::IT_Playlist);
         }
         else if(CPlayer::GetInstance().IsFolderMode())
         {
-            pStatic->SetWindowText(theApp.m_str_table.LoadText(L"UI_TXT_FOLDER").c_str());
+            pStatic->SetWindowText(theApp.m_str_table.LoadText(L"TXT_FOLDER").c_str());
             pStatic->SetIcon(IconMgr::IconType::IT_Folder);
         }
         else
@@ -6426,9 +6426,9 @@ int CMusicPlayerDlg::UpdatePlaylistCtrlPosition(CWnd* pParent, CWnd* pStatic, CW
     int static_width = theApp.DPI(20);
     std::wstring static_text;
     if (CPlayer::GetInstance().IsFolderMode())
-        static_text = theApp.m_str_table.LoadText(L"UI_TXT_FOLDER");
+        static_text = theApp.m_str_table.LoadText(L"TXT_FOLDER");
     else if (CPlayer::GetInstance().IsPlaylistMode())
-        static_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST");
+        static_text = theApp.m_str_table.LoadText(L"TXT_PLAYLIST");
     else if (CPlayer::GetInstance().IsMediaLibMode())
         static_text = CMediaLibPlaylistMgr::GetTypeName(CPlayer::GetInstance().GetMediaLibPlaylistType());
     CDC* pDC = pParent->GetDC();
