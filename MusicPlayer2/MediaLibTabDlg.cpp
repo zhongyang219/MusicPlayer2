@@ -87,7 +87,7 @@ void CMediaLibTabDlg::OnOK()
     {
         bool ok{};
         CMediaClassifier::ClassificationType type = GetClassificationType();
-        if (type != CMediaClassifier::CT_NONE)
+        if (type != CMediaClassifier::CT_NONE && GetClassificationItemName() != STR_OTHER_CLASSIFY_TYPE)
         {
             int item_selected = GetItemSelected();
             //右侧选中了曲目，则播放选中的曲目
