@@ -49,12 +49,17 @@ public:
     {
         ML_FOLDER = 0,
         ML_PLAYLIST = 1,
-        ML_ARTIST = 2,
-        ML_ALBUM = 3
+        ML_ARTIST,
+        ML_ALBUM,
+        ML_GENRE,
+        ML_YEAR,
+        ML_FILE_TYPE,
+        ML_BITRATE,
+        ML_RATING
     };
 
     //显示媒体库对话框
-    //cur_tab: 打开对话框后要切换的标签
+    //cur_tab: 打开对话框后要切换的标签，如果为-1，则保持上次打开的标签
     //tab_force_show: 要强制显示的标签，使用int中的各个bit表示要显示的标签，每个bit参见枚举 MediaLibDisplayItem 的声明
     void ShowMediaLib(int cur_tab = -1, int tab_force_show = 0);
 

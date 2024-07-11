@@ -55,6 +55,7 @@ protected:
 private:
     CTabCtrlEx m_tab_ctrl;
     int m_init_tab{};
+    static int m_last_tab;
     int m_tab_show_force{};     //要强制显示出来的标签
 
 public:

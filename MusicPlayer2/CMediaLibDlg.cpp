@@ -8,6 +8,8 @@
 
 // CMediaLibDlg 对话框
 
+int CMediaLibDlg::m_last_tab{};
+
 IMPLEMENT_DYNAMIC(CMediaLibDlg, CBaseDialog)
 
 CMediaLibDlg::CMediaLibDlg(int cur_tab, CWnd* pParent /*=nullptr*/)
@@ -180,7 +182,8 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_tab_ctrl.SetItemSize(CSize(theApp.DPI(60), theApp.DPI(24)));
     m_tab_ctrl.AdjustTabWindowSize();
 
-    m_tab_ctrl.SetCurTab(m_init_tab);
+    //如果要显示的标签序号无效，则保持上次的标签
+    m_tab_ctrl.SetCurTab(m_init_tab >= 0 ? m_init_tab : m_last_tab);
 
     OnPlaySelectedBtnEnable(0, 0);
 
@@ -234,6 +237,9 @@ void CMediaLibDlg::OnDestroy()
     CBaseDialog::OnDestroy();
 
     // TODO: 在此处添加消息处理程序代码
+
+    //窗口关闭时保存选中的标签
+    m_last_tab = m_tab_ctrl.GetCurSel();
 
     // 销毁并释放子窗口内存
     if (m_path_dlg != nullptr) { m_path_dlg->DestroyWindow(); delete m_path_dlg; m_path_dlg = nullptr; }
