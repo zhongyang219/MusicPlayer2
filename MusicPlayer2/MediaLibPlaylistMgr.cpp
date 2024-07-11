@@ -31,17 +31,33 @@ CMediaLibPlaylistMgr& CMediaLibPlaylistMgr::Instance()
 
 std::vector<SongInfo> CMediaLibPlaylistMgr::GetSongList(CMediaClassifier::ClassificationType type, const std::wstring& name)
 {
-    CMediaClassifier classifier(type, theApp.m_media_lib_setting_data.hide_only_one_classification);
-    classifier.ClassifyMedia();
-    const auto& song_list{ classifier.GetMeidaList()[name] };
-    if (song_list.empty())
+    if (type == CMediaClassifier::CT_NONE)
     {
-        MediaLibPlaylistInfo empty_item;
-        empty_item.path = name;
-        empty_item.medialib_type = type;
-        m_instance.m_empty_items.insert(empty_item);
+        //返回所有曲目
+        std::vector<SongInfo> song_list;
+        CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map)
+            {
+                for (const auto& song_info : song_data_map)
+                {
+                    song_list.push_back(song_info.second);
+                }
+            });
+        return song_list;
     }
-    return song_list;
+    else
+    {
+        CMediaClassifier classifier(type, theApp.m_media_lib_setting_data.hide_only_one_classification);
+        classifier.ClassifyMedia();
+        const auto& song_list{ classifier.GetMeidaList()[name] };
+        if (song_list.empty())
+        {
+            MediaLibPlaylistInfo empty_item;
+            empty_item.path = name;
+            empty_item.medialib_type = type;
+            m_instance.m_empty_items.insert(empty_item);
+        }
+        return song_list;
+    }
 }
 
 IconMgr::IconType CMediaLibPlaylistMgr::GetIcon(CMediaClassifier::ClassificationType type)
@@ -55,6 +71,7 @@ IconMgr::IconType CMediaLibPlaylistMgr::GetIcon(CMediaClassifier::Classification
     case CMediaClassifier::CT_TYPE: return IconMgr::IT_File_Relate;
     case CMediaClassifier::CT_BITRATE: return IconMgr::IT_Bitrate;
     case CMediaClassifier::CT_RATING: return IconMgr::IT_Star;
+    case CMediaClassifier::CT_NONE: return IconMgr::IT_Media_Lib;
     }
     return IconMgr::IT_App;
 }
@@ -86,6 +103,10 @@ SortMode CMediaLibPlaylistMgr::GetDefaultSortMode(CMediaClassifier::Classificati
 
 std::wstring CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(CMediaClassifier::ClassificationType type, const std::wstring medialib_item_name)
 {
+    //所有曲目
+    if (type == CMediaClassifier::CT_NONE)
+        return theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS");
+
     //显示名称为<其他>时
     if (medialib_item_name == STR_OTHER_CLASSIFY_TYPE)
         return theApp.m_str_table.LoadText(L"TXT_CLASSIFY_OTHER");

@@ -281,10 +281,19 @@ void CAllMediaDlg::OnOK()
     if (!songs.empty())
     {
         bool ok{};
-        if (songs.size() == 1)
-            ok = CPlayer::GetInstance().OpenSongsInDefaultPlaylist(songs);
+        //所有曲目使用媒体库模式播放
+        if (m_type == DT_ALL_MEDIA)
+        {
+            //TODO: 这里需要指定播放选中曲目
+            ok = CPlayer::GetInstance().SetMediaLibPlaylist(CMediaClassifier::CT_NONE, std::wstring());
+        }
         else
-            ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
+        {
+            if (songs.size() == 1)
+                ok = CPlayer::GetInstance().OpenSongsInDefaultPlaylist(songs);
+            else
+                ok = CPlayer::GetInstance().OpenSongsInTempPlaylist(songs);
+        }
         if (!ok)
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
