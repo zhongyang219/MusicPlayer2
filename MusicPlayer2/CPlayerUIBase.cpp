@@ -2496,7 +2496,7 @@ void CPlayerUIBase::DrawPlaylist(CRect rect, UiElement::Playlist* playlist_eleme
                 m_draw.SetDrawArea(rect);
                 m_draw.DrawWindowText(rect_num, std::to_wstring(i + 1).c_str(), m_colors.color_text, Alignment::LEFT, true);
                 //绘制曲目名称
-                SongInfo song_info{ CPlayer::GetInstance().GetPlayList()[i] };
+                const SongInfo& song_info{ CPlayer::GetInstance().GetPlayList()[i] };
                 CRect rect_name{ rect_item };
                 rect_name.left = rect_num.right + DPI(4);
                 rect_name.right = rect_item.right - DPI(50);
