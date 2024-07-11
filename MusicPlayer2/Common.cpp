@@ -1846,7 +1846,7 @@ POINT CCommon::CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& scree
 
 void CCommon::GetLastCompileTime(wstring& time_str, wstring& hash_str)
 {
-    wstring compile_time = GetTextResource(IDR_COMPILE_TIME, CodeType::UTF16LE);
+    wstring compile_time = GetTextResource(IDR_COMPILE_TIME, CodeType::ANSI);
     size_t pos = compile_time.find(L"\r\n");
     time_str = compile_time.substr(0, pos);
     if (compile_time.size() > pos + 10)                 // 如果hash存在
