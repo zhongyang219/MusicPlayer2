@@ -167,6 +167,31 @@ void CListCtrlEx::SetItemIcon(int item, HICON icon)
     m_fill_left_space_after_paint = false;  //设置了图标后将m_fill_left_space_after_paint置为false，以确保图标部分背景显示正常
 }
 
+bool CListCtrlEx::DeleteItem(int nItem)
+{
+    bool rtn = (CListCtrl::DeleteItem(nItem) != FALSE);
+
+    if (rtn)
+    {
+        //删除对应的图标
+        m_icons.erase(nItem);
+
+        //删除项目后要重新调整删除项目后面所有图标的序号
+        for (int i = nItem + 1; i <= GetItemCount(); i++)
+        {
+            auto iter = m_icons.find(i);
+            if (iter != m_icons.end())
+            {
+                HICON icon = iter->second;
+                m_icons.erase(iter);
+                m_icons[i - 1] = icon;
+            }
+        }
+    }
+
+    return rtn;
+}
+
 void CListCtrlEx::SetListData(ListData* pListData)
 {
     if (pListData == nullptr)

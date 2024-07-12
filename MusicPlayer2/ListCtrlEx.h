@@ -28,6 +28,7 @@ public:
     void FillLeftSpaceAfterPaint(bool fill);        //如果为true，则在每行绘制之后填充左侧空白，否则在绘制之前填充（如果表格没有图标或复选框，则应设置为true，否则设置为false）
     void SetMouseWheelEnable(bool enable);  //设置是否允许响应鼠标滚轮
     void SetItemIcon(int item, HICON icon); //为列表项指定图标。如果使用此函数设置了图标，则必须调用SetRowHeight函数通过left_space参数设置要为图标留出的宽度
+    bool DeleteItem(int nItem);
 
     typedef map<int, wstring> RowData;      //列表数据中每一行的数据，map的key为列序号，value为显示的文本
     typedef vector<RowData> ListData;       //列表数据，其中vector为每一行的数据
