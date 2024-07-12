@@ -12,6 +12,7 @@ public:
 
 	void AddString(LPCTSTR str);
     CString GetItemText(int index);
+    virtual bool DeleteItem(int nItem) override;
 
 protected:
 	virtual void PreSubclassWindow();

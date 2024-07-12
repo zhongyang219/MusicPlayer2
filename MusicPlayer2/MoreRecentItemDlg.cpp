@@ -97,6 +97,7 @@ BOOL CMoreRecentItemDlg::OnInitDialog()
     SetIcon(IconMgr::IconType::IT_Media_Lib, FALSE);     // 设置小图标
     m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
     EnableDlgCtrl(IDC_DELETE_BUTTON, false);
+    EnableDlgCtrl(IDOK, false);
 
     //初始化列表
     m_list_ctrl.SetRowHeight(theApp.DPI(24), theApp.DPI(18));
@@ -180,6 +181,7 @@ afx_msg LRESULT CMoreRecentItemDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lP
         int index = lParam;
         //选中项是否可以删除
         bool delete_enable{ false };
+        bool select_valid{ false };
         auto& data_list{ m_searched ? m_search_result : CRecentFolderAndPlaylist::Instance().GetItemList() };
         if (index >= 0 && index < data_list.size())
         {
@@ -187,9 +189,11 @@ afx_msg LRESULT CMoreRecentItemDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lP
             //此界面仅允许删除媒体库项目
             if (selected_item.IsMedialib())
                 delete_enable = true;
+            select_valid = true;
         }
 
         EnableDlgCtrl(IDC_DELETE_BUTTON, delete_enable);
+        EnableDlgCtrl(IDOK, select_valid);
     }
     return 0;
 }

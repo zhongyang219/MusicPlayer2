@@ -24,6 +24,21 @@ CString CListBoxEnhanced::GetItemText(int index)
     return CListCtrlEx::GetItemText(index, 0);
 }
 
+bool CListBoxEnhanced::DeleteItem(int nItem)
+{
+    bool selected_item_deleted = (nItem == GetCurSel());
+    bool rtn = CListCtrlEx::DeleteItem(nItem);
+    //如果删除的是选中的条目，则更新选中状态并通知父窗口
+    if (selected_item_deleted)
+    {
+        SetCurSel(-1);
+        CWnd* pParent{ GetParent() };
+        if (pParent != nullptr)
+            pParent->SendMessage(WM_LISTBOX_SEL_CHANGED, (WPARAM)this, (LPARAM)-1);
+    }
+    return rtn;
+}
+
 void CListBoxEnhanced::PreSubclassWindow()
 {
 	// TODO: 在此添加专用代码和/或调用基类
