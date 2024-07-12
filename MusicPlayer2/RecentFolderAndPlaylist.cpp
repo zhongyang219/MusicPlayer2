@@ -23,12 +23,17 @@ void CRecentFolderAndPlaylist::Init()
     const CPlaylistMgr& recent_playlist{ CPlaylistMgr::Instance() };
     m_list.clear();
     //添加最近播放播放列表
-    m_list.emplace_back(&recent_playlist.m_default_playlist);
-    m_list.emplace_back(&recent_playlist.m_favourite_playlist);
+    auto addPlaylist = [this](const PlaylistInfo* playlist) {
+        //只添加播放过的播放列表
+        if (playlist->last_played_time > 0)
+            m_list.emplace_back(playlist);
+        };
+    addPlaylist(&recent_playlist.m_default_playlist);
+    addPlaylist(&recent_playlist.m_favourite_playlist);
     if (recent_playlist.m_temp_playlist.track_num > 0)          // 忽略没有文件的临时播放列表
-        m_list.emplace_back(&recent_playlist.m_temp_playlist);
+        addPlaylist(&recent_playlist.m_temp_playlist);
     for (auto& item : recent_playlist.m_recent_playlists)
-        m_list.emplace_back(&item);
+        addPlaylist(&item);
 
     //添加最近播放媒体库项目
     for (const auto& item : CMediaLibPlaylistMgr::Instance().GetAllItems())
