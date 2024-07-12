@@ -46,7 +46,7 @@ std::vector<SongInfo> CMediaLibPlaylistMgr::GetSongList(CMediaClassifier::Classi
     }
     else
     {
-        CMediaClassifier classifier(type, theApp.m_media_lib_setting_data.hide_only_one_classification);
+        CMediaClassifier classifier(type, name == STR_OTHER_CLASSIFY_TYPE);
         classifier.ClassifyMedia();
         const auto& song_list{ classifier.GetMeidaList()[name] };
         if (song_list.empty())
