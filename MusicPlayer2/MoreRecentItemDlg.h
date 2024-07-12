@@ -44,4 +44,6 @@ public:
     afx_msg void OnEnChangeSearchEdit();
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
+    afx_msg LRESULT OnListboxSelChanged(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnBnClickedDeleteButton();
 };

@@ -39,6 +39,7 @@ public:
     void EmplaceMediaLibPlaylist(CMediaClassifier::ClassificationType type, const wstring& name, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time, SortMode sort_mode);
     MediaLibPlaylistInfo FindItem(CMediaClassifier::ClassificationType type, const wstring& name) const;
     MediaLibPlaylistInfo GetCurrentPlaylistInfo() const;
+    bool DeleteItem(const MediaLibPlaylistInfo* item);
 
     const std::deque<MediaLibPlaylistInfo>& GetAllItems() const { return m_media_lib_playlist; }
 

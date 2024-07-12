@@ -41,6 +41,8 @@ bool CMoreRecentItemDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TITLE_MORE_RECENT_ITEM");
     SetWindowTextW(temp.c_str());
 
+    SetDlgControlText(IDC_DELETE_BUTTON, L"TXT_BTN_DELETE");
+
     RepositionTextBasedControls({
         { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
         { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
@@ -80,6 +82,8 @@ BEGIN_MESSAGE_MAP(CMoreRecentItemDlg, CBaseDialog)
     ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CMoreRecentItemDlg::OnNMDblclkList1)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMoreRecentItemDlg::OnEnChangeSearchEdit)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMoreRecentItemDlg::OnSearchEditBtnClicked)
+    ON_MESSAGE(WM_LISTBOX_SEL_CHANGED, &CMoreRecentItemDlg::OnListboxSelChanged)
+    ON_BN_CLICKED(IDC_DELETE_BUTTON, &CMoreRecentItemDlg::OnBnClickedDeleteButton)
 END_MESSAGE_MAP()
 
 
@@ -92,6 +96,7 @@ BOOL CMoreRecentItemDlg::OnInitDialog()
 
     SetIcon(IconMgr::IconType::IT_Media_Lib, FALSE);     // 设置小图标
     m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
+    EnableDlgCtrl(IDC_DELETE_BUTTON, false);
 
     //初始化列表
     m_list_ctrl.SetRowHeight(theApp.DPI(24), theApp.DPI(18));
@@ -164,4 +169,53 @@ void CMoreRecentItemDlg::QuickSearch(const wstring& key_word)
             m_search_result.push_back(item);
         }
     }
+}
+
+
+afx_msg LRESULT CMoreRecentItemDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lParam)
+{
+    CListBoxEnhanced* pCtrl = (CListBoxEnhanced*)wParam;
+    if (pCtrl == &m_list_ctrl)
+    {
+        int index = lParam;
+        //选中项是否可以删除
+        bool delete_enable{ false };
+        auto& data_list{ m_searched ? m_search_result : CRecentFolderAndPlaylist::Instance().GetItemList() };
+        if (index >= 0 && index < data_list.size())
+        {
+            const auto& selected_item = data_list[index];
+            //此界面仅允许删除媒体库项目
+            if (selected_item.IsMedialib())
+                delete_enable = true;
+        }
+
+        EnableDlgCtrl(IDC_DELETE_BUTTON, delete_enable);
+    }
+    return 0;
+}
+
+void CMoreRecentItemDlg::OnBnClickedDeleteButton()
+{
+    int sel_index = m_list_ctrl.GetCurSel();
+    auto& data_list{ m_searched ? m_search_result : CRecentFolderAndPlaylist::Instance().GetItemList() };
+    if (sel_index >= 0 && sel_index < data_list.size())
+    {
+        const auto& selected_item = data_list[sel_index];
+        if (selected_item.IsMedialib() && selected_item.medialib_info != nullptr)
+        {
+            CString item_str;
+            std::wstring type_name = CMediaLibPlaylistMgr::GetTypeName(selected_item.medialib_info->medialib_type);
+            item_str.Format(_T("%s: %s"), type_name.c_str(), m_list_ctrl.GetItemText(sel_index).GetString());
+            std::wstring messagebox_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_RECENTPLAYED_ITEM_INQUIRY", { item_str });
+            if (MessageBox(messagebox_info.c_str(), nullptr, MB_ICONQUESTION | MB_YESNO) == IDYES)
+            {
+                if (CMediaLibPlaylistMgr::Instance().DeleteItem(selected_item.medialib_info))
+                {
+                    m_list_ctrl.DeleteItem(sel_index);
+                    CRecentFolderAndPlaylist::Instance().Init();
+                }
+            }
+        }
+    }
+
 }

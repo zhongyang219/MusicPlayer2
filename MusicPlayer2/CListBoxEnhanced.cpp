@@ -19,6 +19,11 @@ void CListBoxEnhanced::AddString(LPCTSTR str)
 	InsertItem(cnt, str);
 }
 
+CString CListBoxEnhanced::GetItemText(int index)
+{
+    return CListCtrlEx::GetItemText(index, 0);
+}
+
 void CListBoxEnhanced::PreSubclassWindow()
 {
 	// TODO: 在此添加专用代码和/或调用基类
@@ -48,13 +53,15 @@ void CListBoxEnhanced::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-    CRect check_rect;
-    GetItemRect(pNMItemActivate->iItem, check_rect, LVIR_LABEL);		//获取选中项目文本的矩形区域（以列表控件左上角为原点）
-    if (check_rect.PtInRect(pNMItemActivate->ptAction))                 //如果点击的
+    CWnd* pParent{ GetParent() };
+    if (pParent != nullptr)
     {
-        CWnd* pParent{ GetParent() };
-        if (pParent != nullptr)
+        CRect check_rect;
+        GetItemRect(pNMItemActivate->iItem, check_rect, LVIR_LABEL);		//获取选中项目文本的矩形区域（以列表控件左上角为原点）
+        if (check_rect.PtInRect(pNMItemActivate->ptAction))                 //如果点击的
             pParent->SendMessage(WM_LISTBOX_SEL_CHANGED, (WPARAM)this, (LPARAM)pNMItemActivate->iItem);
+        else
+            pParent->SendMessage(WM_LISTBOX_SEL_CHANGED, (WPARAM)this, (LPARAM)-1);
     }
 
 	*pResult = 0;

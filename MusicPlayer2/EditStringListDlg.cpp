@@ -89,7 +89,7 @@ void CEditStringListDlg::OnOK()
     int item_count = m_list_ctrl.GetItemCount();
     for (int i = 0; i < item_count; i++)
     {
-        m_items.push_back(m_list_ctrl.GetItemText(i, 0).GetString());
+        m_items.push_back(m_list_ctrl.GetItemText(i).GetString());
     }
 
     CBaseDialog::OnOK();

@@ -17,7 +17,7 @@ CEditableListBox::~CEditableListBox()
 
 void CEditableListBox::Edit(int row)
 {
-    CString last_row_text = GetItemText(GetItemCount() - 1, 0);
+    CString last_row_text = GetItemText(GetItemCount() - 1);
     if (row < 0)    //如果编辑的行超出了范围
     {
         if (!last_row_text.IsEmpty())       //最后一行不为空，则直接添加一个新行
@@ -31,7 +31,7 @@ void CEditableListBox::Edit(int row)
     CRect item_rect;
     GetSubItemRect(row, 0, LVIR_LABEL, item_rect);	//取得子项的矩形
 
-    CString text = GetItemText(row, 0);		//取得子项的内容
+    CString text = GetItemText(row);		//取得子项的内容
 
     m_item_edit.SetWindowText(text);		//将子项的内容显示到编辑框中
     m_item_edit.ShowWindow(SW_SHOW);		//显示编辑框

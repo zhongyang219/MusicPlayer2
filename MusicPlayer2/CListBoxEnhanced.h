@@ -11,6 +11,7 @@ public:
 	~CListBoxEnhanced();
 
 	void AddString(LPCTSTR str);
+    CString GetItemText(int index);
 
 protected:
 	virtual void PreSubclassWindow();

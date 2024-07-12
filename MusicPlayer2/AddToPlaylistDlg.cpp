@@ -79,6 +79,8 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
 
     m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
 
+    ShowDlgCtrl(IDC_DELETE_BUTTON, false);  //隐藏“删除”按钮
+
     //初始化列表
     for (const auto& item : CPlaylistMgr::Instance().m_recent_playlists)
     {
@@ -96,7 +98,7 @@ void CAddToPlaylistDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
     int index = m_playlist_list_ctrl.GetCurSel();
-    m_playlist_selected = m_playlist_list_ctrl.GetItemText(index, 0);
+    m_playlist_selected = m_playlist_list_ctrl.GetItemText(index);
 
     CBaseDialog::OnOK();
 }
@@ -106,7 +108,7 @@ void CAddToPlaylistDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
-    m_playlist_selected = m_playlist_list_ctrl.GetItemText(pNMItemActivate->iItem, 0);
+    m_playlist_selected = m_playlist_list_ctrl.GetItemText(pNMItemActivate->iItem);
     CBaseDialog::OnOK();
 
     *pResult = 0;

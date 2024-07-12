@@ -153,6 +153,22 @@ MediaLibPlaylistInfo CMediaLibPlaylistMgr::GetCurrentPlaylistInfo() const
     return MediaLibPlaylistInfo();
 }
 
+bool CMediaLibPlaylistMgr::DeleteItem(const MediaLibPlaylistInfo* item)
+{
+    if (item != nullptr)
+    {
+        for (auto iter = m_media_lib_playlist.begin(); iter != m_media_lib_playlist.end(); ++iter)
+        {
+            if (&(*iter) == item)
+            {
+                m_media_lib_playlist.erase(iter);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 MediaLibPlaylistInfo CMediaLibPlaylistMgr::FindItem(CMediaClassifier::ClassificationType type, const wstring& name) const
 {
     for (auto iter = m_media_lib_playlist.begin(); iter != m_media_lib_playlist.end(); ++iter)
