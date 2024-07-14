@@ -283,6 +283,7 @@
     <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="PropertyDlgHelper.h" />
     <ClInclude Include="RecentFolderAndPlaylist.h" />
+    <ClInclude Include="RecentFolderMgr.h" />
     <ClInclude Include="RenameDlg.h" />
     <ClInclude Include="ScintillaEditView.h" />
     <ClInclude Include="SelectItemDlg.h" />
@@ -447,6 +448,7 @@
     <ClCompile Include="PropertyDlg.cpp" />
     <ClCompile Include="PropertyDlgHelper.cpp" />
     <ClCompile Include="RecentFolderAndPlaylist.cpp" />
+    <ClCompile Include="RecentFolderMgr.cpp" />
     <ClCompile Include="RenameDlg.cpp" />
     <ClCompile Include="ScintillaEditView.cpp" />
     <ClCompile Include="SelectItemDlg.cpp" />

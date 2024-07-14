@@ -62,19 +62,6 @@ struct TAG_ID3V1
     BYTE genre;
 };
 
-//文件夹模式下一个文件夹的信息
-struct PathInfo
-{
-    wstring path;		//路径
-    int track{};			//最后播放到的曲目号
-    int position{};		//最后播放到的位置
-    SortMode sort_mode{};	//路径中文件的排序方式
-    int track_num{};		//路径中音频文件的数量
-    int total_time{};		//路径中音频文件的总时间
-    bool contain_sub_folder{};  //是否包含子文件夹
-    unsigned __int64 last_played_time{};    //上次播放的时间
-};
-
 //循环模式
 enum RepeatMode
 {

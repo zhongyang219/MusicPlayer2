@@ -563,7 +563,7 @@ int CMusicPlayerCmdHelper::CleanUpSongData(std::function<bool(const SongInfo&)> 
 int CMusicPlayerCmdHelper::CleanUpRecentFolders()
 {
     int cleard_cnt{};
-    auto& recent_folders{ CPlayer::GetInstance().GetRecentPath() };
+    auto& recent_folders{ CRecentFolderMgr::Instance().GetRecentPath() };
     for (size_t i{}; i < recent_folders.size(); i++)
     {
         if (!CAudioCommon::IsPathContainsAudioFile(recent_folders[i].path, recent_folders[i].contain_sub_folder) && !COSUPlayerHelper::IsOsuFolder(recent_folders[i].path))

@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Common.h"
-#include "AudioCommon.h"
+#include "RecentFolderMgr.h"
 #include "ListCtrlEx.h"
 #include "TabDlg.h"
 #include "SearchEditCtrl.h"

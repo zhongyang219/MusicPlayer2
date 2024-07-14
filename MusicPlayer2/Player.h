@@ -11,6 +11,7 @@
 #include "SpectralDataHelper.h"
 #include "MediaTransControls.h"
 #include "MediaLibHelper.h"
+#include "RecentFolderMgr.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)         // 播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)      // 播放列表加载完成消息
@@ -91,7 +92,6 @@ private:
     bool m_current_song_playing_tmp;    // 临时存储歌曲是否正在播放（m_current_song_tmp被找到才会应用）
 
     wstring m_current_file_type;
-    deque<PathInfo> m_recent_path;      //最近打开过的路径
 
     Time m_song_length;                 //正在播放的文件的长度
     Time m_current_position;            //当前播放到的位置
@@ -190,8 +190,6 @@ private:
     void LoadRecentPath();
 public:
     void SaveCurrentPlaylist();
-    //将最近路径列表保存到文件
-    void SaveRecentPath() const;
     //退出时的处理
     void OnExit();
     //播放列表加载完毕时的处理
@@ -460,8 +458,6 @@ public:
     const float* GetSpectralPeakData() const { return m_spectral_peak; }
     //返回频谱分析的原始数据
     const float* GetFFTData() const { return m_fft; }
-    //返回最近播放路径列表的引用
-    deque<PathInfo>& GetRecentPath() { return m_recent_path; }
     //获取播放状态的字符串
     wstring GetPlayingState() const;
     //获取正在播放状态（0：已停止，1：已暂停，2：正在播放）

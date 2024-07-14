@@ -4409,7 +4409,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniStart(WPARAM wParam, LPARAM lParam
     {
         if (CCommon::IsFolder(remove_list_path))
         {
-            deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
+            deque<PathInfo>& recent_path = CRecentFolderMgr::Instance().GetRecentPath();
             auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == remove_list_path; });
             if (iter != recent_path.end())
             {

@@ -2,6 +2,7 @@
 #include "AudioCommon.h"
 #include "PlaylistMgr.h"
 #include "MediaLibPlaylistMgr.h"
+#include "RecentFolderMgr.h"
 
 class CRecentFolderAndPlaylist
 {

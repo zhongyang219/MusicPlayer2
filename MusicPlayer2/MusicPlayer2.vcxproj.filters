@@ -210,9 +210,6 @@
     <Filter Include="对话框类\媒体库对话框">
       <UniqueIdentifier>{a3ab564f-8af7-4267-a854-05b454587203}</UniqueIdentifier>
     </Filter>
-    <Filter Include="功能逻辑类\PlaylistMgr">
-      <UniqueIdentifier>{4dbe9b2f-faf2-46dd-8583-24b0eff0b7fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="对话框类\InputDlg">
       <UniqueIdentifier>{82bbfa03-6c20-4f56-8ad9-7bf00fcd1fe2}</UniqueIdentifier>
     </Filter>
@@ -401,6 +398,9 @@
     </Filter>
     <Filter Include="公共的类\ChinesePingyinRes">
       <UniqueIdentifier>{66fcd09f-bfb4-43ed-9b9f-69a6eb0a32af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="功能逻辑类\RecentlyPlayedMgr">
+      <UniqueIdentifier>{4dbe9b2f-faf2-46dd-8583-24b0eff0b7fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -643,7 +643,7 @@
       <Filter>对话框类\媒体库对话框</Filter>
     </ClInclude>
     <ClInclude Include="PlaylistMgr.h">
-      <Filter>功能逻辑类\PlaylistMgr</Filter>
+      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClInclude>
     <ClInclude Include="RegFileRelate.h">
       <Filter>功能逻辑类\RegFileRealte</Filter>
@@ -895,13 +895,16 @@
       <Filter>功能逻辑类\IconMgr</Filter>
     </ClInclude>
     <ClInclude Include="MediaLibPlaylistMgr.h">
-      <Filter>功能逻辑类\PlaylistMgr</Filter>
+      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClInclude>
     <ClInclude Include="MoreRecentItemDlg.h">
       <Filter>对话框类\MoreRecentItemDlg</Filter>
     </ClInclude>
     <ClInclude Include="ChinesePingyinRes.h">
       <Filter>公共的类\ChinesePingyinRes</Filter>
+    </ClInclude>
+    <ClInclude Include="RecentFolderMgr.h">
+      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1116,7 +1119,7 @@
       <Filter>对话框类\媒体库对话框</Filter>
     </ClCompile>
     <ClCompile Include="PlaylistMgr.cpp">
-      <Filter>功能逻辑类\PlaylistMgr</Filter>
+      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClCompile>
     <ClCompile Include="RegFileRelate.cpp">
       <Filter>功能逻辑类\RegFileRealte</Filter>
@@ -1362,13 +1365,16 @@
       <Filter>功能逻辑类\IconMgr</Filter>
     </ClCompile>
     <ClCompile Include="MediaLibPlaylistMgr.cpp">
-      <Filter>功能逻辑类\PlaylistMgr</Filter>
+      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClCompile>
     <ClCompile Include="MoreRecentItemDlg.cpp">
       <Filter>对话框类\MoreRecentItemDlg</Filter>
     </ClCompile>
     <ClCompile Include="ChinesePingyinRes.cpp">
       <Filter>公共的类\ChinesePingyinRes</Filter>
+    </ClCompile>
+    <ClCompile Include="RecentFolderMgr.cpp">
+      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

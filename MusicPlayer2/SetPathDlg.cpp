@@ -83,7 +83,7 @@ void CSetPathDlg::ShowPathList()
 {
     // 这里的更新m_path_list_info操作本应有独立方法不过暂时还不必要，先放这里
     m_path_list_info.clear();
-    const deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
+    const deque<PathInfo>& recent_path = CRecentFolderMgr::Instance().GetRecentPath();
     std::copy(recent_path.begin(), recent_path.end(), std::back_inserter(m_path_list_info));
 
     m_path_list.EnableWindow(TRUE);
@@ -377,7 +377,7 @@ void CSetPathDlg::OnDeletePath()
         }
         else
         {
-            deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
+            deque<PathInfo>& recent_path = CRecentFolderMgr::Instance().GetRecentPath();
             auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == del_path; });
             recent_path.erase(iter);        // 删除选中的路径
             ShowPathList();                 // 重新显示路径列表
@@ -491,7 +491,7 @@ void CSetPathDlg::OnContainSubFolder()
         }
         else
         {
-            deque<PathInfo>& recent_path = CPlayer::GetInstance().GetRecentPath();
+            deque<PathInfo>& recent_path = CRecentFolderMgr::Instance().GetRecentPath();
             auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == sel_path; });
             if (iter != recent_path.end())
             {

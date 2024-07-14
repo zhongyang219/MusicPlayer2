@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "MusicPlayer2.h"
 #include "MediaLibPlaylistMgr.h"
+#include "RecentFolderMgr.h"
 
 CRecentFolderAndPlaylist CRecentFolderAndPlaylist::m_instance;
 
@@ -19,7 +20,7 @@ CRecentFolderAndPlaylist& CRecentFolderAndPlaylist::Instance()
 
 void CRecentFolderAndPlaylist::Init()
 {
-    const deque<PathInfo>& recent_folder{ CPlayer::GetInstance().GetRecentPath() };
+    const deque<PathInfo>& recent_folder{ CRecentFolderMgr::Instance().GetRecentPath()};
     const CPlaylistMgr& recent_playlist{ CPlaylistMgr::Instance() };
     m_list.clear();
     //添加最近播放播放列表

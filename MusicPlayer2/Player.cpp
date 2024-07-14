@@ -105,7 +105,8 @@ void CPlayer::Create()
     CPlaylistMgr::Instance().LoadPlaylistData();
     CMediaLibPlaylistMgr::Instance().LoadPlaylistData();
     m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
-    bool change_to_default_playlist{ m_playlist_mode == PM_FOLDER && (m_recent_path.empty() || (!COSUPlayerHelper::IsOsuFolder(m_recent_path.front().path) && !CAudioCommon::IsPathContainsAudioFile(m_recent_path.front().path, m_recent_path.front().contain_sub_folder)))};
+    const PathInfo& path_info{ CRecentFolderMgr::Instance().GetCurrentItem() };
+    bool change_to_default_playlist{ m_playlist_mode == PM_FOLDER && (CRecentFolderMgr::Instance().IsEmpty() || (!COSUPlayerHelper::IsOsuFolder(path_info.path) && !CAudioCommon::IsPathContainsAudioFile(path_info.path, path_info.contain_sub_folder)))};
     // 如果文件夹模式且当前文件夹没有音频文件那么切换到默认播放列表，清理无效（空）文件夹会在启动时更新媒体库进行（如果启用remove_file_not_exist_when_update）
     if (change_to_default_playlist)
     {
@@ -114,7 +115,7 @@ void CPlayer::Create()
     }
     else if (m_playlist_mode == PM_FOLDER)
     {
-        SetPath(m_recent_path.front());
+        SetPath(path_info);
     }
     else if (m_playlist_mode == PM_MEDIA_LIB)
     {
@@ -936,41 +937,23 @@ void CPlayer::SaveRecentInfoToFiles(bool save_playlist)
         initialized = true;
         return;
     }
+    int song_num = IsPlaylistEmpty() ? 0 : GetSongNum();
     if (m_playlist_mode == PM_PLAYLIST)
     {
         if (save_playlist)
             SaveCurrentPlaylist();
-        int song_num = IsPlaylistEmpty() ? 0 : GetSongNum();
         CPlaylistMgr::Instance().EmplacePlaylist(m_playlist_path, m_index, m_current_position.toInt(), song_num, m_total_time, CCommon::GetCurTimeElapse());
         CPlaylistMgr::Instance().SavePlaylistData();
     }
     else if (m_playlist_mode == PM_MEDIA_LIB)
     {
-        int song_num = IsPlaylistEmpty() ? 0 : GetSongNum();
         CMediaLibPlaylistMgr::Instance().EmplaceMediaLibPlaylist(m_media_lib_playlist_type, m_media_lib_playlist_name, m_index, m_current_position.toInt(), song_num, m_total_time, CCommon::GetCurTimeElapse(), m_sort_mode);
         CMediaLibPlaylistMgr::Instance().SavePlaylistData();
     }
     else if (m_playlist_mode == PM_FOLDER)
     {
-        for (size_t i{ 0 }; i < m_recent_path.size(); i++)
-        {
-            if (m_path == m_recent_path[i].path)
-                m_recent_path.erase(m_recent_path.begin() + i);		//如果当前路径已经在最近路径中，就把它最近路径中删除
-        }
-        if (!IsPlaylistEmpty())      // 如果当前路径中没有文件，就不保存
-        {
-            PathInfo path_info;
-            path_info.path = m_path;
-            path_info.track = m_index;
-            path_info.position = m_current_position.toInt();
-            path_info.sort_mode = m_sort_mode;
-            path_info.track_num = GetSongNum();
-            path_info.total_time = m_total_time;
-            path_info.contain_sub_folder = m_contain_sub_folder;
-            path_info.last_played_time = CCommon::GetCurTimeElapse();
-            m_recent_path.push_front(path_info);        // 当前路径插入到m_recent_path的前面
-        }
-        SaveRecentPath();
+        CRecentFolderMgr::Instance().EmplaceRecentFolder(m_path, m_index, m_current_position.toInt(), m_sort_mode, song_num, m_total_time, m_contain_sub_folder);
+        CRecentFolderMgr::Instance().SaveData();
     }
     CRecentFolderAndPlaylist::Instance().Init();
 }
@@ -1027,11 +1010,9 @@ bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     m_current_position.fromInt(0);
 
     // 如果是打开过的文件夹那么用保存的设置覆盖默认值
-    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
-        [&](const PathInfo& path_info) { return path_info.path == m_path; });
-    if (iter != m_recent_path.end())
+    const auto& path_info = CRecentFolderMgr::Instance().FindItem(m_path);
+    if (!path_info.IsEmpty())
     {
-        const PathInfo& path_info = *iter;
         m_sort_mode = path_info.sort_mode;
         m_index = path_info.track;
         m_current_position.fromInt(path_info.position);
@@ -1153,11 +1134,8 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     m_current_position.fromInt(0);
 
     // 如果是打开过的文件夹那么用保存的设置覆盖默认值
-    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
-        [&](const PathInfo& path_info) { return path_info.path == m_path; });
-    if (iter != m_recent_path.end())
+    const auto& path_info = CRecentFolderMgr::Instance().FindItem(m_path);
     {
-        const PathInfo& path_info = *iter;
         m_sort_mode = path_info.sort_mode;
         m_contain_sub_folder = path_info.contain_sub_folder;
         m_index = path_info.track;
@@ -2214,41 +2192,6 @@ void CPlayer::SortPlaylist(bool is_init)
     SaveCurrentPlaylist();
 }
 
-void CPlayer::SaveRecentPath() const
-{
-    // 打开或者新建文件
-    CFile file;
-    BOOL bRet = file.Open(theApp.m_recent_path_dat_path.c_str(),
-        CFile::modeCreate | CFile::modeWrite);
-    if (!bRet)		//打开文件失败
-    {
-        return;
-    }
-    // 构造CArchive对象
-    CArchive ar(&file, CArchive::store);
-    // 写数据
-    const unsigned int version{ 4u };
-    ar << static_cast<unsigned int>(m_recent_path.size());		//写入m_recent_path容器的大小
-    ar << version;     //写入文件的版本
-    for (auto& path_info : m_recent_path)
-    {
-        ar << CString(path_info.path.c_str())
-            << path_info.track
-            << path_info.position
-            << static_cast<int>(path_info.sort_mode)
-            << path_info.track_num
-            << path_info.total_time
-            << static_cast<BYTE>(path_info.contain_sub_folder)
-            << path_info.last_played_time
-            ;
-    }
-    // 关闭CArchive对象
-    ar.Close();
-    // 关闭文件
-    file.Close();
-
-}
-
 void CPlayer::OnExit()
 {
     SaveConfig();
@@ -2258,85 +2201,10 @@ void CPlayer::OnExit()
 
 void CPlayer::LoadRecentPath()
 {
-    // 打开文件
-    CFile file;
-    BOOL bRet = file.Open(theApp.m_recent_path_dat_path.c_str(), CFile::modeRead);
-    if (!bRet)		//文件不存在
+    if (!CRecentFolderMgr::Instance().LoadData())
     {
         m_path = L".\\songs\\";		//默认的路径
-        return;
     }
-    //为了保持和以前版本的数据兼容，先读取前8个字节，以判断是否是以前版本
-    char buff[8]{};
-    file.Read(buff, 8);
-    file.SeekToBegin();
-
-    // 构造CArchive对象
-    CArchive ar(&file, CArchive::load);
-    // 读数据
-    unsigned int size{};
-    PathInfo path_info;
-    CString temp;
-    int sort_mode;
-    unsigned int version{};
-    try
-    {
-        ar >> size;		//读取映射容器的长度
-        if (buff[4] == '\xff' && buff[5] == '\xfe')     //如果第4个字节和第5个字节是FFFE，则说明数据文件是以前版本，此时不读取version
-            version = 0;
-        else
-            ar >> version;  //读取数据文件的版本
-        for (unsigned int i{}; i < size; i++)
-        {
-            ar >> temp;
-            path_info.path = temp;
-            ar >> path_info.track;
-            ar >> path_info.position;
-            ar >> sort_mode;
-            path_info.sort_mode = static_cast<SortMode>(sort_mode);
-            if (version >= 2 && version <= 3)   // 在版本4变量descending不再独立存储，功能整合到sort_mode内，这里做读取兼容
-            {
-                BYTE descending;
-                ar >> descending;
-                switch (sort_mode)
-                {
-                case 0: path_info.sort_mode = descending ? SM_D_FILE : SM_U_FILE; break;
-                case 1: path_info.sort_mode = descending ? SM_D_PATH : SM_U_PATH; break;
-                case 2: path_info.sort_mode = descending ? SM_D_TITLE : SM_U_TITLE; break;
-                case 3: path_info.sort_mode = descending ? SM_D_ARTIST : SM_U_ARTIST; break;
-                case 4: path_info.sort_mode = descending ? SM_D_ALBUM : SM_U_ALBUM; break;
-                case 5: path_info.sort_mode = descending ? SM_D_TRACK : SM_U_TRACK; break;
-                case 6: path_info.sort_mode = descending ? SM_D_TIME : SM_U_TIME; break;
-                default: break;
-                }
-            }
-            ar >> path_info.track_num;
-            ar >> path_info.total_time;
-            if (version >= 1)
-            {
-                BYTE contain_sub_folder;
-                ar >> contain_sub_folder;
-                path_info.contain_sub_folder = (contain_sub_folder != 0);
-            }
-            if (version >= 3)
-                ar >> path_info.last_played_time;
-
-            if (path_info.path.empty() || path_info.path.size() < 2) continue;		//如果路径为空或路径太短，就忽略它
-            if (path_info.path.back() != L'/' && path_info.path.back() != L'\\')	//如果读取到的路径末尾没有斜杠，则在末尾加上一个
-                path_info.path.push_back(L'\\');
-            m_recent_path.push_back(path_info);
-        }
-    }
-    catch (CArchiveException* exception)
-    {
-        //捕获序列化时出现的异常
-        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SERIALIZE_ERROR", { theApp.m_recent_path_dat_path, exception->m_cause });
-        theApp.WriteLog(info);
-    }
-    // 关闭对象
-    ar.Close();
-    // 关闭文件
-    file.Close();
 }
 
 void CPlayer::SaveCurrentPlaylist()
