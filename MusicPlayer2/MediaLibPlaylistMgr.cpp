@@ -87,6 +87,7 @@ std::wstring CMediaLibPlaylistMgr::GetTypeName(CMediaClassifier::ClassificationT
     case CMediaClassifier::CT_TYPE: return theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
     case CMediaClassifier::CT_BITRATE: return theApp.m_str_table.LoadText(L"TXT_BITRATE");
     case CMediaClassifier::CT_RATING: return theApp.m_str_table.LoadText(L"TXT_RATING");
+    case CMediaClassifier::CT_NONE: return theApp.m_str_table.LoadText(L"TXT_MEDIA_LIB");
     }
     return std::wstring();
 }
