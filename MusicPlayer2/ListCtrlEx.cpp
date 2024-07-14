@@ -187,6 +187,8 @@ bool CListCtrlEx::DeleteItem(int nItem)
                 m_icons[i - 1] = icon;
             }
         }
+
+        Invalidate();       //控件重绘
     }
 
     return rtn;
