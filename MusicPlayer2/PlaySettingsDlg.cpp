@@ -46,17 +46,17 @@ void CPlaySettingsDlg::ShowDeviceInfo()
     wstring type_info;
     switch (device_type)
     {
-    case BASS_DEVICE_TYPE_NETWORK: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_NETWORK"); break;
-    case BASS_DEVICE_TYPE_SPEAKERS: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_SPEAKERS"); break;
-    case BASS_DEVICE_TYPE_LINE: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_LINE"); break;
-    case BASS_DEVICE_TYPE_HEADPHONES: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_HEADPHONES"); break;
-    case BASS_DEVICE_TYPE_MICROPHONE: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_MICROPHONE"); break;
-    case BASS_DEVICE_TYPE_HEADSET: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_HEADSET"); break;
-    case BASS_DEVICE_TYPE_HANDSET: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_HANDSET"); break;
-    case BASS_DEVICE_TYPE_DIGITAL: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_DIGITAL"); break;
-    case BASS_DEVICE_TYPE_SPDIF: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_SPDIF"); break;
-    case BASS_DEVICE_TYPE_HDMI: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_HDMI"); break;
-    case BASS_DEVICE_TYPE_DISPLAYPORT: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_BASS_DISPLAYPORT"); break;
+    case BASS_DEVICE_TYPE_NETWORK: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_NETWORK"); break;
+    case BASS_DEVICE_TYPE_SPEAKERS: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_SPEAKERS"); break;
+    case BASS_DEVICE_TYPE_LINE: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_LINE"); break;
+    case BASS_DEVICE_TYPE_HEADPHONES: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_HEADPHONES"); break;
+    case BASS_DEVICE_TYPE_MICROPHONE: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_MICROPHONE"); break;
+    case BASS_DEVICE_TYPE_HEADSET: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_HEADSET"); break;
+    case BASS_DEVICE_TYPE_HANDSET: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_HANDSET"); break;
+    case BASS_DEVICE_TYPE_DIGITAL: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_DIGITAL"); break;
+    case BASS_DEVICE_TYPE_SPDIF: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_SPDIF"); break;
+    case BASS_DEVICE_TYPE_HDMI: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_HDMI"); break;
+    case BASS_DEVICE_TYPE_DISPLAYPORT: type_info = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_DEVICE_TYPE_DISPLAYPORT"); break;
     default: break;
     }
     m_device_info_list.SetItemText(2, 1, type_info.c_str());

@@ -108,9 +108,9 @@ BOOL CTestDlg::OnInitDialog()
     m_list_ctrl.FillLeftSpaceAfterPaint(false);
 
     //设置图标列表
-    m_list_ctrl.SetItemIcon(0, theApp.m_icon_mgr.GetHICON(IconMgr::IT_Artist, IconMgr::IconStyle::IS_OutlinedDark));
-    m_list_ctrl.SetItemIcon(1, theApp.m_icon_mgr.GetHICON(IconMgr::IT_Album, IconMgr::IconStyle::IS_OutlinedDark));
-    m_list_ctrl.SetItemIcon(2, theApp.m_icon_mgr.GetHICON(IconMgr::IT_Genre, IconMgr::IconStyle::IS_OutlinedDark));
+    m_list_ctrl.SetItemIcon(0, theApp.m_icon_mgr.GetHICON(IconMgr::IT_Artist, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16));
+    m_list_ctrl.SetItemIcon(1, theApp.m_icon_mgr.GetHICON(IconMgr::IT_Album, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16));
+    m_list_ctrl.SetItemIcon(2, theApp.m_icon_mgr.GetHICON(IconMgr::IT_Genre, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16));
 
     //插入列
     m_list_ctrl.InsertItem(0, _T("00"), 0);

@@ -144,7 +144,7 @@ public:
 
     // 获取需要的图标，不要在代码中大量直接调用
     // 请为同类调用提供一层包装以免之后修改困难
-    HICON GetHICON(IconType type, IconStyle style = IS_Auto, IconSize size = IS_DPI_16);
+    HICON GetHICON(IconType type, IconStyle style, IconSize size);
 
     static CSize GetIconSize(IconSize size)
     {

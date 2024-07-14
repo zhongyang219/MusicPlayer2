@@ -7,13 +7,14 @@ IMPLEMENT_DYNAMIC(CListCtrlEx, CListCtrl)
 CListCtrlEx::CListCtrlEx()
     : m_theme_color(theApp.m_app_setting_data.theme_color)
 {
-    
+
     m_drag_cursor = AfxGetApp()->LoadCursor(IDC_DRAG_CURSOR);
 }
 
 
 CListCtrlEx::~CListCtrlEx()
 {
+    DestroyCursor(m_drag_cursor);
 }
 
 

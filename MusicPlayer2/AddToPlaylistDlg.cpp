@@ -33,6 +33,8 @@ bool CAddToPlaylistDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TITLE_ADD_TO_PLAYLIST");
     SetWindowTextW(temp.c_str());
 
+    ShowDlgCtrl(IDC_DELETE_BUTTON, false);  //隐藏“删除”按钮
+
     RepositionTextBasedControls({
         { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
         { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
@@ -78,8 +80,6 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
     SetIcon(IconMgr::IconType::IT_Playlist, FALSE);     // 设置小图标
 
     m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
-
-    ShowDlgCtrl(IDC_DELETE_BUTTON, false);  //隐藏“删除”按钮
 
     //初始化列表
     for (const auto& item : CPlaylistMgr::Instance().m_recent_playlists)
