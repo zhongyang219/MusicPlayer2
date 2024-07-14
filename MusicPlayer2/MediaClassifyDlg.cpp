@@ -349,6 +349,8 @@ CMediaClassifier::ClassificationType CMediaClassifyDlg::GetClassificationType() 
 
 std::wstring CMediaClassifyDlg::GetClassificationItemName() const
 {
+    if (m_left_selected_items.size() > 1)    // 左侧列表有多个选中项时返回<其他>
+        return STR_OTHER_CLASSIFY_TYPE;
     return m_classify_selected;
 }
 
