@@ -42,6 +42,8 @@ bool CMoreRecentItemDlg::InitializeControls()
     SetWindowTextW(temp.c_str());
 
     SetDlgControlText(IDC_DELETE_BUTTON, L"TXT_MORE_RECENT_ITEM_REMOVE");
+    SetDlgControlText(IDOK, L"TXT_MORE_RECENT_ITEM_PLAY_SEL");
+    SetButtonIcon(IDOK, IconMgr::IconType::IT_Play);
 
     RepositionTextBasedControls({
         { CtrlTextInfo::L1, IDC_DELETE_BUTTON, CtrlTextInfo::W32 },
