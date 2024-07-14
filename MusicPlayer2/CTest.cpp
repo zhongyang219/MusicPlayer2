@@ -11,6 +11,7 @@
 #include "TagLibHelper.h"
 #include "Player.h"
 #include "CueFile.h"
+#include "MusicPlayer2.h"
 
 CTest::CTest()
 {
@@ -52,7 +53,8 @@ void CTest::Test()
 
     //TestCueSave();
     //TestFilePathHelper();
-    TestStringToInt();
+    //TestStringToInt();
+    TestChinesePingyinMatch();
 }
 
 void CTest::TestStringMatch()
@@ -262,4 +264,13 @@ void CTest::TestStringToInt()
     wstring str4 = L"sdfoeoirglksf6";
     int n4 = CCommon::StringToInt(str4);
     ASSERT(n4 == 6);
+}
+
+void CTest::TestChinesePingyinMatch()
+{
+    ASSERT(theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(L"nh", L"你好世界"));
+    ASSERT(theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(L"nhsj", L"你好世界"));
+    ASSERT(theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(L"nihaoshijie", L"你好世界"));
+    ASSERT(!theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(L"nh", L"你世界"));
+    ASSERT(theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(L"cxqd", L"春夏秋冬"));
 }

@@ -272,7 +272,7 @@ bool CMediaClassifyDlg::IsItemMatchKeyWord(const SongInfo& song, const wstring& 
 
 bool CMediaClassifyDlg::IsItemMatchKeyWord(const wstring& str, const wstring& key_word)
 {
-    return CCommon::StringFindNoCase(str, key_word) != wstring::npos;
+    return theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, str);
 }
 
 void CMediaClassifyDlg::QuickSearch(const wstring& key_word)

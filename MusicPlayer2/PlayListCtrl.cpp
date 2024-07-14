@@ -76,10 +76,10 @@ void CPlayListCtrl::QuickSearch(const wstring & key_word)
         return;
     for (size_t i{}; i < m_all_song_info.size(); i++)
     {
-        if (CCommon::StringFindNoCase(m_all_song_info[i].GetFileName(), key_word) != wstring::npos
-            || CCommon::StringFindNoCase(m_all_song_info[i].title, key_word) != wstring::npos
-            || CCommon::StringFindNoCase(m_all_song_info[i].artist, key_word) != wstring::npos
-            || CCommon::StringFindNoCase(m_all_song_info[i].album, key_word) != wstring::npos)
+        if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, m_all_song_info[i].GetFileName())
+            || theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, m_all_song_info[i].title)
+            || theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, m_all_song_info[i].artist)
+            || theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, m_all_song_info[i].album))
             m_search_result.push_back(i);
     }
 }

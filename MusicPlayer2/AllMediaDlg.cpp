@@ -183,7 +183,7 @@ void CAllMediaDlg::QuickSearch(const wstring& key_word)
         const vector<int> search_col{ COL_TITLE, COL_ARTIST, COL_ALBUM, COL_GENRE, COL_PATH };
         for (int col : search_col)
         {
-            if (CCommon::StringFindNoCase(item.at(col), key_word) != wstring::npos)
+            if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, item.at(col)))
             {
                 m_list_data_searched.push_back(item);
                 m_list_songs_searched.push_back(m_list_songs[i]);

@@ -152,7 +152,7 @@ void CAddToPlaylistDlg::QuickSearch(const wstring& key_word)
     m_search_result.clear();
     for (const auto& str : m_list)
     {
-        if (CCommon::StringFindNoCase(str, key_word) != wstring::npos)
+        if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, str))
         {
             m_search_result.push_back(str);
         }

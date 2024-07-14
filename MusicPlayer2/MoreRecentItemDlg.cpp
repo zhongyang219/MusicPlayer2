@@ -165,7 +165,7 @@ void CMoreRecentItemDlg::QuickSearch(const wstring& key_word)
     for (const auto& item : CRecentFolderAndPlaylist::Instance().GetItemList())
     {
         std::wstring str = item.GetName();
-        if (CCommon::StringFindNoCase(str, key_word) != wstring::npos)
+        if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, str))
         {
             m_search_result.push_back(item);
         }

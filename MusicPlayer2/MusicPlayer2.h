@@ -15,7 +15,7 @@
 #include "StrTable.h"
 #include "MenuMgr.h"
 #include "IconMgr.h"
-
+#include "ChinesePingyinRes.h"
 
 // CMusicPlayerApp:
 // 有关此类的实现，请参阅 MusicPlayer2.cpp
@@ -54,6 +54,7 @@ public:
     GlobalHotKeySettingData m_hot_key_setting_data;	//“全局快捷键”设置
     MediaLibSettingData m_media_lib_setting_data;  	//“媒体库”设置
     CAcceleratorRes m_accelerator_res;
+    CChinesePingyinRes m_chinese_pingyin_res;
 
     StrTable m_str_table;   // 实际上负责language manger
     // IconMgr比MenuMgr先构造，后析构，虽然懒加载下不是必须不过语义应当如此

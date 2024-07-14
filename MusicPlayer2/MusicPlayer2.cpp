@@ -291,6 +291,7 @@ BOOL CMusicPlayerApp::InitInstance()
 
     m_hScintillaModule = LoadLibrary(_T("SciLexer.dll"));
     m_accelerator_res.Init();
+    m_chinese_pingyin_res.Init();
 
     CMusicPlayerDlg dlg(cmd_line);
     //CMusicPlayerDlg dlg(L"\"D:\\音乐\\纯音乐\\班得瑞\\05. Chariots Of Fire 火战车.mp3\"");
@@ -808,7 +809,8 @@ UINT CMusicPlayerApp::UpdateLastFMFavouriteFunProc(LPVOID lpParam) {
     auto favourite = (bool)lpParam;
     if (favourite) {
         theApp.m_lastfm.Love();
-    } else {
+    }
+    else {
         theApp.m_lastfm.Unlove();
     }
     return 0;

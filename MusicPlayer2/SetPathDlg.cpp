@@ -28,7 +28,7 @@ void CSetPathDlg::QuickSearch(const wstring & key_word)
     m_search_result.clear();
     for (size_t i{}; i < m_path_list_info.size(); ++i)
     {
-        if (CCommon::StringFindNoCase(m_path_list_info[i].path, key_word) != wstring::npos)
+        if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, m_path_list_info[i].path))
             m_search_result.push_back(i);
     }
 }

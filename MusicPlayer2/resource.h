@@ -233,6 +233,7 @@
 #define IDI_BITRATE_D                   599
 #define IDI_STAR_D                      600
 #define IDI_MORE_D                      601
+#define IDR_CHINESE_PINGYIN             602
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -955,7 +956,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        602
+#define _APS_NEXT_RESOURCE_VALUE        603
 #define _APS_NEXT_COMMAND_VALUE         33467
 #define _APS_NEXT_CONTROL_VALUE         1365
 #define _APS_NEXT_SYMED_VALUE           101

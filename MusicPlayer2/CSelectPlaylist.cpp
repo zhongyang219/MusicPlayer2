@@ -64,7 +64,7 @@ void CSelectPlaylistDlg::QuickSearch(const wstring& key_words)
         // m_search_result存储m_playlist_ctrl_data的索引
         CFilePathHelper file_path{ m_playlist_ctrl_data[i].path };
         wstring playlist_name = file_path.GetFileNameWithoutExtension();
-        if (CCommon::StringFindNoCase(playlist_name, key_words) != wstring::npos && file_path.GetFileName() != TEMP_PLAYLIST_NAME)
+        if (file_path.GetFileName() != TEMP_PLAYLIST_NAME && theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_words, playlist_name))
             m_search_result.push_back(i);
     }
 }

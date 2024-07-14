@@ -2963,6 +2963,8 @@ IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement.txt"
 
 IDR_STRING_TABLE        TEXT                    "language\\English.ini"
 
+IDR_CHINESE_PINGYIN     TEXT                    "res\\hzpy-utf8.txt"
+
 #endif    // 英语(美国) resources
 /////////////////////////////////////////////////////////////////////////////
 

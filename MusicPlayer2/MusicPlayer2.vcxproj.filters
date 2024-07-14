@@ -399,11 +399,19 @@
     <Filter Include="对话框类\MoreRecentItemDlg">
       <UniqueIdentifier>{8275f9f7-1539-4d8d-a8b6-95119418eb6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="公共的类\ChinesePingyinRes">
+      <UniqueIdentifier>{66fcd09f-bfb4-43ed-9b9f-69a6eb0a32af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
     <Text Include="compile_time.txt" />
-    <Text Include="res\Acknowledgement.txt" />
+    <Text Include="res\hzpy-utf8.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="res\Acknowledgement.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -892,6 +900,9 @@
     <ClInclude Include="MoreRecentItemDlg.h">
       <Filter>对话框类\MoreRecentItemDlg</Filter>
     </ClInclude>
+    <ClInclude Include="ChinesePingyinRes.h">
+      <Filter>公共的类\ChinesePingyinRes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1356,6 +1367,9 @@
     <ClCompile Include="MoreRecentItemDlg.cpp">
       <Filter>对话框类\MoreRecentItemDlg</Filter>
     </ClCompile>
+    <ClCompile Include="ChinesePingyinRes.cpp">
+      <Filter>公共的类\ChinesePingyinRes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
@@ -1380,6 +1394,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="language\English.ini">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="res\text1.bin">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>

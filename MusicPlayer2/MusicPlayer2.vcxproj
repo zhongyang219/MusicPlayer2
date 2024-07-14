@@ -221,6 +221,7 @@
     <Text Include="compile_time.txt" />
     <Text Include="ReadMe.txt" />
     <Text Include="res\Acknowledgement.txt" />
+    <Text Include="res\hzpy-utf8.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
@@ -242,6 +243,7 @@
     <ClInclude Include="CDevicesManager.h" />
     <ClInclude Include="CDonateDlg.h" />
     <ClInclude Include="CFloatPlaylistDlg.h" />
+    <ClInclude Include="ChinesePingyinRes.h" />
     <ClInclude Include="CHotKey.h" />
     <ClInclude Include="CHotkeyManager.h" />
     <ClInclude Include="CHotKeySettingDlg.h" />
@@ -405,6 +407,7 @@
     <ClCompile Include="CDevicesManager.cpp" />
     <ClCompile Include="CDonateDlg.cpp" />
     <ClCompile Include="CFloatPlaylistDlg.cpp" />
+    <ClCompile Include="ChinesePingyinRes.cpp" />
     <ClCompile Include="CHotKey.cpp" />
     <ClCompile Include="CHotkeyManager.cpp" />
     <ClCompile Include="CHotKeySettingDlg.cpp" />
@@ -560,6 +563,7 @@
     <None Include="language\English.ini" />
     <None Include="res\drag.cur" />
     <None Include="res\MusicPlayer2.rc2" />
+    <None Include="res\text1.bin" />
     <None Include="skins\ui1.xml" />
     <None Include="skins\ui2.xml" />
     <None Include="skins\miniMode\miniMode00.xml" />
