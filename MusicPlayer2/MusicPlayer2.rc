@@ -575,6 +575,7 @@ BEGIN
     "9",            ID_SWITCH_UI_9,         VIRTKEY, CONTROL, NOINVERT
     VK_DOWN,        ID_VOLUME_DOWN,         VIRTKEY, NOINVERT
     VK_UP,          ID_VOLUME_UP,           VIRTKEY, NOINVERT
+    "H",            ID_MORE_RECENT_ITEMS,   VIRTKEY, CONTROL, NOINVERT
 END
 
 

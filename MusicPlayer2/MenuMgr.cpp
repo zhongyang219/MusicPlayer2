@@ -140,7 +140,7 @@ const CBitmap* MenuMgr::GetMenuBitmap(IconMgr::IconType icon_type)
 
     HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
     // 取得默认图标尺寸（应该与GetSystemMetrics(SM_CXSMICON/SM_CYSMICON)相同）
-    auto[width, height] = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
+    auto [width, height] = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
 
     if (m_icon_bitmap_map[hIcon].GetSafeHandle())  // 已有bitmap时不再二次转换
         return &m_icon_bitmap_map[hIcon];
@@ -670,10 +670,10 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_LYRIC_DEFAULT_STYLE3));
         break;
     case MenuMgr::RecentFolderPlaylistMenu:
-        menu.CreateMenu(true, false);
+        menu.CreateMenu(true, true);
         menu.SetUpdatePos();            // 设置Update插入点
         menu.AppendSeparator();
-        menu.AppendItem(EX_ID(ID_MORE_RECENT_ITEMS), IconMgr::IconType::IT_More);
+        menu.AppendItem(EX_ID(ID_MORE_RECENT_ITEMS), IconMgr::IconType::IT_More, L"Ctrl+H");
         menu.AppendItem(EX_ID(ID_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
         break;
     case MenuMgr::PlaylistMenu:
@@ -837,7 +837,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.CreateMenu(true, false);
         menu.AppendItem(EX_ID(ID_LYRIC_INSERT_TAG), IconMgr::IconType::IT_Le_Tag_Insert, L"F8");
         menu.AppendItem(EX_ID(ID_LYRIC_REPLACE_TAG), IconMgr::IconType::IT_Le_Tag_Replace, L"F9");
-        menu.AppendItem(EX_ID(ID_LYRIC_DELETE_TAG), IconMgr::IconType::IT_Le_Tag_Delete , L"Ctrl+Del");
+        menu.AppendItem(EX_ID(ID_LYRIC_DELETE_TAG), IconMgr::IconType::IT_Le_Tag_Delete, L"Ctrl+Del");
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_LYRIC_FIND), IconMgr::IconType::IT_Le_Find, L"Ctrl+F");
         menu.AppendItem(EX_ID(ID_LYRIC_REPLACE), IconMgr::IconType::IT_Le_Replace, L"Ctrl+H");
