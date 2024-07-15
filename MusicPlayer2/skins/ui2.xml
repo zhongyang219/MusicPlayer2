@@ -17,12 +17,12 @@
           <lyrics margin="4" margin-left="8" margin-bottom="16"/>
         </horizontalLayout>
         <horizontalLayout>
-          <verticalLayout>
+          <verticalLayout margin-bottom="12">
             <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
             <text type="artist" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
             <lyrics hide-height="200" height="15%" margin-top="4"/>
-            <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-16" margin-bottom="4" min-height="24" max-height="80"/>
+            <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-8" margin-bottom="-12" min-height="24" max-height="80"/>
           </verticalLayout>
           <verticalLayout margin="4" margin-left="8" margin-bottom="16">
             <playlistIndicator height="30" margin-bottom="4"/>
@@ -30,7 +30,7 @@
           </verticalLayout>
         </horizontalLayout>
         <horizontalLayout>
-          <verticalLayout margin="8" margin-bottom="4">
+          <verticalLayout margin="8" margin-bottom="12">
             <rectangle height="80">
               <horizontalLayout margin="4">
                 <albumCover square="true" width="64" margin-left="4"/>
@@ -58,11 +58,11 @@
 
   <ui type="narrow">
     <verticalLayout>
-      <verticalLayout margin="4" margin-bottom="0">
+      <verticalLayout margin="12">
         <trackInfo height="20"/>
         <text type="format" style="scroll" height="20"/>
         <stackElement click_to_switch="false" show_indicator="true" margin-bottom="4">
-          <verticalLayout>
+          <verticalLayout margin-bottom="4">
             <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
             <text type="artist" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
@@ -82,7 +82,7 @@
           </verticalLayout>
           <playlist margin="8"/>
         </stackElement>
-        <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-6" min-height="24" max-height="80"/>
+        <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-6" margin-bottom="-12" min-height="24" max-height="80"/>
       </verticalLayout>
       <rectangle height="24" margin="4" margin-bottom="0">
         <toolbar show_translate_btn="true"/>
