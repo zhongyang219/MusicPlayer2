@@ -41,9 +41,12 @@ bool CMoreRecentItemDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TITLE_MORE_RECENT_ITEM");
     SetWindowTextW(temp.c_str());
 
-    SetDlgControlText(IDC_DELETE_BUTTON, L"TXT_BTN_DELETE");
+    SetDlgControlText(IDC_DELETE_BUTTON, L"TXT_MORE_RECENT_ITEM_REMOVE");
+    SetDlgControlText(IDOK, L"TXT_MORE_RECENT_ITEM_PLAY_SEL");
+    SetButtonIcon(IDOK, IconMgr::IconType::IT_Play);
 
     RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_DELETE_BUTTON, CtrlTextInfo::W32 },
         { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
         { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
         });
@@ -65,7 +68,7 @@ void CMoreRecentItemDlg::ShowList()
             icon_type = IconMgr::IT_Playlist;
         else if (item.medialib_info != nullptr)
             icon_type = CMediaLibPlaylistMgr::GetIcon(item.medialib_info->medialib_type);
-        m_list_ctrl.SetItemIcon(m_list_ctrl.GetItemCount() - 1, theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark));
+        m_list_ctrl.SetItemIcon(m_list_ctrl.GetItemCount() - 1, theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16));
     }
 }
 
@@ -183,7 +186,7 @@ afx_msg LRESULT CMoreRecentItemDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lP
         bool delete_enable{ false };
         bool select_valid{ false };
         auto& data_list{ m_searched ? m_search_result : CRecentFolderAndPlaylist::Instance().GetItemList() };
-        if (index >= 0 && index < data_list.size())
+        if (index >= 0 && index < static_cast<int>(data_list.size()))
         {
             const auto& selected_item = data_list[index];
             //此界面仅允许删除媒体库项目
@@ -202,7 +205,7 @@ void CMoreRecentItemDlg::OnBnClickedDeleteButton()
 {
     int sel_index = m_list_ctrl.GetCurSel();
     auto& data_list{ m_searched ? m_search_result : CRecentFolderAndPlaylist::Instance().GetItemList() };
-    if (sel_index >= 0 && sel_index < data_list.size())
+    if (sel_index >= 0 && sel_index < static_cast<int>(data_list.size()))
     {
         const auto& selected_item = data_list[sel_index];
         if (selected_item.IsMedialib() && selected_item.medialib_info != nullptr)

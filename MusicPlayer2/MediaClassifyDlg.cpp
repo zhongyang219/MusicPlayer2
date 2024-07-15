@@ -45,13 +45,14 @@ void CMediaClassifyDlg::RefreshData()
     }
 }
 
-bool CMediaClassifyDlg::SetLeftListSel(const wstring& item)
+bool CMediaClassifyDlg::SetLeftListSel(wstring item)
 {
     int list_size = static_cast<int>(m_list_data_left.size());
+    item = CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(m_type, item);  // 将空item转换为用于显示的<未知xxx>
     //遍历左侧列表，寻找匹配匹配的项目
     for (int i = 0; i < list_size; i++)
     {
-        wstring name = m_list_data_left[i][0];
+        const wstring& name = m_list_data_left[i][0];
         if (CCommon::StringCompareNoCase(name, item))
         {
             m_classify_list_ctrl.SetCurSel(i);
@@ -349,6 +350,8 @@ CMediaClassifier::ClassificationType CMediaClassifyDlg::GetClassificationType() 
 
 std::wstring CMediaClassifyDlg::GetClassificationItemName() const
 {
+    if (m_left_selected_items.size() > 1)    // 左侧列表有多个选中项时返回<其他>
+        return STR_OTHER_CLASSIFY_TYPE;
     return m_classify_selected;
 }
 

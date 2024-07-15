@@ -23,7 +23,7 @@ public:
 
 public:
     void RefreshData();
-    bool SetLeftListSel(const wstring& item);
+    bool SetLeftListSel(wstring item);
 
 protected:
     enum SongColumeIndex
