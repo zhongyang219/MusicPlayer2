@@ -3,6 +3,7 @@
 #include "MusicPlayer2.h"
 #include "MusicPlayerDlg.h"
 #include "SongInfoHelper.h"
+#include "RecentFolderAndPlaylist.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1018,7 +1019,7 @@ void UiElement::ListElement::MouseMove(CPoint point)
     {
         int delta_scrollbar_offset = mouse_pressed_pos.y - point.y;  //滚动条移动的距离
         //将滚动条移动的距离转换成播放列表的位移
-        int delta_playlist_offset = delta_scrollbar_offset * (ItemHeight() * CPlayer::GetInstance().GetSongNum()) / (rect.Height() - scroll_handle_length_comp);
+        int delta_playlist_offset = delta_scrollbar_offset * (ItemHeight() * GetRowCount()) / (rect.Height() - scroll_handle_length_comp);
         playlist_offset = mouse_pressed_offset - delta_playlist_offset;
     }
     else if (mouse_pressed)
@@ -1030,7 +1031,7 @@ void UiElement::ListElement::MouseMove(CPoint point)
     if (ShowTooltip() && hover && !scrollbar_hover && !scrollbar_handle_pressed)
     {
         int item_size{ static_cast<int>(item_rects.size()) };
-        for (int i{}; i < item_size && i < CPlayer::GetInstance().GetSongNum(); i++)
+        for (int i{}; i < item_size && i < GetRowCount(); i++)
         {
             if (item_rects[i].PtInRect(point))
             {
@@ -1054,11 +1055,7 @@ bool UiElement::ListElement::RButtunUp(CPoint point)
     if (rect.PtInRect(point))
     {
         mouse_pressed = false;
-        CMenu* menu{};
-        if (item_selected >= 0 && !scrollbar_rect.PtInRect(point))
-            menu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
-        else
-            menu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu);
+        CMenu* menu{ GetContextMenu(item_selected >= 0 && !scrollbar_rect.PtInRect(point)) };
         if (menu != nullptr)
         {
             CPoint cursor_pos;
@@ -1110,7 +1107,7 @@ bool UiElement::ListElement::DoubleClick(CPoint point)
 {
     if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point) && item_selected >= 0)
     {
-        ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_ITEM, 0);
+        OnDoubleClicked();
     }
     return false;
 }
@@ -1150,7 +1147,7 @@ void UiElement::ListElement::RestrictOffset()
     int& offset{ playlist_offset };
     if (offset < 0)
         offset = 0;
-    int offset_max{ ItemHeight() * CPlayer::GetInstance().GetSongNum() - rect.Height() };
+    int offset_max{ ItemHeight() * GetRowCount() - rect.Height() };
     if (offset_max <= 0)
         offset = 0;
     else if (offset > offset_max)
@@ -1159,7 +1156,7 @@ void UiElement::ListElement::RestrictOffset()
 
 void UiElement::ListElement::CalculateItemRects()
 {
-    item_rects.resize(CPlayer::GetInstance().GetSongNum());
+    item_rects.resize(GetRowCount());
     for (size_t i{}; i < item_rects.size(); i++)
     {
         //计算每一行的矩形区域
@@ -1197,9 +1194,7 @@ int UiElement::ListElement::GetPlaylistIndexByPoint(CPoint point)
 void UiElement::ListElement::Clicked(CPoint point)
 {
     item_selected = GetPlaylistIndexByPoint(point);
-    CMusicPlayerDlg* pMainWnd = CMusicPlayerDlg::GetInstance();
-    if (pMainWnd != nullptr)
-        pMainWnd->SetPlaylistSelected(item_selected);
+    OnClicked();
     selected_item_scroll_info.Reset();
 }
 
@@ -1291,9 +1286,77 @@ int UiElement::Playlist::GetToolTipIndex() const
     return PLAYLIST_TOOLTIP_INDEX;
 }
 
+CMenu* UiElement::Playlist::GetContextMenu(bool item_selected)
+{
+    if (item_selected)
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
+    else
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu);
+    return nullptr;
+}
+
+void UiElement::Playlist::OnDoubleClicked()
+{
+    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_ITEM, 0);
+}
+
+void UiElement::Playlist::OnClicked()
+{
+    CMusicPlayerDlg* pMainWnd = CMusicPlayerDlg::GetInstance();
+    if (pMainWnd != nullptr)
+        pMainWnd->SetPlaylistSelected(item_selected);
+}
+
 int UiElement::Playlist::GetRowCount()
 {
     return CPlayer::GetInstance().GetSongNum();
+}
+
+std::wstring UiElement::RecentPlayedList::GetItemText(int row, int col)
+{
+    if (row >= 0 && row < GetRowCount())
+    {
+        const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[row] };
+        return item.GetName();
+    }
+    return std::wstring();
+}
+
+int UiElement::RecentPlayedList::GetRowCount()
+{
+    return CRecentFolderAndPlaylist::Instance().GetItemList().size();
+}
+
+int UiElement::RecentPlayedList::GetColumnCount()
+{
+    return 1;
+}
+
+int UiElement::RecentPlayedList::GetColumnWidth(int col, int total_width)
+{
+    if (col == 0)
+        return total_width;
+    return 0;
+}
+
+int UiElement::RecentPlayedList::GetColumnScrollTextWhenSelected()
+{
+    return 0;
+}
+
+IconMgr::IconType UiElement::RecentPlayedList::GetIcon(int row)
+{
+    if (row >= 0 && row < GetRowCount())
+    {
+        const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[row] };
+        return item.GetIcon();
+    }
+    return IconMgr::IT_NO_ICON;
+}
+
+bool UiElement::RecentPlayedList::HasIcon()
+{
+    return true;
 }
 
 void UiElement::PlaylistIndicator::Draw()
@@ -1370,6 +1433,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::PlaylistIndicator>();
     else if (name == "classicalControlBar")
         element = std::make_shared<UiElement::ClassicalControlBar>();
+    else if (name == "recentPlayedList")
+        element = std::make_shared<UiElement::RecentPlayedList>();
     else if (name == "ui" || name == "root" || name == "placeHolder")
         element = std::make_shared<UiElement::Element>();
 

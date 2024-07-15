@@ -258,22 +258,25 @@ namespace UiElement
         virtual int GetRowCount() = 0;
         virtual int GetColumnCount() = 0;
         virtual int GetColumnWidth(int col, int total_width) = 0;
-        virtual HICON GetIcon(int row) { return NULL; }
+        virtual IconMgr::IconType GetIcon(int row) { return IconMgr::IT_NO_ICON; }
         virtual bool HasIcon() { return false; }
         virtual std::wstring GetEmptyString() { return std::wstring(); }    //列表为空时显示的文本
-        virtual int GetHighlightRow() = 0;
+        virtual int GetHighlightRow() { return -1; }
         virtual int GetColumnScrollTextWhenSelected() { return -1; }    //获取选中时需要滚动显示的列
         virtual bool ShowTooltip() { return false; }
         virtual std::wstring GetToolTipText(int row) { return std::wstring(); }
         virtual int GetToolTipIndex() const { return 0; }
+        virtual CMenu* GetContextMenu(bool item_selected) { return nullptr; }
+        virtual void OnDoubleClicked() {};
+        virtual void OnClicked() {};
 
         int item_height{ 28 };
 
-    private:
+    protected:
         int GetPlaylistIndexByPoint(CPoint point);
         void Clicked(CPoint point);     //当播放列表被点击时调用此函数
 
-    private:
+    protected:
         bool mouse_pressed{ };          //鼠标左键是否按下
         bool hover{};                   //指标指向播放列表区域
         CPoint mouse_pressed_pos;       //鼠标按下时的位置
@@ -314,6 +317,22 @@ namespace UiElement
         virtual bool ShowTooltip() override;
         virtual std::wstring GetToolTipText(int row) override;
         virtual int GetToolTipIndex() const override;
+        virtual CMenu* GetContextMenu(bool item_selected) override;
+        virtual void OnDoubleClicked() override;
+        virtual void OnClicked() override;
+    };
+
+    //最近播放
+    class RecentPlayedList : public ListElement
+    {
+        // 通过 ListElement 继承
+        std::wstring GetItemText(int row, int col) override;
+        int GetRowCount() override;
+        int GetColumnCount() override;
+        int GetColumnWidth(int col, int total_width) override;
+        virtual int GetColumnScrollTextWhenSelected() override;
+        virtual IconMgr::IconType GetIcon(int row) override;
+        virtual bool HasIcon() override;
     };
 
     //当前播放列表指示

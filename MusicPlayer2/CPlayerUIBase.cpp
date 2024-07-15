@@ -2490,9 +2490,21 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     else
                         m_draw.FillRect(rect_cur_indicator, m_colors.color_text_heighlight, true);
                 }
-                //绘制列
-                int total_width = rect_item.Width() - DPI(4);       //所有列的总宽度（去掉播放指示的宽度）
+
                 int col_x = rect_item.left + DPI(4);
+                //绘制图标
+                if (list_element->HasIcon())
+                {
+                    m_draw.SetDrawArea(rect);
+                    CRect rect_icon{ rect_item };
+                    rect_icon.left = col_x;
+                    rect_icon.right = rect_icon.left + DPI(20);
+                    DrawUiIcon(rect_icon, list_element->GetIcon(i));
+                    col_x = rect_icon.right;
+                }
+
+                //绘制列
+                int total_width = rect_item.right - col_x;       //所有列的总宽度
                 for (int j{}; j < list_element->GetColumnCount(); j++)
                 {
                     CRect rect_cell{ rect_item };
@@ -2532,7 +2544,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                 };
 
             //开始绘制滚动条
-            if (CPlayer::GetInstance().GetSongNum() > 1 && item_height * CPlayer::GetInstance().GetSongNum() > rect.Height())
+            if (list_element->GetRowCount() > 1 && item_height * list_element->GetRowCount() > rect.Height())
             {
                 //填充滚动条背景
                 if (list_element->scrollbar_hover || list_element->scrollbar_handle_pressed)
@@ -2540,7 +2552,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
 
                 //画滚动条把手
                 //计算滚动条的长度
-                int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * CPlayer::GetInstance().GetSongNum()) };
+                int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * list_element->GetRowCount()) };
                 list_element->scroll_handle_length_comp = 0;
                 if (scroll_handle_length < MIN_SCROLLBAR_LENGTH)
                 {

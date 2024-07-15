@@ -61,13 +61,7 @@ void CMoreRecentItemDlg::ShowList()
     {
         m_list_ctrl.AddString(item.GetName().c_str());
         //设置图标
-        IconMgr::IconType icon_type{};
-        if (item.IsFolder())
-            icon_type = IconMgr::IT_Folder;
-        else if (item.IsPlaylist())
-            icon_type = IconMgr::IT_Playlist;
-        else if (item.medialib_info != nullptr)
-            icon_type = CMediaLibPlaylistMgr::GetIcon(item.medialib_info->medialib_type);
+        IconMgr::IconType icon_type = item.GetIcon();
         m_list_ctrl.SetItemIcon(m_list_ctrl.GetItemCount() - 1, theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16));
     }
 }
@@ -107,7 +101,7 @@ BOOL CMoreRecentItemDlg::OnInitDialog()
     ShowList();
 
     return TRUE;  // return TRUE unless you set the focus to a control
-                  // 异常: OCX 属性页应返回 FALSE
+    // 异常: OCX 属性页应返回 FALSE
 }
 
 
@@ -119,7 +113,7 @@ void CMoreRecentItemDlg::OnOK()
 }
 
 
-void CMoreRecentItemDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
+void CMoreRecentItemDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     m_selected_item = pNMItemActivate->iItem;

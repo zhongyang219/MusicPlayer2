@@ -20,7 +20,7 @@ CRecentFolderAndPlaylist& CRecentFolderAndPlaylist::Instance()
 
 void CRecentFolderAndPlaylist::Init()
 {
-    const deque<PathInfo>& recent_folder{ CRecentFolderMgr::Instance().GetRecentPath()};
+    const deque<PathInfo>& recent_folder{ CRecentFolderMgr::Instance().GetRecentPath() };
     const CPlaylistMgr& recent_playlist{ CPlaylistMgr::Instance() };
     m_list.clear();
     //添加最近播放播放列表
@@ -170,4 +170,22 @@ bool CRecentFolderAndPlaylist::Item::IsItemCurrentPlaying() const
             && medialib_info->path == CPlayer::GetInstance().GetMedialibItemName();
     }
     return false;
+}
+
+IconMgr::IconType CRecentFolderAndPlaylist::Item::GetIcon() const
+{
+    if (IsPlaylist())
+    {
+        bool is_favourite{ playlist_info->path == CPlaylistMgr::Instance().m_favourite_playlist.path };
+        return is_favourite ? IconMgr::IconType::IT_Favorite_On : IconMgr::IconType::IT_Playlist;
+    }
+    else if (IsFolder())
+    {
+        return IconMgr::IconType::IT_Folder;
+    }
+    else if (IsMedialib())
+    {
+        return CMediaLibPlaylistMgr::GetIcon(medialib_info->medialib_type);
+    }
+    return IconMgr::IT_NO_ICON;
 }

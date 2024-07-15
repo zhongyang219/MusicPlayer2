@@ -106,21 +106,21 @@ void CUserUi::ResetVolumeToPlayTime()
 
 void CUserUi::PlaylistLocateToIndex(int index)
 {
-    //遍历Playlist元素
+    //遍历ListElement元素
     IterateAllElements([&](UiElement::Element* element) ->bool
-    {
-        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
-        if (playlist_element != nullptr)
         {
-            playlist_element->EnsureItemVisible(index);
-        }
-        return false;
-    });
+            UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
+            if (playlist_element != nullptr)
+            {
+                playlist_element->EnsureItemVisible(index);
+            }
+            return false;
+        });
 }
 
 void CUserUi::SaveStatackElementIndex(CArchive& archive)
 {
-    //遍历Playlist元素
+    //遍历StackElement元素
     IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool
         {
             UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
@@ -236,16 +236,16 @@ bool CUserUi::LButtonUp(CPoint point)
             }
         }
 
-        //遍历Playlist元素
+        //遍历ListElement元素
         IterateAllElements([point](UiElement::Element* element) ->bool
-        {
-            UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
-            if (playlist_element != nullptr)
             {
-                playlist_element->LButtonUp(point);
-            }
-            return false;
-        });
+                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
+                if (playlist_element != nullptr)
+                {
+                    playlist_element->LButtonUp(point);
+                }
+                return false;
+            });
     }
     return false;
 }
@@ -263,16 +263,16 @@ bool CUserUi::LButtonDown(CPoint point)
                 stack_element->indicator.pressed = true;
         }
 
-        //遍历Playlist元素
+        //遍历ListElement元素
         IterateAllElements([point](UiElement::Element* element) ->bool
-        {
-            UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
-            if (playlist_element != nullptr)
             {
-                playlist_element->LButtonDown(point);
-            }
-            return false;
-        });
+                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
+                if (playlist_element != nullptr)
+                {
+                    playlist_element->LButtonDown(point);
+                }
+                return false;
+            });
     }
     return false;
 }
@@ -296,10 +296,10 @@ void CUserUi::MouseMove(CPoint point)
             }
         }
 
-        //遍历Playlist元素
+        //遍历ListElement元素
         IterateAllElements([point](UiElement::Element* element) ->bool
             {
-                UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
                 if (playlist_element != nullptr)
                 {
                     playlist_element->MouseMove(point);
@@ -322,20 +322,20 @@ void CUserUi::MouseLeave()
             stack_element->mouse_hover = false;
         }
     }
-    
+
     CPlayerUIBase::MouseLeave();
 }
 
 
 void CUserUi::RButtonUp(CPoint point)
 {
-    //遍历Playlist元素
+    //遍历ListElement元素
     bool rtn = false;
     if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         IterateAllElements([&](UiElement::Element* element) ->bool
             {
-                UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
                 if (playlist_element != nullptr)
                 {
                     if (playlist_element->RButtunUp(point))
@@ -354,12 +354,12 @@ void CUserUi::RButtonUp(CPoint point)
 
 void CUserUi::RButtonDown(CPoint point)
 {
-    //遍历Playlist元素
+    //遍历ListElement元素
     if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         IterateAllElements([point](UiElement::Element* element) ->bool
             {
-                UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
                 if (playlist_element != nullptr)
                 {
                     playlist_element->RButtonDown(point);
@@ -372,40 +372,40 @@ void CUserUi::RButtonDown(CPoint point)
 
 bool CUserUi::MouseWheel(int delta, CPoint point)
 {
-    //遍历Playlist元素
+    //遍历ListElement元素
     bool rtn = false;
     IterateAllElements([&](UiElement::Element* element) ->bool
-    {
-        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
-        if (playlist_element != nullptr)
         {
-            if (playlist_element->MouseWheel(delta, point))
+            UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
+            if (playlist_element != nullptr)
             {
-                rtn = true;
-                return true;
-            }
-        }
-        return false;
-    });
-
-    if (!rtn)
-    {
-        //遍历stackElement元素
-        IterateAllElements([&](UiElement::Element* element) ->bool
-        {
-            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
-            if (stack_element != nullptr)
-            {
-                //如果鼠标指向指示器，或者指定了scroll_to_switch属性时鼠标指向stackElement区域，通过鼠标滚轮切换显示
-                if ((stack_element->show_indicator && stack_element->indicator.rect.PtInRect(point)) || (stack_element->scroll_to_switch && stack_element->GetRect().PtInRect(point)))
+                if (playlist_element->MouseWheel(delta, point))
                 {
-                    stack_element->SwitchDisplay(delta > 0);
                     rtn = true;
                     return true;
                 }
             }
             return false;
         });
+
+    if (!rtn)
+    {
+        //遍历stackElement元素
+        IterateAllElements([&](UiElement::Element* element) ->bool
+            {
+                UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
+                if (stack_element != nullptr)
+                {
+                    //如果鼠标指向指示器，或者指定了scroll_to_switch属性时鼠标指向stackElement区域，通过鼠标滚轮切换显示
+                    if ((stack_element->show_indicator && stack_element->indicator.rect.PtInRect(point)) || (stack_element->scroll_to_switch && stack_element->GetRect().PtInRect(point)))
+                    {
+                        stack_element->SwitchDisplay(delta > 0);
+                        rtn = true;
+                        return true;
+                    }
+                }
+                return false;
+            });
     }
 
     if (rtn)
@@ -415,11 +415,11 @@ bool CUserUi::MouseWheel(int delta, CPoint point)
 
 bool CUserUi::DoubleClick(CPoint point)
 {
-    //遍历Playlist元素
+    //遍历ListElement元素
     bool rtn = false;
     IterateAllElements([&](UiElement::Element* element) ->bool
         {
-            UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+            UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
             if (playlist_element != nullptr)
             {
                 if (playlist_element->DoubleClick(point))
@@ -495,7 +495,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             element->min_width.FromString(str_min_width);
         if (!str_min_height.empty())
             element->min_height.FromString(str_min_height);
-        
+
         if (!str_margin.empty())
         {
             element->margin_left.FromString(str_margin);
