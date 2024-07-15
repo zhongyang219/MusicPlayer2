@@ -795,7 +795,7 @@ std::wstring UiElement::Text::GetText() const
         {
             static const wstring& mute_str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE");
             int volume = CPlayer::GetInstance().GetVolume();
-            if(volume <= 0)
+            if (volume <= 0)
                 draw_text = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { mute_str, L"" });
             else
                 draw_text = theApp.m_str_table.LoadTextFormat(L"UI_TXT_VOLUME", { volume, L"%" });
@@ -1211,6 +1211,12 @@ void UiElement::PlaylistIndicator::Draw()
     ui->DrawCurrentPlaylistIndicator(rect);
     ui->ResetDrawArea();
     Element::Draw();
+}
+
+UiElement::ClassicalControlBar::ClassicalControlBar()
+    : Element()
+{
+    max_height.FromString("56");
 }
 
 void UiElement::ClassicalControlBar::Draw()

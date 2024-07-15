@@ -288,6 +288,7 @@ namespace UiElement
     class ClassicalControlBar : public Element
     {
     public:
+        ClassicalControlBar();
         virtual void Draw() override;
 
     public:
