@@ -968,23 +968,23 @@ void UiElement::BeatIndicator::Draw()
     Element::Draw();
 }
 
-void UiElement::Playlist::Draw()
+void UiElement::ListElement::Draw()
 {
     CalculateRect();
     RestrictOffset();
     CalculateItemRects();
-    ui->DrawPlaylist(rect, this, ItemHeight());
+    ui->DrawList(rect, this, ItemHeight());
     ui->ResetDrawArea();
     Element::Draw();
 }
 
-void UiElement::Playlist::LButtonUp(CPoint point)
+void UiElement::ListElement::LButtonUp(CPoint point)
 {
     mouse_pressed = false;
     scrollbar_handle_pressed = false;
 }
 
-void UiElement::Playlist::LButtonDown(CPoint point)
+void UiElement::ListElement::LButtonDown(CPoint point)
 {
     if (rect.PtInRect(point))
     {
@@ -1010,7 +1010,7 @@ void UiElement::Playlist::LButtonDown(CPoint point)
     }
 }
 
-void UiElement::Playlist::MouseMove(CPoint point)
+void UiElement::ListElement::MouseMove(CPoint point)
 {
     hover = rect.PtInRect(point);
     scrollbar_hover = scrollbar_rect.PtInRect(point);
@@ -1027,7 +1027,7 @@ void UiElement::Playlist::MouseMove(CPoint point)
     }
 
     //显示鼠标提示
-    if (theApp.m_media_lib_setting_data.show_playlist_tooltip && hover && !scrollbar_hover && !scrollbar_handle_pressed)
+    if (ShowTooltip() && hover && !scrollbar_hover && !scrollbar_handle_pressed)
     {
         int item_size{ static_cast<int>(item_rects.size()) };
         for (int i{}; i < item_size && i < CPlayer::GetInstance().GetSongNum(); i++)
@@ -1038,12 +1038,10 @@ void UiElement::Playlist::MouseMove(CPoint point)
                 if (last_item_index != i)
                 {
                     last_item_index = i;
-                    const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[i];
-                    bool show_full_path = (!CPlayer::GetInstance().IsFolderMode() || CPlayer::GetInstance().IsContainSubFolder());
-                    std::wstring str_tip = CSongInfoHelper::GetPlaylistItemToolTip(song_info, true, show_full_path);
+                    std::wstring str_tip = GetToolTipText(i);
 
-                    ui->UpdateMouseToolTip(PLAYLIST_TOOLTIP_INDEX, str_tip.c_str());
-                    ui->UpdateMouseToolTipPosition(PLAYLIST_TOOLTIP_INDEX, item_rects[i]);
+                    ui->UpdateMouseToolTip(GetToolTipIndex(), str_tip.c_str());
+                    ui->UpdateMouseToolTipPosition(GetToolTipIndex(), item_rects[i]);
                 }
                 break;
             }
@@ -1051,7 +1049,7 @@ void UiElement::Playlist::MouseMove(CPoint point)
     }
 }
 
-bool UiElement::Playlist::RButtunUp(CPoint point)
+bool UiElement::ListElement::RButtunUp(CPoint point)
 {
     if (rect.PtInRect(point))
     {
@@ -1073,7 +1071,7 @@ bool UiElement::Playlist::RButtunUp(CPoint point)
 }
 
 
-void UiElement::Playlist::RButtonDown(CPoint point)
+void UiElement::ListElement::RButtonDown(CPoint point)
 {
     mouse_pressed = false;
     if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point))
@@ -1086,7 +1084,7 @@ void UiElement::Playlist::RButtonDown(CPoint point)
     }
 }
 
-bool UiElement::Playlist::MouseWheel(int delta, CPoint point)
+bool UiElement::ListElement::MouseWheel(int delta, CPoint point)
 {
     if (rect.PtInRect(point))
     {
@@ -1108,7 +1106,7 @@ bool UiElement::Playlist::MouseWheel(int delta, CPoint point)
     return false;
 }
 
-bool UiElement::Playlist::DoubleClick(CPoint point)
+bool UiElement::ListElement::DoubleClick(CPoint point)
 {
     if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point) && item_selected >= 0)
     {
@@ -1117,7 +1115,7 @@ bool UiElement::Playlist::DoubleClick(CPoint point)
     return false;
 }
 
-void UiElement::Playlist::EnsureItemVisible(int index)
+void UiElement::ListElement::EnsureItemVisible(int index)
 {
     if (index <= 0)
     {
@@ -1147,7 +1145,7 @@ void UiElement::Playlist::EnsureItemVisible(int index)
     playlist_offset -= delta_offset;
 }
 
-void UiElement::Playlist::RestrictOffset()
+void UiElement::ListElement::RestrictOffset()
 {
     int& offset{ playlist_offset };
     if (offset < 0)
@@ -1159,7 +1157,7 @@ void UiElement::Playlist::RestrictOffset()
         offset = offset_max;
 }
 
-void UiElement::Playlist::CalculateItemRects()
+void UiElement::ListElement::CalculateItemRects()
 {
     item_rects.resize(CPlayer::GetInstance().GetSongNum());
     for (size_t i{}; i < item_rects.size(); i++)
@@ -1175,18 +1173,18 @@ void UiElement::Playlist::CalculateItemRects()
     }
 }
 
-int UiElement::Playlist::ItemHeight() const
+int UiElement::ListElement::ItemHeight() const
 {
     return ui->DPI(item_height);
 }
 
-void UiElement::Playlist::SetItemSelected(int index)
+void UiElement::ListElement::SetItemSelected(int index)
 {
     item_selected = index;
     EnsureItemVisible(index);
 }
 
-int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)
+int UiElement::ListElement::GetPlaylistIndexByPoint(CPoint point)
 {
     for (size_t i{}; i < item_rects.size(); i++)
     {
@@ -1196,13 +1194,106 @@ int UiElement::Playlist::GetPlaylistIndexByPoint(CPoint point)
     return -1;
 }
 
-void UiElement::Playlist::Clicked(CPoint point)
+void UiElement::ListElement::Clicked(CPoint point)
 {
     item_selected = GetPlaylistIndexByPoint(point);
     CMusicPlayerDlg* pMainWnd = CMusicPlayerDlg::GetInstance();
     if (pMainWnd != nullptr)
         pMainWnd->SetPlaylistSelected(item_selected);
     selected_item_scroll_info.Reset();
+}
+
+std::wstring UiElement::Playlist::GetItemText(int row, int col)
+{
+    if (row >= 0 && row < GetRowCount())
+    {
+        //序号
+        if (col == COL_INDEX)
+        {
+            return std::to_wstring(row + 1);
+        }
+        //曲目
+        else if (col == COL_TRACK)
+        {
+            const SongInfo& song_info{ CPlayer::GetInstance().GetPlayList()[row] };
+            std::wstring display_name{ CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format) };
+            return display_name;
+        }
+        //时间
+        else if (col == COL_TIME)
+        {
+            const SongInfo& song_info{ CPlayer::GetInstance().GetPlayList()[row] };
+            return song_info.length().toString();
+        }
+    }
+
+    return std::wstring();
+}
+
+int UiElement::Playlist::GetColumnCount()
+{
+    return COL_MAX;
+}
+
+int UiElement::Playlist::GetColumnWidth(int col, int total_width)
+{
+    if (col == COL_INDEX)
+    {
+        return ui->DPI(36);
+    }
+    else if (col == COL_TIME)
+    {
+        return ui->DPI(50);
+    }
+    else if (col == COL_TRACK)
+    {
+        return total_width - ui->DPI(32) - ui->DPI(50);
+    }
+    return 0;
+}
+
+std::wstring UiElement::Playlist::GetEmptyString()
+{
+    const wstring& info = theApp.m_str_table.LoadText(L"UI_PLAYLIST_EMPTY_INFO");
+    return info;
+}
+
+int UiElement::Playlist::GetHighlightRow()
+{
+    return CPlayer::GetInstance().GetIndex();
+}
+
+int UiElement::Playlist::GetColumnScrollTextWhenSelected()
+{
+    return COL_TRACK;
+}
+
+bool UiElement::Playlist::ShowTooltip()
+{
+    return theApp.m_media_lib_setting_data.show_playlist_tooltip;
+}
+
+std::wstring UiElement::Playlist::GetToolTipText(int row)
+{
+    if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+    {
+        const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+        bool show_full_path = (!CPlayer::GetInstance().IsFolderMode() || CPlayer::GetInstance().IsContainSubFolder());
+        std::wstring str_tip = CSongInfoHelper::GetPlaylistItemToolTip(song_info, true, show_full_path);
+        return str_tip;
+    }
+
+    return std::wstring();
+}
+
+int UiElement::Playlist::GetToolTipIndex() const
+{
+    return PLAYLIST_TOOLTIP_INDEX;
+}
+
+int UiElement::Playlist::GetRowCount()
+{
+    return CPlayer::GetInstance().GetSongNum();
 }
 
 void UiElement::PlaylistIndicator::Draw()

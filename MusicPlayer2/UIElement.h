@@ -233,10 +233,8 @@ namespace UiElement
         virtual void Draw() override;
     };
 
-    //播放列表
-    const int PLAYLIST_TOOLTIP_INDEX = 999;
-
-    class Playlist : public Element
+    //列表元素
+    class ListElement : public Element
     {
     public:
         friend class CPlayerUIBase;
@@ -255,6 +253,19 @@ namespace UiElement
         void CalculateItemRects();         //计算播放列表中每一项的矩形区域，保存在playlist_info.item_rects中
         int ItemHeight() const;
         void SetItemSelected(int index);
+
+        virtual std::wstring GetItemText(int row, int col) = 0;
+        virtual int GetRowCount() = 0;
+        virtual int GetColumnCount() = 0;
+        virtual int GetColumnWidth(int col, int total_width) = 0;
+        virtual HICON GetIcon(int row) { return NULL; }
+        virtual bool HasIcon() { return false; }
+        virtual std::wstring GetEmptyString() { return std::wstring(); }    //列表为空时显示的文本
+        virtual int GetHighlightRow() = 0;
+        virtual int GetColumnScrollTextWhenSelected() { return -1; }    //获取选中时需要滚动显示的列
+        virtual bool ShowTooltip() { return false; }
+        virtual std::wstring GetToolTipText(int row) { return std::wstring(); }
+        virtual int GetToolTipIndex() const { return 0; }
 
         int item_height{ 28 };
 
@@ -276,6 +287,33 @@ namespace UiElement
         bool scrollbar_hover{};         //鼠标指向滚动条
         bool scrollbar_handle_pressed{};    //滚动条把手被按下
         int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
+    };
+
+    const int PLAYLIST_TOOLTIP_INDEX = 999;
+
+    //播放列表
+    class Playlist : public ListElement
+    {
+    public:
+        enum Column
+        {
+            COL_INDEX,
+            COL_TRACK,
+            COL_TIME,
+            COL_MAX
+        };
+
+        // 通过 ListElement 继承
+        std::wstring GetItemText(int row, int col) override;
+        int GetRowCount() override;
+        int GetColumnCount() override;
+        virtual int GetColumnWidth(int col, int total_width) override;
+        virtual std::wstring GetEmptyString() override;
+        virtual int GetHighlightRow() override;
+        virtual int GetColumnScrollTextWhenSelected() override;
+        virtual bool ShowTooltip() override;
+        virtual std::wstring GetToolTipText(int row) override;
+        virtual int GetToolTipIndex() const override;
     };
 
     //当前播放列表指示
