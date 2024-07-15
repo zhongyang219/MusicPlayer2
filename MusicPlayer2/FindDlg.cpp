@@ -115,9 +115,9 @@ void CFindDlg::ShowFindInfo()
 bool CFindDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
 {
     auto getSongList = [&](std::vector<SongInfo>& song_list)
-    {
-        GetSongsSelected(song_list);
-    };
+        {
+            GetSongsSelected(song_list);
+        };
     CMusicPlayerCmdHelper cmd_helper(this);
     return cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
 }
@@ -247,7 +247,6 @@ void CFindDlg::OnBnClickedFindButton()
         m_item_selected = -1;
         m_items_selected.clear();
         m_find_result.clear();
-        int index;
         bool find_flag;
         if (m_find_current_playlist)        //查找当前播放列表时，在m_playlist窗口中查找
         {
@@ -256,23 +255,23 @@ void CFindDlg::OnBnClickedFindButton()
                 find_flag = false;
                 if (m_find_file && !find_flag)
                 {
-                    index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].GetFileName(), m_key_word);
-                    if (index != wstring::npos) find_flag = true;
+                    if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(m_key_word, CPlayer::GetInstance().GetPlayList()[i].GetFileName()))
+                        find_flag = true;
                 }
                 if (m_find_title && !find_flag)
                 {
-                    index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].title, m_key_word);
-                    if (index != wstring::npos) find_flag = true;
+                    if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(m_key_word, CPlayer::GetInstance().GetPlayList()[i].title))
+                        find_flag = true;
                 }
                 if (m_find_artist && !find_flag)
                 {
-                    index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].artist, m_key_word);
-                    if (index != wstring::npos) find_flag = true;
+                    if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(m_key_word, CPlayer::GetInstance().GetPlayList()[i].artist))
+                        find_flag = true;
                 }
                 if (m_find_album && !find_flag)
                 {
-                    index = CCommon::StringFindNoCase(CPlayer::GetInstance().GetPlayList()[i].album, m_key_word);
-                    if (index != wstring::npos) find_flag = true;
+                    if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(m_key_word, CPlayer::GetInstance().GetPlayList()[i].album))
+                        find_flag = true;
                 }
                 if (find_flag)
                 {
@@ -289,23 +288,23 @@ void CFindDlg::OnBnClickedFindButton()
                         find_flag = false;
                         if (m_find_file && !find_flag)
                         {
-                            index = CCommon::StringFindNoCase(item.second.GetFileName(), m_key_word);
-                            if (index != wstring::npos) find_flag = true;
+                            if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(m_key_word, item.second.GetFileName()))
+                                find_flag = true;
                         }
                         if (m_find_title && !find_flag)
                         {
-                            index = CCommon::StringFindNoCase(item.second.title, m_key_word);
-                            if (index != wstring::npos) find_flag = true;
+                            if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(m_key_word, item.second.title))
+                                find_flag = true;
                         }
                         if (m_find_artist && !find_flag)
                         {
-                            index = CCommon::StringFindNoCase(item.second.artist, m_key_word);
-                            if (index != wstring::npos) find_flag = true;
+                            if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(m_key_word, item.second.artist))
+                                find_flag = true;
                         }
                         if (m_find_album && !find_flag)
                         {
-                            index = CCommon::StringFindNoCase(item.second.album, m_key_word);
-                            if (index != wstring::npos) find_flag = true;
+                            if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(m_key_word, item.second.album))
+                                find_flag = true;
                         }
                         if (find_flag)
                         {
@@ -378,7 +377,7 @@ BOOL CFindDlg::OnInitDialog()
     GetDlgItem(IDOK)->EnableWindow(FALSE);  //禁用“播放选中曲目”按钮，除非选中了一个项目
 
     return FALSE;  // return TRUE unless you set the focus to a control
-                  // 异常: OCX 属性页应返回 FALSE
+    // 异常: OCX 属性页应返回 FALSE
 }
 
 
@@ -560,7 +559,7 @@ void CFindDlg::OnAddToNewPlaylist()
 void CFindDlg::OnExploreOnline()
 {
     // TODO: 在此添加命令处理程序代码
-    if(m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
+    if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
         AfxBeginThread(ViewOnlineThreadFunc, (void*)this);
 }
 
@@ -661,9 +660,9 @@ BOOL CFindDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
     auto getSelectedItems = [&](std::vector<SongInfo>& item_list)
-    {
-        GetSongsSelected(item_list);
-    };
+        {
+            GetSongsSelected(item_list);
+        };
     //响应播放列表右键菜单中的“添加到播放列表”
     CMusicPlayerCmdHelper cmd_helper;
     cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
@@ -682,14 +681,14 @@ void CFindDlg::OnDeleteFromDisk()
     {
         //删除成功，则刷新列表
         auto isRemoved = [&](const SongInfo& song)
-        {
-            for (const auto& item : songs_selected)
             {
-                if (item.IsSameSong(song))
-                    return true;
-            }
-            return false;
-        };
+                for (const auto& item : songs_selected)
+                {
+                    if (item.IsSameSong(song))
+                        return true;
+                }
+                return false;
+            };
         auto iter_removed = std::remove_if(m_find_result.begin(), m_find_result.end(), isRemoved);
         m_find_result.erase(iter_removed, m_find_result.end());
         ShowFindResult();
