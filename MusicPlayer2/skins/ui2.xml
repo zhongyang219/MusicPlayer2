@@ -18,11 +18,11 @@
         </horizontalLayout>
         <horizontalLayout>
           <verticalLayout>
-            <albumCover square="true" height="70%" margin="8"/>
+            <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
             <text type="artist" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
-            <placeHolder/>
-            <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-bottom="4" min-height="24" max-height="80"/>
+            <lyrics hide-height="200" height="15%" margin-top="4"/>
+            <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-16" margin-bottom="4" min-height="24" max-height="80"/>
           </verticalLayout>
           <verticalLayout margin="4" margin-left="8" margin-bottom="16">
             <playlistIndicator height="30" margin-bottom="4"/>
@@ -55,18 +55,18 @@
       <classicalControlBar margin="4"/>
     </verticalLayout>
   </ui>
-  
+
   <ui type="narrow">
     <verticalLayout>
       <verticalLayout margin="4" margin-bottom="0">
         <trackInfo height="20"/>
         <text type="format" style="scroll" height="20"/>
         <stackElement click_to_switch="false" show_indicator="true" margin-bottom="4">
-          <verticalLayout margin-bottom="4">
-            <albumCover square="true" height="70%" margin="8"/>
+          <verticalLayout>
+            <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
             <text type="artist" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
-            <lyrics height="15%" hide-height="360" margin-top="4"/>
+            <lyrics hide-height="200" height="18%" margin-top="4"/>
           </verticalLayout>
           <verticalLayout margin="8">
             <rectangle height="80">
@@ -82,8 +82,7 @@
           </verticalLayout>
           <playlist margin="8"/>
         </stackElement>
-        <placeHolder height="10"/>
-        <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-bottom="4" min-height="24" max-height="80"/>
+        <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-6" min-height="24" max-height="80"/>
       </verticalLayout>
       <rectangle height="24" margin="4" margin-bottom="0">
         <toolbar show_translate_btn="true"/>
@@ -93,23 +92,23 @@
   </ui>
 
   <ui type="small">
-      <verticalLayout margin="4">
-        <trackInfo height="20" hide-height="180" />
-        <horizontalLayout margin="4">
-          <rectangle max-height="80">
-            <horizontalLayout margin="6">
-              <albumCover square="true" width="64" margin-left="4">
-                <spectrum draw_reflex="false" fixed_width="true" alignment="center" height="50%" margin-bottom="0"/>
-              </albumCover>
-              <verticalLayout margin-left="16">
-                <text type="title" font_size="10" style="scroll" height="28"/>
-                <text type="artist" font_size="9" style="scroll" height="24"/>
-                <text type="format" font_size="8" style="scroll" height="22" hide-height="68"/>
-              </verticalLayout>
-            </horizontalLayout>
-          </rectangle>
+    <verticalLayout margin="4">
+      <trackInfo height="20" hide-height="180" />
+      <horizontalLayout margin="4">
+        <rectangle max-height="80">
+          <horizontalLayout margin="6">
+            <albumCover square="true" width="64" margin-left="4">
+              <spectrum draw_reflex="false" fixed_width="true" alignment="center" height="50%" margin-bottom="0"/>
+            </albumCover>
+            <verticalLayout margin-left="16">
+              <text type="title" font_size="10" style="scroll" height="28"/>
+              <text type="artist" font_size="9" style="scroll" height="24"/>
+              <text type="format" font_size="8" style="scroll" height="22" hide-height="68"/>
+            </verticalLayout>
+          </horizontalLayout>
+        </rectangle>
 
-          <!--<albumCover square="true" margin-right="4" width="120">
+        <!--<albumCover square="true" margin-right="4" width="120">
             <spectrum draw_reflex="false" fixed_width="true" alignment="center" height="50%" margin-bottom="0"/>
           </albumCover>
           <verticalLayout>
@@ -119,12 +118,12 @@
             <text type="artist_album" alignment="center" height="20" font_size="9" margin-top="0" />
             <lyrics height="20" />
           </verticalLayout>-->
-        </horizontalLayout>
+      </horizontalLayout>
       <rectangle height="24" margin="4" margin-bottom="0">
         <toolbar show_translate_btn="true"/>
       </rectangle>
       <classicalControlBar margin-top="4"/>
-      </verticalLayout>
+    </verticalLayout>
 
   </ui>
 
