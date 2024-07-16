@@ -13,6 +13,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
 #include "PlaylistMgr.h"
+#include "MediaLibItemMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -218,6 +219,8 @@ BOOL CMusicPlayerApp::InitInstance()
 
     LoadSongData();
     LoadLastFMData();
+
+    UpdateMeidaLibItems();
 
     // 获取默认线程语言
     CCommon::GetThreadLanguageList(m_def_lang_list);
@@ -639,6 +642,7 @@ void CMusicPlayerApp::StartUpdateMediaLib(bool force)
                 }
                 CMusicPlayerCmdHelper::UpdateMediaLib();
                 theApp.m_media_lib_updating = false;
+                CMediaLibItemMgr::Instance().Init();
                 return 0;
             }, nullptr);
     }
@@ -822,5 +826,16 @@ void CMusicPlayerApp::LastFMScrobble() {
 
 UINT CMusicPlayerApp::LastFMScrobbleFunProc(LPVOID lpParam) {
     theApp.m_lastfm.Scrobble();
+    return 0;
+}
+
+void CMusicPlayerApp::UpdateMeidaLibItems()
+{
+    AfxBeginThread(UpdateMediaLibItemsProc, (LPVOID)NULL);
+}
+
+UINT CMusicPlayerApp::UpdateMediaLibItemsProc(LPVOID lpParam)
+{
+    CMediaLibItemMgr::Instance().Init();
     return 0;
 }

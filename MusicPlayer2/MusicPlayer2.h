@@ -131,6 +131,8 @@ public:
     void UpdateLastFMFavourite(bool favourite);
     void LastFMScrobble();
 
+    void UpdateMeidaLibItems();
+
 private:
     void LoadSongData();
 
@@ -139,6 +141,7 @@ private:
     static UINT UpdateLastFMNowPlayingFunProc(LPVOID lpParam);
     static UINT UpdateLastFMFavouriteFunProc(LPVOID lpParam);
     static UINT LastFMScrobbleFunProc(LPVOID lpParam);
+    static UINT UpdateMediaLibItemsProc(LPVOID lpParam);
 
 private:
     HHOOK m_multimedia_key_hook = NULL;
