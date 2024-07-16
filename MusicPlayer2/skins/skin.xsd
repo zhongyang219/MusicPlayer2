@@ -130,6 +130,7 @@
                 <xs:element name="playlist" type="playlistType"></xs:element>
                 <xs:element name="recentPlayedList" type="recentPlayedListType"></xs:element>
                 <xs:element name="playlistIndicator" type="playlistIndicatorType"></xs:element>
+                <xs:element name="mediaLibItemList" type="mediaLibItemList"></xs:element>
 				<xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
 			</xs:choice>
         </xs:sequence>
@@ -782,6 +783,31 @@
       <xs:annotation>
         <xs:documentation>最近播放项目的列表。</xs:documentation>
       </xs:annotation>
+      <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="mediaLibItemList">
+      <xs:annotation>
+        <xs:documentation>媒体库项目列表。</xs:documentation>
+      </xs:annotation>
+      <xs:attribute name="type">
+        <xs:annotation>
+          <xs:documentation>类型。</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="artist">
+              <xs:annotation>
+                <xs:documentation>艺术家</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="album">
+              <xs:annotation>
+                <xs:documentation>唱片集</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
 </xs:schema>

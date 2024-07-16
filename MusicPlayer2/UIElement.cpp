@@ -4,6 +4,7 @@
 #include "MusicPlayerDlg.h"
 #include "SongInfoHelper.h"
 #include "RecentFolderAndPlaylist.h"
+#include "MediaLibItemMgr.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1364,6 +1365,52 @@ void UiElement::RecentPlayedList::OnDoubleClicked()
     ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_RECENT_FOLDER_PLAYLIST_MENU_START + item_selected, 0);
 }
 
+std::wstring UiElement::MediaLibItemList::GetItemText(int row, int col)
+{
+    if (col == 0)
+    {
+        if (row >= 0 && row < CMediaLibItemMgr::Instance().GetItemCount(type))
+            return CMediaLibItemMgr::Instance().GetItemName(type, row);
+    }
+    return std::wstring();
+}
+
+int UiElement::MediaLibItemList::GetRowCount()
+{
+    return CMediaLibItemMgr::Instance().GetItemCount(type);
+}
+
+int UiElement::MediaLibItemList::GetColumnCount()
+{
+    return 1;
+}
+
+int UiElement::MediaLibItemList::GetColumnWidth(int col, int total_width)
+{
+    if (col == 0)
+        return total_width;
+    return 0;
+}
+
+int UiElement::MediaLibItemList::GetHighlightRow()
+{
+    return -1;
+}
+
+int UiElement::MediaLibItemList::GetColumnScrollTextWhenSelected()
+{
+    return 0;
+}
+
+void UiElement::MediaLibItemList::OnDoubleClicked()
+{
+    if (item_selected >= 0 && item_selected < CMediaLibItemMgr::Instance().GetItemCount(type))
+    {
+        std::wstring item_name = CMediaLibItemMgr::Instance().GetItemName(type, item_selected);
+        CPlayer::GetInstance().SetMediaLibPlaylist(type, item_name, -1, SongInfo(), true);
+    }
+}
+
 void UiElement::PlaylistIndicator::Draw()
 {
     CalculateRect();
@@ -1440,6 +1487,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::ClassicalControlBar>();
     else if (name == "recentPlayedList")
         element = std::make_shared<UiElement::RecentPlayedList>();
+    else if (name == "mediaLibItemList")
+        element = std::make_shared<UiElement::MediaLibItemList>();
     else if (name == "ui" || name == "root" || name == "placeHolder")
         element = std::make_shared<UiElement::Element>();
 

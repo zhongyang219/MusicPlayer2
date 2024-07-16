@@ -220,8 +220,6 @@ BOOL CMusicPlayerApp::InitInstance()
     LoadSongData();
     LoadLastFMData();
 
-    UpdateMeidaLibItems();
-
     // 获取默认线程语言
     CCommon::GetThreadLanguageList(m_def_lang_list);
     //初始化界面语言

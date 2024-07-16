@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "MediaLibItemMgr.h"
 #include "MusicPlayer2.h"
+#include "MediaLibPlaylistMgr.h"
 
 CMediaLibItemMgr CMediaLibItemMgr::m_instance;
 
@@ -55,7 +56,10 @@ std::wstring CMediaLibItemMgr::GetItemName(CMediaClassifier::ClassificationType 
         {
             const auto& item_list{ iter->second };
             if (index >= 0 && index < static_cast<int>(item_list.size()))
-                return item_list[index];
+            {
+                const std::wstring& name{ item_list[index] };
+                return CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(type, name);
+            }
         }
     }
     return std::wstring();

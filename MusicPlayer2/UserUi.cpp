@@ -739,6 +739,19 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", lyrics->font_size);
             }
         }
+        //媒体库列表
+        else if (item_name == "mediaLibItemList")
+        {
+            UiElement::MediaLibItemList* mediaLibItemList = dynamic_cast<UiElement::MediaLibItemList*>(element.get());
+            if (mediaLibItemList != nullptr)
+            {
+                std::string str_type = CTinyXml2Helper::ElementAttribute(xml_node, "type");
+                if (str_type == "artist")
+                    mediaLibItemList->type = CMediaClassifier::CT_ARTIST;
+                else if (str_type == "album")
+                    mediaLibItemList->type = CMediaClassifier::CT_ALBUM;
+            }
+        }
 
         //递归调用此函数创建子节点
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)

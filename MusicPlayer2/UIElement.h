@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CPlayerUIBase.h"
+#include "MediaLibHelper.h"
 
 //定义界面元素
 namespace UiElement
@@ -325,6 +326,7 @@ namespace UiElement
     //最近播放
     class RecentPlayedList : public ListElement
     {
+    public:
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
@@ -333,6 +335,22 @@ namespace UiElement
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual IconMgr::IconType GetIcon(int row) override;
         virtual bool HasIcon() override;
+        virtual void OnDoubleClicked() override;
+    };
+
+    //媒体库项目列表
+    class MediaLibItemList : public ListElement
+    {
+    public:
+        CMediaClassifier::ClassificationType type;
+
+        // 通过 ListElement 继承
+        std::wstring GetItemText(int row, int col) override;
+        int GetRowCount() override;
+        int GetColumnCount() override;
+        int GetColumnWidth(int col, int total_width) override;
+        virtual int GetHighlightRow() override;
+        virtual int GetColumnScrollTextWhenSelected() override;
         virtual void OnDoubleClicked() override;
     };
 

@@ -2560,7 +2560,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     scroll_handle_length = MIN_SCROLLBAR_LENGTH;
                 }
                 //根据播放列表偏移量计算滚动条的位置
-                int scroll_pos{ (rect.Height() - list_element->scroll_handle_length_comp) * list_element->playlist_offset / (item_height * CPlayer::GetInstance().GetSongNum()) };
+                int scroll_pos{ (rect.Height() - list_element->scroll_handle_length_comp) * list_element->playlist_offset / (item_height * list_element->GetRowCount()) };
                 list_element->scrollbar_handle_rect = scrollbar_rect;
                 list_element->scrollbar_handle_rect.top = scrollbar_rect.top + scroll_pos;
                 list_element->scrollbar_handle_rect.bottom = list_element->scrollbar_handle_rect.top + scroll_handle_length;

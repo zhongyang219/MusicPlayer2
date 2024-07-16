@@ -1999,6 +1999,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     CMainDialogBase::OnInitDialog();
 
+    theApp.UpdateMeidaLibItems();
+
     // 载入图标资源
     theApp.LoadImgResource();
     // 载入字体资源
