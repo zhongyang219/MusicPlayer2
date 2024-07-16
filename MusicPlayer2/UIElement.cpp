@@ -1359,6 +1359,11 @@ bool UiElement::RecentPlayedList::HasIcon()
     return true;
 }
 
+void UiElement::RecentPlayedList::OnDoubleClicked()
+{
+    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_RECENT_FOLDER_PLAYLIST_MENU_START + item_selected, 0);
+}
+
 void UiElement::PlaylistIndicator::Draw()
 {
     CalculateRect();

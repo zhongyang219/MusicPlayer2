@@ -333,6 +333,7 @@ namespace UiElement
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual IconMgr::IconType GetIcon(int row) override;
         virtual bool HasIcon() override;
+        virtual void OnDoubleClicked() override;
     };
 
     //当前播放列表指示
