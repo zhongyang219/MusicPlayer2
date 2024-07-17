@@ -805,6 +805,31 @@
                 <xs:documentation>唱片集</xs:documentation>
               </xs:annotation>
             </xs:enumeration>
+            <xs:enumeration value="genre">
+              <xs:annotation>
+                <xs:documentation>流派</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="year">
+              <xs:annotation>
+                <xs:documentation>年份</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="file_type">
+              <xs:annotation>
+                <xs:documentation>文件类型</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="bitrate">
+              <xs:annotation>
+                <xs:documentation>比特率</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="rating">
+              <xs:annotation>
+                <xs:documentation>分级</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>

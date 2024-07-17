@@ -32,6 +32,11 @@ void CMediaLibItemMgr::Init()
 
     GetClassifiedMeidaLibItemList(CMediaClassifier::CT_ARTIST);
     GetClassifiedMeidaLibItemList(CMediaClassifier::CT_ALBUM);
+    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_GENRE);
+    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_YEAR);
+    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_TYPE);
+    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_BITRATE);
+    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_RATING);
 
     m_loading = false;
 }

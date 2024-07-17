@@ -750,6 +750,16 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     mediaLibItemList->type = CMediaClassifier::CT_ARTIST;
                 else if (str_type == "album")
                     mediaLibItemList->type = CMediaClassifier::CT_ALBUM;
+                else if (str_type == "genre")
+                    mediaLibItemList->type = CMediaClassifier::CT_GENRE;
+                else if (str_type == "year")
+                    mediaLibItemList->type = CMediaClassifier::CT_YEAR;
+                else if (str_type == "file_type")
+                    mediaLibItemList->type = CMediaClassifier::CT_TYPE;
+                else if (str_type == "bitrate")
+                    mediaLibItemList->type = CMediaClassifier::CT_BITRATE;
+                else if (str_type == "rating")
+                    mediaLibItemList->type = CMediaClassifier::CT_RATING;
             }
         }
 
