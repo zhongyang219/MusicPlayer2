@@ -41,7 +41,7 @@ void CMediaLibItemMgr::Init()
     m_loading = false;
 }
 
-int CMediaLibItemMgr::GetItemCount(CMediaClassifier::ClassificationType type)
+int CMediaLibItemMgr::GetItemCount(CMediaClassifier::ClassificationType type) const
 {
     if (!m_loading)
     {
@@ -52,7 +52,7 @@ int CMediaLibItemMgr::GetItemCount(CMediaClassifier::ClassificationType type)
     return 0;
 }
 
-std::wstring CMediaLibItemMgr::GetItemName(CMediaClassifier::ClassificationType type, int index)
+std::wstring CMediaLibItemMgr::GetItemName(CMediaClassifier::ClassificationType type, int index) const
 {
     if (!m_loading)
     {
@@ -68,6 +68,42 @@ std::wstring CMediaLibItemMgr::GetItemName(CMediaClassifier::ClassificationType 
         }
     }
     return std::wstring();
+}
+
+void CMediaLibItemMgr::SetCurrentName(CMediaClassifier::ClassificationType type, const std::wstring& name)
+{
+    m_current_name_map[type] = name;
+}
+
+int CMediaLibItemMgr::GetCurrentIndex(CMediaClassifier::ClassificationType type)
+{
+    if (!m_loading)
+    {
+        auto index_iter = m_current_index_map.find(type);
+        if (index_iter == m_current_index_map.end())
+        {
+            //根据名称查找所在的序号
+            auto name_iter = m_current_name_map.find(type);
+            if (name_iter != m_current_name_map.end())
+            {
+                const auto& name_list{ m_item_map[type] };
+                auto iter = std::find(name_list.begin(), name_list.end(), name_iter->second);
+                if (iter != name_list.end())
+                {
+                    int index = iter - name_list.begin();
+                    //设置当前项目的序号
+                    m_current_index_map[type] = index;
+                    return index;
+                }
+            }
+        }
+        else
+        {
+            return index_iter->second;
+        }
+    }
+
+    return -1;
 }
 
 CMediaLibItemMgr::CMediaLibItemMgr()

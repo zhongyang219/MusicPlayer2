@@ -1256,7 +1256,13 @@ std::wstring UiElement::Playlist::GetEmptyString()
 
 int UiElement::Playlist::GetHighlightRow()
 {
-    return CPlayer::GetInstance().GetIndex();
+    int highlight_row = CPlayer::GetInstance().GetIndex();
+    if (last_highlight_row != highlight_row)
+    {
+        EnsureItemVisible(highlight_row);
+        last_highlight_row = highlight_row;
+    }
+    return highlight_row;
 }
 
 int UiElement::Playlist::GetColumnScrollTextWhenSelected()
@@ -1394,7 +1400,13 @@ int UiElement::MediaLibItemList::GetColumnWidth(int col, int total_width)
 
 int UiElement::MediaLibItemList::GetHighlightRow()
 {
-    return -1;
+    int highlight_row = CMediaLibItemMgr::Instance().GetCurrentIndex(type);
+    if (last_highlight_row != highlight_row)
+    {
+        EnsureItemVisible(highlight_row);
+        last_highlight_row = highlight_row;
+    }
+    return highlight_row;
 }
 
 int UiElement::MediaLibItemList::GetColumnScrollTextWhenSelected()

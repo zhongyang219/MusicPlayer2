@@ -321,6 +321,8 @@ namespace UiElement
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual void OnDoubleClicked() override;
         virtual void OnClicked() override;
+    private:
+        int last_highlight_row{ -1 };
     };
 
     //最近播放
@@ -352,6 +354,8 @@ namespace UiElement
         virtual int GetHighlightRow() override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual void OnDoubleClicked() override;
+    private:
+        int last_highlight_row{ -1 };
     };
 
     //当前播放列表指示

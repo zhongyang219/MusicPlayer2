@@ -31,6 +31,7 @@
 #include "WinVersionHelper.h"
 #include "MediaLibPlaylistMgr.h"
 #include "MoreRecentItemDlg.h"
+#include "MediaLibItemMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -4094,6 +4095,12 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     m_part_static_width = UpdatePlaylistCtrlPosition(this, &m_path_static, &m_path_edit);
     if (IsFloatPlaylistExist())
         UpdatePlaylistCtrlPosition(m_pFloatPlaylistDlg, &m_pFloatPlaylistDlg->GetPathStatic(), &m_pFloatPlaylistDlg->GetPathEdit());
+
+
+    if (CPlayer::GetInstance().IsMediaLibMode())
+    {
+        CMediaLibItemMgr::Instance().SetCurrentName(CPlayer::GetInstance().GetMediaLibPlaylistType(), CPlayer::GetInstance().GetMedialibItemName());
+    }
 
     return 0;
 }
