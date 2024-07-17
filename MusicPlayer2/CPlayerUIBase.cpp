@@ -2427,7 +2427,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
 {
     m_draw.SetDrawArea(rect);
 
-    if (CPlayer::GetInstance().IsPlaylistEmpty())
+    if (list_element->GetRowCount() <= 0)
     {
         wstring info = list_element->GetEmptyString();
         if (!info.empty())

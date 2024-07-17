@@ -1398,6 +1398,12 @@ int UiElement::MediaLibItemList::GetColumnWidth(int col, int total_width)
     return 0;
 }
 
+std::wstring UiElement::MediaLibItemList::GetEmptyString()
+{
+    const wstring& info = theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
+    return info;
+}
+
 int UiElement::MediaLibItemList::GetHighlightRow()
 {
     int highlight_row = CMediaLibItemMgr::Instance().GetCurrentIndex(type);

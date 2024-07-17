@@ -351,6 +351,7 @@ namespace UiElement
         int GetRowCount() override;
         int GetColumnCount() override;
         int GetColumnWidth(int col, int total_width) override;
+        virtual std::wstring GetEmptyString() override;
         virtual int GetHighlightRow() override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual void OnDoubleClicked() override;
