@@ -249,7 +249,8 @@ void CCommon::StringSplitLine(const wstring& source_str, vector<wstring>& result
     push_back_str(line_start_pos, cur_pos);
 }
 
-void CCommon::StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& results, bool skip_empty, bool trim)
+template<class T>
+static void _StringSplit(const T& str, wchar_t div_ch, vector<T>& results, bool skip_empty, bool trim)
 {
     results.clear();
     size_t split_index = -1;
@@ -257,9 +258,9 @@ void CCommon::StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& r
     while (true)
     {
         split_index = str.find(div_ch, split_index + 1);
-        wstring split_str = str.substr(last_split_index + 1, split_index - last_split_index - 1);
+        T split_str = str.substr(last_split_index + 1, split_index - last_split_index - 1);
         if (trim)
-            StringNormalize(split_str);
+            CCommon::StringNormalize(split_str);
         if (!split_str.empty() || !skip_empty)
             results.push_back(split_str);
         if (split_index == wstring::npos)
@@ -268,7 +269,8 @@ void CCommon::StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& r
     }
 }
 
-void CCommon::StringSplit(const wstring& str, const wstring& div_str, vector<wstring>& results, bool skip_empty /*= true*/, bool trim)
+template<class T>
+void _StringSplit(const T& str, const T& div_str, vector<T>& results, bool skip_empty /*= true*/, bool trim)
 {
     results.clear();
     size_t split_index = 0 - div_str.size();
@@ -276,15 +278,35 @@ void CCommon::StringSplit(const wstring& str, const wstring& div_str, vector<wst
     while (true)
     {
         split_index = str.find(div_str, split_index + div_str.size());
-        wstring split_str = str.substr(last_split_index + div_str.size(), split_index - last_split_index - div_str.size());
+        T split_str = str.substr(last_split_index + div_str.size(), split_index - last_split_index - div_str.size());
         if (trim)
-            StringNormalize(split_str);
+            CCommon::StringNormalize(split_str);
         if (!split_str.empty() || !skip_empty)
             results.push_back(split_str);
         if (split_index == wstring::npos)
             break;
         last_split_index = split_index;
     }
+}
+
+void CCommon::StringSplit(const wstring& str, wchar_t div_ch, vector<wstring>& results, bool skip_empty, bool trim)
+{
+    _StringSplit<std::wstring>(str, div_ch, results, skip_empty, trim);
+}
+
+void CCommon::StringSplit(const wstring& str, const wstring& div_str, vector<wstring>& results, bool skip_empty /*= true*/, bool trim)
+{
+    _StringSplit<std::wstring>(str, div_str, results, skip_empty, trim);
+}
+
+void CCommon::StringSplit(const string& str, char div_ch, vector<string>& result, bool skip_empty, bool trim)
+{
+    _StringSplit<std::string>(str, div_ch, result, skip_empty, trim);
+}
+
+void CCommon::StringSplit(const string& str, const string& div_str, vector<string>& results, bool skip_empty, bool trim)
+{
+    _StringSplit<std::string>(str, div_str, results, skip_empty, trim);
 }
 
 void CCommon::StringSplitWithMulitChars(const wstring& str, const wstring& div_ch, vector<wstring>& results, bool skip_empty /*= true*/)

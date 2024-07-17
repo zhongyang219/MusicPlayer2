@@ -22,7 +22,8 @@ void CMediaLibItemMgr::GetClassifiedMeidaLibItemList(CMediaClassifier::Classific
     classifier.ClassifyMedia();
     for (const auto& item : classifier.GetMeidaList())
     {
-        item_list.push_back(item.first);
+        if (item.first != STR_OTHER_CLASSIFY_TYPE)
+            item_list.push_back(item.first);
     }
 }
 

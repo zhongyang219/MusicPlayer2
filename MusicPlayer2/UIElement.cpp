@@ -1406,13 +1406,17 @@ std::wstring UiElement::MediaLibItemList::GetEmptyString()
 
 int UiElement::MediaLibItemList::GetHighlightRow()
 {
-    int highlight_row = CMediaLibItemMgr::Instance().GetCurrentIndex(type);
-    if (last_highlight_row != highlight_row)
+    if (CPlayer::GetInstance().IsMediaLibMode() && CPlayer::GetInstance().GetMediaLibPlaylistType() == type)
     {
-        EnsureItemVisible(highlight_row);
-        last_highlight_row = highlight_row;
+        int highlight_row = CMediaLibItemMgr::Instance().GetCurrentIndex(type);
+        if (last_highlight_row != highlight_row)
+        {
+            EnsureItemVisible(highlight_row);
+            last_highlight_row = highlight_row;
+        }
+        return highlight_row;
     }
-    return highlight_row;
+    return -1;
 }
 
 int UiElement::MediaLibItemList::GetColumnScrollTextWhenSelected()
@@ -1454,6 +1458,78 @@ void UiElement::ClassicalControlBar::Draw()
     ui->DrawControlBar(rect, show_switch_display_btn);
     ui->ResetDrawArea();
     Element::Draw();
+}
+
+void UiElement::TabElement::Draw()
+{
+    ui->DrawTabElement(rect, this);
+    Element::Draw();
+}
+
+void UiElement::TabElement::LButtonUp(CPoint point)
+{
+    FindStackElement();
+    if (stack_element != nullptr)
+    {
+        //查找点击的标签
+        int _selected_index = -1;
+        for (size_t i{}; i < item_rects.size(); i++)
+        {
+            if (item_rects[i].PtInRect(point))
+            {
+                _selected_index = i;
+                break;
+            }
+        }
+        if (_selected_index >= 0)
+        {
+            selected_index = _selected_index;
+            stack_element->SetCurrentElement(selected_index);
+        }
+    }
+}
+
+void UiElement::TabElement::MouseMove(CPoint point)
+{
+    int _hover_index{ -1 };
+    if (rect.PtInRect(point))
+    {
+        for (size_t i{}; i < item_rects.size(); i++)
+        {
+            if (item_rects[i].PtInRect(point))
+            {
+                _hover_index = i;
+                break;
+            }
+        }
+    }
+    hover_index = _hover_index;
+}
+
+int UiElement::TabElement::SelectedIndex() const
+{
+    if (stack_element != nullptr)
+        return stack_element->GetCurIndex();
+    else
+        return selected_index;
+}
+
+void UiElement::TabElement::FindStackElement()
+{
+    if (!find_stack_element)
+    {
+        if (pParent != nullptr)
+        {
+            for (const auto& ele : pParent->childLst)
+            {
+                StackElement* _stack_element = dynamic_cast<StackElement*>(ele.get());
+                if (_stack_element != nullptr)
+                    stack_element = _stack_element;
+            }
+        }
+
+        find_stack_element = true;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -1507,6 +1583,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::RecentPlayedList>();
     else if (name == "mediaLibItemList")
         element = std::make_shared<UiElement::MediaLibItemList>();
+    else if (name == "tabElement")
+        element = std::make_shared<UiElement::TabElement>();
     else if (name == "ui" || name == "root" || name == "placeHolder")
         element = std::make_shared<UiElement::Element>();
 

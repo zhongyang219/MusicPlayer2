@@ -53,6 +53,14 @@ namespace UiElement
         void IterateAllElements(std::function<bool(UiElement::Element*)> func);  //遍历所有界面元素
         void SetUi(CPlayerUIBase* _ui);
 
+        virtual void LButtonUp(CPoint point) {}
+        virtual void LButtonDown(CPoint point) {}
+        virtual void MouseMove(CPoint point) {}
+        virtual bool RButtunUp(CPoint point) { return false; }
+        virtual void RButtonDown(CPoint point) {}
+        virtual bool MouseWheel(int delta, CPoint point) { return false; }
+        virtual bool DoubleClick(CPoint point) { return false; }
+
     protected:
         CRect ParentRect() const;
         virtual void CalculateRect();           //计算此元素在界面中的矩形区域
@@ -241,13 +249,13 @@ namespace UiElement
         friend class CPlayerUIBase;
 
         virtual void Draw() override;
-        void LButtonUp(CPoint point);
-        void LButtonDown(CPoint point);
-        void MouseMove(CPoint point);
-        bool RButtunUp(CPoint point);
-        void RButtonDown(CPoint point);
-        bool MouseWheel(int delta, CPoint point);
-        bool DoubleClick(CPoint point);
+        virtual void LButtonUp(CPoint point) override;
+        virtual void LButtonDown(CPoint point) override;
+        virtual void MouseMove(CPoint point) override;
+        virtual bool RButtunUp(CPoint point) override;
+        virtual void RButtonDown(CPoint point) override;
+        virtual bool MouseWheel(int delta, CPoint point) override;
+        virtual bool DoubleClick(CPoint point) override;
 
         void EnsureItemVisible(int index);  //确保指定项在播放列表中可见
         void RestrictOffset();             //将播放列表偏移量限制在正确的范围
@@ -374,6 +382,33 @@ namespace UiElement
 
     public:
         bool show_switch_display_btn{};
+    };
+
+    //tab标签
+    class TabElement : public Element
+    {
+    public:
+        virtual void Draw() override;
+        virtual void LButtonUp(CPoint point) override;
+        virtual void MouseMove(CPoint point) override;
+
+        enum IconType
+        {
+            ICON_AND_TEXT,
+            ICON_ONLY,
+            TEXT_ONLY
+        };
+
+        IconType icon_type{};
+        std::vector<std::string> tab_list;
+        std::vector<CRect> item_rects;
+        int SelectedIndex() const;
+        int hover_index{ -1 };
+    private:
+        void FindStackElement();        //查找StackElement
+        bool find_stack_element{};      //如果已经查找过StackElement，则为true
+        StackElement* stack_element{};
+        int selected_index{};
     };
 }
 

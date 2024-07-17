@@ -2782,6 +2782,147 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
     ResetDrawArea();
 }
 
+void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_element)
+{
+    m_draw.SetDrawArea(rect);
+    bool draw_icon{ tab_element->icon_type == UiElement::TabElement::ICON_AND_TEXT || tab_element->icon_type == UiElement::TabElement::ICON_ONLY };
+    bool draw_text{ tab_element->icon_type == UiElement::TabElement::ICON_AND_TEXT || tab_element->icon_type == UiElement::TabElement::TEXT_ONLY };
+    int x_pos{ rect.left };
+    int index{};
+    tab_element->item_rects.resize(tab_element->tab_list.size());
+    for (const std::string& item_str : tab_element->tab_list)
+    {
+        IconMgr::IconType icon;
+        std::wstring item_text;
+        if (item_str == "album_cover")
+        {
+            if (draw_icon) icon = IconMgr::IT_Album_Cover;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"UI_TXT_ALBUM_COVER");
+        }
+        else if (item_str == "spectrum")
+        {
+            if (draw_icon) icon = IconMgr::IT_Reverb;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"UI_TXT_SPECTRUM");
+        }
+        else if (item_str == "lyrics")
+        {
+            if (draw_icon) icon = IconMgr::IT_Lyric;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"UI_TXT_LYRICS");
+        }
+        else if (item_str == "now_playing")
+        {
+            if (draw_icon) icon = IconMgr::IT_Play;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PLAYING");
+        }
+        else if (item_str == "recently_played")
+        {
+            if (draw_icon) icon = IconMgr::IT_History;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED");
+        }
+        else if (item_str == "artist")
+        {
+            if (draw_icon) icon = IconMgr::IT_Artist;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_ARTIST");
+        }
+        else if (item_str == "album")
+        {
+            if (draw_icon) icon = IconMgr::IT_Album;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_ALBUM");
+        }
+        else if (item_str == "genre")
+        {
+            if (draw_icon) icon = IconMgr::IT_Genre;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_GENRE");
+        }
+        else if (item_str == "year")
+        {
+            if (draw_icon) icon = IconMgr::IT_Year;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_YEAR");
+        }
+        else if (item_str == "file_type")
+        {
+            if (draw_icon) icon = IconMgr::IT_File_Relate;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
+        }
+        else if (item_str == "bitrate")
+        {
+            if (draw_icon) icon = IconMgr::IT_Bitrate;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_BITRATE");
+        }
+        else if (item_str == "rating")
+        {
+            if (draw_icon) icon = IconMgr::IT_Star;
+            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_RATING");
+        }
+        else
+        {
+            continue;
+        }
+
+        //计算矩形区域
+        int icon_width{};
+        int text_width{};
+        if (draw_icon)
+            icon_width = DPI(24);
+        if (draw_text)
+            text_width = m_draw.GetTextExtent(item_text.c_str()).cx;
+        CRect item_rect{ rect };
+        item_rect.left = x_pos;
+        item_rect.right = item_rect.left + icon_width + text_width + DPI(4);
+        tab_element->item_rects[index] = item_rect;
+
+        //绘制背景
+        if (tab_element->hover_index == index)
+        {
+            BYTE alpha;
+            if (IsDrawBackgroundAlpha())
+                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+            else
+                alpha = 255;
+            if (!theApp.m_app_setting_data.button_round_corners)
+                m_draw.FillAlphaRect(item_rect, m_colors.color_button_hover, alpha, true);
+            else
+                m_draw.DrawRoundRect(item_rect, m_colors.color_button_hover, CalculateRoundRectRadius(item_rect), alpha);
+        }
+
+        //绘制图标
+        if (draw_icon)
+        {
+            CRect icon_rect{ item_rect };
+            if (tab_element->icon_type != UiElement::TabElement::ICON_ONLY)
+                icon_rect.right = icon_rect.left + icon_width;
+            DrawUiIcon(icon_rect, icon);
+        }
+
+        //绘制文本
+        if (draw_text)
+        {
+            CRect text_rect{ item_rect };
+            if (tab_element->icon_type != UiElement::TabElement::TEXT_ONLY)
+                text_rect.left += icon_width;
+            m_draw.DrawWindowText(text_rect, item_text.c_str(), m_colors.color_text, Alignment::LEFT, true);
+        }
+
+        //绘制选中指示
+        if (tab_element->SelectedIndex() == index)
+        {
+            CRect selected_indicator_rect{ item_rect };
+            selected_indicator_rect.left += DPI(4);
+            selected_indicator_rect.right -= DPI(4);
+            selected_indicator_rect.top = selected_indicator_rect.bottom - DPI(4);
+            if (theApp.m_app_setting_data.button_round_corners)
+                m_draw.DrawRoundRect(selected_indicator_rect, m_colors.color_text_heighlight, DPI(2));
+            else
+                m_draw.FillRect(selected_indicator_rect, m_colors.color_text_heighlight, true);
+
+        }
+
+        x_pos = item_rect.right;
+        index++;
+    }
+    ResetDrawArea();
+}
+
 void CPlayerUIBase::DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style, IconMgr::IconSize icon_size)
 {
     // style为IS_Auto时根据深色模式设置向IconMgr要求深色/浅色图标，没有对应风格图标时IconMgr会自行fallback

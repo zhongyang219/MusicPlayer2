@@ -130,7 +130,8 @@
                 <xs:element name="playlist" type="playlistType"></xs:element>
                 <xs:element name="recentPlayedList" type="recentPlayedListType"></xs:element>
                 <xs:element name="playlistIndicator" type="playlistIndicatorType"></xs:element>
-                <xs:element name="mediaLibItemList" type="mediaLibItemList"></xs:element>
+                <xs:element name="mediaLibItemList" type="mediaLibItemListType"></xs:element>
+                <xs:element name="tabElement" type="tabElementType"></xs:element>
 				<xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
 			</xs:choice>
         </xs:sequence>
@@ -785,7 +786,7 @@
       </xs:annotation>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
-    <xs:complexType name="mediaLibItemList">
+    <xs:complexType name="mediaLibItemListType">
       <xs:annotation>
         <xs:documentation>媒体库项目列表。</xs:documentation>
       </xs:annotation>
@@ -828,6 +829,41 @@
             <xs:enumeration value="rating">
               <xs:annotation>
                 <xs:documentation>分级</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="tabElementType">
+      <xs:annotation>
+        <xs:documentation>tab标签。用于控制stackElement的切换，总是作用于和它同一级的stackElement。</xs:documentation>
+      </xs:annotation>
+      <xs:attribute name="item_list" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,recently_played,artist,album,genre,year,file_type,bitrate,rating”中选，多个标签使用半角逗号隔开。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="icon_type" default="icon_and_text">
+        <xs:annotation>
+          <xs:documentation>图标类型。</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="icon_and_text">
+              <xs:annotation>
+                <xs:documentation>图标和文本</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="icon_only">
+              <xs:annotation>
+                <xs:documentation>仅图标</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="text_only">
+              <xs:annotation>
+                <xs:documentation>仅文本</xs:documentation>
               </xs:annotation>
             </xs:enumeration>
           </xs:restriction>

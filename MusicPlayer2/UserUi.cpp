@@ -236,13 +236,12 @@ bool CUserUi::LButtonUp(CPoint point)
             }
         }
 
-        //遍历ListElement元素
+        //遍历所有元素
         IterateAllElements([point](UiElement::Element* element) ->bool
             {
-                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
-                if (playlist_element != nullptr)
+                if (element != nullptr)
                 {
-                    playlist_element->LButtonUp(point);
+                    element->LButtonUp(point);
                 }
                 return false;
             });
@@ -263,13 +262,12 @@ bool CUserUi::LButtonDown(CPoint point)
                 stack_element->indicator.pressed = true;
         }
 
-        //遍历ListElement元素
+        //遍历所有元素
         IterateAllElements([point](UiElement::Element* element) ->bool
             {
-                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
-                if (playlist_element != nullptr)
+                if (element != nullptr)
                 {
-                    playlist_element->LButtonDown(point);
+                    element->LButtonDown(point);
                 }
                 return false;
             });
@@ -296,13 +294,12 @@ void CUserUi::MouseMove(CPoint point)
             }
         }
 
-        //遍历ListElement元素
+        //遍历所有元素
         IterateAllElements([point](UiElement::Element* element) ->bool
             {
-                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
-                if (playlist_element != nullptr)
+                if (element != nullptr)
                 {
-                    playlist_element->MouseMove(point);
+                    element->MouseMove(point);
                 }
                 return false;
             });
@@ -329,16 +326,15 @@ void CUserUi::MouseLeave()
 
 void CUserUi::RButtonUp(CPoint point)
 {
-    //遍历ListElement元素
+    //遍历所有元素
     bool rtn = false;
     if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         IterateAllElements([&](UiElement::Element* element) ->bool
             {
-                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
-                if (playlist_element != nullptr)
+                if (element != nullptr)
                 {
-                    if (playlist_element->RButtunUp(point))
+                    if (element->RButtunUp(point))
                     {
                         rtn = true;
                         return true;
@@ -354,15 +350,14 @@ void CUserUi::RButtonUp(CPoint point)
 
 void CUserUi::RButtonDown(CPoint point)
 {
-    //遍历ListElement元素
+    //遍历所有元素
     if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         IterateAllElements([point](UiElement::Element* element) ->bool
             {
-                UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
-                if (playlist_element != nullptr)
+                if (element != nullptr)
                 {
-                    playlist_element->RButtonDown(point);
+                    element->RButtonDown(point);
                 }
                 return false;
             });
@@ -372,14 +367,13 @@ void CUserUi::RButtonDown(CPoint point)
 
 bool CUserUi::MouseWheel(int delta, CPoint point)
 {
-    //遍历ListElement元素
+    //遍历所有元素
     bool rtn = false;
     IterateAllElements([&](UiElement::Element* element) ->bool
         {
-            UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
-            if (playlist_element != nullptr)
+            if (element != nullptr)
             {
-                if (playlist_element->MouseWheel(delta, point))
+                if (element->MouseWheel(delta, point))
                 {
                     rtn = true;
                     return true;
@@ -415,14 +409,13 @@ bool CUserUi::MouseWheel(int delta, CPoint point)
 
 bool CUserUi::DoubleClick(CPoint point)
 {
-    //遍历ListElement元素
+    //遍历所有元素
     bool rtn = false;
     IterateAllElements([&](UiElement::Element* element) ->bool
         {
-            UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
-            if (playlist_element != nullptr)
+            if (element != nullptr)
             {
-                if (playlist_element->DoubleClick(point))
+                if (element->DoubleClick(point))
                 {
                     rtn = true;
                     return true;
@@ -761,6 +754,25 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 else if (str_type == "rating")
                     mediaLibItemList->type = CMediaClassifier::CT_RATING;
             }
+        }
+        //标签
+        else if (item_name == "tabElement")
+        {
+            UiElement::TabElement* tab_emelent = dynamic_cast<UiElement::TabElement*>(element.get());
+            if (tab_emelent != nullptr)
+            {
+                std::string str_item_list = CTinyXml2Helper::ElementAttribute(xml_node, "item_list");
+                CCommon::StringSplit(str_item_list, ',', tab_emelent->tab_list);
+
+                std::string str_icon_type = CTinyXml2Helper::ElementAttribute(xml_node, "icon_type");
+                if (str_icon_type == "icon_and_text")
+                    tab_emelent->icon_type = UiElement::TabElement::ICON_AND_TEXT;
+                else if (str_icon_type == "icon_only")
+                    tab_emelent->icon_type = UiElement::TabElement::ICON_ONLY;
+                else if (str_icon_type == "text_only")
+                    tab_emelent->icon_type = UiElement::TabElement::TEXT_ONLY;
+            }
+
         }
 
         //递归调用此函数创建子节点

@@ -1,0 +1,58 @@
+﻿<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
+      name="test">
+  <ui>
+    <horizontalLayout>
+      <verticalLayout margin="8">
+        <albumCover proportion="2"/>
+        <text type="title" font_size="12" style="scroll" height="32"/>
+        <text type="artist" font_size="10" style="scroll" height="32"/>
+        <text type="album" font_size="10" style="scroll" height="32"/>
+        <!--<placeHolder height="24" hide-height="200"/>-->
+        <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
+        <rectangle proportion="1">
+          <lyrics margin="8"/>
+        </rectangle>
+        <horizontalLayout height="28">
+          <button key="darkLightMode" width="24" height="24" />
+          <button key="previous" width="24" height="24" />
+          <button key="playPause" width="24" height="24" />
+          <button key="next" width="24" height="24" />
+          <progressBar show_play_time="true"/>
+          <button key="showPlaylist" width="24" height="24" />
+        </horizontalLayout>
+      </verticalLayout>
+
+      <verticalLayout>
+        <tabElement height="30" icon_type="icon_only" item_list="now_playing,recently_played,artist,album,genre,year,file_type,bitrate,rating"/>
+        <stackElement margin="8" show_indicator="true" margin-bottom="20">
+          <verticalLayout>
+            <playlistIndicator height="30" margin-bottom="4"/>
+            <playlist/>
+          </verticalLayout>
+          <recentPlayedList/>
+          <mediaLibItemList type="artist"/>
+          <mediaLibItemList type="album"/>
+          <mediaLibItemList type="genre"/>
+          <mediaLibItemList type="year"/>
+          <mediaLibItemList type="file_type"/>
+          <mediaLibItemList type="bitrate"/>
+          <mediaLibItemList type="rating"/>
+        </stackElement>
+      </verticalLayout>
+
+    </horizontalLayout>
+
+    <!--<verticalLayout>
+      <horizontalLayout height="64" hide-height="360">
+        <albumCover square="true" width="64"/>
+        <verticalLayout margin-left="16">
+          <text type="title" font_size="12" style="scroll" height="32"/>
+          <text type="artist" font_size="10" style="scroll" height="32"/>
+        </verticalLayout>
+      </horizontalLayout>
+      <lyrics margin="8"/>
+    </verticalLayout>-->
+
+  </ui>
+
+</root>
