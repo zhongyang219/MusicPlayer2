@@ -1965,14 +1965,14 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         int progress_percent = CPlayer::GetInstance().m_thread_info.process_percent;
         //绘制进度右侧的进度百分比
         CRect rc_percent{ rect };
-        rc_percent.left = rc_percent.right - theApp.DPI(24);
+        rc_percent.left = rc_percent.right - DPI(24);
         CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.font8.GetFont(theApp.m_ui_data.full_screen));
         CString str_info;
         str_info.Format(_T("%d%%"), progress_percent);
         m_draw.DrawWindowText(rc_percent, str_info, m_colors.color_text);
         m_draw.SetFont(pOldFont);
 
-        rect.right = rc_percent.left - theApp.DPI(4);
+        rect.right = rc_percent.left - DPI(4);
         CRect rc_tmp{ rect };
         //绘制进度条（进度条里面包含10格）
         int bar_width = DPI(4);     //每一格的宽度
@@ -2037,7 +2037,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
             str_info = CPlayer::GetInstance().GetPlayingState();
         int text_width = m_draw.GetTextExtent(str_info.c_str()).cx;
         CRect rect_play{ rect };
-        rect_play.right = rect_play.left + text_width + theApp.DPI(8);
+        rect_play.right = rect_play.left + text_width + DPI(8);
         m_draw.DrawWindowText(rect_play, str_info.c_str(), m_colors.color_text);
 
         //显示下一个播放曲目
