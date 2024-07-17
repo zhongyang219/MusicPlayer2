@@ -1376,7 +1376,7 @@ std::wstring UiElement::MediaLibItemList::GetItemText(int row, int col)
     if (col == 0)
     {
         if (row >= 0 && row < CMediaLibItemMgr::Instance().GetItemCount(type))
-            return CMediaLibItemMgr::Instance().GetItemName(type, row);
+            return CMediaLibItemMgr::Instance().GetItemDisplayName(type, row);
     }
     return std::wstring();
 }

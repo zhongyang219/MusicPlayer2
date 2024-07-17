@@ -11,7 +11,8 @@ public:
     void Init();
 
     int GetItemCount(CMediaClassifier::ClassificationType type) const;
-    std::wstring GetItemName(CMediaClassifier::ClassificationType type, int index) const;
+    std::wstring GetItemDisplayName(CMediaClassifier::ClassificationType type, int index) const;
+    const std::wstring& GetItemName(CMediaClassifier::ClassificationType type, int index) const;
     void SetCurrentName(CMediaClassifier::ClassificationType type, const std::wstring& name);
     int GetCurrentIndex(CMediaClassifier::ClassificationType type);
 
