@@ -28,7 +28,8 @@ public:
         LY_AUTO,                // 根据扩展名判断
         LY_LRC,
         LY_LRC_NETEASE,
-        LY_KSC
+        LY_KSC,
+        LY_VTT,
     };
 
     const static vector<wstring> m_surpported_lyric;            // 支持的歌词格式的扩展名列表
@@ -78,6 +79,7 @@ private:
     void DisposeLrc();
     void DisposeLrcNetease();
     void DisposeKsc();
+    void DisposeWebVTT();
     // 将歌词中信息全部填入m_lyrics后或偏移量调整后调用，负责修正/填补信息
     void NormalizeLyric();
 

@@ -53,7 +53,7 @@ void CTagSelBaseDlg::GetTagFromFileName(const wstring& formular, const wstring& 
     //将标识符全部替换成|
     for (const auto& item : identifiers)
     {
-        CCommon::StringReplace(str_format, item.second.c_str(), SPLITER);
+        CCommon::StringReplace(str_format, item.second, SPLITER);
     }
     //取得分割符
     vector<wstring> seprators;

@@ -162,6 +162,18 @@ public:
         return wstring(buff);
     }
 
+    wstring toVttTimeTag() const
+    {
+        int hour, min1;
+        hour = min / 60;
+        min1 = min % 60;
+        if (hour > 99)
+            return L"99:99:99.999";
+        wchar_t buff[16]{};
+        swprintf_s(buff, L"%.2d:%.2d:%.2d.%.3d", hour, min1, sec, msec);
+        return wstring(buff);
+    }
+
     //判断时间是否为0
     bool isZero() const
     {
