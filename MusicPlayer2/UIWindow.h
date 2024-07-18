@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "IPlayerUI.h"
 
 class CUIWindow :
@@ -35,5 +35,7 @@ protected:
     afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+    virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+    afx_msg void OnInitMenu(CMenu* pMenu);
 };
 

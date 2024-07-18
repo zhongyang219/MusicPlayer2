@@ -1,20 +1,20 @@
 ﻿#include "stdafx.h"
-#include "MediaLibItemMgr.h"
+#include "UiMediaLibItemMgr.h"
 #include "MusicPlayer2.h"
 #include "MediaLibPlaylistMgr.h"
 
-CMediaLibItemMgr CMediaLibItemMgr::m_instance;
+CUiMediaLibItemMgr CUiMediaLibItemMgr::m_instance;
 
-CMediaLibItemMgr::~CMediaLibItemMgr()
+CUiMediaLibItemMgr::~CUiMediaLibItemMgr()
 {
 }
 
-CMediaLibItemMgr& CMediaLibItemMgr::Instance()
+CUiMediaLibItemMgr& CUiMediaLibItemMgr::Instance()
 {
     return m_instance;
 }
 
-void CMediaLibItemMgr::GetClassifiedMeidaLibItemList(CMediaClassifier::ClassificationType type)
+void CUiMediaLibItemMgr::GetClassifiedMeidaLibItemList(CMediaClassifier::ClassificationType type)
 {
     auto& item_list{ m_item_map[type] };
     item_list.clear();
@@ -27,7 +27,7 @@ void CMediaLibItemMgr::GetClassifiedMeidaLibItemList(CMediaClassifier::Classific
     }
 }
 
-void CMediaLibItemMgr::Init()
+void CUiMediaLibItemMgr::Init()
 {
     m_loading = true;
 
@@ -42,7 +42,7 @@ void CMediaLibItemMgr::Init()
     m_loading = false;
 }
 
-int CMediaLibItemMgr::GetItemCount(CMediaClassifier::ClassificationType type) const
+int CUiMediaLibItemMgr::GetItemCount(CMediaClassifier::ClassificationType type) const
 {
     if (!m_loading)
     {
@@ -53,7 +53,7 @@ int CMediaLibItemMgr::GetItemCount(CMediaClassifier::ClassificationType type) co
     return 0;
 }
 
-std::wstring CMediaLibItemMgr::GetItemDisplayName(CMediaClassifier::ClassificationType type, int index) const
+std::wstring CUiMediaLibItemMgr::GetItemDisplayName(CMediaClassifier::ClassificationType type, int index) const
 {
     if (!m_loading)
     {
@@ -63,7 +63,7 @@ std::wstring CMediaLibItemMgr::GetItemDisplayName(CMediaClassifier::Classificati
     return std::wstring();
 }
 
-const std::wstring& CMediaLibItemMgr::GetItemName(CMediaClassifier::ClassificationType type, int index) const
+const std::wstring& CUiMediaLibItemMgr::GetItemName(CMediaClassifier::ClassificationType type, int index) const
 {
     if (!m_loading)
     {
@@ -82,13 +82,13 @@ const std::wstring& CMediaLibItemMgr::GetItemName(CMediaClassifier::Classificati
     return empty_str;
 }
 
-void CMediaLibItemMgr::SetCurrentName(CMediaClassifier::ClassificationType type, const std::wstring& name)
+void CUiMediaLibItemMgr::SetCurrentName(CMediaClassifier::ClassificationType type, const std::wstring& name)
 {
     m_current_name_map[type] = name;
     m_current_index_map.erase(type);
 }
 
-int CMediaLibItemMgr::GetCurrentIndex(CMediaClassifier::ClassificationType type)
+int CUiMediaLibItemMgr::GetCurrentIndex(CMediaClassifier::ClassificationType type)
 {
     if (!m_loading)
     {
@@ -119,6 +119,6 @@ int CMediaLibItemMgr::GetCurrentIndex(CMediaClassifier::ClassificationType type)
     return -1;
 }
 
-CMediaLibItemMgr::CMediaLibItemMgr()
+CUiMediaLibItemMgr::CUiMediaLibItemMgr()
 {
 }

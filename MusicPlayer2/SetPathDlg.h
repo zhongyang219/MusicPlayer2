@@ -60,7 +60,7 @@ protected:
 public:
     virtual BOOL OnInitDialog();
     //afx_msg void OnBnClickedDeletePathButton();
-    //virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+    //virtual BOOL OnUiCommand(WPARAM wParam, LPARAM lParam);
     afx_msg void OnNMClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMRClickPathList(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnNMDblclkPathList(NMHDR *pNMHDR, LRESULT *pResult);

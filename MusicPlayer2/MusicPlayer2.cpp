@@ -13,7 +13,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
 #include "PlaylistMgr.h"
-#include "MediaLibItemMgr.h"
+#include "UiMediaLibItemMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -640,7 +640,7 @@ void CMusicPlayerApp::StartUpdateMediaLib(bool force)
                 }
                 CMusicPlayerCmdHelper::UpdateMediaLib();
                 theApp.m_media_lib_updating = false;
-                CMediaLibItemMgr::Instance().Init();
+                CUiMediaLibItemMgr::Instance().Init();
                 return 0;
             }, nullptr);
     }
@@ -834,6 +834,6 @@ void CMusicPlayerApp::UpdateMeidaLibItems()
 
 UINT CMusicPlayerApp::UpdateMediaLibItemsProc(LPVOID lpParam)
 {
-    CMediaLibItemMgr::Instance().Init();
+    CUiMediaLibItemMgr::Instance().Init();
     return 0;
 }

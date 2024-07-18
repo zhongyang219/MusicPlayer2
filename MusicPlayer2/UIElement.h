@@ -262,6 +262,7 @@ namespace UiElement
         void CalculateItemRects();         //计算播放列表中每一项的矩形区域，保存在playlist_info.item_rects中
         int ItemHeight() const;
         void SetItemSelected(int index);
+        int GetItemSelected() const;
 
         virtual std::wstring GetItemText(int row, int col) = 0;
         virtual int GetRowCount() = 0;
@@ -276,6 +277,7 @@ namespace UiElement
         virtual std::wstring GetToolTipText(int row) { return std::wstring(); }
         virtual int GetToolTipIndex() const { return 0; }
         virtual CMenu* GetContextMenu(bool item_selected) { return nullptr; }
+        virtual CWnd* GetCmdRecivedWnd();
         virtual void OnDoubleClicked() {};
         virtual void OnClicked() {};
 
@@ -362,6 +364,8 @@ namespace UiElement
         virtual std::wstring GetEmptyString() override;
         virtual int GetHighlightRow() override;
         virtual int GetColumnScrollTextWhenSelected() override;
+        virtual CMenu* GetContextMenu(bool item_selected) override;
+        virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
     private:
         int last_highlight_row{ -1 };

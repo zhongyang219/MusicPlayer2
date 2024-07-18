@@ -4,7 +4,8 @@
 #include "MusicPlayerDlg.h"
 #include "SongInfoHelper.h"
 #include "RecentFolderAndPlaylist.h"
-#include "MediaLibItemMgr.h"
+#include "UiMediaLibItemMgr.h"
+#include "UserUi.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1059,9 +1060,13 @@ bool UiElement::ListElement::RButtunUp(CPoint point)
         CMenu* menu{ GetContextMenu(item_selected >= 0 && !scrollbar_rect.PtInRect(point)) };
         if (menu != nullptr)
         {
+            CUserUi* pUi = dynamic_cast<CUserUi*>(ui);
+            if (pUi != nullptr)
+                pUi->m_context_menu_sender = this;      //保存右键菜单的发送者
+
             CPoint cursor_pos;
             GetCursorPos(&cursor_pos);
-            menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cursor_pos.x, cursor_pos.y, theApp.m_pMainWnd); //在指定位置显示弹出菜单
+            menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cursor_pos.x, cursor_pos.y, GetCmdRecivedWnd()); //在指定位置显示弹出菜单
         }
         return true;
     }
@@ -1180,6 +1185,16 @@ void UiElement::ListElement::SetItemSelected(int index)
 {
     item_selected = index;
     EnsureItemVisible(index);
+}
+
+int UiElement::ListElement::GetItemSelected() const
+{
+    return item_selected;
+}
+
+CWnd* UiElement::ListElement::GetCmdRecivedWnd()
+{
+    return theApp.m_pMainWnd;
 }
 
 int UiElement::ListElement::GetPlaylistIndexByPoint(CPoint point)
@@ -1375,15 +1390,15 @@ std::wstring UiElement::MediaLibItemList::GetItemText(int row, int col)
 {
     if (col == 0)
     {
-        if (row >= 0 && row < CMediaLibItemMgr::Instance().GetItemCount(type))
-            return CMediaLibItemMgr::Instance().GetItemDisplayName(type, row);
+        if (row >= 0 && row < CUiMediaLibItemMgr::Instance().GetItemCount(type))
+            return CUiMediaLibItemMgr::Instance().GetItemDisplayName(type, row);
     }
     return std::wstring();
 }
 
 int UiElement::MediaLibItemList::GetRowCount()
 {
-    return CMediaLibItemMgr::Instance().GetItemCount(type);
+    return CUiMediaLibItemMgr::Instance().GetItemCount(type);
 }
 
 int UiElement::MediaLibItemList::GetColumnCount()
@@ -1408,7 +1423,7 @@ int UiElement::MediaLibItemList::GetHighlightRow()
 {
     if (CPlayer::GetInstance().IsMediaLibMode() && CPlayer::GetInstance().GetMediaLibPlaylistType() == type)
     {
-        int highlight_row = CMediaLibItemMgr::Instance().GetCurrentIndex(type);
+        int highlight_row = CUiMediaLibItemMgr::Instance().GetCurrentIndex(type);
         if (last_highlight_row != highlight_row)
         {
             EnsureItemVisible(highlight_row);
@@ -1424,11 +1439,29 @@ int UiElement::MediaLibItemList::GetColumnScrollTextWhenSelected()
     return 0;
 }
 
+CMenu* UiElement::MediaLibItemList::GetContextMenu(bool item_selected)
+{
+    if (item_selected)
+    {
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::LibLeftMenu);
+    }
+    return nullptr;
+}
+
+CWnd* UiElement::MediaLibItemList::GetCmdRecivedWnd()
+{
+    //这里让右键菜单命令发送给CUIWindow处理
+    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pDlg != nullptr)
+        return &pDlg->GetUIWindow();
+    return nullptr;
+}
+
 void UiElement::MediaLibItemList::OnDoubleClicked()
 {
-    if (item_selected >= 0 && item_selected < CMediaLibItemMgr::Instance().GetItemCount(type))
+    if (item_selected >= 0 && item_selected < CUiMediaLibItemMgr::Instance().GetItemCount(type))
     {
-        std::wstring item_name = CMediaLibItemMgr::Instance().GetItemName(type, item_selected);
+        std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
         CPlayer::GetInstance().SetMediaLibPlaylist(type, item_name, -1, SongInfo(), true);
     }
 }

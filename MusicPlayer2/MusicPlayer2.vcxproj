@@ -270,7 +270,7 @@
     <ClInclude Include="LastFMDataArchive.h" />
     <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="md5.h" />
-    <ClInclude Include="MediaLibItemMgr.h" />
+    <ClInclude Include="UiMediaLibItemMgr.h" />
     <ClInclude Include="MediaLibPlaylistMgr.h" />
     <ClInclude Include="MediaLibStatisticsDlg.h" />
     <ClInclude Include="MediaTransControls.h" />
@@ -301,6 +301,7 @@
     <ClInclude Include="tinyxml2\tinyxml2.h" />
     <ClInclude Include="UIElement.h" />
     <ClInclude Include="UIWindow.h" />
+    <ClInclude Include="UIWindowCmdHelper.h" />
     <ClInclude Include="UserUi.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="DesktopLyric.h" />
@@ -436,7 +437,7 @@
     <ClCompile Include="LastFMDataArchive.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="md5.cpp" />
-    <ClCompile Include="MediaLibItemMgr.cpp" />
+    <ClCompile Include="UiMediaLibItemMgr.cpp" />
     <ClCompile Include="MediaLibPlaylistMgr.cpp" />
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
     <ClCompile Include="MediaTransControls.cpp" />
@@ -473,6 +474,7 @@
     </ClCompile>
     <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="UIWindow.cpp" />
+    <ClCompile Include="UIWindowCmdHelper.cpp" />
     <ClCompile Include="UserUi.cpp" />
     <ClCompile Include="DesktopLyric.cpp" />
     <ClCompile Include="DllLib.cpp" />

@@ -2,11 +2,11 @@
 #include <map>
 #include "MediaLibHelper.h"
 
-class CMediaLibItemMgr
+class CUiMediaLibItemMgr
 {
 public:
-    ~CMediaLibItemMgr();
-    static CMediaLibItemMgr& Instance();
+    ~CUiMediaLibItemMgr();
+    static CUiMediaLibItemMgr& Instance();
 
     void Init();
 
@@ -17,10 +17,10 @@ public:
     int GetCurrentIndex(CMediaClassifier::ClassificationType type);
 
 private:
-    CMediaLibItemMgr();
+    CUiMediaLibItemMgr();
     void GetClassifiedMeidaLibItemList(CMediaClassifier::ClassificationType type);
 
-    static CMediaLibItemMgr m_instance;
+    static CUiMediaLibItemMgr m_instance;
     std::map<CMediaClassifier::ClassificationType, std::vector<std::wstring>> m_item_map;   //保存媒体库中所有分类的名称列表
     bool m_loading{};
     std::map<CMediaClassifier::ClassificationType, int> m_current_index_map;    //保存媒体库模式下每种模式正在播放的曲目

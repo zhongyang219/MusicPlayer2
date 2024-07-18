@@ -402,7 +402,7 @@
     <Filter Include="功能逻辑类\RecentlyPlayedMgr">
       <UniqueIdentifier>{4dbe9b2f-faf2-46dd-8583-24b0eff0b7fa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="功能逻辑类\MediaLibItemMgr">
+    <Filter Include="功能逻辑类\UiMediaLibItemMgr">
       <UniqueIdentifier>{0699c691-a3ac-4f77-952c-e57b1344ba5f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -909,8 +909,11 @@
     <ClInclude Include="RecentFolderMgr.h">
       <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClInclude>
-    <ClInclude Include="MediaLibItemMgr.h">
-      <Filter>功能逻辑类\MediaLibItemMgr</Filter>
+    <ClInclude Include="UiMediaLibItemMgr.h">
+      <Filter>功能逻辑类\UiMediaLibItemMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowCmdHelper.h">
+      <Filter>UIWindow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1382,8 +1385,11 @@
     <ClCompile Include="RecentFolderMgr.cpp">
       <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClCompile>
-    <ClCompile Include="MediaLibItemMgr.cpp">
-      <Filter>功能逻辑类\MediaLibItemMgr</Filter>
+    <ClCompile Include="UiMediaLibItemMgr.cpp">
+      <Filter>功能逻辑类\UiMediaLibItemMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowCmdHelper.cpp">
+      <Filter>UIWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

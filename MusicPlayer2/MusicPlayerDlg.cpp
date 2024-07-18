@@ -31,7 +31,7 @@
 #include "WinVersionHelper.h"
 #include "MediaLibPlaylistMgr.h"
 #include "MoreRecentItemDlg.h"
-#include "MediaLibItemMgr.h"
+#include "UiMediaLibItemMgr.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -4099,7 +4099,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
 
     if (CPlayer::GetInstance().IsMediaLibMode())
     {
-        CMediaLibItemMgr::Instance().SetCurrentName(CPlayer::GetInstance().GetMediaLibPlaylistType(), CPlayer::GetInstance().GetMedialibItemName());
+        CUiMediaLibItemMgr::Instance().SetCurrentName(CPlayer::GetInstance().GetMediaLibPlaylistType(), CPlayer::GetInstance().GetMedialibItemName());
     }
 
     return 0;

@@ -52,6 +52,8 @@ public:
     friend class CUIWindow;
     friend class CPlayerUIBase;
 
+    CUIWindow& GetUIWindow() { return m_ui_static_ctrl; }
+
     // 对话框数据
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_MUSICPLAYER2_DIALOG };
