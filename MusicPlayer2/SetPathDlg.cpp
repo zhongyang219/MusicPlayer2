@@ -47,6 +47,28 @@ void CSetPathDlg::RefreshTabData()
     SetButtonsEnable();
 }
 
+bool CSetPathDlg::SetCurSel(const wstring& folder_path)
+{
+    if (!m_searched)
+    {
+        int index{ -1 };
+        for (size_t i{}; i < m_path_list_info.size(); i++)
+        {
+            if (m_path_list_info[i].path == folder_path)
+                index = i;
+        }
+
+        if (index >= 0)
+        {
+            m_path_list.SetCurSel(index);
+            m_path_list.EnsureVisible(index, FALSE);
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
+
 bool CSetPathDlg::SelectValid() const
 {
     int index{ m_list_selected };

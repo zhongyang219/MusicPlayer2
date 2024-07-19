@@ -27,6 +27,8 @@ public:
     // 完全重新载入标签页数据
     void RefreshTabData();
 
+    bool SetCurSel(const wstring& playlist_path);
+
 private:
 
     bool m_searched{ false };                   // 是否处于搜索状态

@@ -61,6 +61,7 @@ public:
         LibLeftMenu,                        // 媒体库左侧菜单
         LibRightMenu,                       // 媒体库右侧菜单
         UiLibLeftMenu,                      // UI中媒体库列表菜单
+        UiRecentPlayedMenu,                 // UI中最近播放列表菜单
 
         LeMenu,                             // 歌词编辑对话框->窗口菜单
         LeFileMenu,                         // 歌词编辑对话框->窗口菜单->子菜单"文件"

@@ -58,6 +58,8 @@ public:
         ML_RATING
     };
 
+    std::wstring GetMediaLibTabName(eMediaLibTab tab);
+
     //显示媒体库对话框
     //cur_tab: 打开对话框后要切换的标签，如果为-1，则保持上次打开的标签
     //tab_force_show: 要强制显示的标签，使用int中的各个bit表示要显示的标签，每个bit参见枚举 MediaLibDisplayItem 的声明
@@ -67,7 +69,7 @@ public:
     static void RefreshMediaTabData(eMediaLibTab tab);
 
     //在媒体库中查看
-    void OnViewInMediaLib(CMediaClassifier::ClassificationType type, const std::wstring name);
+    void OnViewInMediaLib(eMediaLibTab tab, const std::wstring name);
 
     //查看艺术家
     void OnViewArtist(const SongInfo& song_info);

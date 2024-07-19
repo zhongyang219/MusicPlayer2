@@ -29,11 +29,25 @@ void CMediaLibDlg::SetCurTab(int tab)
 
 bool CMediaLibDlg::NavigateToItem(const wstring& item)
 {
-    CMediaClassifyDlg* pCurTab = dynamic_cast<CMediaClassifyDlg*>(m_tab_ctrl.GetCurrentTab());
-    if (pCurTab != nullptr)
+    CWnd* pCurTab{ m_tab_ctrl.GetCurrentTab() };
+    CMediaClassifyDlg* media_classfi_dlg = dynamic_cast<CMediaClassifyDlg*>(pCurTab);
+    if (media_classfi_dlg != nullptr)
     {
-        return pCurTab->SetLeftListSel(item);
+        return media_classfi_dlg->SetLeftListSel(item);
     }
+    
+    CSetPathDlg* folder_dlg = dynamic_cast<CSetPathDlg*>(pCurTab);
+    if (folder_dlg != nullptr)
+    {
+        return folder_dlg->SetCurSel(item);
+    }
+
+    CSelectPlaylistDlg* playlist_dlg = dynamic_cast<CSelectPlaylistDlg*>(pCurTab);
+    if (playlist_dlg != nullptr)
+    {
+        return playlist_dlg->SetCurSel(item);
+    }
+
     return false;
 }
 
@@ -118,62 +132,66 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_playlist_dlg->Create(IDD_SELECT_PLAYLIST_DIALOG);
     m_tab_ctrl.AddWindow(m_playlist_dlg, theApp.m_str_table.LoadText(L"TXT_PLAYLIST").c_str(), IconMgr::IconType::IT_Playlist);
 
+    auto isTabShown = [&](MediaLibDisplayItem tab) {
+        return (theApp.m_media_lib_setting_data.display_item & tab) || (m_tab_show_force & tab);
+    };
+
     //艺术家
-    if ((theApp.m_media_lib_setting_data.display_item & MLDI_ARTIST) || (m_tab_show_force & MLDI_ARTIST))
+    if (isTabShown(MLDI_ARTIST))
     {
         m_artist_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         m_tab_ctrl.AddWindow(m_artist_dlg, theApp.m_str_table.LoadText(L"TXT_ARTIST").c_str(), IconMgr::IconType::IT_Artist);
     }
     //唱片集
-    if ((theApp.m_media_lib_setting_data.display_item & MLDI_ALBUM) || (m_tab_show_force & MLDI_ALBUM))
+    if (isTabShown(MLDI_ALBUM))
     {
         m_album_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         m_tab_ctrl.AddWindow(m_album_dlg, theApp.m_str_table.LoadText(L"TXT_ALBUM").c_str(), IconMgr::IconType::IT_Album);
     }
     //流派
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_GENRE)
+    if (isTabShown(MLDI_GENRE))
     {
         m_genre_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         m_tab_ctrl.AddWindow(m_genre_dlg, theApp.m_str_table.LoadText(L"TXT_GENRE").c_str(), IconMgr::IconType::IT_Genre);
     }
     //年份
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_YEAR)
+    if (isTabShown(MLDI_YEAR))
     {
         m_year_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         m_tab_ctrl.AddWindow(m_year_dlg, theApp.m_str_table.LoadText(L"TXT_YEAR").c_str(), IconMgr::IconType::IT_Year);
     }
     //类型
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_TYPE)
+    if (isTabShown(MLDI_TYPE))
     {
         m_type_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         m_tab_ctrl.AddWindow(m_type_dlg, theApp.m_str_table.LoadText(L"TXT_FILE_TYPE").c_str(), IconMgr::IconType::IT_File_Relate);
     }
     //比特率
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_BITRATE)
+    if (isTabShown(MLDI_BITRATE))
     {
         m_bitrate_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         m_tab_ctrl.AddWindow(m_bitrate_dlg, theApp.m_str_table.LoadText(L"TXT_BITRATE").c_str(), IconMgr::IconType::IT_Bitrate);
     }
     //分级
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_RATING)
+    if (isTabShown(MLDI_RATING))
     {
         m_rating_dlg->Create(IDD_MEDIA_CLASSIFY_DIALOG);
         m_tab_ctrl.AddWindow(m_rating_dlg, theApp.m_str_table.LoadText(L"TXT_RATING").c_str(), IconMgr::IconType::IT_Star);
     }
     //所有曲目
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_ALL)
+    if (isTabShown(MLDI_ALL))
     {
         m_all_media_dlg->Create(IDD_ALL_MEDIA_DIALOG);
         m_tab_ctrl.AddWindow(m_all_media_dlg, theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS").c_str(), IconMgr::IconType::IT_Media_Lib);
     }
     //最近播放
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_RECENT)
+    if (isTabShown(MLDI_RECENT))
     {
         m_recent_media_dlg->Create(IDD_ALL_MEDIA_DIALOG);
         m_tab_ctrl.AddWindow(m_recent_media_dlg, theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED").c_str(), IconMgr::IconType::IT_History);
     }
     //文件夹浏览
-    if (theApp.m_media_lib_setting_data.display_item & MLDI_FOLDER_EXPLORE)
+    if (isTabShown(MLDI_FOLDER_EXPLORE))
     {
         m_folder_explore_dlg->Create(IDD_FOLDER_EXPLORE_DIALOG);
         m_tab_ctrl.AddWindow(m_folder_explore_dlg, theApp.m_str_table.LoadText(L"TXT_FOLDER_EXPLORE").c_str(), IconMgr::IconType::IT_Folder_Explore);

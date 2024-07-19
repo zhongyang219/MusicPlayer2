@@ -355,6 +355,8 @@ namespace UiElement
         virtual IconMgr::IconType GetIcon(int row) override;
         virtual bool HasIcon() override;
         virtual void OnDoubleClicked() override;
+        virtual CMenu* GetContextMenu(bool item_selected) override;
+        virtual CWnd* GetCmdRecivedWnd() override;
     };
 
     //媒体库项目列表

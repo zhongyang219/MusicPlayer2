@@ -953,13 +953,14 @@
 #define ID_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE 33465
 #define ID_MORE_RECENT_ITEMS            33466
 #define ID_VIEW_IN_MEDIA_LIB            33467
+#define ID_RECENT_PLAYED_REMOVE         33468
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        604
-#define _APS_NEXT_COMMAND_VALUE         33468
+#define _APS_NEXT_COMMAND_VALUE         33469
 #define _APS_NEXT_CONTROL_VALUE         1365
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

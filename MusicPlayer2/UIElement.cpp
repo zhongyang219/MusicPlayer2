@@ -1391,6 +1391,24 @@ void UiElement::RecentPlayedList::OnDoubleClicked()
     ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_RECENT_FOLDER_PLAYLIST_MENU_START + item_selected, 0);
 }
 
+CMenu* UiElement::RecentPlayedList::GetContextMenu(bool item_selected)
+{
+    if (item_selected)
+    {
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::UiRecentPlayedMenu);
+    }
+    return nullptr;
+}
+
+CWnd* UiElement::RecentPlayedList::GetCmdRecivedWnd()
+{
+    //这里让右键菜单命令发送给CUIWindow处理
+    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pDlg != nullptr)
+        return &pDlg->GetUIWindow();
+    return nullptr;
+}
+
 std::wstring UiElement::MediaLibItemList::GetItemText(int row, int col)
 {
     if (col == COL_NAME)

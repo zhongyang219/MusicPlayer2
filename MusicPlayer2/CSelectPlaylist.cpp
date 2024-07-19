@@ -46,6 +46,29 @@ void CSelectPlaylistDlg::RefreshTabData()
     ShowSongList();
 }
 
+bool CSelectPlaylistDlg::SetCurSel(const wstring& playlist_path)
+{
+    if (!m_searched)
+    {
+        int index{ -1 };
+        for (size_t i{}; i < m_playlist_ctrl_data.size(); i++)
+        {
+            if (m_playlist_ctrl_data[i].path == playlist_path)
+                index = i;
+        }
+
+        if (index >= 0)
+        {
+            m_playlist_ctrl.SetCurSel(index);
+            m_playlist_ctrl.EnsureVisible(index, FALSE);
+            LeftListClicked(index);
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
+
 void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 {
     CMediaLibTabDlg::DoDataExchange(pDX);
