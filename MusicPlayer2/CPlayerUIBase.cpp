@@ -797,6 +797,50 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
     }
 }
 
+void CPlayerUIBase::ClearElementBtnRect(UiElement::Element* element)
+{
+    UiElement::Button* button = dynamic_cast<UiElement::Button*>(element);
+    if (button != nullptr)
+        m_buttons[button->key].rect = CRect();
+    UiElement::PlaylistIndicator* playlist_indicator = dynamic_cast<UiElement::PlaylistIndicator*>(element);
+    if (playlist_indicator != nullptr)
+    {
+        m_buttons[BTN_PLAYLIST_DROP_DOWN].rect = CRect();
+        m_buttons[BTN_PLAYLIST_MENU].rect = CRect();
+    }
+    UiElement::Toolbar* toolbar = dynamic_cast<UiElement::Toolbar*>(element);
+    if (toolbar != nullptr)
+    {
+        m_buttons[BTN_REPETEMODE].rect = CRect();
+        m_buttons[BTN_SETTING].rect = CRect();
+        m_buttons[BTN_EQ].rect = CRect();
+        m_buttons[BTN_SKIN].rect = CRect();
+        m_buttons[BTN_MINI].rect = CRect();
+        m_buttons[BTN_INFO].rect = CRect();
+        m_buttons[BTN_FIND].rect = CRect();
+        m_buttons[BTN_DARK_LIGHT].rect = CRect();
+        m_buttons[BTN_AB_REPEAT].rect = CRect();
+        m_buttons[BTN_AB_REPEAT].rect = CRect();
+        if (toolbar->show_translate_btn)
+            m_buttons[BTN_TRANSLATE].rect = CRect();
+        m_buttons[BTN_LRYIC].rect = CRect();
+    }
+    UiElement::ClassicalControlBar* controlbar = dynamic_cast<UiElement::ClassicalControlBar*>(element);
+    if (controlbar != nullptr)
+    {
+        m_buttons[BTN_PROGRESS].rect = CRect();
+        m_buttons[BTN_STOP].rect = CRect();
+        m_buttons[BTN_PREVIOUS].rect = CRect();
+        m_buttons[BTN_PLAY_PAUSE].rect = CRect();
+        m_buttons[BTN_NEXT].rect = CRect();
+        m_buttons[BTN_SHOW_PLAYLIST].rect = CRect();
+        m_buttons[BTN_MEDIA_LIB].rect = CRect();
+        if (controlbar->show_switch_display_btn)
+            m_buttons[BTN_SWITCH_DISPLAY].rect = CRect();
+        m_buttons[BTN_FAVOURITE].rect = CRect();
+    }
+}
+
 void CPlayerUIBase::PreDrawInfo()
 {
     //设置颜色
