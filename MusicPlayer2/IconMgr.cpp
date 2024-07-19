@@ -238,7 +238,7 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
     case IconMgr::IconType::IT_Bitrate:
         return { IDI_BITRATE_D, IDI_BITRATE, NULL, NULL };
     case IconMgr::IconType::IT_History:
-        return { IDI_RECENT_SONG_D, NULL, NULL, NULL };
+        return { IDI_RECENT_SONG_D, IDI_RECENT_SONG, NULL, NULL };
     case IconMgr::IconType::IT_Key_Board:
         return { IDI_HOT_KEY, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Reverb:

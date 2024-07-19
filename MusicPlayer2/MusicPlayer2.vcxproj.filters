@@ -1956,5 +1956,8 @@
     <Image Include="res\more_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\recent_songs.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>
