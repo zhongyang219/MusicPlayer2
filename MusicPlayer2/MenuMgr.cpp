@@ -285,7 +285,7 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
         return L"LIB_SET_PATH";
     case MenuMgr::LibPlaylistMenu:
         return L"LIB_PLAYLIST";
-    case MenuMgr::LibLeftMenu:
+    case MenuMgr::LibLeftMenu: case MenuMgr::UiLibLeftMenu:
         return L"LIB_LEFT";
     case MenuMgr::LibRightMenu:
         return L"LIB_RIGHT";
@@ -818,6 +818,16 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_ITEM_PROPERTY), IconMgr::IconType::IT_Info);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
+        break;
+    case MenuMgr::UiLibLeftMenu:
+        menu.CreateMenu(true, false);
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM), IconMgr::IconType::IT_Play);
+        menu.SetDefaultItem();
+        menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
+        menu.AppendItem(EX_ID(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY), IconMgr::IconType::IT_Play_In_Playlist);
+        menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
+        menu.AppendItem(EX_ID(ID_VIEW_IN_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
         break;
     case MenuMgr::LeMenu:
         menu.CreateMenu(false, false);

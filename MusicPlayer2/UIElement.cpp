@@ -1456,7 +1456,7 @@ CMenu* UiElement::MediaLibItemList::GetContextMenu(bool item_selected)
 {
     if (item_selected)
     {
-        return theApp.m_menu_mgr.GetMenu(MenuMgr::LibLeftMenu);
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::UiLibLeftMenu);
     }
     return nullptr;
 }

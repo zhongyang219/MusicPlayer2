@@ -640,6 +640,30 @@ void CMusicPlayerCmdHelper::RefreshMediaTabData(eMediaLibTab tab_index)
     }
 }
 
+void CMusicPlayerCmdHelper::OnViewInMediaLib(CMediaClassifier::ClassificationType type, const std::wstring name)
+{
+    int tab{};
+    int tab_force_show{};
+    switch (type)
+    {
+    case CMediaClassifier::CT_ARTIST: tab = ML_ARTIST; tab_force_show = MLDI_ARTIST; break;
+    case CMediaClassifier::CT_ALBUM: tab = ML_ALBUM; tab_force_show = MLDI_ALBUM; break;
+    case CMediaClassifier::CT_GENRE: tab = ML_GENRE; tab_force_show = MLDI_GENRE; break;
+    case CMediaClassifier::CT_YEAR: tab = ML_YEAR; tab_force_show = MLDI_YEAR; break;
+    case CMediaClassifier::CT_TYPE: tab = ML_FILE_TYPE; tab_force_show = MLDI_TYPE; break;
+    case CMediaClassifier::CT_BITRATE: tab = ML_BITRATE; tab_force_show = MLDI_BITRATE; break;
+    case CMediaClassifier::CT_RATING: tab = ML_RATING; tab_force_show = MLDI_RATING; break;
+    }
+    ShowMediaLib(tab, tab_force_show);
+    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
+    if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(name))
+    {
+        wstring type_name = CMediaLibPlaylistMgr::GetTypeName(type);
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_CANNOT_FIND_IN_MEDIA_LIB_WARNING", { type_name, name });
+        pPlayerDlg->MessageBox(info.c_str(), NULL, MB_OK | MB_ICONWARNING);
+    }
+}
+
 void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
 {
     vector<wstring> artist_list;
@@ -664,25 +688,13 @@ void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
         else
             return;
     }
-    ShowMediaLib(CMusicPlayerCmdHelper::ML_ARTIST, MLDI_ARTIST);
-    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
-    if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(artist))
-    {
-        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_CANNOT_FIND_ARTIST_WARNING", { artist });
-        pPlayerDlg->MessageBox(info.c_str(), NULL, MB_OK | MB_ICONWARNING);
-    }
+    OnViewInMediaLib(CMediaClassifier::CT_ARTIST, artist);
 }
 
 void CMusicPlayerCmdHelper::OnViewAlbum(const SongInfo& song_info)
 {
     wstring album = song_info.GetAlbum();
-    ShowMediaLib(CMusicPlayerCmdHelper::ML_ALBUM, MLDI_ALBUM);
-    CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
-    if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(album))
-    {
-        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_CANNOT_FIND_ALBUM_WARNING", { album });
-        pPlayerDlg->MessageBox(info.c_str(), NULL, MB_OK | MB_ICONWARNING);
-    }
+    OnViewInMediaLib(CMediaClassifier::CT_ALBUM, album);
 }
 
 int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)

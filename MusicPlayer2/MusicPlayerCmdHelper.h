@@ -66,6 +66,9 @@ public:
     //刷新媒体库指定标签页，0刷新文件夹，1刷新播放列表
     static void RefreshMediaTabData(eMediaLibTab tab);
 
+    //在媒体库中查看
+    void OnViewInMediaLib(CMediaClassifier::ClassificationType type, const std::wstring name);
+
     //查看艺术家
     void OnViewArtist(const SongInfo& song_info);
 

@@ -63,6 +63,11 @@ void CUIWindowCmdHelper::OnUiCommand(DWORD command)
                     AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
 
             }
+            //在媒体库中查看
+            else if (command == ID_VIEW_IN_MEDIA_LIB)
+            {
+                helper.OnViewInMediaLib(medialib_item_list->type, item_name);
+            }
             else
             {
                 helper.OnAddToPlaylistCommand(getSongList, command);
