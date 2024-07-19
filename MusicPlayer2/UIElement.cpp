@@ -1310,7 +1310,7 @@ std::wstring UiElement::Playlist::GetToolTipText(int row)
 
 int UiElement::Playlist::GetToolTipIndex() const
 {
-    return PLAYLIST_TOOLTIP_INDEX;
+    return TooltipIndex::PLAYLIST;
 }
 
 CMenu* UiElement::Playlist::GetContextMenu(bool item_selected)
@@ -1550,6 +1550,18 @@ void UiElement::TabElement::MouseMove(CPoint point)
         }
     }
     hover_index = _hover_index;
+
+    //显示鼠标提示
+    if (icon_type == ICON_ONLY && hover_index >= 0)
+    {
+        if (last_hover_index != hover_index)
+        {
+            last_hover_index = hover_index;
+            std::wstring str_tip = labels[hover_index];
+            ui->UpdateMouseToolTip(TooltipIndex::TAB_ELEMENT, str_tip.c_str());
+            ui->UpdateMouseToolTipPosition(TooltipIndex::TAB_ELEMENT, item_rects[hover_index]);
+        }
+    }
 }
 
 int UiElement::TabElement::SelectedIndex() const

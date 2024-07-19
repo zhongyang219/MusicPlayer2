@@ -2834,69 +2834,70 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
     int x_pos{ rect.left };
     int index{};
     tab_element->item_rects.resize(tab_element->tab_list.size());
+    tab_element->labels.resize(tab_element->tab_list.size());
     for (const std::string& item_str : tab_element->tab_list)
     {
         IconMgr::IconType icon;
-        std::wstring item_text;
+        std::wstring& item_text{ tab_element->labels[index]};
         if (item_str == "album_cover")
         {
             if (draw_icon) icon = IconMgr::IT_Album_Cover;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"UI_TXT_ALBUM_COVER");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_ALBUM_COVER");
         }
         else if (item_str == "spectrum")
         {
             if (draw_icon) icon = IconMgr::IT_Reverb;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"UI_TXT_SPECTRUM");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_SPECTRUM");
         }
         else if (item_str == "lyrics")
         {
             if (draw_icon) icon = IconMgr::IT_Lyric;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"UI_TXT_LYRICS");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_LYRICS");
         }
         else if (item_str == "now_playing")
         {
             if (draw_icon) icon = IconMgr::IT_Play;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PLAYING");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PLAYING");
         }
         else if (item_str == "recently_played")
         {
             if (draw_icon) icon = IconMgr::IT_History;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED");
         }
         else if (item_str == "artist")
         {
             if (draw_icon) icon = IconMgr::IT_Artist;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_ARTIST");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_ARTIST");
         }
         else if (item_str == "album")
         {
             if (draw_icon) icon = IconMgr::IT_Album;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_ALBUM");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_ALBUM");
         }
         else if (item_str == "genre")
         {
             if (draw_icon) icon = IconMgr::IT_Genre;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_GENRE");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_GENRE");
         }
         else if (item_str == "year")
         {
             if (draw_icon) icon = IconMgr::IT_Year;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_YEAR");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_YEAR");
         }
         else if (item_str == "file_type")
         {
             if (draw_icon) icon = IconMgr::IT_File_Relate;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
         }
         else if (item_str == "bitrate")
         {
             if (draw_icon) icon = IconMgr::IT_Bitrate;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_BITRATE");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_BITRATE");
         }
         else if (item_str == "rating")
         {
             if (draw_icon) icon = IconMgr::IT_Star;
-            if (draw_text) item_text = theApp.m_str_table.LoadText(L"TXT_RATING");
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_RATING");
         }
         else
         {
@@ -3124,5 +3125,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip.c_str());
     UpdateRepeatModeToolTip();
     // 播放列表工具提示
-    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::PLAYLIST_TOOLTIP_INDEX), L"");
+    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::PLAYLIST), L"");
+    // tabElement工具提示
+    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::TAB_ELEMENT), L"");
 }

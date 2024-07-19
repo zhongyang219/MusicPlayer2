@@ -67,8 +67,14 @@ namespace UiElement
         static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func);
 
         CRect rect;     //用于保存计算得到的元素的矩形区域
-        CPlayerUIBase* ui;
+        CPlayerUIBase* ui{};
     };
+
+    namespace TooltipIndex
+    {
+        const int PLAYLIST = 999;
+        const int TAB_ELEMENT = 998;
+    }
 
     //布局
     class Layout : public Element
@@ -303,7 +309,6 @@ namespace UiElement
         int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
     };
 
-    const int PLAYLIST_TOOLTIP_INDEX = 999;
 
     //播放列表
     class Playlist : public ListElement
@@ -413,6 +418,7 @@ namespace UiElement
         IconType icon_type{};
         std::vector<std::string> tab_list;
         std::vector<CRect> item_rects;
+        std::vector<std::wstring> labels;
         int SelectedIndex() const;
         int hover_index{ -1 };
     private:
@@ -420,6 +426,7 @@ namespace UiElement
         bool find_stack_element{};      //如果已经查找过StackElement，则为true
         StackElement* stack_element{};
         int selected_index{};
+        int last_hover_index{ -1 };
     };
 }
 
