@@ -23,7 +23,12 @@ void CUiMediaLibItemMgr::GetClassifiedMeidaLibItemList(CMediaClassifier::Classif
     for (const auto& item : classifier.GetMeidaList())
     {
         if (item.first != STR_OTHER_CLASSIFY_TYPE)
-            item_list.push_back(item.first);
+        {
+            ItemInfo info;
+            info.name = item.first;
+            info.count = item.second.size();
+            item_list.push_back(info);
+        }
     }
 }
 
@@ -63,7 +68,7 @@ std::wstring CUiMediaLibItemMgr::GetItemDisplayName(CMediaClassifier::Classifica
     return std::wstring();
 }
 
-const std::wstring& CUiMediaLibItemMgr::GetItemName(CMediaClassifier::ClassificationType type, int index) const
+const CUiMediaLibItemMgr::ItemInfo& CUiMediaLibItemMgr::GetItemInfo(CMediaClassifier::ClassificationType type, int index) const
 {
     if (!m_loading)
     {
@@ -73,13 +78,22 @@ const std::wstring& CUiMediaLibItemMgr::GetItemName(CMediaClassifier::Classifica
             const auto& item_list{ iter->second };
             if (index >= 0 && index < static_cast<int>(item_list.size()))
             {
-                const std::wstring& name{ item_list[index] };
-                return name;
+                return item_list[index];
             }
         }
     }
-    static std::wstring empty_str{};
-    return empty_str;
+    static ItemInfo empty_info{};
+    return empty_info;
+}
+
+const std::wstring& CUiMediaLibItemMgr::GetItemName(CMediaClassifier::ClassificationType type, int index) const
+{
+    return GetItemInfo(type, index).name;
+}
+
+int CUiMediaLibItemMgr::GetItemSongCount(CMediaClassifier::ClassificationType type, int index) const
+{
+    return GetItemInfo(type, index).count;
 }
 
 void CUiMediaLibItemMgr::SetCurrentName(CMediaClassifier::ClassificationType type, const std::wstring& name)
@@ -100,7 +114,9 @@ int CUiMediaLibItemMgr::GetCurrentIndex(CMediaClassifier::ClassificationType typ
             if (name_iter != m_current_name_map.end())
             {
                 const auto& name_list{ m_item_map[type] };
-                auto iter = std::find(name_list.begin(), name_list.end(), name_iter->second);
+                auto iter = std::find_if(name_list.begin(), name_list.end(), [&](const ItemInfo& item) {
+                    return item.name == name_iter->second;
+                });
                 if (iter != name_list.end())
                 {
                     int index = iter - name_list.begin();

@@ -1251,17 +1251,19 @@ int UiElement::Playlist::GetColumnCount()
 
 int UiElement::Playlist::GetColumnWidth(int col, int total_width)
 {
+    const int index_width{ ui->DPI(36) };
+    const int time_width{ ui->DPI(50) };
     if (col == COL_INDEX)
     {
-        return ui->DPI(36);
+        return index_width;
     }
     else if (col == COL_TIME)
     {
-        return ui->DPI(50);
+        return time_width;
     }
     else if (col == COL_TRACK)
     {
-        return total_width - ui->DPI(32) - ui->DPI(50);
+        return total_width - index_width - time_width;
     }
     return 0;
 }
@@ -1391,10 +1393,15 @@ void UiElement::RecentPlayedList::OnDoubleClicked()
 
 std::wstring UiElement::MediaLibItemList::GetItemText(int row, int col)
 {
-    if (col == 0)
+    if (col == COL_NAME)
     {
         if (row >= 0 && row < CUiMediaLibItemMgr::Instance().GetItemCount(type))
             return CUiMediaLibItemMgr::Instance().GetItemDisplayName(type, row);
+    }
+    else if (col == COL_COUNT)
+    {
+        if (row >= 0 && row < CUiMediaLibItemMgr::Instance().GetItemCount(type))
+            return std::to_wstring(CUiMediaLibItemMgr::Instance().GetItemSongCount(type, row));
     }
     return std::wstring();
 }
@@ -1406,13 +1413,16 @@ int UiElement::MediaLibItemList::GetRowCount()
 
 int UiElement::MediaLibItemList::GetColumnCount()
 {
-    return 1;
+    return COL_MAX;
 }
 
 int UiElement::MediaLibItemList::GetColumnWidth(int col, int total_width)
 {
-    if (col == 0)
-        return total_width;
+    const int count_width{ ui->DPI(40) };
+    if (col == COL_NAME)
+        return total_width - count_width;
+    else if (col == COL_COUNT)
+        return count_width;
     return 0;
 }
 
@@ -1439,7 +1449,7 @@ int UiElement::MediaLibItemList::GetHighlightRow()
 
 int UiElement::MediaLibItemList::GetColumnScrollTextWhenSelected()
 {
-    return 0;
+    return COL_NAME;
 }
 
 CMenu* UiElement::MediaLibItemList::GetContextMenu(bool item_selected)
