@@ -1564,6 +1564,12 @@ void UiElement::TabElement::MouseMove(CPoint point)
     }
 }
 
+bool UiElement::TabElement::RButtunUp(CPoint point)
+{
+    //不弹出右键菜单
+    return rect.PtInRect(point);
+}
+
 int UiElement::TabElement::SelectedIndex() const
 {
     if (stack_element != nullptr)

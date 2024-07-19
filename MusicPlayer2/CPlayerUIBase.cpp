@@ -2914,6 +2914,8 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         CRect item_rect{ rect };
         item_rect.left = x_pos;
         item_rect.right = item_rect.left + icon_width + text_width + DPI(4);
+        if (tab_element->icon_type == UiElement::TabElement::TEXT_ONLY)
+            item_rect.right += DPI(4);
         tab_element->item_rects[index] = item_rect;
 
         //绘制背景
@@ -2945,6 +2947,8 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
             CRect text_rect{ item_rect };
             if (tab_element->icon_type != UiElement::TabElement::TEXT_ONLY)
                 text_rect.left += icon_width;
+            else
+                text_rect.MoveToX(text_rect.left + DPI(4));
             m_draw.DrawWindowText(text_rect, item_text.c_str(), m_colors.color_text, Alignment::LEFT, true);
         }
 

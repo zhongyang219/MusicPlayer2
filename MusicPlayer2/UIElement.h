@@ -53,6 +53,8 @@ namespace UiElement
         void IterateAllElements(std::function<bool(UiElement::Element*)> func);  //遍历所有界面元素
         void SetUi(CPlayerUIBase* _ui);
 
+        //鼠标消息虚函数。
+        //即使鼠标的位置不在当前元素的矩形区域内，函数仍然会响应，因此在重写这些虚函数时需要先使用rect.PtInRect(point)判断鼠标位置是否在矩形区域内。
         virtual void LButtonUp(CPoint point) {}
         virtual void LButtonDown(CPoint point) {}
         virtual void MouseMove(CPoint point) {}
@@ -359,7 +361,7 @@ namespace UiElement
     class MediaLibItemList : public ListElement
     {
     public:
-        CMediaClassifier::ClassificationType type;
+        CMediaClassifier::ClassificationType type{};
 
         enum Column
         {
@@ -407,6 +409,7 @@ namespace UiElement
         virtual void Draw() override;
         virtual void LButtonUp(CPoint point) override;
         virtual void MouseMove(CPoint point) override;
+        virtual bool RButtunUp(CPoint point) override;
 
         enum IconType
         {
