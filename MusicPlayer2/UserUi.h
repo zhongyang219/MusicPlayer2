@@ -49,6 +49,7 @@ protected:
     std::shared_ptr<UiElement::Element> m_root_ui_small;
     std::wstring m_ui_name;
     std::map<UiElement::Element*, std::vector<std::shared_ptr<UiElement::Element>>>  m_stack_elements;      //保存所有的stackElement。key是其所在的ui节点，value是该ui节点下所有stackElement
+    bool m_last_mouse_in_draw_area{};
 
 public:
     virtual int GetUiIndex() override;

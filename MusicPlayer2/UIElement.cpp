@@ -1588,6 +1588,11 @@ bool UiElement::TabElement::RButtunUp(CPoint point)
     return rect.PtInRect(point);
 }
 
+void UiElement::TabElement::MouseLeave()
+{
+    hover_index = -1;
+}
+
 int UiElement::TabElement::SelectedIndex() const
 {
     if (stack_element != nullptr)

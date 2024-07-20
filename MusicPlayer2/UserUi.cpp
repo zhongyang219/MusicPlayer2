@@ -277,7 +277,8 @@ bool CUserUi::LButtonDown(CPoint point)
 
 void CUserUi::MouseMove(CPoint point)
 {
-    if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
+    bool mouse_in_draw_area{ !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point) };
+    if (mouse_in_draw_area)
     {
         auto& stack_elements{ GetStackElements() };
         for (auto& element : stack_elements)
@@ -304,6 +305,18 @@ void CUserUi::MouseMove(CPoint point)
                 return false;
             });
     }
+
+    //鼠标离开绘图区域后发送MouseLeave消息
+    if (m_last_mouse_in_draw_area && !mouse_in_draw_area)
+    {
+        IterateAllElements([point](UiElement::Element* element) ->bool {
+            if (element != nullptr)
+                element->MouseLeave();
+            return false;
+        });
+    }
+
+    m_last_mouse_in_draw_area = mouse_in_draw_area;
     CPlayerUIBase::MouseMove(point);
 }
 
@@ -319,6 +332,16 @@ void CUserUi::MouseLeave()
             stack_element->mouse_hover = false;
         }
     }
+
+    //遍历所有元素
+    IterateAllElements([](UiElement::Element* element) ->bool
+        {
+            if (element != nullptr)
+            {
+                element->MouseLeave();
+            }
+            return false;
+        });
 
     CPlayerUIBase::MouseLeave();
 }

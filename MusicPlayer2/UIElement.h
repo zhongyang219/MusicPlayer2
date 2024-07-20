@@ -62,6 +62,7 @@ namespace UiElement
         virtual void RButtonDown(CPoint point) {}
         virtual bool MouseWheel(int delta, CPoint point) { return false; }
         virtual bool DoubleClick(CPoint point) { return false; }
+        virtual void MouseLeave() {}
 
     protected:
         CRect ParentRect() const;
@@ -412,6 +413,7 @@ namespace UiElement
         virtual void LButtonUp(CPoint point) override;
         virtual void MouseMove(CPoint point) override;
         virtual bool RButtunUp(CPoint point) override;
+        virtual void MouseLeave() override;
 
         enum IconType
         {
