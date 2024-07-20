@@ -435,6 +435,38 @@ namespace UiElement
         int selected_index{};
         int last_hover_index{ -1 };
     };
+
+    //媒体库的文件
+    class MediaLibFolder : public ListElement
+    {
+    public:
+        // 通过 ListElement 继承
+        std::wstring GetItemText(int row, int col) override;
+        int GetRowCount() override;
+        int GetColumnCount() override;
+        int GetColumnWidth(int col, int total_width) override;
+        virtual int GetHighlightRow() override;
+        virtual int GetColumnScrollTextWhenSelected() override;
+        virtual CMenu* GetContextMenu(bool item_selected) override;
+        virtual CWnd* GetCmdRecivedWnd() override;
+        virtual void OnDoubleClicked() override;
+    };
+
+    //媒体库的播放列表
+    class MediaLibPlaylist : public ListElement
+    {
+    public:
+        // 通过 ListElement 继承
+        std::wstring GetItemText(int row, int col) override;
+        int GetRowCount() override;
+        int GetColumnCount() override;
+        int GetColumnWidth(int col, int total_width) override;
+        virtual int GetHighlightRow() override;
+        virtual int GetColumnScrollTextWhenSelected() override;
+        virtual CMenu* GetContextMenu(bool item_selected) override;
+        virtual CWnd* GetCmdRecivedWnd() override;
+        virtual void OnDoubleClicked() override;
+    };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

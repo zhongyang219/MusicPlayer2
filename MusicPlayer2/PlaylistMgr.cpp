@@ -374,10 +374,66 @@ void CPlaylistMgr::RenamePlaylist(const wstring& old_path, const wstring& new_pa
 void CPlaylistMgr::GetAllPlaylistInfo(vector<PlaylistInfo>& playlists_info)
 {
     playlists_info.clear();
-    playlists_info.push_back(CPlaylistMgr::Instance().m_default_playlist);
-    playlists_info.push_back(CPlaylistMgr::Instance().m_favourite_playlist);
+    playlists_info.push_back(m_default_playlist);
+    playlists_info.push_back(m_favourite_playlist);
     std::copy(m_recent_playlists.begin(), m_recent_playlists.end(), std::back_inserter(playlists_info));
     // 只有当列表中有歌曲时才显示临时播放列表
-    if (CPlaylistMgr::Instance().m_temp_playlist.track_num > 0)
-        playlists_info.push_back(CPlaylistMgr::Instance().m_temp_playlist);
+    if (m_temp_playlist.track_num > 0)
+        playlists_info.push_back(m_temp_playlist);
+}
+
+int CPlaylistMgr::GetPlaylistNum() const
+{
+    int playlist_num = m_recent_playlists.size() + SPEC_PLAYLIST_NUM;
+    if (m_temp_playlist.track_num > 0)
+        playlist_num++;
+    return playlist_num;
+}
+
+const PlaylistInfo& CPlaylistMgr::GetPlaylistInfo(int index)
+{
+    size_t renect_playlist_index{ size_t(index - SPEC_PLAYLIST_NUM) };
+    if (index == 0)
+        return m_default_playlist;
+    else if (index == 1)
+        return m_favourite_playlist;
+    else if (renect_playlist_index < m_recent_playlists.size())
+        return m_recent_playlists[renect_playlist_index];
+    else if (index == static_cast<int>(m_recent_playlists.size()) + SPEC_PLAYLIST_NUM && m_temp_playlist.track_num > 0)
+        return m_temp_playlist;
+
+    static PlaylistInfo empty_info;
+    return empty_info;
+}
+
+int CPlaylistMgr::GetCurrentPlaylistIndex() const
+{
+    if (m_cur_playlist_type == PT_DEFAULT)
+        return 0;
+    else if (m_cur_playlist_type == PT_FAVOURITE)
+        return 1;
+    else if (m_cur_playlist_type == PT_TEMP)
+        return GetPlaylistNum() - 1;
+    else if (m_recent_playlists.empty())    // m_recent_playlists为空时返回默认播放列表)
+        return 0;
+    else
+        return SPEC_PLAYLIST_NUM;
+}
+
+std::wstring CPlaylistMgr::GetPlaylistDisplayName(const std::wstring path)
+{
+    if (path.empty())
+        return std::wstring();
+
+    CFilePathHelper path_helper{ path };
+    wstring playlist_name = path_helper.GetFileName();
+    if (playlist_name == DEFAULT_PLAYLIST_NAME)
+        playlist_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_DEFAULT");
+    else if (playlist_name == FAVOURITE_PLAYLIST_NAME)
+        playlist_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_FAVOURITE");
+    else if (playlist_name == TEMP_PLAYLIST_NAME)
+        playlist_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_TEMP");
+    else
+        playlist_name = path_helper.GetFileNameWithoutExtension();
+    return playlist_name;
 }

@@ -2864,6 +2864,16 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
             if (draw_icon) icon = IconMgr::IT_History;
             if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED");
         }
+        else if (item_str == "folder")
+        {
+            if (draw_icon) icon = IconMgr::IT_Folder;
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_FOLDER");
+        }
+        else if (item_str == "playlist")
+        {
+            if (draw_icon) icon = IconMgr::IT_Playlist;
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_PLAYLIST");
+        }
         else if (item_str == "artist")
         {
             if (draw_icon) icon = IconMgr::IT_Artist;

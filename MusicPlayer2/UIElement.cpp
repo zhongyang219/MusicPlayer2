@@ -6,6 +6,7 @@
 #include "RecentFolderAndPlaylist.h"
 #include "UiMediaLibItemMgr.h"
 #include "UserUi.h"
+#include "MusicPlayerCmdHelper.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1493,7 +1494,8 @@ void UiElement::MediaLibItemList::OnDoubleClicked()
     if (item_selected >= 0 && item_selected < CUiMediaLibItemMgr::Instance().GetItemCount(type))
     {
         std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
-        CPlayer::GetInstance().SetMediaLibPlaylist(type, item_name, -1, SongInfo(), true);
+        CMusicPlayerCmdHelper helper;
+        helper.OnMediaLibItemSelected(type, item_name, true);
     }
 }
 
@@ -1619,6 +1621,132 @@ void UiElement::TabElement::FindStackElement()
     }
 }
 
+std::wstring UiElement::MediaLibFolder::GetItemText(int row, int col)
+{
+    if (col == 0)
+    {
+        if (row >= 0 && row < static_cast<int>(CRecentFolderMgr::Instance().GetRecentPath().size()))
+        {
+            return CRecentFolderMgr::Instance().GetRecentPath()[row].path;
+        }
+    }
+    return std::wstring();
+}
+
+int UiElement::MediaLibFolder::GetRowCount()
+{
+    return CRecentFolderMgr::Instance().GetRecentPath().size();
+}
+
+int UiElement::MediaLibFolder::GetColumnCount()
+{
+    return 1;
+}
+
+int UiElement::MediaLibFolder::GetColumnWidth(int col, int total_width)
+{
+    if (col == 0)
+        return total_width;
+    return 0;
+}
+
+int UiElement::MediaLibFolder::GetHighlightRow()
+{
+    if (CPlayer::GetInstance().IsFolderMode())
+        return 0;
+    else
+        return -1;
+}
+
+int UiElement::MediaLibFolder::GetColumnScrollTextWhenSelected()
+{
+    return 0;
+}
+
+CMenu* UiElement::MediaLibFolder::GetContextMenu(bool item_selected)
+{
+    return nullptr;
+}
+
+CWnd* UiElement::MediaLibFolder::GetCmdRecivedWnd()
+{
+    return nullptr;
+}
+
+void UiElement::MediaLibFolder::OnDoubleClicked()
+{
+    if (item_selected >= 0 && item_selected < GetRowCount())
+    {
+        const PathInfo& path_info{ CRecentFolderMgr::Instance().GetRecentPath()[item_selected] };
+        CMusicPlayerCmdHelper helper;
+        helper.OnFolderSelected(path_info, true);
+    }
+}
+
+std::wstring UiElement::MediaLibPlaylist::GetItemText(int row, int col)
+{
+    if (col == 0)
+    {
+        const PlaylistInfo& info{ CPlaylistMgr::Instance().GetPlaylistInfo(row) };
+        return CPlaylistMgr::Instance().GetPlaylistDisplayName(info.path);
+    }
+    return std::wstring();
+}
+
+int UiElement::MediaLibPlaylist::GetRowCount()
+{
+    return CPlaylistMgr::Instance().GetPlaylistNum();
+}
+
+int UiElement::MediaLibPlaylist::GetColumnCount()
+{
+    return 1;
+}
+
+int UiElement::MediaLibPlaylist::GetColumnWidth(int col, int total_width)
+{
+    if (col == 0)
+        return total_width;
+    return 0;
+}
+
+int UiElement::MediaLibPlaylist::GetHighlightRow()
+{
+    if (CPlayer::GetInstance().IsPlaylistMode())
+    {
+        return CPlaylistMgr::Instance().GetCurrentPlaylistIndex();
+    }
+    return -1;
+}
+
+int UiElement::MediaLibPlaylist::GetColumnScrollTextWhenSelected()
+{
+    return 0;
+}
+
+CMenu* UiElement::MediaLibPlaylist::GetContextMenu(bool item_selected)
+{
+    return nullptr;
+}
+
+CWnd* UiElement::MediaLibPlaylist::GetCmdRecivedWnd()
+{
+    return nullptr;
+}
+
+void UiElement::MediaLibPlaylist::OnDoubleClicked()
+{
+    if (item_selected >= 0 && item_selected < GetRowCount())
+    {
+        const PlaylistInfo& info{ CPlaylistMgr::Instance().GetPlaylistInfo(item_selected) };
+        if (!info.path.empty())
+        {
+            CMusicPlayerCmdHelper helper;
+            helper.OnPlaylistSelected(info, true);
+        }
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name, CPlayerUIBase* ui)
@@ -1672,6 +1800,10 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::MediaLibItemList>();
     else if (name == "tabElement")
         element = std::make_shared<UiElement::TabElement>();
+    else if (name == "mediaLibFolder")
+        element = std::make_shared<UiElement::MediaLibFolder>();
+    else if (name == "mediaLibPlaylist")
+        element = std::make_shared<UiElement::MediaLibPlaylist>();
     else if (name == "ui" || name == "root" || name == "placeHolder")
         element = std::make_shared<UiElement::Element>();
 

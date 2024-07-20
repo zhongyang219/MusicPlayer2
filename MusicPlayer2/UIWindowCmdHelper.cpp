@@ -58,7 +58,7 @@ void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* 
     //播放
     if (command == ID_PLAY_ITEM)
     {
-        CPlayer::GetInstance().SetMediaLibPlaylist(medialib_item_list->type, item_name, -1, SongInfo(), true);
+        helper.OnMediaLibItemSelected(medialib_item_list->type, item_name, true);
     }
     //添加到新播放列表
     else if (command == ID_ADD_TO_NEW_PLAYLIST)

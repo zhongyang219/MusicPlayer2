@@ -25,6 +25,11 @@ public:
     ~CPlaylistMgr();
     static CPlaylistMgr& Instance();
 
+    enum
+    {
+        SPEC_PLAYLIST_NUM = 2       //特殊播放列表的个数（这里是2，默认播放列表和我喜欢的播放列表）
+    };
+
     void Init();
 
     void EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time);
@@ -44,6 +49,12 @@ public:
     void RenamePlaylist(const wstring& old_path, const wstring& new_path);
     // CSelectPlaylistDlg使用此方法获取/更新显示数据
     void GetAllPlaylistInfo(vector<PlaylistInfo>& playlists_info);
+
+    int GetPlaylistNum() const;
+    const PlaylistInfo& GetPlaylistInfo(int index);
+    int GetCurrentPlaylistIndex() const;
+
+    static std::wstring GetPlaylistDisplayName(const std::wstring path);
 
 private:
     CPlaylistMgr();

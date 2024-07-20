@@ -131,6 +131,8 @@
                 <xs:element name="recentPlayedList" type="recentPlayedListType"></xs:element>
                 <xs:element name="playlistIndicator" type="playlistIndicatorType"></xs:element>
                 <xs:element name="mediaLibItemList" type="mediaLibItemListType"></xs:element>
+                <xs:element name="mediaLibFolder" type="mediaLibFolderType"></xs:element>
+                <xs:element name="mediaLibPlaylist" type="mediaLibPlaylistType"></xs:element>
                 <xs:element name="tabElement" type="tabElementType"></xs:element>
 				<xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
 			</xs:choice>
@@ -842,7 +844,7 @@
       </xs:annotation>
       <xs:attribute name="item_list" type="xs:string">
         <xs:annotation>
-          <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,recently_played,artist,album,genre,year,file_type,bitrate,rating”中选，多个标签使用半角逗号隔开。</xs:documentation>
+          <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating”中选，多个标签使用半角逗号隔开。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attribute name="icon_type" default="icon_and_text">
@@ -871,4 +873,16 @@
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
+  <xs:complexType name="mediaLibFolderType">
+    <xs:annotation>
+      <xs:documentation>媒体库的文件夹。</xs:documentation>
+    </xs:annotation>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="mediaLibPlaylistType">
+    <xs:annotation>
+      <xs:documentation>媒体库的播放列表。</xs:documentation>
+    </xs:annotation>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
 </xs:schema>

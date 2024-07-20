@@ -752,6 +752,33 @@ int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
     return fixed_count;
 }
 
+void CMusicPlayerCmdHelper::OnFolderSelected(const PathInfo& path_info, bool play)
+{
+    if (!CPlayer::GetInstance().SetPath(path_info, play))
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
+}
+
+void CMusicPlayerCmdHelper::OnPlaylistSelected(const PlaylistInfo& playlist_info, bool play)
+{
+    if (!CPlayer::GetInstance().SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, play))
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
+}
+
+void CMusicPlayerCmdHelper::OnMediaLibItemSelected(CMediaClassifier::ClassificationType type, const std::wstring& name, bool play)
+{
+    if (!CPlayer::GetInstance().SetMediaLibPlaylist(type, name, -1, SongInfo(), play))
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
+}
+
 void CMusicPlayerCmdHelper::OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item)
 {
     if (item != nullptr && !item->IsItemCurrentPlaying())
@@ -759,35 +786,17 @@ void CMusicPlayerCmdHelper::OnRecentItemSelected(const CRecentFolderAndPlaylist:
         if (item->IsPlaylist())
         {
             if (item->playlist_info != nullptr)
-            {
-                if (!CPlayer::GetInstance().SetPlaylist(item->playlist_info->path, item->playlist_info->track, item->playlist_info->position))
-                {
-                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                    AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-                }
-            }
+                OnPlaylistSelected(*item->playlist_info);
         }
         else if (item->IsFolder())
         {
             if (item->folder_info != nullptr)
-            {
-                if (!CPlayer::GetInstance().SetPath(*item->folder_info))
-                {
-                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                    AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-                }
-            }
+                OnFolderSelected(*item->folder_info);
         }
         else if (item->IsMedialib())
         {
             if (item->medialib_info != nullptr)
-            {
-                if (!CPlayer::GetInstance().SetMediaLibPlaylist(item->medialib_info->medialib_type, item->medialib_info->path))
-                {
-                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                    AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-                }
-            }
+                OnMediaLibItemSelected(item->medialib_info->medialib_type, item->medialib_info->path);
         }
     }
 }

@@ -42,11 +42,6 @@ private:
     std::vector<int> m_right_selected_items;    // 右侧列表多选选中的项目的索引
     wstring m_selected_string;
 
-    enum
-    {
-        SPEC_PLAYLIST_NUM = 2       //特殊播放列表的个数（这里是2，默认播放列表和我喜欢的播放列表）
-    };
-
     enum SongColumeIndex
     {
         COL_INDEX,

@@ -82,7 +82,7 @@ void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
 void CSelectPlaylistDlg::QuickSearch(const wstring& key_words)
 {
     m_search_result.clear();
-    for (size_t i{ SPEC_PLAYLIST_NUM }; i < m_playlist_ctrl_data.size(); ++i)   // 跳过前两个特殊播放列表
+    for (size_t i{ CPlaylistMgr::SPEC_PLAYLIST_NUM }; i < m_playlist_ctrl_data.size(); ++i)   // 跳过前两个特殊播放列表
     {
         // m_search_result存储m_playlist_ctrl_data的索引
         CFilePathHelper file_path{ m_playlist_ctrl_data[i].path };
@@ -358,17 +358,7 @@ void CSelectPlaylistDlg::ShowPathList()
 
 void CSelectPlaylistDlg::SetListRowData(int index, const PlaylistInfo& playlist_info)
 {
-    CFilePathHelper path_helper{ playlist_info.path };
-    wstring playlist_name = path_helper.GetFileName();
-    if (playlist_name == DEFAULT_PLAYLIST_NAME)
-        playlist_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_DEFAULT");
-    else if (playlist_name == FAVOURITE_PLAYLIST_NAME)
-        playlist_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_FAVOURITE");
-    else if (playlist_name == TEMP_PLAYLIST_NAME)
-        playlist_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_TEMP");
-    else
-        playlist_name = path_helper.GetFileNameWithoutExtension();
-
+    wstring playlist_name = CPlaylistMgr::GetPlaylistDisplayName(playlist_info.path);
     m_playlist_ctrl.SetItemText(index, 1, playlist_name.c_str());
 
     CString str;
@@ -498,7 +488,7 @@ wstring CSelectPlaylistDlg::DoNewPlaylist()
 
         CPlaylistMgr::Instance().AddNewPlaylist(playlist_path);
         ShowPathList();
-        SetLeftListSelected(SPEC_PLAYLIST_NUM);     //选中新增的播放列表。添加新的播放列表后，新增的播放会排到前面，在特殊的播放列表的后一个位置
+        SetLeftListSelected(CPlaylistMgr::SPEC_PLAYLIST_NUM);     //选中新增的播放列表。添加新的播放列表后，新增的播放会排到前面，在特殊的播放列表的后一个位置
         CRecentFolderAndPlaylist::Instance().Init();
         return playlist_path;
     }

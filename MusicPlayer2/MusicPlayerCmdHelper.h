@@ -80,6 +80,12 @@ public:
     //修正播放列表中的错误的路径
     int FixPlaylistPathError(const std::wstring& path);
 
+    void OnFolderSelected(const PathInfo& path_info, bool play = false);
+
+    void OnPlaylistSelected(const PlaylistInfo& playlist_info, bool play = false);
+
+    void OnMediaLibItemSelected(CMediaClassifier::ClassificationType type, const std::wstring& name, bool play = false);
+
     //响应播放列表上方下拉列表项
     void OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item);
 

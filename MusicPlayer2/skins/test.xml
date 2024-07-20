@@ -23,13 +23,15 @@
       </verticalLayout>
 
       <verticalLayout>
-        <tabElement height="30" icon_type="icon_only" item_list="now_playing,recently_played,artist,album,genre,year,file_type,bitrate,rating"/>
+        <tabElement height="30" icon_type="icon_only" item_list="now_playing,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating"/>
         <stackElement margin="8" show_indicator="true" margin-bottom="20">
           <verticalLayout>
             <playlistIndicator height="30" margin-bottom="4"/>
             <playlist/>
           </verticalLayout>
           <recentPlayedList/>
+          <mediaLibFolder/>
+          <mediaLibPlaylist/>
           <mediaLibItemList type="artist"/>
           <mediaLibItemList type="album"/>
           <mediaLibItemList type="genre"/>
