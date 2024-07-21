@@ -55,7 +55,8 @@ public:
         ML_YEAR,
         ML_FILE_TYPE,
         ML_BITRATE,
-        ML_RATING
+        ML_RATING,
+        ML_ALL
     };
 
     std::wstring GetMediaLibTabName(eMediaLibTab tab);

@@ -669,14 +669,18 @@ void CMusicPlayerCmdHelper::OnViewInMediaLib(eMediaLibTab tab, const std::wstrin
     case CMusicPlayerCmdHelper::ML_FILE_TYPE: tab_force_show = MLDI_TYPE; break;
     case CMusicPlayerCmdHelper::ML_BITRATE: tab_force_show = MLDI_BITRATE; break;
     case CMusicPlayerCmdHelper::ML_RATING: tab_force_show = MLDI_RATING; break;
+    case CMusicPlayerCmdHelper::ML_ALL: tab_force_show = MLDI_ALL; break;
     }
     ShowMediaLib(tab, tab_force_show);
     CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
-    if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(name))
+    if (!name.empty())
     {
-        wstring type_name = GetMediaLibTabName(tab);
-        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_CANNOT_FIND_IN_MEDIA_LIB_WARNING", { type_name, name });
-        pPlayerDlg->MessageBox(info.c_str(), NULL, MB_OK | MB_ICONWARNING);
+        if (!pPlayerDlg->m_pMediaLibDlg->NavigateToItem(name))
+        {
+            wstring type_name = GetMediaLibTabName(tab);
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_CANNOT_FIND_IN_MEDIA_LIB_WARNING", { type_name, name });
+            pPlayerDlg->MessageBox(info.c_str(), NULL, MB_OK | MB_ICONWARNING);
+        }
     }
 }
 
