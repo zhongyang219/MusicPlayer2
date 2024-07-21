@@ -1665,11 +1665,18 @@ int UiElement::MediaLibFolder::GetColumnScrollTextWhenSelected()
 
 CMenu* UiElement::MediaLibFolder::GetContextMenu(bool item_selected)
 {
+    if (item_selected)
+    {
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu);
+    }
     return nullptr;
 }
 
 CWnd* UiElement::MediaLibFolder::GetCmdRecivedWnd()
 {
+    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pDlg != nullptr)
+        return &pDlg->GetUIWindow();
     return nullptr;
 }
 

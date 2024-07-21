@@ -12,6 +12,11 @@ public:
 private:
     void OnMediaLibItemListCommand(UiElement::MediaLibItemList* medialib_item_list, DWORD command);
     void OnRecentPlayedListCommand(UiElement::RecentPlayedList* medialib_item_list, DWORD command);
+    void OnMediaLibFolderCommand(UiElement::MediaLibFolder* medialib_folder, DWORD command);
+    void OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command);
+
+    void SetMediaLibItemListMenuState(CMenu* pMenu);
+    void SetMediaLibFolderMenuState(CMenu* pMenu);
 
 private:
     IPlayerUI* m_pUI;

@@ -27,6 +27,8 @@ public:
     void EmplaceRecentFolder(const std::wstring& path, int track, int position, SortMode sort_mode, int track_num, int totla_time, bool contain_sub_folder);
     const PathInfo& FindItem(const std::wstring& path);
     const PathInfo& GetCurrentItem();
+    bool DeleteItem(const std::wstring& path);
+    static int DeleteInvalidItems();
 
     //从文件读取数据
     bool LoadData();

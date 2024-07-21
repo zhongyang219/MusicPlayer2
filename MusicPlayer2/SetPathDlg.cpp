@@ -399,11 +399,11 @@ void CSetPathDlg::OnDeletePath()
         }
         else
         {
-            deque<PathInfo>& recent_path = CRecentFolderMgr::Instance().GetRecentPath();
-            auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == del_path; });
-            recent_path.erase(iter);        // 删除选中的路径
-            ShowPathList();                 // 重新显示路径列表
-            CRecentFolderAndPlaylist::Instance().Init();
+            if (CRecentFolderMgr::Instance().DeleteItem(del_path))
+            {
+                ShowPathList();                 // 重新显示路径列表
+                CRecentFolderAndPlaylist::Instance().Init();
+            }
         }
     }
 }

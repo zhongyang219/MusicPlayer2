@@ -26,21 +26,30 @@ void CUIWindowCmdHelper::OnUiCommand(DWORD command)
         {
             OnRecentPlayedListCommand(recent_played_list, command);
         }
+        UiElement::MediaLibFolder* medialib_folder = dynamic_cast<UiElement::MediaLibFolder*>(pUi->m_context_menu_sender);
+        if (medialib_folder != nullptr)
+        {
+            OnMediaLibFolderCommand(medialib_folder, command);
+        }
+        UiElement::MediaLibPlaylist* medialib_playlist = dynamic_cast<UiElement::MediaLibPlaylist*>(pUi->m_context_menu_sender);
+        if (medialib_playlist != nullptr)
+        {
+            OnMediaLibPlaylistCommand(medialib_playlist, command);
+        }
         pUi->m_context_menu_sender = nullptr;   //命令被响应后清空上次保存的命令发送者
     }
 }
 
 void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
 {
-    //设置“添加到播放列表”子菜单项的可用状态
-    for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
+    if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::UiLibLeftMenu))
     {
-        CString menu_string;
-        pMenu->GetMenuString(id, menu_string, 0);
-        pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
+        SetMediaLibItemListMenuState(pMenu);
     }
-    pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
-    pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu))
+    {
+        SetMediaLibFolderMenuState(pMenu);
+    }
 }
 
 void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* medialib_item_list, DWORD command)
@@ -76,7 +85,7 @@ void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* 
             if (!CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true))
             {
                 const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
             }
         }
     }
@@ -84,7 +93,7 @@ void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* 
     else if (command == ID_COPY_TEXT)
     {
         if (!CCommon::CopyStringToClipboard(display_name))
-            AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
+            AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), MB_ICONWARNING);
 
     }
     //在媒体库中查看
@@ -116,12 +125,6 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
         return;
 
     const CRecentFolderAndPlaylist::Item& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[item_selected] };
-    //if (item.IsMedialib() && item.medialib_info != nullptr)
-    //{
-
-    //}
-
-    CMusicPlayerCmdHelper helper;
 
     //播放
     if (command == ID_PLAY_ITEM)
@@ -151,11 +154,12 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
     else if (command == ID_COPY_TEXT)
     {
         if (!CCommon::CopyStringToClipboard(item.GetName()))
-            AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
+            AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), MB_ICONWARNING);
     }
     //在媒体库中查看
     else if (command == ID_VIEW_IN_MEDIA_LIB)
     {
+        CMusicPlayerCmdHelper helper;
         if (item.IsFolder())
         {
             wstring folder_path{ item.folder_info->path };
@@ -182,5 +186,105 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
             }
             helper.OnViewInMediaLib(tab, item.medialib_info->path);
         }
+    }
+}
+
+void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medialib_folder, DWORD command)
+{
+    int item_selected{ medialib_folder->GetItemSelected() };
+    if (item_selected < 0 || item_selected >= static_cast<int>(CRecentFolderMgr::Instance().GetRecentPath().size()))
+        return;
+
+    PathInfo& path_info{ CRecentFolderMgr::Instance().GetRecentPath()[item_selected] };
+    CMusicPlayerCmdHelper helper;
+
+    if (command == ID_PLAY_PATH)
+    {
+        helper.OnFolderSelected(path_info, true);
+    }
+    else if (command == ID_DELETE_PATH)
+    {
+        // 如果是当前播放则使用CPlayer成员方法处理
+        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == path_info.path)
+        {
+            if (!CPlayer::GetInstance().RemoveCurPlaylistOrFolder())
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
+            }
+        }
+        else
+        {
+            if (CRecentFolderMgr::Instance().DeleteItem(path_info.path))
+                CRecentFolderAndPlaylist::Instance().Init();
+        }
+    }
+    else if (command == ID_BROWSE_PATH)
+    {
+        ShellExecute(NULL, _T("open"), _T("explorer"), path_info.path.c_str(), NULL, SW_SHOWNORMAL);
+    }
+    else if (command == ID_CONTAIN_SUB_FOLDER)
+    {
+        // 如果是当前播放则使用CPlayer成员方法更改（会启动播放列表初始化）不需要操作CPlayer::GetInstance().GetRecentPath()
+        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == path_info.path)
+        {
+            if (!CPlayer::GetInstance().SetContainSubFolder())
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
+            }
+        }
+        else
+        {
+            path_info.contain_sub_folder = !path_info.contain_sub_folder;
+        }
+
+    }
+    else if (command == ID_CLEAR_INVALID_PATH)
+    {
+        const wstring& inquiry_info = theApp.m_str_table.LoadText(L"MSG_LIB_PATH_CLEAR_INQUIRY");
+        if (AfxMessageBox(inquiry_info.c_str(), MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
+            return;
+        int cleard_cnt = CRecentFolderMgr::Instance().DeleteInvalidItems();
+        CRecentFolderAndPlaylist::Instance().Init();
+        wstring complete_info = theApp.m_str_table.LoadTextFormat(L"MSG_LIB_PATH_CLEAR_COMPLETE", { cleard_cnt });
+        AfxMessageBox(complete_info.c_str(), MB_ICONINFORMATION | MB_OK);
+    }
+}
+
+void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command)
+{
+}
+
+void CUIWindowCmdHelper::SetMediaLibItemListMenuState(CMenu* pMenu)
+{
+    //设置“添加到播放列表”子菜单项的可用状态
+    for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
+    {
+        CString menu_string;
+        pMenu->GetMenuString(id, menu_string, 0);
+        pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
+    }
+    pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
+    pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
+}
+
+void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
+{
+    UiElement::MediaLibFolder* medialib_folder{};
+    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
+    if (pUi != nullptr)
+    {
+        medialib_folder = dynamic_cast<UiElement::MediaLibFolder*>(pUi->m_context_menu_sender);
+    }
+    if (medialib_folder != nullptr)
+    {
+        int item_selected{ medialib_folder->GetItemSelected() };
+        if (item_selected < 0 || item_selected >= static_cast<int>(CRecentFolderMgr::Instance().GetRecentPath().size()))
+            return;
+
+        PathInfo& path_info{ CRecentFolderMgr::Instance().GetRecentPath()[item_selected] };
+
+        pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (path_info.contain_sub_folder ? MF_CHECKED : MF_UNCHECKED));
     }
 }
