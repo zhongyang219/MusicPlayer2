@@ -17,6 +17,7 @@ private:
 
     void SetMediaLibItemListMenuState(CMenu* pMenu);
     void SetMediaLibFolderMenuState(CMenu* pMenu);
+    void SetMediaLibPlaylistMenuState(CMenu* pMenu);
 
 private:
     IPlayerUI* m_pUI;

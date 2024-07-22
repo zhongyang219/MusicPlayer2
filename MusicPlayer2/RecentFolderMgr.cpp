@@ -66,6 +66,19 @@ const PathInfo& CRecentFolderMgr::GetCurrentItem()
     return empty_item;
 }
 
+PathInfo& CRecentFolderMgr::GetItem(int index)
+{
+    if (index >= 0 && index < static_cast<int>(m_recent_path.size()))
+    {
+        return m_recent_path[index];
+    }
+    else
+    {
+        static PathInfo empty_item;
+        return empty_item;
+    }
+}
+
 bool CRecentFolderMgr::DeleteItem(const std::wstring& path)
 {
     auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(), [&](const PathInfo& path_info) {

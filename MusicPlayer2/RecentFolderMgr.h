@@ -27,6 +27,7 @@ public:
     void EmplaceRecentFolder(const std::wstring& path, int track, int position, SortMode sort_mode, int track_num, int totla_time, bool contain_sub_folder);
     const PathInfo& FindItem(const std::wstring& path);
     const PathInfo& GetCurrentItem();
+    PathInfo& GetItem(int index);
     bool DeleteItem(const std::wstring& path);
     static int DeleteInvalidItems();
 

@@ -12,6 +12,7 @@
 #include "SongDataManager.h"
 #include "SelectItemDlg.h"
 #include "CommonDialogMgr.h"
+#include "FilterHelper.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -750,7 +751,7 @@ void CMusicPlayerCmdHelper::OnFolderSelected(const PathInfo& path_info, bool pla
     if (!CPlayer::GetInstance().SetPath(path_info, play))
     {
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-        AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -759,7 +760,7 @@ void CMusicPlayerCmdHelper::OnPlaylistSelected(const PlaylistInfo& playlist_info
     if (!CPlayer::GetInstance().SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position, play))
     {
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-        AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -768,7 +769,7 @@ void CMusicPlayerCmdHelper::OnMediaLibItemSelected(CMediaClassifier::Classificat
     if (!CPlayer::GetInstance().SetMediaLibPlaylist(type, name, -1, SongInfo(), play))
     {
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-        AfxMessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 
@@ -792,6 +793,176 @@ void CMusicPlayerCmdHelper::OnRecentItemSelected(const CRecentFolderAndPlaylist:
                 OnMediaLibItemSelected(item->medialib_info->medialib_type, item->medialib_info->path);
         }
     }
+}
+
+bool CMusicPlayerCmdHelper::OnRenamePlaylist(const std::wstring& playlist_path)
+{
+    if (playlist_path.empty())
+        return false;
+    CFilePathHelper old_path{ playlist_path };
+    wstring old_playlist_name{ old_path.GetFileName() };        // 确保不是特殊播放列表
+    if (old_playlist_name == DEFAULT_PLAYLIST_NAME || old_playlist_name == FAVOURITE_PLAYLIST_NAME || old_playlist_name == TEMP_PLAYLIST_NAME)
+        return false;
+    old_playlist_name = old_path.GetFileNameWithoutExtension(); // 获取播放列表名
+
+    CInputDlg imput_dlg;
+    imput_dlg.SetTitle(theApp.m_str_table.LoadText(L"TITLE_RENAME_PLAYLIST").c_str());
+    imput_dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_RENAME_PLAYLIST_INPUT_PLAYLIST_NAME").c_str());
+    imput_dlg.SetEditText(old_playlist_name.c_str());
+
+    if (imput_dlg.DoModal() == IDOK)
+    {
+        wstring new_playlist_name{ imput_dlg.GetEditText() };
+        if (new_playlist_name.empty())
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_NAME_EMPTY_WARNING");
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+            return false;
+        }
+        if (!CCommon::IsFileNameValid(new_playlist_name))
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_NAME_INVALID_WARNING");
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+            return false;
+        }
+        if (CCommon::FileExist(theApp.m_playlist_dir + new_playlist_name + PLAYLIST_EXTENSION))
+        {
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_EXIST_WARNING", { new_playlist_name });
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+            return false;
+        }
+
+        wstring new_path = CCommon::FileRename(playlist_path, new_playlist_name);   //播放列表后命名后的路径
+        if (new_path.empty())
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_RENANE_FAILED");
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+            return false;
+        }
+        if (playlist_path == new_path)
+            return false;
+
+        if (playlist_path == CPlayer::GetInstance().GetPlaylistPath())          // 如果重命名的播放是当前播放的播放列表，就重新设置当前播放列表的路径
+        {
+            CPlayer::GetInstance().SetPlaylistPath(new_path);                       // 更新m_playlist_path变量
+            theApp.m_pMainWnd->SendMessage(WM_CUR_PLAYLIST_RENAMED);                // 更新主窗口m_path_edit控件文字
+        }
+        CPlaylistMgr::Instance().RenamePlaylist(playlist_path, new_path);
+        CPlaylistMgr::Instance().SavePlaylistData();
+
+        CRecentFolderAndPlaylist::Instance().Init();
+        return true;
+    }
+    return false;
+}
+
+bool CMusicPlayerCmdHelper::OnDeletePlaylist(std::wstring playlist_path)
+{
+    if (playlist_path.empty())
+        return false;
+
+    CFilePathHelper old_path{ playlist_path };
+    wstring old_playlist_name{ old_path.GetFileName() };        // 确保不是特殊播放列表
+    if (old_playlist_name == DEFAULT_PLAYLIST_NAME || old_playlist_name == FAVOURITE_PLAYLIST_NAME || old_playlist_name == TEMP_PLAYLIST_NAME)
+        return false;
+
+    const wstring& inquiry_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_PLAYLIST_INQUIRY", { old_playlist_name });
+    if (GetOwner()->MessageBox(inquiry_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+    {
+        // 如果是当前播放那么使用CPlayer成员方法处理
+        if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetPlaylistPath() == playlist_path)
+        {
+            if (!CPlayer::GetInstance().RemoveCurPlaylistOrFolder())
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            }
+            return false;
+        }
+        else
+        {
+            CPlaylistMgr::Instance().DeletePlaylist(playlist_path);
+            CommonDialogMgr::DeleteAFile(GetOwner()->GetSafeHwnd(), playlist_path);
+            CRecentFolderAndPlaylist::Instance().Init();
+            return true;
+        }
+    }
+    return false;
+}
+
+std::wstring CMusicPlayerCmdHelper::OnNewPlaylist()
+{
+    CInputDlg imput_dlg(GetOwner());
+    imput_dlg.SetTitle(theApp.m_str_table.LoadText(L"TITLE_NEW_PLAYLIST").c_str());
+    imput_dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_NEW_PLAYLIST_INPUT_PLAYLIST_NAME").c_str());
+    if (imput_dlg.DoModal() == IDOK)
+    {
+        CString playlist_name = imput_dlg.GetEditText();
+        if (playlist_name.IsEmpty())
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_NAME_EMPTY_WARNING");
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+            return wstring();
+        }
+        if (!CCommon::IsFileNameValid(wstring(playlist_name.GetString())))
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_NAME_INVALID_WARNING");
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+            return wstring();
+        }
+        wstring playlist_path = theApp.m_playlist_dir + playlist_name.GetString() + PLAYLIST_EXTENSION;
+        if (CCommon::FileExist(playlist_path))
+        {
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_EXIST_WARNING", { playlist_name });
+            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+            return wstring();
+        }
+
+        CPlaylistMgr::Instance().AddNewPlaylist(playlist_path);
+        CRecentFolderAndPlaylist::Instance().Init();
+        return playlist_path;
+    }
+    return wstring();
+
+}
+
+void CMusicPlayerCmdHelper::OnPlaylistSaveAs(const std::wstring& playlist_path)
+{
+    wstring filter = FilterHelper::GetPlaylistSaveAsFilter();
+    CFileDialog fileDlg(FALSE, _T("m3u"), CFilePathHelper(playlist_path).GetFileNameWithoutExtension().c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter.c_str(), GetOwner());
+    if (IDOK == fileDlg.DoModal())
+    {
+        CPlaylistFile playlist;
+        playlist.LoadFromFile(playlist_path);
+        //将播放列表保存到文件
+        wstring file_path{ fileDlg.GetPathName() };
+        wstring file_extension{ fileDlg.GetFileExt() };
+        file_extension = L'.' + file_extension;
+        CPlaylistFile::Type file_type{};
+        if (file_extension == PLAYLIST_EXTENSION)
+            file_type = CPlaylistFile::PL_PLAYLIST;
+        else if (file_extension == L".m3u")
+            file_type = CPlaylistFile::PL_M3U;
+        else if (file_extension == L".m3u8")
+            file_type = CPlaylistFile::PL_M3U8;
+        playlist.SaveToFile(file_path, file_type);
+    }
+}
+
+bool CMusicPlayerCmdHelper::OnPlaylistFixPathError(const std::wstring& playlist_path)
+{
+    if (!playlist_path.empty())
+    {
+        const wstring& inquiry_info = theApp.m_str_table.LoadText(L"MSG_PLAYLIST_FIX_ERROR_PATH_INQUIRY");
+        if (GetOwner()->MessageBox(inquiry_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+        {
+            int fixed_count = FixPlaylistPathError(playlist_path);
+            wstring complete_info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_FIX_ERROR_PATH_COMPLETE", { fixed_count });
+            GetOwner()->MessageBox(complete_info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            return true;
+        }
+    }
+    return false;
 }
 
 void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)

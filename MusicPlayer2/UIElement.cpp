@@ -1665,11 +1665,7 @@ int UiElement::MediaLibFolder::GetColumnScrollTextWhenSelected()
 
 CMenu* UiElement::MediaLibFolder::GetContextMenu(bool item_selected)
 {
-    if (item_selected)
-    {
-        return theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu);
-    }
-    return nullptr;
+    return theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu);
 }
 
 CWnd* UiElement::MediaLibFolder::GetCmdRecivedWnd()
@@ -1733,11 +1729,14 @@ int UiElement::MediaLibPlaylist::GetColumnScrollTextWhenSelected()
 
 CMenu* UiElement::MediaLibPlaylist::GetContextMenu(bool item_selected)
 {
-    return nullptr;
+    return theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistMenu);
 }
 
 CWnd* UiElement::MediaLibPlaylist::GetCmdRecivedWnd()
 {
+    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pDlg != nullptr)
+        return &pDlg->GetUIWindow();
     return nullptr;
 }
 

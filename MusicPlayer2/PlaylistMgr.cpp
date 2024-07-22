@@ -3,6 +3,7 @@
 #include "MusicPlayer2.h"
 #include "Playlist.h"
 #include "FilePathHelper.h"
+#include "Player.h"
 
 CPlaylistMgr CPlaylistMgr::m_instance;
 
@@ -408,16 +409,36 @@ const PlaylistInfo& CPlaylistMgr::GetPlaylistInfo(int index)
 
 int CPlaylistMgr::GetCurrentPlaylistIndex() const
 {
+    if (!CPlayer::GetInstance().IsPlaylistMode())
+    {
+        return -1;
+    }
     if (m_cur_playlist_type == PT_DEFAULT)
+    {
         return 0;
+    }
     else if (m_cur_playlist_type == PT_FAVOURITE)
+    {
         return 1;
+    }
     else if (m_cur_playlist_type == PT_TEMP)
+    {
         return GetPlaylistNum() - 1;
+    }
     else if (m_recent_playlists.empty())    // m_recent_playlists为空时返回默认播放列表)
+    {
         return 0;
+    }
     else
+    {
+        std::wstring cur_playlist_path{ CPlayer::GetInstance().GetPlaylistPath() };
+        auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [&](const PlaylistInfo& playlist) {
+            return playlist.path == cur_playlist_path;
+        });
+        if (iter != m_recent_playlists.end())
+            return SPEC_PLAYLIST_NUM + (iter - m_recent_playlists.begin());
         return SPEC_PLAYLIST_NUM;
+    }
 }
 
 std::wstring CPlaylistMgr::GetPlaylistDisplayName(const std::wstring path)

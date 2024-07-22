@@ -50,6 +50,10 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     {
         SetMediaLibFolderMenuState(pMenu);
     }
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistMenu))
+    {
+        SetMediaLibPlaylistMenuState(pMenu);
+    }
 }
 
 void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* medialib_item_list, DWORD command)
@@ -192,10 +196,8 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
 void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medialib_folder, DWORD command)
 {
     int item_selected{ medialib_folder->GetItemSelected() };
-    if (item_selected < 0 || item_selected >= static_cast<int>(CRecentFolderMgr::Instance().GetRecentPath().size()))
-        return;
 
-    PathInfo& path_info{ CRecentFolderMgr::Instance().GetRecentPath()[item_selected] };
+    PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
     CMusicPlayerCmdHelper helper;
 
     if (command == ID_PLAY_PATH)
@@ -254,6 +256,57 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
 
 void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command)
 {
+    int item_selected{ medialib_folder->GetItemSelected() };
+
+    const PlaylistInfo& playlist{ CPlaylistMgr::Instance().GetPlaylistInfo(item_selected) };
+    CMusicPlayerCmdHelper helper;
+
+    if (command == ID_PLAY_PLAYLIST)
+    {
+        helper.OnPlaylistSelected(playlist, true);
+    }
+    else if (command == ID_RENAME_PLAYLIST)
+    {
+        helper.OnRenamePlaylist(playlist.path);
+    }
+    else if (command == ID_DELETE_PLAYLIST)
+    {
+        helper.OnDeletePlaylist(playlist.path);
+    }
+    else if (command == ID_SAVE_AS_NEW_PLAYLIST)
+    {
+        wstring new_playlist_path = helper.OnNewPlaylist();
+        if (!new_playlist_path.empty())
+        {
+            PlaylistInfo playlist_info{ playlist };
+            CopyFile(playlist_info.path.c_str(), new_playlist_path.c_str(), FALSE);
+            playlist_info.path = new_playlist_path;
+            playlist_info.last_played_time = 0;
+            CPlaylistMgr::Instance().UpdatePlaylistInfo(playlist_info);
+        }
+    }
+    else if (command == ID_PLAYLIST_SAVE_AS)
+    {
+        helper.OnPlaylistSaveAs(playlist.path);
+
+    }
+    else if (command == ID_PLAYLIST_BROWSE_FILE)
+    {
+        if (!playlist.path.empty())
+        {
+            CString str;
+            str.Format(_T("/select,\"%s\""), playlist.path.c_str());
+            ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
+        }
+    }
+    else if (command == ID_PLAYLIST_FIX_PATH_ERROR)
+    {
+        helper.OnPlaylistFixPathError(playlist.path);
+    }
+    else if (command == ID_NEW_PLAYLIST)
+    {
+        helper.OnNewPlaylist();
+    }
 }
 
 void CUIWindowCmdHelper::SetMediaLibItemListMenuState(CMenu* pMenu)
@@ -271,6 +324,8 @@ void CUIWindowCmdHelper::SetMediaLibItemListMenuState(CMenu* pMenu)
 
 void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
 {
+    bool select_valid{};
+    bool contain_sub_folder{};
     UiElement::MediaLibFolder* medialib_folder{};
     CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
     if (pUi != nullptr)
@@ -280,11 +335,53 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
     if (medialib_folder != nullptr)
     {
         int item_selected{ medialib_folder->GetItemSelected() };
-        if (item_selected < 0 || item_selected >= static_cast<int>(CRecentFolderMgr::Instance().GetRecentPath().size()))
-            return;
+        if (item_selected >= 0 && item_selected < static_cast<int>(CRecentFolderMgr::Instance().GetRecentPath().size()))
+            select_valid = true;
 
-        PathInfo& path_info{ CRecentFolderMgr::Instance().GetRecentPath()[item_selected] };
-
-        pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (path_info.contain_sub_folder ? MF_CHECKED : MF_UNCHECKED));
+        const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
+        contain_sub_folder = path_info.contain_sub_folder;
     }
+
+    pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_BROWSE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid && contain_sub_folder ? MF_CHECKED : MF_UNCHECKED));
+}
+
+void CUIWindowCmdHelper::SetMediaLibPlaylistMenuState(CMenu* pMenu)
+{
+    bool select_valid{};
+    PlaylistInfo selected_playlist;
+    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
+    if (pUi != nullptr)
+    {
+        UiElement::MediaLibPlaylist* medialib_playlist = dynamic_cast<UiElement::MediaLibPlaylist*>(pUi->m_context_menu_sender);
+        if (medialib_playlist != nullptr)
+        {
+            int item_selected{ medialib_playlist->GetItemSelected() };
+            if (item_selected >= 0 && item_selected < static_cast<int>(CPlaylistMgr::Instance().GetPlaylistNum()))
+            {
+                select_valid = true;
+                selected_playlist = CPlaylistMgr::Instance().GetPlaylistInfo(item_selected);
+            }
+        }
+    }
+
+    bool selected_can_play{ select_valid &&
+        (
+            !CPlayer::GetInstance().IsPlaylistMode() ||
+            selected_playlist.path != CPlayer::GetInstance().GetPlaylistPath()
+        )};
+
+    wstring sel_playlist_name = CFilePathHelper(selected_playlist.path).GetFileName();
+    bool is_spec_playlist{ sel_playlist_name == DEFAULT_PLAYLIST_NAME || sel_playlist_name == FAVOURITE_PLAYLIST_NAME };
+    bool is_temp_playlist{ sel_playlist_name == TEMP_PLAYLIST_NAME };
+    pMenu->EnableMenuItem(ID_RENAME_PLAYLIST, MF_BYCOMMAND | (select_valid && !is_spec_playlist && !is_temp_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (select_valid && !is_spec_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (selected_can_play ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_SAVE_AS_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_SAVE_AS, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_FIX_PATH_ERROR, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAYLIST_BROWSE_FILE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 }

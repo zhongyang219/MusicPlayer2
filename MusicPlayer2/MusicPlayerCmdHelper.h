@@ -90,6 +90,12 @@ public:
     //响应播放列表上方下拉列表项
     void OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item);
 
+    bool OnRenamePlaylist(const std::wstring& playlist_path);
+    bool OnDeletePlaylist(std::wstring playlist_path);   //执行删除播放列表操作，仅当要删除的不是正在播放的播放列表时返回true
+    std::wstring OnNewPlaylist();
+    void OnPlaylistSaveAs(const std::wstring& playlist_path);
+    bool OnPlaylistFixPathError(const std::wstring& playlist_path);
+
 protected:
     void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 
