@@ -46,13 +46,17 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     {
         SetMediaLibItemListMenuState(pMenu);
     }
-    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu))
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::UiLibSetPathMenu))
     {
         SetMediaLibFolderMenuState(pMenu);
     }
     else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistMenu))
     {
         SetMediaLibPlaylistMenuState(pMenu);
+    }
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::UiRecentPlayedMenu))
+    {
+        SetRecentPlayedListMenuState(pMenu);
     }
 }
 
@@ -252,6 +256,10 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
         wstring complete_info = theApp.m_str_table.LoadTextFormat(L"MSG_LIB_PATH_CLEAR_COMPLETE", { cleard_cnt });
         AfxMessageBox(complete_info.c_str(), MB_ICONINFORMATION | MB_OK);
     }
+    else if (command == ID_FILE_OPEN_FOLDER)
+    {
+        helper.OnOpenFolder();
+    }
 }
 
 void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command)
@@ -306,6 +314,24 @@ void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* 
     else if (command == ID_NEW_PLAYLIST)
     {
         helper.OnNewPlaylist();
+    }
+}
+
+void CUIWindowCmdHelper::SetRecentPlayedListMenuState(CMenu* pMenu)
+{
+    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
+    if (pUi != nullptr)
+    {
+        UiElement::RecentPlayedList* recent_played = dynamic_cast<UiElement::RecentPlayedList*>(pUi->m_context_menu_sender);
+        if (recent_played != nullptr)
+        {
+            int item_selected{ recent_played->GetItemSelected() };
+            if (item_selected >= 0 && item_selected < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()))
+            {
+                const CRecentFolderAndPlaylist::Item& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[item_selected] };
+                pMenu->EnableMenuItem(ID_RECENT_PLAYED_REMOVE, MF_BYCOMMAND | (item.IsMedialib() ? MF_ENABLED : MF_GRAYED));
+            }
+        }
     }
 }
 

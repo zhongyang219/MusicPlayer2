@@ -339,38 +339,13 @@ void CSetPathDlg::OnOK()
 void CSetPathDlg::OnBnClickedOpenFolder()
 {
     // TODO: 在此添加控件通知处理程序代码
-    static bool include_sub_dir{ false };
-    static CString include_sub_dir_str{ theApp.m_str_table.LoadText(L"TXT_FOLDER_BROWSER_INCLUDE_SUB_DIR").c_str() };
-    const wstring& title = theApp.m_str_table.LoadText(L"TITLE_FOLDER_BROWSER_SONG_SOURCE");
-    // 这里原来使用WM_COMMAND, ID_FILE_OPEN_FOLDER但菜单命令无法返回用户是否点击“取消”
-#ifdef COMPILE_IN_WIN_XP
-    CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
-    folderPickerDlg.SetInfo(title.c_str());
-#else
-    CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
-    CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
-    folderPickerDlg.m_ofn.lpstrTitle = title.c_str();
-    folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, include_sub_dir_str, include_sub_dir);     //在打开对话框中添加一个复选框
-#endif
-    if (folderPickerDlg.DoModal() == IDOK)
+    CMusicPlayerCmdHelper helper(this);
+    if (helper.OnOpenFolder())
     {
-#ifndef COMPILE_IN_WIN_XP
-        BOOL checked;
-        folderPickerDlg.GetCheckButtonState(IDC_OPEN_CHECKBOX, checked);
-        include_sub_dir = (checked != FALSE);
-#endif
-        if (!CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir))
-        {
-            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-        }
-        else
-        {
-            CTabDlg::OnOK();
-            CWnd* pParent = GetParentWindow();
-            if (pParent != nullptr)
-                ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
-        }
+        CTabDlg::OnOK();
+        CWnd* pParent = GetParentWindow();
+        if (pParent != nullptr)
+            ::PostMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
     }
 }
 

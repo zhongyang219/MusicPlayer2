@@ -96,6 +96,8 @@ public:
     void OnPlaylistSaveAs(const std::wstring& playlist_path);
     bool OnPlaylistFixPathError(const std::wstring& playlist_path);
 
+    bool OnOpenFolder();
+
 protected:
     void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 

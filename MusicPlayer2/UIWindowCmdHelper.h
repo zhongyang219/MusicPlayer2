@@ -15,6 +15,7 @@ private:
     void OnMediaLibFolderCommand(UiElement::MediaLibFolder* medialib_folder, DWORD command);
     void OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command);
 
+    void SetRecentPlayedListMenuState(CMenu* pMenu);
     void SetMediaLibItemListMenuState(CMenu* pMenu);
     void SetMediaLibFolderMenuState(CMenu* pMenu);
     void SetMediaLibPlaylistMenuState(CMenu* pMenu);

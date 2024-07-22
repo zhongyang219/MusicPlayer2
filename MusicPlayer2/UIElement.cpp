@@ -1665,7 +1665,7 @@ int UiElement::MediaLibFolder::GetColumnScrollTextWhenSelected()
 
 CMenu* UiElement::MediaLibFolder::GetContextMenu(bool item_selected)
 {
-    return theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu);
+    return theApp.m_menu_mgr.GetMenu(MenuMgr::UiLibSetPathMenu);
 }
 
 CWnd* UiElement::MediaLibFolder::GetCmdRecivedWnd()

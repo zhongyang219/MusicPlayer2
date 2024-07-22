@@ -281,7 +281,7 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
         return L"MINI_SWITCH_UI";
     case MenuMgr::NotifyMenu:
         return L"NOTIFY";
-    case MenuMgr::LibSetPathMenu:
+    case MenuMgr::LibSetPathMenu: case MenuMgr::UiLibSetPathMenu:
         return L"LIB_SET_PATH";
     case MenuMgr::LibPlaylistMenu:
         return L"LIB_PLAYLIST";
@@ -820,6 +820,17 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_ITEM_PROPERTY), IconMgr::IconType::IT_Info);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
+        break;
+    case MenuMgr::UiLibSetPathMenu:
+        menu.CreateMenu(true, false);
+        menu.AppendItem(EX_ID(ID_PLAY_PATH), IconMgr::IconType::IT_Play);
+        menu.SetDefaultItem();
+        menu.AppendItem(EX_ID(ID_DELETE_PATH), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_BROWSE_PATH), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_CONTAIN_SUB_FOLDER));
+        menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_CLEAR_INVALID_PATH));
+        menu.AppendItem(EX_ID(ID_FILE_OPEN_FOLDER), IconMgr::IconType::IT_Folder);
         break;
     case MenuMgr::UiLibLeftMenu:
         menu.CreateMenu(true, false);
