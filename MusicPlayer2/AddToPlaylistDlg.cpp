@@ -82,11 +82,10 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
     m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
 
     //初始化列表
-    for (const auto& item : CPlaylistMgr::Instance().m_recent_playlists)
-    {
+    CPlaylistMgr::Instance().IterateItemsWithoutSpecialPlaylist([&](PlaylistInfo& item) {
         CFilePathHelper playlist_path{ item.path };
         m_list.push_back(playlist_path.GetFileNameWithoutExtension());
-    }
+    });
     ShowList();
 
     return TRUE;  // return TRUE unless you set the focus to a control

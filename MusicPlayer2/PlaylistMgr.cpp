@@ -30,6 +30,7 @@ void CPlaylistMgr::Init()
 
 void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time)
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     if (path == m_default_playlist.path)
     {
         m_default_playlist.position = pos;
@@ -75,6 +76,7 @@ void CPlaylistMgr::EmplacePlaylist(const wstring& path, int track, int pos, int 
 
 void CPlaylistMgr::AddNewPlaylist(const wstring& path)
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     PlaylistInfo playlist_info{};
     playlist_info.path = path;
     m_recent_playlists.push_front(playlist_info);
@@ -85,6 +87,7 @@ void CPlaylistMgr::AddNewPlaylist(const wstring& path)
 
 bool CPlaylistMgr::DeletePlaylist(const wstring& path)
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     if (path == m_temp_playlist.path)
     {
         m_temp_playlist.track_num = 0;
@@ -108,11 +111,13 @@ bool CPlaylistMgr::DeletePlaylist(const wstring& path)
 void CPlaylistMgr::UpdateCurrentPlaylistType(const wstring& path)
 {
     if (path.empty()) return;
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     m_cur_playlist_type = GetPlaylistType(path);
 }
 
 void CPlaylistMgr::UpdatePlaylistInfo(PlaylistInfo playlist_info)
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     PlaylistType type = GetPlaylistType(playlist_info.path);
     switch (type)
     {
@@ -150,6 +155,7 @@ void CPlaylistMgr::SavePlaylistData()
     {
         return;
     }
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
@@ -201,6 +207,7 @@ void CPlaylistMgr::SavePlaylistData()
 
 void CPlaylistMgr::LoadPlaylistData()
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     m_recent_playlists.clear();
     std::vector<PlaylistInfo> playlist_info_vect;       //从数据获取到的播放列表信息
 
@@ -313,6 +320,7 @@ void CPlaylistMgr::LoadPlaylistData()
 
 PlaylistInfo CPlaylistMgr::FindPlaylistInfo(const wstring& str) const
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     if (m_default_playlist.path.find(str) != wstring::npos)
     {
         return m_default_playlist;
@@ -340,6 +348,7 @@ PlaylistInfo CPlaylistMgr::FindPlaylistInfo(const wstring& str) const
 
 PlaylistInfo CPlaylistMgr::GetCurrentPlaylistInfo() const
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     if (m_cur_playlist_type == PT_DEFAULT)
         return m_default_playlist;
     else if (m_cur_playlist_type == PT_FAVOURITE)
@@ -354,6 +363,7 @@ PlaylistInfo CPlaylistMgr::GetCurrentPlaylistInfo() const
 
 PlaylistType CPlaylistMgr::GetPlaylistType(const wstring& path) const
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     if (path == m_default_playlist.path)
         return PT_DEFAULT;
     else if (path == m_favourite_playlist.path)
@@ -366,6 +376,7 @@ PlaylistType CPlaylistMgr::GetPlaylistType(const wstring& path) const
 
 void CPlaylistMgr::RenamePlaylist(const wstring& old_path, const wstring& new_path)
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(),
         [&](const PlaylistInfo& playlist_info) { return playlist_info.path == old_path; });
     if (iter != m_recent_playlists.end())
@@ -374,6 +385,7 @@ void CPlaylistMgr::RenamePlaylist(const wstring& old_path, const wstring& new_pa
 
 void CPlaylistMgr::GetAllPlaylistInfo(vector<PlaylistInfo>& playlists_info)
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     playlists_info.clear();
     playlists_info.push_back(m_default_playlist);
     playlists_info.push_back(m_favourite_playlist);
@@ -383,12 +395,45 @@ void CPlaylistMgr::GetAllPlaylistInfo(vector<PlaylistInfo>& playlists_info)
         playlists_info.push_back(m_temp_playlist);
 }
 
+void CPlaylistMgr::IterateItems(std::function<void(PlaylistInfo&)> func)
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    func(m_default_playlist);
+    func(m_favourite_playlist);
+    for (auto& item : m_recent_playlists)
+        func(item);
+    if (m_temp_playlist.track_num > 0)
+        func(m_temp_playlist);
+}
+
+void CPlaylistMgr::IterateItemsWithoutSpecialPlaylist(std::function<void(PlaylistInfo&)> func, int max_num)
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    int count{};
+    for (auto& item : m_recent_playlists)
+    {
+        func(item);
+        count++;
+        if (max_num > 0 && count >= max_num)
+            break;
+    }
+}
+
 int CPlaylistMgr::GetPlaylistNum() const
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     int playlist_num = m_recent_playlists.size() + SPEC_PLAYLIST_NUM;
     if (m_temp_playlist.track_num > 0)
         playlist_num++;
     return playlist_num;
+}
+
+void CPlaylistMgr::GetPlaylistInfo(int index, std::function<void(const PlaylistInfo&)> func)
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    const PlaylistInfo& playlist_info{ GetPlaylistInfo(index) };
+    if (!playlist_info.path.empty())
+        func(playlist_info);
 }
 
 const PlaylistInfo& CPlaylistMgr::GetPlaylistInfo(int index)
@@ -407,8 +452,16 @@ const PlaylistInfo& CPlaylistMgr::GetPlaylistInfo(int index)
     return empty_info;
 }
 
+void CPlaylistMgr::GetPlaylistInfoWithoutSpecialPlaylist(int index, std::function<void(const PlaylistInfo&)> func)
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    if (index >= 0 && index < static_cast<int>(m_recent_playlists.size()))
+        func(m_recent_playlists[index]);
+}
+
 int CPlaylistMgr::GetCurrentPlaylistIndex() const
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     if (!CPlayer::GetInstance().IsPlaylistMode())
     {
         return -1;

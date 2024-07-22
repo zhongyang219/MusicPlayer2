@@ -149,12 +149,12 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         }
         else if (command == ID_ADD_TO_DEFAULT_PLAYLIST)      //添加到默认播放列表
         {
-            std::wstring default_playlist_path = CPlaylistMgr::Instance().m_default_playlist.path;
+            std::wstring default_playlist_path = CPlaylistMgr::Instance().GetDefaultPlaylist().path;
             AddToPlaylist(selected_item_path, default_playlist_path);
         }
         else if (command == ID_ADD_TO_MY_FAVOURITE)      //添加到“我喜欢”播放列表
         {
-            std::wstring favourite_playlist_path = CPlaylistMgr::Instance().m_favourite_playlist.path;
+            std::wstring favourite_playlist_path = CPlaylistMgr::Instance().GetFavouritePlaylist().path;
             AddToPlaylist(selected_item_path, favourite_playlist_path);
 
             //添加到“我喜欢”播放列表后，为添加的项目设置favourite标记
@@ -180,10 +180,10 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         else        //添加到选中的播放列表
         {
             wstring playlist_path;
-            const auto& recent_playlist = CPlaylistMgr::Instance().m_recent_playlists;
             int index = command - ID_ADD_TO_MY_FAVOURITE - 1;
-            if (index >= 0 && index < static_cast<int>(recent_playlist.size()))
-                playlist_path = recent_playlist[index].path;
+            CPlaylistMgr::Instance().GetPlaylistInfoWithoutSpecialPlaylist(index, [&](const PlaylistInfo& playlist_info) {
+                playlist_path = playlist_info.path;
+            });
             if (CCommon::FileExist(playlist_path))
             {
                 AddToPlaylist(selected_item_path, playlist_path);

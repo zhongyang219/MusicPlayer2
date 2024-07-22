@@ -44,28 +44,45 @@ public:
     PlaylistInfo FindPlaylistInfo(const wstring& str) const;
     PlaylistInfo GetCurrentPlaylistInfo() const;
     PlaylistType GetPlaylistType(const wstring& path) const;
+    PlaylistType GetCurPlaylistType() const { return m_cur_playlist_type; }
 
     // 重命名播放列表后以此更新m_recent_playlists
     void RenamePlaylist(const wstring& old_path, const wstring& new_path);
     // CSelectPlaylistDlg使用此方法获取/更新显示数据
     void GetAllPlaylistInfo(vector<PlaylistInfo>& playlists_info);
 
+    void IterateItems(std::function<void(PlaylistInfo&)> func);
+
+    //遍历所有播放列表，不包括特殊播放列表
+    //max_num：最多遍历播放列表的个数，0表示不限制
+    void IterateItemsWithoutSpecialPlaylist(std::function<void(PlaylistInfo&)> func, int max_num = 0);
+
+    //获取播放列表总数，包括特殊播放列表
     int GetPlaylistNum() const;
-    const PlaylistInfo& GetPlaylistInfo(int index);
+
+    //根据指定index获取一个播放列表信息，包括特殊播放列表，获取到的播放列表信息通过func的参数传递
+    void GetPlaylistInfo(int index, std::function<void(const PlaylistInfo&)> func);
+
+    //根据指定index获取一个播放列表信息，不包括特殊播放列表，获取到的播放列表信息通过func的参数传递
+    void GetPlaylistInfoWithoutSpecialPlaylist(int index, std::function<void(const PlaylistInfo&)> func);
+
     int GetCurrentPlaylistIndex() const;
+
+    const PlaylistInfo& GetDefaultPlaylist() const { return m_default_playlist; }
+    const PlaylistInfo& GetFavouritePlaylist() const { return m_favourite_playlist; }
+    const PlaylistInfo& GetTempPlaylist() const { return m_temp_playlist; }
 
     static std::wstring GetPlaylistDisplayName(const std::wstring path);
 
 private:
     CPlaylistMgr();
+    const PlaylistInfo& GetPlaylistInfo(int index);
 
     static CPlaylistMgr m_instance;     //CPlaylistMgr类唯一的对象
-
-public:
-
     PlaylistInfo m_default_playlist;
     PlaylistInfo m_favourite_playlist;
     PlaylistInfo m_temp_playlist;
     std::deque<PlaylistInfo> m_recent_playlists;
     PlaylistType m_cur_playlist_type{ PT_DEFAULT };
+    mutable std::shared_mutex m_shared_mutex;
 };

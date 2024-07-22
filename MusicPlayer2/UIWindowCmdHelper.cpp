@@ -266,7 +266,10 @@ void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* 
 {
     int item_selected{ medialib_folder->GetItemSelected() };
 
-    const PlaylistInfo& playlist{ CPlaylistMgr::Instance().GetPlaylistInfo(item_selected) };
+    PlaylistInfo playlist;
+    CPlaylistMgr::Instance().GetPlaylistInfo(item_selected, [&](const PlaylistInfo& playlist_info) {
+        playlist = playlist_info;
+    });
     CMusicPlayerCmdHelper helper;
 
     if (command == ID_PLAY_PLAYLIST)
@@ -361,7 +364,7 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
     if (medialib_folder != nullptr)
     {
         int item_selected{ medialib_folder->GetItemSelected() };
-        if (item_selected >= 0 && item_selected < static_cast<int>(CRecentFolderMgr::Instance().GetRecentPath().size()))
+        if (item_selected >= 0 && item_selected < CRecentFolderMgr::Instance().GetItemSize())
             select_valid = true;
 
         const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
@@ -389,7 +392,9 @@ void CUIWindowCmdHelper::SetMediaLibPlaylistMenuState(CMenu* pMenu)
             if (item_selected >= 0 && item_selected < static_cast<int>(CPlaylistMgr::Instance().GetPlaylistNum()))
             {
                 select_valid = true;
-                selected_playlist = CPlaylistMgr::Instance().GetPlaylistInfo(item_selected);
+                CPlaylistMgr::Instance().GetPlaylistInfo(item_selected, [&](const PlaylistInfo& playlist_info) {
+                    selected_playlist = playlist_info;
+                });
             }
         }
     }

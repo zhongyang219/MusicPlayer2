@@ -22,14 +22,18 @@ public:
     ~CRecentFolderMgr();
     static CRecentFolderMgr& Instance();
 
-    deque<PathInfo>& GetRecentPath() { return m_recent_path; }    //返回最近播放路径列表的引用
+    //deque<PathInfo>& GetRecentPath() { return m_recent_path; }    //返回最近播放路径列表的引用
     bool IsEmpty() { return m_recent_path.empty(); }
     void EmplaceRecentFolder(const std::wstring& path, int track, int position, SortMode sort_mode, int track_num, int totla_time, bool contain_sub_folder);
-    const PathInfo& FindItem(const std::wstring& path);
+    PathInfo& FindItem(const std::wstring& path);
+    bool FindItem(const std::wstring& path, std::function<void(PathInfo&)> func);   //查找一个PathInfo对象，找到后会调用func，并通过参数传递找到的对象，func仅调用一次
     const PathInfo& GetCurrentItem();
+    int GetItemSize() const;
+    void IteratePathInfo(std::function<void(const PathInfo&)> func);
     PathInfo& GetItem(int index);
+    void GetItem(int index, std::function<void(const PathInfo&)> func);
     bool DeleteItem(const std::wstring& path);
-    static int DeleteInvalidItems();
+    int DeleteInvalidItems();
 
     //从文件读取数据
     bool LoadData();
@@ -41,6 +45,7 @@ private:
 
     static CRecentFolderMgr m_instance;     //CRecentFolderMgr类唯一的对象
     deque<PathInfo> m_recent_path;      //最近打开过的路径
+    mutable std::shared_mutex m_shared_mutex;
 
 };
 

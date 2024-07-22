@@ -19,29 +19,24 @@ CRecentFolderAndPlaylist& CRecentFolderAndPlaylist::Instance()
 
 void CRecentFolderAndPlaylist::Init()
 {
-    const deque<PathInfo>& recent_folder{ CRecentFolderMgr::Instance().GetRecentPath() };
-    const CPlaylistMgr& recent_playlist{ CPlaylistMgr::Instance() };
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     m_list.clear();
     //添加最近播放播放列表
-    auto addPlaylist = [this](const PlaylistInfo* playlist) {
+    CPlaylistMgr::Instance().IterateItems([&](const PlaylistInfo& playlist_info) {
         //只添加播放过的播放列表
-        if (playlist->last_played_time > 0)
-            m_list.emplace_back(playlist);
-        };
-    addPlaylist(&recent_playlist.m_default_playlist);
-    addPlaylist(&recent_playlist.m_favourite_playlist);
-    if (recent_playlist.m_temp_playlist.track_num > 0)          // 忽略没有文件的临时播放列表
-        addPlaylist(&recent_playlist.m_temp_playlist);
-    for (auto& item : recent_playlist.m_recent_playlists)
-        addPlaylist(&item);
+        if (playlist_info.last_played_time > 0)
+            m_list.emplace_back(&playlist_info);
+    });
 
     //添加最近播放媒体库项目
-    for (const auto& item : CMediaLibPlaylistMgr::Instance().GetAllItems())
-        m_list.emplace_back(&item);
+    CMediaLibPlaylistMgr::Instance().IterateItems([&](const MediaLibPlaylistInfo& medialib_item_info) {
+        m_list.emplace_back(&medialib_item_info);
+    });
 
     //添加最近播放文件夹
-    for (auto& item : recent_folder)
-        m_list.emplace_back(&item);
+    CRecentFolderMgr::Instance().IteratePathInfo([&](const PathInfo& path_info) {
+        m_list.emplace_back(&path_info);
+    });
 
     //按最近播放时间排序
     std::sort(m_list.begin(), m_list.end(), [](const Item& item1, const Item& item2)->bool
@@ -56,6 +51,23 @@ void CRecentFolderAndPlaylist::Init()
 const std::vector<CRecentFolderAndPlaylist::Item>& CRecentFolderAndPlaylist::GetItemList() const
 {
     return m_list;
+}
+
+int CRecentFolderAndPlaylist::GetSize() const
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    return m_list.size();
+}
+
+bool CRecentFolderAndPlaylist::GetItem(int index, std::function<void(const Item&)> func)
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    if (index >= 0 && index < static_cast<int>(m_list.size()))
+    {
+        func(m_list[index]);
+        return true;
+    }
+    return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +178,7 @@ IconMgr::IconType CRecentFolderAndPlaylist::Item::GetIcon() const
 {
     if (IsPlaylist())
     {
-        bool is_favourite{ playlist_info->path == CPlaylistMgr::Instance().m_favourite_playlist.path };
+        bool is_favourite{ playlist_info->path == CPlaylistMgr::Instance().GetFavouritePlaylist().path};
         return is_favourite ? IconMgr::IconType::IT_Favorite_On : IconMgr::IconType::IT_Playlist;
     }
     else if (IsFolder())

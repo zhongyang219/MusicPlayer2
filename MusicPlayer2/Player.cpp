@@ -110,7 +110,7 @@ void CPlayer::Create()
     // 如果文件夹模式且当前文件夹没有音频文件那么切换到默认播放列表，清理无效（空）文件夹会在启动时更新媒体库进行（如果启用remove_file_not_exist_when_update）
     if (change_to_default_playlist)
     {
-        const PlaylistInfo& playlist_info = CPlaylistMgr::Instance().m_default_playlist;
+        const PlaylistInfo& playlist_info = CPlaylistMgr::Instance().GetDefaultPlaylist();
         SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position);
     }
     else if (m_playlist_mode == PM_FOLDER)
@@ -298,7 +298,7 @@ void CPlayer::IniPlaylistComplate()
 
     //检查列表中的曲目是否在“我喜欢”播放列表中
     CPlaylistFile favourite_playlist;
-    favourite_playlist.LoadFromFile(CPlaylistMgr::Instance().m_favourite_playlist.path);
+    favourite_playlist.LoadFromFile(CPlaylistMgr::Instance().GetFavouritePlaylist().path);
     for (auto& item : m_playlist)
     {
         item.is_favourite = favourite_playlist.IsSongInPlaylist(item);
@@ -1078,7 +1078,7 @@ bool CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool pla
         return false;
 
     m_path.clear();
-    m_playlist_path = CPlaylistMgr::Instance().m_default_playlist.path;
+    m_playlist_path = CPlaylistMgr::Instance().GetDefaultPlaylist().path;
     m_playlist_mode = PM_PLAYLIST;
     m_sort_mode = SM_UNSORT;    // 播放列表模式下默认未排序
     m_contain_sub_folder = false;
@@ -1104,7 +1104,7 @@ bool CPlayer::OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_in
         return false;
 
     m_path.clear();
-    m_playlist_path = CPlaylistMgr::Instance().m_temp_playlist.path;
+    m_playlist_path = CPlaylistMgr::Instance().GetTempPlaylist().path;
     m_playlist_mode = PM_PLAYLIST;
     m_sort_mode = SM_UNSORT;    // 播放列表模式下默认未排序
     m_contain_sub_folder = false;
@@ -1264,7 +1264,7 @@ bool CPlayer::RemoveCurPlaylistOrFolder()
     else if (m_playlist_mode == PM_FOLDER)
         m_thread_info.remove_list_path = m_path;
 
-    const PlaylistInfo& def_playlist = CPlaylistMgr::Instance().m_default_playlist;
+    const PlaylistInfo& def_playlist = CPlaylistMgr::Instance().GetDefaultPlaylist();
 
     m_path.clear();
     m_playlist_path = def_playlist.path;
@@ -2071,7 +2071,7 @@ void CPlayer::SetFavourite(bool favourite)
 
 bool CPlayer::IsFavourite()
 {
-    if (m_playlist_mode == PM_PLAYLIST && CPlaylistMgr::Instance().m_cur_playlist_type == PT_FAVOURITE)
+    if (m_playlist_mode == PM_PLAYLIST && CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE)
         return true;
     if (m_index >= 0 && m_index < GetSongNum())
     {

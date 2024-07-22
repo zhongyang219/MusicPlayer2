@@ -105,8 +105,9 @@ void CSetPathDlg::ShowPathList()
 {
     // 这里的更新m_path_list_info操作本应有独立方法不过暂时还不必要，先放这里
     m_path_list_info.clear();
-    const deque<PathInfo>& recent_path = CRecentFolderMgr::Instance().GetRecentPath();
-    std::copy(recent_path.begin(), recent_path.end(), std::back_inserter(m_path_list_info));
+    CRecentFolderMgr::Instance().IteratePathInfo([&](const PathInfo& path_info) {
+        m_path_list_info.push_back(path_info);
+    });
 
     m_path_list.EnableWindow(TRUE);
     m_path_list.DeleteAllItems();
@@ -488,11 +489,11 @@ void CSetPathDlg::OnContainSubFolder()
         }
         else
         {
-            deque<PathInfo>& recent_path = CRecentFolderMgr::Instance().GetRecentPath();
-            auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == sel_path; });
-            if (iter != recent_path.end())
+            bool found = CRecentFolderMgr::Instance().FindItem(sel_path, [](PathInfo& path_info) {
+                path_info.contain_sub_folder = !path_info.contain_sub_folder;
+            });
+            if (found)
             {
-                iter->contain_sub_folder = !iter->contain_sub_folder;
                 ShowPathList();     // 重新显示路径列表
             }
         }

@@ -127,6 +127,7 @@ std::wstring CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(CMediaClassifier::
 
 void CMediaLibPlaylistMgr::EmplaceMediaLibPlaylist(CMediaClassifier::ClassificationType type, const wstring& name, int track, int pos, int track_num, int total_time, unsigned __int64 last_played_time, SortMode sort_mode)
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     MediaLibPlaylistInfo playlist_info;
     playlist_info.path = name;
     playlist_info.track = track;
@@ -149,6 +150,7 @@ void CMediaLibPlaylistMgr::EmplaceMediaLibPlaylist(CMediaClassifier::Classificat
 
 MediaLibPlaylistInfo CMediaLibPlaylistMgr::GetCurrentPlaylistInfo() const
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     if (!m_media_lib_playlist.empty())
         return m_media_lib_playlist.front();
     return MediaLibPlaylistInfo();
@@ -158,6 +160,7 @@ bool CMediaLibPlaylistMgr::DeleteItem(const MediaLibPlaylistInfo* item)
 {
     if (item != nullptr)
     {
+        std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
         for (auto iter = m_media_lib_playlist.begin(); iter != m_media_lib_playlist.end(); ++iter)
         {
             if (&(*iter) == item)
@@ -170,8 +173,18 @@ bool CMediaLibPlaylistMgr::DeleteItem(const MediaLibPlaylistInfo* item)
     return false;
 }
 
+void CMediaLibPlaylistMgr::IterateItems(std::function<void(const MediaLibPlaylistInfo&)> func)
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    for (const auto& item : m_media_lib_playlist)
+    {
+        func(item);
+    }
+}
+
 MediaLibPlaylistInfo CMediaLibPlaylistMgr::FindItem(CMediaClassifier::ClassificationType type, const wstring& name) const
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     for (auto iter = m_media_lib_playlist.begin(); iter != m_media_lib_playlist.end(); ++iter)
     {
         if (iter->medialib_type == type && iter->path == name)
@@ -190,6 +203,7 @@ void CMediaLibPlaylistMgr::SavePlaylistData()
     {
         return;
     }
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
@@ -216,6 +230,7 @@ void CMediaLibPlaylistMgr::SavePlaylistData()
 
 void CMediaLibPlaylistMgr::LoadPlaylistData()
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     m_media_lib_playlist.clear();
 
     // 打开文件

@@ -1487,9 +1487,9 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
 
     //设置“添加到播放列表”子菜单项的可用状态
     bool add_to_valid{ is_main_pop ? true : selete_valid };
-    bool use_default_playlist{ CPlaylistMgr::Instance().m_cur_playlist_type == PT_DEFAULT };
+    bool use_default_playlist{ CPlaylistMgr::Instance().GetCurPlaylistType() == PT_DEFAULT };
     pMenu->EnableMenuItem(ID_ADD_TO_DEFAULT_PLAYLIST, MF_BYCOMMAND | (!(playlist_mode && use_default_playlist) && add_to_valid ? MF_ENABLED : MF_GRAYED));
-    bool use_faourite_playlist{ CPlaylistMgr::Instance().m_cur_playlist_type == PT_FAVOURITE };
+    bool use_faourite_playlist{ CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE };
     pMenu->EnableMenuItem(ID_ADD_TO_MY_FAVOURITE, MF_BYCOMMAND | (!(playlist_mode && use_faourite_playlist) && add_to_valid ? MF_ENABLED : MF_GRAYED));
     wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
     for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
@@ -1787,14 +1787,10 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
 {
     //向“添加到播放列表”菜单更新播放列表
     vector<MenuMgr::MenuItem> menu_list;
-    const auto& recent_playlist = CPlaylistMgr::Instance().m_recent_playlists;
-    for (const auto& item : recent_playlist)
-    {
-        if (menu_list.size() >= ADD_TO_PLAYLIST_MAX_SIZE)
-            break;
+    CPlaylistMgr::Instance().IterateItemsWithoutSpecialPlaylist([&](PlaylistInfo& item) {
         UINT id = ID_ADD_TO_MY_FAVOURITE + 1 + menu_list.size();
         menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IconType::IT_NO_ICON, CFilePathHelper(item.path).GetFileNameWithoutExtension() });
-    }
+    }, ADD_TO_PLAYLIST_MAX_SIZE);
     theApp.m_menu_mgr.UpdateMenu(MenuMgr::AddToPlaylistMenu, menu_list);
 }
 
@@ -4393,12 +4389,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniStart(WPARAM wParam, LPARAM lParam
     {
         if (CCommon::IsFolder(remove_list_path))
         {
-            deque<PathInfo>& recent_path = CRecentFolderMgr::Instance().GetRecentPath();
-            auto iter = std::find_if(recent_path.begin(), recent_path.end(), [&](const PathInfo& info) { return info.path == remove_list_path; });
-            if (iter != recent_path.end())
-            {
-                recent_path.erase(iter);
-            }
+            CRecentFolderMgr::Instance().DeleteItem(remove_list_path);
         }
         else if (CPlaylistFile::IsPlaylistFile(remove_list_path))
         {
@@ -5445,7 +5436,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnAddRemoveFromFavourite()
 {
     // TODO: 在此添加命令处理程序代码
-    if (CPlayer::GetInstance().IsPlaylistMode() && CPlaylistMgr::Instance().m_cur_playlist_type == PT_FAVOURITE)
+    if (CPlayer::GetInstance().IsPlaylistMode() && CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE)
     {
         //如果当前播放列表就是“我喜欢”播放列表，则直接将当前歌曲从列表中移除
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_REMOVE_FAVOURITE_WARNING");
@@ -5458,7 +5449,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
     else
     {
         SongInfo current_file = CPlayer::GetInstance().GetCurrentSongInfo();
-        std::wstring favourite_playlist_path = CPlaylistMgr::Instance().m_favourite_playlist.path;
+        std::wstring favourite_playlist_path = CPlaylistMgr::Instance().GetFavouritePlaylist().path;
         CPlaylistFile playlist;
         playlist.LoadFromFile(favourite_playlist_path);
         if (!CPlayer::GetInstance().IsFavourite())

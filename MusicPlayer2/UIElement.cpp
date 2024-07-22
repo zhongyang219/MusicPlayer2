@@ -1344,15 +1344,18 @@ std::wstring UiElement::RecentPlayedList::GetItemText(int row, int col)
 {
     if (row >= 0 && row < GetRowCount())
     {
-        const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[row] };
-        return item.GetName();
+        std::wstring name;
+        CRecentFolderAndPlaylist::Instance().GetItem(row, [&](const CRecentFolderAndPlaylist::Item& item) {
+            name = item.GetName();
+        });
+        return name;
     }
     return std::wstring();
 }
 
 int UiElement::RecentPlayedList::GetRowCount()
 {
-    return CRecentFolderAndPlaylist::Instance().GetItemList().size();
+    return CRecentFolderAndPlaylist::Instance().GetSize();
 }
 
 int UiElement::RecentPlayedList::GetColumnCount()
@@ -1376,8 +1379,11 @@ IconMgr::IconType UiElement::RecentPlayedList::GetIcon(int row)
 {
     if (row >= 0 && row < GetRowCount())
     {
-        const auto& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[row] };
-        return item.GetIcon();
+        IconMgr::IconType icon{ IconMgr::IT_NO_ICON };
+        CRecentFolderAndPlaylist::Instance().GetItem(row, [&](const CRecentFolderAndPlaylist::Item& item) {
+            icon = item.GetIcon();
+        });
+        return icon;
     }
     return IconMgr::IT_NO_ICON;
 }
@@ -1625,17 +1631,18 @@ std::wstring UiElement::MediaLibFolder::GetItemText(int row, int col)
 {
     if (col == 0)
     {
-        if (row >= 0 && row < static_cast<int>(CRecentFolderMgr::Instance().GetRecentPath().size()))
-        {
-            return CRecentFolderMgr::Instance().GetRecentPath()[row].path;
-        }
+        wstring text;
+        CRecentFolderMgr::Instance().GetItem(row, [&](const PathInfo& path_info) {
+            text = path_info.path;
+        });
+        return text;
     }
     return std::wstring();
 }
 
 int UiElement::MediaLibFolder::GetRowCount()
 {
-    return CRecentFolderMgr::Instance().GetRecentPath().size();
+    return CRecentFolderMgr::Instance().GetItemSize();
 }
 
 int UiElement::MediaLibFolder::GetColumnCount()
@@ -1680,7 +1687,7 @@ void UiElement::MediaLibFolder::OnDoubleClicked()
 {
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
-        const PathInfo& path_info{ CRecentFolderMgr::Instance().GetRecentPath()[item_selected] };
+        const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
         CMusicPlayerCmdHelper helper;
         helper.OnFolderSelected(path_info, true);
     }
@@ -1690,8 +1697,11 @@ std::wstring UiElement::MediaLibPlaylist::GetItemText(int row, int col)
 {
     if (col == 0)
     {
-        const PlaylistInfo& info{ CPlaylistMgr::Instance().GetPlaylistInfo(row) };
-        return CPlaylistMgr::Instance().GetPlaylistDisplayName(info.path);
+        wstring text;
+        CPlaylistMgr::Instance().GetPlaylistInfo(row, [&](const PlaylistInfo& playlist_info) {
+            text = playlist_info.path;
+        });
+        return CPlaylistMgr::Instance().GetPlaylistDisplayName(text);
     }
     return std::wstring();
 }
@@ -1744,7 +1754,10 @@ void UiElement::MediaLibPlaylist::OnDoubleClicked()
 {
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
-        const PlaylistInfo& info{ CPlaylistMgr::Instance().GetPlaylistInfo(item_selected) };
+        PlaylistInfo info;
+        CPlaylistMgr::Instance().GetPlaylistInfo(item_selected, [&](const PlaylistInfo& playlist_info) {
+            info = playlist_info;
+        });
         if (!info.path.empty())
         {
             CMusicPlayerCmdHelper helper;

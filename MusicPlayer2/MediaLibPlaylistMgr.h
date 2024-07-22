@@ -41,7 +41,7 @@ public:
     MediaLibPlaylistInfo GetCurrentPlaylistInfo() const;
     bool DeleteItem(const MediaLibPlaylistInfo* item);
 
-    const std::deque<MediaLibPlaylistInfo>& GetAllItems() const { return m_media_lib_playlist; }
+    void IterateItems(std::function<void(const MediaLibPlaylistInfo&)> func);
 
     void SavePlaylistData();
     void LoadPlaylistData();
@@ -53,6 +53,6 @@ private:
     static CMediaLibPlaylistMgr m_instance;     //此类唯一的对象
     std::deque<MediaLibPlaylistInfo> m_media_lib_playlist;
     std::set<MediaLibPlaylistInfo> m_empty_items;   //如果一个媒体库库项目下面没有任何曲目，则会被保存到这里
-
+    mutable std::shared_mutex m_shared_mutex;
 };
 
