@@ -79,6 +79,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\MusicPlayer2.ico"
 
+IDI_PLAY_IN_PLAYLIST_D  ICON                    "res\\play_in_playlist_d.ico"
+
 IDI_PREVIOUS            ICON                    "res\\上一曲.ico"
 
 IDI_PLAY_PAUSE          ICON                    "res\\播放_暂停.ico"
@@ -265,7 +267,7 @@ IDI_PIN_D               ICON                    "res\\pin_d.ico"
 
 IDI_EXIT_D              ICON                    "res\\exit_d.ico"
 
-IDI_ALBUM_COVER_D       ICON                    "res\\album_cover.ico"
+IDI_ALBUM_COVER_D       ICON                    "res\\album_cover_d.ico"
 
 IDI_DARK_MODE_D         ICON                    "res\\dark_mode.ico"
 
@@ -410,6 +412,10 @@ IDI_STAR_D              ICON                    "res\\star_d.ico"
 IDI_MORE_D              ICON                    "res\\more_d.ico"
 
 IDI_RECENT_SONG         ICON                    "res\\recent_songs.ico"
+
+IDI_ALBUM_COVER         ICON                    "res\\album_cover.ico"
+
+IDI_REVERB_D            ICON                    "res\\reverb_d.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////

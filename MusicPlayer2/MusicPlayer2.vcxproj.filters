@@ -1959,5 +1959,14 @@
     <Image Include="res\recent_songs.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\album_cover_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_in_playlist_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\reverb_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

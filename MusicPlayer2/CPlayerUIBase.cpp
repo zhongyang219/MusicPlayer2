@@ -2856,7 +2856,7 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         }
         else if (item_str == "now_playing")
         {
-            if (draw_icon) icon = IconMgr::IT_Play;
+            if (draw_icon) icon = IconMgr::IT_Play_In_Playlist;
             if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PLAYING");
         }
         else if (item_str == "recently_played")

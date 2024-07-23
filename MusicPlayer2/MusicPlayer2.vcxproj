@@ -581,6 +581,7 @@
     <Image Include="res\add_d.ico" />
     <Image Include="res\album.ico" />
     <Image Include="res\album_cover.ico" />
+    <Image Include="res\album_cover_d.ico" />
     <Image Include="res\album_d.ico" />
     <Image Include="res\artist.ico" />
     <Image Include="res\artist_d.ico" />
@@ -673,6 +674,7 @@
     <Image Include="res\play_dark.ico" />
     <Image Include="res\play_in_folder.ico" />
     <Image Include="res\play_in_playlist.ico" />
+    <Image Include="res\play_in_playlist_d.ico" />
     <Image Include="res\play_pause_d.ico" />
     <Image Include="res\play_white.ico" />
     <Image Include="res\previous_dark.ico" />
@@ -685,6 +687,7 @@
     <Image Include="res\restore.ico" />
     <Image Include="res\restore_d.ico" />
     <Image Include="res\reverb.ico" />
+    <Image Include="res\reverb_d.ico" />
     <Image Include="res\rew_new_d.ico" />
     <Image Include="res\Save.ico" />
     <Image Include="res\save_as_d.ico" />

@@ -235,6 +235,9 @@
 #define IDI_MORE_D                      601
 #define IDR_CHINESE_PINGYIN             602
 #define IDI_RECENT_SONG                 603
+#define IDI_ALBUM_COVER                 605
+#define IDI_REVERB_D                    607
+#define IDI_PLAY_IN_PLAYLIST_D          608
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -959,7 +962,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        604
+#define _APS_NEXT_RESOURCE_VALUE        609
 #define _APS_NEXT_COMMAND_VALUE         33469
 #define _APS_NEXT_CONTROL_VALUE         1365
 #define _APS_NEXT_SYMED_VALUE           101
