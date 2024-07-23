@@ -109,6 +109,13 @@
             </xs:annotation>
         </xs:attribute>
     </xs:attributeGroup>
+    <xs:attributeGroup name="listattr">
+      <xs:attribute name="item_height" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>列表项目的高度。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:attributeGroup>
     <xs:group name="elements">
         <xs:sequence><!--sequence 和 choice 配合使用，使得元素可以以任意顺序出现任意次数-->
             <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -768,12 +775,8 @@
         <xs:documentation>播放列表。</xs:documentation>
       </xs:annotation>
       <xs:group ref="elements"></xs:group>
-      <xs:attribute name="item_height" type="xs:int">
-        <xs:annotation>
-          <xs:documentation>播放列表项目的高度。</xs:documentation>
-        </xs:annotation>
-      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+      <xs:attributeGroup ref="listattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="playlistIndicatorType">
       <xs:annotation>
@@ -787,6 +790,7 @@
         <xs:documentation>最近播放项目的列表。</xs:documentation>
       </xs:annotation>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+      <xs:attributeGroup ref="listattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="mediaLibItemListType">
       <xs:annotation>
@@ -837,6 +841,7 @@
         </xs:simpleType>
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+      <xs:attributeGroup ref="listattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="tabElementType">
       <xs:annotation>
@@ -907,11 +912,13 @@
       <xs:documentation>媒体库的文件夹。</xs:documentation>
     </xs:annotation>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="mediaLibPlaylistType">
     <xs:annotation>
       <xs:documentation>媒体库的播放列表。</xs:documentation>
     </xs:annotation>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

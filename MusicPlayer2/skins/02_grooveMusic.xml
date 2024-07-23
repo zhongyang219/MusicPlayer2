@@ -36,27 +36,27 @@
           <!--最近播放-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_RECENT_PLAYED)" height="56" font_size="12" margin-left="8"/>
-            <recentPlayedList/>
+            <recentPlayedList item_height="30"/>
           </verticalLayout>
           <!--文件夹-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_FOLDER)" height="56" font_size="12" margin-left="8"/>
-            <mediaLibFolder/>
+            <mediaLibFolder item_height="30"/>
           </verticalLayout>
           <!--播放列表-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_PLAYLIST)" height="56" font_size="12" margin-left="8"/>
-            <mediaLibPlaylist/>
+            <mediaLibPlaylist item_height="30"/>
           </verticalLayout>
           <!--艺术家-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_ARTIST)" height="56" font_size="12" margin-left="8"/>
-            <mediaLibItemList type="artist"/>
+            <mediaLibItemList type="artist" item_height="30"/>
           </verticalLayout>
           <!--唱片集-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_ALBUM)" height="56" font_size="12" margin-left="8"/>
-            <mediaLibItemList type="album"/>
+            <mediaLibItemList type="album" item_height="30"/>
           </verticalLayout>
         </stackElement>
       </horizontalLayout>
@@ -125,27 +125,27 @@
           <!--最近播放-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_RECENT_PLAYED)" height="56" font_size="12" margin-left="8"/>
-            <recentPlayedList/>
+            <recentPlayedList item_height="30"/>
           </verticalLayout>
           <!--文件夹-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_FOLDER)" height="56" font_size="12" margin-left="8"/>
-            <mediaLibFolder/>
+            <mediaLibFolder item_height="30"/>
           </verticalLayout>
           <!--播放列表-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_PLAYLIST)" height="56" font_size="12" margin-left="8"/>
-            <mediaLibPlaylist/>
+            <mediaLibPlaylist item_height="30"/>
           </verticalLayout>
           <!--艺术家-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_ARTIST)" height="56" font_size="12" margin-left="8"/>
-            <mediaLibItemList type="artist"/>
+            <mediaLibItemList type="artist" item_height="30"/>
           </verticalLayout>
           <!--唱片集-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_ALBUM)" height="56" font_size="12" margin-left="8"/>
-            <mediaLibItemList type="album"/>
+            <mediaLibItemList type="album" item_height="30"/>
           </verticalLayout>
         </stackElement>
       </horizontalLayout>

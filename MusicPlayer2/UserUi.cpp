@@ -533,6 +533,16 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         if (!str_hide_height.empty())
             element->hide_height.FromString(str_hide_height);
 
+        //设置ListElement的属性
+        UiElement::ListElement* list_element = dynamic_cast<UiElement::ListElement*>(element.get());
+        if (list_element != nullptr)
+        {
+            int item_height{};
+            CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", item_height);
+            if (item_height > 0)
+                list_element->item_height = item_height;
+        }
+
         //根据节点的类型设置元素独有的属性
         //按钮
         if (item_name == "button")
@@ -722,17 +732,6 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "scroll_to_switch", stack_element->scroll_to_switch);
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_indicator", stack_element->show_indicator);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "indicator_offset", stack_element->indicator_offset);
-            }
-        }
-        //播放列表
-        else if (item_name == "playlist")
-        {
-            UiElement::Playlist* playlist = dynamic_cast<UiElement::Playlist*>(element.get());
-            if (playlist != nullptr)
-            {
-                int item_height = atoi(CTinyXml2Helper::ElementAttribute(xml_node, "item_height"));
-                if (item_height > 0)
-                    playlist->item_height = item_height;
             }
         }
         //播放控制栏
