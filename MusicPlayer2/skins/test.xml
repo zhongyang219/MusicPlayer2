@@ -3,37 +3,73 @@
   <ui>
     <verticalLayout>
 
-      <verticalLayout>
-        <tabElement height="30" icon_type="icon_only" item_list="album_cover,spectrum,lyrics,now_playing,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating"/>
-        <stackElement margin="8">
-          <verticalLayout>
-            <albumCover square="true" margin="28" margin-bottom="12"/>
-            <text type="title" style="scroll" height="36" font_size="12" margin-left="16" margin-right="16" alignment="center"/>
-            <text type="artist_album" style="scroll" height="24" font_size="10" margin-left="16" margin-right="16" alignment="center"/>
-          </verticalLayout>
-          <verticalLayout>
-            <text type="title" alignment="center" font_size="12" style="scroll" height="32"/>
-            <text type="artist" alignment="center" font_size="10" style="scroll" height="32"/>
-            <text type="album" alignment="center" font_size="10" style="scroll" height="32"/>
-            <spectrum alignment="center" max-height="30%" fixed_width="true" draw_reflex="true" margin-top="24" proportion="4"/>
-          </verticalLayout>
-          <lyrics/>
-          <verticalLayout>
-            <playlistIndicator height="30" margin-bottom="4"/>
-            <playlist/>
-          </verticalLayout>
-          <recentPlayedList/>
-          <mediaLibFolder/>
-          <mediaLibPlaylist/>
-          <mediaLibItemList type="artist"/>
-          <mediaLibItemList type="album"/>
-          <mediaLibItemList type="genre"/>
-          <mediaLibItemList type="year"/>
-          <mediaLibItemList type="file_type"/>
-          <mediaLibItemList type="bitrate"/>
-          <mediaLibItemList type="rating"/>
-        </stackElement>
-      </verticalLayout>
+      <stackElement margin-bottom="12" show_indicator="true" indicator_offset="-4">
+        <verticalLayout>
+          <tabElement height="30" icon_type="icon_only" item_space="4" item_list="album_cover,spectrum,lyrics,now_playing,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating"/>
+          <stackElement margin="8">
+            <verticalLayout>
+              <albumCover square="true" margin="28" margin-bottom="12"/>
+              <text type="title" style="scroll" height="36" font_size="12" margin-left="16" margin-right="16" alignment="center"/>
+              <text type="artist_album" style="scroll" height="24" font_size="10" margin-left="16" margin-right="16" alignment="center"/>
+            </verticalLayout>
+            <verticalLayout>
+              <text type="title" alignment="center" font_size="12" style="scroll" height="32"/>
+              <text type="artist" alignment="center" font_size="10" style="scroll" height="32"/>
+              <text type="album" alignment="center" font_size="10" style="scroll" height="32"/>
+              <spectrum alignment="center" max-height="30%" fixed_width="true" draw_reflex="true" margin-top="24" proportion="4"/>
+            </verticalLayout>
+            <lyrics/>
+            <verticalLayout>
+              <playlistIndicator height="30" margin-bottom="4"/>
+              <playlist/>
+            </verticalLayout>
+            <recentPlayedList/>
+            <mediaLibFolder/>
+            <mediaLibPlaylist/>
+            <mediaLibItemList type="artist"/>
+            <mediaLibItemList type="album"/>
+            <mediaLibItemList type="genre"/>
+            <mediaLibItemList type="year"/>
+            <mediaLibItemList type="file_type"/>
+            <mediaLibItemList type="bitrate"/>
+            <mediaLibItemList type="rating"/>
+          </stackElement>
+        </verticalLayout>
+
+        <horizontalLayout>
+          <tabElement width="36" margin="4" orientation="vertical" icon_type="icon_only" item_space="4" item_height="32" item_list="album_cover,spectrum,lyrics,now_playing,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating"/>
+          <stackElement margin="8">
+            <verticalLayout>
+              <albumCover square="true" margin="28" margin-bottom="12"/>
+              <text type="title" style="scroll" height="36" font_size="12" margin-left="16" margin-right="16" alignment="center"/>
+              <text type="artist_album" style="scroll" height="24" font_size="10" margin-left="16" margin-right="16" alignment="center"/>
+            </verticalLayout>
+            <verticalLayout>
+              <text type="title" alignment="center" font_size="12" style="scroll" height="32"/>
+              <text type="artist" alignment="center" font_size="10" style="scroll" height="32"/>
+              <text type="album" alignment="center" font_size="10" style="scroll" height="32"/>
+              <spectrum alignment="center" max-height="30%" fixed_width="true" draw_reflex="true" margin-top="24" proportion="4"/>
+            </verticalLayout>
+            <lyrics/>
+            <verticalLayout>
+              <playlistIndicator height="30" margin-bottom="4"/>
+              <playlist/>
+            </verticalLayout>
+            <recentPlayedList/>
+            <mediaLibFolder/>
+            <mediaLibPlaylist/>
+            <mediaLibItemList type="artist"/>
+            <mediaLibItemList type="album"/>
+            <mediaLibItemList type="genre"/>
+            <mediaLibItemList type="year"/>
+            <mediaLibItemList type="file_type"/>
+            <mediaLibItemList type="bitrate"/>
+            <mediaLibItemList type="rating"/>
+          </stackElement>
+
+        </horizontalLayout>
+        
+      </stackElement>
 
       <rectangle height="100" no_corner_radius="true">
         <verticalLayout margin="6">

@@ -422,7 +422,16 @@ namespace UiElement
             TEXT_ONLY
         };
 
+        enum Orientation
+        {
+            Horizontal,
+            Vertical,
+        };
+
         IconType icon_type{};
+        Orientation orientation{ Horizontal };
+        int item_space{};
+        int item_height{ 28 };
         std::vector<std::string> tab_list;
         std::vector<CRect> item_rects;
         std::vector<std::wstring> labels;

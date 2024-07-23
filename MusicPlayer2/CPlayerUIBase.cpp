@@ -2832,6 +2832,7 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
     bool draw_icon{ tab_element->icon_type == UiElement::TabElement::ICON_AND_TEXT || tab_element->icon_type == UiElement::TabElement::ICON_ONLY };
     bool draw_text{ tab_element->icon_type == UiElement::TabElement::ICON_AND_TEXT || tab_element->icon_type == UiElement::TabElement::TEXT_ONLY };
     int x_pos{ rect.left };
+    int y_pos{ rect.top };
     int index{};
     tab_element->item_rects.resize(tab_element->tab_list.size());
     tab_element->labels.resize(tab_element->tab_list.size());
@@ -2922,12 +2923,24 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         if (draw_text)
             text_width = m_draw.GetTextExtent(item_text.c_str()).cx;
         CRect item_rect{ rect };
-        item_rect.left = x_pos;
-        item_rect.right = item_rect.left + icon_width + text_width + DPI(4);
-        if (tab_element->icon_type == UiElement::TabElement::TEXT_ONLY)
-            item_rect.right += DPI(4);
+        if (tab_element->orientation == UiElement::TabElement::Horizontal)
+        {
+            item_rect.left = x_pos;
+            item_rect.right = item_rect.left + icon_width + text_width + DPI(4);
+            if (tab_element->icon_type == UiElement::TabElement::TEXT_ONLY)
+                item_rect.right += DPI(4);
+        }
+        else
+        {
+            item_rect.top = y_pos;
+            item_rect.bottom = item_rect.top + DPI(tab_element->item_height);
+        }
         tab_element->item_rects[index] = item_rect;
 
+        if ((rect & item_rect).IsRectEmpty())
+            continue;
+
+        m_draw.SetDrawArea(rect);
         //绘制背景
         if (tab_element->hover_index == index)
         {
@@ -2942,6 +2955,7 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
                 m_draw.DrawRoundRect(item_rect, m_colors.color_button_hover, CalculateRoundRectRadius(item_rect), alpha);
         }
 
+        m_draw.SetDrawArea(rect);
         //绘制图标
         if (draw_icon)
         {
@@ -2966,9 +2980,20 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         if (tab_element->SelectedIndex() == index)
         {
             CRect selected_indicator_rect{ item_rect };
-            selected_indicator_rect.left += DPI(4);
-            selected_indicator_rect.right -= DPI(4);
-            selected_indicator_rect.top = selected_indicator_rect.bottom - DPI(4);
+            //水平排列时选中指示在底部
+            if (tab_element->orientation == UiElement::TabElement::Horizontal)
+            {
+                selected_indicator_rect.left += DPI(4);
+                selected_indicator_rect.right -= DPI(4);
+                selected_indicator_rect.top = selected_indicator_rect.bottom - DPI(4);
+            }
+            //垂直排列时选中指示在左侧
+            else
+            {
+                selected_indicator_rect.top += DPI(4);
+                selected_indicator_rect.bottom -= DPI(4);
+                selected_indicator_rect.right = selected_indicator_rect.left + DPI(4);
+            }
             if (theApp.m_app_setting_data.button_round_corners)
                 m_draw.DrawRoundRect(selected_indicator_rect, m_colors.color_text_heighlight, DPI(2));
             else
@@ -2976,7 +3001,10 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
 
         }
 
-        x_pos = item_rect.right;
+        if (tab_element->orientation == UiElement::TabElement::Horizontal)
+            x_pos = item_rect.right + DPI(tab_element->item_space);
+        else
+            y_pos = item_rect.bottom + DPI(tab_element->item_space);
         index++;
     }
     ResetDrawArea();

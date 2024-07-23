@@ -871,6 +871,35 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
+      <xs:attribute name="orientation" default="horizontal">
+        <xs:annotation>
+          <xs:documentation>排列方向。</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="horizontal">
+              <xs:annotation>
+                <xs:documentation>水平排列</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="vertical">
+              <xs:annotation>
+                <xs:documentation>垂直排列</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="item_space" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>项目间距</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="item_height" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>标签的高度。仅在垂直排列模式下起作用。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
   <xs:complexType name="mediaLibFolderType">

@@ -794,6 +794,15 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     tab_emelent->icon_type = UiElement::TabElement::ICON_ONLY;
                 else if (str_icon_type == "text_only")
                     tab_emelent->icon_type = UiElement::TabElement::TEXT_ONLY;
+
+                std::string str_orientation = CTinyXml2Helper::ElementAttribute(xml_node, "orientation");
+                if (str_orientation == "horizontal")
+                    tab_emelent->orientation = UiElement::TabElement::Horizontal;
+                else if (str_orientation == "vertical")
+                    tab_emelent->orientation = UiElement::TabElement::Vertical;
+
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_space", tab_emelent->item_space);
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", tab_emelent->item_height);
             }
 
         }
