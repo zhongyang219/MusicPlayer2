@@ -728,9 +728,14 @@ bool CCommon::StringCharacterReplace(wstring& str, wchar_t ch, wchar_t ch_replac
 
 void CCommon::StringReplace(wstring& str, const wstring& str_old, const wstring& str_new)
 {
-    CString _str{ str.c_str() };
-    _str.Replace(str_old.c_str(), str_new.c_str());
-    str = _str.GetString();
+    if (str.empty())
+        return;
+    size_t pos = 0;
+    while ((pos = str.find(str_old, pos)) != std::wstring::npos)
+    {
+        str.replace(pos, str_old.length(), str_new);
+        pos += str_new.length();    // 前进到替换后的字符串末尾
+    }
 }
 
 CString CCommon::DataSizeToString(size_t data_size)

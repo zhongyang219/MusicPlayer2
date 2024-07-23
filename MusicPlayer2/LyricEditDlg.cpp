@@ -1049,7 +1049,8 @@ void CLyricEditDlg::OnInitMenu(CMenu* pMenu)
     CBaseDialog::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
-    bool is_lrc{ m_lyric_type != CLyrics::LyricType::LY_KSC };
+    bool is_lrc{ m_lyric_type == CLyrics::LyricType::LY_LRC };
+    bool is_vtt{ m_lyric_type == CLyrics::LyricType::LY_VTT };
     pMenu->EnableMenuItem(ID_LYRIC_INSERT_TAG, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_LYRIC_REPLACE_TAG, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_LYRIC_DELETE_TAG, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
@@ -1057,6 +1058,7 @@ void CLyricEditDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_FORWARD, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_DELAY, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_SEEK_TO_CUR_LINE, MF_BYCOMMAND | (!is_vtt ? MF_ENABLED : MF_GRAYED));
 
 }
 
@@ -1090,7 +1092,8 @@ void CLyricEditDlg::SetToolbarCmdEnable()
 {
     if (m_wndToolBar.m_hWnd != NULL)
     {
-        bool is_lrc{ m_lyric_type != CLyrics::LyricType::LY_KSC };
+        bool is_lrc{ m_lyric_type == CLyrics::LyricType::LY_LRC };
+        bool is_vtt{ m_lyric_type == CLyrics::LyricType::LY_VTT };
         m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_INSERT_TAG, is_lrc);
         m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_REPLACE_TAG, is_lrc);
         m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_DELETE_TAG, is_lrc);
@@ -1098,5 +1101,6 @@ void CLyricEditDlg::SetToolbarCmdEnable()
         m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_SWAP_TEXT_AND_TRANSLATION, is_lrc);
         m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_TIME_TAG_FORWARD, is_lrc);
         m_wndToolBar.GetToolBarCtrl().EnableButton(ID_LYRIC_TIME_TAG_DELAY, is_lrc);
+        m_wndToolBar.GetToolBarCtrl().EnableButton(ID_SEEK_TO_CUR_LINE, !is_vtt);
     }
 }

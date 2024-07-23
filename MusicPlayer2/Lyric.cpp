@@ -3,15 +3,10 @@
 #include "FilePathHelper.h"
 #include "MusicPlayer2.h"
 
-const vector<wstring> CLyrics::m_surpported_lyric{ L"lrc", L"ksc" };
+const vector<wstring> CLyrics::m_surpported_lyric{ L"lrc", L"ksc", L"vtt" };
 
 CLyrics::CLyrics(const wstring& file_name, const LyricType& lyric_type) : m_file{ file_name }, m_lyric_type{ lyric_type }
 {
-    string lyric_str;
-    if (!CCommon::GetFileContent(m_file.c_str(), lyric_str)) return;            // 读取歌词文件内容
-    m_code_type = CCommon::JudgeCodeType(lyric_str, CodeType::ANSI, true);      // 判断编码格式
-    wstring lyric_wcs = CCommon::StrToUnicode(lyric_str, m_code_type, true);    // 转换成Unicode
-
     // 当未指定歌词类型时按扩展名处理
     if (m_lyric_type == LyricType::LY_AUTO)
     {
@@ -21,25 +16,44 @@ CLyrics::CLyrics(const wstring& file_name, const LyricType& lyric_type) : m_file
             m_lyric_type = LyricType::LY_LRC;
         else if (ext == L"ksc")
             m_lyric_type = LyricType::LY_KSC;
+        else if (ext == L"vtt")
+            m_lyric_type = LyricType::LY_VTT;
         else
             m_lyric_type = LyricType::LY_LRC;   // 无匹配时默认为lrc
     }
+
+    string lyric_str;
+    if (!CCommon::GetFileContent(m_file.c_str(), lyric_str)) return;            // 读取歌词文件内容
+    m_code_type = CCommon::JudgeCodeType(lyric_str, m_code_type, true);         // 判断编码格式
+    wstring lyric_wcs = CCommon::StrToUnicode(lyric_str, m_code_type, true);    // 转换成Unicode
 
     LyricsFromRowString(lyric_wcs, m_lyric_type);
 }
 
 void CLyrics::LyricsFromRowString(const wstring& lyric_str, const LyricType& lyric_type)
 {
+    ASSERT(lyric_type != LyricType::LY_AUTO);
+
     CCommon::StringSplitLine(lyric_str, m_lyrics_str, false, true);
 
-    ASSERT(lyric_type != LyricType::LY_AUTO);
+    m_lyric_type = lyric_type;
     // 按歌词类型调用解析方法
-    if (lyric_type == LyricType::LY_LRC)
-        DisposeLrc();
-    else if (lyric_type == LyricType::LY_LRC_NETEASE)
+    switch (m_lyric_type)
+    {
+    case CLyrics::LyricType::LY_LRC_NETEASE:
         DisposeLrcNetease();
-    else if (lyric_type == LyricType::LY_KSC)
+        break;
+    case CLyrics::LyricType::LY_KSC:
         DisposeKsc();
+        break;
+    case CLyrics::LyricType::LY_VTT:
+        m_code_type = CodeType::UTF8;   // WebVTT格式只能是UTF8内码，BOM是可选的
+        DisposeWebVTT();
+        break;
+    default:
+        DisposeLrc();
+        break;
+    }
     // 解析完成后规范歌词
     NormalizeLyric();
 }
@@ -373,6 +387,124 @@ void CLyrics::DisposeKsc()
     }
 }
 
+void CLyrics::DisposeWebVTT()
+{
+    auto getTime = [](const wstring& str, int& pos, int& time) -> bool
+        {
+            const wchar_t* time_char = L"0123456789:.";
+            int pos_start = str.find_first_of(time_char, pos);
+            if (pos_start == wstring::npos) return false;
+            int pos_end = str.find_first_not_of(time_char, pos_start);
+            if (pos_end == wstring::npos)
+                pos_end = str.size();
+            if (pos_end - pos_start != 12 && pos_end - pos_start != 9)
+                return false;
+            int hh{}, mm{}, ss{}, ttt{};
+            if (pos_end - pos_start == 12)
+            {
+                hh = _wtoi(str.substr(pos_start, 2).c_str());
+                pos_start += 3;
+            }
+            mm = _wtoi(str.substr(pos_start, 2).c_str());
+            pos_start += 3;
+            ss = _wtoi(str.substr(pos_start, 2).c_str());
+            pos_start += 3;
+            ttt = _wtoi(str.substr(pos_start, 3).c_str());
+            time = (((hh * 60) + mm) * 60 + ss) * 1000 + ttt;
+            pos = pos_end;
+            return true;
+        };
+
+    // 不完整的实体引用解转义
+    auto unEscapeStr = [](wstring& str)
+        {
+            if (str.empty() || str.find(L'&') == wstring::npos)
+                return;
+            CCommon::StringReplace(str, L"&amp;", L"&");
+            CCommon::StringReplace(str, L"&lt;", L"<");
+            CCommon::StringReplace(str, L"&gt;", L">");
+            CCommon::StringReplace(str, L"&quot;", L"\"");
+            CCommon::StringReplace(str, L"&apos;", L"\'");
+            CCommon::StringReplace(str, L"&nbsp;", L" ");
+        };
+
+    m_lyrics.clear();
+    if (m_lyrics_str.empty() || !m_lyrics_str.back().empty())
+        m_lyrics_str.push_back(wstring());
+    bool find_next = true;
+    wstring text_with_tag;
+    for (const wstring& line_str : m_lyrics_str)
+    {
+        if (find_next)                      // 首先查找并处理带有-->的行，find_next设置为false标记已进入一个cue
+        {
+            if (line_str.find(L"-->") == wstring::npos)
+                continue;
+            int pos{};
+            Lyric lyric{};
+            if (!getTime(line_str, pos, lyric.time_start_raw))
+                continue;
+            if (!getTime(line_str, pos, lyric.time_span_raw))
+                continue;
+            lyric.time_span_raw -= lyric.time_start_raw;
+            m_lyrics.push_back(std::move(lyric));
+            find_next = false;
+        }
+        else if (!line_str.empty())         // 在一个cue中遇到空行之前将文本全部加入text_with_tag并插入空格合并为一行
+        {
+            text_with_tag += line_str + L' ';
+        }
+        else if (!text_with_tag.empty())    // 遇到空行标志着一个cue结束，处理text_with_tag并设置find_next为true查找下一个cue
+        {
+            text_with_tag.pop_back();
+            Lyric& lyric = m_lyrics.back();
+            int time_last = lyric.time_start_raw;
+            bool in_tag = false;            // 文档中表示">"的转义是非强制(但建议)的，所以独立出现的大于号是正常的文本
+            const wchar_t* start_pos = text_with_tag.data();
+            const wchar_t* cur_pos = start_pos;
+            const wchar_t* end_pos = start_pos + text_with_tag.size();
+            while (cur_pos < end_pos)
+            {
+                if (*cur_pos == L'<')
+                {
+                    wstring tmp(start_pos, cur_pos);
+                    unEscapeStr(tmp);
+                    lyric.text += tmp;
+                    start_pos = cur_pos + 1;
+                    in_tag = true;
+                }
+                else if (*cur_pos == L'>' && in_tag)
+                {
+                    wstring tmp(start_pos, cur_pos);
+                    int pos = 0, time = 0;
+                    if (getTime(tmp, pos, time))
+                    {
+                        lyric.split.push_back(lyric.text.size());
+                        lyric.word_time.push_back(time - time_last);
+                        time_last = time;
+                    }
+                    start_pos = cur_pos + 1;
+                    in_tag = false;
+                }
+                ++cur_pos;
+            }
+            wstring tmp(start_pos, cur_pos);
+            unEscapeStr(tmp);
+            lyric.text += tmp;
+            if (!lyric.split.empty())
+            {
+                lyric.split.push_back(lyric.text.size());
+                lyric.word_time.push_back(lyric.time_start_raw + lyric.time_span_raw - time_last);
+            }
+            text_with_tag.clear();
+            find_next = true;
+        }
+        else                                // text_with_tag还没有内容时就遇到空行，说明这个cue没有文本，查找下一个cue
+        {
+            find_next = true;
+        }
+    }
+}
+
 void CLyrics::NormalizeLyric()
 {
     if (m_lyrics.empty()) return;
@@ -662,14 +794,14 @@ wstring CLyrics::GetLyricsString() const
 
 wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line) const
 {
-    wstring lyric_string{};
+    std::wstringstream lyric_string;
     if (m_lyric_type == LyricType::LY_LRC || m_lyric_type == LyricType::LY_LRC_NETEASE)
     {
-        if (m_id_tag) lyric_string += (L"[id:" + m_id + L"]\r\n");
-        if (m_ti_tag) lyric_string += (L"[ti:" + m_ti + L"]\r\n");
-        if (m_ar_tag) lyric_string += (L"[ar:" + m_ar + L"]\r\n");
-        if (m_al_tag) lyric_string += (L"[al:" + m_al + L"]\r\n");
-        if (m_by_tag) lyric_string += (L"[by:" + m_by + L"]\r\n");
+        if (m_id_tag) lyric_string << L"[id:" << m_id << L"]\r\n";
+        if (m_ti_tag) lyric_string << L"[ti:" << m_ti << L"]\r\n";
+        if (m_ar_tag) lyric_string << L"[ar:" << m_ar << L"]\r\n";
+        if (m_al_tag) lyric_string << L"[al:" << m_al << L"]\r\n";
+        if (m_by_tag) lyric_string << L"[by:" << m_by << L"]\r\n";
         for (const auto& a_lyric : m_lyrics)
         {
             Time a_time{ a_lyric.time_start };
@@ -707,7 +839,7 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line) const
                     line_str += a_lyric.translate;
                 }
             }
-            lyric_string += (line_str + L"\r\n");
+            lyric_string << line_str << L"\r\n";
         }
     }
     else if (m_lyric_type == LyricType::LY_KSC)
@@ -715,20 +847,20 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line) const
         for (const wstring& str : m_lyrics_str) // 不清楚规则故暂不修改非歌词行
         {
             if (str.find(L"karaoke.add") != wstring::npos) break;
-            lyric_string += (str + L"\r\n");
+            lyric_string << str << L"\r\n";
         }
         wchar_t time_buff[16];
         for (const auto& a_lyric : m_lyrics)    // 重新构建歌词行
         {
-            lyric_string += L"karaoke.add('";
+            lyric_string << L"karaoke.add('";
             Time a_time{ a_lyric.time_start };
             swprintf_s(time_buff, L"%.2d:%.2d.%.3d", a_time.min, a_time.sec, a_time.msec);
-            lyric_string += time_buff;
-            lyric_string += L"', '";
+            lyric_string << time_buff;
+            lyric_string << L"', '";
             a_time += a_lyric.time_span;
             swprintf_s(time_buff, L"%.2d:%.2d.%.3d", a_time.min, a_time.sec, a_time.msec);
-            lyric_string += time_buff;
-            lyric_string += L"', '";
+            lyric_string << time_buff;
+            lyric_string << L"', '";
             wstring text{};
             for (size_t i{}; i < a_lyric.split.size(); ++i)
             {
@@ -743,19 +875,57 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line) const
                     text += L'[' + word + L']';
             }
             CCommon::StringReplace(text, L"\'", L"\'\'");   // 转义单引号
-            lyric_string += text;
-            lyric_string += L"', '";
+            lyric_string << text;
+            lyric_string << L"', '";
             for (size_t i{}; i < a_lyric.word_time.size(); ++i)
             {
-                lyric_string += std::to_wstring(a_lyric.word_time[i]);
+                lyric_string << std::to_wstring(a_lyric.word_time[i]);
                 if (i != a_lyric.word_time.size() - 1)
-                    lyric_string += L",";
+                    lyric_string << L",";
             }
-            lyric_string += L"');\r\n";
+            lyric_string << L"');\r\n";
+        }
+    }
+    else if (m_lyric_type == LyricType::LY_VTT)
+    {
+        // 更不完整的实体引用转义
+        auto escapeStr = [](wstring str) -> wstring
+            {
+                CCommon::StringReplace(str, L"&", L"&amp;");
+                CCommon::StringReplace(str, L"<", L"&lt;");
+                CCommon::StringReplace(str, L">", L"&gt;");
+                return str;
+            };
+
+        int index{};
+        // 放弃未识别的部分，重新生成所有有效cue
+        lyric_string << L"WEBVTT\r\n";
+        for (const auto& a_lyric : m_lyrics)
+        {
+            lyric_string << L"\r\n" << ++index << L"\r\n";
+            lyric_string << Time(a_lyric.time_start).toVttTimeTag() << L" --> " << Time(a_lyric.time_start + a_lyric.time_span).toVttTimeTag() << L"\r\n";
+            if (a_lyric.split.empty())
+                lyric_string << escapeStr(a_lyric.text) << L"\r\n";
+            else
+            {
+                int start_time = a_lyric.time_start;
+                int end_time = start_time + a_lyric.time_span;
+                int pos_start = 0;
+                size_t split_num{ min(a_lyric.split.size(), a_lyric.word_time.size()) };    // 避免原始歌词不标准可能导致的索引越界
+                for (size_t i{}; i < split_num; ++i)
+                {
+                    lyric_string << escapeStr(a_lyric.text.substr(pos_start, a_lyric.split[i] - pos_start));
+                    pos_start = a_lyric.split[i];
+                    start_time += a_lyric.word_time[i];
+                    if (start_time < end_time)             // 不添加不合法的时间标签(卡掉最后一个与end_time相同的时间标签)
+                        lyric_string << L'<' << Time(start_time).toVttTimeTag() << L'>';
+                }
+                lyric_string << L"\r\n";
+            }
         }
     }
 
-    return lyric_string;
+    return lyric_string.str();
 }
 
 void CLyrics::SaveLyric2(bool lyric_and_traslation_in_same_line)
