@@ -844,7 +844,7 @@
       </xs:annotation>
       <xs:attribute name="item_list" type="xs:string">
         <xs:annotation>
-          <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating”中选，多个标签使用半角逗号隔开。</xs:documentation>
+          <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating”中选，多个标签使用半角逗号隔开。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attribute name="icon_type" default="icon_and_text">

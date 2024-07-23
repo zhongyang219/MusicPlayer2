@@ -2857,8 +2857,13 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         }
         else if (item_str == "now_playing")
         {
-            if (draw_icon) icon = IconMgr::IT_Play_In_Playlist;
+            if (draw_icon) icon = IconMgr::IT_Album_Cover;
             if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PLAYING");
+        }
+        else if (item_str == "play_queue")
+        {
+            if (draw_icon) icon = IconMgr::IT_Play_In_Playlist;
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAY_QUEUE");
         }
         else if (item_str == "recently_played")
         {
@@ -2919,7 +2924,10 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         int icon_width{};
         int text_width{};
         if (draw_icon)
-            icon_width = DPI(24);
+        {
+            int item_height{ tab_element->orientation == UiElement::TabElement::Horizontal ? rect.Height() : DPI(tab_element->item_height) };
+            icon_width = (std::max)(DPI(24), item_height - DPI(4));
+        }
         if (draw_text)
             text_width = m_draw.GetTextExtent(item_text.c_str()).cx;
         CRect item_rect{ rect };
@@ -2970,9 +2978,15 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         {
             CRect text_rect{ item_rect };
             if (tab_element->icon_type != UiElement::TabElement::TEXT_ONLY)
+            {
                 text_rect.left += icon_width;
+            }
             else
+            {
                 text_rect.MoveToX(text_rect.left + DPI(4));
+                if (tab_element->orientation == UiElement::TabElement::Vertical)
+                    text_rect.left += DPI(8);
+            }
             m_draw.DrawWindowText(text_rect, item_text.c_str(), m_colors.color_text, Alignment::LEFT, true);
         }
 

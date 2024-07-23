@@ -1615,11 +1615,30 @@ void UiElement::TabElement::FindStackElement()
     {
         if (pParent != nullptr)
         {
+            //查找与自己同级的StackElement
             for (const auto& ele : pParent->childLst)
             {
                 StackElement* _stack_element = dynamic_cast<StackElement*>(ele.get());
                 if (_stack_element != nullptr)
                     stack_element = _stack_element;
+            }
+        }
+
+        //如果没有找到，则查找整个界面第一个StackElement
+        if (stack_element == nullptr)
+        {
+            Element* root = RootElement();
+            if (root != nullptr)
+            {
+                root->IterateAllElements([&](Element* ele)->bool {
+                    StackElement* _stack_element = dynamic_cast<StackElement*>(ele);
+                    if (_stack_element != nullptr)
+                    {
+                        stack_element = _stack_element;
+                        return true;
+                    }
+                    return false;
+                });
             }
         }
 
