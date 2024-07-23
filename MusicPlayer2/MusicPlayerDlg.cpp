@@ -2116,7 +2116,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     devicesManager->InitializeDeviceEnumerator();
 
     // 注册休眠/睡眠状态唤醒事件通知
-    if (CWinVersionHelper::IsWindows8OrLater()) // powrprof.dll在win8添加，没有实际测试过win10以外的系统会怎么样
+    if (CWinVersionHelper::IsWindows8OrLater())
     {
         static _DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS NotifyCallback = { DeviceNotifyCallbackRoutine, nullptr };
         DWORD rtn = PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &NotifyCallback, &RegistrationHandle);
@@ -2901,8 +2901,10 @@ void CMusicPlayerDlg::OnDestroy()
     delete devicesManager;
 
     // 取消注册电源状态切换通知
-    if (CWinVersionHelper::IsWindows8OrLater()) // powrprof.dll在win8添加，没有实际测试过其他系统会怎么样
+    if (CWinVersionHelper::IsWindows8OrLater())
+    {
         PowerUnregisterSuspendResumeNotification(&RegistrationHandle);
+    }
 
     //退出时恢复Cortana的默认文本
     m_cortana_lyric.ResetCortanaText();
