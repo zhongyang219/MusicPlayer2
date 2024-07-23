@@ -78,7 +78,7 @@
 						<horizontalLayout margin-right="4">
 							<placeHolder/>
 							<volume show_text="true" width="64" height="28" margin="2"/>
-							<button key="info" width="28" height="28" margin="2"/>
+							<button key="addToPlaylist" width="28" height="28" margin="2"/>
 							<button key="mediaLib" width="28" height="28" margin="2"/>
 							<button key="showPlaylist" width="28" height="28" margin="2"/>
 						</horizontalLayout>
