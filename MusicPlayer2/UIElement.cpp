@@ -1601,8 +1601,9 @@ void UiElement::TabElement::MouseLeave()
     hover_index = -1;
 }
 
-int UiElement::TabElement::SelectedIndex() const
+int UiElement::TabElement::SelectedIndex()
 {
+    FindStackElement();
     if (stack_element != nullptr)
         return stack_element->GetCurIndex();
     else

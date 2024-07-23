@@ -435,7 +435,7 @@ namespace UiElement
         std::vector<std::string> tab_list;
         std::vector<CRect> item_rects;
         std::vector<std::wstring> labels;
-        int SelectedIndex() const;
+        int SelectedIndex();
         int hover_index{ -1 };
     private:
         void FindStackElement();        //查找StackElement
