@@ -553,15 +553,12 @@ void UiElement::StackElement::Draw()
     {
         if (cur_element != childLst[i])
         {
-            childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
-                if (element != nullptr)
+            childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool
                 {
-                    element->SetRect(CRect());
-                    //清空CPlayerUIBase中按钮的矩形区域
-                    ui->ClearElementBtnRect(element);
-                }
-                return false;
-            });
+                    if (element != nullptr)
+                        element->SetRect(CRect());
+                    return false;
+                });
         }
     }
 

@@ -201,8 +201,6 @@ public:
     // 将BtnKey枚举和当前状态组合映射为IconMgr::IconType枚举
     IconMgr::IconType GetBtnIconType(BtnKey key);
 
-    void ClearElementBtnRect(UiElement::Element* element);
-
 protected:
     struct DrawData
     {
