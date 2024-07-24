@@ -64,7 +64,6 @@ namespace UiElement
         virtual bool MouseWheel(int delta, CPoint point) { return false; }
         virtual bool DoubleClick(CPoint point) { return false; }
         virtual void MouseLeave() {}
-        virtual void UpdateToolTip() {};
 
     protected:
         CRect ParentRect() const;
@@ -400,7 +399,6 @@ namespace UiElement
         virtual void LButtonUp(CPoint point) override;
         virtual void LButtonDown(CPoint point) override;
         virtual void MouseMove(CPoint point) override;
-        virtual void UpdateToolTip() override;
         virtual void ClearRect() override;
 
         IPlayerUI::UIButton btn_drop_down;

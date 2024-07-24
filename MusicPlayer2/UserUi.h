@@ -37,7 +37,6 @@ public:
     virtual bool MouseWheel(int delta, CPoint point) override;
     virtual bool DoubleClick(CPoint point) override;
     virtual void UiSizeChanged() override;
-    virtual void UpdateToolTipPosition() override;
 
     UiElement::Element* m_context_menu_sender{};
 

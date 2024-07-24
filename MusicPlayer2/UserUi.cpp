@@ -457,16 +457,6 @@ void CUserUi::UiSizeChanged()
     PlaylistLocateToIndex(INT_MAX);
 }
 
-void CUserUi::UpdateToolTipPosition()
-{
-    CPlayerUIBase::UpdateTitlebarBtnToolTip();
-    IterateAllElements([&](UiElement::Element* element) ->bool {
-        if (element != nullptr)
-            element->UpdateToolTip();
-        return false;
-    });
-}
-
 int CUserUi::GetUiIndex()
 {
     return m_index;

@@ -1543,12 +1543,11 @@ void UiElement::PlaylistIndicator::MouseMove(CPoint point)
 {
     btn_drop_down.hover = (btn_drop_down.rect.PtInRect(point) != FALSE);
     btn_menu.hover = (btn_menu.rect.PtInRect(point) != FALSE);
-}
 
-void UiElement::PlaylistIndicator::UpdateToolTip()
-{
-    ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_DROP_DOWN_BTN, btn_drop_down.rect);
-    ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_MENU_BTN, btn_menu.rect);
+    if (btn_drop_down.hover)
+        ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_DROP_DOWN_BTN, btn_drop_down.rect);
+    if (btn_menu.hover)
+        ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_MENU_BTN, btn_menu.rect);
 }
 
 void UiElement::PlaylistIndicator::ClearRect()
