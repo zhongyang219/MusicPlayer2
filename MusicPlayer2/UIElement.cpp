@@ -712,6 +712,8 @@ void UiElement::Text::Draw()
     case 10: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font10.GetFont(big_font)); break;
     case 11: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font11.GetFont(big_font)); break;
     case 12: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font12.GetFont(big_font)); break;
+    case 14: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font14.GetFont(big_font)); break;
+    case 16: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font16.GetFont(big_font)); break;
     default: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(big_font)); break;
     }
 

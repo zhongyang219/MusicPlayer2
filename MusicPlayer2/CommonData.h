@@ -124,6 +124,8 @@ struct FontSet
     UIFont font10;				//界面2的歌曲标题
     UIFont font11;
     UIFont font12;           //界面4的歌曲标题
+    UIFont font14;
+    UIFont font16;
 
     UIFont dlg;                 // 窗口控件字体
     UIFont lyric;				//歌词字体
@@ -139,6 +141,8 @@ struct FontSet
         font10.SetFont(10, font_name);
         font11.SetFont(11, font_name);
         font12.SetFont(12, font_name);
+        font14.SetFont(14, font_name);
+        font16.SetFont(16, font_name);
         dlg.SetFont(9, font_name);
     }
 };

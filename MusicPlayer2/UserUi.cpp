@@ -628,8 +628,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     text->font_size = 9;
                 else if (text->font_size < 8)
                     text->font_size = 8;
-                else if (text->font_size > 12)
-                    text->font_size = 12;
+                else if (text->font_size > 16)
+                    text->font_size = 16;
                 // max_width_follow_text 优先级低于 max-width
                 std::string str_width_follow_text = CTinyXml2Helper::ElementAttribute(xml_node, "width_follow_text");
                 if (str_width_follow_text == "true")

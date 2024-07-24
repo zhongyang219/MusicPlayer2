@@ -68,6 +68,18 @@
           </stackElement>
 
         </horizontalLayout>
+
+        <verticalLayout>
+          <albumCover proportion="2"/>
+          <text type="title" font_size="16" style="scroll" height="32"/>
+          <text type="artist" font_size="14" style="scroll" height="32"/>
+          <text type="album" font_size="12" style="scroll" height="32"/>
+          <!--<placeHolder height="24" hide-height="200"/>-->
+          <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
+          <rectangle proportion="1">
+            <lyrics margin="8"/>
+          </rectangle>
+        </verticalLayout>
         
       </stackElement>
 
