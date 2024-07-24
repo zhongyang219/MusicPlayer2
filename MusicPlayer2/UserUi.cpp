@@ -802,6 +802,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
 
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_space", tab_emelent->item_space);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", tab_emelent->item_height);
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", tab_emelent->font_size);
             }
 
         }

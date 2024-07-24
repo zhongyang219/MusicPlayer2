@@ -705,17 +705,7 @@ void UiElement::Text::Draw()
 
     CFont* old_font{};  //原先的字体
     bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
-    switch (font_size)
-    {
-    case 8: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font8.GetFont(big_font)); break;
-    case 9: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(big_font)); break;
-    case 10: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font10.GetFont(big_font)); break;
-    case 11: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font11.GetFont(big_font)); break;
-    case 12: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font12.GetFont(big_font)); break;
-    case 14: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font14.GetFont(big_font)); break;
-    case 16: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font16.GetFont(big_font)); break;
-    default: old_font = ui->m_draw.SetFont(&theApp.m_font_set.font9.GetFont(big_font)); break;
-    }
+    old_font = ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(font_size).GetFont(big_font));
 
     COLORREF text_color{};
     if (color_mode == CPlayerUIBase::RCM_LIGHT)

@@ -37,7 +37,8 @@
         </verticalLayout>
 
         <horizontalLayout>
-          <tabElement width="36" margin="4" orientation="vertical" icon_type="icon_only" item_space="4" item_height="32" item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating"/>
+          <tabElement width="100" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="10"
+                      item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating"/>
           <stackElement margin="8">
             <verticalLayout>
               <albumCover square="true" margin="28" margin-bottom="12"/>

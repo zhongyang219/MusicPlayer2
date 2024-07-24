@@ -450,6 +450,7 @@ namespace UiElement
         Orientation orientation{ Horizontal };
         int item_space{};
         int item_height{ 28 };
+        int font_size{ 9 };
         std::vector<std::string> tab_list;
         std::vector<CRect> item_rects;
         std::vector<std::wstring> labels;

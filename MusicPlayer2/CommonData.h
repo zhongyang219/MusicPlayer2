@@ -134,17 +134,9 @@ struct FontSet
     UIFont cortana_translate;	//搜索框翻译字体
 
 
-    void Init(LPCTSTR font_name)
-    {
-        font9.SetFont(9, font_name);
-        font8.SetFont(8, font_name);
-        font10.SetFont(10, font_name);
-        font11.SetFont(11, font_name);
-        font12.SetFont(12, font_name);
-        font14.SetFont(14, font_name);
-        font16.SetFont(16, font_name);
-        dlg.SetFont(9, font_name);
-    }
+    void Init(LPCTSTR font_name);
+    UIFont& GetFontBySize(int font_size);
+
 };
 
 

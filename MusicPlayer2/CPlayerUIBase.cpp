@@ -2907,12 +2907,20 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
 
         m_draw.SetDrawArea(rect);
         //绘制图标
+        CRect icon_rect{ item_rect };
         if (draw_icon)
         {
-            CRect icon_rect{ item_rect };
             if (tab_element->icon_type != UiElement::TabElement::ICON_ONLY)
+            {
                 icon_rect.right = icon_rect.left + icon_width;
+                if (tab_element->orientation == UiElement::TabElement::Vertical)
+                    icon_rect.MoveToX(icon_rect.left + DPI(4));
+            }
             DrawUiIcon(icon_rect, icon);
+        }
+        else
+        {
+            icon_rect.right = icon_rect.left;
         }
 
         //绘制文本
@@ -2921,7 +2929,7 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
             CRect text_rect{ item_rect };
             if (tab_element->icon_type != UiElement::TabElement::TEXT_ONLY)
             {
-                text_rect.left += icon_width;
+                text_rect.left = icon_rect.right;
             }
             else
             {
@@ -2929,7 +2937,11 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
                 if (tab_element->orientation == UiElement::TabElement::Vertical)
                     text_rect.left += DPI(8);
             }
+            CFont* old_font{};  //原先的字体
+            bool big_font{ m_ui_data.full_screen && IsDrawLargeIcon() };
+            old_font = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(tab_element->font_size).GetFont(big_font));
             m_draw.DrawWindowText(text_rect, item_text.c_str(), m_colors.color_text, Alignment::LEFT, true);
+            m_draw.SetFont(old_font);
         }
 
         //绘制选中指示
