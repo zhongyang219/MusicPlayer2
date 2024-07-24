@@ -175,8 +175,6 @@ public:
         BTN_SWITCH_DISPLAY,     //切换界面中的stackElement
         BTN_DARK_LIGHT,         //切换深色/浅色模式
         BTN_LOCATE_TO_CURRENT,  //播放列表定位到当前播放
-        BTN_PLAYLIST_DROP_DOWN, //播放列表下拉按钮
-        BTN_PLAYLIST_MENU,      //播放列表菜单按键
 
         //菜单栏
         MENU_FILE,
@@ -233,7 +231,7 @@ protected:
     void DrawABRepeatButton(CRect rect);
     void DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background);        //绘制歌词 rect：歌曲区域；with_background是否绘制背景
     void DrawList(CRect rect, UiElement::ListElement* list_element, int item_height);                  //绘制播放列表
-    void DrawCurrentPlaylistIndicator(CRect rect);      //绘制当前播放列表指示
+    void DrawCurrentPlaylistIndicator(CRect rect, UiElement::PlaylistIndicator* playlist_indicator);      //绘制当前播放列表指示
     /**
      * @brief   绘制stackElement的指示器
      * @param   UIButton indicator 指示器信息
@@ -248,6 +246,7 @@ protected:
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
     // 绘制一个UI按钮 (使用GetBtnIconType取得的图标)
     void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false);
+    void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false);
     // 绘制一个工具条按钮（将rect四面缩小 DPI(2) 后调用DrawUIButton）
     void DrawControlBarBtn(CRect rect, BtnKey btn_type);
     // 绘制一个UI按钮，以text文本作为图标

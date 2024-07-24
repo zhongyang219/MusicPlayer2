@@ -435,22 +435,6 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCATE_TO_CURRENT);
                 return true;
 
-            case BTN_PLAYLIST_DROP_DOWN:
-            {
-                m_buttons[BTN_PLAYLIST_DROP_DOWN].hover = false;
-                CRect btn_rect = btn.second.rect;
-                AfxGetMainWnd()->ClientToScreen(&btn_rect);
-                theApp.m_menu_mgr.GetMenu(MenuMgr::RecentFolderPlaylistMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
-                return true;
-            }
-            case BTN_PLAYLIST_MENU:
-            {
-                m_buttons[BTN_PLAYLIST_MENU].hover = false;
-                CRect btn_rect = btn.second.rect;
-                AfxGetMainWnd()->ClientToScreen(&btn_rect);
-                theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
-                return true;
-            }
             case BTN_VOLUME_UP:
                 if (m_show_volume_adj)
                 {
@@ -773,10 +757,6 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
             return IconMgr::IconType::IT_Dark_Mode_On;
     case BTN_LOCATE_TO_CURRENT:
         return IconMgr::IconType::IT_Locate;
-    case BTN_PLAYLIST_DROP_DOWN:
-        return IconMgr::IconType::IT_Triangle_Down;
-    case BTN_PLAYLIST_MENU:
-        return IconMgr::IconType::IT_Menu;
     case MENU_FILE:
         return IconMgr::IconType::IT_Folder;
     case MENU_PLAY_CONTROL:
@@ -1153,6 +1133,11 @@ CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
 void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon)
 {
     auto& btn = m_buttons[key_type];
+    DrawUIButton(rect, btn, GetBtnIconType(key_type), big_icon);
+}
+
+void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon)
+{
     btn.rect = DrawAreaToClient(rect, m_draw_rect);
 
     CRect rc_tmp = rect;
@@ -1196,7 +1181,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, bool big_ic
 
     IconMgr::IconStyle icon_style = (is_close_btn && (btn.pressed || btn.hover)) ? IconMgr::IconStyle::IS_OutlinedLight : IconMgr::IconStyle::IS_Auto;
     IconMgr::IconSize icon_size = big_icon ? IconMgr::IconSize::IS_DPI_20 : IconMgr::IconSize::IS_DPI_16;
-    DrawUiIcon(rc_tmp, GetBtnIconType(key_type), icon_style, icon_size);
+    DrawUiIcon(rc_tmp, icon_type, icon_style, icon_size);
 }
 
 void CPlayerUIBase::DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool back_color)
@@ -2588,7 +2573,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
     ResetDrawArea();
 }
 
-void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect)
+void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::PlaylistIndicator* playlist_indicator)
 {
     IconMgr::IconType icon_type{};
     wstring str;
@@ -2622,7 +2607,7 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect)
     menu_btn_rect.left = rect.right - DPI(26);
     const int icon_size{ (std::min)(DPI(24), rect.Height()) };
     CRect menu_btn_icon_rect = CDrawCommon::CalculateCenterIconRect(menu_btn_rect, icon_size);
-    DrawUIButton(menu_btn_icon_rect, BTN_PLAYLIST_MENU);
+    DrawUIButton(menu_btn_icon_rect, playlist_indicator->btn_menu, IconMgr::IconType::IT_Menu);
     //绘制当前播放列表名称
     CRect rect_name{ rect };
     rect_name.left = rect_text.right + DPI(8);
@@ -2645,7 +2630,7 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect)
     rect_drop_down.left = rect_name.right + DPI(2);
     rect_drop_down.right = menu_btn_rect.left - DPI(6);
     CRect rect_drop_down_btn = CDrawCommon::CalculateCenterIconRect(rect_drop_down, icon_size);
-    DrawUIButton(rect_drop_down_btn, BTN_PLAYLIST_DROP_DOWN);
+    DrawUIButton(rect_drop_down_btn, playlist_indicator->btn_drop_down, IconMgr::IconType::IT_Triangle_Down);
 }
 
 void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
@@ -3129,10 +3114,10 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_LOCATE_TO_CURRENT, tip_str.c_str());
     // 播放列表
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_MENU");
-    AddMouseToolTip(BTN_PLAYLIST_MENU, tip_str.c_str());
+    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::PLAYLIST_MENU_BTN), tip_str.c_str());
     // 播放列表下拉菜单按钮
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST");
-    AddMouseToolTip(BTN_PLAYLIST_DROP_DOWN, tip_str.c_str());
+    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::PLAYLIST_DROP_DOWN_BTN), tip_str.c_str());
     // 循环模式
     AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip.c_str());
     UpdateRepeatModeToolTip();

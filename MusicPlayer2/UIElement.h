@@ -49,6 +49,7 @@ namespace UiElement
         int GetHeight(CRect parent_rect) const;
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
+        virtual void ClearRect();
         Element* RootElement();       //获取根节点
         void IterateAllElements(std::function<bool(UiElement::Element*)> func);  //遍历所有界面元素
         void SetUi(CPlayerUIBase* _ui);
@@ -63,6 +64,7 @@ namespace UiElement
         virtual bool MouseWheel(int delta, CPoint point) { return false; }
         virtual bool DoubleClick(CPoint point) { return false; }
         virtual void MouseLeave() {}
+        virtual void UpdateToolTip() {};
 
     protected:
         CRect ParentRect() const;
@@ -75,8 +77,10 @@ namespace UiElement
 
     namespace TooltipIndex
     {
-        const int PLAYLIST = 999;
-        const int TAB_ELEMENT = 998;
+        const int PLAYLIST = 900;
+        const int TAB_ELEMENT = 901;
+        const int PLAYLIST_DROP_DOWN_BTN = 902;
+        const int PLAYLIST_MENU_BTN = 903;
     }
 
     //布局
@@ -393,6 +397,14 @@ namespace UiElement
     {
     public:
         virtual void Draw() override;
+        virtual void LButtonUp(CPoint point) override;
+        virtual void LButtonDown(CPoint point) override;
+        virtual void MouseMove(CPoint point) override;
+        virtual void UpdateToolTip() override;
+        virtual void ClearRect() override;
+
+        IPlayerUI::UIButton btn_drop_down;
+        IPlayerUI::UIButton btn_menu;
     };
 
     class ClassicalControlBar : public Element

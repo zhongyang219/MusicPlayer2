@@ -105,6 +105,11 @@ void UiElement::Element::SetRect(CRect _rect)
     rect = _rect;
 }
 
+void UiElement::Element::ClearRect()
+{
+    rect = CRect();
+}
+
 UiElement::Element* UiElement::Element::RootElement()
 {
     Element* ele{ this };
@@ -556,7 +561,7 @@ void UiElement::StackElement::Draw()
             childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool
                 {
                     if (element != nullptr)
-                        element->SetRect(CRect());
+                        element->ClearRect();
                     return false;
                 });
         }
@@ -1505,9 +1510,52 @@ void UiElement::MediaLibItemList::OnDoubleClicked()
 void UiElement::PlaylistIndicator::Draw()
 {
     CalculateRect();
-    ui->DrawCurrentPlaylistIndicator(rect);
+    ui->DrawCurrentPlaylistIndicator(rect, this);
     ui->ResetDrawArea();
     Element::Draw();
+}
+
+void UiElement::PlaylistIndicator::LButtonUp(CPoint point)
+{
+    if (btn_drop_down.rect.PtInRect(point))
+    {
+        btn_drop_down.hover = false;
+        CRect btn_rect = btn_drop_down.rect;
+        AfxGetMainWnd()->ClientToScreen(&btn_rect);
+        theApp.m_menu_mgr.GetMenu(MenuMgr::RecentFolderPlaylistMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
+    }
+    else if (btn_menu.rect.PtInRect(point))
+    {
+        btn_menu.hover = false;
+        CRect btn_rect = btn_menu.rect;
+        AfxGetMainWnd()->ClientToScreen(&btn_rect);
+        theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
+    }
+}
+
+void UiElement::PlaylistIndicator::LButtonDown(CPoint point)
+{
+    btn_drop_down.pressed = (btn_drop_down.rect.PtInRect(point) != FALSE);
+    btn_menu.pressed = (btn_menu.rect.PtInRect(point) != FALSE);
+}
+
+void UiElement::PlaylistIndicator::MouseMove(CPoint point)
+{
+    btn_drop_down.hover = (btn_drop_down.rect.PtInRect(point) != FALSE);
+    btn_menu.hover = (btn_menu.rect.PtInRect(point) != FALSE);
+}
+
+void UiElement::PlaylistIndicator::UpdateToolTip()
+{
+    ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_DROP_DOWN_BTN, btn_drop_down.rect);
+    ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_MENU_BTN, btn_menu.rect);
+}
+
+void UiElement::PlaylistIndicator::ClearRect()
+{
+    Element::ClearRect();
+    btn_drop_down.rect = CRect();
+    btn_menu.rect = CRect();
 }
 
 UiElement::ClassicalControlBar::ClassicalControlBar()
