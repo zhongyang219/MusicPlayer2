@@ -2924,7 +2924,10 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
                 CPoint pos_icon{ icon_rect.left + (icon_rect.Width() - size_icon.cx) / 2 , icon_rect.top + (icon_rect.Height() - size_icon.cy) / 2 };
                 CRect draw_icon_rect(pos_icon, size_icon);
                 draw_icon_rect.bottom -= DPI(2);
-                m_draw.DrawSpectrum(CRect(pos_icon, size_icon), DPI(2), DPI(2), 4, icon_color, false, false, Alignment::CENTER, false, 180);
+                int gap_width{ DPI(2) };
+                if (theApp.GetDPI() % 48 == 24)       //DPI对48取余等于24意味着对“2”这个数进行DPI变换后会有0.5的小数，此时让柱形的间隙增加1像素
+                    gap_width++;
+                m_draw.DrawSpectrum(CRect(pos_icon, size_icon), DPI(2), gap_width, 4, icon_color, false, false, Alignment::CENTER, false, 180);
             }
             else
             {
