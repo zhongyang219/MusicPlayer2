@@ -410,6 +410,7 @@ namespace UiElement
 
         IPlayerUI::UIButton btn_drop_down;
         IPlayerUI::UIButton btn_menu;
+        CRect rect_name;
     };
 
     class ClassicalControlBar : public Element

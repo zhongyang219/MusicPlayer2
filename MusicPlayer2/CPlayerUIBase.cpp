@@ -2620,6 +2620,7 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::Playlist
         m_draw.DrawRoundRect(rect_name, m_colors.color_control_bar_back, DPI(4), alpha);
     else
         m_draw.FillAlphaRect(rect_name, m_colors.color_control_bar_back, alpha);
+    playlist_indicator->rect_name = rect_name;
     ResetDrawArea();
     rect_name.left += DPI(6);
     rect_name.right -= DPI(30);

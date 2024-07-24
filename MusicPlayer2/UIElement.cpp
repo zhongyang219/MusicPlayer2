@@ -1534,7 +1534,7 @@ void UiElement::PlaylistIndicator::LButtonUp(CPoint point)
     if (btn_drop_down.rect.PtInRect(point))
     {
         btn_drop_down.hover = false;
-        CRect btn_rect = btn_drop_down.rect;
+        CRect btn_rect = rect_name;
         AfxGetMainWnd()->ClientToScreen(&btn_rect);
         theApp.m_menu_mgr.GetMenu(MenuMgr::RecentFolderPlaylistMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
     }
