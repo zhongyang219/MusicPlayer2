@@ -351,7 +351,7 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
     DrawSpectrum(rect, width, gap_width, cols, m_colors.color_spectrum, draw_reflex, low_freq_in_center, alignment);
 }
 
-void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex /*= false*/, bool low_freq_in_center, Alignment alignment)
+void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex, bool low_freq_in_center, Alignment alignment, bool draw_peak, int sprctrum_height)
 {
     CRect rc_spectrum_top = rect;
     if (draw_reflex)     //如果要绘制倒影，则倒影占总高度的1/3
@@ -397,8 +397,10 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
         float peak_data = CPlayer::GetInstance().GetSpectralPeakData()[index * (SPECTRUM_COL / cols)];
 
         CRect rect_tmp{ rects[i] };
-        int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
-        int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * theApp.m_app_setting_data.sprctrum_height / 100);
+        if (sprctrum_height <= 0)
+            sprctrum_height = theApp.m_app_setting_data.sprctrum_height;
+        int spetral_height = static_cast<int>(spetral_data * rects[0].Height() / 30 * sprctrum_height / 100);
+        int peak_height = static_cast<int>(peak_data * rects[0].Height() / 30 * sprctrum_height / 100);
         if (spetral_height < 0 || CPlayer::GetInstance().IsError()) spetral_height = 0;		//如果播放出错，不显示频谱
         if (peak_height < 0 || CPlayer::GetInstance().IsError()) peak_height = 0;
 
@@ -418,15 +420,18 @@ void CUIDrawer::DrawSpectrum(CRect rect, int col_width, int gap_width, int cols,
             FillAlphaRect(rc_invert, color, 96, true);
         }
 
-        //绘制顶端
-        CRect rect_peak{ rect_tmp };
-        rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
-        rect_peak.top = rect_peak.bottom - peak_rect_height;
-        FillRect(rect_peak, color, true);
-        ////绘制顶端倒影
-        //CRect rc_peak_invert = rect_peak;
-        //rc_peak_invert.MoveToY(rc_invert.top + peak_height + theApp.DPIRound(1.1));
-        //FillAlphaRect(rc_peak_invert, color, 96);
+        if (draw_peak)
+        {
+            //绘制顶端
+            CRect rect_peak{ rect_tmp };
+            rect_peak.bottom = rect_tmp.bottom - peak_height - gap_width;
+            rect_peak.top = rect_peak.bottom - peak_rect_height;
+            FillRect(rect_peak, color, true);
+            ////绘制顶端倒影
+            //CRect rc_peak_invert = rect_peak;
+            //rc_peak_invert.MoveToY(rc_invert.top + peak_height + theApp.DPIRound(1.1));
+            //FillAlphaRect(rc_peak_invert, color, 96);
+        }
     }
 
 }

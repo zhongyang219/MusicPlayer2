@@ -46,7 +46,9 @@ public:
     //cols：频谱的柱形的数量，必须为2的n次方，且小于或等于SPECTRUM_COL
     //color：频谱分析的颜色
     //draw_reflex：是否绘制倒影
-    void DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex = false, bool low_freq_in_center = false, Alignment alignment = Alignment::LEFT);
+    //draw_peak: 是否绘制顶端
+    //sprctrum_height: 设置频谱整体的高度，大于0有效，否则使用设置中的值theApp.m_app_setting_data.sprctrum_height
+    void DrawSpectrum(CRect rect, int col_width, int gap_width, int cols, COLORREF color, bool draw_reflex = false, bool low_freq_in_center = false, Alignment alignment = Alignment::LEFT, bool draw_peak = true, int sprctrum_height = 0);
 
     int DPI(int pixel);
 

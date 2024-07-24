@@ -2916,7 +2916,20 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
                 if (tab_element->orientation == UiElement::TabElement::Vertical)
                     icon_rect.MoveToX(icon_rect.left + DPI(4));
             }
-            DrawUiIcon(icon_rect, icon);
+            //使用跳动的频谱代替正在播放图标
+            if (item_str == "now_playing" && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED)
+            {
+                COLORREF icon_color{ theApp.m_app_setting_data.dark_mode ? RGB(255, 255, 255) : RGB(110, 110, 110) };
+                CSize size_icon = IconMgr::GetIconSize(IsDrawLargeIcon() ? IconMgr::IS_DPI_16_Full_Screen : IconMgr::IS_DPI_16);
+                CPoint pos_icon{ icon_rect.left + (icon_rect.Width() - size_icon.cx) / 2 , icon_rect.top + (icon_rect.Height() - size_icon.cy) / 2 };
+                CRect draw_icon_rect(pos_icon, size_icon);
+                draw_icon_rect.bottom -= DPI(2);
+                m_draw.DrawSpectrum(CRect(pos_icon, size_icon), DPI(2), DPI(2), 4, icon_color, false, false, Alignment::CENTER, false, 180);
+            }
+            else
+            {
+                DrawUiIcon(icon_rect, icon);
+            }
         }
         else
         {
