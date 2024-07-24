@@ -417,6 +417,10 @@ IDI_ALBUM_COVER         ICON                    "res\\album_cover.ico"
 
 IDI_REVERB_D            ICON                    "res\\reverb_d.ico"
 
+IDI_NOW_PLAYING         ICON                    "res\\now_playing.ico"
+
+IDI_NOW_PLAYING_D       ICON                    "res\\now_playing_d.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

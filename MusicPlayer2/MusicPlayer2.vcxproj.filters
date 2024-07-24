@@ -1968,5 +1968,11 @@
     <Image Include="res\reverb_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\now_playing.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\now_playing_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

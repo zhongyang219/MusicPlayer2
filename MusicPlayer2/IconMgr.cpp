@@ -259,6 +259,8 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
         return { IDI_TAG, NULL, NULL, NULL };
     case IconMgr::IconType::IT_More:
         return { IDI_MORE_D, NULL, NULL, NULL };
+    case IconMgr::IconType::IT_NowPlaying:
+        return { IDI_NOW_PLAYING_D, IDI_NOW_PLAYING, NULL, NULL };
     case IconMgr::IconType::IT_Le_Tag_Insert:
         return { NULL, NULL, NULL, IDI_ADD_TAG };
     case IconMgr::IconType::IT_Le_Tag_Replace:

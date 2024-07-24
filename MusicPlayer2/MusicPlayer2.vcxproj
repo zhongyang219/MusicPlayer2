@@ -662,6 +662,8 @@
     <Image Include="res\next_white.ico" />
     <Image Include="res\notify_preview.bmp" />
     <Image Include="res\notify_preview_light.bmp" />
+    <Image Include="res\now_playing.ico" />
+    <Image Include="res\now_playing_d.ico" />
     <Image Include="res\ok.ico" />
     <Image Include="res\online_d.ico" />
     <Image Include="res\pause_dark.ico" />
