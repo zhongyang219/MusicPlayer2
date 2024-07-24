@@ -406,6 +406,7 @@ namespace UiElement
         virtual void LButtonUp(CPoint point) override;
         virtual void LButtonDown(CPoint point) override;
         virtual void MouseMove(CPoint point) override;
+        virtual void MouseLeave() override;
         virtual void ClearRect() override;
 
         IPlayerUI::UIButton btn_drop_down;

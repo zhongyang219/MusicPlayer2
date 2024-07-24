@@ -1556,6 +1556,14 @@ void UiElement::PlaylistIndicator::MouseMove(CPoint point)
         ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_MENU_BTN, btn_menu.rect);
 }
 
+void UiElement::PlaylistIndicator::MouseLeave()
+{
+    btn_drop_down.pressed = false;
+    btn_drop_down.hover = false;
+    btn_menu.pressed = false;
+    btn_menu.hover = false;
+}
+
 void UiElement::PlaylistIndicator::ClearRect()
 {
     Element::ClearRect();
