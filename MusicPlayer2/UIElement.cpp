@@ -1346,11 +1346,22 @@ std::wstring UiElement::RecentPlayedList::GetItemText(int row, int col)
 {
     if (row >= 0 && row < GetRowCount())
     {
-        std::wstring name;
-        CRecentFolderAndPlaylist::Instance().GetItem(row, [&](const CRecentFolderAndPlaylist::Item& item) {
-            name = item.GetName();
-        });
-        return name;
+        if (col == COL_NAME)
+        {
+            std::wstring name;
+            CRecentFolderAndPlaylist::Instance().GetItem(row, [&](const CRecentFolderAndPlaylist::Item& item) {
+                name = item.GetName();
+            });
+            return name;
+        }
+        else if (col == COL_COUNT)
+        {
+            int track_num{};
+            CRecentFolderAndPlaylist::Instance().GetItem(row, [&](const CRecentFolderAndPlaylist::Item& item) {
+                track_num = item.GetTrackNum();
+            });
+            return std::to_wstring(track_num);
+        }
     }
     return std::wstring();
 }
@@ -1362,19 +1373,22 @@ int UiElement::RecentPlayedList::GetRowCount()
 
 int UiElement::RecentPlayedList::GetColumnCount()
 {
-    return 1;
+    return COL_MAX;
 }
 
 int UiElement::RecentPlayedList::GetColumnWidth(int col, int total_width)
 {
-    if (col == 0)
-        return total_width;
+    const int count_width{ ui->DPI(40) };
+    if (col == COL_NAME)
+        return total_width - count_width;
+    else if (col == COL_COUNT)
+        return count_width;
     return 0;
 }
 
 int UiElement::RecentPlayedList::GetColumnScrollTextWhenSelected()
 {
-    return 0;
+    return COL_NAME;
 }
 
 IconMgr::IconType UiElement::RecentPlayedList::GetIcon(int row)
@@ -1693,13 +1707,21 @@ void UiElement::TabElement::FindStackElement()
 
 std::wstring UiElement::MediaLibFolder::GetItemText(int row, int col)
 {
-    if (col == 0)
+    if (col == COL_NAME)
     {
         wstring text;
         CRecentFolderMgr::Instance().GetItem(row, [&](const PathInfo& path_info) {
             text = path_info.path;
         });
         return text;
+    }
+    else if (col == COL_COUNT)
+    {
+        int track_num;
+        CRecentFolderMgr::Instance().GetItem(row, [&](const PathInfo& path_info) {
+            track_num = path_info.track_num;
+        });
+        return std::to_wstring(track_num);
     }
     return std::wstring();
 }
@@ -1711,13 +1733,16 @@ int UiElement::MediaLibFolder::GetRowCount()
 
 int UiElement::MediaLibFolder::GetColumnCount()
 {
-    return 1;
+    return COL_MAX;
 }
 
 int UiElement::MediaLibFolder::GetColumnWidth(int col, int total_width)
 {
-    if (col == 0)
-        return total_width;
+    const int count_width{ ui->DPI(40) };
+    if (col == COL_NAME)
+        return total_width - count_width;
+    else if (col == COL_COUNT)
+        return count_width;
     return 0;
 }
 
@@ -1731,7 +1756,7 @@ int UiElement::MediaLibFolder::GetHighlightRow()
 
 int UiElement::MediaLibFolder::GetColumnScrollTextWhenSelected()
 {
-    return 0;
+    return COL_NAME;
 }
 
 CMenu* UiElement::MediaLibFolder::GetContextMenu(bool item_selected)
@@ -1759,13 +1784,21 @@ void UiElement::MediaLibFolder::OnDoubleClicked()
 
 std::wstring UiElement::MediaLibPlaylist::GetItemText(int row, int col)
 {
-    if (col == 0)
+    if (col == COL_NAME)
     {
         wstring text;
         CPlaylistMgr::Instance().GetPlaylistInfo(row, [&](const PlaylistInfo& playlist_info) {
             text = playlist_info.path;
         });
         return CPlaylistMgr::Instance().GetPlaylistDisplayName(text);
+    }
+    else if (col == COL_COUNT)
+    {
+        int track_num{};
+        CPlaylistMgr::Instance().GetPlaylistInfo(row, [&](const PlaylistInfo& playlist_info) {
+            track_num = playlist_info.track_num;;
+        });
+        return std::to_wstring(track_num);
     }
     return std::wstring();
 }
@@ -1777,13 +1810,16 @@ int UiElement::MediaLibPlaylist::GetRowCount()
 
 int UiElement::MediaLibPlaylist::GetColumnCount()
 {
-    return 1;
+    return COL_MAX;
 }
 
 int UiElement::MediaLibPlaylist::GetColumnWidth(int col, int total_width)
 {
-    if (col == 0)
-        return total_width;
+    const int count_width{ ui->DPI(40) };
+    if (col == COL_NAME)
+        return total_width - count_width;
+    else if (col == COL_COUNT)
+        return count_width;
     return 0;
 }
 
@@ -1798,7 +1834,7 @@ int UiElement::MediaLibPlaylist::GetHighlightRow()
 
 int UiElement::MediaLibPlaylist::GetColumnScrollTextWhenSelected()
 {
-    return 0;
+    return COL_NAME;
 }
 
 CMenu* UiElement::MediaLibPlaylist::GetContextMenu(bool item_selected)

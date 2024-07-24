@@ -350,6 +350,13 @@ namespace UiElement
     class RecentPlayedList : public ListElement
     {
     public:
+        enum Column
+        {
+            COL_NAME,
+            COL_COUNT,
+            COL_MAX
+        };
+
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
@@ -459,6 +466,13 @@ namespace UiElement
     class MediaLibFolder : public ListElement
     {
     public:
+        enum Column
+        {
+            COL_NAME,
+            COL_COUNT,
+            COL_MAX
+        };
+
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
@@ -475,6 +489,13 @@ namespace UiElement
     class MediaLibPlaylist : public ListElement
     {
     public:
+        enum Column
+        {
+            COL_NAME,
+            COL_COUNT,
+            COL_MAX
+        };
+        
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;

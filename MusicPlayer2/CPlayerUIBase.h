@@ -27,6 +27,9 @@ namespace UiElement
     class PlaylistIndicator;
     class ClassicalControlBar;
     class MediaLibItemList;
+    class MediaLibPlaylist;
+    class MediaLibFolder;
+    class RecentPlayedList;
     class TabElement;
 }
 
@@ -74,6 +77,9 @@ public:
     friend class UiElement::PlaylistIndicator;
     friend class UiElement::ClassicalControlBar;
     friend class UiElement::MediaLibItemList;
+    friend class UiElement::MediaLibPlaylist;
+    friend class UiElement::MediaLibFolder;
+    friend class UiElement::RecentPlayedList;
     friend class UiElement::TabElement;
 
 public:

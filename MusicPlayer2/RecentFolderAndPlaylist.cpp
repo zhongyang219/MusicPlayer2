@@ -156,6 +156,26 @@ std::wstring CRecentFolderAndPlaylist::Item::GetName() const
     return wstring();
 }
 
+int CRecentFolderAndPlaylist::Item::GetTrackNum() const
+{
+    if (item_type == Item::PLAYLIST)
+    {
+        if (playlist_info != nullptr)
+            return playlist_info->track_num;
+    }
+    else if (item_type == Item::FOLDER)
+    {
+        if (folder_info != nullptr)
+            return folder_info->track_num;
+    }
+    else if (item_type == Item::MEDIA_LIB)
+    {
+        if (medialib_info != nullptr)
+            return medialib_info->track_num;
+    }
+    return 0;
+}
+
 bool CRecentFolderAndPlaylist::Item::IsItemCurrentPlaying() const
 {
     if (CPlayer::GetInstance().IsPlaylistMode())
