@@ -136,6 +136,7 @@
     <xs:group name="elements">
         <xs:sequence><!--sequence 和 choice 配合使用，使得元素可以以任意顺序出现任意次数-->
             <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="element" type="elementType"></xs:element>
                 <xs:element name="verticalLayout" type="verticalLayoutType"></xs:element>
                 <xs:element name="horizontalLayout" type="horizontalLayoutType"></xs:element>
                 <xs:element name="stackElement" type="stackElementType"></xs:element>
@@ -222,7 +223,14 @@
         </xs:attribute>
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup><!--引用属性组 sharedattr-->
     </xs:complexType>
-    <xs:complexType name="verticalLayoutType">
+    <xs:complexType name="elementType">
+      <xs:annotation>
+        <xs:documentation>一个空白的元素，不绘制任何东西，可用于作为其他元素的父节点。</xs:documentation>
+      </xs:annotation>
+      <xs:group ref="elements"></xs:group>
+      <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    </xs:complexType>
+  <xs:complexType name="verticalLayoutType">
         <xs:annotation>
             <xs:documentation>垂直布局元素。让界面元素依次摆放到界面中，且不会发生重叠的现象。</xs:documentation>
         </xs:annotation>
@@ -799,6 +807,7 @@
       <xs:annotation>
         <xs:documentation>最近播放项目的列表。</xs:documentation>
       </xs:annotation>
+      <xs:group ref="elements"></xs:group>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
       <xs:attributeGroup ref="listattr"></xs:attributeGroup>
     </xs:complexType>
@@ -806,6 +815,7 @@
       <xs:annotation>
         <xs:documentation>媒体库项目列表。</xs:documentation>
       </xs:annotation>
+      <xs:group ref="elements"></xs:group>
       <xs:attribute name="type">
         <xs:annotation>
           <xs:documentation>类型。</xs:documentation>
@@ -857,6 +867,7 @@
       <xs:annotation>
         <xs:documentation>导航栏。用于控制stackElement的切换，优先作用于和它同一级的stackElement，如果未找到，则作用于ui元素下第一个stackElement。</xs:documentation>
       </xs:annotation>
+      <xs:group ref="elements"></xs:group>
       <xs:attribute name="item_list">
         <xs:annotation>
           <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating”中选，多个标签使用半角逗号隔开。</xs:documentation>
@@ -931,6 +942,7 @@
     <xs:annotation>
       <xs:documentation>媒体库的文件夹。</xs:documentation>
     </xs:annotation>
+    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
@@ -938,6 +950,7 @@
     <xs:annotation>
       <xs:documentation>媒体库的播放列表。</xs:documentation>
     </xs:annotation>
+    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>

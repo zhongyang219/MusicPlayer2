@@ -1931,7 +1931,7 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::MediaLibFolder>();
     else if (name == "mediaLibPlaylist")
         element = std::make_shared<UiElement::MediaLibPlaylist>();
-    else if (name == "ui" || name == "root" || name == "placeHolder")
+    else if (name == "ui" || name == "root" || name == "placeHolder" || name == "element")
         element = std::make_shared<UiElement::Element>();
 
     if (element != nullptr)
