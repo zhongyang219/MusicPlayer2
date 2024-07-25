@@ -424,8 +424,8 @@ namespace UiElement
         bool show_switch_display_btn{};
     };
 
-    //tab标签
-    class TabElement : public Element
+    //导航栏
+    class NavigationBar : public Element
     {
     public:
         virtual void Draw() override;

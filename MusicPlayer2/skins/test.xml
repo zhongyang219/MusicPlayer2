@@ -5,7 +5,7 @@
 
       <stackElement margin-bottom="12" show_indicator="true" indicator_offset="-4">
         <verticalLayout>
-          <tabElement height="30" icon_type="icon_only" item_space="4" item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating"/>
+          <navigationBar height="30" icon_type="icon_only" item_space="4" item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating"/>
           <stackElement margin="8">
             <verticalLayout>
               <albumCover square="true" margin="28" margin-bottom="12"/>
@@ -37,7 +37,7 @@
         </verticalLayout>
 
         <horizontalLayout>
-          <tabElement width="100" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="10"
+          <navigationBar width="100" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="10"
                       item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating"/>
           <stackElement margin="8">
             <verticalLayout>

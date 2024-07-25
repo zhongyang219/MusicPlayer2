@@ -30,7 +30,7 @@ namespace UiElement
     class MediaLibPlaylist;
     class MediaLibFolder;
     class RecentPlayedList;
-    class TabElement;
+    class NavigationBar;
 }
 
 struct SLayoutData
@@ -80,7 +80,7 @@ public:
     friend class UiElement::MediaLibPlaylist;
     friend class UiElement::MediaLibFolder;
     friend class UiElement::RecentPlayedList;
-    friend class UiElement::TabElement;
+    friend class UiElement::NavigationBar;
 
 public:
     void Init(CDC* pDC) override;
@@ -246,7 +246,7 @@ protected:
      */
     void DrawStackIndicator(UIButton indicator, int num, int index);
     void DrawUiMenuBar(CRect rect);
-    void DrawTabElement(CRect rect, UiElement::TabElement* tab_element);
+    void DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element);
 
     // 实际绘制一个图标
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);

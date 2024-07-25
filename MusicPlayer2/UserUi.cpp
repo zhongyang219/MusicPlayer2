@@ -777,10 +777,10 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     mediaLibItemList->type = CMediaClassifier::CT_RATING;
             }
         }
-        //标签
-        else if (item_name == "tabElement")
+        //导航栏
+        else if (item_name == "navigationBar")
         {
-            UiElement::TabElement* tab_emelent = dynamic_cast<UiElement::TabElement*>(element.get());
+            UiElement::NavigationBar* tab_emelent = dynamic_cast<UiElement::NavigationBar*>(element.get());
             if (tab_emelent != nullptr)
             {
                 std::string str_item_list = CTinyXml2Helper::ElementAttribute(xml_node, "item_list");
@@ -788,17 +788,17 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
 
                 std::string str_icon_type = CTinyXml2Helper::ElementAttribute(xml_node, "icon_type");
                 if (str_icon_type == "icon_and_text")
-                    tab_emelent->icon_type = UiElement::TabElement::ICON_AND_TEXT;
+                    tab_emelent->icon_type = UiElement::NavigationBar::ICON_AND_TEXT;
                 else if (str_icon_type == "icon_only")
-                    tab_emelent->icon_type = UiElement::TabElement::ICON_ONLY;
+                    tab_emelent->icon_type = UiElement::NavigationBar::ICON_ONLY;
                 else if (str_icon_type == "text_only")
-                    tab_emelent->icon_type = UiElement::TabElement::TEXT_ONLY;
+                    tab_emelent->icon_type = UiElement::NavigationBar::TEXT_ONLY;
 
                 std::string str_orientation = CTinyXml2Helper::ElementAttribute(xml_node, "orientation");
                 if (str_orientation == "horizontal")
-                    tab_emelent->orientation = UiElement::TabElement::Horizontal;
+                    tab_emelent->orientation = UiElement::NavigationBar::Horizontal;
                 else if (str_orientation == "vertical")
-                    tab_emelent->orientation = UiElement::TabElement::Vertical;
+                    tab_emelent->orientation = UiElement::NavigationBar::Vertical;
 
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_space", tab_emelent->item_space);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", tab_emelent->item_height);

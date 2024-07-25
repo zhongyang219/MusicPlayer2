@@ -4,7 +4,7 @@
     <verticalLayout>
       <horizontalLayout>
         <verticalLayout width="134">
-          <tabElement orientation="vertical" icon_type="icon_and_text" item_height="40" item_list="now_playing,play_queue,recently_played,folder,playlist,artist,album"/>
+          <navigationBar orientation="vertical" icon_type="icon_and_text" item_height="40" item_list="now_playing,play_queue,recently_played,folder,playlist,artist,album"/>
           <horizontalLayout height="40">
             <button key="settings" width="48" height="40"/>
             <placeHolder/>
@@ -99,7 +99,7 @@
     <verticalLayout>
       <horizontalLayout>
         <verticalLayout width="48">
-          <tabElement orientation="vertical" icon_type="icon_only" item_height="48" item_list="now_playing,play_queue,recently_played,folder,playlist,artist,album"/>
+          <navigationBar orientation="vertical" icon_type="icon_only" item_height="48" item_list="now_playing,play_queue,recently_played,folder,playlist,artist,album"/>
           <button key="settings" width="48" height="48"/>
         </verticalLayout>
         <stackElement>

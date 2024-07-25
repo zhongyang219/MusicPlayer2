@@ -152,7 +152,7 @@
                 <xs:element name="mediaLibItemList" type="mediaLibItemListType"></xs:element>
                 <xs:element name="mediaLibFolder" type="mediaLibFolderType"></xs:element>
                 <xs:element name="mediaLibPlaylist" type="mediaLibPlaylistType"></xs:element>
-                <xs:element name="tabElement" type="tabElementType"></xs:element>
+                <xs:element name="navigationBar" type="navigationBarType"></xs:element>
 				<xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
 			</xs:choice>
         </xs:sequence>
@@ -843,9 +843,9 @@
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
       <xs:attributeGroup ref="listattr"></xs:attributeGroup>
     </xs:complexType>
-    <xs:complexType name="tabElementType">
+    <xs:complexType name="navigationBarType">
       <xs:annotation>
-        <xs:documentation>tab标签。用于控制stackElement的切换，总是作用于和它同一级的stackElement。</xs:documentation>
+        <xs:documentation>导航栏。用于控制stackElement的切换，优先作用于和它同一级的stackElement，如果未找到，则作用于ui元素下第一个stackElement。</xs:documentation>
       </xs:annotation>
       <xs:attribute name="item_list">
         <xs:annotation>
@@ -856,7 +856,6 @@
             <xs:pattern value = "^(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating)(,(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating))*$"/>
           </xs:restriction>
         </xs:simpleType>
-
       </xs:attribute>
       <xs:attribute name="icon_type" default="icon_and_text">
         <xs:annotation>

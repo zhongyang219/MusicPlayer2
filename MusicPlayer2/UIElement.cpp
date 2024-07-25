@@ -1590,13 +1590,13 @@ void UiElement::ClassicalControlBar::Draw()
     Element::Draw();
 }
 
-void UiElement::TabElement::Draw()
+void UiElement::NavigationBar::Draw()
 {
-    ui->DrawTabElement(rect, this);
+    ui->DrawNavigationBar(rect, this);
     Element::Draw();
 }
 
-void UiElement::TabElement::LButtonUp(CPoint point)
+void UiElement::NavigationBar::LButtonUp(CPoint point)
 {
     FindStackElement();
     if (stack_element != nullptr)
@@ -1619,7 +1619,7 @@ void UiElement::TabElement::LButtonUp(CPoint point)
     }
 }
 
-void UiElement::TabElement::MouseMove(CPoint point)
+void UiElement::NavigationBar::MouseMove(CPoint point)
 {
     int _hover_index{ -1 };
     if (rect.PtInRect(point))
@@ -1648,18 +1648,18 @@ void UiElement::TabElement::MouseMove(CPoint point)
     }
 }
 
-bool UiElement::TabElement::RButtunUp(CPoint point)
+bool UiElement::NavigationBar::RButtunUp(CPoint point)
 {
     //不弹出右键菜单
     return rect.PtInRect(point);
 }
 
-void UiElement::TabElement::MouseLeave()
+void UiElement::NavigationBar::MouseLeave()
 {
     hover_index = -1;
 }
 
-int UiElement::TabElement::SelectedIndex()
+int UiElement::NavigationBar::SelectedIndex()
 {
     FindStackElement();
     if (stack_element != nullptr)
@@ -1668,7 +1668,7 @@ int UiElement::TabElement::SelectedIndex()
         return selected_index;
 }
 
-void UiElement::TabElement::FindStackElement()
+void UiElement::NavigationBar::FindStackElement()
 {
     if (!find_stack_element)
     {
@@ -1917,8 +1917,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::RecentPlayedList>();
     else if (name == "mediaLibItemList")
         element = std::make_shared<UiElement::MediaLibItemList>();
-    else if (name == "tabElement")
-        element = std::make_shared<UiElement::TabElement>();
+    else if (name == "navigationBar")
+        element = std::make_shared<UiElement::NavigationBar>();
     else if (name == "mediaLibFolder")
         element = std::make_shared<UiElement::MediaLibFolder>();
     else if (name == "mediaLibPlaylist")

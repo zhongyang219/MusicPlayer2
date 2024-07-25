@@ -2768,11 +2768,11 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
     ResetDrawArea();
 }
 
-void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_element)
+void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element)
 {
     m_draw.SetDrawArea(rect);
-    bool draw_icon{ tab_element->icon_type == UiElement::TabElement::ICON_AND_TEXT || tab_element->icon_type == UiElement::TabElement::ICON_ONLY };
-    bool draw_text{ tab_element->icon_type == UiElement::TabElement::ICON_AND_TEXT || tab_element->icon_type == UiElement::TabElement::TEXT_ONLY };
+    bool draw_icon{ tab_element->icon_type == UiElement::NavigationBar::ICON_AND_TEXT || tab_element->icon_type == UiElement::NavigationBar::ICON_ONLY };
+    bool draw_text{ tab_element->icon_type == UiElement::NavigationBar::ICON_AND_TEXT || tab_element->icon_type == UiElement::NavigationBar::TEXT_ONLY };
     int x_pos{ rect.left };
     int y_pos{ rect.top };
     int index{};
@@ -2867,17 +2867,17 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         int text_width{};
         if (draw_icon)
         {
-            int item_height{ tab_element->orientation == UiElement::TabElement::Horizontal ? rect.Height() : DPI(tab_element->item_height) };
+            int item_height{ tab_element->orientation == UiElement::NavigationBar::Horizontal ? rect.Height() : DPI(tab_element->item_height) };
             icon_width = (std::max)(DPI(24), item_height - DPI(4));
         }
         if (draw_text)
             text_width = m_draw.GetTextExtent(item_text.c_str()).cx;
         CRect item_rect{ rect };
-        if (tab_element->orientation == UiElement::TabElement::Horizontal)
+        if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
         {
             item_rect.left = x_pos;
             item_rect.right = item_rect.left + icon_width + text_width + DPI(4);
-            if (tab_element->icon_type == UiElement::TabElement::TEXT_ONLY)
+            if (tab_element->icon_type == UiElement::NavigationBar::TEXT_ONLY)
                 item_rect.right += DPI(4);
         }
         else
@@ -2910,10 +2910,10 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         CRect icon_rect{ item_rect };
         if (draw_icon)
         {
-            if (tab_element->icon_type != UiElement::TabElement::ICON_ONLY)
+            if (tab_element->icon_type != UiElement::NavigationBar::ICON_ONLY)
             {
                 icon_rect.right = icon_rect.left + icon_width;
-                if (tab_element->orientation == UiElement::TabElement::Vertical)
+                if (tab_element->orientation == UiElement::NavigationBar::Vertical)
                     icon_rect.MoveToX(icon_rect.left + DPI(4));
             }
             //使用跳动的频谱代替正在播放图标
@@ -2943,14 +2943,14 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         if (draw_text)
         {
             CRect text_rect{ item_rect };
-            if (tab_element->icon_type != UiElement::TabElement::TEXT_ONLY)
+            if (tab_element->icon_type != UiElement::NavigationBar::TEXT_ONLY)
             {
                 text_rect.left = icon_rect.right;
             }
             else
             {
                 text_rect.MoveToX(text_rect.left + DPI(4));
-                if (tab_element->orientation == UiElement::TabElement::Vertical)
+                if (tab_element->orientation == UiElement::NavigationBar::Vertical)
                     text_rect.left += DPI(8);
             }
             CFont* old_font{};  //原先的字体
@@ -2965,7 +2965,7 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
         {
             CRect selected_indicator_rect{ item_rect };
             //水平排列时选中指示在底部
-            if (tab_element->orientation == UiElement::TabElement::Horizontal)
+            if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
             {
                 selected_indicator_rect.left += DPI(4);
                 selected_indicator_rect.right -= DPI(4);
@@ -2985,7 +2985,7 @@ void CPlayerUIBase::DrawTabElement(CRect rect, UiElement::TabElement* tab_elemen
 
         }
 
-        if (tab_element->orientation == UiElement::TabElement::Horizontal)
+        if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
             x_pos = item_rect.right + DPI(tab_element->item_space);
         else
             y_pos = item_rect.bottom + DPI(tab_element->item_space);
