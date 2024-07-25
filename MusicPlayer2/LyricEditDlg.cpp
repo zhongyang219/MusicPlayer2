@@ -1059,7 +1059,8 @@ void CLyricEditDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_FORWARD, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_LYRIC_TIME_TAG_DELAY, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_SEEK_TO_CUR_LINE, MF_BYCOMMAND | (!is_vtt ? MF_ENABLED : MF_GRAYED));
-
+    pMenu->EnableMenuItem(ID_LYRIC_AND_TRANSLATION_IN_SAME_LINE, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE, MF_BYCOMMAND | (is_lrc ? MF_ENABLED : MF_GRAYED));
 }
 
 void CLyricEditDlg::OnLyricAndTranslationInSameLine()
