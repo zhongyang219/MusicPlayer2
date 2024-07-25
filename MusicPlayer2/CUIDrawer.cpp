@@ -19,14 +19,14 @@ void CUIDrawer::SetLyricFont(CFont* lyric_font, CFont* lyric_tr_font)
     m_lyric_tr_font = lyric_tr_font;
 }
 
-void CUIDrawer::DrawLryicCommon(CRect rect, Alignment align)
+void CUIDrawer::DrawLryicCommon(CRect rect, Alignment align, bool show_song_info)
 {
     SetDrawArea(rect);
     static int flag{};
     if (!IsDrawMultiLine(rect.Height()))
-        DrawLyricTextSingleLine(rect, flag, true, align);
+        DrawLyricTextSingleLine(rect, flag, true, align, show_song_info);
     else
-        DrawLyricTextMultiLine(rect, align);
+        DrawLyricTextMultiLine(rect, align, show_song_info);
 }
 
 int CUIDrawer::GetLyricTextHeight() const
@@ -53,7 +53,7 @@ void CUIDrawer::SetForCortanaLyric(bool for_cortana_lyric)
     m_for_cortana_lyric = for_cortana_lyric;
 }
 
-void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
+void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align, bool show_song_info)
 {
     // AUTO时多行歌词居中显示
     if (align == Alignment::AUTO) align = Alignment::CENTER;
@@ -93,7 +93,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())
     {
         //没有歌词时显示歌曲信息
-        if (theApp.m_lyric_setting_data.show_song_info_if_lyric_not_exist)
+        if (theApp.m_lyric_setting_data.show_song_info_if_lyric_not_exist || show_song_info)
         {
             CString song_info_str;
             const SongInfo& cur_song{ CPlayer::GetInstance().GetCurrentSongInfo() };
@@ -221,7 +221,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align)
     SetFont(pOldFont);
 }
 
-void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line, Alignment align)
+void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line, Alignment align, bool show_song_info)
 {
     CFont* pOldFont = SetFont(m_lyric_font);
 
@@ -233,7 +233,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
     else if (CPlayer::GetInstance().m_Lyrics.IsEmpty())
     {
         //没有歌词时显示歌曲信息
-        if (theApp.m_lyric_setting_data.show_song_info_if_lyric_not_exist)
+        if (theApp.m_lyric_setting_data.show_song_info_if_lyric_not_exist || show_song_info)
         {
             CString song_info_str;
             const SongInfo& cur_song{ CPlayer::GetInstance().GetCurrentSongInfo() };

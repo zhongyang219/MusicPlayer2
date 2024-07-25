@@ -765,6 +765,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "no_background", lyrics->no_background);
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "use_default_font", lyrics->use_default_font);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", lyrics->font_size);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_song_info", lyrics->show_song_info);
             }
         }
         //媒体库列表

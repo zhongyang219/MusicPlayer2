@@ -716,28 +716,33 @@
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="lyricsType">
-        <xs:annotation>
-            <xs:documentation>
-                显示歌词的区域。歌词的显示会自动根据歌词区域的大小切换单行、双行、多行显示模式。在此区域点击鼠标右键会弹出歌词右键菜单。
-            </xs:documentation>
-        </xs:annotation>
-        <xs:group ref="elements"></xs:group>
-          <xs:attribute name="no_background" type="xs:boolean" default="false">
-            <xs:annotation>
-                <xs:documentation>设置为true时总是不绘制歌词背景</xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-          <xs:attribute name="use_default_font" type="xs:boolean" default="false">
-            <xs:annotation>
-                <xs:documentation>设置为true时歌词总是使用默认字体</xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-          <xs:attribute name="font_size" default="9" type="font_size">
-            <xs:annotation>
-                <xs:documentation>歌词字体大小，use_default_font为true时有效，仅支持8~12,14,16。默认大小为9。</xs:documentation>
-            </xs:annotation>
-          </xs:attribute>
-        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+      <xs:annotation>
+        <xs:documentation>
+            显示歌词的区域。歌词的显示会自动根据歌词区域的大小切换单行、双行、多行显示模式。在此区域点击鼠标右键会弹出歌词右键菜单。
+        </xs:documentation>
+      </xs:annotation>
+      <xs:group ref="elements"></xs:group>
+        <xs:attribute name="no_background" type="xs:boolean" default="false">
+          <xs:annotation>
+              <xs:documentation>设置为true时总是不绘制歌词背景</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="use_default_font" type="xs:boolean" default="false">
+          <xs:annotation>
+             <xs:documentation>设置为true时歌词总是使用默认字体</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="font_size" default="9" type="font_size">
+          <xs:annotation>
+            <xs:documentation>歌词字体大小，use_default_font为true时有效，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="show_song_info" type="xs:boolean" default="false">
+          <xs:annotation>
+            <xs:documentation>设置为true时总是在没有歌词时显示歌曲信息</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="volumeType">
         <xs:annotation>

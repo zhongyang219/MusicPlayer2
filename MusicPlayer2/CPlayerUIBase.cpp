@@ -2378,7 +2378,7 @@ void CPlayerUIBase::DrawABRepeatButton(CRect rect)
     m_draw.SetFont(pOldFont);
 }
 
-void CPlayerUIBase::DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background)
+void CPlayerUIBase::DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background, bool show_song_info)
 {
     if (rect.Height() < DPI(4))
         return;
@@ -2405,7 +2405,7 @@ void CPlayerUIBase::DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_fo
 
     //绘制歌词文本
     m_draw.SetLyricFont(lyric_font, lyric_tr_font);
-    m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align);
+    m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align, show_song_info);
 }
 
 void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, int item_height)

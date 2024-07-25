@@ -935,7 +935,7 @@ void UiElement::Lyrics::Draw()
     }
 
     //如果父元素中包含了矩形元素，则即使在“外观设置”中勾选了“歌词界面背景”，也不再为歌词区域绘制半透明背景
-    ui->DrawLyrics(rect, lyric_font, lyric_tr_font, (!no_background && !IsParentRectangle()));
+    ui->DrawLyrics(rect, lyric_font, lyric_tr_font, (!no_background && !IsParentRectangle()), show_song_info);
 
     ui->ResetDrawArea();
     ui->m_draw_data.lyric_rect = rect;
