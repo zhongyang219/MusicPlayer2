@@ -875,11 +875,11 @@
       <xs:group ref="elements"></xs:group>
       <xs:attribute name="item_list">
         <xs:annotation>
-          <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating”中选，多个标签使用半角逗号隔开。</xs:documentation>
+          <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating,media_lib”中选，多个标签使用半角逗号隔开。</xs:documentation>
         </xs:annotation>
         <xs:simpleType>
           <xs:restriction base = "xs:string">
-            <xs:pattern value = "^(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating)(,(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating))*$"/>
+            <xs:pattern value = "^(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating|media_lib)(,(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating|media_lib))*$"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>

@@ -2873,6 +2873,11 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
             if (draw_icon) icon = IconMgr::IT_Star;
             if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_RATING");
         }
+        else if (item_str == "media_lib")
+        {
+            if (draw_icon) icon = IconMgr::IT_Media_Lib;
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_MEDIA_LIB");
+        }
         else
         {
             continue;
@@ -2895,6 +2900,8 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
             item_rect.right = item_rect.left + icon_width + text_width + DPI(4);
             if (tab_element->icon_type == UiElement::NavigationBar::TEXT_ONLY)
                 item_rect.right += DPI(4);
+            else if (tab_element->icon_type == UiElement::NavigationBar::ICON_AND_TEXT && tab_element->item_height > 20)
+                item_rect.right += DPI(tab_element->item_height - 20) / 2;      //基于高度值增加一些右侧的边距
         }
         else
         {
