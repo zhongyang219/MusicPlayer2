@@ -337,9 +337,10 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
             max_width = DPI(280);
         }
     }
-    int gap_width{ max_width * (SPECTRUM_COL / cols) / 168 };		//频谱柱形间隙宽度
+    double gap_width_double{ max_width * (SPECTRUM_COL / cols) / 168.0 };   //频谱柱形间隙宽度
     if (theApp.m_ui_data.full_screen && !m_for_cortana_lyric)
-        gap_width = static_cast<int>(gap_width * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
+        gap_width_double *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
+    int gap_width{ static_cast<int>(gap_width_double + 0.5) };		//这里加0.5用作将小数四舍五入处理
     int width = (max_width - (cols - 1) * gap_width) / (cols - 1);
     if (gap_width < 1)
         gap_width = 1;

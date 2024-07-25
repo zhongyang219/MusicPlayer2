@@ -81,6 +81,13 @@
             <lyrics margin="8"/>
           </rectangle>
         </verticalLayout>
+
+        <verticalLayout margin-right="60">
+          <spectrum height="30" type="64col" margin="32"/>
+          <spectrum height="30" type="32col" margin="32"/>
+          <spectrum height="30" type="16col" margin="32"/>
+          <spectrum height="30" type="8col" margin="32"/>
+        </verticalLayout>
         
       </stackElement>
 
