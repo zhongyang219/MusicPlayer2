@@ -847,10 +847,16 @@
       <xs:annotation>
         <xs:documentation>tab标签。用于控制stackElement的切换，总是作用于和它同一级的stackElement。</xs:documentation>
       </xs:annotation>
-      <xs:attribute name="item_list" type="xs:string">
+      <xs:attribute name="item_list">
         <xs:annotation>
           <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating”中选，多个标签使用半角逗号隔开。</xs:documentation>
         </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base = "xs:string">
+            <xs:pattern value = "^(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating)(,(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating))*$"/>
+          </xs:restriction>
+        </xs:simpleType>
+
       </xs:attribute>
       <xs:attribute name="icon_type" default="icon_and_text">
         <xs:annotation>
