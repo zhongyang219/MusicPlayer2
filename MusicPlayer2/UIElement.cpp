@@ -1146,6 +1146,13 @@ void UiElement::ListElement::EnsureItemVisible(int index)
     playlist_offset -= delta_offset;
 }
 
+void UiElement::ListElement::EnsureHighlightItemVisible()
+{
+    int highlight_row{ GetHighlightRow() };
+    if (highlight_row >= 0)
+        EnsureItemVisible(highlight_row);
+}
+
 void UiElement::ListElement::RestrictOffset()
 {
     int& offset{ playlist_offset };

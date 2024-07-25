@@ -104,18 +104,30 @@ void CUserUi::ResetVolumeToPlayTime()
         });
 }
 
-void CUserUi::PlaylistLocateToIndex(int index)
+void CUserUi::PlaylistLocateToCurrent()
+{
+    //遍历Playlist元素
+    IterateAllElements([&](UiElement::Element* element) ->bool {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            playlist_element->EnsureHighlightItemVisible();
+        }
+        return false;
+    });
+}
+
+void CUserUi::ListLocateToCurrent()
 {
     //遍历ListElement元素
-    IterateAllElements([&](UiElement::Element* element) ->bool
+    IterateAllElements([&](UiElement::Element* element) ->bool {
+        UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
+        if (playlist_element != nullptr)
         {
-            UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
-            if (playlist_element != nullptr)
-            {
-                playlist_element->EnsureItemVisible(index);
-            }
-            return false;
-        });
+            playlist_element->EnsureHighlightItemVisible();
+        }
+        return false;
+    });
 }
 
 void CUserUi::SaveStatackElementIndex(CArchive& archive)
@@ -454,7 +466,7 @@ bool CUserUi::DoubleClick(CPoint point)
 
 void CUserUi::UiSizeChanged()
 {
-    PlaylistLocateToIndex(INT_MAX);
+    ListLocateToCurrent();
 }
 
 int CUserUi::GetUiIndex()
