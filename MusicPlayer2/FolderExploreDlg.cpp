@@ -262,6 +262,7 @@ BOOL CFolderExploreDlg::OnInitDialog()
 
     //初始化分隔条
     m_splitter_ctrl.AttachCtrlAsLeftPane(IDC_FOLDER_EXPLORE_TREE);
+    m_splitter_ctrl.AttachCtrlAsLeftPane(IDC_MFCEDITBROWSE1);
     m_splitter_ctrl.AttachCtrlAsRightPane(IDC_PATH_STATIC);
     m_splitter_ctrl.AttachCtrlAsRightPane(IDC_SONG_LIST);
 

@@ -509,6 +509,7 @@ BOOL CMediaClassifyDlg::OnInitDialog()
 
     //初始化分隔条
     m_splitter_ctrl.AttachCtrlAsLeftPane(IDC_CLASSIFY_LIST);
+    m_splitter_ctrl.AttachCtrlAsLeftPane(IDC_MFCEDITBROWSE1);
     m_splitter_ctrl.AttachCtrlAsRightPane(IDC_SONG_LIST);
 
     return TRUE;  // return TRUE unless you set the focus to a control
