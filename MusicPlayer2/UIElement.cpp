@@ -1874,6 +1874,103 @@ void UiElement::MediaLibPlaylist::OnDoubleClicked()
     }
 }
 
+std::wstring UiElement::MyFavouriteList::GetItemText(int row, int col)
+{
+    if (row >= 0 && row < GetRowCount())
+    {
+        //序号
+        if (col == COL_INDEX)
+        {
+            return std::to_wstring(row + 1);
+        }
+        //曲目
+        if (col == COL_TRACK)
+        {
+            if (row >= 0 && row < CUiMyFavouriteItemMgr::Instance().GetSongCount())
+            {
+                const SongInfo& song_info{ CUiMyFavouriteItemMgr::Instance().GetSongInfo(row) };
+                std::wstring display_name{ CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format) };
+                return display_name;
+            }
+        }
+        //时间
+        else if (col == COL_TIME)
+        {
+            const SongInfo& song_info{ CUiMyFavouriteItemMgr::Instance().GetSongInfo(row) };
+            return song_info.length().toString();
+        }
+    }
+    return std::wstring();
+}
+
+int UiElement::MyFavouriteList::GetRowCount()
+{
+    return CUiMyFavouriteItemMgr::Instance().GetSongCount();
+}
+
+int UiElement::MyFavouriteList::GetColumnCount()
+{
+    return COL_MAX;
+}
+
+int UiElement::MyFavouriteList::GetColumnWidth(int col, int total_width)
+{
+    const int index_width{ ui->DPI(36) };
+    const int time_width{ ui->DPI(50) };
+    if (col == COL_INDEX)
+    {
+        return index_width;
+    }
+    else if (col == COL_TIME)
+    {
+        return time_width;
+    }
+    else if (col == COL_TRACK)
+    {
+        return total_width - index_width - time_width;
+    }
+    return 0;
+}
+
+int UiElement::MyFavouriteList::GetHighlightRow()
+{
+    if (CPlayer::GetInstance().IsPlaylistMode() && CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE)
+    {
+        return CPlayer::GetInstance().GetIndex();
+    }
+    return -1;
+}
+
+int UiElement::MyFavouriteList::GetColumnScrollTextWhenSelected()
+{
+    return COL_TRACK;
+}
+
+CMenu* UiElement::MyFavouriteList::GetContextMenu(bool item_selected)
+{
+    return nullptr;
+}
+
+CWnd* UiElement::MyFavouriteList::GetCmdRecivedWnd()
+{
+    return nullptr;
+}
+
+void UiElement::MyFavouriteList::OnDoubleClicked()
+{
+    if (item_selected >= 0 && item_selected < GetRowCount())
+    {
+        CPlayer::GetInstance().SetPlaylist(theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME, item_selected, 0, true, true);
+    }
+}
+
+std::wstring UiElement::MyFavouriteList::GetEmptyString()
+{
+    if (CUiMyFavouriteItemMgr::Instance().IsLoading())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
+    return std::wstring();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name, CPlayerUIBase* ui)
@@ -1931,6 +2028,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::MediaLibFolder>();
     else if (name == "mediaLibPlaylist")
         element = std::make_shared<UiElement::MediaLibPlaylist>();
+    else if (name == "myFavouriteList")
+        element = std::make_shared<UiElement::MyFavouriteList>();
     else if (name == "ui" || name == "root" || name == "placeHolder" || name == "element")
         element = std::make_shared<UiElement::Element>();
 

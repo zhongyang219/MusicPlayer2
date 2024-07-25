@@ -13,6 +13,7 @@
 #include "SelectItemDlg.h"
 #include "CommonDialogMgr.h"
 #include "FilterHelper.h"
+#include "UiMediaLibItemMgr.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -176,6 +177,7 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
             //    }
             //}
 
+            CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
         }
         else        //添加到选中的播放列表
         {

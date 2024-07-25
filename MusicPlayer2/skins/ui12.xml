@@ -3,7 +3,7 @@
   <ui type="narrow">
     <verticalLayout>
       <verticalLayout margin="8">
-        <navigationBar height="30" icon_type="icon_only" item_space="4" item_list="album_cover,lyrics,play_queue,recently_played,folder,playlist,artist,album"/>
+        <navigationBar height="30" icon_type="icon_only" item_space="4" item_list="album_cover,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album"/>
         <stackElement margin-top="8">
           <verticalLayout margin-bottom="16">
             <albumCover square="true" margin="12"/>
@@ -18,6 +18,7 @@
           <recentPlayedList item_height="32"/>
           <mediaLibFolder item_height="32"/>
           <mediaLibPlaylist item_height="32"/>
+          <myFavouriteList item_height="32"/>
           <mediaLibItemList type="artist" item_height="32"/>
           <mediaLibItemList type="album" item_height="32"/>
         </stackElement>
@@ -67,7 +68,7 @@
           <text type="artist_album" style="scroll" height="24" font_size="10" margin-left="16" margin-right="16" alignment="center"/>
         </verticalLayout>
         <verticalLayout margin="8">
-          <navigationBar height="30" icon_type="icon_only" item_space="4" item_list="lyrics,play_queue,recently_played,folder,playlist,artist,album"/>
+          <navigationBar height="30" icon_type="icon_only" item_space="4" item_list="lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album"/>
           <stackElement margin-top="8">
             <lyrics/>
             <verticalLayout>
@@ -77,6 +78,7 @@
             <recentPlayedList item_height="32"/>
             <mediaLibFolder item_height="32"/>
             <mediaLibPlaylist item_height="32"/>
+            <myFavouriteList item_height="32"/>
             <mediaLibItemList type="artist" item_height="32"/>
             <mediaLibItemList type="album" item_height="32"/>
           </stackElement>

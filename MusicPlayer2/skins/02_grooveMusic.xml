@@ -4,7 +4,7 @@
     <verticalLayout>
       <horizontalLayout>
         <verticalLayout width="134">
-          <navigationBar orientation="vertical" icon_type="icon_and_text" item_height="40" item_list="now_playing,play_queue,recently_played,folder,playlist,media_lib"/>
+          <navigationBar orientation="vertical" icon_type="icon_and_text" item_height="40" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
           <horizontalLayout height="40">
             <button key="settings" width="48" height="40"/>
             <placeHolder/>
@@ -50,6 +50,11 @@
           <verticalLayout>
             <text type="userDefine" text="%(TXT_PLAYLIST)" height="56" font_size="12" margin-left="8"/>
             <mediaLibPlaylist item_height="30"/>
+          </verticalLayout>
+          <!--我喜欢的音乐-->
+          <verticalLayout>
+            <text type="userDefine" text="%(TXT_MY_FAVOURITE)" height="56" font_size="12" margin-left="8"/>
+            <myFavouriteList item_height="30"/>
           </verticalLayout>
           <!--媒体库-->
           <verticalLayout>
@@ -100,7 +105,7 @@
     <verticalLayout>
       <horizontalLayout>
         <verticalLayout width="48">
-          <navigationBar orientation="vertical" icon_type="icon_only" item_height="48" item_list="now_playing,play_queue,recently_played,folder,playlist,media_lib"/>
+          <navigationBar orientation="vertical" icon_type="icon_only" item_height="48" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
           <button key="settings" width="48" height="48"/>
         </verticalLayout>
         <stackElement>
@@ -140,6 +145,11 @@
           <verticalLayout>
             <text type="userDefine" text="%(TXT_PLAYLIST)" height="56" font_size="12" margin-left="8"/>
             <mediaLibPlaylist item_height="30"/>
+          </verticalLayout>
+          <!--我喜欢的音乐-->
+          <verticalLayout>
+            <text type="userDefine" text="%(TXT_MY_FAVOURITE)" height="56" font_size="12" margin-left="8"/>
+            <myFavouriteList item_height="30"/>
           </verticalLayout>
           <!--媒体库-->
           <verticalLayout>

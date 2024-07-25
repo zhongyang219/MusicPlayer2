@@ -2,6 +2,8 @@
 #include "UiMediaLibItemMgr.h"
 #include "MusicPlayer2.h"
 #include "MediaLibPlaylistMgr.h"
+#include "Playlist.h"
+#include "SongDataManager.h"
 
 CUiMediaLibItemMgr CUiMediaLibItemMgr::m_instance;
 
@@ -136,5 +138,54 @@ int CUiMediaLibItemMgr::GetCurrentIndex(CMediaClassifier::ClassificationType typ
 }
 
 CUiMediaLibItemMgr::CUiMediaLibItemMgr()
+{
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CUiMyFavouriteItemMgr CUiMyFavouriteItemMgr::m_instance;
+
+CUiMyFavouriteItemMgr::~CUiMyFavouriteItemMgr()
+{
+}
+
+CUiMyFavouriteItemMgr& CUiMyFavouriteItemMgr::Instance()
+{
+    return m_instance;
+}
+
+int CUiMyFavouriteItemMgr::GetSongCount() const
+{
+    if (!m_loading)
+        return static_cast<int>(m_may_favourite_song_list.size());
+    else
+        return 0;
+}
+
+const SongInfo& CUiMyFavouriteItemMgr::GetSongInfo(int index) const
+{
+    if (!m_loading)
+    {
+        if (index >= 0 && index < GetSongCount())
+            return m_may_favourite_song_list[index];
+    }
+    static SongInfo empty_song;
+    return empty_song;
+}
+
+void CUiMyFavouriteItemMgr::UpdateMyFavourite()
+{
+    m_loading = true;
+
+    CPlaylistFile playlist_file;
+    playlist_file.LoadFromFile(theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME);
+    playlist_file.MoveToSongList(m_may_favourite_song_list);
+    CSongDataManager::GetInstance().LoadSongsInfo(m_may_favourite_song_list);  // 从媒体库加载歌曲属性
+
+    m_loading = false;
+}
+
+CUiMyFavouriteItemMgr::CUiMyFavouriteItemMgr()
 {
 }

@@ -5446,6 +5446,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
         {
             CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
             ShowPlayList();
+            CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
         }
     }
     else
@@ -5471,6 +5472,7 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
             playlist.SaveToFile(favourite_playlist_path);
             CPlayer::GetInstance().SetFavourite(false);
         }
+        CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
     }
 }
 

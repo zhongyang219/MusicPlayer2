@@ -515,6 +515,31 @@ namespace UiElement
         virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
     };
+
+    //我喜欢的音乐列表
+    class MyFavouriteList : public ListElement
+    {
+    public:
+        enum Column
+        {
+            COL_INDEX,
+            COL_TRACK,
+            COL_TIME,
+            COL_MAX
+        };
+
+        // 通过 ListElement 继承
+        std::wstring GetItemText(int row, int col) override;
+        int GetRowCount() override;
+        int GetColumnCount() override;
+        int GetColumnWidth(int col, int total_width) override;
+        virtual int GetHighlightRow() override;
+        virtual int GetColumnScrollTextWhenSelected() override;
+        virtual CMenu* GetContextMenu(bool item_selected) override;
+        virtual CWnd* GetCmdRecivedWnd() override;
+        virtual void OnDoubleClicked() override;
+        virtual std::wstring GetEmptyString() override;
+    };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

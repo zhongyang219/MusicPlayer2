@@ -834,6 +834,7 @@ void CMusicPlayerApp::UpdateMeidaLibItems()
 
 UINT CMusicPlayerApp::UpdateMediaLibItemsProc(LPVOID lpParam)
 {
+    CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
     CUiMediaLibItemMgr::Instance().Init();
     return 0;
 }

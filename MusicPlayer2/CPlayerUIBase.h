@@ -31,6 +31,7 @@ namespace UiElement
     class MediaLibFolder;
     class RecentPlayedList;
     class NavigationBar;
+    class MyFavouriteList;
 }
 
 struct SLayoutData
@@ -81,6 +82,7 @@ public:
     friend class UiElement::MediaLibFolder;
     friend class UiElement::RecentPlayedList;
     friend class UiElement::NavigationBar;
+    friend class UiElement::MyFavouriteList;
 
 public:
     void Init(CDC* pDC) override;

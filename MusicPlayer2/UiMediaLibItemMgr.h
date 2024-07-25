@@ -36,3 +36,24 @@ private:
     std::map<CMediaClassifier::ClassificationType, std::wstring> m_current_name_map;    //保存媒体库模式下每种模式正在播放的曲目
 };
 
+
+class CUiMyFavouriteItemMgr
+{
+public:
+    ~CUiMyFavouriteItemMgr();
+    static CUiMyFavouriteItemMgr& Instance();
+
+    int GetSongCount() const;
+    const SongInfo& GetSongInfo(int index) const;
+    void UpdateMyFavourite();
+    bool IsLoading() const { return m_loading; }
+
+private:
+    CUiMyFavouriteItemMgr();
+    static CUiMyFavouriteItemMgr m_instance;
+
+    vector<SongInfo> m_may_favourite_song_list;     //“我喜欢的音乐”列表
+    bool m_loading{};
+
+};
+
