@@ -294,6 +294,7 @@ namespace UiElement
         virtual void OnClicked() {};
 
         int item_height{ 28 };
+        int font_size{ 9 };
 
     protected:
         int GetPlaylistIndexByPoint(CPoint point);
@@ -408,6 +409,8 @@ namespace UiElement
         virtual void MouseMove(CPoint point) override;
         virtual void MouseLeave() override;
         virtual void ClearRect() override;
+
+        int font_size{ 9 };
 
         IPlayerUI::UIButton btn_drop_down;
         IPlayerUI::UIButton btn_menu;

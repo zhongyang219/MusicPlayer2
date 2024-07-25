@@ -541,6 +541,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", item_height);
             if (item_height > 0)
                 list_element->item_height = item_height;
+            CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", list_element->font_size);
         }
 
         //根据节点的类型设置元素独有的属性
@@ -804,7 +805,14 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", tab_emelent->item_height);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", tab_emelent->font_size);
             }
-
+        }
+        else if (item_name == "playlistIndicator")
+        {
+            UiElement::PlaylistIndicator* playlist_indicator = dynamic_cast<UiElement::PlaylistIndicator*>(element.get());
+            if (playlist_indicator != nullptr)
+            {
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", playlist_indicator->font_size);
+            }
         }
 
         //递归调用此函数创建子节点

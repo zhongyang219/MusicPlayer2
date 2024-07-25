@@ -53,8 +53,8 @@
             </verticalLayout>
             <lyrics/>
             <verticalLayout>
-              <playlistIndicator height="30" margin-bottom="4"/>
-              <playlist/>
+              <playlistIndicator height="36" margin-bottom="8" font_size="11"/>
+              <playlist font_size="10" item_height="34"/>
             </verticalLayout>
             <recentPlayedList/>
             <mediaLibFolder/>

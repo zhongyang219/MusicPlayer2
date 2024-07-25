@@ -2431,6 +2431,11 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
         else
             background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 
+        //设置字体
+        CFont* old_font{};  //原先的字体
+        bool big_font{ m_ui_data.full_screen && IsDrawLargeIcon() };
+        old_font = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(list_element->font_size).GetFont(big_font));
+
         for (int i{}; i < list_element->GetRowCount(); i++)
         {
             if (i < 0 || i >= static_cast<int>(list_element->item_rects.size()))
@@ -2506,6 +2511,10 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                 }
             }
         }
+
+        //恢复原来的字体
+        if (old_font != nullptr)
+            m_draw.SetFont(old_font);
 
         //绘制滚动条
         m_draw.SetDrawArea(rect);
@@ -2597,6 +2606,10 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::Playlist
     CRect rect_icon{ rect };
     rect_icon.right = rect_icon.left + DPI(26);
     DrawUiIcon(rect_icon, icon_type);
+    //设置字体
+    CFont* old_font{};  //原先的字体
+    bool big_font{ m_ui_data.full_screen && IsDrawLargeIcon() };
+    old_font = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(playlist_indicator->font_size).GetFont(big_font));
     //绘制文本
     CRect rect_text{ rect };
     rect_text.left = rect_icon.right;
@@ -2626,6 +2639,9 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::Playlist
     rect_name.right -= DPI(30);
     static CDrawCommon::ScrollInfo name_scroll_info;
     m_draw.DrawScrollText(rect_name, CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str(), m_colors.color_text_heighlight, GetScrollTextPixel(), false, name_scroll_info);
+    //恢复原来的字体
+    if (old_font != nullptr)
+        m_draw.SetFont(old_font);
     //绘制下拉按钮
     CRect rect_drop_down{ rect };
     rect_drop_down.left = rect_name.right + DPI(2);

@@ -127,6 +127,11 @@
           <xs:documentation>列表项目的高度。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="font_size" default="9" type="font_size">
+        <xs:annotation>
+          <xs:documentation>字体大小，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
     </xs:attributeGroup>
     <xs:group name="elements">
         <xs:sequence><!--sequence 和 choice 配合使用，使得元素可以以任意顺序出现任意次数-->
@@ -783,6 +788,11 @@
         <xs:documentation>指示当前播放列表和一个下拉按钮。</xs:documentation>
       </xs:annotation>
       <xs:group ref="elements"></xs:group>
+      <xs:attribute name="font_size" default="9" type="font_size">
+        <xs:annotation>
+          <xs:documentation>字体大小，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="recentPlayedListType">
