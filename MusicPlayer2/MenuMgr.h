@@ -63,6 +63,7 @@ public:
         UiLibLeftMenu,                      // UI中媒体库列表菜单
         UiRecentPlayedMenu,                 // UI中最近播放列表菜单
         UiLibSetPathMenu,                   // UI中文件夹标签页菜单
+        UiMyFavouriteMenu,                  // UI中“我喜欢的音乐”菜单
 
         LeMenu,                             // 歌词编辑对话框->窗口菜单
         LeFileMenu,                         // 歌词编辑对话框->窗口菜单->子菜单"文件"

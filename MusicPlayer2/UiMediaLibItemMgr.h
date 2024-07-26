@@ -47,6 +47,7 @@ public:
     const SongInfo& GetSongInfo(int index) const;
     void UpdateMyFavourite();
     bool IsLoading() const { return m_loading; }
+    void GetSongList(std::vector<SongInfo>& song_list) const;
 
 private:
     CUiMyFavouriteItemMgr();

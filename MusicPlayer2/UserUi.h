@@ -24,6 +24,9 @@ public:
     void SaveStatackElementIndex(CArchive& archive);
     void LoadStatackElementIndex(CArchive& archive);
 
+    template<class T>
+    T* FindElement();
+
     enum { SHOW_VOLUME_TIMER_ID = 1635 };
 
     // 通过 CPlayerUIBase 继承
@@ -70,3 +73,20 @@ protected:
 protected:
     virtual void SwitchStackElement() override;
 };
+
+template<class T>
+inline T* CUserUi::FindElement()
+{
+    T* element_found{};
+    IterateAllElements([&](UiElement::Element* element) ->bool {
+        T* ele = dynamic_cast<T*>(element);
+        if (ele != nullptr)
+        {
+            element_found = ele;
+            return true;
+        }
+        return false;
+    });
+
+    return element_found;
+}

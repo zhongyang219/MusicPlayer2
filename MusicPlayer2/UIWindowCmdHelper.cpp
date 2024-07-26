@@ -4,6 +4,8 @@
 #include "UserUi.h"
 #include "UiMediaLibItemMgr.h"
 #include "MusicPlayerCmdHelper.h"
+#include "PropertyDlg.h"
+#include "COSUPlayerHelper.h"
 
 CUIWindowCmdHelper::CUIWindowCmdHelper(IPlayerUI* pUI)
     : m_pUI(pUI)
@@ -36,6 +38,11 @@ void CUIWindowCmdHelper::OnUiCommand(DWORD command)
         {
             OnMediaLibPlaylistCommand(medialib_playlist, command);
         }
+        UiElement::MyFavouriteList* my_favourite_list = dynamic_cast<UiElement::MyFavouriteList*>(pUi->m_context_menu_sender);
+        if (my_favourite_list != nullptr)
+        {
+            OnMyFavouriteListCommand(my_favourite_list, command);
+        }
         pUi->m_context_menu_sender = nullptr;   //命令被响应后清空上次保存的命令发送者
     }
 }
@@ -57,6 +64,10 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::UiRecentPlayedMenu))
     {
         SetRecentPlayedListMenuState(pMenu);
+    }
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::UiMyFavouriteMenu))
+    {
+        SetMyFavouriteListMenuState(pMenu);
     }
 }
 
@@ -320,6 +331,91 @@ void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* 
     }
 }
 
+void CUIWindowCmdHelper::OnMyFavouriteListCommand(UiElement::MyFavouriteList* my_favourite_list, DWORD command)
+{
+    int item_selected{ my_favourite_list->GetItemSelected() };
+    if (item_selected < 0 || item_selected >= CUiMyFavouriteItemMgr::Instance().GetSongCount())
+        return;
+
+    const SongInfo& song_info = CUiMyFavouriteItemMgr::Instance().GetSongInfo(item_selected);
+    CMusicPlayerCmdHelper helper;
+
+    //播放
+    if (command == ID_PLAY_ITEM)
+    {
+        CPlayer::GetInstance().SetPlaylist(theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME, item_selected, 0, true, true);
+    }
+    //下一首播放
+    else if (command == ID_PLAY_AS_NEXT)
+    {
+        vector<SongInfo> songs{ song_info };
+        CPlayer::GetInstance().PlayAfterCurrentTrack(songs);
+    }
+    //在文件夹模式中播放
+    else if (command == ID_PLAY_ITEM_IN_FOLDER_MODE)
+    {
+        if (!CPlayer::GetInstance().OpenASongInFolderMode(song_info, true))
+        {
+            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+            AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
+        }
+    }
+    //在线查看
+    else if (command == ID_EXPLORE_ONLINE)
+    {
+        AfxBeginThread(CMusicPlayerCmdHelper::ViewOnlineThreadFunc, (LPVOID)&song_info);
+    }
+    //格式转换
+    else if (command == ID_FORMAT_CONVERT)
+    {
+        vector<SongInfo> songs{ song_info };
+        helper.FormatConvert(songs);
+    }
+    //打开文件位置
+    else if (command == ID_EXPLORE_TRACK)
+    {
+        CString str;
+        str.Format(_T("/select,\"%s\""), song_info.file_path.c_str());
+        ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
+    }
+    //从列表中删除
+    else if (command == ID_REMOVE_FROM_PLAYLIST)
+    {
+        vector<SongInfo> songs{ song_info };
+        helper.OnRemoveFromPlaylist(songs, theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME);
+    }
+    //从磁盘删除
+    else if (command == ID_DELETE_FROM_DISK)
+    {
+        vector<SongInfo> songs{ song_info };
+        helper.DeleteSongsFromDisk(songs);
+    }
+    //属性
+    else if (command == ID_ITEM_PROPERTY)
+    {
+        std::vector<SongInfo> songs;
+        CUiMyFavouriteItemMgr::Instance().GetSongList(songs);
+        CPropertyDlg dlg(songs, item_selected, false);
+        dlg.DoModal();
+    }
+    //复制文本
+    else if (command == ID_COPY_TEXT)
+    {
+        std::wstring text = my_favourite_list->GetItemText(item_selected, UiElement::MyFavouriteList::COL_TRACK);
+        if (!CCommon::CopyStringToClipboard(text))
+            AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), MB_ICONWARNING);
+    }
+    //添加到播放列表
+    else
+    {
+        auto getSongList = [&](std::vector<SongInfo>& song_list) {
+            song_list.clear();
+            song_list.push_back(song_info);
+        };
+        helper.OnAddToPlaylistCommand(getSongList, command);
+    }
+}
+
 void CUIWindowCmdHelper::SetRecentPlayedListMenuState(CMenu* pMenu)
 {
     CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
@@ -415,4 +511,34 @@ void CUIWindowCmdHelper::SetMediaLibPlaylistMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_PLAYLIST_SAVE_AS, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_FIX_PATH_ERROR, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_BROWSE_FILE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+}
+
+void CUIWindowCmdHelper::SetMyFavouriteListMenuState(CMenu* pMenu)
+{
+    bool selected_in_current_playing_list{ false }; //选中是否正在播放
+    bool can_del{ false };
+    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
+    if (pUi != nullptr)
+    {
+        UiElement::MyFavouriteList* my_favourite_list = dynamic_cast<UiElement::MyFavouriteList*>(pUi->m_context_menu_sender);
+        if (my_favourite_list != nullptr)
+        {
+            int item_selected{ my_favourite_list->GetItemSelected() };
+            if (item_selected >= 0 && item_selected < static_cast<int>(CUiMyFavouriteItemMgr::Instance().GetSongCount()))
+            {
+                //获取选中曲目
+                const SongInfo& selected_song{ CUiMyFavouriteItemMgr::Instance().GetSongInfo(item_selected) };
+                std::vector<SongInfo> selected_songs{ selected_song };
+                //判断是否可以下一首播放
+                selected_in_current_playing_list = CPlayer::GetInstance().IsSongsInPlayList(selected_songs);
+                //判断是否可以从磁盘删除
+                can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
+                    !selected_song.is_cue &&
+                    !COSUPlayerHelper::IsOsuFile(selected_song.file_path);
+            }
+        }
+    }
+
+    pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (selected_in_current_playing_list ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
 }

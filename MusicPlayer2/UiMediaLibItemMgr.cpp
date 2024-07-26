@@ -186,6 +186,11 @@ void CUiMyFavouriteItemMgr::UpdateMyFavourite()
     m_loading = false;
 }
 
+void CUiMyFavouriteItemMgr::GetSongList(std::vector<SongInfo>& song_list) const
+{
+    std::copy(m_may_favourite_song_list.begin(), m_may_favourite_song_list.end(), std::back_inserter(song_list));
+}
+
 CUiMyFavouriteItemMgr::CUiMyFavouriteItemMgr()
 {
 }

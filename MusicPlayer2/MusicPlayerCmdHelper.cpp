@@ -46,6 +46,17 @@ void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
 
 }
 
+UINT CMusicPlayerCmdHelper::ViewOnlineThreadFunc(LPVOID lpParam)
+{
+    SongInfo* song = (SongInfo*)(lpParam);
+    if (song == nullptr || song->IsEmpty())
+        return 0;
+    CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
+    CMusicPlayerCmdHelper helper;
+    helper.VeiwOnline(*song);
+    return 0;
+}
+
 void CMusicPlayerCmdHelper::FormatConvert(const std::vector<SongInfo>& songs)
 {
     if (!theApp.m_format_convert_dialog_exit)
@@ -998,6 +1009,49 @@ bool CMusicPlayerCmdHelper::OnOpenFolder()
             return true;
         }
     }
+    return false;
+}
+
+bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
+{
+    if (songs.empty())
+        return false;
+    std::wstring playlist_name = CPlaylistMgr::GetPlaylistDisplayName(playlist_path);
+    std::wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_REMOVE_FROM_PLAYLIST_INQUIRY", { playlist_name, songs.size() });
+    if (GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+    {
+        //如果当前列表正在播放
+        if (CPlayer::GetInstance().IsPlaylistMode() && CPlayer::GetInstance().GetPlaylistPath() == playlist_path)
+        {
+            std::vector<int> indexs;
+            for (const auto& song : songs)
+            {
+                auto iter = std::find_if(CPlayer::GetInstance().GetPlayList().begin(), CPlayer::GetInstance().GetPlayList().end(), [&](const SongInfo& a) {
+                    return a.IsSameSong(song);
+                });
+                if (iter != CPlayer::GetInstance().GetPlayList().end())
+                    indexs.push_back(iter - CPlayer::GetInstance().GetPlayList().begin());
+            }
+            CPlayer::GetInstance().RemoveSongs(indexs);
+        }
+        else
+        {
+            CPlaylistFile playlist_file;
+            playlist_file.LoadFromFile(playlist_path);
+            for (const auto& song : songs)
+            {
+                playlist_file.RemoveSong(song);
+            }
+            playlist_file.SaveToFile(playlist_path);
+        }
+
+        //如果是我喜欢的曲目，则需要更新UI中的显示
+        if (playlist_path == theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME)
+            CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
+
+        return true;
+    }
+
     return false;
 }
 

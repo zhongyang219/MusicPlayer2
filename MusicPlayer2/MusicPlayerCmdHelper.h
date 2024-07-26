@@ -10,6 +10,10 @@ public:
     ~CMusicPlayerCmdHelper();
 
     void VeiwOnline(SongInfo& song);
+
+    //执行“在线查看”的线程函数，lpParam为SongInfo类型的指针，必须确保线程结束前指针不会被析构
+    static UINT ViewOnlineThreadFunc(LPVOID lpParam);
+
     void FormatConvert(const std::vector<SongInfo>& songs);
 
     //执行添加到新建播放列表命令，成功返回true
@@ -97,6 +101,9 @@ public:
     bool OnPlaylistFixPathError(const std::wstring& playlist_path);
 
     bool OnOpenFolder();
+
+    //从播放列表中移除
+    bool OnRemoveFromPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 
 protected:
     void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);

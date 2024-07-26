@@ -1948,11 +1948,18 @@ int UiElement::MyFavouriteList::GetColumnScrollTextWhenSelected()
 
 CMenu* UiElement::MyFavouriteList::GetContextMenu(bool item_selected)
 {
+    if (item_selected)
+    {
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::UiMyFavouriteMenu);
+    }
     return nullptr;
 }
 
 CWnd* UiElement::MyFavouriteList::GetCmdRecivedWnd()
 {
+    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pDlg != nullptr)
+        return &pDlg->GetUIWindow();
     return nullptr;
 }
 
