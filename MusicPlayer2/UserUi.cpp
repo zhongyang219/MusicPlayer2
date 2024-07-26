@@ -567,6 +567,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 button->FromString(str_key);
                 std::string str_big_icon = CTinyXml2Helper::ElementAttribute(xml_node, "bigIcon");
                 button->big_icon = CTinyXml2Helper::StringToBool(str_big_icon.c_str());
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_text", button->show_text);
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", button->font_size);
             }
         }
         else if (item_name == "rectangle")

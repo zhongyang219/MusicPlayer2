@@ -85,10 +85,36 @@
         </verticalLayout>
 
         <verticalLayout margin-right="60">
-          <spectrum height="30" type="64col" margin="32"/>
-          <spectrum height="30" type="32col" margin="32"/>
-          <spectrum height="30" type="16col" margin="32"/>
-          <spectrum height="30" type="8col" margin="32"/>
+          <verticalLayout height="240">
+            <spectrum type="64col" margin="32"/>
+            <spectrum type="32col" margin="32"/>
+            <spectrum type="16col" margin="32"/>
+            <spectrum type="8col" margin="32"/>
+          </verticalLayout>
+          <verticalLayout>
+            <horizontalLayout height="32">
+              <button key="menu" height="28" margin="2" show_text="true" font_size="10"/>
+              <button key="miniMode" height="28" margin="2" show_text="true"/>
+              <button key="fullScreen" height="28" margin="2" show_text="true"/>
+              <!--<button key="repeatMode" height="28" margin="2" show_text="true"/>-->
+              <button key="settings" height="28" margin="2" show_text="true"/>
+              <button key="equalizer" height="28" margin="2" show_text="true"/>
+              <button key="darkLightMode" height="28" margin="2" show_text="true"/>
+              <button key="skin" height="28" margin="2" show_text="true"/>
+              <placeHolder/>
+            </horizontalLayout>
+            <!--<horizontalLayout height="28">
+              <button key="find" width="82" height="24" margin="2" show_text="true"/>
+              <button key="stop" width="82" height="24" margin="2" show_text="true"/>
+              <button key="previous" width="82" height="24" margin="2" show_text="true"/>
+              <button key="playPause" width="82" height="24" margin="2" show_text="true"/>
+              <button key="next" width="82" height="24" margin="2" show_text="true"/>
+              <button key="favorite" width="82" height="24" margin="2" show_text="true"/>
+              <button key="mediaLib" width="82" height="24" margin="2" show_text="true"/>
+              <button key="locateTrack" width="82" height="24" margin="2" show_text="true"/>
+              <placeHolder/>
+            </horizontalLayout>-->
+          </verticalLayout>
         </verticalLayout>
         
       </stackElement>

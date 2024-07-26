@@ -250,11 +250,13 @@ protected:
     void DrawUiMenuBar(CRect rect);
     void DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element);
 
+    std::wstring GetButtonText(BtnKey key_type);
+
     // 实际绘制一个图标
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
     // 绘制一个UI按钮 (使用GetBtnIconType取得的图标)
-    void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false);
-    void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false);
+    void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false, bool show_text = false, int font_size = 9);
+    void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9);
     // 绘制一个工具条按钮（将rect四面缩小 DPI(2) 后调用DrawUIButton）
     void DrawControlBarBtn(CRect rect, BtnKey btn_type);
     // 绘制一个UI按钮，以text文本作为图标

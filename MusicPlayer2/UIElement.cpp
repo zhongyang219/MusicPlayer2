@@ -637,7 +637,7 @@ void UiElement::Button::Draw()
         ui->DrawABRepeatButton(rect);
         break;
     default:
-        ui->DrawUIButton(rect, key, big_icon);
+        ui->DrawUIButton(rect, key, big_icon, show_text);
         break;
     }
     ui->ResetDrawArea();
@@ -696,6 +696,23 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_LOCATE_TO_CURRENT;
     else
         key = CPlayerUIBase::BTN_INVALID;
+}
+
+int UiElement::Button::GetMaxWidth(CRect parent_rect) const
+{
+    //显示文本时跟随文本宽度
+    if (show_text)
+    {
+        std::wstring text = ui->GetButtonText(key);
+        int right_space = (rect.Height() - ui->DPI(16)) / 2;
+        int width_text{ ui->m_draw.GetTextExtent(text.c_str()).cx + right_space + rect.Height() };
+        int width_max{ max_width.IsValid() ? max_width.GetValue(parent_rect) : INT_MAX };
+        return min(width_text, width_max);
+    }
+    else
+    {
+        return Element::GetMaxWidth(parent_rect);
+    }
 }
 
 void UiElement::Text::Draw()

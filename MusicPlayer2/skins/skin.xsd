@@ -459,7 +459,17 @@
                 <xs:documentation>如果为false，则图标尺寸为16x16；如果为true，则图标尺寸为20x20</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+        <xs:attribute name="show_text" type="xs:boolean" default="false">
+          <xs:annotation>
+            <xs:documentation>是否显示文本</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      <xs:attribute name="font_size" default="9" type="font_size">
+        <xs:annotation>
+          <xs:documentation>歌词字体大小，use_default_font为true时有效，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="textType">
         <xs:annotation>
