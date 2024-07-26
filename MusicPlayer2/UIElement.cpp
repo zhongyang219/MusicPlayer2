@@ -637,7 +637,7 @@ void UiElement::Button::Draw()
         ui->DrawABRepeatButton(rect);
         break;
     default:
-        ui->DrawUIButton(rect, key, big_icon, show_text);
+        ui->DrawUIButton(rect, key, big_icon, show_text, font_size);
         break;
     }
     ui->ResetDrawArea();
@@ -694,18 +694,39 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_DARK_LIGHT;
     else if (key_type == "locateTrack")
         key = CPlayerUIBase::BTN_LOCATE_TO_CURRENT;
+    else if (key_type == "openFolder")
+        key = CPlayerUIBase::BTN_OPEN_FOLDER;
+    else if (key_type == "newPlaylist")
+        key = CPlayerUIBase::BTN_NEW_PLAYLIST;
+    else if (key_type == "playMyFavourite")
+        key = CPlayerUIBase::BTN_PLAY_MY_FAVOURITE;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }
 
 int UiElement::Button::GetMaxWidth(CRect parent_rect) const
 {
-    //显示文本时跟随文本宽度
-    if (show_text)
+    //显示文本，并且没有指定宽度时时跟随文本宽度
+    if (show_text && !width.IsValid())
     {
         std::wstring text = ui->GetButtonText(key);
-        int right_space = (rect.Height() - ui->DPI(16)) / 2;
-        int width_text{ ui->m_draw.GetTextExtent(text.c_str()).cx + right_space + rect.Height() };
+        //第一次执行到这里时，由于rect还没有从layout元素中计算出来，因此这里做一下判断，如果高度为0，则直接获取height的值
+        int btn_height = rect.Height();
+        if (btn_height == 0)
+            btn_height = Element::height.GetValue(parent_rect);
+        int right_space = (btn_height - ui->DPI(16)) / 2;
+
+        //计算文本宽度前先设置一下字体
+        CFont* old_font{};  //原先的字体
+        bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
+        old_font = ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(font_size).GetFont(big_font));
+
+        int width_text{ ui->m_draw.GetTextExtent(text.c_str()).cx + right_space + btn_height };
+
+        //恢复原来的字体
+        if (old_font != nullptr)
+            ui->m_draw.SetFont(old_font);
+
         int width_max{ max_width.IsValid() ? max_width.GetValue(parent_rect) : INT_MAX };
         return min(width_text, width_max);
     }
@@ -713,6 +734,12 @@ int UiElement::Button::GetMaxWidth(CRect parent_rect) const
     {
         return Element::GetMaxWidth(parent_rect);
     }
+}
+
+void UiElement::Button::ClearRect()
+{
+    Element::ClearRect();
+    ui->m_buttons[key].rect = CRect();
 }
 
 void UiElement::Text::Draw()

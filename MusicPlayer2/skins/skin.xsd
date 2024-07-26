@@ -319,154 +319,169 @@
         <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="buttonType">
+      <xs:annotation>
+        <xs:documentation>按钮</xs:documentation>
+      </xs:annotation>
+      <xs:group ref="elements"></xs:group>
+      <xs:attribute name="key" use="required">
         <xs:annotation>
-            <xs:documentation>按钮</xs:documentation>
+          <xs:documentation>
+            按钮的类型。不支持在一个界面中放置两个以上相同的按钮，否则会导致只有其中一个按钮有效。
+          </xs:documentation>
         </xs:annotation>
-        <xs:group ref="elements"></xs:group>
-        <xs:attribute name="key" use="required">
-            <xs:annotation>
-                <xs:documentation>
-                    按钮的类型。不支持在一个界面中放置两个以上相同的按钮，否则会导致只有其中一个按钮有效。
-                </xs:documentation>
-            </xs:annotation>
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="menu">
-                        <xs:annotation>
-                            <xs:documentation>菜单</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="miniMode">
-                        <xs:annotation>
-                            <xs:documentation>迷你模式</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="miniModeClose">
-                        <xs:annotation>
-                            <xs:documentation>迷你模式界面中使用的关闭按钮</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="fullScreen">
-                        <xs:annotation>
-                            <xs:documentation>全屏模式</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="repeatMode">
-                        <xs:annotation>
-                            <xs:documentation>循环模式</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="settings">
-                        <xs:annotation>
-                            <xs:documentation>设置</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="equalizer">
-                        <xs:annotation>
-                            <xs:documentation>均衡器</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="skin">
-                        <xs:annotation>
-                            <xs:documentation>切换界面</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="info">
-                        <xs:annotation>
-                            <xs:documentation>曲目信息</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="find">
-                        <xs:annotation>
-                            <xs:documentation>查找</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="abRepeat">
-                        <xs:annotation>
-                            <xs:documentation>AB重复</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="desktopLyric">
-                        <xs:annotation>
-                            <xs:documentation>显示桌面歌词</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="lyricTranslate">
-                        <xs:annotation>
-                            <xs:documentation>显示歌词翻译</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="stop">
-                        <xs:annotation>
-                            <xs:documentation>停止</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="previous">
-                        <xs:annotation>
-                            <xs:documentation>上一曲</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="next">
-                        <xs:annotation>
-                            <xs:documentation>下一曲</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="playPause">
-                        <xs:annotation>
-                            <xs:documentation>播放/暂停</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="favorite">
-                        <xs:annotation>
-                            <xs:documentation>添加到“我喜欢的音乐”</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="mediaLib">
-                        <xs:annotation>
-                            <xs:documentation>媒体库</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="showPlaylist">
-                        <xs:annotation>
-                            <xs:documentation>显示/隐藏播放列表</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="addToPlaylist">
-                        <xs:annotation>
-                            <xs:documentation>添加到播放列表</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="switchDisplay">
-                        <xs:annotation>
-                            <xs:documentation>切换界面中stackElement元素的显示。如果界面中有多个stackElement元素，则点击此按钮会切换第一个stackElement元素的显示。</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="darkLightMode">
-                        <xs:annotation>
-                            <xs:documentation>在深色模式和浅色模式之间切换。</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                    <xs:enumeration value="locateTrack">
-                        <xs:annotation>
-                            <xs:documentation>播放列表定位到正在播放的曲目。</xs:documentation>
-                        </xs:annotation>
-                    </xs:enumeration>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
-        <xs:attribute name="bigIcon" type="xs:boolean" default="false">
-            <xs:annotation>
-                <xs:documentation>如果为false，则图标尺寸为16x16；如果为true，则图标尺寸为20x20</xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="show_text" type="xs:boolean" default="false">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="menu">
+              <xs:annotation>
+                <xs:documentation>菜单</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="miniMode">
+              <xs:annotation>
+                <xs:documentation>迷你模式</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="miniModeClose">
+              <xs:annotation>
+                 <xs:documentation>迷你模式界面中使用的关闭按钮</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="fullScreen">
+              <xs:annotation>
+                <xs:documentation>全屏模式</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="repeatMode">
+              <xs:annotation>
+                <xs:documentation>循环模式</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="settings">
+              <xs:annotation>
+                <xs:documentation>设置</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="equalizer">
+              <xs:annotation>
+                <xs:documentation>均衡器</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="skin">
+              <xs:annotation>
+                <xs:documentation>切换界面</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="info">
+              <xs:annotation>
+                <xs:documentation>曲目信息</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="find">
+              <xs:annotation>
+                <xs:documentation>查找</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="abRepeat">
+              <xs:annotation>
+                <xs:documentation>AB重复</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="desktopLyric">
+              <xs:annotation>
+                <xs:documentation>显示桌面歌词</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="lyricTranslate">
+              <xs:annotation>
+                <xs:documentation>显示歌词翻译</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="stop">
+              <xs:annotation>
+                <xs:documentation>停止</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="previous">
+              <xs:annotation>
+                <xs:documentation>上一曲</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="next">
+              <xs:annotation>
+                <xs:documentation>下一曲</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playPause">
+              <xs:annotation>
+                <xs:documentation>播放/暂停</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="favorite">
+              <xs:annotation>
+                <xs:documentation>添加到“我喜欢的音乐”</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="mediaLib">
+              <xs:annotation>
+                <xs:documentation>媒体库</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="showPlaylist">
+              <xs:annotation>
+                <xs:documentation>显示/隐藏播放列表</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="addToPlaylist">
+              <xs:annotation>
+                <xs:documentation>添加到播放列表</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="switchDisplay">
+              <xs:annotation>
+                <xs:documentation>切换界面中stackElement元素的显示。如果界面中有多个stackElement元素，则点击此按钮会切换第一个stackElement元素的显示。</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="darkLightMode">
+              <xs:annotation>
+                <xs:documentation>在深色模式和浅色模式之间切换。</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="locateTrack">
+              <xs:annotation>
+                <xs:documentation>播放列表定位到正在播放的曲目。</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="openFolder">
+              <xs:annotation>
+                <xs:documentation>打开文件夹。</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="newPlaylist">
+              <xs:annotation>
+                <xs:documentation>新建播放列表。</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playMyFavourite">
+              <xs:annotation>
+                <xs:documentation>播放“我喜欢的音乐”。</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="bigIcon" type="xs:boolean" default="false">
           <xs:annotation>
-            <xs:documentation>是否显示文本</xs:documentation>
+              <xs:documentation>如果为false，则图标尺寸为16x16；如果为true，则图标尺寸为20x20</xs:documentation>
           </xs:annotation>
-        </xs:attribute>
+      </xs:attribute>
+      <xs:attribute name="show_text" type="xs:boolean" default="false">
+        <xs:annotation>
+          <xs:documentation>是否显示文本</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attribute name="font_size" default="9" type="font_size">
         <xs:annotation>
-          <xs:documentation>歌词字体大小，use_default_font为true时有效，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+          <xs:documentation>字体大小，use_default_font为true时有效，仅支持8~12,14,16。默认大小为9。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>

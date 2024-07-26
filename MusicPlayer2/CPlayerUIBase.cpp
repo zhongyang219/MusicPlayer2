@@ -5,6 +5,7 @@
 #include "SongInfoHelper.h"
 #include "UIElement.h"
 #include "MediaLibPlaylistMgr.h"
+#include "MusicPlayerCmdHelper.h"
 
 CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
     : m_ui_data(ui_data), m_pMainWnd(pMainWnd)
@@ -509,6 +510,23 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 SwitchStackElement();
                 return true;
 
+            case BTN_OPEN_FOLDER:
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FILE_OPEN_FOLDER);
+                return true;
+
+            case BTN_NEW_PLAYLIST:
+            {
+                CMusicPlayerCmdHelper helper;
+                helper.OnNewPlaylist();
+                return true;
+            }
+            case BTN_PLAY_MY_FAVOURITE:
+            {
+                CMusicPlayerCmdHelper helper;
+                helper.OnPlayMyFavourite();
+                return true;
+            }
+
                 //菜单
             case MENU_FILE:
                 showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainFileMenu));
@@ -771,10 +789,58 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Setting;
     case MENU_HELP:
         return IconMgr::IconType::IT_Help;
+    case BTN_OPEN_FOLDER:
+        return IconMgr::IconType::IT_Folder;
+    case BTN_NEW_PLAYLIST:
+        return IconMgr::IconType::IT_Add;
+    case BTN_PLAY_MY_FAVOURITE:
+        return IconMgr::IconType::IT_Play;
     default:
         ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;
     }
+}
+
+std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type)
+{
+    switch (key_type)
+    {
+    case CPlayerUIBase::BTN_REPETEMODE:
+        switch (CPlayer::GetInstance().GetRepeatMode())
+        {
+        case RM_PLAY_ORDER: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_ORDER");
+        case RM_PLAY_SHUFFLE: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_SHUFFLE");
+        case RM_PLAY_RANDOM: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_RANDOM");
+        case RM_LOOP_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_PLAYLIST");
+        case RM_LOOP_TRACK: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_TRACK");
+        case RM_PLAY_TRACK: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_ONCE");
+        }
+        break;
+    case CPlayerUIBase::BTN_SKIN: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_UI");
+    case CPlayerUIBase::BTN_EQ: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SOUND_EFFECT_SETTING");
+    case CPlayerUIBase::BTN_SETTING: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING");
+    case CPlayerUIBase::BTN_MINI: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE");
+    case CPlayerUIBase::BTN_INFO: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PROPERTY");
+    case CPlayerUIBase::BTN_FIND: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FIND_SONGS");
+    case CPlayerUIBase::BTN_STOP: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
+    case CPlayerUIBase::BTN_PREVIOUS: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
+    case CPlayerUIBase::BTN_PLAY_PAUSE: return theApp.m_str_table.LoadText(CPlayer::GetInstance().IsPlaying() ? L"UI_TIP_BTN_PAUSE" : L"UI_TIP_BTN_PLAY");
+    case CPlayerUIBase::BTN_NEXT: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT");
+    case CPlayerUIBase::BTN_SHOW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
+    case CPlayerUIBase::BTN_MEDIA_LIB: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MEDIA_LIB");
+    case CPlayerUIBase::BTN_FULL_SCREEN: return theApp.m_str_table.LoadText(m_ui_data.full_screen ? L"UI_TIP_BTN_FULL_SCREEN_EXIT" : L"UI_TIP_BTN_FULL_SCREEN");
+    case CPlayerUIBase::BTN_MENU: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAIN_MENU");
+    case CPlayerUIBase::BTN_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
+    case CPlayerUIBase::BTN_ADD_TO_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    case CPlayerUIBase::BTN_SWITCH_DISPLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_DISPLAY");
+    case CPlayerUIBase::BTN_DARK_LIGHT: return theApp.m_str_table.LoadText(theApp.m_app_setting_data.dark_mode ? L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE" : L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
+    case CPlayerUIBase::BTN_LOCATE_TO_CURRENT:return theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT");
+    case CPlayerUIBase::BTN_OPEN_FOLDER: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_OPEN_FOLDER");
+    case CPlayerUIBase::BTN_NEW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_NEW_PLAYLIST");
+    case CPlayerUIBase::BTN_PLAY_MY_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    }
+
+    return std::wstring();
 }
 
 void CPlayerUIBase::PreDrawInfo()
@@ -3049,45 +3115,6 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
         index++;
     }
     ResetDrawArea();
-}
-
-std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type)
-{
-    switch (key_type)
-    {
-    case CPlayerUIBase::BTN_REPETEMODE:
-        switch (CPlayer::GetInstance().GetRepeatMode())
-        {
-        case RM_PLAY_ORDER: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_ORDER");
-        case RM_PLAY_SHUFFLE: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_SHUFFLE");
-        case RM_PLAY_RANDOM: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_RANDOM");
-        case RM_LOOP_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_PLAYLIST");
-        case RM_LOOP_TRACK: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_TRACK");
-        case RM_PLAY_TRACK: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_ONCE");
-        }
-        break;
-    case CPlayerUIBase::BTN_SKIN: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_UI");
-    case CPlayerUIBase::BTN_EQ: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SOUND_EFFECT_SETTING");
-    case CPlayerUIBase::BTN_SETTING: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING");
-    case CPlayerUIBase::BTN_MINI: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE");
-    case CPlayerUIBase::BTN_INFO: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PROPERTY");
-    case CPlayerUIBase::BTN_FIND: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FIND_SONGS");
-    case CPlayerUIBase::BTN_STOP: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
-    case CPlayerUIBase::BTN_PREVIOUS: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
-    case CPlayerUIBase::BTN_PLAY_PAUSE: return theApp.m_str_table.LoadText(CPlayer::GetInstance().IsPlaying() ? L"UI_TIP_BTN_PAUSE" : L"UI_TIP_BTN_PLAY");
-    case CPlayerUIBase::BTN_NEXT: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT");
-    case CPlayerUIBase::BTN_SHOW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
-    case CPlayerUIBase::BTN_MEDIA_LIB: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MEDIA_LIB");
-    case CPlayerUIBase::BTN_FULL_SCREEN: return theApp.m_str_table.LoadText(m_ui_data.full_screen ? L"UI_TIP_BTN_FULL_SCREEN_EXIT" : L"UI_TIP_BTN_FULL_SCREEN");
-    case CPlayerUIBase::BTN_MENU: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAIN_MENU");
-    case CPlayerUIBase::BTN_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
-    case CPlayerUIBase::BTN_ADD_TO_PLAYLIST:return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
-    case CPlayerUIBase::BTN_SWITCH_DISPLAY:return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_DISPLAY");
-    case CPlayerUIBase::BTN_DARK_LIGHT:return theApp.m_str_table.LoadText(theApp.m_app_setting_data.dark_mode ? L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE" : L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
-    case CPlayerUIBase::BTN_LOCATE_TO_CURRENT:return theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT");
-    }
-
-    return std::wstring();
 }
 
 void CPlayerUIBase::DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style, IconMgr::IconSize icon_size)

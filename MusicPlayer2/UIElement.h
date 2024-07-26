@@ -140,6 +140,7 @@ namespace UiElement
         virtual void Draw() override;
         void FromString(const std::string& key_type);
         virtual int GetMaxWidth(CRect parent_rect) const override;
+        virtual void ClearRect() override;
     };
 
     //文本

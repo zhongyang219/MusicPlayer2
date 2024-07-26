@@ -5,10 +5,7 @@
       <horizontalLayout>
         <verticalLayout width="134">
           <navigationBar orientation="vertical" icon_type="icon_and_text" item_height="40" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
-          <horizontalLayout height="40">
-            <button key="settings" width="48" height="40"/>
-            <placeHolder/>
-          </horizontalLayout>
+          <button key="settings" height="40" show_text="true"/>
         </verticalLayout>
         <stackElement>
           <!--正在播放-->
@@ -43,17 +40,26 @@
           </verticalLayout>
           <!--文件夹-->
           <verticalLayout>
-            <text type="userDefine" text="%(TXT_FOLDER)" height="56" font_size="12" margin-left="8"/>
+            <horizontalLayout height="56" margin-left="8" margin-right="8">
+              <text type="userDefine" text="%(TXT_FOLDER)" font_size="12"/>
+              <button key="openFolder" height="32" show_text="true"/>
+            </horizontalLayout>
             <mediaLibFolder item_height="30"/>
           </verticalLayout>
           <!--播放列表-->
           <verticalLayout>
-            <text type="userDefine" text="%(TXT_PLAYLIST)" height="56" font_size="12" margin-left="8"/>
+            <horizontalLayout height="56" margin-left="8" margin-right="8">
+              <text type="userDefine" text="%(TXT_PLAYLIST)" font_size="12"/>
+              <button key="newPlaylist" height="32" show_text="true"/>
+            </horizontalLayout>
             <mediaLibPlaylist item_height="30"/>
           </verticalLayout>
           <!--我喜欢的音乐-->
           <verticalLayout>
-            <text type="userDefine" text="%(TXT_MY_FAVOURITE)" height="56" font_size="12" margin-left="8"/>
+            <horizontalLayout height="56" margin-left="8" margin-right="8">
+              <text type="userDefine" text="%(TXT_MY_FAVOURITE)" font_size="12"/>
+              <button key="playMyFavourite" height="32" show_text="true"/>
+            </horizontalLayout>
             <myFavouriteList item_height="30"/>
           </verticalLayout>
           <!--媒体库-->
@@ -138,17 +144,26 @@
           </verticalLayout>
           <!--文件夹-->
           <verticalLayout>
-            <text type="userDefine" text="%(TXT_FOLDER)" height="56" font_size="12" margin-left="8"/>
+            <horizontalLayout height="56" margin-left="8" margin-right="8">
+              <text type="userDefine" text="%(TXT_FOLDER)" font_size="12"/>
+              <button key="openFolder" height="32" show_text="true"/>
+            </horizontalLayout>
             <mediaLibFolder item_height="30"/>
           </verticalLayout>
           <!--播放列表-->
           <verticalLayout>
-            <text type="userDefine" text="%(TXT_PLAYLIST)" height="56" font_size="12" margin-left="8"/>
+            <horizontalLayout height="56" margin-left="8" margin-right="8">
+              <text type="userDefine" text="%(TXT_PLAYLIST)" font_size="12"/>
+              <button key="newPlaylist" height="32" show_text="true"/>
+            </horizontalLayout>
             <mediaLibPlaylist item_height="30"/>
           </verticalLayout>
           <!--我喜欢的音乐-->
           <verticalLayout>
-            <text type="userDefine" text="%(TXT_MY_FAVOURITE)" height="56" font_size="12" margin-left="8"/>
+            <horizontalLayout height="56" margin-left="8" margin-right="8">
+              <text type="userDefine" text="%(TXT_MY_FAVOURITE)" font_size="12"/>
+              <button key="playMyFavourite" height="32" show_text="true"/>
+            </horizontalLayout>
             <myFavouriteList item_height="30"/>
           </verticalLayout>
           <!--媒体库-->

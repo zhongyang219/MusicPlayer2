@@ -1055,6 +1055,22 @@ bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const std::vector<SongInfo>& so
     return false;
 }
 
+void CMusicPlayerCmdHelper::OnPlayMyFavourite()
+{
+    //已经在播放“我喜欢的音乐”
+    if (CPlayer::GetInstance().IsPlaylistMode() && CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE)
+    {
+        //不在播放状态时执行播放命令
+        if (!CPlayer::GetInstance().IsPlaying())
+            theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY);
+    }
+    //没有播放“我喜欢的音乐”的情况下，播放“我喜欢的音乐”
+    else
+    {
+        OnPlaylistSelected(CPlaylistMgr::Instance().GetFavouritePlaylist(), true);
+    }
+}
+
 void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
 {
     CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();

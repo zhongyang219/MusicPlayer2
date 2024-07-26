@@ -105,6 +105,8 @@ public:
     //从播放列表中移除
     bool OnRemoveFromPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 
+    void OnPlayMyFavourite();
+
 protected:
     void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 

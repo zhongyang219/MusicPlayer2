@@ -183,6 +183,9 @@ public:
         BTN_SWITCH_DISPLAY,     //切换界面中的stackElement
         BTN_DARK_LIGHT,         //切换深色/浅色模式
         BTN_LOCATE_TO_CURRENT,  //播放列表定位到当前播放
+        BTN_OPEN_FOLDER,        //打开文件夹
+        BTN_NEW_PLAYLIST,       //新建播放列表
+        BTN_PLAY_MY_FAVOURITE,  //播放“我喜欢的音乐”
 
         //菜单栏
         MENU_FILE,
@@ -206,6 +209,9 @@ public:
     // 获取参数按钮当前应当使用的图标类型
     // 将BtnKey枚举和当前状态组合映射为IconMgr::IconType枚举
     IconMgr::IconType GetBtnIconType(BtnKey key);
+
+    //获取按钮的文本
+    std::wstring GetButtonText(BtnKey key_type);
 
 protected:
     struct DrawData
@@ -249,8 +255,6 @@ protected:
     void DrawStackIndicator(UIButton indicator, int num, int index);
     void DrawUiMenuBar(CRect rect);
     void DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element);
-
-    std::wstring GetButtonText(BtnKey key_type);
 
     // 实际绘制一个图标
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
