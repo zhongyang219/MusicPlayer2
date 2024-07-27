@@ -3277,4 +3277,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::PLAYLIST), L"");
     // tabElement工具提示
     AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::TAB_ELEMENT), L"");
+    // "播放“我喜欢的音乐”"
+    AddMouseToolTip(BTN_PLAY_MY_FAVOURITE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_MY_FAVOURITE").c_str());
 }
