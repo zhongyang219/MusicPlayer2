@@ -5486,12 +5486,23 @@ void CMusicPlayerDlg::OnFileOpenUrl()
     if (input_dlg.DoModal() == IDOK)
     {
         wstring strUrl = input_dlg.GetEditText().GetString();
-        if (!CCommon::IsURL(strUrl))
+        //如何输入的是文件夹，则在文件夹模式中打开
+        if (CCommon::FolderExist(strUrl))
+        {
+            if (!CPlayer::GetInstance().OpenFolder(strUrl))
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            }
+            return;
+        }
+        else if (!CCommon::FileExist(strUrl) && !CCommon::IsURL(strUrl))
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_INPUT_URL_INVALID_WARNING");
             MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
             return;
         }
+        //本地文件或URL将被添加到默认的播放列表播放
         vector<wstring> vecUrl;
         vecUrl.push_back(strUrl);
         if (!CPlayer::GetInstance().OpenFilesInDefaultPlaylist(vecUrl))
