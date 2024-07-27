@@ -73,6 +73,8 @@
         </horizontalLayout>
 
         <verticalLayout>
+          <trackInfo height="28"/>
+          <trackInfo font_size="10" height="28"/>
           <albumCover proportion="2"/>
           <text type="title" font_size="16" style="scroll" height="32"/>
           <text type="artist" font_size="14" style="scroll" height="32"/>

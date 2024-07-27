@@ -717,15 +717,9 @@ int UiElement::Button::GetMaxWidth(CRect parent_rect) const
         int right_space = (btn_height - ui->DPI(16)) / 2;
 
         //计算文本宽度前先设置一下字体
-        CFont* old_font{};  //原先的字体
-        bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
-        old_font = ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(font_size).GetFont(big_font));
+        UiFontGuard set_font(ui, font_size);
 
         int width_text{ ui->m_draw.GetTextExtent(text.c_str()).cx + right_space + btn_height };
-
-        //恢复原来的字体
-        if (old_font != nullptr)
-            ui->m_draw.SetFont(old_font);
 
         int width_max{ max_width.IsValid() ? max_width.GetValue(parent_rect) : INT_MAX };
         return min(width_text, width_max);
@@ -747,9 +741,8 @@ void UiElement::Text::Draw()
     CalculateRect();
     std::wstring draw_text{ GetText() };
 
-    CFont* old_font{};  //原先的字体
-    bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
-    old_font = ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(font_size).GetFont(big_font));
+    //设置字体
+    UiFontGuard set_font(ui, font_size);
 
     COLORREF text_color{};
     if (color_mode == CPlayerUIBase::RCM_LIGHT)
@@ -781,9 +774,6 @@ void UiElement::Text::Draw()
             break;
         }
     }
-    //恢复原来的字体
-    if (old_font != nullptr)
-        ui->m_draw.SetFont(old_font);
 
     ui->ResetDrawArea();
     Element::Draw();
@@ -911,7 +901,7 @@ bool UiElement::Spectrum::IsEnable(CRect parent_rect) const
 void UiElement::TrackInfo::Draw()
 {
     CalculateRect();
-    ui->DrawSongInfo(rect);
+    ui->DrawSongInfo(rect, font_size);
     ui->ResetDrawArea();
     Element::Draw();
 }

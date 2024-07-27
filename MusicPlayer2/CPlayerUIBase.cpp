@@ -894,8 +894,11 @@ void CPlayerUIBase::DrawBackground()
         m_draw.FillRect(draw_rect, m_colors.color_back);
 }
 
-void CPlayerUIBase::DrawSongInfo(CRect rect, bool reset)
+void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
 {
+    //设置字体
+    UiFontGuard set_font(this, font_size);
+
     //绘制播放状态
     CRect rc_tmp{ rect };
     if (!theApp.m_app_setting_data.always_show_statusbar)
@@ -1261,20 +1264,13 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
     //绘制文本
     if (!text.empty())
     {
-        //设置字体
-        CFont* old_font{};  //原先的字体
-        bool big_font{ m_ui_data.full_screen && IsDrawLargeIcon() };
-        old_font = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(font_size).GetFont(big_font));
+        UiFontGuard set_font(this, font_size);
 
         CRect rect_text{ rc_tmp };
         rect_text.left = rect_icon.right;
         int right_space = (rc_tmp.Height() - DPI(16)) / 2;
         rect_text.right -= right_space;
         m_draw.DrawWindowText(rect_text, text.c_str(), m_colors.color_text, Alignment::LEFT, true);
-
-        //恢复原来的字体
-        if (old_font != nullptr)
-            m_draw.SetFont(old_font);
 
     }
 }
@@ -1830,7 +1826,7 @@ void CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
     CRect progress_rect{ rect };
     if (draw_progress_time)
     {
-        CFont* old_font = m_draw.SetFont(&theApp.m_font_set.font8.GetFont(m_ui_data.full_screen));
+        UiFontGuard set_font(this, 8);
         if (play_time_both_side)
         {
             CRect rc_time_left{ rect }, rc_time_right{ rect };
@@ -1857,7 +1853,6 @@ void CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
             m_draw.DrawWindowText(rc_time, strTime.c_str(), m_colors.color_text);
             progress_rect.right = rc_time.left - Margin();
         }
-        m_draw.SetFont(old_font);
     }
 
     //绘制进度条
@@ -2527,9 +2522,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
             background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 
         //设置字体
-        CFont* old_font{};  //原先的字体
-        bool big_font{ m_ui_data.full_screen && IsDrawLargeIcon() };
-        old_font = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(list_element->font_size).GetFont(big_font));
+        UiFontGuard set_font(this, list_element->font_size);
 
         for (int i{}; i < list_element->GetRowCount(); i++)
         {
@@ -2606,10 +2599,6 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                 }
             }
         }
-
-        //恢复原来的字体
-        if (old_font != nullptr)
-            m_draw.SetFont(old_font);
 
         //绘制滚动条
         m_draw.SetDrawArea(rect);
@@ -2702,9 +2691,7 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::Playlist
     rect_icon.right = rect_icon.left + DPI(26);
     DrawUiIcon(rect_icon, icon_type);
     //设置字体
-    CFont* old_font{};  //原先的字体
-    bool big_font{ m_ui_data.full_screen && IsDrawLargeIcon() };
-    old_font = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(playlist_indicator->font_size).GetFont(big_font));
+    UiFontGuard set_font(this, playlist_indicator->font_size);
     //绘制文本
     CRect rect_text{ rect };
     rect_text.left = rect_icon.right;
@@ -2734,9 +2721,6 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::Playlist
     rect_name.right -= DPI(30);
     static CDrawCommon::ScrollInfo name_scroll_info;
     m_draw.DrawScrollText(rect_name, CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str(), m_colors.color_text_heighlight, GetScrollTextPixel(), false, name_scroll_info);
-    //恢复原来的字体
-    if (old_font != nullptr)
-        m_draw.SetFont(old_font);
     //绘制下拉按钮
     CRect rect_drop_down{ rect };
     rect_drop_down.left = rect_name.right + DPI(2);

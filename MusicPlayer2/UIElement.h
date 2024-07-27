@@ -210,6 +210,7 @@ namespace UiElement
     class TrackInfo : public Element
     {
     public:
+        int font_size{ 9 };
         virtual void Draw() override;
     };
 

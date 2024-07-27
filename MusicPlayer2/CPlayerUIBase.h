@@ -84,6 +84,8 @@ public:
     friend class UiElement::NavigationBar;
     friend class UiElement::MyFavouriteList;
 
+    friend class UiFontGuard;
+
 public:
     void Init(CDC* pDC) override;
     virtual void DrawInfo(bool reset = false) override final;
@@ -226,7 +228,7 @@ protected:
     virtual void PreDrawInfo();
     void SetDrawRect();
     void DrawBackground();
-    void DrawSongInfo(CRect rect, bool reset = false);
+    void DrawSongInfo(CRect rect, int font_size = 9, bool reset = false);
     void DrawRectangle(const CRect& rect, bool no_corner_radius = false, bool theme_color = true, ColorMode color_mode = RCM_AUTO);       //绘制矩形。如果no_corner_radius为true，则总是绘制直角矩形，忽略“使用圆角风格按钮”的设置；theme_color：是否使用主题彦颜色
     void DrawToolBar(CRect rect, bool draw_translate_button);
     void DrawToolBarWithoutBackground(CRect rect, bool draw_translate_button);
@@ -350,4 +352,34 @@ private:
     CBitmap m_mem_bitmap_static;
 
     bool m_need_update_tooltip_pos{ false };   //是否需要更新鼠标提示
+};
+
+//用于在UI中设置字体。
+//在需要设置字体时，创建此类的一个局部对象，它会在构造时设置字体，并在析构时恢复原来的字体
+class UiFontGuard
+{
+public:
+    UiFontGuard(CPlayerUIBase* _ui, int font_size)
+        : ui(_ui)
+    {
+        if (ui != nullptr)
+        {
+            bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
+            //设置字体
+            old_font = ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(font_size).GetFont(big_font));
+        }
+    }
+    ~UiFontGuard()
+    {
+        if (ui != nullptr)
+        {
+            //恢复原来的字体
+            if (old_font != nullptr)
+                ui->m_draw.SetFont(old_font);
+        }
+    }
+
+private:
+    CFont* old_font{};
+    CPlayerUIBase* ui{};
 };

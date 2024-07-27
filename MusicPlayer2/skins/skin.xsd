@@ -706,11 +706,16 @@
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="trackInfoType">
+      <xs:annotation>
+        <xs:documentation>曲目信息（包含播放状态、文件名、歌曲标识、速度）</xs:documentation>
+      </xs:annotation>
+      <xs:group ref="elements"></xs:group>
+      <xs:attribute name="font_size" default="9" type="font_size">
         <xs:annotation>
-            <xs:documentation>曲目信息（包含播放状态、文件名、歌曲标识、速度）</xs:documentation>
+          <xs:documentation>字体大小，仅支持8~12,14,16。默认大小为9。</xs:documentation>
         </xs:annotation>
-        <xs:group ref="elements"></xs:group>
-        <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+      </xs:attribute>
+      <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="toolbarType">
         <xs:annotation>

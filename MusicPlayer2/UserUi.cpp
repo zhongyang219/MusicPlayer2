@@ -829,6 +829,14 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", playlist_indicator->font_size);
             }
         }
+        else if (item_name == "trackInfo")
+        {
+            UiElement::TrackInfo* track_info = dynamic_cast<UiElement::TrackInfo*>(element.get());
+            if (track_info != nullptr)
+            {
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", track_info->font_size);
+            }
+        }
 
         //递归调用此函数创建子节点
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)
