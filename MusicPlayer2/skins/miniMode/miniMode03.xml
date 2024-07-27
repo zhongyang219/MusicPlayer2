@@ -1,0 +1,22 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../skin.xsd">  
+  <ui width="292" height="32">
+    <horizontalLayout margin="2">
+      <albumCover width="28" margin-right="4"/>
+      <stackElement hover_to_switch="true" margin-right="4">
+        <lyrics no_background="true" use_default_font="true" font_size="9" show_song_info="true" margin-top="-2" margin-bottom="-2"/>
+        <horizontalLayout>
+          <button key="previous" width="24" height="24"/>
+          <button key="playPause" width="24" height="24"/>
+          <button key="next" width="24" height="24"/>
+          <button key="repeatMode" width="24" height="24"/>
+          <text type="play_time_and_volume" style="scroll" alignment="center"/>
+          <button key="showPlaylist" width="22" height="22"/>
+        </horizontalLayout>
+      </stackElement>
+      <button key="favorite" width="22" height="22"/>
+      <button key="miniMode" width="22" height="22"/>
+      <button key="miniModeClose" width="22" height="22"/>
+    </horizontalLayout>
+    <progressBar margin-bottom="0" height="2"/>
+  </ui>
+</root>

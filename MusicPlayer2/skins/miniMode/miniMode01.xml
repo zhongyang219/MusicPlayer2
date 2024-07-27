@@ -12,7 +12,7 @@
           <button key="playPause" width="34" height="34" bigIcon="true"/>
           <button key="next" width="34" height="34" bigIcon="true"/>
           <button key="repeatMode" width="24" height="24"/>
-          <text type="play_time_and_volume" style="scroll" alignment="center" margin-left="4" margin-right="4"/>
+          <text type="play_time_and_volume" style="scroll" alignment="center"/>
           <button key="showPlaylist" width="24" height="24"/>
         </horizontalLayout>
       </stackElement>
