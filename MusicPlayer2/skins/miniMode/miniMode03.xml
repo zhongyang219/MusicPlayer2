@@ -3,7 +3,10 @@
     <horizontalLayout margin="2">
       <albumCover width="28" margin-right="4"/>
       <stackElement hover_to_switch="true" margin-right="4">
-        <lyrics no_background="true" use_default_font="true" font_size="9" show_song_info="true" margin-top="-2" margin-bottom="-2"/>
+        <horizontalLayout>
+          <miniSpectrum width="16" height="16" margin-right="4"/>
+          <lyrics no_background="true" use_default_font="true" font_size="9" show_song_info="true" margin-top="-2" margin-bottom="-2"/>
+        </horizontalLayout>
         <horizontalLayout>
           <button key="previous" width="24" height="24"/>
           <button key="playPause" width="24" height="24"/>

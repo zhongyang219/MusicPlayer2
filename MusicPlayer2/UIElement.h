@@ -545,6 +545,13 @@ namespace UiElement
         virtual void OnDoubleClicked() override;
         virtual std::wstring GetEmptyString() override;
     };
+
+    //迷你频谱
+    class MiniSpectrum : public Element
+    {
+    public:
+        virtual void Draw() override;
+    };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

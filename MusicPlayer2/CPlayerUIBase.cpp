@@ -3026,15 +3026,7 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
             //使用跳动的频谱代替正在播放图标
             if (item_str == "now_playing" && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED)
             {
-                COLORREF icon_color{ theApp.m_app_setting_data.dark_mode ? RGB(255, 255, 255) : RGB(110, 110, 110) };
-                CSize size_icon = IconMgr::GetIconSize(IsDrawLargeIcon() ? IconMgr::IS_DPI_16_Full_Screen : IconMgr::IS_DPI_16);
-                CPoint pos_icon{ icon_rect.left + (icon_rect.Width() - size_icon.cx) / 2 , icon_rect.top + (icon_rect.Height() - size_icon.cy) / 2 };
-                CRect draw_icon_rect(pos_icon, size_icon);
-                draw_icon_rect.bottom -= DPI(2);
-                int gap_width{ DPI(2) };
-                if (theApp.GetDPI() % 48 == 24)       //DPI对48取余等于24意味着对“2”这个数进行DPI变换后会有0.5的小数，此时让柱形的间隙增加1像素
-                    gap_width++;
-                m_draw.DrawSpectrum(CRect(pos_icon, size_icon), DPI(2), gap_width, 4, icon_color, false, false, Alignment::CENTER, false, 180);
+                DrawMiniSpectrum(icon_rect);
             }
             else
             {
@@ -3099,6 +3091,19 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
         index++;
     }
     ResetDrawArea();
+}
+
+void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
+{
+    COLORREF icon_color{ theApp.m_app_setting_data.dark_mode ? RGB(255, 255, 255) : RGB(110, 110, 110) };
+    CSize size_icon = IconMgr::GetIconSize(IsDrawLargeIcon() ? IconMgr::IS_DPI_16_Full_Screen : IconMgr::IS_DPI_16);
+    CPoint pos_icon{ rect.left + (rect.Width() - size_icon.cx) / 2 , rect.top + (rect.Height() - size_icon.cy) / 2 };
+    CRect draw_icon_rect(pos_icon, size_icon);
+    draw_icon_rect.bottom -= DPI(2);
+    int gap_width{ DPI(2) };
+    if (theApp.GetDPI() % 48 == 24)       //DPI对48取余等于24意味着对“2”这个数进行DPI变换后会有0.5的小数，此时让柱形的间隙增加1像素
+        gap_width++;
+    m_draw.DrawSpectrum(CRect(pos_icon, size_icon), DPI(2), gap_width, 4, icon_color, false, false, Alignment::CENTER, false, 180);
 }
 
 void CPlayerUIBase::DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style, IconMgr::IconSize icon_size)

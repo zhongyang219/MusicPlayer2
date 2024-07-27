@@ -2012,6 +2012,13 @@ std::wstring UiElement::MyFavouriteList::GetEmptyString()
     return std::wstring();
 }
 
+void UiElement::MiniSpectrum::Draw()
+{
+    ui->DrawMiniSpectrum(rect);
+    ui->ResetDrawArea();
+    Element::Draw();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name, CPlayerUIBase* ui)
@@ -2071,6 +2078,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::MediaLibPlaylist>();
     else if (name == "myFavouriteList")
         element = std::make_shared<UiElement::MyFavouriteList>();
+    else if (name == "miniSpectrum")
+        element = std::make_shared<UiElement::MiniSpectrum>();
     else if (name == "ui" || name == "root" || name == "placeHolder" || name == "element")
         element = std::make_shared<UiElement::Element>();
 

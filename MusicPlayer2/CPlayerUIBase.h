@@ -32,6 +32,7 @@ namespace UiElement
     class RecentPlayedList;
     class NavigationBar;
     class MyFavouriteList;
+    class MiniSpectrum;
 }
 
 struct SLayoutData
@@ -83,6 +84,7 @@ public:
     friend class UiElement::RecentPlayedList;
     friend class UiElement::NavigationBar;
     friend class UiElement::MyFavouriteList;
+    friend class UiElement::MiniSpectrum;
 
     friend class UiFontGuard;
 
@@ -257,6 +259,7 @@ protected:
     void DrawStackIndicator(UIButton indicator, int num, int index);
     void DrawUiMenuBar(CRect rect);
     void DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element);
+    void DrawMiniSpectrum(CRect rect);      //绘制图标大小的迷你频谱
 
     // 实际绘制一个图标
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
