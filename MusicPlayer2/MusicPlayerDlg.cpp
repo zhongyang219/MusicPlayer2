@@ -5486,7 +5486,7 @@ void CMusicPlayerDlg::OnFileOpenUrl()
     if (input_dlg.DoModal() == IDOK)
     {
         wstring strUrl = input_dlg.GetEditText().GetString();
-        //如何输入的是文件夹，则在文件夹模式中打开
+        //如果输入的是文件夹，则在文件夹模式中打开
         if (CCommon::FolderExist(strUrl))
         {
             if (!CPlayer::GetInstance().OpenFolder(strUrl))
@@ -5526,14 +5526,25 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
     if (input_dlg.DoModal() == IDOK)
     {
         wstring strUrl = input_dlg.GetEditText().GetString();
-        if (!CCommon::IsURL(strUrl))
-        {
-            const wstring& info = theApp.m_str_table.LoadText(L"MSG_INPUT_URL_INVALID_WARNING");
-            MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
-            return;
-        }
         vector<wstring> vecUrl;
-        vecUrl.push_back(strUrl);
+        //如果输入的是文件夹路径，则将文件夹内的音频文件添加到播放列表
+        if (CCommon::FolderExist(strUrl))
+        {
+            if (COSUPlayerHelper::IsOsuFolder(strUrl))
+                COSUPlayerHelper::GetOSUAudioFiles(strUrl, vecUrl);
+            else
+                CAudioCommon::GetAudioFiles(strUrl, vecUrl);
+        }
+        else
+        {
+            if (!CCommon::FileExist(strUrl) && !CCommon::IsURL(strUrl))
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_INPUT_URL_INVALID_WARNING");
+                MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
+                return;
+            }
+            vecUrl.push_back(strUrl);
+        }
         int rtn = CPlayer::GetInstance().AddFilesToPlaylist(vecUrl);
         if (rtn == 0)
         {
