@@ -88,7 +88,7 @@ bool CPlayerUIHelper::IsDrawStatusBar()
 double CPlayerUIHelper::GetScrollTextPixel()
 {
     //界面刷新频率越高，即界面刷新时间间隔越小，则每次滚动的像素值就要越小
-    double pixel = static_cast<double>(theApp.m_app_setting_data.ui_refresh_interval) * 0.025 + 0.2;
+    double pixel = static_cast<double>(theApp.m_app_setting_data.ui_refresh_interval) * 0.0125 + 0.2;
     pixel = static_cast<double>(theApp.GetDPI()) * pixel / 96;
     if (pixel < 0.1)
         pixel = 0.1;
