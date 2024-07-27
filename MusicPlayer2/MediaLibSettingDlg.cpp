@@ -530,7 +530,11 @@ void CMediaLibSettingDlg::OnBnClickedRefreshMediaLibButton()
     }
     else
     {
-        theApp.StartUpdateMediaLib(true);  // 刷新媒体库按钮强制重新获取所有元数据
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_FORCE_UPDATE_MEDIA_LIB_INQUIRY");
+        if (MessageBox(info.c_str(), nullptr, MB_ICONQUESTION | MB_YESNO) == IDYES)
+        {
+            theApp.StartUpdateMediaLib(true);  // 刷新媒体库按钮强制重新获取所有元数据
+        }
     }
 }
 
