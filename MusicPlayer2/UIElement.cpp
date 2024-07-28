@@ -976,6 +976,12 @@ void UiElement::Lyrics::Draw()
     Element::Draw();
 }
 
+void UiElement::Lyrics::ClearRect()
+{
+    Element::ClearRect();
+    ui->m_draw_data.lyric_rect = CRect();
+}
+
 bool UiElement::Lyrics::IsParentRectangle() const
 {
     const Element* ele{ this };
