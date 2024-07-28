@@ -1152,6 +1152,26 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
 
 bool CPlayer::SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index, const SongInfo& play_song, bool play, bool force)
 {
+    //如果播放模式没有变化，则不需要初始化播放列表
+    if (IsMediaLibMode() && type == m_media_lib_playlist_type && name == m_media_lib_playlist_name)
+    {
+        //通过play_song指定了播放曲目
+        if (!play_song.IsEmpty())
+        {
+            auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& song) ->bool {
+                return song.IsSameSong(play_song);
+            });
+            if (iter != m_playlist.end())
+                PlayTrack(iter - m_playlist.begin());
+        }
+        //通过play_index指定了播放曲目
+        else if (play_index >= 0)
+        {
+            PlayTrack(play_index);
+        }
+        return true;
+    }
+
     if (!BeforeIniPlayList(!force))
         return false;
 
