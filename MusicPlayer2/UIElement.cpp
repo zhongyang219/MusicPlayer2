@@ -2080,17 +2080,13 @@ int UiElement::AllTracksList::GetColumnWidth(int col, int total_width)
 
 int UiElement::AllTracksList::GetHighlightRow()
 {
-    if (CPlayer::GetInstance().IsMediaLibMode() && CPlayer::GetInstance().GetMediaLibPlaylistType() == CMediaClassifier::CT_NONE)
+    int highlight_row = CUiAllTracksMgr::Instance().GetCurrentIndex();
+    if (last_highlight_row != highlight_row)
     {
-        int highlight_row = CUiAllTracksMgr::Instance().GetCurrentIndex();
-        if (last_highlight_row != highlight_row)
-        {
-            EnsureItemVisible(highlight_row);
-            last_highlight_row = highlight_row;
-        }
-        return highlight_row;
+        EnsureItemVisible(highlight_row);
+        last_highlight_row = highlight_row;
     }
-    return -1;
+    return highlight_row;
 }
 
 int UiElement::AllTracksList::GetColumnScrollTextWhenSelected()
