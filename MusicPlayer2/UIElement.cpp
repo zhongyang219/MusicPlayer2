@@ -1294,7 +1294,7 @@ int UiElement::Playlist::GetColumnCount()
 
 int UiElement::Playlist::GetColumnWidth(int col, int total_width)
 {
-    const int index_width{ ui->DPI(36) };
+    const int index_width{ ui->DPI(40) };
     const int time_width{ ui->DPI(50) };
     if (col == COL_INDEX)
     {
@@ -1956,7 +1956,7 @@ int UiElement::MyFavouriteList::GetColumnCount()
 
 int UiElement::MyFavouriteList::GetColumnWidth(int col, int total_width)
 {
-    const int index_width{ ui->DPI(36) };
+    const int index_width{ ui->DPI(40) };
     const int time_width{ ui->DPI(50) };
     if (col == COL_INDEX)
     {
@@ -2061,7 +2061,7 @@ int UiElement::AllTracksList::GetColumnCount()
 
 int UiElement::AllTracksList::GetColumnWidth(int col, int total_width)
 {
-    const int index_width{ ui->DPI(36) };
+    const int index_width{ ui->DPI(40) };
     const int time_width{ ui->DPI(50) };
     if (col == COL_INDEX)
     {
