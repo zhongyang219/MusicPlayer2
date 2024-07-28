@@ -786,26 +786,34 @@ void CMusicPlayerCmdHelper::OnMediaLibItemSelected(CMediaClassifier::Classificat
     }
 }
 
-void CMusicPlayerCmdHelper::OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item)
+void CMusicPlayerCmdHelper::OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item, bool play)
 {
     if (item != nullptr && !item->IsItemCurrentPlaying())
     {
         if (item->IsPlaylist())
         {
             if (item->playlist_info != nullptr)
-                OnPlaylistSelected(*item->playlist_info);
+                OnPlaylistSelected(*item->playlist_info, play);
         }
         else if (item->IsFolder())
         {
             if (item->folder_info != nullptr)
-                OnFolderSelected(*item->folder_info);
+                OnFolderSelected(*item->folder_info, play);
         }
         else if (item->IsMedialib())
         {
             if (item->medialib_info != nullptr)
-                OnMediaLibItemSelected(item->medialib_info->medialib_type, item->medialib_info->path);
+                OnMediaLibItemSelected(item->medialib_info->medialib_type, item->medialib_info->path, play);
         }
     }
+}
+
+void CMusicPlayerCmdHelper::OnRecentItemSelected(int index, bool play)
+{
+    CRecentFolderAndPlaylist::Instance().GetItem(index, [&](const CRecentFolderAndPlaylist::Item& item) {
+        CMusicPlayerCmdHelper helper;
+        helper.OnRecentItemSelected(&item, play);
+    });
 }
 
 bool CMusicPlayerCmdHelper::OnRenamePlaylist(const std::wstring& playlist_path)

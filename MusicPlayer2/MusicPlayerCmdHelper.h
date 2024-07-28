@@ -92,7 +92,8 @@ public:
     void OnMediaLibItemSelected(CMediaClassifier::ClassificationType type, const std::wstring& name, bool play = false);
 
     //响应播放列表上方下拉列表项
-    void OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item);
+    void OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item, bool play = false);
+    void OnRecentItemSelected(int index, bool play = false);
 
     bool OnRenamePlaylist(const std::wstring& playlist_path);
     bool OnDeletePlaylist(std::wstring playlist_path);   //执行删除播放列表操作，仅当要删除的不是正在播放的播放列表时返回true

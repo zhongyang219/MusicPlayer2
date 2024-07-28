@@ -1445,7 +1445,8 @@ bool UiElement::RecentPlayedList::HasIcon()
 
 void UiElement::RecentPlayedList::OnDoubleClicked()
 {
-    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_RECENT_FOLDER_PLAYLIST_MENU_START + item_selected, 0);
+    CMusicPlayerCmdHelper helper;
+    helper.OnRecentItemSelected(item_selected, true);
 }
 
 CMenu* UiElement::RecentPlayedList::GetContextMenu(bool item_selected)

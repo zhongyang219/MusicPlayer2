@@ -3323,12 +3323,8 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     if (command >= ID_RECENT_FOLDER_PLAYLIST_MENU_START && command <= ID_RECENT_FOLDER_PLAYLIST_MENU_END)
     {
         int index = command - ID_RECENT_FOLDER_PLAYLIST_MENU_START;
-        if (index >= 0 && index < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()))
-        {
-            auto& item = CRecentFolderAndPlaylist::Instance().GetItemList()[index];
-            CMusicPlayerCmdHelper helper;
-            helper.OnRecentItemSelected(&item);
-        }
+        CMusicPlayerCmdHelper helper;
+        helper.OnRecentItemSelected(index);
     }
 
     // 这里应当先判断ID再调用IsMainWindowPopupMenu，避免程序初始化时的无关命令导致菜单全量创建

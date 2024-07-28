@@ -148,7 +148,8 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
     //播放
     if (command == ID_PLAY_ITEM)
     {
-        ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_RECENT_FOLDER_PLAYLIST_MENU_START + item_selected, 0);
+        CMusicPlayerCmdHelper helper;
+        helper.OnRecentItemSelected(item_selected, true);
     }
     //移除
     else if (command == ID_RECENT_PLAYED_REMOVE)
