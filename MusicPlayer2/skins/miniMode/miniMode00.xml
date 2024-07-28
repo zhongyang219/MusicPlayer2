@@ -4,11 +4,11 @@
       <albumCover width="42" margin-right="3"/>
       <verticalLayout>
         <horizontalLayout height="20">
-          <button key="previous" width="24" margin-right="3"/>
-          <button key="playPause" width="24" margin-right="3"/>
-          <button key="next" width="24" margin-right="3"/>
-          <spectrum type="8col" margin-right="6" width="30"/>
-          <text type="play_time_and_volume" alignment="center" font_size="8" margin-right="6">
+          <button key="previous" width="28" height="24" margin-right="2"/>
+          <button key="playPause" width="28" height="24" margin-right="2"/>
+          <button key="next" width="28" height="24" margin-right="4"/>
+          <miniSpectrum margin-right="4" height="16" width="22" margin-bottom="-2"/>
+          <text type="play_time_and_volume" alignment="center" style="scroll" font_size="8" margin-right="4">
             <progressBar margin-bottom="0" height="2"/>
           </text>
           <button key="showPlaylist" width="20" margin-right="3"/>
