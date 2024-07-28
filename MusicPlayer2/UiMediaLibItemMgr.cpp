@@ -38,6 +38,7 @@ void CUiMediaLibItemMgr::GetClassifiedMeidaLibItemList(CMediaClassifier::Classif
 void CUiMediaLibItemMgr::Init()
 {
     m_loading = true;
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
 
     GetClassifiedMeidaLibItemList(CMediaClassifier::CT_ARTIST);
     GetClassifiedMeidaLibItemList(CMediaClassifier::CT_ALBUM);
@@ -178,6 +179,7 @@ const SongInfo& CUiMyFavouriteItemMgr::GetSongInfo(int index) const
 void CUiMyFavouriteItemMgr::UpdateMyFavourite()
 {
     m_loading = true;
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
 
     CPlaylistFile playlist_file;
     playlist_file.LoadFromFile(theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME);
@@ -246,7 +248,7 @@ int CUiAllTracksMgr::GetCurrentIndex() const
 
 void CUiAllTracksMgr::SetCurrentSong(const SongInfo& song)
 {
-    if (!m_loading)
+    if (!m_loading && m_inited && !song.IsEmpty())
     {
         int index{};
         for (const auto& item : m_all_tracks_list)
@@ -264,6 +266,7 @@ void CUiAllTracksMgr::SetCurrentSong(const SongInfo& song)
 void CUiAllTracksMgr::UpdateAllTracks()
 {
     m_loading = true;
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
 
     m_all_tracks_list.clear();
     CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map) {
@@ -278,6 +281,7 @@ void CUiAllTracksMgr::UpdateAllTracks()
     });
 
     m_loading = false;
+    m_inited = true;
 }
 
 void CUiAllTracksMgr::GetSongList(std::vector<SongInfo>& song_list) const

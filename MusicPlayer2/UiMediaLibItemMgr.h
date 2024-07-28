@@ -34,6 +34,7 @@ private:
     bool m_loading{};
     std::map<CMediaClassifier::ClassificationType, int> m_current_index_map;    //保存媒体库模式下每种模式正在播放的曲目
     std::map<CMediaClassifier::ClassificationType, std::wstring> m_current_name_map;    //保存媒体库模式下每种模式正在播放的曲目
+    mutable std::shared_mutex m_shared_mutex;
 };
 
 
@@ -55,6 +56,7 @@ private:
 
     vector<SongInfo> m_may_favourite_song_list;     //“我喜欢的音乐”列表
     bool m_loading{};
+    mutable std::shared_mutex m_shared_mutex;
 
 };
 
@@ -89,4 +91,6 @@ private:
     std::vector<UTrackInfo> m_all_tracks_list;  //所有曲目信息列表
     bool m_loading{};
     int m_current_index{ -1 };              //正在播放的曲目在m_all_tracks_list中的序号
+    bool m_inited{};
+    mutable std::shared_mutex m_shared_mutex;
 };

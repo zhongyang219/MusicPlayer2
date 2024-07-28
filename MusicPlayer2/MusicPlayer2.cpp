@@ -640,8 +640,12 @@ void CMusicPlayerApp::StartUpdateMediaLib(bool force)
                 }
                 CMusicPlayerCmdHelper::UpdateMediaLib();
                 theApp.m_media_lib_updating = false;
-                CUiMediaLibItemMgr::Instance().Init();
-                CUiAllTracksMgr::Instance().UpdateAllTracks();
+                if (theApp.m_media_update_para.num_added > 0)
+                {
+                    //如果媒体库更新完成后有新增的音频文件，则更新UI中所有曲目和媒体库项目列表
+                    CUiAllTracksMgr::Instance().UpdateAllTracks();
+                    CUiMediaLibItemMgr::Instance().Init();
+                }
                 return 0;
             }, nullptr);
     }
@@ -836,7 +840,7 @@ void CMusicPlayerApp::UpdateMeidaLibItems()
 UINT CMusicPlayerApp::UpdateMediaLibItemsProc(LPVOID lpParam)
 {
     CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
-    CUiMediaLibItemMgr::Instance().Init();
     CUiAllTracksMgr::Instance().UpdateAllTracks();
+    CUiMediaLibItemMgr::Instance().Init();
     return 0;
 }
