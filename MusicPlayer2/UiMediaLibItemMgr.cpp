@@ -4,6 +4,7 @@
 #include "MediaLibPlaylistMgr.h"
 #include "Playlist.h"
 #include "SongDataManager.h"
+#include "SongInfoHelper.h"
 
 CUiMediaLibItemMgr CUiMediaLibItemMgr::m_instance;
 
@@ -192,5 +193,102 @@ void CUiMyFavouriteItemMgr::GetSongList(std::vector<SongInfo>& song_list) const
 }
 
 CUiMyFavouriteItemMgr::CUiMyFavouriteItemMgr()
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CUiAllTracksMgr CUiAllTracksMgr::m_instance;
+
+CUiAllTracksMgr::~CUiAllTracksMgr()
+{
+}
+
+CUiAllTracksMgr& CUiAllTracksMgr::Instance()
+{
+    return m_instance;
+}
+
+int CUiAllTracksMgr::GetSongCount() const
+{
+    if (!m_loading)
+        return static_cast<int>(m_all_tracks_list.size());
+    else
+        return 0;
+}
+
+SongInfo CUiAllTracksMgr::GetSongInfo(int index) const
+{
+    if (!m_loading)
+    {
+        if (index >= 0 && index < GetSongCount())
+            return CSongDataManager::GetInstance().GetSongInfo(m_all_tracks_list[index].song_key);
+    }
+    static SongInfo empty_song;
+    return empty_song;
+}
+
+const CUiAllTracksMgr::UTrackInfo& CUiAllTracksMgr::GetItem(int index) const
+{
+    if (!m_loading)
+    {
+        if (index >= 0 && index < GetSongCount())
+            return m_all_tracks_list[index];
+    }
+    static UTrackInfo empty_item;
+    return empty_item;
+}
+
+int CUiAllTracksMgr::GetCurrentIndex() const
+{
+    return m_current_index;
+}
+
+void CUiAllTracksMgr::SetCurrentSong(const SongInfo& song)
+{
+    if (!m_loading)
+    {
+        int index{};
+        for (const auto& item : m_all_tracks_list)
+        {
+            if (std::equal_to<SongKey>()(SongKey(song), item.song_key))
+            {
+                m_current_index = index;
+                break;
+            }
+            index++;
+        }
+    }
+}
+
+void CUiAllTracksMgr::UpdateAllTracks()
+{
+    m_loading = true;
+
+    m_all_tracks_list.clear();
+    CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map) {
+        for (const auto& song_info : song_data_map)
+        {
+            UTrackInfo item;
+            item.song_key = song_info.first;
+            item.name = CSongInfoHelper::GetDisplayStr(song_info.second, theApp.m_media_lib_setting_data.display_format);
+            item.length = song_info.second.length();
+            m_all_tracks_list.push_back(item);
+        }
+    });
+
+    m_loading = false;
+}
+
+void CUiAllTracksMgr::GetSongList(std::vector<SongInfo>& song_list) const
+{
+    for (const auto& item : m_all_tracks_list)
+    {
+        SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item.song_key) };
+        song_list.push_back(song);
+    }
+}
+
+CUiAllTracksMgr::CUiAllTracksMgr()
 {
 }

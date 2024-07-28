@@ -2008,13 +2008,126 @@ void UiElement::MyFavouriteList::OnDoubleClicked()
 {
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
-        CPlayer::GetInstance().SetPlaylist(theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME, item_selected, 0, true, true);
+        CMusicPlayerCmdHelper helper;
+        helper.OnPlayMyFavourite(item_selected);
     }
 }
 
 std::wstring UiElement::MyFavouriteList::GetEmptyString()
 {
     if (CUiMyFavouriteItemMgr::Instance().IsLoading())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
+    return std::wstring();
+}
+
+std::wstring UiElement::AllTracksList::GetItemText(int row, int col)
+{
+    if (row >= 0 && row < GetRowCount())
+    {
+        //序号
+        if (col == COL_INDEX)
+        {
+            return std::to_wstring(row + 1);
+        }
+        //曲目
+        if (col == COL_TRACK)
+        {
+            if (row >= 0 && row < CUiAllTracksMgr::Instance().GetSongCount())
+            {
+                return CUiAllTracksMgr::Instance().GetItem(row).name;
+            }
+        }
+        //时间
+        else if (col == COL_TIME)
+        {
+            if (row >= 0 && row < CUiAllTracksMgr::Instance().GetSongCount())
+            {
+                return CUiAllTracksMgr::Instance().GetItem(row).length.toString();
+            }
+        }
+    }
+    return std::wstring();
+}
+
+int UiElement::AllTracksList::GetRowCount()
+{
+    return CUiAllTracksMgr::Instance().GetSongCount();
+}
+
+int UiElement::AllTracksList::GetColumnCount()
+{
+    return COL_MAX;
+}
+
+int UiElement::AllTracksList::GetColumnWidth(int col, int total_width)
+{
+    const int index_width{ ui->DPI(36) };
+    const int time_width{ ui->DPI(50) };
+    if (col == COL_INDEX)
+    {
+        return index_width;
+    }
+    else if (col == COL_TIME)
+    {
+        return time_width;
+    }
+    else if (col == COL_TRACK)
+    {
+        return total_width - index_width - time_width;
+    }
+    return 0;
+}
+
+int UiElement::AllTracksList::GetHighlightRow()
+{
+    if (CPlayer::GetInstance().IsMediaLibMode() && CPlayer::GetInstance().GetMediaLibPlaylistType() == CMediaClassifier::CT_NONE)
+    {
+        int highlight_row = CUiAllTracksMgr::Instance().GetCurrentIndex();
+        if (last_highlight_row != highlight_row)
+        {
+            EnsureItemVisible(highlight_row);
+            last_highlight_row = highlight_row;
+        }
+        return highlight_row;
+    }
+    return -1;
+}
+
+int UiElement::AllTracksList::GetColumnScrollTextWhenSelected()
+{
+    return COL_TRACK;
+}
+
+CMenu* UiElement::AllTracksList::GetContextMenu(bool item_selected)
+{
+    if (item_selected)
+    {
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu);
+    }
+    return nullptr;
+}
+
+CWnd* UiElement::AllTracksList::GetCmdRecivedWnd()
+{
+    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+    if (pDlg != nullptr)
+        return &pDlg->GetUIWindow();
+    return nullptr;
+}
+
+void UiElement::AllTracksList::OnDoubleClicked()
+{
+    if (item_selected >= 0 && item_selected < GetRowCount())
+    {
+        const SongInfo& song{ CUiAllTracksMgr::Instance().GetSongInfo(item_selected) };
+        CMusicPlayerCmdHelper helper;
+        helper.OnPlayAllTrack(song);
+    }
+}
+
+std::wstring UiElement::AllTracksList::GetEmptyString()
+{
+    if (CUiAllTracksMgr::Instance().IsLoading())
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
     return std::wstring();
 }
@@ -2085,6 +2198,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::MediaLibPlaylist>();
     else if (name == "myFavouriteList")
         element = std::make_shared<UiElement::MyFavouriteList>();
+    else if (name == "allTracksList")
+        element = std::make_shared<UiElement::AllTracksList>();
     else if (name == "miniSpectrum")
         element = std::make_shared<UiElement::MiniSpectrum>();
     else if (name == "ui" || name == "root" || name == "placeHolder" || name == "element")

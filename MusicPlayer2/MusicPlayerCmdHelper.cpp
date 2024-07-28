@@ -1063,6 +1063,16 @@ bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const std::vector<SongInfo>& so
     return false;
 }
 
+void CMusicPlayerCmdHelper::OnPlayMyFavourite(int index)
+{
+    bool ok = CPlayer::GetInstance().SetPlaylist(theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME, index, 0, true, true);
+    if (!ok)
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
+}
+
 void CMusicPlayerCmdHelper::OnPlayMyFavourite()
 {
     //已经在播放“我喜欢的音乐”
@@ -1076,6 +1086,16 @@ void CMusicPlayerCmdHelper::OnPlayMyFavourite()
     else
     {
         OnPlaylistSelected(CPlaylistMgr::Instance().GetFavouritePlaylist(), true);
+    }
+}
+
+void CMusicPlayerCmdHelper::OnPlayAllTrack(const SongInfo& song)
+{
+    bool ok = CPlayer::GetInstance().SetMediaLibPlaylist(CMediaClassifier::CT_NONE, std::wstring(), -1, song, true, true);
+    if (!ok)
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
     }
 }
 

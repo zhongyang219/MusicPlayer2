@@ -10,12 +10,12 @@ public:
 
     void Init();
 
-    int GetItemCount(CMediaClassifier::ClassificationType type) const;
-    std::wstring GetItemDisplayName(CMediaClassifier::ClassificationType type, int index) const;
-    const std::wstring& GetItemName(CMediaClassifier::ClassificationType type, int index) const;
-    int GetItemSongCount(CMediaClassifier::ClassificationType type, int index) const;
-    void SetCurrentName(CMediaClassifier::ClassificationType type, const std::wstring& name);
-    int GetCurrentIndex(CMediaClassifier::ClassificationType type);
+    int GetItemCount(CMediaClassifier::ClassificationType type) const;                              //获取指定类别下项目的数量
+    std::wstring GetItemDisplayName(CMediaClassifier::ClassificationType type, int index) const;    //获取指定类别下项目显示到界面中的名称
+    const std::wstring& GetItemName(CMediaClassifier::ClassificationType type, int index) const;    //获取指定项的原始名称，如果是<未知xxx>返回的是空
+    int GetItemSongCount(CMediaClassifier::ClassificationType type, int index) const;               //获取指定类别下项目的曲目数量
+    void SetCurrentName(CMediaClassifier::ClassificationType type, const std::wstring& name);       //设置指定类别下正在播放项目的名称，其中name为原始名称
+    int GetCurrentIndex(CMediaClassifier::ClassificationType type);                                 //获取指定类别下正在播放项目的序号
 
 private:
     CUiMediaLibItemMgr();
@@ -58,3 +58,35 @@ private:
 
 };
 
+
+class CUiAllTracksMgr
+{
+public:
+    ~CUiAllTracksMgr();
+    static CUiAllTracksMgr& Instance();
+
+    //用于在UI中显示的曲目信息
+    struct UTrackInfo
+    {
+        SongKey song_key;
+        std::wstring name;
+        Time length;
+    };
+
+    int GetSongCount() const;
+    SongInfo GetSongInfo(int index) const;
+    const UTrackInfo& GetItem(int index) const;
+    int GetCurrentIndex() const;                //获取正在播放的曲目在m_all_tracks_list中的序号
+    void SetCurrentSong(const SongInfo& song);  //设置正在播放的曲目，将其在m_all_tracks_list中的序号保存起来
+    void UpdateAllTracks();                     //从CSongDataManager中更新所有曲目信息
+    bool IsLoading() const { return m_loading; }
+    void GetSongList(std::vector<SongInfo>& song_list) const;
+
+private:
+    CUiAllTracksMgr();
+    static CUiAllTracksMgr m_instance;
+
+    std::vector<UTrackInfo> m_all_tracks_list;  //所有曲目信息列表
+    bool m_loading{};
+    int m_current_index{ -1 };              //正在播放的曲目在m_all_tracks_list中的序号
+};

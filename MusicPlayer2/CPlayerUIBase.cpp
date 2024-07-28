@@ -2962,6 +2962,11 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
             if (draw_icon) icon = IconMgr::IT_Favorite_On;
             if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_MY_FAVOURITE");
         }
+        else if (item_str == "all_tracks")
+        {
+            if (draw_icon) icon = IconMgr::IT_Media_Lib;
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS");
+        }
         else
         {
             continue;

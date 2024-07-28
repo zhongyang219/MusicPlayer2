@@ -32,6 +32,7 @@ namespace UiElement
     class RecentPlayedList;
     class NavigationBar;
     class MyFavouriteList;
+    class AllTracksList;
     class MiniSpectrum;
 }
 
@@ -84,6 +85,7 @@ public:
     friend class UiElement::RecentPlayedList;
     friend class UiElement::NavigationBar;
     friend class UiElement::MyFavouriteList;
+    friend class UiElement::AllTracksList;
     friend class UiElement::MiniSpectrum;
 
     friend class UiFontGuard;

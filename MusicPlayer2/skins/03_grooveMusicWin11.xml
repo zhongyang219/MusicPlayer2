@@ -62,11 +62,12 @@
           <!--媒体库-->
           <verticalLayout>
             <verticalLayout>
-              <navigationBar height="34" margin-top="12" margin-bottom="12" orientation="horizontal" item_space="6" icon_type="icon_and_text" item_list="artist,album,genre"/>
+              <navigationBar height="34" margin-top="12" margin-bottom="12" orientation="horizontal" item_space="6" icon_type="icon_and_text" item_list="artist,album,genre,all_tracks"/>
               <stackElement>
                 <mediaLibItemList type="artist" item_height="30"/>
                 <mediaLibItemList type="album" item_height="30"/>
                 <mediaLibItemList type="genre" item_height="30"/>
+                <allTracksList item_height="30"/>
               </stackElement>
             </verticalLayout>
           </verticalLayout>
@@ -166,11 +167,12 @@
           <!--媒体库-->
           <verticalLayout>
             <verticalLayout>
-              <navigationBar height="34" margin-top="12" margin-bottom="12" orientation="horizontal" item_space="6" icon_type="icon_and_text" item_list="artist,album,genre"/>
+              <navigationBar height="34" margin-top="12" margin-bottom="12" orientation="horizontal" item_space="6" icon_type="icon_only" item_list="artist,album,genre,all_tracks"/>
               <stackElement>
                 <mediaLibItemList type="artist" item_height="30"/>
                 <mediaLibItemList type="album" item_height="30"/>
                 <mediaLibItemList type="genre" item_height="30"/>
+                <allTracksList item_height="30"/>
               </stackElement>
             </verticalLayout>
           </verticalLayout>

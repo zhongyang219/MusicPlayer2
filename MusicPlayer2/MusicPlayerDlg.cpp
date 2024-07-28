@@ -4119,6 +4119,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnAfterSetTrack(WPARAM wParam, LPARAM lParam)
 
     SwitchTrack();
     UpdatePlayPauseButton();
+    CUiAllTracksMgr::Instance().SetCurrentSong(CPlayer::GetInstance().GetCurrentSongInfo());
 
     return 0;
 }

@@ -32,6 +32,8 @@ public:
     // 用于修改媒体库的歌曲属性，修改后需使用CSongDataManager::AddItem保存
     SongInfo GetSongInfo3(const SongInfo& song) const;
 
+    SongInfo GetSongInfo(const SongKey& key) const;
+
     // 用于外部读取m_song_data，加读锁后以const m_song_data&为参数调用func
     // 请勿在func中试图修改媒体库以避免未定义行为
     void GetSongData(const std::function<void(const CSongDataManager::SongDataMap&)>& func) const;

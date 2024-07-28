@@ -161,6 +161,7 @@
                 <xs:element name="myFavouriteList" type="myFavouriteListType"></xs:element>
                 <xs:element name="navigationBar" type="navigationBarType"></xs:element>
                 <xs:element name="miniSpectrum" type="miniSpectrumType"></xs:element>
+                <xs:element name="allTracksList" type="allTracksListType"></xs:element>
 				<xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
 			</xs:choice>
         </xs:sequence>
@@ -907,11 +908,11 @@
       <xs:group ref="elements"></xs:group>
       <xs:attribute name="item_list">
         <xs:annotation>
-          <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating,media_lib,my_favourite”中选，多个标签使用半角逗号隔开。</xs:documentation>
+          <xs:documentation>标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating,media_lib,my_favourite,all_tracks”中选，多个标签使用半角逗号隔开。</xs:documentation>
         </xs:annotation>
         <xs:simpleType>
           <xs:restriction base = "xs:string">
-            <xs:pattern value = "^(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating|media_lib|my_favourite)(,(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating|media_lib|my_favourite))*$"/>
+            <xs:pattern value = "^(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating|media_lib|my_favourite|all_tracks)(,(album_cover|spectrum|lyrics|now_playing|play_queue|recently_played|folder|playlist|artist|album|genre|year|file_type|bitrate|rating|media_lib|my_favourite|all_tracks))*$"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
@@ -994,6 +995,14 @@
   <xs:complexType name="myFavouriteListType">
     <xs:annotation>
       <xs:documentation>我喜欢的音乐列表。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    <xs:attributeGroup ref="listattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="allTracksListType">
+    <xs:annotation>
+      <xs:documentation>所有曲目列表。</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>

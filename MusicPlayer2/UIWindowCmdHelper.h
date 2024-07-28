@@ -14,13 +14,16 @@ private:
     void OnRecentPlayedListCommand(UiElement::RecentPlayedList* medialib_item_list, DWORD command);
     void OnMediaLibFolderCommand(UiElement::MediaLibFolder* medialib_folder, DWORD command);
     void OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command);
+    bool OnSongListCommand(const SongInfo& song, DWORD command);
     void OnMyFavouriteListCommand(UiElement::MyFavouriteList* my_favourite_list, DWORD command);
+    void OnAllTracksListCommand(UiElement::AllTracksList* all_tracks_list, DWORD command);
 
     void SetRecentPlayedListMenuState(CMenu* pMenu);
     void SetMediaLibItemListMenuState(CMenu* pMenu);
     void SetMediaLibFolderMenuState(CMenu* pMenu);
     void SetMediaLibPlaylistMenuState(CMenu* pMenu);
     void SetMyFavouriteListMenuState(CMenu* pMenu);
+    void SetAllTracksListMenuState(CMenu* pMenu);
 
 private:
     IPlayerUI* m_pUI;

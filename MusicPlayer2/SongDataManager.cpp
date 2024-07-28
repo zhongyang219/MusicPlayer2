@@ -372,6 +372,17 @@ SongInfo CSongDataManager::GetSongInfo3(const SongInfo& song) const
     return tmp;
 }
 
+SongInfo CSongDataManager::GetSongInfo(const SongKey& key) const
+{
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
+    ASSERT(!key.path.empty());
+    SongInfo tmp;
+    auto iter = m_song_data.find(key);
+    if (iter != m_song_data.end())
+        tmp = iter->second;
+    return tmp;
+}
+
 void CSongDataManager::GetSongData(const std::function<void(const CSongDataManager::SongDataMap&)>& func) const
 {
     std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);

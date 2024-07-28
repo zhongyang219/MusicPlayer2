@@ -641,6 +641,7 @@ void CMusicPlayerApp::StartUpdateMediaLib(bool force)
                 CMusicPlayerCmdHelper::UpdateMediaLib();
                 theApp.m_media_lib_updating = false;
                 CUiMediaLibItemMgr::Instance().Init();
+                CUiAllTracksMgr::Instance().UpdateAllTracks();
                 return 0;
             }, nullptr);
     }
@@ -836,5 +837,6 @@ UINT CMusicPlayerApp::UpdateMediaLibItemsProc(LPVOID lpParam)
 {
     CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
     CUiMediaLibItemMgr::Instance().Init();
+    CUiAllTracksMgr::Instance().UpdateAllTracks();
     return 0;
 }
