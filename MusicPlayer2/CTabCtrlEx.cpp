@@ -58,6 +58,15 @@ void CTabCtrlEx::SetCurTab(int index)
     CTabDlg* pTabWnd = dynamic_cast<CTabDlg*>(m_tab_list[index]);
     if (pTabWnd != nullptr)
         pTabWnd->OnTabEntered();
+
+    if (m_last_tab_index != index && m_last_tab_index >= 0 && m_last_tab_index < static_cast<int>(m_tab_list.size()))
+    {
+        CTabDlg* pLastTabWnd = dynamic_cast<CTabDlg*>(m_tab_list[m_last_tab_index]);
+        if (pLastTabWnd != nullptr)
+            pLastTabWnd->OnTabExited();
+    }
+
+    m_last_tab_index = index;
 }
 
 CWnd* CTabCtrlEx::GetCurrentTab()

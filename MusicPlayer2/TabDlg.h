@@ -11,6 +11,8 @@ public:
 
     // 当标签切换到当前窗口时被调用
     virtual void OnTabEntered() {}
+    // 当标签切换到当前窗口以外的窗口时被调用
+    virtual void OnTabExited() {}
     // 需要从界面获取数据时被调用
     virtual void GetDataFromUi() {}
     // 需要从数据更新界面时被调用

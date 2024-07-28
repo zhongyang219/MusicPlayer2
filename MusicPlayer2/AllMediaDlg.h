@@ -70,8 +70,10 @@ protected:
     void QuickSearch(const wstring& key_word);      //根据关键字执行快速查找，将结果保存在m_list_data_searched中
     void SongListClicked(int index);
     void SetButtonsEnable(bool enable);
+    void SetPlayButtonText(bool selected_valid);    //设置父窗口中“播放”按钮的文本
 
     virtual void OnTabEntered() override;
+    virtual void OnTabExited() override;
 
     virtual const vector<SongInfo>& GetSongList() const override;
     virtual int GetItemSelected() const override;

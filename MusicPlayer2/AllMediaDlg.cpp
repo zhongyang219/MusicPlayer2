@@ -47,13 +47,32 @@ void CAllMediaDlg::RefreshSongList()
 
 void CAllMediaDlg::OnTabEntered()
 {
-    SetButtonsEnable(m_song_list_ctrl.GetCurSel() >= 0);
+    if (m_type == DT_ALL_MEDIA)
+    {
+        SetButtonsEnable(true);
+        SetPlayButtonText(m_song_list_ctrl.GetCurSel() >= 0);
+    }
+    else
+    {
+        SetButtonsEnable(m_song_list_ctrl.GetCurSel() >= 0);
+    }
     if (!m_initialized)
     {
         CWaitCursor wait_cursor;
         InitListData();
         ShowSongList();
         m_initialized = true;
+    }
+}
+
+void CAllMediaDlg::OnTabExited()
+{
+    //切换到其他标签时将按钮恢复为“播放选中”
+    if (m_type == DT_ALL_MEDIA)
+    {
+        CWnd* pParent = GetParentWindow();
+        if (pParent != nullptr)
+            pParent->SetDlgItemTextW(IDC_PLAY_SELECTED, theApp.m_str_table.LoadText(L"TXT_LIB_PLAY_SEL").c_str());
     }
 }
 
@@ -197,13 +216,32 @@ void CAllMediaDlg::SongListClicked(int index)
 {
     m_selected_item = index;
     m_song_list_ctrl.GetItemSelected(m_selected_items);
-    SetButtonsEnable(/*(index >=0 && index < m_song_list_ctrl.GetItemCount()) ||*/ !m_selected_items.empty());
+    bool select_valid = !m_selected_items.empty();
+    if (m_type == DT_ALL_MEDIA)
+        SetPlayButtonText(select_valid);
+    else
+        SetButtonsEnable(select_valid);
 }
 
 void CAllMediaDlg::SetButtonsEnable(bool enable)
 {
     CWnd* pParent = GetParentWindow();
     ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
+}
+
+void CAllMediaDlg::SetPlayButtonText(bool selected_valid)
+{
+    CWnd* pParent = GetParentWindow();
+    if (pParent != nullptr)
+    {
+        //选中了曲目时按钮文本为“播放选中”，否则为“播放”
+        std::wstring text;
+        if (selected_valid)
+            text = theApp.m_str_table.LoadText(L"TXT_LIB_PLAY_SEL");
+        else
+            text = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+        pParent->SetDlgItemTextW(IDC_PLAY_SELECTED, text.c_str());
+    }
 }
 
 const vector<SongInfo>& CAllMediaDlg::GetSongList() const
@@ -278,13 +316,16 @@ void CAllMediaDlg::OnOK()
 
     vector<SongInfo> songs;
     GetSongsSelected(songs);
-    if (!songs.empty())
+    if (!songs.empty() || m_type == DT_ALL_MEDIA)
     {
         bool ok{};
         //所有曲目使用媒体库模式播放
         if (m_type == DT_ALL_MEDIA)
         {
-            ok = CPlayer::GetInstance().SetMediaLibPlaylist(CMediaClassifier::CT_NONE, std::wstring(), -1, songs.front(), true, true);
+            if (songs.empty())
+                ok = CPlayer::GetInstance().SetMediaLibPlaylist(CMediaClassifier::CT_NONE, std::wstring());
+            else
+                ok = CPlayer::GetInstance().SetMediaLibPlaylist(CMediaClassifier::CT_NONE, std::wstring(), -1, songs.front(), true, true);
         }
         else
         {
