@@ -203,8 +203,6 @@ BOOL CMediaLibDlg::OnInitDialog()
     //如果要显示的标签序号无效，则保持上次的标签
     m_tab_ctrl.SetCurTab(m_init_tab >= 0 ? m_init_tab : m_last_tab);
 
-    OnPlaySelectedBtnEnable(0, 0);
-
     m_path_dlg->AdjustColumnWidth();
     m_playlist_dlg->AdjustColumnWidth();
 

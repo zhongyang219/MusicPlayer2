@@ -48,6 +48,13 @@ void CMediaLibTabDlg::GetSongsSelected(std::vector<SongInfo>& song_list) const
     }
 }
 
+void CMediaLibTabDlg::OnTabEntered()
+{
+    //默认将“播放选中”禁用
+    CWnd* pParent = GetParentWindow();
+    ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, 0, 0);
+}
+
 bool CMediaLibTabDlg::_OnAddToNewPlaylist(std::wstring& playlist_path)
 {
     auto getSongList = [&](std::vector<SongInfo>& song_list)

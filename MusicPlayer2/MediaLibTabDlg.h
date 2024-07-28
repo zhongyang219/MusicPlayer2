@@ -33,6 +33,8 @@ protected:
 
     virtual CMediaClassifier::ClassificationType GetClassificationType() const { return CMediaClassifier::CT_NONE; }
     virtual std::wstring GetClassificationItemName() const { return std::wstring(); }
+    
+    virtual void OnTabEntered() override;
 
     DECLARE_MESSAGE_MAP()
 
