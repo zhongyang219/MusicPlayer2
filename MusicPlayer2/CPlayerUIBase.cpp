@@ -1219,7 +1219,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
         rc_tmp.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
 
     //rc_tmp.DeflateRect(DPI(2), DPI(2));
-    m_draw.SetDrawArea(rc_tmp);
+    //m_draw.SetDrawArea(rc_tmp);
 
     //绘制的是否为关闭按钮（关闭按钮需要特别处理）
     bool is_close_btn = (&btn == &m_buttons[BTN_CLOSE] || &btn == &m_buttons[BTN_APP_CLOSE]);
@@ -1248,7 +1248,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
                 back_color = m_colors.color_button_hover;
         }
         if (!theApp.m_app_setting_data.button_round_corners)
-            m_draw.FillAlphaRect(rc_tmp, back_color, alpha);
+            m_draw.FillAlphaRect(rc_tmp, back_color, alpha, true);
         else
             m_draw.DrawRoundRect(rc_tmp, back_color, CalculateRoundRectRadius(rc_tmp), alpha);
     }
