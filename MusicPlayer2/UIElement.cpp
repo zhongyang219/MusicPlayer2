@@ -1207,6 +1207,13 @@ bool UiElement::ListElement::DoubleClick(CPoint point)
     return false;
 }
 
+void UiElement::ListElement::ClearRect()
+{
+    Element::ClearRect();
+    for (auto& btn : hover_buttons)
+        btn.second.rect = CRect();
+}
+
 void UiElement::ListElement::EnsureItemVisible(int index)
 {
     if (index <= 0)
@@ -1295,8 +1302,7 @@ CWnd* UiElement::ListElement::GetCmdRecivedWnd()
 
 IPlayerUI::UIButton& UiElement::ListElement::GetHoverButtonState(int btn_index)
 {
-    static IPlayerUI::UIButton empty_btn;
-    return empty_btn;
+    return hover_buttons[btn_index];
 }
 
 int UiElement::ListElement::GetListIndexByPoint(CPoint point)
@@ -1457,7 +1463,7 @@ IconMgr::IconType UiElement::Playlist::GetHoverButtonIcon(int index, int row)
             return IconMgr::IT_Favorite_On;
     }
     }
-    return IconMgr::IconType();
+    return IconMgr::IT_NO_ICON;
 }
 
 std::wstring UiElement::Playlist::GetHoverButtonTooltip(int index, int row)
@@ -1494,12 +1500,6 @@ void UiElement::Playlist::OnHoverButtonClicked(int btn_index, int row)
     {
         helper.OnAddRemoveFromFavourite(row);
     }
-    int a = 0;
-}
-
-IPlayerUI::UIButton& UiElement::Playlist::GetHoverButtonState(int btn_index)
-{
-    return hover_buttons[static_cast<BtnKey>(btn_index)];
 }
 
 int UiElement::Playlist::GetRowCount()
@@ -1598,6 +1598,44 @@ CWnd* UiElement::RecentPlayedList::GetCmdRecivedWnd()
     return nullptr;
 }
 
+int UiElement::RecentPlayedList::GetHoverButtonCount()
+{
+    return 1;
+}
+
+int UiElement::RecentPlayedList::GetHoverButtonColumn()
+{
+    return COL_NAME;
+}
+
+IconMgr::IconType UiElement::RecentPlayedList::GetHoverButtonIcon(int index, int row)
+{
+    if (index == 0)
+        return IconMgr::IT_Play;
+    return IconMgr::IT_NO_ICON;
+}
+
+std::wstring UiElement::RecentPlayedList::GetHoverButtonTooltip(int index, int row)
+{
+    if (index == 0)
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    return std::wstring();
+}
+
+void UiElement::RecentPlayedList::OnHoverButtonClicked(int btn_index, int row)
+{
+    CMusicPlayerCmdHelper helper;
+    //点击了“播放”按钮
+    if (btn_index == 0)
+    {
+        if (row >= 0 && row < GetRowCount())
+        {
+            CMusicPlayerCmdHelper helper;
+            helper.OnRecentItemSelected(row, true);
+        }
+    }
+}
+
 std::wstring UiElement::MediaLibItemList::GetItemText(int row, int col)
 {
     if (col == COL_NAME)
@@ -1684,6 +1722,57 @@ void UiElement::MediaLibItemList::OnDoubleClicked()
         std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
         CMusicPlayerCmdHelper helper;
         helper.OnMediaLibItemSelected(type, item_name, true);
+    }
+}
+
+int UiElement::MediaLibItemList::GetHoverButtonCount()
+{
+    return BTN_MAX;
+}
+
+int UiElement::MediaLibItemList::GetHoverButtonColumn()
+{
+    return COL_NAME;
+}
+
+IconMgr::IconType UiElement::MediaLibItemList::GetHoverButtonIcon(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return IconMgr::IT_Play;
+    case BTN_ADD: return IconMgr::IT_Add;
+    }
+    return IconMgr::IT_NO_ICON;
+}
+
+std::wstring UiElement::MediaLibItemList::GetHoverButtonTooltip(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    }
+    return std::wstring();
+}
+
+void UiElement::MediaLibItemList::OnHoverButtonClicked(int btn_index, int row)
+{
+    CMusicPlayerCmdHelper helper;
+    //点击了“播放”按钮
+    if (btn_index == BTN_PLAY)
+    {
+        if (item_selected >= 0 && item_selected < GetRowCount())
+        {
+            std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
+            CMusicPlayerCmdHelper helper;
+            helper.OnMediaLibItemSelected(type, item_name, true);
+        }
+    }
+    //点击了“添加到播放列表”按钮
+    else if (btn_index == BTN_ADD)
+    {
+        CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
+        ShowContextMenu(menu, GetCmdRecivedWnd());
     }
 }
 
@@ -1956,6 +2045,45 @@ void UiElement::MediaLibFolder::OnDoubleClicked()
     }
 }
 
+int UiElement::MediaLibFolder::GetHoverButtonCount()
+{
+    return 1;
+}
+
+int UiElement::MediaLibFolder::GetHoverButtonColumn()
+{
+    return COL_NAME;
+}
+
+IconMgr::IconType UiElement::MediaLibFolder::GetHoverButtonIcon(int index, int row)
+{
+    if (index == 0)
+        return IconMgr::IT_Play;
+    return IconMgr::IT_NO_ICON;
+}
+
+std::wstring UiElement::MediaLibFolder::GetHoverButtonTooltip(int index, int row)
+{
+    if (index == 0)
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    return std::wstring();
+}
+
+void UiElement::MediaLibFolder::OnHoverButtonClicked(int btn_index, int row)
+{
+    CMusicPlayerCmdHelper helper;
+    //点击了“播放”按钮
+    if (btn_index == 0)
+    {
+        if (row >= 0 && row < GetRowCount())
+        {
+            const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(row) };
+            CMusicPlayerCmdHelper helper;
+            helper.OnFolderSelected(path_info, true);
+        }
+    }
+}
+
 std::wstring UiElement::MediaLibPlaylist::GetItemText(int row, int col)
 {
     if (col == COL_NAME)
@@ -2036,6 +2164,51 @@ void UiElement::MediaLibPlaylist::OnDoubleClicked()
         {
             CMusicPlayerCmdHelper helper;
             helper.OnPlaylistSelected(info, true);
+        }
+    }
+}
+
+int UiElement::MediaLibPlaylist::GetHoverButtonCount()
+{
+    return 1;
+}
+
+int UiElement::MediaLibPlaylist::GetHoverButtonColumn()
+{
+    return COL_NAME;
+}
+
+IconMgr::IconType UiElement::MediaLibPlaylist::GetHoverButtonIcon(int index, int row)
+{
+    if (index == 0)
+        return IconMgr::IT_Play;
+    return IconMgr::IT_NO_ICON;
+}
+
+std::wstring UiElement::MediaLibPlaylist::GetHoverButtonTooltip(int index, int row)
+{
+    if (index == 0)
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    return std::wstring();
+}
+
+void UiElement::MediaLibPlaylist::OnHoverButtonClicked(int btn_index, int row)
+{
+    CMusicPlayerCmdHelper helper;
+    //点击了“播放”按钮
+    if (btn_index == 0)
+    {
+        if (row >= 0 && row < GetRowCount())
+        {
+            PlaylistInfo info;
+            CPlaylistMgr::Instance().GetPlaylistInfo(row, [&](const PlaylistInfo& playlist_info) {
+                info = playlist_info;
+                });
+            if (!info.path.empty())
+            {
+                CMusicPlayerCmdHelper helper;
+                helper.OnPlaylistSelected(info, true);
+            }
         }
     }
 }
@@ -2145,6 +2318,56 @@ std::wstring UiElement::MyFavouriteList::GetEmptyString()
     return std::wstring();
 }
 
+int UiElement::MyFavouriteList::GetHoverButtonCount()
+{
+    return BTN_MAX;
+}
+
+int UiElement::MyFavouriteList::GetHoverButtonColumn()
+{
+    return COL_TRACK;
+}
+
+IconMgr::IconType UiElement::MyFavouriteList::GetHoverButtonIcon(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return IconMgr::IT_Play;
+    case BTN_ADD: return IconMgr::IT_Add;
+    }
+    return IconMgr::IT_NO_ICON;
+}
+
+std::wstring UiElement::MyFavouriteList::GetHoverButtonTooltip(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    }
+    return std::wstring();
+}
+
+void UiElement::MyFavouriteList::OnHoverButtonClicked(int btn_index, int row)
+{
+    CMusicPlayerCmdHelper helper;
+    //点击了“播放”按钮
+    if (btn_index == BTN_PLAY)
+    {
+        if (item_selected >= 0 && item_selected < GetRowCount())
+        {
+            CMusicPlayerCmdHelper helper;
+            helper.OnPlayMyFavourite(item_selected);
+        }
+    }
+    //点击了“添加到播放列表”按钮
+    else if (btn_index == BTN_ADD)
+    {
+        CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
+        ShowContextMenu(menu, GetCmdRecivedWnd());
+    }
+}
+
 std::wstring UiElement::AllTracksList::GetItemText(int row, int col)
 {
     if (row >= 0 && row < GetRowCount())
@@ -2251,6 +2474,69 @@ std::wstring UiElement::AllTracksList::GetEmptyString()
     if (CUiAllTracksMgr::Instance().IsLoading())
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
     return std::wstring();
+}
+
+int UiElement::AllTracksList::GetHoverButtonCount()
+{
+    return BTN_MAX;
+}
+
+int UiElement::AllTracksList::GetHoverButtonColumn()
+{
+    return COL_TRACK;
+}
+
+IconMgr::IconType UiElement::AllTracksList::GetHoverButtonIcon(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return IconMgr::IT_Play;
+    case BTN_ADD: return IconMgr::IT_Add;
+    case BTN_FAVOURITE:
+    {
+        if (CUiAllTracksMgr::Instance().GetItem(row).is_favourite)
+            return IconMgr::IT_Favorite_Off;
+        else
+            return IconMgr::IT_Favorite_On;
+    }
+    }
+    return IconMgr::IT_NO_ICON;
+}
+
+std::wstring UiElement::AllTracksList::GetHoverButtonTooltip(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    case BTN_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
+    }
+    return std::wstring();
+}
+
+void UiElement::AllTracksList::OnHoverButtonClicked(int btn_index, int row)
+{
+    CMusicPlayerCmdHelper helper;
+    //点击了“播放”按钮
+    if (btn_index == BTN_PLAY)
+    {
+        const SongInfo& song{ CUiAllTracksMgr::Instance().GetSongInfo(row) };
+        CMusicPlayerCmdHelper helper;
+        helper.OnPlayAllTrack(song);
+    }
+    //点击了“添加到播放列表”按钮
+    else if (btn_index == BTN_ADD)
+    {
+        CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
+        ShowContextMenu(menu, GetCmdRecivedWnd());
+    }
+    //点击了“添加到我喜欢的音乐”按钮
+    else if (btn_index == BTN_FAVOURITE)
+    {
+        const SongInfo& song{ CUiAllTracksMgr::Instance().GetSongInfo(row) };
+        helper.OnAddRemoveFromFavourite(song);
+        CUiAllTracksMgr::Instance().AddOrRemoveMyFavourite(row);        //更新UI中的显示
+    }
 }
 
 void UiElement::MiniSpectrum::Draw()

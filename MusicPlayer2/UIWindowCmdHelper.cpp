@@ -661,11 +661,39 @@ void CUIWindowCmdHelper::SetAllTracksListMenuState(CMenu* pMenu)
 
 void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
 {
+    //判断菜单的发送者
+    UiElement::Playlist* playlist{};
+    UiElement::MyFavouriteList* my_favourite_list{};
+    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
+    if (pUi != nullptr)
+    {
+        playlist = dynamic_cast<UiElement::Playlist*>(pUi->m_context_menu_sender);
+        my_favourite_list = dynamic_cast<UiElement::MyFavouriteList*>(pUi->m_context_menu_sender);
+    }
+    //我喜欢的音乐菜单的名称
+    wstring str_my_favourite{ theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_MY_FAVOURITE")};
+    //正在播放的播放列表在菜单中的名称
     wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
-    for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
+    if (CPlayer::GetInstance().IsPlaylistMode())
+    {
+        switch (CPlaylistMgr::Instance().GetCurPlaylistType())
+        {
+        case PT_DEFAULT: current_playlist = theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_DEFAULT_PLAYLIST"); break;
+        case PT_FAVOURITE: current_playlist = str_my_favourite; break;
+        }
+    }
+    for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
     {
         CString menu_string;
         pMenu->GetMenuString(id, menu_string, 0);
-        pMenu->EnableMenuItem(id, MF_BYCOMMAND | (current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+        //发送者是播放列表，则将当前播放列表禁用
+        if (playlist != nullptr)
+            pMenu->EnableMenuItem(id, MF_BYCOMMAND | (current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+        //发送者是我喜欢的音乐列表，则将当前我喜欢的音乐禁用
+        else if (my_favourite_list != nullptr)
+            pMenu->EnableMenuItem(id, MF_BYCOMMAND | (str_my_favourite != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+        else
+            pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
+
     }
 }

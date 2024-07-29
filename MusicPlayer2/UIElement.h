@@ -276,6 +276,7 @@ namespace UiElement
         virtual void RButtonDown(CPoint point) override;
         virtual bool MouseWheel(int delta, CPoint point) override;
         virtual bool DoubleClick(CPoint point) override;
+        virtual void ClearRect() override;
 
         void EnsureItemVisible(int index);  //确保指定项在播放列表中可见
         void EnsureHighlightItemVisible();  //确保高亮行可见
@@ -306,7 +307,7 @@ namespace UiElement
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) { return IconMgr::IT_NO_ICON; } //获取鼠标指向一行时按钮的图标
         virtual std::wstring GetHoverButtonTooltip(int index, int row) { return std::wstring(); }     //获取鼠标指向一行时按钮的鼠标提示
         virtual void OnHoverButtonClicked(int btn_index, int row) {}    //响应鼠标指向时按钮点击
-        virtual IPlayerUI::UIButton& GetHoverButtonState(int btn_index);         //获取储存鼠标指向时按钮信息的结构体
+        IPlayerUI::UIButton& GetHoverButtonState(int btn_index);         //获取储存鼠标指向时按钮信息的结构体
 
         int item_height{ 28 };
         int font_size{ 9 };
@@ -330,6 +331,7 @@ namespace UiElement
         bool scrollbar_hover{};         //鼠标指向滚动条
         bool scrollbar_handle_pressed{};    //滚动条把手被按下
         int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
+        std::map<int, IPlayerUI::UIButton> hover_buttons;   //鼠标指向时的按钮
     };
 
 
@@ -373,11 +375,9 @@ namespace UiElement
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
         virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
-        virtual IPlayerUI::UIButton& GetHoverButtonState(int btn_index) override;
 
     private:
         int last_highlight_row{ -1 };
-        std::map<BtnKey, IPlayerUI::UIButton> hover_buttons;
     };
 
     //最近播放
@@ -402,6 +402,11 @@ namespace UiElement
         virtual void OnDoubleClicked() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual CWnd* GetCmdRecivedWnd() override;
+        virtual int GetHoverButtonCount() override;
+        virtual int GetHoverButtonColumn() override;
+        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
+        virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
+        virtual void OnHoverButtonClicked(int btn_index, int row) override;
     };
 
     //媒体库项目列表
@@ -417,6 +422,14 @@ namespace UiElement
             COL_MAX
         };
 
+        //鼠标指向一行时显示的按钮
+        enum BtnKey
+        {
+            BTN_PLAY,
+            BTN_ADD,
+            BTN_MAX
+        };
+
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
@@ -428,9 +441,14 @@ namespace UiElement
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
+        virtual int GetHoverButtonCount() override;
+        virtual int GetHoverButtonColumn() override;
+        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
+        virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
+        virtual void OnHoverButtonClicked(int btn_index, int row) override;
     private:
         int last_highlight_row{ -1 };
-    };
+ };
 
     //当前播放列表指示
     class PlaylistIndicator : public Element
@@ -501,7 +519,7 @@ namespace UiElement
         int last_hover_index{ -1 };
     };
 
-    //媒体库的文件
+    //媒体库的文件夹
     class MediaLibFolder : public ListElement
     {
     public:
@@ -522,6 +540,11 @@ namespace UiElement
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
+        virtual int GetHoverButtonCount() override;
+        virtual int GetHoverButtonColumn() override;
+        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
+        virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
+        virtual void OnHoverButtonClicked(int btn_index, int row) override;
     };
 
     //媒体库的播放列表
@@ -545,6 +568,11 @@ namespace UiElement
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
+        virtual int GetHoverButtonCount() override;
+        virtual int GetHoverButtonColumn() override;
+        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
+        virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
+        virtual void OnHoverButtonClicked(int btn_index, int row) override;
     };
 
     //我喜欢的音乐列表
@@ -559,6 +587,14 @@ namespace UiElement
             COL_MAX
         };
 
+        //鼠标指向一行时显示的按钮
+        enum BtnKey
+        {
+            BTN_PLAY,
+            BTN_ADD,
+            BTN_MAX
+        };
+
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
@@ -570,6 +606,11 @@ namespace UiElement
         virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
         virtual std::wstring GetEmptyString() override;
+        virtual int GetHoverButtonCount() override;
+        virtual int GetHoverButtonColumn() override;
+        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
+        virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
+        virtual void OnHoverButtonClicked(int btn_index, int row) override;
     };
 
     //所有曲目列表
@@ -584,6 +625,15 @@ namespace UiElement
             COL_MAX
         };
 
+        //鼠标指向一行时显示的按钮
+        enum BtnKey
+        {
+            BTN_PLAY,
+            BTN_ADD,
+            BTN_FAVOURITE,
+            BTN_MAX
+        };
+
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
@@ -595,6 +645,11 @@ namespace UiElement
         virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
         virtual std::wstring GetEmptyString() override;
+        virtual int GetHoverButtonCount() override;
+        virtual int GetHoverButtonColumn() override;
+        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
+        virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
+        virtual void OnHoverButtonClicked(int btn_index, int row) override;
     private:
         int last_highlight_row{ -1 };
     };

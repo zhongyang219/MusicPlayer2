@@ -113,6 +113,7 @@ public:
     void OnPlayTrack(int track);
 
     bool OnAddRemoveFromFavourite(int track);
+    bool OnAddRemoveFromFavourite(const SongInfo& song);
 
 protected:
     void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);

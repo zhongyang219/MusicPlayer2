@@ -49,6 +49,7 @@ public:
     void UpdateMyFavourite();
     bool IsLoading() const { return m_loading; }
     void GetSongList(std::vector<SongInfo>& song_list) const;
+    bool Contains(const SongInfo& song) const;
 
 private:
     CUiMyFavouriteItemMgr();
@@ -73,6 +74,7 @@ public:
         SongKey song_key;
         std::wstring name;
         Time length;
+        bool is_favourite{};
     };
 
     int GetSongCount() const;
@@ -83,6 +85,7 @@ public:
     void UpdateAllTracks();                     //从CSongDataManager中更新所有曲目信息
     bool IsLoading() const { return m_loading; }
     void GetSongList(std::vector<SongInfo>& song_list) const;
+    void AddOrRemoveMyFavourite(int index);     //仅更新UI中显示的“我喜欢”的状态，不更新到“我喜欢的音乐”播放列表中
 
 private:
     CUiAllTracksMgr();

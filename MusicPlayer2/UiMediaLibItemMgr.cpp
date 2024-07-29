@@ -194,6 +194,14 @@ void CUiMyFavouriteItemMgr::GetSongList(std::vector<SongInfo>& song_list) const
     std::copy(m_may_favourite_song_list.begin(), m_may_favourite_song_list.end(), std::back_inserter(song_list));
 }
 
+bool CUiMyFavouriteItemMgr::Contains(const SongInfo& song) const
+{
+    auto iter = std::find_if(m_may_favourite_song_list.begin(), m_may_favourite_song_list.end(), [&](const SongInfo& a) {
+        return a.IsSameSong(song);
+    });
+    return iter != m_may_favourite_song_list.end();
+}
+
 CUiMyFavouriteItemMgr::CUiMyFavouriteItemMgr()
 {
 }
@@ -276,6 +284,7 @@ void CUiAllTracksMgr::UpdateAllTracks()
             item.song_key = song_info.first;
             item.name = CSongInfoHelper::GetDisplayStr(song_info.second, theApp.m_media_lib_setting_data.display_format);
             item.length = song_info.second.length();
+            item.is_favourite = CUiMyFavouriteItemMgr::Instance().Contains(song_info.second);
             m_all_tracks_list.push_back(item);
         }
     });
@@ -290,6 +299,14 @@ void CUiAllTracksMgr::GetSongList(std::vector<SongInfo>& song_list) const
     {
         SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item.song_key) };
         song_list.push_back(song);
+    }
+}
+
+void CUiAllTracksMgr::AddOrRemoveMyFavourite(int index)
+{
+    if (!m_loading && m_inited && index >= 0 && index < GetSongCount())
+    {
+        m_all_tracks_list[index].is_favourite = !m_all_tracks_list[index].is_favourite;
     }
 }
 
