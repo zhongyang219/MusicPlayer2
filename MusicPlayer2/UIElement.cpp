@@ -1502,6 +1502,24 @@ void UiElement::Playlist::OnHoverButtonClicked(int btn_index, int row)
     }
 }
 
+int UiElement::Playlist::GetUnHoverIconCount(int row)
+{
+    //鼠标未指向的列，如果曲目在“我喜欢的音乐”中，则显示红心图标
+    if (CPlayer::GetInstance().IsFavourite(row))
+        return 1;
+    else
+        return 0;
+}
+
+IconMgr::IconType UiElement::Playlist::GetUnHoverIcon(int index, int row)
+{
+    if (index == 0)
+    {
+        return IconMgr::IT_Favorite_Off;
+    }
+    return IconMgr::IT_NO_ICON;
+}
+
 int UiElement::Playlist::GetRowCount()
 {
     return CPlayer::GetInstance().GetSongNum();
@@ -2537,6 +2555,24 @@ void UiElement::AllTracksList::OnHoverButtonClicked(int btn_index, int row)
         helper.OnAddRemoveFromFavourite(song);
         CUiAllTracksMgr::Instance().AddOrRemoveMyFavourite(row);        //更新UI中的显示
     }
+}
+
+int UiElement::AllTracksList::GetUnHoverIconCount(int row)
+{
+    //鼠标未指向的列，如果曲目在“我喜欢的音乐”中，则显示红心图标
+    if (CUiAllTracksMgr::Instance().GetItem(row).is_favourite)
+        return 1;
+    else
+        return 0;
+}
+
+IconMgr::IconType UiElement::AllTracksList::GetUnHoverIcon(int index, int row)
+{
+    if (index == 0)
+    {
+        return IconMgr::IT_Favorite_Off;
+    }
+    return IconMgr::IT_NO_ICON;
 }
 
 void UiElement::MiniSpectrum::Draw()

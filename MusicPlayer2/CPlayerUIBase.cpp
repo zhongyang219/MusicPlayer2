@@ -2617,6 +2617,27 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                             }
                         }
                     }
+                    //绘制鼠标未指向时的图标
+                    if (list_element->GetUnHoverIconCount(i) > 0 && list_element->GetHoverButtonColumn() == j && !rect_cell.PtInRect(list_element->mouse_pos))
+                    {
+                        const int btn_size{ DPI(24) };
+                        int icons_width = btn_size * list_element->GetUnHoverIconCount(i) + DPI(4);    //按钮区域的宽度
+                        if (rect_cell.Width() > icons_width + DPI(40))    //如果单元格宽度太小则不绘制图标（至少给文本留出40像素）
+                        {
+                            rect_text.right -= icons_width;
+                            for (int k{}; k < list_element->GetUnHoverIconCount(i); k++)
+                            {
+                                //计算按钮矩形区域
+                                CRect rect_icon{ rect_cell };
+                                rect_icon.left = rect_text.right + btn_size * k;
+                                rect_icon.right = rect_icon.left + btn_size;
+                                rect_icon.top = rect_cell.top + (rect_cell.Height() - btn_size) / 2;
+                                rect_icon.bottom = rect_icon.top + btn_size;
+                                //绘制图标
+                                DrawUiIcon(rect_icon, list_element->GetUnHoverIcon(k, i));
+                            }
+                        }
+                    }
 
                     m_draw.SetDrawArea(rect & rect_text);
                     //绘制文本

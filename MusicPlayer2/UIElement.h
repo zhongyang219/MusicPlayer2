@@ -307,7 +307,9 @@ namespace UiElement
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) { return IconMgr::IT_NO_ICON; } //获取鼠标指向一行时按钮的图标
         virtual std::wstring GetHoverButtonTooltip(int index, int row) { return std::wstring(); }     //获取鼠标指向一行时按钮的鼠标提示
         virtual void OnHoverButtonClicked(int btn_index, int row) {}    //响应鼠标指向时按钮点击
-        IPlayerUI::UIButton& GetHoverButtonState(int btn_index);         //获取储存鼠标指向时按钮信息的结构体
+        IPlayerUI::UIButton& GetHoverButtonState(int btn_index);        //获取储存鼠标指向时按钮信息的结构体
+        virtual int GetUnHoverIconCount(int row) { return 0; }          //获取鼠标未指向的行要显示的图标数量（列为GetHoverButtonColumn返回的列）
+        virtual IconMgr::IconType GetUnHoverIcon(int index, int row) { return IconMgr::IT_NO_ICON; }   //获取鼠标未指向的行要显示的图标
 
         int item_height{ 28 };
         int font_size{ 9 };
@@ -375,6 +377,8 @@ namespace UiElement
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
         virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
+        virtual int GetUnHoverIconCount(int row) override;
+        virtual IconMgr::IconType GetUnHoverIcon(int index, int row) override;
 
     private:
         int last_highlight_row{ -1 };
@@ -650,6 +654,9 @@ namespace UiElement
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
         virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
+        virtual int GetUnHoverIconCount(int row) override;
+        virtual IconMgr::IconType GetUnHoverIcon(int index, int row) override;
+
     private:
         int last_highlight_row{ -1 };
     };
