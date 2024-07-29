@@ -3208,11 +3208,8 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 void CMusicPlayerDlg::OnPlayItem()
 {
     // TODO: 在此添加命令处理程序代码
-    if (!CPlayer::GetInstance().PlayTrack(m_item_selected))
-    {
-        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-    }
+    CMusicPlayerCmdHelper helper(this);
+    helper.OnPlayTrack(m_item_selected);
 }
 
 
@@ -5435,42 +5432,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnListItemDragged(WPARAM wParam, LPARAM lParam)
 void CMusicPlayerDlg::OnAddRemoveFromFavourite()
 {
     // TODO: 在此添加命令处理程序代码
-    if (CPlayer::GetInstance().IsPlaylistMode() && CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE)
-    {
-        //如果当前播放列表就是“我喜欢”播放列表，则直接将当前歌曲从列表中移除
-        const wstring& info = theApp.m_str_table.LoadText(L"MSG_REMOVE_FAVOURITE_WARNING");
-        if (MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
-        {
-            CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
-            ShowPlayList();
-            CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
-        }
-    }
-    else
-    {
-        SongInfo current_file = CPlayer::GetInstance().GetCurrentSongInfo();
-        std::wstring favourite_playlist_path = CPlaylistMgr::Instance().GetFavouritePlaylist().path;
-        CPlaylistFile playlist;
-        playlist.LoadFromFile(favourite_playlist_path);
-        if (!CPlayer::GetInstance().IsFavourite())
-        {
-            //添加到“我喜欢”播放列表
-            if (!playlist.IsSongInPlaylist(current_file))
-            {
-                playlist.AddSongsToPlaylist(std::vector<SongInfo> {current_file}, theApp.m_media_lib_setting_data.insert_begin_of_playlist);
-                playlist.SaveToFile(favourite_playlist_path);
-            }
-            CPlayer::GetInstance().SetFavourite(true);
-        }
-        else
-        {
-            //从“我喜欢”播放列表移除
-            playlist.RemoveSong(current_file);
-            playlist.SaveToFile(favourite_playlist_path);
-            CPlayer::GetInstance().SetFavourite(false);
-        }
-        CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
-    }
+    CMusicPlayerCmdHelper helper(this);
+    helper.OnAddRemoveFromFavourite(CPlayer::GetInstance().GetIndex());
 }
 
 

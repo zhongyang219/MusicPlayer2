@@ -2591,10 +2591,39 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     std::wstring display_name{ list_element->GetItemText(i, j) };
                     rect_cell.left += DPI(4);       //绘制文字时左侧留出4个像素
                     m_draw.SetDrawArea(rect & rect_cell);
+
+                    CRect rect_text{ rect_cell };
+                    //绘制鼠标指向时的按钮
+                    if (list_element->GetHoverButtonCount() > 0 && list_element->GetHoverButtonColumn() == j && rect_cell.PtInRect(list_element->mouse_pos))
+                    {
+                        const int btn_size{ DPI(24) };
+                        int buttons_width = btn_size * list_element->GetHoverButtonCount() + DPI(4);    //按钮区域的宽度
+                        if (rect_cell.Width() > buttons_width + DPI(40))    //如果单元格宽度太小则不绘制按钮（至少给文本留出40像素）
+                        {
+                            rect_text.right -= buttons_width;
+
+                            for (int k{}; k < list_element->GetHoverButtonCount(); k++)
+                            {
+                                //计算按钮矩形区域
+                                CRect rect_btn{ rect_cell };
+                                rect_btn.left = rect_text.right + btn_size * k;
+                                rect_btn.right = rect_btn.left + btn_size;
+                                rect_btn.top = rect_cell.top + (rect_cell.Height() - btn_size) / 2;
+                                rect_btn.bottom = rect_btn.top + btn_size;
+                                //保存按钮矩形区域
+                                list_element->GetHoverButtonState(k).rect = rect_btn;
+                                //开始绘制按钮
+                                DrawUIButton(rect_btn, list_element->GetHoverButtonState(k), list_element->GetHoverButtonIcon(k, i));
+                            }
+                        }
+                    }
+
+                    m_draw.SetDrawArea(rect & rect_text);
+                    //绘制文本
                     if (i == list_element->item_selected && j == list_element->GetColumnScrollTextWhenSelected())
-                        m_draw.DrawScrollText(rect_cell, display_name.c_str(), m_colors.color_text, GetScrollTextPixel(), false, list_element->selected_item_scroll_info, false, true);
+                        m_draw.DrawScrollText(rect_text, display_name.c_str(), m_colors.color_text, GetScrollTextPixel(), false, list_element->selected_item_scroll_info, false, true);
                     else
-                        m_draw.DrawWindowText(rect_cell, display_name.c_str(), m_colors.color_text, Alignment::LEFT, true);
+                        m_draw.DrawWindowText(rect_text, display_name.c_str(), m_colors.color_text, Alignment::LEFT, true);
                     col_x = rect_cell.right;
                 }
             }

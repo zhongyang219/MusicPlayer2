@@ -272,6 +272,7 @@ namespace UiElement
         virtual void LButtonDown(CPoint point) override;
         virtual void MouseMove(CPoint point) override;
         virtual bool RButtunUp(CPoint point) override;
+        void ShowContextMenu(CMenu* menu, CWnd* cmd_reciver);
         virtual void RButtonDown(CPoint point) override;
         virtual bool MouseWheel(int delta, CPoint point) override;
         virtual bool DoubleClick(CPoint point) override;
@@ -300,17 +301,24 @@ namespace UiElement
         virtual CWnd* GetCmdRecivedWnd();
         virtual void OnDoubleClicked() {};
         virtual void OnClicked() {};
+        virtual int GetHoverButtonCount() { return 0; }     //获取鼠标指向一行时要显示的按钮数量
+        virtual int GetHoverButtonColumn() { return 0; }    //获取鼠标指向时要显示的按钮所在列
+        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) { return IconMgr::IT_NO_ICON; } //获取鼠标指向一行时按钮的图标
+        virtual std::wstring GetHoverButtonTooltip(int index, int row) { return std::wstring(); }     //获取鼠标指向一行时按钮的鼠标提示
+        virtual void OnHoverButtonClicked(int btn_index, int row) {}    //响应鼠标指向时按钮点击
+        virtual IPlayerUI::UIButton& GetHoverButtonState(int btn_index);         //获取储存鼠标指向时按钮信息的结构体
 
         int item_height{ 28 };
         int font_size{ 9 };
 
     protected:
-        int GetPlaylistIndexByPoint(CPoint point);
+        int GetListIndexByPoint(CPoint point);
         void Clicked(CPoint point);     //当播放列表被点击时调用此函数
 
     protected:
         bool mouse_pressed{ };          //鼠标左键是否按下
         bool hover{};                   //指标指向播放列表区域
+        CPoint mouse_pos;               //鼠标指向的区域
         CPoint mouse_pressed_pos;       //鼠标按下时的位置
         int mouse_pressed_offset{};     //鼠标按下时播放列表的位移
         int playlist_offset{};          //当前播放列表滚动的位移
@@ -337,6 +345,15 @@ namespace UiElement
             COL_MAX
         };
 
+        //鼠标指向一行时显示的按钮
+        enum BtnKey
+        {
+            BTN_PLAY,
+            BTN_ADD,
+            BTN_FAVOURITE,
+            BTN_MAX
+        };
+
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
@@ -351,8 +368,16 @@ namespace UiElement
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual void OnDoubleClicked() override;
         virtual void OnClicked() override;
+        virtual int GetHoverButtonCount() override;
+        virtual int GetHoverButtonColumn() override;
+        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
+        virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
+        virtual void OnHoverButtonClicked(int btn_index, int row) override;
+        virtual IPlayerUI::UIButton& GetHoverButtonState(int btn_index) override;
+
     private:
         int last_highlight_row{ -1 };
+        std::map<BtnKey, IPlayerUI::UIButton> hover_buttons;
     };
 
     //最近播放

@@ -48,6 +48,11 @@ void CUIWindowCmdHelper::OnUiCommand(DWORD command)
         {
             OnAllTracksListCommand(all_tracks_list, command);
         }
+        UiElement::Playlist* playlist = dynamic_cast<UiElement::Playlist*>(pUi->m_context_menu_sender);
+        if (playlist != nullptr)
+        {
+            OnAddToPlaystCommand(playlist, command);
+        }
         pUi->m_context_menu_sender = nullptr;   //命令被响应后清空上次保存的命令发送者
     }
 }
@@ -77,6 +82,10 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu))
     {
         SetAllTracksListMenuState(pMenu);
+    }
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu))
+    {
+        SetAddToPlaylistMenuState(pMenu);
     }
 }
 
@@ -470,6 +479,29 @@ void CUIWindowCmdHelper::OnAllTracksListCommand(UiElement::AllTracksList* all_tr
     }
 }
 
+void CUIWindowCmdHelper::OnAddToPlaystCommand(UiElement::Playlist* playlist, DWORD command)
+{
+    int item_selected{ playlist->GetItemSelected() };
+    if (item_selected < 0 || item_selected >= CPlayer::GetInstance().GetSongNum())
+        return;
+    const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[item_selected];
+    CMusicPlayerCmdHelper helper;
+    auto getSongList = [&](std::vector<SongInfo>& song_list) {
+        song_list.clear();
+        song_list.push_back(song_info);
+        };
+    //添加到新播放列表
+    if (command == ID_ADD_TO_NEW_PLAYLIST)
+    {
+        wstring playlist_path;
+        helper.OnAddToNewPlaylist(getSongList, playlist_path);
+    }
+    else
+    {
+        helper.OnAddToPlaylistCommand(getSongList, command);
+    }
+}
+
 void CUIWindowCmdHelper::SetRecentPlayedListMenuState(CMenu* pMenu)
 {
     CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
@@ -625,4 +657,15 @@ void CUIWindowCmdHelper::SetAllTracksListMenuState(CMenu* pMenu)
 
     pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (selected_in_current_playing_list ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
+}
+
+void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
+{
+    wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
+    for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
+    {
+        CString menu_string;
+        pMenu->GetMenuString(id, menu_string, 0);
+        pMenu->EnableMenuItem(id, MF_BYCOMMAND | (current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+    }
 }

@@ -2075,29 +2075,38 @@ SongInfo CPlayer::GetNextTrack() const
     }
 }
 
-void CPlayer::SetFavourite(bool favourite)
+void CPlayer::SetFavourite(int index, bool favourite)
 {
     if (IsError())
         return;
-    if (m_index >= 0 && m_index < GetSongNum())
+    if (index >= 0 && index < GetSongNum())
     {
-        m_playlist[m_index].is_favourite = favourite;
+        m_playlist[index].is_favourite = favourite;
     }
     if (theApp.m_media_lib_setting_data.enable_lastfm) {
         theApp.UpdateLastFMFavourite(favourite);
     }
+}
 
+void CPlayer::SetFavourite(bool favourite)
+{
+    SetFavourite(m_index, favourite);
+}
+
+bool CPlayer::IsFavourite(int index)
+{
+    if (m_playlist_mode == PM_PLAYLIST && CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE)
+        return true;
+    if (index >= 0 && index < GetSongNum())
+    {
+        return m_playlist[index].is_favourite;
+    }
+    return false;
 }
 
 bool CPlayer::IsFavourite()
 {
-    if (m_playlist_mode == PM_PLAYLIST && CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE)
-        return true;
-    if (m_index >= 0 && m_index < GetSongNum())
-    {
-        return m_playlist[m_index].is_favourite;
-    }
-    return false;
+    return IsFavourite(m_index);
 }
 
 void CPlayer::AddListenTime(int sec)

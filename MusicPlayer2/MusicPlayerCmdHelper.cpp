@@ -1099,6 +1099,67 @@ void CMusicPlayerCmdHelper::OnPlayAllTrack(const SongInfo& song)
     }
 }
 
+void CMusicPlayerCmdHelper::OnPlayTrack(int track)
+{
+    if (!CPlayer::GetInstance().PlayTrack(track))
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+        GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+    }
+}
+
+
+bool CMusicPlayerCmdHelper::OnAddRemoveFromFavourite(int track)
+{
+    if (track < 0 || track >= CPlayer::GetInstance().GetSongNum())
+        return false;
+
+    if (CPlayer::GetInstance().IsPlaylistMode() && CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE)
+    {
+        //如果当前播放列表就是“我喜欢”播放列表，则直接将歌曲从列表中移除
+        const wstring& info = theApp.m_str_table.LoadText(L"MSG_REMOVE_FAVOURITE_WARNING");
+        if (GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OKCANCEL) == IDOK)
+        {
+            bool removed = CPlayer::GetInstance().RemoveSong(track);
+            if (removed)
+            {
+                CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+                if (pDlg != nullptr)
+                    pDlg->ShowPlayList();
+                CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
+            }
+            return removed;
+        }
+    }
+    else
+    {
+        SongInfo song = CPlayer::GetInstance().GetPlayList()[track];
+        std::wstring favourite_playlist_path = CPlaylistMgr::Instance().GetFavouritePlaylist().path;
+        CPlaylistFile playlist;
+        playlist.LoadFromFile(favourite_playlist_path);
+        if (!CPlayer::GetInstance().IsFavourite(track))
+        {
+            //添加到“我喜欢”播放列表
+            if (!playlist.IsSongInPlaylist(song))
+            {
+                playlist.AddSongsToPlaylist(std::vector<SongInfo> {song}, theApp.m_media_lib_setting_data.insert_begin_of_playlist);
+                playlist.SaveToFile(favourite_playlist_path);
+            }
+            CPlayer::GetInstance().SetFavourite(track, true);
+        }
+        else
+        {
+            //从“我喜欢”播放列表移除
+            playlist.RemoveSong(song);
+            playlist.SaveToFile(favourite_playlist_path);
+            CPlayer::GetInstance().SetFavourite(false);
+        }
+        CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
+        return true;
+    }
+    return false;
+}
+
 void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)
 {
     CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();

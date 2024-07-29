@@ -469,7 +469,9 @@ public:
     //获取下一个要播放的曲目。如果返回的是空的SongInfo对象，则说明没有下一个曲目或下一个曲目不确定
     SongInfo GetNextTrack() const;
     //为当前歌曲设置“我喜欢”标记
+    void SetFavourite(int index, bool favourite);
     void SetFavourite(bool favourite);
+    bool IsFavourite(int index);
     bool IsFavourite();
     //判断当前专辑封面是否是内嵌图片
     bool IsInnerCover() const { return m_inner_cover; }

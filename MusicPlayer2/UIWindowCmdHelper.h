@@ -17,6 +17,7 @@ private:
     bool OnSongListCommand(const SongInfo& song, DWORD command);
     void OnMyFavouriteListCommand(UiElement::MyFavouriteList* my_favourite_list, DWORD command);
     void OnAllTracksListCommand(UiElement::AllTracksList* all_tracks_list, DWORD command);
+    void OnAddToPlaystCommand(UiElement::Playlist* playlist, DWORD command);
 
     void SetRecentPlayedListMenuState(CMenu* pMenu);
     void SetMediaLibItemListMenuState(CMenu* pMenu);
@@ -24,6 +25,7 @@ private:
     void SetMediaLibPlaylistMenuState(CMenu* pMenu);
     void SetMyFavouriteListMenuState(CMenu* pMenu);
     void SetAllTracksListMenuState(CMenu* pMenu);
+    void SetAddToPlaylistMenuState(CMenu* pMenu);
 
 private:
     IPlayerUI* m_pUI;

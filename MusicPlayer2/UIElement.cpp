@@ -1024,6 +1024,16 @@ void UiElement::ListElement::LButtonUp(CPoint point)
 {
     mouse_pressed = false;
     scrollbar_handle_pressed = false;
+    //设置按钮的按下状态
+    for (int i{}; i < GetHoverButtonCount(); i++)
+    {
+        auto& btn{ GetHoverButtonState(i) };
+        if (btn.pressed)
+        {
+            OnHoverButtonClicked(i, GetListIndexByPoint(point));
+            btn.pressed = false;
+        }
+    }
 }
 
 void UiElement::ListElement::LButtonDown(CPoint point)
@@ -1039,6 +1049,13 @@ void UiElement::ListElement::LButtonDown(CPoint point)
         }
         else
         {
+            //设置按钮的按下状态
+            for (int i{}; i < GetHoverButtonCount(); i++)
+            {
+                auto& btn{ GetHoverButtonState(i) };
+                btn.pressed = btn.rect.PtInRect(point);
+            }
+
             Clicked(point);
         }
         mouse_pressed_offset = playlist_offset;
@@ -1054,6 +1071,7 @@ void UiElement::ListElement::LButtonDown(CPoint point)
 
 void UiElement::ListElement::MouseMove(CPoint point)
 {
+    mouse_pos = point;
     hover = rect.PtInRect(point);
     scrollbar_hover = scrollbar_rect.PtInRect(point);
     if (scrollbar_handle_pressed)
@@ -1068,24 +1086,51 @@ void UiElement::ListElement::MouseMove(CPoint point)
         playlist_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
     }
 
-    //显示鼠标提示
-    if (ShowTooltip() && hover && !scrollbar_hover && !scrollbar_handle_pressed)
-    {
-        int item_size{ static_cast<int>(item_rects.size()) };
-        for (int i{}; i < item_size && i < GetRowCount(); i++)
-        {
-            if (item_rects[i].PtInRect(point))
-            {
-                static int last_item_index{ -1 };
-                if (last_item_index != i)
-                {
-                    last_item_index = i;
-                    std::wstring str_tip = GetToolTipText(i);
+    //查找鼠标指向的行
+    int row = GetListIndexByPoint(point);
 
-                    ui->UpdateMouseToolTip(GetToolTipIndex(), str_tip.c_str());
-                    ui->UpdateMouseToolTipPosition(GetToolTipIndex(), item_rects[i]);
+    //如果显示了按钮
+    bool mouse_in_btn{ false };
+    if (GetHoverButtonCount() > 0)
+    {
+        for (int i{}; i < GetHoverButtonCount(); i++)
+        {
+            auto& btn{ GetHoverButtonState(i) };
+            if (btn.rect.PtInRect(point))
+            {
+                mouse_in_btn = true;
+                btn.hover = true;
+                static int last_row{ -1 };
+                static int last_btn_index{ -1 };
+                if (last_row != row || last_btn_index != i)
+                {
+                    std::wstring btn_tooltip{ GetHoverButtonTooltip(i, row) };
+                    ui->UpdateMouseToolTip(GetToolTipIndex(), btn_tooltip.c_str());
+                    ui->UpdateMouseToolTipPosition(GetToolTipIndex(), btn.rect);
                 }
-                break;
+                last_row = row;
+                last_btn_index = i;
+            }
+            else
+            {
+                btn.hover = false;
+            }
+        }
+    }
+
+    //显示鼠标提示
+    if (!mouse_in_btn && ShowTooltip() && hover && !scrollbar_hover && !scrollbar_handle_pressed)
+    {
+        if (row >= 0)
+        {
+            static int last_row{ -1 };
+            if (last_row != row)
+            {
+                last_row = row;
+                std::wstring str_tip = GetToolTipText(row);
+
+                ui->UpdateMouseToolTip(GetToolTipIndex(), str_tip.c_str());
+                ui->UpdateMouseToolTipPosition(GetToolTipIndex(), item_rects[row]);
             }
         }
     }
@@ -1097,19 +1142,24 @@ bool UiElement::ListElement::RButtunUp(CPoint point)
     {
         mouse_pressed = false;
         CMenu* menu{ GetContextMenu(item_selected >= 0 && !scrollbar_rect.PtInRect(point)) };
-        if (menu != nullptr)
-        {
-            CUserUi* pUi = dynamic_cast<CUserUi*>(ui);
-            if (pUi != nullptr)
-                pUi->m_context_menu_sender = this;      //保存右键菜单的发送者
-
-            CPoint cursor_pos;
-            GetCursorPos(&cursor_pos);
-            menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cursor_pos.x, cursor_pos.y, GetCmdRecivedWnd()); //在指定位置显示弹出菜单
-        }
+        ShowContextMenu(menu, GetCmdRecivedWnd());
         return true;
     }
     return false;
+}
+
+void UiElement::ListElement::ShowContextMenu(CMenu* menu, CWnd* cmd_reciver)
+{
+    if (menu != nullptr)
+    {
+        CUserUi* pUi = dynamic_cast<CUserUi*>(ui);
+        if (pUi != nullptr)
+            pUi->m_context_menu_sender = this;      //保存右键菜单的发送者
+
+        CPoint cursor_pos;
+        GetCursorPos(&cursor_pos);
+        menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cursor_pos.x, cursor_pos.y, cmd_reciver); //在指定位置显示弹出菜单
+    }
 }
 
 
@@ -1243,7 +1293,13 @@ CWnd* UiElement::ListElement::GetCmdRecivedWnd()
     return theApp.m_pMainWnd;
 }
 
-int UiElement::ListElement::GetPlaylistIndexByPoint(CPoint point)
+IPlayerUI::UIButton& UiElement::ListElement::GetHoverButtonState(int btn_index)
+{
+    static IPlayerUI::UIButton empty_btn;
+    return empty_btn;
+}
+
+int UiElement::ListElement::GetListIndexByPoint(CPoint point)
 {
     for (size_t i{}; i < item_rects.size(); i++)
     {
@@ -1255,7 +1311,7 @@ int UiElement::ListElement::GetPlaylistIndexByPoint(CPoint point)
 
 void UiElement::ListElement::Clicked(CPoint point)
 {
-    item_selected = GetPlaylistIndexByPoint(point);
+    item_selected = GetListIndexByPoint(point);
     OnClicked();
     selected_item_scroll_info.Reset();
 }
@@ -1375,6 +1431,75 @@ void UiElement::Playlist::OnClicked()
     CMusicPlayerDlg* pMainWnd = CMusicPlayerDlg::GetInstance();
     if (pMainWnd != nullptr)
         pMainWnd->SetPlaylistSelected(item_selected);
+}
+
+int UiElement::Playlist::GetHoverButtonCount()
+{
+    return BTN_MAX;
+}
+
+int UiElement::Playlist::GetHoverButtonColumn()
+{
+    return COL_TRACK;
+}
+
+IconMgr::IconType UiElement::Playlist::GetHoverButtonIcon(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return IconMgr::IT_Play;
+    case BTN_ADD: return IconMgr::IT_Add;
+    case BTN_FAVOURITE:
+    {
+        if (CPlayer::GetInstance().IsFavourite(row))
+            return IconMgr::IT_Favorite_Off;
+        else
+            return IconMgr::IT_Favorite_On;
+    }
+    }
+    return IconMgr::IconType();
+}
+
+std::wstring UiElement::Playlist::GetHoverButtonTooltip(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    case BTN_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
+    }
+    return std::wstring();
+}
+
+void UiElement::Playlist::OnHoverButtonClicked(int btn_index, int row)
+{
+    CMusicPlayerCmdHelper helper;
+    //点击了“播放”按钮
+    if (btn_index == BTN_PLAY)
+    {
+        helper.OnPlayTrack(row);
+    }
+    //点击了“添加到播放列表”按钮
+    else if (btn_index == BTN_ADD)
+    {
+        CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
+        CWnd* cmd_reciver{};
+        CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+        if (pDlg != nullptr)
+            cmd_reciver = &pDlg->GetUIWindow();
+        ShowContextMenu(menu, cmd_reciver);
+    }
+    //点击了“添加到我喜欢的音乐”按钮
+    else if (btn_index == BTN_FAVOURITE)
+    {
+        helper.OnAddRemoveFromFavourite(row);
+    }
+    int a = 0;
+}
+
+IPlayerUI::UIButton& UiElement::Playlist::GetHoverButtonState(int btn_index)
+{
+    return hover_buttons[static_cast<BtnKey>(btn_index)];
 }
 
 int UiElement::Playlist::GetRowCount()
