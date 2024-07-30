@@ -2773,6 +2773,7 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::Playlist
     rect_name.right -= DPI(30);
     static CDrawCommon::ScrollInfo name_scroll_info;
     m_draw.DrawScrollText(rect_name, CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str(), m_colors.color_text_heighlight, GetScrollTextPixel(), false, name_scroll_info);
+    ResetDrawArea();
     //绘制下拉按钮
     CRect rect_drop_down{ rect };
     rect_drop_down.left = rect_name.right + DPI(2);
