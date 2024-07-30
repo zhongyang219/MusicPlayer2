@@ -923,7 +923,7 @@ BOOL CLyricEditDlg::OnToolTipText(UINT, NMHDR* pNMHDR, LRESULT* pResult)
         tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_REPLACE") + L" (Ctrl+H)";
         break;
     case ID_SEEK_TO_CUR_LINE:
-        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_INSERT_TIME_TAG") + L" (Ctrl+G)";
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_SEEK_TO_LINE") + L" (Ctrl+G)";
         break;
     }
 
