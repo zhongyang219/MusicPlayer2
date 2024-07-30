@@ -172,20 +172,19 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
     //移除
     else if (command == ID_RECENT_PLAYED_REMOVE)
     {
-        //仅支持移除媒体库项目
+        CString item_str;
+        std::wstring type_name;
         if (item.IsMedialib())
+            type_name = CMediaLibPlaylistMgr::GetTypeName(item.medialib_info->medialib_type);
+        else if (item.IsFolder())
+            type_name = theApp.m_str_table.LoadText(L"TXT_FOLDER");
+        else if (item.IsPlaylist())
+            type_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST");
+        item_str.Format(_T("%s: %s"), type_name.c_str(), item.GetName().c_str());
+        std::wstring messagebox_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_RECENTPLAYED_ITEM_INQUIRY", { item_str });
+        if (AfxMessageBox(messagebox_info.c_str(), MB_ICONQUESTION | MB_YESNO) == IDYES)
         {
-            CString item_str;
-            std::wstring type_name = CMediaLibPlaylistMgr::GetTypeName(item.medialib_info->medialib_type);
-            item_str.Format(_T("%s: %s"), type_name.c_str(), item.GetName().c_str());
-            std::wstring messagebox_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_RECENTPLAYED_ITEM_INQUIRY", { item_str });
-            if (AfxMessageBox(messagebox_info.c_str(), MB_ICONQUESTION | MB_YESNO) == IDYES)
-            {
-                if (CMediaLibPlaylistMgr::Instance().DeleteItem(item.medialib_info))
-                {
-                    CRecentFolderAndPlaylist::Instance().Init();
-                }
-            }
+            CRecentFolderAndPlaylist::Instance().RemoveItem(item);
         }
     }
     //复制文本
@@ -511,11 +510,8 @@ void CUIWindowCmdHelper::SetRecentPlayedListMenuState(CMenu* pMenu)
         if (recent_played != nullptr)
         {
             int item_selected{ recent_played->GetItemSelected() };
-            if (item_selected >= 0 && item_selected < static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()))
-            {
-                const CRecentFolderAndPlaylist::Item& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[item_selected] };
-                pMenu->EnableMenuItem(ID_RECENT_PLAYED_REMOVE, MF_BYCOMMAND | (item.IsMedialib() ? MF_ENABLED : MF_GRAYED));
-            }
+            //最近播放中排在第一个的项目为正在播放的项目，不允许移除
+            pMenu->EnableMenuItem(ID_RECENT_PLAYED_REMOVE, MF_BYCOMMAND | (item_selected > 0 ? MF_ENABLED : MF_GRAYED));
         }
     }
 }

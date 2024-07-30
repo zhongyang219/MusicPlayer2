@@ -45,6 +45,8 @@ public:
     int GetSize() const;
     bool GetItem(int index, std::function<void(const Item&)> func);
 
+    bool RemoveItem(const Item& item);
+
 private:
     CRecentFolderAndPlaylist();
     std::vector<Item> m_list;

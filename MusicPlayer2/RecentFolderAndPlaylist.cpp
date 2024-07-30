@@ -30,12 +30,14 @@ void CRecentFolderAndPlaylist::Init()
 
     //添加最近播放媒体库项目
     CMediaLibPlaylistMgr::Instance().IterateItems([&](const MediaLibPlaylistInfo& medialib_item_info) {
-        m_list.emplace_back(&medialib_item_info);
+        if (medialib_item_info.last_played_time > 0)
+            m_list.emplace_back(&medialib_item_info);
     });
 
     //添加最近播放文件夹
     CRecentFolderMgr::Instance().IteratePathInfo([&](const PathInfo& path_info) {
-        m_list.emplace_back(&path_info);
+        if (path_info.last_played_time > 0)
+            m_list.emplace_back(&path_info);
     });
 
     //按最近播放时间排序
@@ -68,6 +70,29 @@ bool CRecentFolderAndPlaylist::GetItem(int index, std::function<void(const Item&
         return true;
     }
     return false;
+}
+
+bool CRecentFolderAndPlaylist::RemoveItem(const Item& item)
+{
+    bool is_removed{};
+    if (item.IsMedialib())
+    {
+        is_removed = CMediaLibPlaylistMgr::Instance().DeleteItem(item.medialib_info);
+        CMediaLibPlaylistMgr::Instance().SavePlaylistData();
+    }
+    else if (item.IsFolder() && item.folder_info != nullptr)
+    {
+        is_removed = CRecentFolderMgr::Instance().ResetLastPlayedTime(item.folder_info->path);
+        CRecentFolderMgr::Instance().SaveData();
+    }
+    else if (item.IsPlaylist() && item.playlist_info != nullptr)
+    {
+        is_removed = CPlaylistMgr::Instance().ResetLastPlayedTime(item.playlist_info->path);
+        CPlaylistMgr::Instance().SavePlaylistData();
+    }
+    if (is_removed)
+        Init();
+    return is_removed;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////

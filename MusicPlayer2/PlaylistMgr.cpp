@@ -511,3 +511,36 @@ std::wstring CPlaylistMgr::GetPlaylistDisplayName(const std::wstring path)
         playlist_name = path_helper.GetFileNameWithoutExtension();
     return playlist_name;
 }
+
+bool CPlaylistMgr::ResetLastPlayedTime(const wstring& path)
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    if (path == m_default_playlist.path)
+    {
+        m_default_playlist.last_played_time = 0;
+        return true;
+    }
+    if (path == m_favourite_playlist.path)
+    {
+        m_favourite_playlist.last_played_time = 0;
+        return true;
+    }
+    if (path == m_temp_playlist.path)
+    {
+        m_temp_playlist.last_played_time = 0;
+        return true;
+    }
+    auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [path](const PlaylistInfo& item) {
+        return item.path == path;
+        });
+
+    if (iter != m_recent_playlists.end())
+    {
+        iter->last_played_time = 0;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}

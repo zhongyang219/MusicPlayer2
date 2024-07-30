@@ -34,6 +34,7 @@ public:
     void GetItem(int index, std::function<void(const PathInfo&)> func);
     bool DeleteItem(const std::wstring& path);
     int DeleteInvalidItems();
+    bool ResetLastPlayedTime(const std::wstring& path);     //将上次播放时间清空，使它从“最近播放”中移除
 
     //从文件读取数据
     bool LoadData();

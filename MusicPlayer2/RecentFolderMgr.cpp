@@ -143,6 +143,20 @@ int CRecentFolderMgr::DeleteInvalidItems()
     return cleard_cnt;
 }
 
+bool CRecentFolderMgr::ResetLastPlayedTime(const std::wstring& path)
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(), [&](const PathInfo& path_info) {
+        return path_info.path == path;
+        });
+    if (iter != m_recent_path.end())
+    {
+        iter->last_played_time = 0;
+        return true;
+    }
+    return false;
+}
+
 bool CRecentFolderMgr::LoadData()
 {
     // 打开文件

@@ -182,11 +182,8 @@ afx_msg LRESULT CMoreRecentItemDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lP
         auto& data_list{ m_searched ? m_search_result : CRecentFolderAndPlaylist::Instance().GetItemList() };
         if (index >= 0 && index < static_cast<int>(data_list.size()))
         {
-            const auto& selected_item = data_list[index];
-            //此界面仅允许删除媒体库项目
-            if (selected_item.IsMedialib())
-                delete_enable = true;
             select_valid = true;
+            delete_enable = index > 0;      //除了第一个都可以删除
         }
 
         EnableDlgCtrl(IDC_DELETE_BUTTON, delete_enable);
@@ -202,19 +199,21 @@ void CMoreRecentItemDlg::OnBnClickedDeleteButton()
     if (sel_index >= 0 && sel_index < static_cast<int>(data_list.size()))
     {
         const auto& selected_item = data_list[sel_index];
-        if (selected_item.IsMedialib() && selected_item.medialib_info != nullptr)
+        CString item_str;
+        std::wstring type_name;
+        if (selected_item.IsMedialib())
+            type_name = CMediaLibPlaylistMgr::GetTypeName(selected_item.medialib_info->medialib_type);
+        else if (selected_item.IsFolder())
+            type_name = theApp.m_str_table.LoadText(L"TXT_FOLDER");
+        else if (selected_item.IsPlaylist())
+            type_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST");
+        item_str.Format(_T("%s: %s"), type_name.c_str(), m_list_ctrl.GetItemText(sel_index).GetString());
+        std::wstring messagebox_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_RECENTPLAYED_ITEM_INQUIRY", { item_str });
+        if (MessageBox(messagebox_info.c_str(), nullptr, MB_ICONQUESTION | MB_YESNO) == IDYES)
         {
-            CString item_str;
-            std::wstring type_name = CMediaLibPlaylistMgr::GetTypeName(selected_item.medialib_info->medialib_type);
-            item_str.Format(_T("%s: %s"), type_name.c_str(), m_list_ctrl.GetItemText(sel_index).GetString());
-            std::wstring messagebox_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_RECENTPLAYED_ITEM_INQUIRY", { item_str });
-            if (MessageBox(messagebox_info.c_str(), nullptr, MB_ICONQUESTION | MB_YESNO) == IDYES)
+            if (CRecentFolderAndPlaylist::Instance().RemoveItem(selected_item))
             {
-                if (CMediaLibPlaylistMgr::Instance().DeleteItem(selected_item.medialib_info))
-                {
-                    m_list_ctrl.DeleteItem(sel_index);
-                    CRecentFolderAndPlaylist::Instance().Init();
-                }
+                m_list_ctrl.DeleteItem(sel_index);
             }
         }
     }

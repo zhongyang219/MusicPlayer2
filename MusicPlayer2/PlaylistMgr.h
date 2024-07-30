@@ -74,6 +74,8 @@ public:
 
     static std::wstring GetPlaylistDisplayName(const std::wstring path);
 
+    bool ResetLastPlayedTime(const wstring& path);     //将上次播放时间清空，使它从“最近播放”中移除
+
 private:
     CPlaylistMgr();
     const PlaylistInfo& GetPlaylistInfo(int index);
