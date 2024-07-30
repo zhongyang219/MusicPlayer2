@@ -364,22 +364,10 @@ void CSetPathDlg::OnDeletePath()
     if (SelectValid())
     {
         wstring del_path = GetSelPath().path;
-        // 如果是当前播放则使用CPlayer成员方法处理
-        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == del_path)
+        CMusicPlayerCmdHelper helper(this);
+        if (helper.OnDeleteRecentFolder(del_path))
         {
-            if (!CPlayer::GetInstance().RemoveCurPlaylistOrFolder())
-            {
-                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-            }
-        }
-        else
-        {
-            if (CRecentFolderMgr::Instance().DeleteItem(del_path))
-            {
-                ShowPathList();                 // 重新显示路径列表
-                CRecentFolderAndPlaylist::Instance().Init();
-            }
+            ShowPathList();                 // 重新显示路径列表
         }
     }
 }

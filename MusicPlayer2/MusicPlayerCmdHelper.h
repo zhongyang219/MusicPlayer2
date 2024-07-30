@@ -101,6 +101,8 @@ public:
     void OnPlaylistSaveAs(const std::wstring& playlist_path);
     bool OnPlaylistFixPathError(const std::wstring& playlist_path);
 
+    bool OnDeleteRecentFolder(std::wstring folder_path);    //执行删除最近播放文件夹操作，仅当要删除的不是正在播放的文件夹时返回true
+
     bool OnOpenFolder();
 
     //从播放列表中移除

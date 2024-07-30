@@ -239,20 +239,7 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
     }
     else if (command == ID_DELETE_PATH)
     {
-        // 如果是当前播放则使用CPlayer成员方法处理
-        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == path_info.path)
-        {
-            if (!CPlayer::GetInstance().RemoveCurPlaylistOrFolder())
-            {
-                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-                AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
-            }
-        }
-        else
-        {
-            if (CRecentFolderMgr::Instance().DeleteItem(path_info.path))
-                CRecentFolderAndPlaylist::Instance().Init();
-        }
+        helper.OnDeleteRecentFolder(path_info.path);
     }
     else if (command == ID_BROWSE_PATH)
     {

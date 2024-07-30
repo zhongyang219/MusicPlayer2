@@ -986,6 +986,32 @@ bool CMusicPlayerCmdHelper::OnPlaylistFixPathError(const std::wstring& playlist_
     return false;
 }
 
+bool CMusicPlayerCmdHelper::OnDeleteRecentFolder(std::wstring folder_path)
+{
+    const wstring& inquiry_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_FOLDER_INQUIRY", { folder_path });
+    if (GetOwner()->MessageBox(inquiry_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+    {
+        // 如果是当前播放则使用CPlayer成员方法处理
+        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == folder_path)
+        {
+            if (!CPlayer::GetInstance().RemoveCurPlaylistOrFolder())
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            }
+        }
+        else
+        {
+            if (CRecentFolderMgr::Instance().DeleteItem(folder_path))
+            {
+                CRecentFolderAndPlaylist::Instance().Init();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool CMusicPlayerCmdHelper::OnOpenFolder()
 {
     static bool include_sub_dir{ false };
