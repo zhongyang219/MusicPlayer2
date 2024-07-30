@@ -2000,7 +2000,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     CMainDialogBase::OnInitDialog();
 
-    theApp.UpdateMeidaLibItems();
+    theApp.UpdateUiMeidaLibItems();
 
     // 载入图标资源
     theApp.LoadImgResource();

@@ -475,7 +475,10 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
                 });
         }
         if (clear_cnt > 0)
+        {
             theApp.SaveSongData();		//清理后将数据写入文件
+            theApp.UpdateUiMeidaLibItems();     //更新UI中的媒体库显示
+        }
 
         size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);	 //清理后数据文件的大小
         int size_reduced = m_data_size - data_size;		//清理后数据文件减少的字节数

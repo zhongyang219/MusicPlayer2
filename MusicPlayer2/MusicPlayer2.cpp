@@ -832,12 +832,12 @@ UINT CMusicPlayerApp::LastFMScrobbleFunProc(LPVOID lpParam) {
     return 0;
 }
 
-void CMusicPlayerApp::UpdateMeidaLibItems()
+void CMusicPlayerApp::UpdateUiMeidaLibItems()
 {
-    AfxBeginThread(UpdateMediaLibItemsProc, (LPVOID)NULL);
+    AfxBeginThread(UpdateUiMediaLibItemsProc, (LPVOID)NULL);
 }
 
-UINT CMusicPlayerApp::UpdateMediaLibItemsProc(LPVOID lpParam)
+UINT CMusicPlayerApp::UpdateUiMediaLibItemsProc(LPVOID lpParam)
 {
     CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
     CUiAllTracksMgr::Instance().UpdateAllTracks();
