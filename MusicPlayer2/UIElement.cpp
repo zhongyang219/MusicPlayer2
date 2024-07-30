@@ -1016,7 +1016,8 @@ void UiElement::ListElement::LButtonUp(CPoint point)
         auto& btn{ GetHoverButtonState(i) };
         if (btn.pressed)
         {
-            OnHoverButtonClicked(i, GetListIndexByPoint(point));
+            if (btn.rect.PtInRect(point))
+                OnHoverButtonClicked(i, GetListIndexByPoint(point));
             btn.pressed = false;
         }
     }
