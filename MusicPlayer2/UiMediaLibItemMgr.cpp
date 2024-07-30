@@ -277,6 +277,7 @@ void CUiAllTracksMgr::UpdateAllTracks()
     std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
 
     m_all_tracks_list.clear();
+    //从song data中读取
     CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map) {
         for (const auto& song_info : song_data_map)
         {
@@ -288,6 +289,34 @@ void CUiAllTracksMgr::UpdateAllTracks()
             m_all_tracks_list.push_back(item);
         }
     });
+
+    //从CMediaLibPlaylistMgr中查找“所有曲目”，并获取排序方式
+    auto info = CMediaLibPlaylistMgr::Instance().FindItem(CMediaClassifier::CT_NONE, std::wstring());
+    //对所有曲目排序
+    auto sort_fun = [&](const UTrackInfo& a, const UTrackInfo& b) {
+        SongInfo song_a{ CSongDataManager::GetInstance().GetSongInfo(a.song_key) };
+        SongInfo song_b{ CSongDataManager::GetInstance().GetSongInfo(b.song_key) };
+        switch (info.sort_mode)
+        {
+        case SM_U_FILE: return SongInfo::ByFileName(song_a, song_b);
+        case SM_D_FILE: return SongInfo::ByFileNameDecending(song_a, song_b);
+        case SM_U_PATH: return SongInfo::ByPath(song_a, song_b);
+        case SM_D_PATH: return SongInfo::ByPathDecending(song_a, song_b);
+        case SM_U_TITLE: return SongInfo::ByTitle(song_a, song_b);
+        case SM_D_TITLE: return SongInfo::ByTitleDecending(song_a, song_b);
+        case SM_U_ARTIST: return SongInfo::ByArtist(song_a, song_b);
+        case SM_D_ARTIST: return SongInfo::ByArtistDecending(song_a, song_b);
+        case SM_U_ALBUM: return SongInfo::ByAlbum(song_a, song_b);
+        case SM_D_ALBUM: return SongInfo::ByAlbumDecending(song_a, song_b);
+        case SM_U_TRACK: return SongInfo::ByTrack(song_a, song_b);
+        case SM_D_TRACK: return SongInfo::ByTrackDecending(song_a, song_b);
+        case SM_U_LISTEN: return SongInfo::ByListenTime(song_a, song_b);
+        case SM_D_LISTEN: return SongInfo::ByListenTimeDecending(song_a, song_b);
+        case SM_U_TIME: return SongInfo::ByModifiedTime(song_a, song_b);
+        case SM_D_TIME: return SongInfo::ByModifiedTimeDecending(song_a, song_b);
+        }
+    };
+    std::stable_sort(m_all_tracks_list.begin(), m_all_tracks_list.end(), sort_fun);
 
     m_loading = false;
     m_inited = true;

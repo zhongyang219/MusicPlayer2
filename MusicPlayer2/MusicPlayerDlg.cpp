@@ -1994,6 +1994,10 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     LoadConfig();
     LoadUiData();
 
+    CRecentFolderMgr::Instance().LoadData();
+    CPlaylistMgr::Instance().LoadPlaylistData();
+    CMediaLibPlaylistMgr::Instance().LoadPlaylistData();
+
     CMainDialogBase::OnInitDialog();
 
     theApp.UpdateMeidaLibItems();

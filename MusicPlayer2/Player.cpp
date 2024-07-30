@@ -101,9 +101,6 @@ void CPlayer::Create()
     AfterSetTrack();     // 预先设置一次标题
     IniPlayerCore();
     LoadConfig();
-    LoadRecentPath();
-    CPlaylistMgr::Instance().LoadPlaylistData();
-    CMediaLibPlaylistMgr::Instance().LoadPlaylistData();
     m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
     const PathInfo& path_info{ CRecentFolderMgr::Instance().GetCurrentItem() };
     bool change_to_default_playlist{ m_playlist_mode == PM_FOLDER && (CRecentFolderMgr::Instance().IsEmpty() || (!COSUPlayerHelper::IsOsuFolder(path_info.path) && !CAudioCommon::IsPathContainsAudioFile(path_info.path, path_info.contain_sub_folder)))};
@@ -134,8 +131,6 @@ void CPlayer::CreateWithFiles(const vector<wstring>& files)
     AfterSetTrack();
     IniPlayerCore();
     LoadConfig();
-    LoadRecentPath();
-    CPlaylistMgr::Instance().LoadPlaylistData();
     m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
     OpenFilesInDefaultPlaylist(files);
 }
@@ -145,8 +140,6 @@ void CPlayer::CreateWithPath(const wstring& path)
     AfterSetTrack();
     IniPlayerCore();
     LoadConfig();
-    LoadRecentPath();
-    CPlaylistMgr::Instance().LoadPlaylistData();
     m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
     OpenFolder(path);
 }
@@ -156,8 +149,6 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
     AfterSetTrack();
     IniPlayerCore();
     LoadConfig();
-    LoadRecentPath();
-    CPlaylistMgr::Instance().LoadPlaylistData();
     m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
     wstring playlist_path_{ playlist_path };
     OpenPlaylistFile(playlist_path_);
@@ -2226,14 +2217,6 @@ void CPlayer::OnExit()
     SaveConfig();
     //退出时保存最后播放的曲目和位置
     SaveRecentInfoToFiles();
-}
-
-void CPlayer::LoadRecentPath()
-{
-    if (!CRecentFolderMgr::Instance().LoadData())
-    {
-        m_path = L".\\songs\\";		//默认的路径
-    }
 }
 
 void CPlayer::SaveCurrentPlaylist()

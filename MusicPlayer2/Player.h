@@ -186,8 +186,6 @@ private:
     //应用一个均衡器通道的增益
     void ApplyEqualizer(int channel, int gain);
 
-    //从文件载入最近路径列表
-    void LoadRecentPath();
 public:
     void SaveCurrentPlaylist();
     //退出时的处理

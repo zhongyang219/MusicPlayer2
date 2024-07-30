@@ -92,8 +92,8 @@ private:
     static CUiAllTracksMgr m_instance;
 
     std::vector<UTrackInfo> m_all_tracks_list;  //所有曲目信息列表
-    bool m_loading{};
+    bool m_loading{};                       //如果正在初始化中，则为true
     int m_current_index{ -1 };              //正在播放的曲目在m_all_tracks_list中的序号
-    bool m_inited{};
+    bool m_inited{};                        //如果已经初始化过，则为true
     mutable std::shared_mutex m_shared_mutex;
 };
