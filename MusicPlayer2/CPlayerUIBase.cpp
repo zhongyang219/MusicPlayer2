@@ -1857,6 +1857,8 @@ void CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
 
     //绘制进度条
     DrawProgess(progress_rect);
+
+    ResetDrawArea();
 }
 
 void CPlayerUIBase::DrawProgess(CRect rect)
