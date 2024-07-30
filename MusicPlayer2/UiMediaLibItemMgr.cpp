@@ -314,6 +314,7 @@ void CUiAllTracksMgr::UpdateAllTracks()
         case SM_D_LISTEN: return SongInfo::ByListenTimeDecending(song_a, song_b);
         case SM_U_TIME: return SongInfo::ByModifiedTime(song_a, song_b);
         case SM_D_TIME: return SongInfo::ByModifiedTimeDecending(song_a, song_b);
+        default: return SongInfo::ByFileName(song_a, song_b);
         }
     };
     std::stable_sort(m_all_tracks_list.begin(), m_all_tracks_list.end(), sort_fun);
