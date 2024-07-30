@@ -2595,7 +2595,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                             {
                                 //计算按钮矩形区域
                                 CRect rect_btn{ rect_cell };
-                                rect_btn.left = rect_text.right + btn_size * k;
+                                rect_btn.left = rect_text.right + DPI(2) + btn_size * k;
                                 rect_btn.right = rect_btn.left + btn_size;
                                 rect_btn.top = rect_cell.top + (rect_cell.Height() - btn_size) / 2;
                                 rect_btn.bottom = rect_btn.top + btn_size;
@@ -2618,7 +2618,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                             {
                                 //计算按钮矩形区域
                                 CRect rect_icon{ rect_cell };
-                                rect_icon.left = rect_text.right + btn_size * k;
+                                rect_icon.left = rect_text.right + DPI(2) + btn_size * k;
                                 rect_icon.right = rect_icon.left + btn_size;
                                 rect_icon.top = rect_cell.top + (rect_cell.Height() - btn_size) / 2;
                                 rect_icon.bottom = rect_icon.top + btn_size;
