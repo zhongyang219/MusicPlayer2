@@ -1508,7 +1508,10 @@ IconMgr::IconType UiElement::Playlist::GetUnHoverIcon(int index, int row)
 
 int UiElement::Playlist::GetRowCount()
 {
-    return CPlayer::GetInstance().GetSongNum();
+    int song_num{ CPlayer::GetInstance().GetSongNum() };
+    if (song_num == 1 && CPlayer::GetInstance().GetPlayList()[0].IsEmpty())     //不显示播放列表为空时的占位符
+        song_num = 0;
+    return song_num;
 }
 
 std::wstring UiElement::RecentPlayedList::GetItemText(int row, int col)
