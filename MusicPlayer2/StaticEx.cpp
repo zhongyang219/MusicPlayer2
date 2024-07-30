@@ -79,7 +79,6 @@ void CStaticEx::OnPaint()
 		CPoint icon_left_top;
         icon_left_top.x = rc_tmp.left + (rc_tmp.Width() - icon_size.cx) / 2;
         icon_left_top.y = rc_tmp.top + (rc_tmp.Height() - icon_size.cy) / 2;
-		draw.SetDrawArea(rc_tmp);
         draw.DrawIcon(hIcon, icon_left_top, icon_size);
 	}
 

@@ -4,6 +4,7 @@
     <verticalLayout>
 
       <stackElement margin-bottom="12" show_indicator="true" indicator_offset="-4">
+        <!--第1页-->
         <verticalLayout>
           <navigationBar height="30" icon_type="icon_only" item_space="4" item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album,genre,year,file_type,bitrate,rating"/>
           <stackElement margin="8">
@@ -37,6 +38,7 @@
           </stackElement>
         </verticalLayout>
 
+        <!--第2页-->
         <horizontalLayout>
           <navigationBar width="100" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="10"
                       item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album,genre,year,file_type,bitrate,rating"/>
@@ -72,6 +74,7 @@
 
         </horizontalLayout>
 
+        <!--第3页-->
         <verticalLayout>
           <trackInfo height="28"/>
           <trackInfo font_size="10" height="28"/>
@@ -86,14 +89,17 @@
           </rectangle>
         </verticalLayout>
 
+        <!--第4页-->
         <verticalLayout margin-right="60">
-          <verticalLayout height="240">
-            <spectrum type="64col" margin="32"/>
-            <spectrum type="32col" margin="32"/>
-            <spectrum type="16col" margin="32"/>
-            <spectrum type="8col" margin="32"/>
-          </verticalLayout>
           <verticalLayout>
+            <spectrum type="64col" margin="8" min-height="40"/>
+            <spectrum type="32col" margin="8" min-height="40" width="50%"/>
+            <horizontalLayout min-height="40">
+              <spectrum type="16col" margin="8" min-height="40" width="25%"/>
+              <spectrum type="8col" margin="8" min-height="40" width="13%"/>
+            </horizontalLayout>
+          </verticalLayout>
+          <verticalLayout height="32">
             <horizontalLayout height="32">
               <button key="menu" height="28" margin="2" show_text="true" font_size="10"/>
               <button key="miniMode" height="28" margin="2" show_text="true"/>
@@ -121,6 +127,7 @@
         
       </stackElement>
 
+      <!--底部控制栏-->
       <rectangle height="100" no_corner_radius="true">
         <verticalLayout margin="6">
           <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>

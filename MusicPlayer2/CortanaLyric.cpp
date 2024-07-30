@@ -223,7 +223,6 @@ void CCortanaLyric::DrawInfo()
             //    rect.left += m_cover_width;
             //    m_draw.DrawRectTopFrame(rect, m_border_color);
             //}
-            CDrawCommon::SetDrawArea(m_pDC, m_cortana_rect);
         }
     }
 
@@ -319,7 +318,7 @@ void CCortanaLyric::DrawAlbumCover(const CImage & album_cover)
     if (m_enable)
     {
         CRect cover_rect = CoverRect();
-        m_draw.SetDrawArea(cover_rect);
+        DrawAreaGuard guard(&m_draw, cover_rect);
         if (album_cover.IsNull() || !m_show_album_cover)
         {
             if (theApp.m_lyric_setting_data.show_default_album_icon_in_search_box)
@@ -373,10 +372,9 @@ void CCortanaLyric::DrawSpectrum()
 	if (rc_spectrum.Height() > max_spectrum_height)
 		rc_spectrum.top = rc_spectrum.bottom - max_spectrum_height;
 
-    m_draw.SetDrawArea(rc_spectrum);
+    DrawAreaGuard guard(&m_draw, rc_spectrum);
     rc_spectrum.right += theApp.DPI(8);
     m_draw.DrawSpectrum(rc_spectrum, CUIDrawer::SC_64, false, theApp.m_app_setting_data.spectrum_low_freq_in_center, true);
-    m_draw.SetDrawArea(m_cortana_rect);
 }
 
 CRect CCortanaLyric::TextRect() const
@@ -472,7 +470,7 @@ void CCortanaLyric::AlbumCoverEnable(bool enable)
     if (last_enable && !enable && m_pDC != nullptr)
     {
         CRect cover_rect = CoverRect();
-        CDrawCommon::SetDrawArea(m_pDC, cover_rect);
+        DrawAreaGuard guard(&m_draw, cover_rect);
         m_pDC->FillSolidRect(cover_rect, m_colors.back_color);
     }
 }

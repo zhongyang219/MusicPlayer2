@@ -206,7 +206,6 @@ void CPlayerToolBar::OnPaint()
                     drawer.FillRect(rc_icon, back_color);
                 else
                 {
-                    drawer.SetDrawArea(rc_icon);
                     drawer.DrawRoundRect(rc_icon, back_color, theApp.DPI(3));
                 }
             }
@@ -227,7 +226,6 @@ void CPlayerToolBar::OnPaint()
                 rc_tmp.MoveToX(rc_tmp.left + theApp.DPI(1));
                 rc_tmp.MoveToY(rc_tmp.top + theApp.DPI(1));
             }
-            drawer.SetDrawArea(rc_tmp);
             drawer.DrawIcon(hIcon, rc_tmp.TopLeft(), rc_tmp.Size());
             //绘制文本
             if (draw_text)

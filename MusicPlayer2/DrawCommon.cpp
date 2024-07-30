@@ -74,10 +74,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
     if (m_pfont != nullptr)
         m_pDC->SelectObject(m_pfont);
     //设置绘图的剪辑区域
-    if (!no_clip_area)
-    {
-        SetDrawArea(m_pDC, rect);
-    }
+    DrawAreaGuard guard(this, rect, true, !no_clip_area);
     CSize text_size = m_pDC->GetTextExtent(lpszString);
     //用背景色填充矩形区域
     //m_pDC->FillSolidRect(rect, m_backColor);
@@ -120,10 +117,7 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1
     CSize text_size;    //文本的大小
     int text_top, text_left;        //输出文本的top和left位置
     //设置绘图的剪辑区域，防止文字输出超出控件区域
-    if (!no_clip_area)
-    {
-        SetDrawArea(m_pDC, rect);
-    }
+    DrawAreaGuard guard(this, rect, true, !no_clip_area);
     //获取文字的宽度和高度
     text_size = m_pDC->GetTextExtent(lpszString);
     //计算文字的起始坐标
@@ -199,10 +193,7 @@ void CDrawCommon::DrawScrollText(CRect rect, LPCTSTR lpszString, COLORREF color,
     CSize text_size;    //文本的大小
     int text_top, text_left;        //输出文本的top和left位置
     //设置绘图的剪辑区域，防止文字输出超出控件区域
-    if (!no_clip_area)
-    {
-        SetDrawArea(m_pDC, rect);
-    }
+    DrawAreaGuard guard(this, rect, true, !no_clip_area);
     //获取文字的宽度和高度
     text_size = m_pDC->GetTextExtent(lpszString);
     //计算文字的起始坐标
@@ -277,7 +268,7 @@ void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color
     CSize text_size;    //文本的大小
     int text_top, text_left;        //输出文本的top和left位置
     //设置绘图的剪辑区域，防止文字输出超出控件区域
-    SetDrawArea(m_pDC, rect);
+    DrawAreaGuard guard(this, rect, true);
     //获取文字的宽度和高度
     text_size = m_pDC->GetTextExtent(lpszString);
     //计算文字的起始坐标
@@ -331,25 +322,6 @@ void CDrawCommon::DrawScrollText2(CRect rect, LPCTSTR lpszString, COLORREF color
 //  BGBrush.DeleteObject();
 //}
 
-void CDrawCommon::SetDrawArea(CDC* pDC, CRect rect)
-{
-    CRgn rgn;
-    rgn.CreateRectRgnIndirect(rect);
-    pDC->SelectClipRgn(&rgn);
-}
-
-void CDrawCommon::SetDrawArea(CRect rect)
-{
-    if (m_pDC->GetSafeHdc() == NULL)
-        return;
-    CRgn rgn;
-    rgn.CreateRectRgnIndirect(rect);
-    m_pDC->SelectClipRgn(&rgn);
-
-    if (m_pGraphics != nullptr)
-        m_pGraphics->SetClip(CGdiPlusTool::CRectToGdiplusRect(rect));
-}
-
 void CDrawCommon::DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
     if (m_pDC->GetSafeHdc() == NULL)
@@ -366,7 +338,8 @@ void CDrawCommon::DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, St
     m_pDC->SetStretchBltMode(HALFTONE);
     m_pDC->SetBrushOrg(0, 0);
     //CSize draw_size;
-    ImageDrawAreaConvert(CSize(bm.bmWidth, bm.bmHeight), start_point, size, stretch_mode, no_clip_area);
+    DrawAreaGuard guard(this, CRect(start_point, size), true, !no_clip_area);
+    ImageDrawAreaConvert(CSize(bm.bmWidth, bm.bmHeight), start_point, size, stretch_mode);
     m_pDC->StretchBlt(start_point.x, start_point.y, size.cx, size.cy, &memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
     memDC.DeleteDC();
 }
@@ -392,28 +365,18 @@ void CDrawCommon::DrawImage(const CImage& image, CPoint start_point, CSize size,
     if (m_pDC->GetSafeHdc() == NULL)
         return;
     m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
-    if (!no_clip_area)
-    {
-        Gdiplus::Rect rect_clip = CGdiPlusTool::CRectToGdiplusRect(CRect(start_point, size));
-        m_pGraphics->SetClip(rect_clip);
-    }
-    ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode, no_clip_area);
+    DrawAreaGuard guard(this, CRect(start_point, size), false, !no_clip_area);
+    ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode);
     Gdiplus::Bitmap bm(image, NULL);
     m_pGraphics->DrawImage(&bm, INT(start_point.x), INT(start_point.y), INT(size.cx), INT(size.cy));
-    m_pGraphics->ResetClip();
 }
 
 void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
 {
     m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
-    if (!no_clip_area)
-    {
-        Gdiplus::Rect rect_clip = CGdiPlusTool::CRectToGdiplusRect(CRect(start_point, size));
-        m_pGraphics->SetClip(rect_clip);
-    }
-    ImageDrawAreaConvert(CSize(pImage->GetWidth(), pImage->GetHeight()), start_point, size, stretch_mode, no_clip_area);
+    DrawAreaGuard guard(this, CRect(start_point, size), false, !no_clip_area);
+    ImageDrawAreaConvert(CSize(pImage->GetWidth(), pImage->GetHeight()), start_point, size, stretch_mode);
     m_pGraphics->DrawImage(pImage, INT(start_point.x), INT(start_point.y), INT(size.cx), INT(size.cy));
-    m_pGraphics->ResetClip();
 }
 
 void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
@@ -446,8 +409,7 @@ void CDrawCommon::FillRect(CRect rect, COLORREF color, bool no_clip_area)
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return;
-    if (!no_clip_area)
-        SetDrawArea(m_pDC, rect);
+    DrawAreaGuard guard(this, rect, true, !no_clip_area);
     m_pDC->FillSolidRect(rect, color);
 }
 
@@ -457,8 +419,7 @@ void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_
         return;
     if (alpha == 0)
         return;
-    if (!no_clip_area)
-        SetDrawArea(m_pDC, rect);
+    DrawAreaGuard guard(this, rect, true, !no_clip_area);
     if (alpha == 255)
     {
         FillRect(rect, color, no_clip_area);
@@ -495,7 +456,7 @@ void CDrawCommon::DrawRectTopFrame(CRect rect, COLORREF color, int pilex)
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return;
-    SetDrawArea(m_pDC, rect);
+    DrawAreaGuard guard(this, rect, true);
     CPen aPen, * pOldPen;
     aPen.CreatePen(PS_SOLID, pilex, color);
     pOldPen = m_pDC->SelectObject(&aPen);
@@ -774,7 +735,7 @@ void CDrawCommon::SaveBitmap(HBITMAP bitmap, LPCTSTR path)
     img_tmp.Detach();
 }
 
-void CDrawCommon::ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode, bool no_clip_area)
+void CDrawCommon::ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CSize& size, StretchMode stretch_mode)
 {
     if (size.cx == 0 || size.cy == 0)       //如果指定的size为0，则使用位图的实际大小绘制
     {
@@ -784,8 +745,6 @@ void CDrawCommon::ImageDrawAreaConvert(CSize image_size, CPoint& start_point, CS
     {
         if (stretch_mode == StretchMode::FILL)
         {
-            if (!no_clip_area)
-                SetDrawArea(m_pDC, CRect(start_point, size));
             float w_h_ratio, w_h_ratio_draw;        //图像的宽高比、绘制大小的宽高比
             w_h_ratio = static_cast<float>(image_size.cx) / image_size.cy;
             w_h_ratio_draw = static_cast<float>(size.cx) / size.cy;
@@ -835,4 +794,39 @@ CRect CDrawCommon::CalculateCenterIconRect(CRect rect, int icon_size)
     rc_icon.right = rc_icon.left + icon_size;
     rc_icon.bottom = rc_icon.top + icon_size;
     return rc_icon;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+CRect DrawAreaGuard::SetDrawArea(CRect rect, bool gdi_only)
+{
+    //如果设置的绘图区域为空，则清除绘图区域
+    if (rect.IsRectEmpty())
+        ResetDrawArea(gdi_only);
+
+    CRect old_rect{};
+    //设置GDI绘图区域
+    if (m_drawer->m_pDC->GetSafeHdc() != NULL)
+    {
+        m_drawer->m_pDC->GetClipBox(&old_rect);     //获取上次的绘图区域
+
+        CRgn rgn;
+        rgn.CreateRectRgnIndirect(rect);
+        m_drawer->m_pDC->SelectClipRgn(&rgn);
+    }
+
+    //设置GDI+绘图区域
+    if (!gdi_only && m_drawer->m_pGraphics != nullptr)
+        m_drawer->m_pGraphics->SetClip(CGdiPlusTool::CRectToGdiplusRect(rect));
+
+    return old_rect;
+}
+
+void DrawAreaGuard::ResetDrawArea(bool gdi_only)
+{
+    if (m_drawer->m_pDC->GetSafeHdc() != NULL)
+        m_drawer->m_pDC->SelectClipRgn(nullptr);
+
+    if (!gdi_only && m_drawer->m_pGraphics != nullptr)
+        m_drawer->m_pGraphics->ResetClip();
 }

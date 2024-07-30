@@ -21,7 +21,7 @@ void CUIDrawer::SetLyricFont(CFont* lyric_font, CFont* lyric_tr_font)
 
 void CUIDrawer::DrawLryicCommon(CRect rect, Alignment align, bool show_song_info)
 {
-    SetDrawArea(rect);
+    DrawAreaGuard guard(this, rect);
     static int flag{};
     if (!IsDrawMultiLine(rect.Height()))
         DrawLyricTextSingleLine(rect, flag, true, align, show_song_info);
@@ -250,7 +250,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
     }
     else
     {
-        SetDrawArea(rect);
+        DrawAreaGuard guard(this, rect);
         CRect lyric_rect = rect;
 
         static const wstring& empty_lyric = theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE");
@@ -347,8 +347,7 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
     if (width < 1)
         width = 1;
 
-    if (fixed_width)
-        SetDrawArea(rect);
+    DrawAreaGuard guard(this, rect, true, fixed_width);
     DrawSpectrum(rect, width, gap_width, cols, m_colors.color_spectrum, draw_reflex, low_freq_in_center, alignment);
 }
 

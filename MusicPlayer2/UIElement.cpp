@@ -580,7 +580,6 @@ void UiElement::StackElement::Draw()
         //绘制指示器
         ui->DrawStackIndicator(indicator, childLst.size(), cur_index);
     }
-    ui->ResetDrawArea();
 }
 
 int UiElement::StackElement::GetCurIndex() const
@@ -618,7 +617,6 @@ void UiElement::Rectangle::Draw()
 {
     CalculateRect();
     ui->DrawRectangle(rect, no_corner_radius, theme_color, color_mode);
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -640,7 +638,6 @@ void UiElement::Button::Draw()
         ui->DrawUIButton(rect, key, big_icon, show_text, font_size);
         break;
     }
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -775,7 +772,6 @@ void UiElement::Text::Draw()
         }
     }
 
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -853,7 +849,6 @@ void UiElement::AlbumCover::Draw()
         ui->DrawAlbumCoverWithInfo(rect);
     else
         ui->DrawAlbumCover(rect);
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -884,9 +879,7 @@ void UiElement::Spectrum::Draw()
     CalculateRect();
     if (theApp.m_app_setting_data.show_spectrum)
     {
-        ui->ResetDrawArea();
         ui->m_draw.DrawSpectrum(rect, type, draw_reflex, theApp.m_app_setting_data.spectrum_low_freq_in_center, fixed_width, align);
-        ui->ResetDrawArea();
         Element::Draw();
     }
 }
@@ -902,7 +895,6 @@ void UiElement::TrackInfo::Draw()
 {
     CalculateRect();
     ui->DrawSongInfo(rect, font_size);
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -910,7 +902,6 @@ void UiElement::Toolbar::Draw()
 {
     CalculateRect();
     ui->DrawToolBarWithoutBackground(rect, show_translate_btn);
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -925,7 +916,6 @@ void UiElement::ProgressBar::Draw()
     {
         ui->DrawProgess(rect);
     }
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -971,7 +961,6 @@ void UiElement::Lyrics::Draw()
     //如果父元素中包含了矩形元素，则即使在“外观设置”中勾选了“歌词界面背景”，也不再为歌词区域绘制半透明背景
     ui->DrawLyrics(rect, lyric_font, lyric_tr_font, (!no_background && !IsParentRectangle()), show_song_info);
 
-    ui->ResetDrawArea();
     ui->m_draw_data.lyric_rect = rect;
     Element::Draw();
 }
@@ -998,7 +987,6 @@ void UiElement::Volume::Draw()
 {
     CalculateRect();
     ui->DrawVolumeButton(rect, adj_btn_on_top, show_text);
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -1006,7 +994,6 @@ void UiElement::BeatIndicator::Draw()
 {
     CalculateRect();
     ui->DrawBeatIndicator(rect);
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -1016,7 +1003,6 @@ void UiElement::ListElement::Draw()
     RestrictOffset();
     CalculateItemRects();
     ui->DrawList(rect, this, ItemHeight());
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -1798,7 +1784,6 @@ void UiElement::PlaylistIndicator::Draw()
 {
     CalculateRect();
     ui->DrawCurrentPlaylistIndicator(rect, this);
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -1867,7 +1852,6 @@ void UiElement::ClassicalControlBar::Draw()
     CalculateRect();
 
     ui->DrawControlBar(rect, show_switch_display_btn);
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
@@ -2578,7 +2562,6 @@ IconMgr::IconType UiElement::AllTracksList::GetUnHoverIcon(int index, int row)
 void UiElement::MiniSpectrum::Draw()
 {
     ui->DrawMiniSpectrum(rect);
-    ui->ResetDrawArea();
     Element::Draw();
 }
 
