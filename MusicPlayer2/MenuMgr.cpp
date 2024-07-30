@@ -287,7 +287,7 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
         return L"LIB_PLAYLIST";
     case MenuMgr::LibLeftMenu: case MenuMgr::UiLibLeftMenu:
         return L"LIB_LEFT";
-    case MenuMgr::LibRightMenu: case MenuMgr::UiMyFavouriteMenu:
+    case MenuMgr::LibRightMenu: case MenuMgr::UiMyFavouriteMenu: case MenuMgr::LibPlaylistRightMenu:
         return L"LIB_RIGHT";
     case MenuMgr::UiRecentPlayedMenu:
         return L"UI_RECENT_PLAYED";
@@ -817,6 +817,25 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_FORMAT_CONVERT), IconMgr::IconType::IT_Convert);
         menu.AppendItem(EX_ID(ID_EXPLORE_TRACK), IconMgr::IconType::IT_Folder_Explore);
         menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_ITEM_PROPERTY), IconMgr::IconType::IT_Info);
+        menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
+        break;
+    case MenuMgr::LibPlaylistRightMenu:
+        menu.CreateMenu(true, false);
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM), IconMgr::IconType::IT_Play);
+        menu.SetDefaultItem();
+        menu.AppendItem(EX_ID(ID_PLAY_AS_NEXT), IconMgr::IconType::IT_Play_As_Next);
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM_IN_FOLDER_MODE), IconMgr::IconType::IT_Play_In_Folder);
+        menu.AppendSeparator();
+        menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
+        menu.AppendItem(EX_ID(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY), IconMgr::IconType::IT_Play_In_Playlist);
+        menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
+        menu.AppendItem(EX_ID(ID_FORMAT_CONVERT), IconMgr::IconType::IT_Convert);
+        menu.AppendItem(EX_ID(ID_EXPLORE_TRACK), IconMgr::IconType::IT_Folder_Explore);
+        menu.AppendItem(EX_ID(ID_REMOVE_FROM_PLAYLIST), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK));
         menu.AppendItem(EX_ID(ID_ITEM_PROPERTY), IconMgr::IconType::IT_Info);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);

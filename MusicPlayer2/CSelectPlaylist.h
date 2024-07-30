@@ -132,4 +132,5 @@ public:
     afx_msg void OnPlaylistSaveAs();
     afx_msg void OnPlaylistFixPathError();
     afx_msg void OnPlaylistBrowseFile();
+    afx_msg void OnRemoveFromPlaylist();
 };

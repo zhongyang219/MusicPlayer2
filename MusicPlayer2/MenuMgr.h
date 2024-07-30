@@ -60,6 +60,7 @@ public:
         LibPlaylistMenu,                    // 媒体库播放列表标签页菜单
         LibLeftMenu,                        // 媒体库左侧菜单
         LibRightMenu,                       // 媒体库右侧菜单
+        LibPlaylistRightMenu,               // 媒体库播放列表右侧菜单
         UiLibLeftMenu,                      // UI中媒体库列表菜单
         UiRecentPlayedMenu,                 // UI中最近播放列表菜单
         UiLibSetPathMenu,                   // UI中文件夹标签页菜单

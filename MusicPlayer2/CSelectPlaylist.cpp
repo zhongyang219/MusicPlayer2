@@ -250,6 +250,7 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)
     ON_COMMAND(ID_PLAYLIST_SAVE_AS, &CSelectPlaylistDlg::OnPlaylistSaveAs)
     ON_COMMAND(ID_PLAYLIST_FIX_PATH_ERROR, &CSelectPlaylistDlg::OnPlaylistFixPathError)
     ON_COMMAND(ID_PLAYLIST_BROWSE_FILE, &CSelectPlaylistDlg::OnPlaylistBrowseFile)
+    ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CSelectPlaylistDlg::OnRemoveFromPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -634,7 +635,7 @@ void CSelectPlaylistDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
     if (!m_right_selected_items.empty())
     {
         //弹出右键菜单
-        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistRightMenu);
         ASSERT(pMenu != nullptr);
         if (pMenu != nullptr)
         {
@@ -701,5 +702,18 @@ void CSelectPlaylistDlg::OnPlaylistBrowseFile()
         CString str;
         str.Format(_T("/select,\"%s\""), playlist_info.path.c_str());
         ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
+    }
+}
+
+
+void CSelectPlaylistDlg::OnRemoveFromPlaylist()
+{
+    vector<SongInfo> songs_selected;
+    GetSongsSelected(songs_selected);
+    PlaylistInfo playlist_info{ GetSelectedPlaylist() };
+    CMusicPlayerCmdHelper helper;
+    if (helper.OnRemoveFromPlaylist(songs_selected, playlist_info.path));
+    {
+        ShowSongList();
     }
 }
