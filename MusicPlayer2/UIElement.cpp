@@ -923,39 +923,14 @@ void UiElement::Lyrics::Draw()
 {
     CalculateRect();
 
-    CFont* lyric_font = &theApp.m_font_set.lyric.GetFont(theApp.m_ui_data.full_screen);
-    CFont* lyric_tr_font = &theApp.m_font_set.lyric_translate.GetFont(theApp.m_ui_data.full_screen);
+    bool big_font = theApp.m_ui_data.full_screen;
+    CFont* lyric_font = &theApp.m_font_set.lyric.GetFont(big_font);
+    CFont* lyric_tr_font = &theApp.m_font_set.lyric_translate.GetFont(big_font);
 
     if (use_default_font)   // 目前这个bool有些冗余，当字体与字号在m_font_set中解耦后有用
     {
-        bool big_font = theApp.m_ui_data.full_screen;
-        switch (font_size)
-        {
-        case 8:
-            lyric_font = &theApp.m_font_set.font8.GetFont(big_font);
-            lyric_tr_font = &theApp.m_font_set.font8.GetFont(big_font);
-            break;
-        case 9:
-            lyric_font = &theApp.m_font_set.font9.GetFont(big_font);
-            lyric_tr_font = &theApp.m_font_set.font8.GetFont(big_font);
-            break;
-        case 10:
-            lyric_font = &theApp.m_font_set.font10.GetFont(big_font);
-            lyric_tr_font = &theApp.m_font_set.font9.GetFont(big_font);
-            break;
-        case 11:
-            lyric_font = &theApp.m_font_set.font11.GetFont(big_font);
-            lyric_tr_font = &theApp.m_font_set.font10.GetFont(big_font);
-            break;
-        case 12:
-            lyric_font = &theApp.m_font_set.font12.GetFont(big_font);
-            lyric_tr_font = &theApp.m_font_set.font11.GetFont(big_font);
-            break;
-        default:
-            lyric_font = &theApp.m_font_set.font9.GetFont(big_font);
-            lyric_tr_font = &theApp.m_font_set.font8.GetFont(big_font);
-            break;
-        }
+        lyric_font = &theApp.m_font_set.GetFontBySize(font_size).GetFont(big_font);
+        lyric_tr_font = &theApp.m_font_set.GetFontBySize(font_size - 1).GetFont(big_font);
     }
 
     //如果父元素中包含了矩形元素，则即使在“外观设置”中勾选了“歌词界面背景”，也不再为歌词区域绘制半透明背景

@@ -76,7 +76,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align, bool s
     CFont* pOldFont = SetFont(m_lyric_font);
     if (CPlayer::GetInstance().IsPlaylistEmpty())   //当前播放为空时在歌词区域显示播放提示
     {
-        CFont* font = SetFont(&theApp.m_font_set.font10.GetFont());
+        CFont* font = SetFont(&theApp.m_font_set.GetFontBySize(10).GetFont());
         wstring no_track_tip_str = theApp.m_str_table.LoadTextFormat(L"UI_LYRIC_NO_TRACKS_TIP", {
             theApp.m_accelerator_res.GetShortcutDescriptionById(ID_SHOW_PLAYLIST),
             theApp.m_accelerator_res.GetShortcutDescriptionById(ID_FILE_OPEN),

@@ -119,13 +119,9 @@ public:
 
 struct FontSet
 {
-    UIFont font9;				//普通的字体
-    UIFont font8;				//显示播放时间
-    UIFont font10;				//界面2的歌曲标题
-    UIFont font11;
-    UIFont font12;           //界面4的歌曲标题
-    UIFont font14;
-    UIFont font16;
+    const int FONT_SIZE_MIN{ 8 };
+    const int FONT_SIZE_MAX{ 16 };
+    std::map<int, UIFont> fonts;    //不同大小的默认字体
 
     UIFont dlg;                 // 窗口控件字体
     UIFont lyric;				//歌词字体
@@ -135,6 +131,8 @@ struct FontSet
 
 
     void Init(LPCTSTR font_name);
+
+    //获取一个指定大小的字体（目前支持8~16）
     UIFont& GetFontBySize(int font_size);
 
 };

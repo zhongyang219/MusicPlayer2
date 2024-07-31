@@ -85,7 +85,7 @@
           <!--<placeHolder height="24" hide-height="200"/>-->
           <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
           <rectangle proportion="1">
-            <lyrics margin="8"/>
+            <lyrics margin="8" use_default_font="true" font_size="9"/>
           </rectangle>
         </verticalLayout>
 

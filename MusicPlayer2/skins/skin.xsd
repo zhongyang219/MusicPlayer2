@@ -14,14 +14,9 @@
     </xs:simpleType>
     <xs:simpleType name="font_size">
       <xs:restriction base="xs:int">
-        <!--只允许8~12,14,16的整数-->
-        <xs:enumeration value="8"></xs:enumeration>
-        <xs:enumeration value="9"></xs:enumeration>
-        <xs:enumeration value="10"></xs:enumeration>
-        <xs:enumeration value="11"></xs:enumeration>
-        <xs:enumeration value="12"></xs:enumeration>
-        <xs:enumeration value="14"></xs:enumeration>
-        <xs:enumeration value="16"></xs:enumeration>
+        <!--只允许8~16的整数-->
+        <xs:minInclusive value = "8"/>
+        <xs:maxInclusive value = "16"/>
       </xs:restriction>
     </xs:simpleType>
     <xs:attributeGroup name="sharedattr"><!--定义属性组 sharedattr-->
@@ -129,7 +124,7 @@
       </xs:attribute>
       <xs:attribute name="font_size" default="9" type="font_size">
         <xs:annotation>
-          <xs:documentation>字体大小，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+          <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
     </xs:attributeGroup>
@@ -483,7 +478,7 @@
       </xs:attribute>
       <xs:attribute name="font_size" default="9" type="font_size">
         <xs:annotation>
-          <xs:documentation>字体大小，use_default_font为true时有效，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+          <xs:documentation>字体大小，use_default_font为true时有效，仅支持8~16。默认大小为9。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
@@ -602,7 +597,7 @@
         </xs:attribute>
         <xs:attribute name="font_size" default="9" type="font_size">
             <xs:annotation>
-                <xs:documentation>字体大小，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+                <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="width_follow_text" type="xs:boolean" default="false">
@@ -714,7 +709,7 @@
       <xs:group ref="elements"></xs:group>
       <xs:attribute name="font_size" default="9" type="font_size">
         <xs:annotation>
-          <xs:documentation>字体大小，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+          <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
@@ -767,7 +762,7 @@
         </xs:attribute>
         <xs:attribute name="font_size" default="9" type="font_size">
           <xs:annotation>
-            <xs:documentation>歌词字体大小，use_default_font为true时有效，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+            <xs:documentation>歌词字体大小，use_default_font为true时有效，仅支持8~16。默认大小为9。</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="show_song_info" type="xs:boolean" default="false">
@@ -836,7 +831,7 @@
       <xs:group ref="elements"></xs:group>
       <xs:attribute name="font_size" default="9" type="font_size">
         <xs:annotation>
-          <xs:documentation>字体大小，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+          <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
@@ -971,7 +966,7 @@
       </xs:attribute>
       <xs:attribute name="font_size" default="9" type="font_size">
         <xs:annotation>
-          <xs:documentation>字体大小，仅支持8~12,14,16。默认大小为9。</xs:documentation>
+          <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
