@@ -17,6 +17,7 @@ struct PlaylistInfo
     int track_num{};		//路径中音频文件的数量
     int total_time{};		//路径中音频文件的总时间
     unsigned __int64 last_played_time{};    //上次播放的时间
+    unsigned __int64 create_time{};         //创建时间
 };
 
 class CPlaylistMgr
@@ -28,6 +29,15 @@ public:
     enum
     {
         SPEC_PLAYLIST_NUM = 2       //特殊播放列表的个数（这里是2，默认播放列表和我喜欢的播放列表）
+    };
+
+    //播放列表排序方式
+    enum SortMode
+    {
+        SM_UNSORTED,        //未排序
+        SM_RECENT_PLAYED,   //最近播放
+        SM_RECENT_CREATED,  //最近创建
+        SM_NAME             //名称
     };
 
     void Init();
@@ -76,9 +86,13 @@ public:
 
     bool ResetLastPlayedTime(const wstring& path);     //将上次播放时间清空，使它从“最近播放”中移除
 
+    bool SetSortMode(SortMode sort_mode);
+    SortMode GetSortMode() const;
+
 private:
     CPlaylistMgr();
     const PlaylistInfo& GetPlaylistInfo(int index);
+    void SortPlaylist();
 
     static CPlaylistMgr m_instance;     //CPlaylistMgr类唯一的对象
     PlaylistInfo m_default_playlist;
@@ -86,5 +100,6 @@ private:
     PlaylistInfo m_temp_playlist;
     std::deque<PlaylistInfo> m_recent_playlists;
     PlaylistType m_cur_playlist_type{ PT_DEFAULT };
+    SortMode m_sort_mode{ SM_UNSORTED };
     mutable std::shared_mutex m_shared_mutex;
 };

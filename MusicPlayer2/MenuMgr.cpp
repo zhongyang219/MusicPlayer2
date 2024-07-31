@@ -291,6 +291,8 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
         return L"LIB_RIGHT";
     case MenuMgr::UiRecentPlayedMenu:
         return L"UI_RECENT_PLAYED";
+    case MenuMgr::LibPlaylistSortMenu:
+        return L"LIB_PLAYLIST_SORT";
     case MenuMgr::LeMenu:
         return L"LE";
     case MenuMgr::LeFileMenu:
@@ -885,6 +887,12 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_ITEM_PROPERTY), IconMgr::IconType::IT_Info);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
+        break;
+    case MenuMgr::LibPlaylistSortMenu:
+        menu.CreateMenu(true, false);
+        menu.AppendItem(EX_ID(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED));
+        menu.AppendItem(EX_ID(ID_LIB_PLAYLIST_SORT_RECENT_CREATED));
+        menu.AppendItem(EX_ID(ID_LIB_PLAYLIST_SORT_NAME));
         break;
     case MenuMgr::LeMenu:
         menu.CreateMenu(false, false);

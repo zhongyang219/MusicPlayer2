@@ -133,4 +133,8 @@ public:
     afx_msg void OnPlaylistFixPathError();
     afx_msg void OnPlaylistBrowseFile();
     afx_msg void OnRemoveFromPlaylist();
+    afx_msg void OnBnClickedSortButton();
+    afx_msg void OnLibPlaylistSortRecentPlayed();
+    afx_msg void OnLibPlaylistSortRecentCreated();
+    afx_msg void OnLibPlaylistSortName();
 };

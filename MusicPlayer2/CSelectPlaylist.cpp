@@ -215,16 +215,16 @@ void CSelectPlaylistDlg::OnTabEntered()
 
 bool CSelectPlaylistDlg::InitializeControls()
 {
-    wstring temp;
-    temp = theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_NEW_PLAYLIST");
-    SetDlgItemTextW(IDC_NEW_PLAYLIST, temp.c_str());
+    SetDlgControlText(IDC_NEW_PLAYLIST, L"TXT_LIB_PLAYLIST_NEW_PLAYLIST");
+    SetDlgControlText(IDC_SORT_BUTTON, L"TXT_LIB_PLAYLIST_SORT");
     // IDC_SEARCH_EDIT
     // IDC_LIST1
     // IDC_HSPLITER_STATIC
     // IDC_SONG_LIST
 
     RepositionTextBasedControls({
-        { CtrlTextInfo::L1, IDC_NEW_PLAYLIST, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L2, IDC_NEW_PLAYLIST, CtrlTextInfo::W32 },
+        { CtrlTextInfo::L1, IDC_SORT_BUTTON, CtrlTextInfo::W32 },
         { CtrlTextInfo::R1, IDC_SEARCH_EDIT }
         });
     return true;
@@ -251,6 +251,10 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)
     ON_COMMAND(ID_PLAYLIST_FIX_PATH_ERROR, &CSelectPlaylistDlg::OnPlaylistFixPathError)
     ON_COMMAND(ID_PLAYLIST_BROWSE_FILE, &CSelectPlaylistDlg::OnPlaylistBrowseFile)
     ON_COMMAND(ID_REMOVE_FROM_PLAYLIST, &CSelectPlaylistDlg::OnRemoveFromPlaylist)
+    ON_BN_CLICKED(IDC_SORT_BUTTON, &CSelectPlaylistDlg::OnBnClickedSortButton)
+    ON_COMMAND(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, &CSelectPlaylistDlg::OnLibPlaylistSortRecentPlayed)
+    ON_COMMAND(ID_LIB_PLAYLIST_SORT_RECENT_CREATED, &CSelectPlaylistDlg::OnLibPlaylistSortRecentCreated)
+    ON_COMMAND(ID_LIB_PLAYLIST_SORT_NAME, &CSelectPlaylistDlg::OnLibPlaylistSortName)
 END_MESSAGE_MAP()
 
 
@@ -264,6 +268,7 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     // TODO:  在此添加额外的初始化
 
     SetButtonIcon(IDC_NEW_PLAYLIST, IconMgr::IconType::IT_Add);
+    SetButtonIcon(IDC_SORT_BUTTON, IconMgr::IconType::IT_Sort_Mode);
 
     //初始化播放列表控件
     vector<int> width;
@@ -544,6 +549,14 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_PLAYLIST_SAVE_AS, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_FIX_PATH_ERROR, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_BROWSE_FILE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+
+    switch (CPlaylistMgr::Instance().GetSortMode())
+    {
+    case CPlaylistMgr::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CPlaylistMgr::SM_RECENT_CREATED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_CREATED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CPlaylistMgr::SM_NAME: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_NAME, MF_BYCOMMAND | MF_CHECKED); break;
+    }
+
 }
 
 
@@ -715,5 +728,49 @@ void CSelectPlaylistDlg::OnRemoveFromPlaylist()
     if (helper.OnRemoveFromPlaylist(songs_selected, playlist_info.path));
     {
         ShowSongList();
+    }
+}
+
+
+void CSelectPlaylistDlg::OnBnClickedSortButton()
+{
+    CWnd* pBtn = GetDlgItem(IDC_SORT_BUTTON);
+    CPoint point;
+    if (pBtn != nullptr)
+    {
+        CRect rect;
+        pBtn->GetWindowRect(rect);
+        point.x = rect.left;
+        point.y = rect.bottom;
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistSortMenu);
+        if (pMenu != NULL)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+    }
+}
+
+
+void CSelectPlaylistDlg::OnLibPlaylistSortRecentPlayed()
+{
+    if (CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_PLAYED))
+    {
+        ShowPathList();
+    }
+}
+
+
+void CSelectPlaylistDlg::OnLibPlaylistSortRecentCreated()
+{
+    if (CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_CREATED))
+    {
+        ShowPathList();
+    }
+}
+
+
+void CSelectPlaylistDlg::OnLibPlaylistSortName()
+{
+    if (CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_NAME))
+    {
+        ShowPathList();
     }
 }

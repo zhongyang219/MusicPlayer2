@@ -480,6 +480,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"hot_key", L"hot_key_enable", theApp.m_hot_key_setting_data.hot_key_enable);
     m_hot_key.SaveToTni(ini);
 
+    ini.WriteInt(L"other", L"playlist_sort_mode", CPlaylistMgr::Instance().GetSortMode());
+
     //保存桌面歌词预设
     m_desktop_lyric.SaveDefaultStyle(ini);
 
@@ -689,6 +691,9 @@ void CMusicPlayerDlg::LoadConfig()
             ui_selected = 0;
     }
     SelectUi(ui_selected);
+
+    CPlaylistMgr::SortMode playlist_sort_mode = static_cast<CPlaylistMgr::SortMode>(ini.GetInt(L"other", L"playlist_sort_mode", CPlaylistMgr::SM_RECENT_PLAYED));
+    CPlaylistMgr::Instance().SetSortMode(playlist_sort_mode);
 
     //载入热键设置
     theApp.m_hot_key_setting_data.hot_key_enable = ini.GetBool(L"hot_key", L"hot_key_enable", true);
