@@ -1089,6 +1089,26 @@ bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const std::vector<SongInfo>& so
     return false;
 }
 
+bool CMusicPlayerCmdHelper::OnRemoveFromCurrentPlaylist(const std::vector<int>& indexs)
+{
+    if (CPlayer::GetInstance().IsPlaylistMode())
+    {
+        std::wstring playlist_name = CPlaylistMgr::GetPlaylistDisplayName(CPlayer::GetInstance().GetPlaylistPath());
+        std::wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_REMOVE_FROM_PLAYLIST_INQUIRY", { playlist_name, indexs.size() });
+        if (GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+        {
+            CPlayer::GetInstance().RemoveSongs(indexs);
+
+            //如果是我喜欢的曲目，则需要更新UI中的显示
+            if (CPlayer::GetInstance().GetPlaylistPath() == theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME)
+                CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
+
+            return true;
+        }
+    }
+    return false;
+}
+
 void CMusicPlayerCmdHelper::OnPlayMyFavourite(int index)
 {
     bool ok = CPlayer::GetInstance().SetPlaylist(theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME, index, 0, true, true);

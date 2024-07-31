@@ -5204,8 +5204,9 @@ void CMusicPlayerDlg::OnPlaylistAddFile()
 void CMusicPlayerDlg::OnRemoveFromPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().RemoveSongs(m_items_selected);
-    ShowPlayList(false);
+    CMusicPlayerCmdHelper helper(this);
+    if (helper.OnRemoveFromCurrentPlaylist(m_items_selected))
+        ShowPlayList(false);
 }
 
 
@@ -5246,6 +5247,7 @@ void CMusicPlayerDlg::OnMovePlaylistItemUp()
             m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(first - 1, last - 1);
             m_pFloatPlaylistDlg->GetPlaylistItemSelected();
         }
+        SetUiPlaylistSelected(first - 1);
     }
 }
 
@@ -5275,6 +5277,7 @@ void CMusicPlayerDlg::OnMovePlaylistItemDown()
             m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(first + 1, last + 1);
             m_pFloatPlaylistDlg->GetPlaylistItemSelected();
         }
+        SetUiPlaylistSelected(first + 1);
     }
 }
 
