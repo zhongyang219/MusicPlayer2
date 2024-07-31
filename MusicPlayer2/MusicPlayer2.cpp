@@ -640,12 +640,10 @@ void CMusicPlayerApp::StartUpdateMediaLib(bool force)
                 }
                 CMusicPlayerCmdHelper::UpdateMediaLib();
                 theApp.m_media_lib_updating = false;
-                if (theApp.m_media_update_para.num_added > 0)
-                {
-                    //如果媒体库更新完成后有新增的音频文件，则更新UI中所有曲目和媒体库项目列表
-                    CUiAllTracksMgr::Instance().UpdateAllTracks();
-                    CUiMediaLibItemMgr::Instance().Init();
-                }
+                //更新UI中我喜欢的音乐、所有曲目和媒体库项目列表
+                CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
+                CUiAllTracksMgr::Instance().UpdateAllTracks();
+                CUiMediaLibItemMgr::Instance().Init();
                 return 0;
             }, nullptr);
     }
@@ -834,13 +832,14 @@ UINT CMusicPlayerApp::LastFMScrobbleFunProc(LPVOID lpParam) {
 
 void CMusicPlayerApp::UpdateUiMeidaLibItems()
 {
-    AfxBeginThread(UpdateUiMediaLibItemsProc, (LPVOID)NULL);
-}
-
-UINT CMusicPlayerApp::UpdateUiMediaLibItemsProc(LPVOID lpParam)
-{
-    CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
-    CUiAllTracksMgr::Instance().UpdateAllTracks();
-    CUiMediaLibItemMgr::Instance().Init();
-    return 0;
+    AfxBeginThread([](LPVOID lpParam)->UINT {
+        //如果没有设置“启动时更新媒体库”，才在这里更新Ui中所有曲目和媒体库项目列表，否则在StartUpdateMediaLib中更新
+        if (!theApp.m_media_lib_setting_data.update_media_lib_when_start_up)
+        {
+            CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
+            CUiAllTracksMgr::Instance().UpdateAllTracks();
+            CUiMediaLibItemMgr::Instance().Init();
+        }
+        return 0;
+    }, (LPVOID)NULL);
 }

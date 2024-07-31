@@ -142,7 +142,6 @@ private:
     static UINT UpdateLastFMNowPlayingFunProc(LPVOID lpParam);
     static UINT UpdateLastFMFavouriteFunProc(LPVOID lpParam);
     static UINT LastFMScrobbleFunProc(LPVOID lpParam);
-    static UINT UpdateUiMediaLibItemsProc(LPVOID lpParam);
 
 private:
     HHOOK m_multimedia_key_hook = NULL;
