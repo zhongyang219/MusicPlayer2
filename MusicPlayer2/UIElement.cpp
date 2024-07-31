@@ -1027,7 +1027,7 @@ void UiElement::ListElement::LButtonDown(CPoint point)
     else
     {
         mouse_pressed = false;
-        item_selected = -1;
+        //item_selected = -1;
     }
 }
 
