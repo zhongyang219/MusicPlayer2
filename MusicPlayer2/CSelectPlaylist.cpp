@@ -725,7 +725,7 @@ void CSelectPlaylistDlg::OnRemoveFromPlaylist()
     GetSongsSelected(songs_selected);
     PlaylistInfo playlist_info{ GetSelectedPlaylist() };
     CMusicPlayerCmdHelper helper;
-    if (helper.OnRemoveFromPlaylist(songs_selected, playlist_info.path));
+    if (helper.OnRemoveFromPlaylist(songs_selected, playlist_info.path))
     {
         ShowSongList();
     }
