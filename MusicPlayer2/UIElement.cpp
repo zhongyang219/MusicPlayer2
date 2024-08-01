@@ -1786,6 +1786,8 @@ void UiElement::PlaylistIndicator::LButtonUp(CPoint point)
         AfxGetMainWnd()->ClientToScreen(&btn_rect);
         theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
     }
+    btn_drop_down.pressed = false;
+    btn_menu.pressed = false;
 }
 
 void UiElement::PlaylistIndicator::LButtonDown(CPoint point)
