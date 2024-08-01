@@ -490,6 +490,37 @@ const PlaylistInfo& CPlaylistMgr::GetPlaylistInfo(int index)
     return empty_info;
 }
 
+PlaylistInfo& CPlaylistMgr::GetPlaylistInfo(const wstring& path, bool& ok)
+{
+    ok = false;
+    if (path == m_default_playlist.path)
+    {
+        ok = true;
+        return m_default_playlist;
+    }
+    if (path == m_favourite_playlist.path)
+    {
+        ok = true;
+        return m_favourite_playlist;
+    }
+    if (path == m_temp_playlist.path)
+    {
+        ok = true;
+        return m_temp_playlist;
+    }
+    auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [path](const PlaylistInfo& item) {
+        return item.path == path;
+    });
+
+    if (iter != m_recent_playlists.end())
+    {
+        ok = true;
+        return *iter;
+    }
+    static PlaylistInfo empty_info;
+    return empty_info;
+}
+
 void CPlaylistMgr::SortPlaylist()
 {
     if (m_recent_playlists.size() > 1)
@@ -574,34 +605,19 @@ std::wstring CPlaylistMgr::GetPlaylistDisplayName(const std::wstring path)
 bool CPlaylistMgr::ResetLastPlayedTime(const wstring& path)
 {
     std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    if (path == m_default_playlist.path)
-    {
-        m_default_playlist.last_played_time = 0;
-        return true;
-    }
-    if (path == m_favourite_playlist.path)
-    {
-        m_favourite_playlist.last_played_time = 0;
-        return true;
-    }
-    if (path == m_temp_playlist.path)
-    {
-        m_temp_playlist.last_played_time = 0;
-        return true;
-    }
-    auto iter = std::find_if(m_recent_playlists.begin(), m_recent_playlists.end(), [path](const PlaylistInfo& item) {
-        return item.path == path;
-        });
+    bool ok{};
+    PlaylistInfo& playlist_info{ GetPlaylistInfo(path, ok) };
+    playlist_info.last_played_time = 0;
+    return ok;
+}
 
-    if (iter != m_recent_playlists.end())
-    {
-        iter->last_played_time = 0;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+bool CPlaylistMgr::UpdatePlaylistTrackNum(const wstring& path, int track_num)
+{
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    bool ok{};
+    PlaylistInfo& playlist_info{ GetPlaylistInfo(path, ok) };
+    playlist_info.track_num = track_num;
+    return ok;
 }
 
 bool CPlaylistMgr::SetSortMode(PlaylistSortMode sort_mode)

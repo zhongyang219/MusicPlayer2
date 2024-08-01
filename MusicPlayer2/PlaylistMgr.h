@@ -85,6 +85,7 @@ public:
     static std::wstring GetPlaylistDisplayName(const std::wstring path);
 
     bool ResetLastPlayedTime(const wstring& path);     //将上次播放时间清空，使它从“最近播放”中移除
+    bool UpdatePlaylistTrackNum(const wstring& path, int track_num);  //更新一个播放列表的曲目总数
 
     bool SetSortMode(PlaylistSortMode sort_mode);
     PlaylistSortMode GetSortMode() const;
@@ -92,6 +93,7 @@ public:
 private:
     CPlaylistMgr();
     const PlaylistInfo& GetPlaylistInfo(int index);
+    PlaylistInfo& GetPlaylistInfo(const wstring& path, bool& ok);
     void SortPlaylist();
 
     static CPlaylistMgr m_instance;     //CPlaylistMgr类唯一的对象

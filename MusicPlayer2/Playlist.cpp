@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "FilePathHelper.h"
 #include "SongDataManager.h"
+#include "PlaylistMgr.h"
 
 const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8" };
 
@@ -117,6 +118,9 @@ void CPlaylistFile::SavePlaylistToFile(const vector<SongInfo>& song_list, const 
         }
     }
     stream.close();
+
+    //更新播放列表的曲目数
+    CPlaylistMgr::Instance().UpdatePlaylistTrackNum(file_path, song_list.size());
 }
 
 const vector<SongInfo>& CPlaylistFile::GetPlaylist() const
