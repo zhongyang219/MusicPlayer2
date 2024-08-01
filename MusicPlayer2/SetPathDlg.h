@@ -80,4 +80,8 @@ protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnContainSubFolder();
+    afx_msg void OnBnClickedSortButton();
+    afx_msg void OnLibFolderSortRecentPlayed();
+    afx_msg void OnLibFolderSortRecentAdded();
+    afx_msg void OnLibFolderSortPath();
 };

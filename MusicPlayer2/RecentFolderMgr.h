@@ -12,6 +12,7 @@ struct PathInfo
     int total_time{};		//路径中音频文件的总时间
     bool contain_sub_folder{};  //是否包含子文件夹
     unsigned __int64 last_played_time{};    //上次播放的时间
+    unsigned __int64 add_time{};            //添加时间
 
     bool IsEmpty() const;
 };
@@ -21,6 +22,15 @@ class CRecentFolderMgr
 public:
     ~CRecentFolderMgr();
     static CRecentFolderMgr& Instance();
+
+    //文件夹排序方式
+    enum FolderSortMode
+    {
+        SM_UNSORTED,        //未排序
+        SM_RECENT_PLAYED,   //最近播放
+        SM_RECENT_ADDED,    //最近添加
+        SM_PATH             //路径
+    };
 
     //deque<PathInfo>& GetRecentPath() { return m_recent_path; }    //返回最近播放路径列表的引用
     bool IsEmpty() { return m_recent_path.empty(); }
@@ -36,6 +46,11 @@ public:
     int DeleteInvalidItems();
     bool ResetLastPlayedTime(const std::wstring& path);     //将上次播放时间清空，使它从“最近播放”中移除
 
+    int GetCurrentPlaylistIndex() const;
+
+    bool SetSortMode(FolderSortMode sort_mode);
+    FolderSortMode GetSortMode() const;
+
     //从文件读取数据
     bool LoadData();
     //将数据写入文件
@@ -43,9 +58,11 @@ public:
 
 private:
     CRecentFolderMgr();
+    void SortPath();
 
     static CRecentFolderMgr m_instance;     //CRecentFolderMgr类唯一的对象
     deque<PathInfo> m_recent_path;      //最近打开过的路径
+    FolderSortMode m_sort_mode{ SM_UNSORTED };
     mutable std::shared_mutex m_shared_mutex;
 
 };

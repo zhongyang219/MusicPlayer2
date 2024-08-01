@@ -32,7 +32,7 @@ public:
     };
 
     //播放列表排序方式
-    enum SortMode
+    enum PlaylistSortMode
     {
         SM_UNSORTED,        //未排序
         SM_RECENT_PLAYED,   //最近播放
@@ -86,8 +86,8 @@ public:
 
     bool ResetLastPlayedTime(const wstring& path);     //将上次播放时间清空，使它从“最近播放”中移除
 
-    bool SetSortMode(SortMode sort_mode);
-    SortMode GetSortMode() const;
+    bool SetSortMode(PlaylistSortMode sort_mode);
+    PlaylistSortMode GetSortMode() const;
 
 private:
     CPlaylistMgr();
@@ -100,6 +100,6 @@ private:
     PlaylistInfo m_temp_playlist;
     std::deque<PlaylistInfo> m_recent_playlists;
     PlaylistType m_cur_playlist_type{ PT_DEFAULT };
-    SortMode m_sort_mode{ SM_UNSORTED };
+    PlaylistSortMode m_sort_mode{ SM_UNSORTED };
     mutable std::shared_mutex m_shared_mutex;
 };

@@ -2,6 +2,7 @@
 #include "RecentFolderMgr.h"
 #include "MusicPlayer2.h"
 #include "COSUPlayerHelper.h"
+#include "Player.h"
 
 
 bool PathInfo::IsEmpty() const
@@ -24,24 +25,45 @@ CRecentFolderMgr& CRecentFolderMgr::Instance()
 void CRecentFolderMgr::EmplaceRecentFolder(const std::wstring& path, int track, int position, SortMode sort_mode, int track_num, int totla_time, bool contain_sub_folder)
 {
     std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    for (size_t i{ 0 }; i < m_recent_path.size(); i++)
+    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(), [&](const PathInfo& path_info) {
+        return path == path_info.path;
+    });
+
+    PathInfo path_info;
+    path_info.path = path;
+    path_info.track = track;
+    path_info.position = position;
+    path_info.sort_mode = sort_mode;
+    path_info.track_num = track_num;
+    path_info.total_time = totla_time;
+    path_info.contain_sub_folder = contain_sub_folder;
+    path_info.last_played_time = CCommon::GetCurTimeElapse();
+
+    //如果当前路径已经在最近路径中，则更新已经存在的路径
+    if (iter != m_recent_path.end())
     {
-        if (path == m_recent_path[i].path)
-            m_recent_path.erase(m_recent_path.begin() + i);		//如果当前路径已经在最近路径中，就把它最近路径中删除
+        if (track_num > 0)
+        {
+            path_info.add_time = iter->add_time;
+            *iter = path_info;
+        }
+        else
+        {
+            m_recent_path.erase(iter);
+        }
     }
-    if (track_num > 0)      // 如果当前路径中没有文件，就不保存
+    //当前路径不在最近路径中，则添加
+    else
     {
-        PathInfo path_info;
-        path_info.path = path;
-        path_info.track = track;
-        path_info.position = position;
-        path_info.sort_mode = sort_mode;
-        path_info.track_num = track_num;
-        path_info.total_time = totla_time;
-        path_info.contain_sub_folder = contain_sub_folder;
-        path_info.last_played_time = CCommon::GetCurTimeElapse();
-        m_recent_path.push_front(path_info);        // 当前路径插入到m_recent_path的前面
+        if (track_num > 0)      //仅当路径中有文件时才保存
+        {
+            path_info.add_time = CCommon::GetCurTimeElapse();
+            m_recent_path.push_front(path_info);        // 当前路径插入到m_recent_path的前面
+        }
     }
+
+    //更新文件夹顺序
+    SortPath();
 }
 
 PathInfo& CRecentFolderMgr::FindItem(const std::wstring& path)
@@ -74,7 +96,16 @@ bool CRecentFolderMgr::FindItem(const std::wstring& path, std::function<void(Pat
 const PathInfo& CRecentFolderMgr::GetCurrentItem()
 {
     if (!m_recent_path.empty())
-        return m_recent_path.front();
+    {
+        //查找播放时间最近的路径
+        const PathInfo* latest_path{ &m_recent_path.front() };
+        for (const auto& path_info : m_recent_path)
+        {
+            if (path_info.last_played_time > latest_path->last_played_time)
+                latest_path = &path_info;
+        }
+        return *latest_path;
+    }
     static PathInfo empty_item;
     return empty_item;
 }
@@ -157,6 +188,37 @@ bool CRecentFolderMgr::ResetLastPlayedTime(const std::wstring& path)
     return false;
 }
 
+int CRecentFolderMgr::GetCurrentPlaylistIndex() const
+{
+    if (CPlayer::GetInstance().IsFolderMode())
+    {
+        std::wstring current_path{ CPlayer::GetInstance().GetCurrentDir2() };
+        auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(), [&](const PathInfo& path_info) {
+            return path_info.path == current_path;
+        });
+        if (iter != m_recent_path.end())
+            return iter - m_recent_path.begin();
+    }
+
+    return -1;
+}
+
+bool CRecentFolderMgr::SetSortMode(FolderSortMode sort_mode)
+{
+    if (m_sort_mode != sort_mode)
+    {
+        m_sort_mode = sort_mode;
+        SortPath();
+        return true;
+    }
+    return false;
+}
+
+CRecentFolderMgr::FolderSortMode CRecentFolderMgr::GetSortMode() const
+{
+    return m_sort_mode;
+}
+
 bool CRecentFolderMgr::LoadData()
 {
     // 打开文件
@@ -176,7 +238,6 @@ bool CRecentFolderMgr::LoadData()
     CArchive ar(&file, CArchive::load);
     // 读数据
     unsigned int size{};
-    PathInfo path_info;
     CString temp;
     int sort_mode;
     unsigned int version{};
@@ -189,6 +250,7 @@ bool CRecentFolderMgr::LoadData()
             ar >> version;  //读取数据文件的版本
         for (unsigned int i{}; i < size; i++)
         {
+            PathInfo path_info;
             ar >> temp;
             path_info.path = temp;
             ar >> path_info.track;
@@ -221,6 +283,10 @@ bool CRecentFolderMgr::LoadData()
             }
             if (version >= 3)
                 ar >> path_info.last_played_time;
+            if (version >= 5)
+                ar >> path_info.add_time;
+            if (path_info.add_time == 0)
+                path_info.add_time = path_info.last_played_time;     //没有读取到添加时间，则将上次播放时间作为添加时间
 
             if (path_info.path.empty() || path_info.path.size() < 2) continue;		//如果路径为空或路径太短，就忽略它
             if (path_info.path.back() != L'/' && path_info.path.back() != L'\\')	//如果读取到的路径末尾没有斜杠，则在末尾加上一个
@@ -255,7 +321,7 @@ void CRecentFolderMgr::SaveData() const
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    const unsigned int version{ 4u };
+    const unsigned int version{ 5u };
     ar << static_cast<unsigned int>(m_recent_path.size());		//写入m_recent_path容器的大小
     ar << version;     //写入文件的版本
     for (auto& path_info : m_recent_path)
@@ -268,6 +334,7 @@ void CRecentFolderMgr::SaveData() const
             << path_info.total_time
             << static_cast<BYTE>(path_info.contain_sub_folder)
             << path_info.last_played_time
+            << path_info.add_time
             ;
     }
     // 关闭CArchive对象
@@ -278,4 +345,25 @@ void CRecentFolderMgr::SaveData() const
 
 CRecentFolderMgr::CRecentFolderMgr()
 {
+}
+
+void CRecentFolderMgr::SortPath()
+{
+    if (m_recent_path.size() > 1)
+    {
+        switch (m_sort_mode)
+        {
+        case CRecentFolderMgr::SM_RECENT_PLAYED:
+            std::stable_sort(m_recent_path.begin(), m_recent_path.end(), [](const PathInfo& a, const PathInfo& b) { return a.last_played_time > b.last_played_time; });
+            break;
+        case CRecentFolderMgr::SM_RECENT_ADDED:
+            std::stable_sort(m_recent_path.begin(), m_recent_path.end(), [](const PathInfo& a, const PathInfo& b) { return a.add_time > b.add_time; });
+            break;
+        case CRecentFolderMgr::SM_PATH:
+            std::stable_sort(m_recent_path.begin(), m_recent_path.end(), [](const PathInfo& a, const PathInfo& b) { return a.path < b.path; });
+            break;
+        default:
+            break;
+        }
+    }
 }

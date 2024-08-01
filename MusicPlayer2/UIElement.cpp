@@ -1993,7 +1993,7 @@ int UiElement::MediaLibFolder::GetColumnWidth(int col, int total_width)
 int UiElement::MediaLibFolder::GetHighlightRow()
 {
     if (CPlayer::GetInstance().IsFolderMode())
-        return 0;
+        return CRecentFolderMgr::Instance().GetCurrentPlaylistIndex();
     else
         return -1;
 }

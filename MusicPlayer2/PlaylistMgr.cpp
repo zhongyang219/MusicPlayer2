@@ -492,7 +492,7 @@ const PlaylistInfo& CPlaylistMgr::GetPlaylistInfo(int index)
 
 void CPlaylistMgr::SortPlaylist()
 {
-    if (!m_recent_playlists.empty())
+    if (m_recent_playlists.size() > 1)
     {
         switch (m_sort_mode)
         {
@@ -604,7 +604,7 @@ bool CPlaylistMgr::ResetLastPlayedTime(const wstring& path)
     }
 }
 
-bool CPlaylistMgr::SetSortMode(SortMode sort_mode)
+bool CPlaylistMgr::SetSortMode(PlaylistSortMode sort_mode)
 {
     if (m_sort_mode != sort_mode)
     {
@@ -615,7 +615,7 @@ bool CPlaylistMgr::SetSortMode(SortMode sort_mode)
     return false;
 }
 
-CPlaylistMgr::SortMode CPlaylistMgr::GetSortMode() const
+CPlaylistMgr::PlaylistSortMode CPlaylistMgr::GetSortMode() const
 {
     return m_sort_mode;
 }

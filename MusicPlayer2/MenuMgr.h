@@ -67,6 +67,7 @@ public:
         UiMyFavouriteMenu,                  // UI中“我喜欢的音乐”菜单
 
         LibPlaylistSortMenu,                // 媒体库播放列表排序菜单
+        LibFolderSortMenu,                  // 媒体库文件夹排序菜单
 
         LeMenu,                             // 歌词编辑对话框->窗口菜单
         LeFileMenu,                         // 歌词编辑对话框->窗口菜单->子菜单"文件"

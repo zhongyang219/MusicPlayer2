@@ -118,6 +118,7 @@ void CSetPathDlg::ShowPathList()
             m_path_list.InsertItem(i, std::to_wstring(i + 1).c_str());
             SetListRowData(i, m_path_list_info[i]);
         }
+        m_path_list.SetHightItem(CRecentFolderMgr::Instance().GetCurrentPlaylistIndex());
     }
     else        //只显示搜索结果的曲目
     {
@@ -132,12 +133,19 @@ void CSetPathDlg::ShowPathList()
             return;
         }
         int index{};
+        int highlight_index_searched{ -1 };
+        int highlight_index{ CRecentFolderMgr::Instance().GetCurrentPlaylistIndex() };
         for (size_t i : m_search_result)
         {
             m_path_list.InsertItem(index, std::to_wstring(i + 1).c_str());
             SetListRowData(index, m_path_list_info[i]);
+
+            if (highlight_index == i)
+                highlight_index_searched = index;
+
             ++index;
         }
+        m_path_list.SetHightItem(highlight_index_searched);
     }
 }
 
@@ -189,19 +197,18 @@ void CSetPathDlg::OnTabEntered()
 
 bool CSetPathDlg::InitializeControls()
 {
-    wstring temp;
-    temp = theApp.m_str_table.LoadText(L"TXT_LIB_PATH_CURRENT_FOLDER");
-    SetDlgItemTextW(IDC_TXT_LIB_PATH_CURRENT_FOLDER_STATIC, temp.c_str());
+    SetDlgControlText(IDC_TXT_LIB_PATH_CURRENT_FOLDER_STATIC, L"TXT_LIB_PATH_CURRENT_FOLDER");
     // IDC_PATH_EDIT
-    temp = theApp.m_str_table.LoadText(L"TXT_LIB_PATH_OPEN_NEW_FOLDER");
-    SetDlgItemTextW(IDC_OPEN_FOLDER, temp.c_str());
+    SetDlgControlText(IDC_OPEN_FOLDER, L"TXT_LIB_PATH_OPEN_NEW_FOLDER");
+    SetDlgControlText(IDC_SORT_BUTTON, L"TXT_LIB_PLAYLIST_SORT");
     // IDC_SEARCH_EDIT
     // IDC_PATH_LIST
 
     RepositionTextBasedControls({
         { CtrlTextInfo::L1, IDC_TXT_LIB_PATH_CURRENT_FOLDER_STATIC },
         { CtrlTextInfo::C0, IDC_PATH_EDIT },
-        { CtrlTextInfo::R1, IDC_OPEN_FOLDER, CtrlTextInfo::W32 }
+        { CtrlTextInfo::R1, IDC_OPEN_FOLDER, CtrlTextInfo::W32 },
+        { CtrlTextInfo::R2, IDC_SORT_BUTTON, CtrlTextInfo::W32 }
         });
     return true;
 }
@@ -231,6 +238,10 @@ BEGIN_MESSAGE_MAP(CSetPathDlg, CTabDlg)
     //ON_BN_CLICKED(IDC_CLEAR_BUTTON, &CSetPathDlg::OnBnClickedClearButton)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CSetPathDlg::OnSearchEditBtnClicked)
     ON_COMMAND(ID_CONTAIN_SUB_FOLDER, &CSetPathDlg::OnContainSubFolder)
+    ON_BN_CLICKED(IDC_SORT_BUTTON, &CSetPathDlg::OnBnClickedSortButton)
+    ON_COMMAND(ID_LIB_FOLDER_SORT_RECENT_PLAYED, &CSetPathDlg::OnLibFolderSortRecentPlayed)
+    ON_COMMAND(ID_LIB_FOLDER_SORT_RECENT_ADDED, &CSetPathDlg::OnLibFolderSortRecentAdded)
+    ON_COMMAND(ID_LIB_FOLDER_SORT_PATH, &CSetPathDlg::OnLibFolderSortPath)
 END_MESSAGE_MAP()
 
 
@@ -245,6 +256,8 @@ BOOL CSetPathDlg::OnInitDialog()
 
     //设置列表控件主题颜色
     //m_path_list.SetColor(theApp.m_app_setting_data.theme_color);
+
+    SetButtonIcon(IDC_SORT_BUTTON, IconMgr::IconType::IT_Sort_Mode);
 
     //初始化播放列表控件
     vector<int> width;
@@ -407,6 +420,14 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     bool contain_sub_folder{ select_valid && GetSelPath().contain_sub_folder };
     pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (contain_sub_folder ? MF_CHECKED : MF_UNCHECKED));
+
+    switch (CRecentFolderMgr::Instance().GetSortMode())
+    {
+    case CRecentFolderMgr::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentFolderMgr::SM_RECENT_ADDED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_ADDED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentFolderMgr::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_PATH, MF_BYCOMMAND | MF_CHECKED); break;
+    }
+
 }
 
 
@@ -485,5 +506,49 @@ void CSetPathDlg::OnContainSubFolder()
                 ShowPathList();     // 重新显示路径列表
             }
         }
+    }
+}
+
+
+void CSetPathDlg::OnBnClickedSortButton()
+{
+    CWnd* pBtn = GetDlgItem(IDC_SORT_BUTTON);
+    CPoint point;
+    if (pBtn != nullptr)
+    {
+        CRect rect;
+        pBtn->GetWindowRect(rect);
+        point.x = rect.left;
+        point.y = rect.bottom;
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibFolderSortMenu);
+        if (pMenu != NULL)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+    }
+}
+
+
+void CSetPathDlg::OnLibFolderSortRecentPlayed()
+{
+    if (CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::SM_RECENT_PLAYED))
+    {
+        ShowPathList();
+    }
+}
+
+
+void CSetPathDlg::OnLibFolderSortRecentAdded()
+{
+    if (CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::SM_RECENT_ADDED))
+    {
+        ShowPathList();
+    }
+}
+
+
+void CSetPathDlg::OnLibFolderSortPath()
+{
+    if (CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::SM_PATH))
+    {
+        ShowPathList();
     }
 }
