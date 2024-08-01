@@ -53,6 +53,7 @@ void CUIWindowCmdHelper::OnUiCommand(DWORD command)
         {
             OnAddToPlaystCommand(playlist, command);
         }
+        OnFolderOrPlaylistSortCommand(command);
         pUi->m_context_menu_sender = nullptr;   //命令被响应后清空上次保存的命令发送者
     }
 }
@@ -86,6 +87,14 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu))
     {
         SetAddToPlaylistMenuState(pMenu);
+    }
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibFolderSortMenu))
+    {
+        SetFolderSortMenuState(pMenu);
+    }
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistSortMenu))
+    {
+        SetPlaylistSortMenuState(pMenu);
     }
 }
 
@@ -488,6 +497,40 @@ void CUIWindowCmdHelper::OnAddToPlaystCommand(UiElement::Playlist* playlist, DWO
     }
 }
 
+void CUIWindowCmdHelper::OnFolderOrPlaylistSortCommand(DWORD command)
+{
+    //文件夹-最近播放
+    if (command == ID_LIB_FOLDER_SORT_RECENT_PLAYED)
+    {
+        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::SM_RECENT_PLAYED);
+    }
+    //文件夹-最近添加
+    else if (command == ID_LIB_FOLDER_SORT_RECENT_ADDED)
+    {
+        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::SM_RECENT_ADDED);
+    }
+    //文件夹-路径
+    else if (command == ID_LIB_FOLDER_SORT_PATH)
+    {
+        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::SM_PATH);
+    }
+    //播放列表-最近播放
+    else if (command == ID_LIB_PLAYLIST_SORT_RECENT_PLAYED)
+    {
+        CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_PLAYED);
+    }
+    //播放列表-最近创建
+    else if (command == ID_LIB_PLAYLIST_SORT_RECENT_CREATED)
+    {
+        CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_CREATED);
+    }
+    //播放列表-名称
+    else if (command == ID_LIB_PLAYLIST_SORT_NAME)
+    {
+        CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_NAME);
+    }
+}
+
 void CUIWindowCmdHelper::SetRecentPlayedListMenuState(CMenu* pMenu)
 {
     CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
@@ -678,5 +721,25 @@ void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
         else
             pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
 
+    }
+}
+
+void CUIWindowCmdHelper::SetFolderSortMenuState(CMenu* pMenu)
+{
+    switch (CRecentFolderMgr::Instance().GetSortMode())
+    {
+    case CRecentFolderMgr::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentFolderMgr::SM_RECENT_ADDED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_ADDED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentFolderMgr::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_PATH, MF_BYCOMMAND | MF_CHECKED); break;
+    }
+}
+
+void CUIWindowCmdHelper::SetPlaylistSortMenuState(CMenu* pMenu)
+{
+    switch (CPlaylistMgr::Instance().GetSortMode())
+    {
+    case CPlaylistMgr::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CPlaylistMgr::SM_RECENT_CREATED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_CREATED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CPlaylistMgr::SM_NAME: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_NAME, MF_BYCOMMAND | MF_CHECKED); break;
     }
 }

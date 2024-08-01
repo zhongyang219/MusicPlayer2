@@ -526,6 +526,40 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 helper.OnPlayMyFavourite();
                 return true;
             }
+            case BTN_MEDIALIB_FOLDER_SORT:
+            {
+                CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+                CWnd* pUiWnd{};
+                if (pDlg != nullptr)
+                    pUiWnd = &pDlg->GetUIWindow();
+                CRect btn_rect(m_buttons[BTN_MEDIALIB_FOLDER_SORT].rect);
+                CPoint point(btn_rect.left, btn_rect.bottom);
+                ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
+                CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibFolderSortMenu);
+                ASSERT(add_to_menu != nullptr);
+                if (add_to_menu != nullptr)
+                {
+                    add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pUiWnd);
+                }
+                return true;
+            }
+            case BTN_MEDIALIB_PLAYLIST_SORT:
+            {
+                CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
+                CWnd* pUiWnd{};
+                if (pDlg != nullptr)
+                    pUiWnd = &pDlg->GetUIWindow();
+                CRect btn_rect(m_buttons[BTN_MEDIALIB_PLAYLIST_SORT].rect);
+                CPoint point(btn_rect.left, btn_rect.bottom);
+                ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
+                CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistSortMenu);
+                ASSERT(add_to_menu != nullptr);
+                if (add_to_menu != nullptr)
+                {
+                    add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pUiWnd);
+                }
+                return true;
+            }
 
                 //菜单
             case MENU_FILE:
@@ -795,6 +829,8 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Add;
     case BTN_PLAY_MY_FAVOURITE:
         return IconMgr::IconType::IT_Play;
+    case BTN_MEDIALIB_FOLDER_SORT: case BTN_MEDIALIB_PLAYLIST_SORT:
+        return IconMgr::IconType::IT_Sort_Mode;
     default:
         ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;
@@ -805,7 +841,7 @@ std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type)
 {
     switch (key_type)
     {
-    case CPlayerUIBase::BTN_REPETEMODE:
+    case BTN_REPETEMODE:
         switch (CPlayer::GetInstance().GetRepeatMode())
         {
         case RM_PLAY_ORDER: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_ORDER");
@@ -816,28 +852,29 @@ std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type)
         case RM_PLAY_TRACK: return theApp.m_str_table.LoadText(L"UI_TIP_REPEAT_ONCE");
         }
         break;
-    case CPlayerUIBase::BTN_SKIN: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_UI");
-    case CPlayerUIBase::BTN_EQ: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SOUND_EFFECT_SETTING");
-    case CPlayerUIBase::BTN_SETTING: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING");
-    case CPlayerUIBase::BTN_MINI: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE");
-    case CPlayerUIBase::BTN_INFO: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PROPERTY");
-    case CPlayerUIBase::BTN_FIND: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FIND_SONGS");
-    case CPlayerUIBase::BTN_STOP: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
-    case CPlayerUIBase::BTN_PREVIOUS: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
-    case CPlayerUIBase::BTN_PLAY_PAUSE: return theApp.m_str_table.LoadText(CPlayer::GetInstance().IsPlaying() ? L"UI_TIP_BTN_PAUSE" : L"UI_TIP_BTN_PLAY");
-    case CPlayerUIBase::BTN_NEXT: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT");
-    case CPlayerUIBase::BTN_SHOW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
-    case CPlayerUIBase::BTN_MEDIA_LIB: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MEDIA_LIB");
-    case CPlayerUIBase::BTN_FULL_SCREEN: return theApp.m_str_table.LoadText(m_ui_data.full_screen ? L"UI_TIP_BTN_FULL_SCREEN_EXIT" : L"UI_TIP_BTN_FULL_SCREEN");
-    case CPlayerUIBase::BTN_MENU: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAIN_MENU");
-    case CPlayerUIBase::BTN_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
-    case CPlayerUIBase::BTN_ADD_TO_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
-    case CPlayerUIBase::BTN_SWITCH_DISPLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_DISPLAY");
-    case CPlayerUIBase::BTN_DARK_LIGHT: return theApp.m_str_table.LoadText(theApp.m_app_setting_data.dark_mode ? L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE" : L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
-    case CPlayerUIBase::BTN_LOCATE_TO_CURRENT:return theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT");
-    case CPlayerUIBase::BTN_OPEN_FOLDER: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_OPEN_FOLDER");
-    case CPlayerUIBase::BTN_NEW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_NEW_PLAYLIST");
-    case CPlayerUIBase::BTN_PLAY_MY_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_SKIN: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_UI");
+    case BTN_EQ: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SOUND_EFFECT_SETTING");
+    case BTN_SETTING: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING");
+    case BTN_MINI: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE");
+    case BTN_INFO: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PROPERTY");
+    case BTN_FIND: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FIND_SONGS");
+    case BTN_STOP: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
+    case BTN_PREVIOUS: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
+    case BTN_PLAY_PAUSE: return theApp.m_str_table.LoadText(CPlayer::GetInstance().IsPlaying() ? L"UI_TIP_BTN_PAUSE" : L"UI_TIP_BTN_PLAY");
+    case BTN_NEXT: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT");
+    case BTN_SHOW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
+    case BTN_MEDIA_LIB: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MEDIA_LIB");
+    case BTN_FULL_SCREEN: return theApp.m_str_table.LoadText(m_ui_data.full_screen ? L"UI_TIP_BTN_FULL_SCREEN_EXIT" : L"UI_TIP_BTN_FULL_SCREEN");
+    case BTN_MENU: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAIN_MENU");
+    case BTN_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
+    case BTN_ADD_TO_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    case BTN_SWITCH_DISPLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_DISPLAY");
+    case BTN_DARK_LIGHT: return theApp.m_str_table.LoadText(theApp.m_app_setting_data.dark_mode ? L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE" : L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
+    case BTN_LOCATE_TO_CURRENT:return theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT");
+    case BTN_OPEN_FOLDER: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_OPEN_FOLDER");
+    case BTN_NEW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_NEW_PLAYLIST");
+    case BTN_PLAY_MY_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_MEDIALIB_FOLDER_SORT: case BTN_MEDIALIB_PLAYLIST_SORT: return theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_SORT");
     }
 
     return std::wstring();

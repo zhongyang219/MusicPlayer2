@@ -192,6 +192,8 @@ public:
         BTN_OPEN_FOLDER,        //打开文件夹
         BTN_NEW_PLAYLIST,       //新建播放列表
         BTN_PLAY_MY_FAVOURITE,  //播放“我喜欢的音乐”
+        BTN_MEDIALIB_FOLDER_SORT, //媒体库“文件夹”排序方式
+        BTN_MEDIALIB_PLAYLIST_SORT, //媒体库“播放列表”排序方式
 
         //菜单栏
         MENU_FILE,

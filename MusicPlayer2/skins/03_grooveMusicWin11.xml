@@ -40,6 +40,7 @@
             <horizontalLayout height="56">
               <text type="userDefine" text="%(TXT_FOLDER)" font_size="12"/>
               <button key="openFolder" height="32" show_text="true"/>
+              <button key="medialibFolderSort" height="32" show_text="true"/>
             </horizontalLayout>
             <mediaLibFolder item_height="30"/>
           </verticalLayout>
@@ -48,6 +49,7 @@
             <horizontalLayout height="56">
               <text type="userDefine" text="%(TXT_PLAYLIST)" font_size="12"/>
               <button key="newPlaylist" height="32" show_text="true"/>
+              <button key="medialibPlaylistSort" height="32" show_text="true"/>
             </horizontalLayout>
             <mediaLibPlaylist item_height="30"/>
           </verticalLayout>
@@ -145,6 +147,7 @@
             <horizontalLayout height="56">
               <text type="userDefine" text="%(TXT_FOLDER)" font_size="12"/>
               <button key="openFolder" height="32" show_text="true"/>
+              <button key="medialibFolderSort" height="32" show_text="true"/>
             </horizontalLayout>
             <mediaLibFolder item_height="30"/>
           </verticalLayout>
@@ -153,6 +156,7 @@
             <horizontalLayout height="56">
               <text type="userDefine" text="%(TXT_PLAYLIST)" font_size="12"/>
               <button key="newPlaylist" height="32" show_text="true"/>
+              <button key="medialibPlaylistSort" height="32" show_text="true"/>
             </horizontalLayout>
             <mediaLibPlaylist item_height="30"/>
           </verticalLayout>
