@@ -634,6 +634,9 @@ void UiElement::Button::Draw()
     case CPlayerUIBase::BTN_AB_REPEAT:
         ui->DrawABRepeatButton(rect);
         break;
+    case CPlayerUIBase::BTN_KARAOKE:
+        ui->DrawKaraokeButton(rect);
+        break;
     default:
         ui->DrawUIButton(rect, key, big_icon, show_text, font_size);
         break;
@@ -701,6 +704,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_MEDIALIB_FOLDER_SORT;
     else if (key_type == "medialibPlaylistSort")
         key = CPlayerUIBase::BTN_MEDIALIB_PLAYLIST_SORT;
+    else if (key_type == "karaoke")
+        key = CPlayerUIBase::BTN_KARAOKE;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }

@@ -1974,5 +1974,11 @@
     <Image Include="res\now_playing_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\karaoke_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\karaoke.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

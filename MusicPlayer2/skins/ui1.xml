@@ -38,7 +38,8 @@
           <horizontalLayout height="24" margin-left="6" margin-right="6">
             <text type="userDefine" text="%(TXT_UI_LYRIC_SHOW):"/>
             <placeHolder/>
-            <button key="lyricTranslate" width="24" height="24"/>
+            <button key="karaoke" width="24" height="24"/>
+            <button key="lyricTranslate" width="24" height="24" margin-left="4"/>
           </horizontalLayout>
           <lyrics margin-top="4" margin-left="6" margin-right="6" margin-bottom="6"/>
         </verticalLayout>

@@ -240,6 +240,8 @@
 #define IDI_PLAY_IN_PLAYLIST_D          608
 #define IDI_NOW_PLAYING                 609
 #define IDI_NOW_PLAYING_D               610
+#define IDI_KARAOKE                     611
+#define IDI_KARAOKE_D                   612
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -965,13 +967,13 @@
 #define ID_LIB_PLAYLIST_SORT_NAME       33471
 #define ID_LIB_FOLDER_SORT_RECENT_PLAYED 33472
 #define ID_LIB_FOLDER_SORT_RECENT_ADDED 33473
-#define ID_LIB_FOLDER_SORT_PATH        33474
+#define ID_LIB_FOLDER_SORT_PATH         33474
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        611
+#define _APS_NEXT_RESOURCE_VALUE        613
 #define _APS_NEXT_COMMAND_VALUE         33475
 #define _APS_NEXT_CONTROL_VALUE         1366
 #define _APS_NEXT_SYMED_VALUE           101

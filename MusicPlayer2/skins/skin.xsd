@@ -473,6 +473,11 @@
                 <xs:documentation>媒体库“播放列表”排序方式。</xs:documentation>
               </xs:annotation>
             </xs:enumeration>
+            <xs:enumeration value="karaoke">
+              <xs:annotation>
+                <xs:documentation>歌词卡拉OK效果显示。</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>

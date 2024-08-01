@@ -21,6 +21,7 @@
             <placeHolder/>
             <button key="desktopLyric" width="24" height="24" margin="2"/>
             <button key="lyricTranslate" width="24" height="24" margin="2"/>
+            <button key="karaoke" width="24" height="24" margin="2"/>
           </horizontalLayout>
         </verticalLayout>
       </horizontalLayout>

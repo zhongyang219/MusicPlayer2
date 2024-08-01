@@ -194,6 +194,7 @@ public:
         BTN_PLAY_MY_FAVOURITE,  //播放“我喜欢的音乐”
         BTN_MEDIALIB_FOLDER_SORT, //媒体库“文件夹”排序方式
         BTN_MEDIALIB_PLAYLIST_SORT, //媒体库“播放列表”排序方式
+        BTN_KARAOKE,
 
         //菜单栏
         MENU_FILE,
@@ -245,6 +246,7 @@ protected:
     void DrawProgess(CRect rect);                   //绘制进度条
     void DrawTranslateButton(CRect rect);
     void DrawDesktopLyricButton(CRect rect);
+    void DrawKaraokeButton(CRect rect);
     int DrawTopRightIcons(bool always_show_full_screen = false);            //绘制右上角的图标。返回总宽度
     void DrawCurrentTime();             //在右上角绘制当前系统时间
     void DrawAlbumCover(CRect rect);                //绘制专辑封面
@@ -268,12 +270,12 @@ protected:
     // 实际绘制一个图标
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
     // 绘制一个UI按钮 (使用GetBtnIconType取得的图标)
-    void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false, bool show_text = false, int font_size = 9);
-    void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9);
+    void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
+    void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9, bool checked = false);
     // 绘制一个工具条按钮（将rect四面缩小 DPI(2) 后调用DrawUIButton）
     void DrawControlBarBtn(CRect rect, BtnKey btn_type);
     // 绘制一个UI按钮，以text文本作为图标
-    void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool back_color = false);
+    void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked = false);
 
     virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str);      //为一个按钮添加鼠标提示
     virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);

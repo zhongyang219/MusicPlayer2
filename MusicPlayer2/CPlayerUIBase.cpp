@@ -560,6 +560,9 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 }
                 return true;
             }
+            case BTN_KARAOKE:
+                theApp.m_lyric_setting_data.lyric_karaoke_disp = !theApp.m_lyric_setting_data.lyric_karaoke_disp;
+                return true;
 
                 //菜单
             case MENU_FILE:
@@ -831,6 +834,8 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Play;
     case BTN_MEDIALIB_FOLDER_SORT: case BTN_MEDIALIB_PLAYLIST_SORT:
         return IconMgr::IconType::IT_Sort_Mode;
+    case BTN_KARAOKE:
+        return IconMgr::IconType::IT_Karaoke;
     default:
         ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;
@@ -1230,7 +1235,7 @@ CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
     return rect;
 }
 
-void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon, bool show_text, int font_size)
+void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon, bool show_text, int font_size, bool checked)
 {
     auto& btn = m_buttons[key_type];
     std::wstring text;
@@ -1238,10 +1243,10 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, bool big_ic
     {
         text = GetButtonText(key_type);
     }
-    DrawUIButton(rect, btn, GetBtnIconType(key_type), big_icon, text, font_size);
+    DrawUIButton(rect, btn, GetBtnIconType(key_type), big_icon, text, font_size, checked);
 }
 
-void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon, const std::wstring& text, int font_size)
+void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon, const std::wstring& text, int font_size, bool checked)
 {
     btn.rect = DrawAreaToClient(rect, m_draw_rect);
 
@@ -1256,7 +1261,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
     bool is_close_btn = (&btn == &m_buttons[BTN_CLOSE] || &btn == &m_buttons[BTN_APP_CLOSE]);
 
     //绘制背景
-    if (btn.pressed || btn.hover)
+    if (btn.pressed || btn.hover || checked)
     {
         BYTE alpha;
         if (!is_close_btn && IsDrawBackgroundAlpha())
@@ -1275,8 +1280,10 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
         {
             if (btn.pressed)
                 back_color = m_colors.color_button_pressed;
-            else
+            else if (btn.hover)
                 back_color = m_colors.color_button_hover;
+            else if (checked)
+                back_color = m_colors.color_button_back;
         }
         if (!theApp.m_app_setting_data.button_round_corners)
             m_draw.FillAlphaRect(rc_tmp, back_color, alpha, true);
@@ -1306,7 +1313,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
     }
 }
 
-void CPlayerUIBase::DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool back_color)
+void CPlayerUIBase::DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked)
 {
     auto& btn = m_buttons[btn_type];
     if (btn.enable)
@@ -1322,7 +1329,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bo
             alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
         else
             alpha = 255;
-        if (btn.pressed || btn.hover || back_color)
+        if (btn.pressed || btn.hover || checked)
         {
             COLORREF background_color{};
             if (is_close_btn)
@@ -1346,7 +1353,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bo
                 {
                     background_color = m_colors.color_button_hover;
                 }
-                else if (back_color)
+                else if (checked)
                 {
                     background_color = m_colors.color_button_back;
                 }
@@ -1969,6 +1976,12 @@ void CPlayerUIBase::DrawDesktopLyricButton(CRect rect)
 {
     static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_DESKTOP_LYRIC");
     DrawTextButton(rect, BTN_LRYIC, btn_str.c_str(), theApp.m_lyric_setting_data.show_desktop_lyric);
+}
+
+void CPlayerUIBase::DrawKaraokeButton(CRect rect)
+{
+    //如果是卡拉OK样式显示歌词，则按钮显示为选中状态
+    DrawUIButton(rect, BTN_KARAOKE, false, false, 9, theApp.m_lyric_setting_data.lyric_karaoke_disp);
 }
 
 int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
@@ -3345,4 +3358,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::TAB_ELEMENT), L"");
     // "播放“我喜欢的音乐”"
     AddMouseToolTip(BTN_PLAY_MY_FAVOURITE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_MY_FAVOURITE").c_str());
+    //歌词卡拉OK样式显示
+    AddMouseToolTip(BTN_KARAOKE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_KARAOKE").c_str());
 }

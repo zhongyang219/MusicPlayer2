@@ -84,6 +84,12 @@
           <text type="album" font_size="12" style="scroll" height="32"/>
           <!--<placeHolder height="24" hide-height="200"/>-->
           <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
+          <rectangle height="26" margin="4">
+            <horizontalLayout>
+              <button key="karaoke" width="22" height="22"/>
+              <placeHolder/>
+            </horizontalLayout>
+          </rectangle>
           <rectangle proportion="1">
             <lyrics margin="8" use_default_font="true" font_size="9"/>
           </rectangle>
