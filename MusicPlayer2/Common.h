@@ -63,6 +63,9 @@ public:
 
     static bool GetFileLastModified(const wstring& file_path, unsigned __int64& modified_time);
 
+    //将FILETIME表示的时间转换为time_t（自1970年1月1日以来的秒数）
+    static time_t FileTimeToTimeT(unsigned __int64 file_time);
+
     //判断文件是否隐藏
     static bool IsFileHidden(const wstring& file_path);
 

@@ -89,6 +89,20 @@ bool CCommon::GetFileLastModified(const wstring& file_path, unsigned __int64& mo
     return false;
 }
 
+time_t CCommon::FileTimeToTimeT(unsigned __int64 file_time)
+{
+    // 1601年到1970年之间的时间间隔，以100纳秒为单位
+    const ULONGLONG epochDelta = 116444736000000000ULL;
+
+    // 将 FILETIME 转换为自1970年1月1日以来的100纳秒间隔数
+    ULONGLONG ull = file_time - epochDelta;
+
+    // 将100纳秒转换为秒
+    time_t t = ull / 10000000ULL;
+
+    return t;
+}
+
 bool CCommon::IsFileHidden(const wstring& file_path)
 {
     DWORD attirbute = GetFileAttributes(file_path.c_str());

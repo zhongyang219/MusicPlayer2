@@ -288,8 +288,13 @@ void CPlaylistMgr::LoadPlaylistData()
                 ar >> path_info.last_played_time;
             if (version >= 5)
                 ar >> path_info.create_time;
-            if (path_info.create_time == 0)
-                path_info.create_time = path_info.last_played_time;     //没有读取到创建时间，则将上次播放时间作为创建时间
+            unsigned __int64 cur_time = CCommon::GetCurTimeElapse();
+            if (path_info.create_time == 0 || path_info.create_time > cur_time)     //创建时间不能超过当前时间
+            {
+                unsigned __int64 file_last_modified_time{};
+                CCommon::GetFileLastModified(path_info.path, file_last_modified_time);     //没有读取到创建时间，则将文件修改时间
+                path_info.create_time = CCommon::FileTimeToTimeT(file_last_modified_time);
+            }
 
             playlist_info_vect.push_back(path_info);
         }
@@ -333,6 +338,9 @@ void CPlaylistMgr::LoadPlaylistData()
 
         PlaylistInfo path_info;
         path_info.path = path_helper.GetFilePath();
+        unsigned __int64 file_last_modified_time{};
+        CCommon::GetFileLastModified(path_info.path, file_last_modified_time);     //没有读取到创建时间，则将文件修改时间
+        path_info.create_time = CCommon::FileTimeToTimeT(file_last_modified_time);
         m_recent_playlists.push_back(path_info);
     }
 
