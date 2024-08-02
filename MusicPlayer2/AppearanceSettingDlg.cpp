@@ -238,10 +238,6 @@ void CAppearanceSettingDlg::SetControlEnable()
     EnableDlgCtrl(IDC_SHOW_NEXT_CHECK, m_data.always_show_statusbar);
     EnableDlgCtrl(IDC_SHOW_FPS_CHECK, m_data.always_show_statusbar);
 
-    EnableDlgCtrl(IDC_SHOW_SETTINGS_BTN_CHECK, !m_data.show_window_frame);
-    EnableDlgCtrl(IDC_SHOW_SKIN_BTN_CHECK, !m_data.show_window_frame);
-    EnableDlgCtrl(IDC_SHOW_MINI_MODE_BTN_CHECK, !m_data.show_window_frame);
-    EnableDlgCtrl(IDC_SHOW_FULLSCREEN_BTN_CHECK, !m_data.show_window_frame);
     EnableDlgCtrl(IDC_SHOW_MINIMIZE_BTN_CHECK, !m_data.show_window_frame);
     EnableDlgCtrl(IDC_SHOW_MAXIMIZE_BTN_CHECK, !m_data.show_window_frame);
 }

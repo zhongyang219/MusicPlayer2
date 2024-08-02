@@ -247,7 +247,7 @@ protected:
     void DrawTranslateButton(CRect rect);
     void DrawDesktopLyricButton(CRect rect);
     void DrawKaraokeButton(CRect rect);
-    int DrawTopRightIcons(bool always_show_full_screen = false);            //绘制右上角的图标。返回总宽度
+    void DrawTopRightIcons();           //绘制右上角的图标
     void DrawCurrentTime();             //在右上角绘制当前系统时间
     void DrawAlbumCover(CRect rect);                //绘制专辑封面
     void DrawAlbumCoverWithInfo(CRect rect);        //绘制专辑封面，并在上面绘制歌曲的标题和艺术家

@@ -1984,49 +1984,68 @@ void CPlayerUIBase::DrawKaraokeButton(CRect rect)
     DrawUIButton(rect, BTN_KARAOKE, false, false, 9, theApp.m_lyric_setting_data.lyric_karaoke_disp);
 }
 
-int CPlayerUIBase::DrawTopRightIcons(bool always_show_full_screen)
+void CPlayerUIBase::DrawTopRightIcons()
 {
     if (!theApp.m_app_setting_data.show_window_frame && !m_ui_data.full_screen)
-        return 0;
+        return;
 
-    int total_width = 0;
     const int icon_size = DPI(28);
-    //绘制“全屏”图标
-    if (always_show_full_screen || (!m_ui_data.show_playlist || m_draw_rect.Width() > m_layout.width_threshold || m_ui_data.full_screen))
+    CRect rect_btn;
+    rect_btn.right = m_draw_rect.right - EdgeMargin(true);
+    rect_btn.top = EdgeMargin(false);
+    rect_btn.bottom = rect_btn.top + icon_size;
+    rect_btn.left = rect_btn.right - icon_size;
+    //绘制“全屏”图标（全屏模式下总是显示“退出全屏”图标）
+    if (theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar || m_ui_data.full_screen)
     {
-        total_width = icon_size;
-
-        CRect rc_tmp;
-        rc_tmp.right = m_draw_rect.right - EdgeMargin(true);
-        rc_tmp.top = EdgeMargin(false);
-        rc_tmp.bottom = rc_tmp.top + icon_size;
-        rc_tmp.left = rc_tmp.right - icon_size;
-        DrawUIButton(rc_tmp, BTN_FULL_SCREEN_TITLEBAR);
-        total_width += Margin();
+        DrawUIButton(rect_btn, BTN_FULL_SCREEN_TITLEBAR);
     }
     else
     {
         m_buttons[BTN_FULL_SCREEN_TITLEBAR].rect.SetRectEmpty();
+        rect_btn.MoveToX(rect_btn.left + icon_size + DPI(4));   //右侧第一个图标不显示，则将按钮的位置向右移动一个图标的位置
     }
 
+    //迷你模式图标
+    if (theApp.m_app_setting_data.show_minimode_btn_in_titlebar)
+    {
+        rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
+        DrawUIButton(rect_btn, BTN_MINI_TITLEBAR);
+    }
+    else
+    {
+        m_buttons[BTN_MINI_TITLEBAR].rect.SetRectEmpty();
+    }
+    //切换界面图标
+    if (theApp.m_app_setting_data.show_skin_btn_in_titlebar)
+    {
+        rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
+        DrawUIButton(rect_btn, BTN_SKIN_TITLEBAR);
+    }
+    else
+    {
+        m_buttons[BTN_SKIN_TITLEBAR].rect.SetRectEmpty();
+    }
+    //设置图标
+    if (theApp.m_app_setting_data.show_settings_btn_in_titlebar)
+    {
+        rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
+        DrawUIButton(rect_btn, BTN_SETTING_TITLEBAR);
+    }
+    else
+    {
+        m_buttons[BTN_SETTING_TITLEBAR].rect.SetRectEmpty();
+    }
     //绘制“主菜单”图标
     if (!m_ui_data.show_menu_bar || m_ui_data.full_screen)
     {
-        CRect rc_tmp;
-        rc_tmp.right = m_draw_rect.right - total_width - EdgeMargin(true);
-        rc_tmp.top = EdgeMargin(false);
-        rc_tmp.bottom = rc_tmp.top + icon_size;
-        rc_tmp.left = rc_tmp.right - icon_size;
-        DrawUIButton(rc_tmp, BTN_MENU_TITLEBAR);
-        total_width += icon_size;
-        total_width += Margin();
+        rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
+        DrawUIButton(rect_btn, BTN_MENU_TITLEBAR);
     }
     else
     {
         m_buttons[BTN_MENU_TITLEBAR].rect.SetRectEmpty();
     }
-
-    return total_width;
 }
 
 void CPlayerUIBase::DrawCurrentTime()

@@ -176,7 +176,7 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
         DrawVolumnAdjBtn();
     }
     //绘制右上角图标
-    DrawTopRightIcons(true);
+    DrawTopRightIcons();
 
     //全屏模式时在右上角绘制时间
     if (m_ui_data.full_screen)

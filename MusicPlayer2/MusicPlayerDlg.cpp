@@ -528,7 +528,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.show_translate = ini.GetBool(L"config", L"show_translate", true);
     theApp.m_ui_data.show_playlist = ini.GetBool(L"config", L"show_playlist", false);
     theApp.m_ui_data.show_menu_bar = ini.GetBool(L"config", L"show_menu_bar", false);
-    theApp.m_app_setting_data.show_window_frame = ini.GetBool(L"config", L"show_window_frame", true);
+    theApp.m_app_setting_data.show_window_frame = ini.GetBool(L"config", L"show_window_frame", CWinVersionHelper::IsWindows10OrLater());    //Win10以上系统默认使用系统标准标题栏
     theApp.m_app_setting_data.always_show_statusbar = ini.GetBool(L"config", L"always_show_statusbar", false);
     theApp.m_nc_setting_data.float_playlist = ini.GetBool(L"config", L"float_playlist", false);
     theApp.m_nc_setting_data.playlist_size.cx = ini.GetInt(L"config", L"float_playlist_width", theApp.DPI(320));
