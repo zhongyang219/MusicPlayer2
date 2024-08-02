@@ -7,6 +7,7 @@
 #include "MusicPlayerDlg.h"
 #include "MiniModeUserUi.h"
 #include "SongInfoHelper.h"
+#include "WinVersionHelper.h"
 
 // CMiniModeDlg 对话框
 
@@ -62,7 +63,7 @@ void CMiniModeDlg::LoadConfig()
     m_ui_index = ini.GetInt(L"mini_mode", L"ui_index", 1);
     if (m_ui_index < 0 || m_ui_index >= static_cast<int>(m_ui_list.size()))
         m_ui_index = 0;
-    m_use_ui_playlist = ini.GetBool(L"mini_mode", L"use_ui_playlist", true);
+    m_use_ui_playlist = ini.GetBool(L"mini_mode", L"use_ui_playlist", CWinVersionHelper::IsWindows10OrLater()); //仅Win10以上系统使用自绘播放列表，Win7下有播放列表鼠标滚轮无法响应的问题
 }
 
 CPlayerUIBase* CMiniModeDlg::GetCurUi()
