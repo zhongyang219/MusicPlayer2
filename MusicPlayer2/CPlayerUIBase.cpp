@@ -431,6 +431,11 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
                 return true;
 
+            case BTN_DARK_LIGHT_TITLE_BAR:
+                m_buttons[BTN_DARK_LIGHT_TITLE_BAR].hover = false;
+                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
+                return true;
+
             case BTN_LOCATE_TO_CURRENT:
                 m_buttons[BTN_LOCATE_TO_CURRENT].hover = false;
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCATE_TO_CURRENT);
@@ -805,7 +810,7 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Add;
     case BTN_SWITCH_DISPLAY:
         return IconMgr::IconType::IT_Switch_Display;
-    case BTN_DARK_LIGHT:    // 之前是一个IconRes的深浅色，现拆分为两个图标类型，将来如果换图标主题要轻松一些
+    case BTN_DARK_LIGHT: case BTN_DARK_LIGHT_TITLE_BAR:    // 之前是一个IconRes的深浅色，现拆分为两个图标类型，将来如果换图标主题要轻松一些
         if (theApp.m_app_setting_data.dark_mode)
             return IconMgr::IconType::IT_Dark_Mode_Off;
         else
@@ -874,7 +879,7 @@ std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type)
     case BTN_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
     case BTN_ADD_TO_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
     case BTN_SWITCH_DISPLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_DISPLAY");
-    case BTN_DARK_LIGHT: return theApp.m_str_table.LoadText(theApp.m_app_setting_data.dark_mode ? L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE" : L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
+    case BTN_DARK_LIGHT: case BTN_DARK_LIGHT_TITLE_BAR: return theApp.m_str_table.LoadText(theApp.m_app_setting_data.dark_mode ? L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE" : L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
     case BTN_LOCATE_TO_CURRENT:return theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT");
     case BTN_OPEN_FOLDER: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_OPEN_FOLDER");
     case BTN_NEW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_NEW_PLAYLIST");
@@ -1419,6 +1424,7 @@ void CPlayerUIBase::UpdateDarkLightModeBtnToolTip()
         tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
     tip_str += GetCmdShortcutKeyForTooltips(ID_DARK_MODE).GetString();
     UpdateMouseToolTip(BTN_DARK_LIGHT, tip_str.c_str());
+    UpdateMouseToolTip(BTN_DARK_LIGHT_TITLE_BAR, tip_str.c_str());
 }
 
 void CPlayerUIBase::UpdateToolTipPositionLater()
@@ -2016,6 +2022,17 @@ void CPlayerUIBase::DrawTopRightIcons()
     {
         m_buttons[BTN_MINI_TITLEBAR].rect.SetRectEmpty();
     }
+    //“深色模式/浅色模式”按钮
+    if (theApp.m_app_setting_data.show_dark_light_btn_in_titlebar)
+    {
+        rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
+        DrawUIButton(rect_btn, BTN_DARK_LIGHT_TITLE_BAR);
+    }
+    else
+    {
+        m_buttons[BTN_MINI_TITLEBAR].rect.SetRectEmpty();
+    }
+    
     //切换界面图标
     if (theApp.m_app_setting_data.show_skin_btn_in_titlebar)
     {
@@ -2273,6 +2290,16 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     else
     {
         m_buttons[BTN_MINI_TITLEBAR].rect = CRect();
+    }
+    //“深色模式/浅色模式”按钮
+    if (theApp.m_app_setting_data.show_dark_light_btn_in_titlebar)
+    {
+        rect_temp.MoveToX(rect_temp.left - rect_temp.Width());
+        DrawUIButton(rect_temp, BTN_DARK_LIGHT_TITLE_BAR);
+    }
+    else
+    {
+        m_buttons[BTN_DARK_LIGHT_TITLE_BAR].rect = CRect();
     }
     //切换界面图标
     if (theApp.m_app_setting_data.show_skin_btn_in_titlebar)
@@ -3361,6 +3388,7 @@ void CPlayerUIBase::AddToolTips()
         tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
     tip_str += GetCmdShortcutKeyForTooltips(ID_DARK_MODE);
     AddMouseToolTip(BTN_DARK_LIGHT, tip_str.c_str());
+    AddMouseToolTip(BTN_DARK_LIGHT_TITLE_BAR, tip_str.c_str());
     // 播放列表定位到当前播放
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT");
     tip_str += GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT);

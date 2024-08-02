@@ -188,6 +188,7 @@ public:
         BTN_ADD_TO_PLAYLIST,    //添加到播放列表按钮
         BTN_SWITCH_DISPLAY,     //切换界面中的stackElement
         BTN_DARK_LIGHT,         //切换深色/浅色模式
+        BTN_DARK_LIGHT_TITLE_BAR, //标题栏中的切换深色/浅色模式
         BTN_LOCATE_TO_CURRENT,  //播放列表定位到当前播放
         BTN_OPEN_FOLDER,        //打开文件夹
         BTN_NEW_PLAYLIST,       //新建播放列表

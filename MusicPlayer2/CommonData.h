@@ -274,6 +274,7 @@ struct ApperanceSettingData
     bool show_fullscreen_btn_in_titlebar{ true };   //是否在标题栏显示“全屏模式”按钮
     bool show_skin_btn_in_titlebar{ false };        //是否在标题栏显示“切换界面”按钮
     bool show_settings_btn_in_titlebar{ false };    //是否在标题栏显示“设置”按钮
+    bool show_dark_light_btn_in_titlebar{ false };  //是否在标题栏显示“深色模式/浅色模式”按钮
     int TitleDisplayItem() const;
 };
 

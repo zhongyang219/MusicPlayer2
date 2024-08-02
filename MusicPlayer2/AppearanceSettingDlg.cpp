@@ -128,6 +128,7 @@ bool CAppearanceSettingDlg::InitializeControls()
     SetDlgItemTextW(IDC_SHOW_MINIMIZE_BTN_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_MAXIMIZE");
     SetDlgItemTextW(IDC_SHOW_MAXIMIZE_BTN_CHECK, temp.c_str());
+    SetDlgControlText(IDC_SHOW_DARK_LIGHT_BTN_CHECK, L"TXT_OPT_APC_TITLE_BAR_BTN_DARK_KIGHT");
 
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_NOTIFY_ICON");
     SetDlgItemTextW(IDC_NA_ICO_STATIC, temp.c_str());
@@ -270,6 +271,7 @@ void CAppearanceSettingDlg::GetDataFromUi()
     m_data.show_fullscreen_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_FULLSCREEN_BTN_CHECK) != 0);
     m_data.show_minimize_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_MINIMIZE_BTN_CHECK) != 0);
     m_data.show_maximize_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_MAXIMIZE_BTN_CHECK) != 0);
+    m_data.show_dark_light_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_DARK_LIGHT_BTN_CHECK) != 0);
 }
 
 void CAppearanceSettingDlg::ApplyDataToUi()
@@ -448,6 +450,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     CheckDlgButton(IDC_SHOW_FULLSCREEN_BTN_CHECK, m_data.show_fullscreen_btn_in_titlebar);
     CheckDlgButton(IDC_SHOW_MINIMIZE_BTN_CHECK, m_data.show_minimize_btn_in_titlebar);
     CheckDlgButton(IDC_SHOW_MAXIMIZE_BTN_CHECK, m_data.show_maximize_btn_in_titlebar);
+    CheckDlgButton(IDC_SHOW_DARK_LIGHT_BTN_CHECK, m_data.show_dark_light_btn_in_titlebar);
 
     //设置通知区图标预览区域的位置
     CalculateNotifyIconPreviewRect();

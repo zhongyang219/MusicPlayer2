@@ -424,6 +424,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"show_fullscreen_btn_in_titlebar", theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar);
     ini.WriteBool(L"config", L"show_skin_btn_in_titlebar", theApp.m_app_setting_data.show_skin_btn_in_titlebar);
     ini.WriteBool(L"config", L"show_settings_btn_in_titlebar", theApp.m_app_setting_data.show_settings_btn_in_titlebar);
+    ini.WriteBool(L"config", L"show_dark_light_btn_in_titlebar", theApp.m_app_setting_data.show_dark_light_btn_in_titlebar);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -622,6 +623,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar = ini.GetBool(L"config", L"show_fullscreen_btn_in_titlebar", true);
     theApp.m_app_setting_data.show_skin_btn_in_titlebar = ini.GetBool(L"config", L"show_skin_btn_in_titlebar", false);
     theApp.m_app_setting_data.show_settings_btn_in_titlebar = ini.GetBool(L"config", L"show_settings_btn_in_titlebar", false);
+    theApp.m_app_setting_data.show_dark_light_btn_in_titlebar = ini.GetBool(L"config", L"show_dark_light_btn_in_titlebar", false);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
