@@ -1048,6 +1048,9 @@ void UiElement::ListElement::LButtonDown(CPoint point)
 
 void UiElement::ListElement::MouseMove(CPoint point)
 {
+    if (rect.IsRectEmpty())
+        return;
+
     mouse_pos = point;
     hover = rect.PtInRect(point);
     scrollbar_hover = scrollbar_rect.PtInRect(point);
@@ -1055,8 +1058,12 @@ void UiElement::ListElement::MouseMove(CPoint point)
     {
         int delta_scrollbar_offset = mouse_pressed_pos.y - point.y;  //滚动条移动的距离
         //将滚动条移动的距离转换成播放列表的位移
-        int delta_playlist_offset = delta_scrollbar_offset * (ItemHeight() * GetRowCount()) / (rect.Height() - scroll_handle_length_comp);
-        playlist_offset = mouse_pressed_offset - delta_playlist_offset;
+        int scroll_area_height = rect.Height() - scroll_handle_length_comp;
+        if (scroll_area_height > 0)
+        {
+            int delta_playlist_offset = delta_scrollbar_offset * (ItemHeight() * GetRowCount()) / scroll_area_height;
+            playlist_offset = mouse_pressed_offset - delta_playlist_offset;
+        }
     }
     else if (mouse_pressed)
     {
