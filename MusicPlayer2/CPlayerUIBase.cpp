@@ -2030,7 +2030,7 @@ void CPlayerUIBase::DrawTopRightIcons()
     }
     else
     {
-        m_buttons[BTN_MINI_TITLEBAR].rect.SetRectEmpty();
+        m_buttons[BTN_DARK_LIGHT_TITLE_BAR].rect.SetRectEmpty();
     }
     
     //切换界面图标
