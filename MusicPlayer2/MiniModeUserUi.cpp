@@ -1,27 +1,59 @@
 ﻿#include "stdafx.h"
 #include "MiniModeUserUi.h"
+#include "MiniModeDlg.h"
 
 CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
     : CUserUi(pMainWnd, xml_path)
 {
+    InitUiPlaylist();
 }
 
 CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, UINT id)
     : CUserUi(pMainWnd, id)
 {
+    InitUiPlaylist();
 }
 
 CMiniModeUserUi::~CMiniModeUserUi()
 {
 }
 
-bool CMiniModeUserUi::GetUiSize(int& width, int& height)
+void CMiniModeUserUi::InitUiPlaylist()
 {
-    if (m_root_default != nullptr)
+    //保存原来的UI
+    m_ui_element = m_root_default;
+    CMiniModeDlg* pMinimodeDlg = dynamic_cast<CMiniModeDlg*>(m_pMainWnd);
+    if (pMinimodeDlg != nullptr)
+    {
+        //如果使用UI播放列表，则向UI中添加一个播放列表元素
+        if (pMinimodeDlg->IsUseUiPlaylist())
+        {
+            CElementFactory factory;
+            //新的UI
+            std::shared_ptr<UiElement::Element> ui_new = factory.CreateElement("element", this);
+            //创建一个垂直布局
+            std::shared_ptr<UiElement::Element> vertical_layout = factory.CreateElement("verticalLayout", this);
+            //垂直布局添加到新的UI中
+            ui_new->AddChild(vertical_layout);
+            //原来的UI添加到垂直布局中
+            vertical_layout->AddChild(m_ui_element);
+            //添加一个播放列表
+            m_playlist_emelment = factory.CreateElement("playlist", this);
+            vertical_layout->AddChild(m_playlist_emelment);
+            //使用新的UI
+            m_root_default = ui_new;
+        }
+    }
+}
+
+bool CMiniModeUserUi::GetUiSize(int& width, int& height, int& height_with_playlist)
+{
+    if (m_ui_element != nullptr)
     {
         //设置绘图区域
-        width = m_root_default->width.GetValue(CRect());
-        height = m_root_default->height.GetValue(CRect());
+        width = m_ui_element->width.GetValue(CRect());
+        height = m_ui_element->height.GetValue(CRect());
+        height_with_playlist = height + theApp.DPI(292);
         return true;
     }
     return false;
@@ -42,13 +74,17 @@ void CMiniModeUserUi::PreDrawInfo()
 {
     //设置颜色
     m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode);
-    if (m_root_default != nullptr)
-    {
-        //设置绘图区域
-        int width{}, height{};
-        GetUiSize(width, height);
-        m_draw_rect = CRect(CPoint(0, 0), CSize(width, height));
-    }
+
+    //设置绘图区域
+    int width{}, height{}, height_width_playlist;
+    GetUiSize(width, height, height_width_playlist);
+    CSize window_size;
+    if (IsShowUiPlaylist())
+        window_size = CSize(width, height_width_playlist);
+    else
+        window_size = CSize(width, height);
+
+    m_draw_rect = CRect(CPoint(0, 0), window_size);
 }
 
 bool CMiniModeUserUi::LButtonUp(CPoint point)
@@ -99,20 +135,54 @@ bool CMiniModeUserUi::PointInControlArea(CPoint point) const
 {
     if (!__super::PointInControlArea(point))
     {
-        const auto& stack_elements{ GetStackElements() };
-        for (const auto& element : stack_elements)
-        {
-            UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
-            if (stack_element != nullptr)
+        bool rtn = false;
+        m_root_default->IterateAllElements([&](UiElement::Element* ele) -> bool {
+            UiElement::Button* button = dynamic_cast<UiElement::Button*>(ele);
+            if (button != nullptr && button->GetRect().PtInRect(point))
             {
-                if (stack_element->indicator.rect.PtInRect(point))
-                    return true;
+                rtn = true;
+                return true;
             }
-        }
-        return false;
+
+            UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(ele);
+            if (stack_element != nullptr && stack_element->indicator.rect.PtInRect(point))
+            {
+                rtn = true;
+                return true;
+            }
+
+            UiElement::ListElement* list_emement = dynamic_cast<UiElement::ListElement*>(ele);
+            if (list_emement != nullptr && list_emement->GetRect().PtInRect(point))
+            {
+                rtn = true;
+                return true;
+            }
+            return false;
+        });
+
+        return rtn;
     }
     else
     {
         return true;
     }
+}
+
+const std::vector<std::shared_ptr<UiElement::Element>>& CMiniModeUserUi::GetStackElements() const
+{
+    //由于迷你模式只会有一个UI，因此这里直接返回m_stack_elements中的第一个
+    if (!m_stack_elements.empty())
+        return m_stack_elements.begin()->second;
+    static std::vector<std::shared_ptr<UiElement::Element>> vec_empty;
+    return vec_empty;
+}
+
+bool CMiniModeUserUi::IsShowUiPlaylist() const
+{
+    CMiniModeDlg* pMinimodeDlg = dynamic_cast<CMiniModeDlg*>(m_pMainWnd);
+    if (pMinimodeDlg != nullptr)
+    {
+        return pMinimodeDlg->IsUseUiPlaylist() && pMinimodeDlg->IsShowPlaylist();
+    }
+    return false;
 }

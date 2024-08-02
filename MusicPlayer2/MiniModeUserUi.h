@@ -8,7 +8,10 @@ public:
     CMiniModeUserUi(CWnd* pMainWnd, UINT id);   // id为xml资源ID
     ~CMiniModeUserUi();
 
-    bool GetUiSize(int& width, int& height);
+    bool GetUiSize(int& width, int& height, int& height_with_playlist);
+
+private:
+    void InitUiPlaylist();
 
 private:
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
@@ -19,6 +22,12 @@ private:
     virtual bool IsDrawTitleBar() const override { return false; }
     virtual bool IsDrawMenuBar() const override { return false; }
     virtual bool PointInControlArea(CPoint point) const override;
+    virtual const std::vector<std::shared_ptr<UiElement::Element>>& GetStackElements() const;
 
+    bool IsShowUiPlaylist() const;
+
+private:
+    std::shared_ptr<UiElement::Element> m_ui_element;       //迷你模式中的“ui”节点
+    std::shared_ptr<UiElement::Element> m_playlist_emelment;   //ui中的播放列表
 };
 

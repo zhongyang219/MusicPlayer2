@@ -2542,6 +2542,9 @@ void CPlayerUIBase::DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_fo
 
 void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, int item_height)
 {
+    if (rect.IsRectEmpty())
+        return;
+
     DrawAreaGuard guard(&m_draw, rect);
 
     if (list_element->GetRowCount() <= 0)

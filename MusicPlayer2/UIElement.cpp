@@ -207,6 +207,12 @@ void UiElement::Element::SetUi(CPlayerUIBase* _ui)
     ui = _ui;
 }
 
+void UiElement::Element::AddChild(std::shared_ptr<Element> child)
+{
+    child->pParent = this;
+    childLst.push_back(child);
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

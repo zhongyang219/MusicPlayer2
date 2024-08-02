@@ -53,6 +53,7 @@ namespace UiElement
         Element* RootElement();       //获取根节点
         void IterateAllElements(std::function<bool(UiElement::Element*)> func);  //遍历所有界面元素
         void SetUi(CPlayerUIBase* _ui);
+        void AddChild(std::shared_ptr<Element> child);
 
         //鼠标消息虚函数。
         //即使鼠标的位置不在当前元素的矩形区域内，函数仍然会响应，因此在重写这些虚函数时需要先使用rect.PtInRect(point)判断鼠标位置是否在矩形区域内。

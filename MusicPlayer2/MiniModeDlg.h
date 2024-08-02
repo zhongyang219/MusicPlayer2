@@ -41,6 +41,8 @@ public:
     void DrawInfo();
 
     CPlayerUIBase* GetCurUi();
+    bool IsUseUiPlaylist() { return m_use_ui_playlist; }
+    bool IsShowPlaylist() { return m_show_playlist; }
 
 protected:
 
@@ -64,10 +66,9 @@ protected:
     CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
 
     bool m_first_start{ true };
-
     bool m_always_on_top{ true };
-
     bool m_draw_reset{ false };
+    bool m_use_ui_playlist{ true };
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -117,4 +118,6 @@ public:
     afx_msg void OnExitSizeMove();
 protected:
     afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 };

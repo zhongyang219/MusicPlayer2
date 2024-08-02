@@ -49,6 +49,7 @@ void CMiniModeDlg::SaveConfig() const
     ini.WriteInt(L"mini_mode", L"position_y", m_position_y);
     ini.WriteBool(L"mini_mode", L"always_on_top", m_always_on_top);
     ini.WriteInt(L"mini_mode", L"ui_index", m_ui_index);
+    ini.WriteBool(L"mini_mode", L"use_ui_playlist", m_use_ui_playlist);
     ini.Save();
 }
 
@@ -61,6 +62,7 @@ void CMiniModeDlg::LoadConfig()
     m_ui_index = ini.GetInt(L"mini_mode", L"ui_index", 1);
     if (m_ui_index < 0 || m_ui_index >= static_cast<int>(m_ui_list.size()))
         m_ui_index = 0;
+    m_use_ui_playlist = ini.GetBool(L"mini_mode", L"use_ui_playlist", true);
 }
 
 CPlayerUIBase* CMiniModeDlg::GetCurUi()
@@ -126,8 +128,7 @@ bool CMiniModeDlg::CalculateWindowSize(int& width, int& height, int& height_with
     CMiniModeUserUi* user_ui = dynamic_cast<CMiniModeUserUi*>(cur_ui);
     if (user_ui != nullptr)
     {
-        user_ui->GetUiSize(width, height);
-        height_with_playlist = height + theApp.DPI(292);
+        user_ui->GetUiSize(width, height, height_with_playlist);
     }
     return true;
 }
@@ -155,6 +156,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     //ON_MESSAGE(WM_TIMER_INTERVAL_CHANGED, &CMiniModeDlg::OnTimerIntervalChanged)
     ON_WM_EXITSIZEMOVE()
     ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CMiniModeDlg::OnTabletQuerysystemgesturestatus)
+    ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 
@@ -227,6 +229,10 @@ BOOL CMiniModeDlg::OnInitDialog()
     SetWindowLongW(m_hWnd, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
 
     m_playlist_ctrl.SetFont(&theApp.m_font_set.dlg.GetFont());
+
+    //如果使用UI播放列表，则隐藏播放列表控件
+    if (m_use_ui_playlist)
+        m_playlist_ctrl.ShowWindow(SW_HIDE);
 
     m_pDC = GetDC();
     for (auto& ui : m_ui_list)
@@ -700,4 +706,17 @@ void CMiniModeDlg::OnExitSizeMove()
 afx_msg LRESULT CMiniModeDlg::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
 {
     return 0;
+}
+
+
+BOOL CMiniModeDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+    //仅自绘播放列表区域的鼠标滚轮事件会在这里响应，自绘播放列表以外的迷你模式区域的滚动事件在PreTranslateMessage中被转发给了主窗口用于调节音量
+
+    ScreenToClient(&pt);
+    CPlayerUIBase* cur_ui{ GetCurUi() };
+    if (cur_ui != nullptr)
+        cur_ui->MouseWheel(zDelta, pt);
+
+    return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
 }

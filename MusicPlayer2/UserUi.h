@@ -68,7 +68,7 @@ protected:
     static int GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list);
     std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node);      //从一个xml节点创建UiElement::Element元素及其所有子元素的对象
 
-    const std::vector<std::shared_ptr<UiElement::Element>>& GetStackElements() const;
+    virtual const std::vector<std::shared_ptr<UiElement::Element>>& GetStackElements() const;
 
 protected:
     virtual void SwitchStackElement() override;
