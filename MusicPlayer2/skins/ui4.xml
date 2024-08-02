@@ -54,7 +54,7 @@
             <text type="title" style="scroll" height="36" font_size="12" margin-left="16" margin-right="16" alignment="center"/>
             <text type="artist_album" style="scroll" height="24" font_size="10" margin-left="16" margin-right="16" alignment="center"/>
           </verticalLayout>
-          <verticalLayout margin-top="20" margin-bottom="8" margin-left="8" proportion="6">
+          <verticalLayout margin-top="28" margin-bottom="8" margin-left="8" proportion="6">
             <playlistIndicator height="30" margin-bottom="4"/>
             <playlist item_height="32"/>
           </verticalLayout>
