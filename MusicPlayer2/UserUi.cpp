@@ -837,6 +837,14 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", track_info->font_size);
             }
         }
+        else if (item_name == "placeHolder")
+        {
+            UiElement::PlaceHolder* place_holder = dynamic_cast<UiElement::PlaceHolder*>(element.get());
+            if (place_holder != nullptr)
+            {
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_when_use_system_titlebar", place_holder->show_when_use_system_titlebar);
+            }
+        }
 
         //递归调用此函数创建子节点
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)

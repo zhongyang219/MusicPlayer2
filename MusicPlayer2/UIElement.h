@@ -45,8 +45,8 @@ namespace UiElement
         virtual void Draw();   //绘制此元素
         virtual bool IsEnable(CRect parent_rect) const;
         virtual int GetMaxWidth(CRect parent_rect) const;
-        int GetWidth(CRect parent_rect) const;
-        int GetHeight(CRect parent_rect) const;
+        virtual int GetWidth(CRect parent_rect) const;
+        virtual int GetHeight(CRect parent_rect) const;
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         virtual void ClearRect();
@@ -667,6 +667,16 @@ namespace UiElement
     {
     public:
         virtual void Draw() override;
+    };
+
+    //占位符
+    class PlaceHolder : public Element
+    {
+    public:
+        virtual int GetWidth(CRect parent_rect) const override;
+        virtual int GetHeight(CRect parent_rect) const override;
+
+        bool show_when_use_system_titlebar{};   //仅当开启“使用系统标准标题栏”时才显示
     };
 }
 

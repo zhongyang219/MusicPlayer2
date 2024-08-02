@@ -2561,6 +2561,24 @@ void UiElement::MiniSpectrum::Draw()
     Element::Draw();
 }
 
+int UiElement::PlaceHolder::GetWidth(CRect parent_rect) const
+{
+    //如果设置了“仅当使用系统标准标题栏时才显示”，并且没有使用系统标准标题栏，则不显示
+    if (show_when_use_system_titlebar && !theApp.m_app_setting_data.show_window_frame)
+        return 0;
+    else
+        return Element::GetWidth(parent_rect);
+}
+
+int UiElement::PlaceHolder::GetHeight(CRect parent_rect) const
+{
+    //如果设置了“仅当使用系统标准标题栏时才显示”，并且没有使用系统标准标题栏，则不显示
+    if (show_when_use_system_titlebar && !theApp.m_app_setting_data.show_window_frame)
+        return 0;
+    else
+        return Element::GetHeight(parent_rect);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name, CPlayerUIBase* ui)
@@ -2624,7 +2642,9 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::AllTracksList>();
     else if (name == "miniSpectrum")
         element = std::make_shared<UiElement::MiniSpectrum>();
-    else if (name == "ui" || name == "root" || name == "placeHolder" || name == "element")
+    else if (name == "placeHolder")
+        element = std::make_shared<UiElement::PlaceHolder>();
+    else if (name == "ui" || name == "root" || name == "element")
         element = std::make_shared<UiElement::Element>();
 
     if (element != nullptr)

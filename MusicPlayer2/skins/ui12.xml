@@ -3,6 +3,7 @@
   <ui type="narrow">
     <verticalLayout>
       <verticalLayout margin="8">
+        <placeHolder show_when_use_system_titlebar="true" height="24"/>
         <navigationBar height="30" icon_type="icon_only" item_space="4" item_list="album_cover,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album"/>
         <stackElement margin-top="8">
           <verticalLayout margin-bottom="16">
@@ -68,6 +69,7 @@
           <text type="artist_album" style="scroll" height="24" font_size="10" margin-left="16" margin-right="16" alignment="center"/>
         </verticalLayout>
         <verticalLayout margin="8">
+          <placeHolder show_when_use_system_titlebar="true" height="24"/>
           <navigationBar height="30" icon_type="icon_only" item_space="4" item_list="lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album"/>
           <stackElement margin-top="8">
             <verticalLayout>
