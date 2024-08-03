@@ -1266,7 +1266,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
     bool is_close_btn = (&btn == &m_buttons[BTN_CLOSE] || &btn == &m_buttons[BTN_APP_CLOSE]);
 
     //绘制背景
-    if (btn.pressed || btn.hover || checked)
+    if (btn.enable && (btn.pressed || btn.hover || checked))
     {
         BYTE alpha;
         if (!is_close_btn && IsDrawBackgroundAlpha())
@@ -1986,6 +1986,7 @@ void CPlayerUIBase::DrawDesktopLyricButton(CRect rect)
 
 void CPlayerUIBase::DrawKaraokeButton(CRect rect)
 {
+    m_buttons[BTN_KARAOKE].enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
     //如果是卡拉OK样式显示歌词，则按钮显示为选中状态
     DrawUIButton(rect, BTN_KARAOKE, false, false, 9, theApp.m_lyric_setting_data.lyric_karaoke_disp);
 }
