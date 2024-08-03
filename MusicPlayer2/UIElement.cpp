@@ -1084,7 +1084,7 @@ void UiElement::ListElement::MouseMove(CPoint point)
         for (int i{}; i < GetHoverButtonCount(); i++)
         {
             auto& btn{ GetHoverButtonState(i) };
-            if (btn.rect.PtInRect(point))
+            if (btn.rect.PtInRect(point) && rect.PtInRect(point))
             {
                 mouse_in_btn = true;
                 btn.hover = true;
