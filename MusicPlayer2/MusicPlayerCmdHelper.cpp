@@ -884,10 +884,11 @@ bool CMusicPlayerCmdHelper::OnDeletePlaylist(std::wstring playlist_path)
 
     CFilePathHelper old_path{ playlist_path };
     wstring old_playlist_name{ old_path.GetFileName() };        // 确保不是特殊播放列表
-    if (old_playlist_name == DEFAULT_PLAYLIST_NAME || old_playlist_name == FAVOURITE_PLAYLIST_NAME || old_playlist_name == TEMP_PLAYLIST_NAME)
+    if (old_playlist_name == DEFAULT_PLAYLIST_NAME || old_playlist_name == FAVOURITE_PLAYLIST_NAME)
         return false;
+    wstring display_name = CPlaylistMgr::GetPlaylistDisplayName(playlist_path);
 
-    const wstring& inquiry_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_PLAYLIST_INQUIRY", { old_playlist_name });
+    const wstring& inquiry_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_PLAYLIST_INQUIRY", { display_name });
     if (GetOwner()->MessageBox(inquiry_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
     {
         // 如果是当前播放那么使用CPlayer成员方法处理
