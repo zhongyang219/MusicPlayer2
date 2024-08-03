@@ -564,12 +564,16 @@ void UiElement::StackElement::Draw()
     {
         if (cur_element != childLst[i])
         {
-            childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool
-                {
-                    if (element != nullptr)
-                        element->ClearRect();
+            childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
+                //Button目前先不处理，否则会导致同一个StackElement不同页面含有相同按钮时无法点击的问题
+                Button* button = dynamic_cast<Button*>(element);
+                if (button != nullptr)
                     return false;
-                });
+
+                if (element != nullptr)
+                    element->ClearRect();
+                return false;
+            });
         }
     }
 
