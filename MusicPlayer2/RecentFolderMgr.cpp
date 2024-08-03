@@ -95,6 +95,7 @@ bool CRecentFolderMgr::FindItem(const std::wstring& path, std::function<void(Pat
 
 const PathInfo& CRecentFolderMgr::GetCurrentItem()
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     if (!m_recent_path.empty())
     {
         //查找播放时间最近的路径
@@ -112,6 +113,7 @@ const PathInfo& CRecentFolderMgr::GetCurrentItem()
 
 int CRecentFolderMgr::GetItemSize() const
 {
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
     return static_cast<int>(m_recent_path.size());
 }
 
@@ -207,6 +209,7 @@ bool CRecentFolderMgr::SetSortMode(FolderSortMode sort_mode)
 {
     if (m_sort_mode != sort_mode)
     {
+        std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
         m_sort_mode = sort_mode;
         SortPath();
         return true;

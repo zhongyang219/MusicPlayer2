@@ -632,6 +632,7 @@ bool CPlaylistMgr::SetSortMode(PlaylistSortMode sort_mode)
 {
     if (m_sort_mode != sort_mode)
     {
+        std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
         m_sort_mode = sort_mode;
         SortPlaylist();
         return true;
