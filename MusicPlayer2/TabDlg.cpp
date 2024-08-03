@@ -62,12 +62,15 @@ void CTabDlg::ScrollWindowSimple(int step, bool absolute)
         step = scrollinfo.nPage;
     if (step == INT_MIN)
         step = -static_cast<int>(scrollinfo.nPage);
+    int offset_diff = scrollinfo.nMax - static_cast<int>(scrollinfo.nPage);
+    if (offset_diff < 0)    //nMax应该总是大于或等于nPage，当nMax等于nPage时没有滚动条
+        offset_diff = 0;
     if (!absolute)
         scrollinfo.nPos -= step;
     else
     {
         if (step < 0)               // 绝对位置时step为-1表示滚动到底部
-            step = scrollinfo.nMax - scrollinfo.nPage;
+            step = offset_diff;
         scrollinfo.nPos = step;     // 此时的stpe为目标绝对位置
         step = m_last_pos - step;   // 将参数的绝对位置转换为偏移量继续处理
     }
@@ -76,10 +79,10 @@ void CTabDlg::ScrollWindowSimple(int step, bool absolute)
         step -= scrollinfo.nMin - scrollinfo.nPos;
         scrollinfo.nPos = scrollinfo.nMin;
     }
-    if (scrollinfo.nPos > scrollinfo.nMax - static_cast<int>(scrollinfo.nPage))     // 限制nPos不大于最大值nMax - nPage
+    if (scrollinfo.nPos > offset_diff)     // 限制nPos不大于最大值nMax - nPage
     {
-        step += scrollinfo.nPos - (scrollinfo.nMax - scrollinfo.nPage);
-        scrollinfo.nPos = scrollinfo.nMax - scrollinfo.nPage;
+        step += scrollinfo.nPos - offset_diff;
+        scrollinfo.nPos = offset_diff;
     }
     SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
     m_last_pos = scrollinfo.nPos;
