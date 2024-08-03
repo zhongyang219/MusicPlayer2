@@ -918,7 +918,7 @@
     </xs:complexType>
     <xs:complexType name="navigationBarType">
       <xs:annotation>
-        <xs:documentation>导航栏。用于控制stackElement的切换，优先作用于和它同一级的stackElement，如果未找到，则作用于ui元素下第一个stackElement。</xs:documentation>
+        <xs:documentation>导航栏。用于控制stackElement的切换，依次向上在它的所有父节点下面查找stackElement，如果未找到，则作用于ui元素下第一个stackElement。</xs:documentation>
       </xs:annotation>
       <xs:group ref="elements"></xs:group>
       <xs:attribute name="item_list">

@@ -1955,15 +1955,21 @@ void UiElement::NavigationBar::FindStackElement()
 {
     if (!find_stack_element)
     {
-        if (pParent != nullptr)
+        UiElement::Element* parent = pParent;
+        while (parent != nullptr)
         {
-            //查找与自己同级的StackElement
-            for (const auto& ele : pParent->childLst)
+            //依次查找所有父节点下面的StackElement
+            for (const auto& ele : parent->childLst)
             {
                 StackElement* _stack_element = dynamic_cast<StackElement*>(ele.get());
                 if (_stack_element != nullptr)
+                {
                     stack_element = _stack_element;
+                    find_stack_element = true;
+                    return;
+                }
             }
+            parent = parent->pParent;
         }
 
         //如果没有找到，则查找整个界面第一个StackElement
@@ -1984,7 +1990,7 @@ void UiElement::NavigationBar::FindStackElement()
             }
         }
 
-        find_stack_element = true;
+        find_stack_element = true;  //找过一次没找到就不找了
     }
 }
 
