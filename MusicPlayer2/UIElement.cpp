@@ -1164,19 +1164,13 @@ bool UiElement::ListElement::MouseWheel(int delta, CPoint point)
 {
     if (rect.PtInRect(point))
     {
-        int step{};
-        if (delta > 0)
-            step = -1;
-        if (delta < 0)
-            step = 1;
         //一次滚动的行数
         int lines = rect.Height() / ItemHeight() / 2;
         if (lines > 3)
             lines = 3;
         if (lines < 1)
             lines = 1;
-        step *= lines;
-        playlist_offset = (playlist_offset / ItemHeight() + step) * ItemHeight();
+        playlist_offset += (-delta * lines * ItemHeight() / 120);  //120为鼠标滚轮一行时delta的值
         return true;
     }
     return false;
