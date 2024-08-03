@@ -158,6 +158,7 @@ BEGIN_MESSAGE_MAP(CMiniModeDlg, CDialogEx)
     ON_WM_EXITSIZEMOVE()
     ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CMiniModeDlg::OnTabletQuerysystemgesturestatus)
     ON_WM_MOUSEWHEEL()
+    ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -482,8 +483,18 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
     }
     else
     {
-        CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniAreaMenu);
-        pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
+        CRect rect_ui(CPoint(0, 0), CSize(m_ui_width, m_ui_height));
+        if (rect_ui.PtInRect(point))
+        {
+            CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniAreaMenu);
+            pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
+        }
+        else
+        {
+            CPlayerUIBase* cur_ui{ GetCurUi() };
+            if (cur_ui != nullptr)
+                cur_ui->RButtonUp(point);
+        }
     }
 
     CDialogEx::OnRButtonUp(nFlags, point);
@@ -672,6 +683,7 @@ BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     {
         m_ui_index = command - ID_MINIMODE_UI_DEFAULT;
         AdjustWindowSize();
+        return TRUE;
     }
 
     return CDialogEx::OnCommand(wParam, lParam);
@@ -720,4 +732,19 @@ BOOL CMiniModeDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
         cur_ui->MouseWheel(zDelta, pt);
 
     return CDialogEx::OnMouseWheel(nFlags, zDelta, pt);
+}
+
+
+void CMiniModeDlg::OnRButtonDown(UINT nFlags, CPoint point)
+{
+    // TODO: 在此添加消息处理程序代码和/或调用默认值
+    CRect rect_ui(CPoint(0, 0), CSize(m_ui_width, m_ui_height));
+    if (!rect_ui.PtInRect(point))
+    {
+        CPlayerUIBase* cur_ui{ GetCurUi() };
+        if (cur_ui != nullptr)
+            cur_ui->RButtonDown(point);
+    }
+
+    CDialogEx::OnRButtonDown(nFlags, point);
 }

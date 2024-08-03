@@ -101,6 +101,16 @@ CMusicPlayerDlg* CMusicPlayerDlg::GetInstance()
     return dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
 }
 
+bool CMusicPlayerDlg::IsMiniMode() const
+{
+    return m_miniModeDlg.GetSafeHwnd() != NULL;
+}
+
+CMiniModeDlg* CMusicPlayerDlg::GetMinimodeDlg()
+{
+    return &m_miniModeDlg;
+}
+
 void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
 {
     CMainDialogBase::DoDataExchange(pDX);

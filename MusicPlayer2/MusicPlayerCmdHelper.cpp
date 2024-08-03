@@ -1295,7 +1295,14 @@ void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, co
 CWnd* CMusicPlayerCmdHelper::GetOwner()
 {
     if (m_pOwner != nullptr)
+    {
         return m_pOwner;
+    }
     else
+    {
+        CMusicPlayerDlg* dlg = CMusicPlayerDlg::GetInstance();
+        if (dlg != nullptr && dlg->IsMiniMode())
+            return dlg->GetMinimodeDlg();
         return theApp.m_pMainWnd;
+    }
 }

@@ -53,6 +53,8 @@ public:
     friend class CPlayerUIBase;
 
     CUIWindow& GetUIWindow() { return m_ui_static_ctrl; }
+    bool IsMiniMode() const;
+    CMiniModeDlg* GetMinimodeDlg();
 
     // 对话框数据
 #ifdef AFX_DESIGN_TIME

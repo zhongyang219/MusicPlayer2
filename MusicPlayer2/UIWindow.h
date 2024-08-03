@@ -16,6 +16,7 @@ protected:
     IPlayerUI*& m_pUI;
     bool m_bTitlebarLButtonDown{};
     CPoint m_ptLButtonDown{};
+    IPlayerUI* GetCurUi() const;
 
     virtual void PreSubclassWindow();
     virtual BOOL PreTranslateMessage(MSG* pMsg);

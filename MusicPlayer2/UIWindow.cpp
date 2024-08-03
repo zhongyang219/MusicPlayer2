@@ -4,6 +4,17 @@
 #include "MusicPlayerDlg.h"
 #include "UIWindowCmdHelper.h"
 
+IPlayerUI* CUIWindow::GetCurUi() const
+{
+    IPlayerUI* minimode_ui{};
+    CMusicPlayerDlg* pDlg = CMusicPlayerDlg::GetInstance();
+    if (pDlg != nullptr && pDlg->IsMiniMode())
+        minimode_ui = pDlg->GetMinimodeDlg()->GetCurUi();
+    if (minimode_ui != nullptr)
+        return minimode_ui;
+    return m_pUI;
+}
+
 void CUIWindow::PreSubclassWindow()
 {
     // TODO: 在此添加专用代码和/或调用基类
@@ -250,7 +261,7 @@ BOOL CUIWindow::OnCommand(WPARAM wParam, LPARAM lParam)
     // TODO: 在此添加专用代码和/或调用基类
     WORD command = LOWORD(wParam);
 
-    CUIWindowCmdHelper helper(m_pUI);
+    CUIWindowCmdHelper helper(GetCurUi());
     helper.OnUiCommand(command);
 
     return CStatic::OnCommand(wParam, lParam);
@@ -260,6 +271,6 @@ void CUIWindow::OnInitMenu(CMenu* pMenu)
 {
     CStatic::OnInitMenu(pMenu);
 
-    CUIWindowCmdHelper helper(m_pUI);
+    CUIWindowCmdHelper helper(GetCurUi());
     helper.SetMenuState(pMenu);
 }
