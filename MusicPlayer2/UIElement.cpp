@@ -559,16 +559,33 @@ void UiElement::StackElement::Draw()
     //只绘制一个子元素
     //不调用基类的Draw方法。
 
+    //判断一个界面元素下是否存在指定类型的按钮
+    auto isButtonExist = [](UiElement::Element* root, CPlayerUIBase::BtnKey key) ->bool {
+        bool rtn = false;
+        root->IterateAllElements([&](UiElement::Element* element) ->bool {
+            Button* button = dynamic_cast<Button*>(element);
+            if (button != nullptr && button->key == key)
+            {
+                rtn = true;
+                return true;
+            }
+        });
+        return rtn;
+    };
+
     //清空不显示的子元素的矩形区域
     for (size_t i{}; i < childLst.size(); i++)
     {
         if (cur_element != childLst[i])
         {
             childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
-                //Button目前先不处理，否则会导致同一个StackElement不同页面含有相同按钮时无法点击的问题
                 Button* button = dynamic_cast<Button*>(element);
                 if (button != nullptr)
-                    return false;
+                {
+                    //如果按钮在当前页面下也存在，则不清除
+                    if (isButtonExist(cur_element.get(), button->key))
+                        return false;
+                }
 
                 if (element != nullptr)
                     element->ClearRect();
