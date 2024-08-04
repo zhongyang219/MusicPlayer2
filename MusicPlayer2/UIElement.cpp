@@ -569,6 +569,7 @@ void UiElement::StackElement::Draw()
                 rtn = true;
                 return true;
             }
+            return false;
         });
         return rtn;
     };
