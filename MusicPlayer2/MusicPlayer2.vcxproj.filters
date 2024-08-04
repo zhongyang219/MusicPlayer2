@@ -405,6 +405,9 @@
     <Filter Include="功能逻辑类\UiMediaLibItemMgr">
       <UniqueIdentifier>{0699c691-a3ac-4f77-952c-e57b1344ba5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\媒体库对话框\属性对话框">
+      <UniqueIdentifier>{4fb739d3-9132-4e7c-a046-8cdf7b3436e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -915,6 +918,9 @@
     <ClInclude Include="UIWindowCmdHelper.h">
       <Filter>UIWindow</Filter>
     </ClInclude>
+    <ClInclude Include="SimplePropertiesDlg.h">
+      <Filter>对话框类\媒体库对话框\属性对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1390,6 +1396,9 @@
     </ClCompile>
     <ClCompile Include="UIWindowCmdHelper.cpp">
       <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="SimplePropertiesDlg.cpp">
+      <Filter>对话框类\媒体库对话框\属性对话框</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
