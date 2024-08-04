@@ -677,6 +677,9 @@ namespace UiElement
         virtual int GetHeight(CRect parent_rect) const override;
 
         bool show_when_use_system_titlebar{};   //仅当开启“使用系统标准标题栏”时才显示
+
+    private:
+        bool IsHide() const;
     };
 }
 
