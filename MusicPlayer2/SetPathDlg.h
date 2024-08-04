@@ -84,4 +84,5 @@ public:
     afx_msg void OnLibFolderSortRecentPlayed();
     afx_msg void OnLibFolderSortRecentAdded();
     afx_msg void OnLibFolderSortPath();
+    afx_msg void OnLibFolderProperties();
 };

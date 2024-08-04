@@ -7,6 +7,7 @@
 #include "PropertyDlg.h"
 #include "COSUPlayerHelper.h"
 #include "PlaylistPropertiesDlg.h"
+#include "FolderPropertiesDlg.h"
 
 CUIWindowCmdHelper::CUIWindowCmdHelper(IPlayerUI* pUI)
     : m_pUI(pUI)
@@ -285,6 +286,12 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
     else if (command == ID_FILE_OPEN_FOLDER)
     {
         helper.OnOpenFolder();
+    }
+    else if (command == ID_LIB_FOLDER_PROPERTIES)
+    {
+        CFolderPropertiesDlg dlg(path_info);
+        dlg.DoModal();
+
     }
 }
 

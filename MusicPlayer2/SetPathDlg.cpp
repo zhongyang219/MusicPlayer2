@@ -7,6 +7,7 @@
 #include "SetPathDlg.h"
 #include "MusicPlayerCmdHelper.h"
 #include "RecentFolderAndPlaylist.h"
+#include "FolderPropertiesDlg.h"
 
 
 // CSetPathDlg 对话框
@@ -242,6 +243,7 @@ BEGIN_MESSAGE_MAP(CSetPathDlg, CTabDlg)
     ON_COMMAND(ID_LIB_FOLDER_SORT_RECENT_PLAYED, &CSetPathDlg::OnLibFolderSortRecentPlayed)
     ON_COMMAND(ID_LIB_FOLDER_SORT_RECENT_ADDED, &CSetPathDlg::OnLibFolderSortRecentAdded)
     ON_COMMAND(ID_LIB_FOLDER_SORT_PATH, &CSetPathDlg::OnLibFolderSortPath)
+    ON_COMMAND(ID_LIB_FOLDER_PROPERTIES, &CSetPathDlg::OnLibFolderProperties)
 END_MESSAGE_MAP()
 
 
@@ -551,4 +553,11 @@ void CSetPathDlg::OnLibFolderSortPath()
     {
         ShowPathList();
     }
+}
+
+
+void CSetPathDlg::OnLibFolderProperties()
+{
+    CFolderPropertiesDlg dlg(GetSelPath());
+    dlg.DoModal();
 }

@@ -783,6 +783,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_CONTAIN_SUB_FOLDER));
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_CLEAR_INVALID_PATH));
+        menu.AppendItem(EX_ID(ID_LIB_FOLDER_PROPERTIES), IconMgr::IconType::IT_Info);
         break;
     case MenuMgr::LibPlaylistMenu:
         menu.CreateMenu(true, false);
@@ -855,6 +856,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_CLEAR_INVALID_PATH));
         menu.AppendItem(EX_ID(ID_FILE_OPEN_FOLDER), IconMgr::IconType::IT_Folder);
+        menu.AppendItem(EX_ID(ID_LIB_FOLDER_PROPERTIES), IconMgr::IconType::IT_Info);
         break;
     case MenuMgr::UiLibLeftMenu:
         menu.CreateMenu(true, false);

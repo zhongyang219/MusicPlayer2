@@ -1,4 +1,4 @@
-﻿// MediaLibStatisticsDlg.cpp: 实现文件
+﻿// PlaylistPropertiesDlg.cpp: 实现文件
 //
 
 #include "stdafx.h"
@@ -47,12 +47,12 @@ BOOL CPlaylistPropertiesDlg::OnInitDialog()
 
 void CPlaylistPropertiesDlg::InitData()
 {
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_PROPERTIES_NAME"), CPlaylistMgr::GetPlaylistDisplayName(m_playlist_info.path));
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NAME"), CPlaylistMgr::GetPlaylistDisplayName(m_playlist_info.path));
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_PATH"), m_playlist_info.path);
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TRACK"), std::to_wstring(m_playlist_info.track + 1));
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_PROPERTIES_LAST_PLAYED_POSITION"), Time(m_playlist_info.position).toString());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_LAST_PLAYED_POSITION"), Time(m_playlist_info.position).toString());
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK"), std::to_wstring(m_playlist_info.track_num));
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH"), Time(m_playlist_info.total_time).toString());
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TIME"), m_playlist_info.last_played_time == 0 ? L"-" : CTime(m_playlist_info.last_played_time).Format(_T("%F %T")).GetString());
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_PROPERTIES_CREATE_TIME"), m_playlist_info.create_time == 0 ? L"-" : CTime(m_playlist_info.create_time).Format(_T("%F %T")).GetString());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_CREATE_TIME"), m_playlist_info.create_time == 0 ? L"-" : CTime(m_playlist_info.create_time).Format(_T("%F %T")).GetString());
 }
