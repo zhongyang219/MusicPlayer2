@@ -8,6 +8,7 @@
 #include "COSUPlayerHelper.h"
 #include "PlaylistPropertiesDlg.h"
 #include "FolderPropertiesDlg.h"
+#include "MediaLibItemPropertiesDlg.h"
 
 CUIWindowCmdHelper::CUIWindowCmdHelper(IPlayerUI* pUI)
     : m_pUI(pUI)
@@ -233,6 +234,25 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
             case CMediaClassifier::CT_NONE: tab = CMusicPlayerCmdHelper::ML_ALL; break;
             }
             helper.OnViewInMediaLib(tab, item.medialib_info->path);
+        }
+    }
+    //属性
+    else if (command == ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES)
+    {
+        if (item.IsFolder())
+        {
+            CFolderPropertiesDlg dlg(*item.folder_info);
+            dlg.DoModal();
+        }
+        else if (item.IsPlaylist())
+        {
+            CPlaylistPropertiesDlg dlg(*item.playlist_info);
+            dlg.DoModal();
+        }
+        else if (item.IsMedialib())
+        {
+            CMediaLibItemPropertiesDlg dlg(*item.medialib_info);
+            dlg.DoModal();
         }
     }
 }

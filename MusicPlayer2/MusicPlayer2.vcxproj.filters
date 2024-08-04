@@ -927,6 +927,9 @@
     <ClInclude Include="FolderPropertiesDlg.h">
       <Filter>对话框类\媒体库对话框\属性对话框</Filter>
     </ClInclude>
+    <ClInclude Include="MediaLibItemPropertiesDlg.h">
+      <Filter>对话框类\媒体库对话框\属性对话框</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1410,6 +1413,9 @@
       <Filter>对话框类\媒体库对话框\属性对话框</Filter>
     </ClCompile>
     <ClCompile Include="FolderPropertiesDlg.cpp">
+      <Filter>对话框类\媒体库对话框\属性对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="MediaLibItemPropertiesDlg.cpp">
       <Filter>对话框类\媒体库对话框\属性对话框</Filter>
     </ClCompile>
   </ItemGroup>

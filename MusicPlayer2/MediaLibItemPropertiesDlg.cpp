@@ -1,57 +1,59 @@
-﻿// FolderPropertiesDlg.cpp: 实现文件
+﻿// MediaLibItemPropertiesDlg.cpp: 实现文件
 //
 
 #include "stdafx.h"
 #include "MusicPlayer2.h"
-#include "FolderPropertiesDlg.h"
+#include "MediaLibItemPropertiesDlg.h"
 
-// CFolderPropertiesDlg 对话框
+// CMediaLibItemPropertiesDlg 对话框
 
-IMPLEMENT_DYNAMIC(CFolderPropertiesDlg, CSimplePropertiesDlg)
+IMPLEMENT_DYNAMIC(CMediaLibItemPropertiesDlg, CSimplePropertiesDlg)
 
-CFolderPropertiesDlg::CFolderPropertiesDlg(const PathInfo& folder_info, CWnd* pParent /*=nullptr*/)
+CMediaLibItemPropertiesDlg::CMediaLibItemPropertiesDlg(const MediaLibPlaylistInfo& item_info, CWnd* pParent /*=nullptr*/)
     : CSimplePropertiesDlg(pParent)
-    , m_folder_info(folder_info)
+    , m_item_info(item_info)
 {
 
 }
 
-CFolderPropertiesDlg::~CFolderPropertiesDlg()
+CMediaLibItemPropertiesDlg::~CMediaLibItemPropertiesDlg()
 {
 }
 
-CString CFolderPropertiesDlg::GetDialogName() const
+CString CMediaLibItemPropertiesDlg::GetDialogName() const
 {
-    return _T("FolderPropertiesDlg");
+    return _T("MediaLibItemPropertiesDlg");
 }
 
-BEGIN_MESSAGE_MAP(CFolderPropertiesDlg, CSimplePropertiesDlg)
+BEGIN_MESSAGE_MAP(CMediaLibItemPropertiesDlg, CSimplePropertiesDlg)
 END_MESSAGE_MAP()
 
 
-// CFolderPropertiesDlg 消息处理程序
+// CMediaLibItemPropertiesDlg 消息处理程序
 
 
-BOOL CFolderPropertiesDlg::OnInitDialog()
+BOOL CMediaLibItemPropertiesDlg::OnInitDialog()
 {
     CSimplePropertiesDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
 
-    SetWindowTextW(theApp.m_str_table.LoadText(L"TXT_TITLE_FOLDER_PROPERTIES").c_str());
+    SetWindowTextW(theApp.m_str_table.LoadText(L"TXT_TITLE_MEDIA_LIB_ITEM_PROPERTIES").c_str());
     SetIcon(IconMgr::IconType::IT_Info, FALSE);
 
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
 
-void CFolderPropertiesDlg::InitData()
+void CMediaLibItemPropertiesDlg::InitData()
 {
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_PATH"), m_folder_info.path);
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TRACK"), std::to_wstring(m_folder_info.track + 1));
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_LAST_PLAYED_POSITION"), Time(m_folder_info.position).toString());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_TYPE"), CMediaLibPlaylistMgr::GetTypeName(m_item_info.medialib_type));
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NAME"), CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(m_item_info.medialib_type, m_item_info.path));
+
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TRACK"), std::to_wstring(m_item_info.track + 1));
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_LAST_PLAYED_POSITION"), Time(m_item_info.position).toString());
     std::wstring str_sort_mode;
-    switch (m_folder_info.sort_mode)
+    switch (m_item_info.sort_mode)
     {
     case SM_U_FILE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_FILE"); break;
     case SM_D_FILE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_FILE"); break;
@@ -72,9 +74,7 @@ void CFolderPropertiesDlg::InitData()
     case SM_UNSORT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_UNSORT"); break;
     }
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_SORT"), str_sort_mode);
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK"), std::to_wstring(m_folder_info.track_num));
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH"), Time(m_folder_info.total_time).toString());
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER"), theApp.m_str_table.LoadText(m_folder_info.contain_sub_folder ? L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER_YES" : L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER_NO"));
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TIME"), m_folder_info.last_played_time == 0 ? L"-" : CTime(m_folder_info.last_played_time).Format(_T("%F %T")).GetString());
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_ADD_TIME"), m_folder_info.add_time == 0 ? L"-" : CTime(m_folder_info.add_time).Format(_T("%F %T")).GetString());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK"), std::to_wstring(m_item_info.track_num));
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH"), Time(m_item_info.total_time).toString());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TIME"), m_item_info.last_played_time == 0 ? L"-" : CTime(m_item_info.last_played_time).Format(_T("%F %T")).GetString());
 }

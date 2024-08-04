@@ -6,6 +6,10 @@
 #include "MoreRecentItemDlg.h"
 #include "FilePathHelper.h"
 #include "MediaLibPlaylistMgr.h"
+#include "MusicPlayerCmdHelper.h"
+#include "FolderPropertiesDlg.h"
+#include "PlaylistPropertiesDlg.h"
+#include "MediaLibItemPropertiesDlg.h"
 
 
 // CMoreRecentItemDlg 对话框
@@ -41,12 +45,10 @@ bool CMoreRecentItemDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TITLE_MORE_RECENT_ITEM");
     SetWindowTextW(temp.c_str());
 
-    SetDlgControlText(IDC_DELETE_BUTTON, L"TXT_MORE_RECENT_ITEM_REMOVE");
     SetDlgControlText(IDOK, L"TXT_MORE_RECENT_ITEM_PLAY_SEL");
     SetButtonIcon(IDOK, IconMgr::IconType::IT_Play);
 
     RepositionTextBasedControls({
-        { CtrlTextInfo::L1, IDC_DELETE_BUTTON, CtrlTextInfo::W32 },
         { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
         { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
         });
@@ -77,10 +79,16 @@ void CMoreRecentItemDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CMoreRecentItemDlg, CBaseDialog)
     ON_WM_GETMINMAXINFO()
     ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CMoreRecentItemDlg::OnNMDblclkList1)
+    ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CMoreRecentItemDlg::OnNMRClickList1)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CMoreRecentItemDlg::OnEnChangeSearchEdit)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMoreRecentItemDlg::OnSearchEditBtnClicked)
     ON_MESSAGE(WM_LISTBOX_SEL_CHANGED, &CMoreRecentItemDlg::OnListboxSelChanged)
-    ON_BN_CLICKED(IDC_DELETE_BUTTON, &CMoreRecentItemDlg::OnBnClickedDeleteButton)
+    ON_COMMAND(ID_PLAY_ITEM, &CMoreRecentItemDlg::OnPlayItem)
+    ON_COMMAND(ID_RECENT_PLAYED_REMOVE, &CMoreRecentItemDlg::OnRecentPlayedRemove)
+    ON_COMMAND(ID_COPY_TEXT, &CMoreRecentItemDlg::OnCopyText)
+    ON_COMMAND(ID_VIEW_IN_MEDIA_LIB, &CMoreRecentItemDlg::OnViewInMediaLib)
+    ON_COMMAND(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES, &CMoreRecentItemDlg::OnLibRecentPlayedItemProperties)
+    ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 
@@ -93,7 +101,6 @@ BOOL CMoreRecentItemDlg::OnInitDialog()
 
     SetIcon(IconMgr::IconType::IT_Media_Lib, FALSE);     // 设置小图标
     m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
-    EnableDlgCtrl(IDC_DELETE_BUTTON, false);
     EnableDlgCtrl(IDOK, false);
 
     //初始化列表
@@ -120,6 +127,19 @@ void CMoreRecentItemDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 
     CBaseDialog::OnOK();
 
+    *pResult = 0;
+}
+
+void CMoreRecentItemDlg::OnNMRClickList1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+    // TODO: 在此添加控件通知处理程序代码
+    m_selected_item = pNMItemActivate->iItem;
+    
+    //弹出右键菜单
+    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::UiRecentPlayedMenu);
+    m_list_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
+    
     *pResult = 0;
 }
 
@@ -175,24 +195,28 @@ afx_msg LRESULT CMoreRecentItemDlg::OnListboxSelChanged(WPARAM wParam, LPARAM lP
     CListBoxEnhanced* pCtrl = (CListBoxEnhanced*)wParam;
     if (pCtrl == &m_list_ctrl)
     {
-        int index = lParam;
+        m_selected_item = lParam;
         //选中项是否可以删除
-        bool delete_enable{ false };
         bool select_valid{ false };
         auto& data_list{ m_searched ? m_search_result : CRecentFolderAndPlaylist::Instance().GetItemList() };
-        if (index >= 0 && index < static_cast<int>(data_list.size()))
+        if (m_selected_item >= 0 && m_selected_item < static_cast<int>(data_list.size()))
         {
             select_valid = true;
-            delete_enable = index > 0;      //除了第一个都可以删除
         }
 
-        EnableDlgCtrl(IDC_DELETE_BUTTON, delete_enable);
         EnableDlgCtrl(IDOK, select_valid);
     }
     return 0;
 }
 
-void CMoreRecentItemDlg::OnBnClickedDeleteButton()
+
+void CMoreRecentItemDlg::OnPlayItem()
+{
+    OnOK();
+}
+
+
+void CMoreRecentItemDlg::OnRecentPlayedRemove()
 {
     int sel_index = m_list_ctrl.GetCurSel();
     auto& data_list{ m_searched ? m_search_result : CRecentFolderAndPlaylist::Instance().GetItemList() };
@@ -217,5 +241,94 @@ void CMoreRecentItemDlg::OnBnClickedDeleteButton()
             }
         }
     }
+}
 
+
+void CMoreRecentItemDlg::OnCopyText()
+{
+    auto* item = GetSelectedItem();
+    if (item != nullptr && !CCommon::CopyStringToClipboard(item->GetName()))
+        AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), MB_ICONWARNING);
+}
+
+
+void CMoreRecentItemDlg::OnViewInMediaLib()
+{
+    auto* item = GetSelectedItem();
+    if (item != nullptr)
+    {
+        CMusicPlayerCmdHelper helper;
+        if (item->IsFolder())
+        {
+            wstring folder_path{ item->folder_info->path };
+            helper.OnViewInMediaLib(CMusicPlayerCmdHelper::ML_FOLDER, folder_path);
+        }
+        else if (item->IsPlaylist())
+        {
+            wstring playlist_path{ item->playlist_info->path };
+            helper.OnViewInMediaLib(CMusicPlayerCmdHelper::ML_PLAYLIST, playlist_path);
+        }
+        else if (item->IsMedialib())
+        {
+            CMusicPlayerCmdHelper::eMediaLibTab tab{};
+            switch (item->medialib_info->medialib_type)
+            {
+            case CMediaClassifier::CT_ARTIST: tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
+            case CMediaClassifier::CT_ALBUM: tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
+            case CMediaClassifier::CT_GENRE: tab = CMusicPlayerCmdHelper::ML_GENRE; break;
+            case CMediaClassifier::CT_YEAR: tab = CMusicPlayerCmdHelper::ML_YEAR; break;
+            case CMediaClassifier::CT_TYPE: tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
+            case CMediaClassifier::CT_BITRATE: tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
+            case CMediaClassifier::CT_RATING: tab = CMusicPlayerCmdHelper::ML_RATING; break;
+            case CMediaClassifier::CT_NONE: tab = CMusicPlayerCmdHelper::ML_ALL; break;
+            }
+            helper.OnViewInMediaLib(tab, item->medialib_info->path);
+        }
+    }
+}
+
+
+void CMoreRecentItemDlg::OnLibRecentPlayedItemProperties()
+{
+    auto* item = GetSelectedItem();
+    if (item != nullptr)
+    {
+        if (item->IsFolder())
+        {
+            CFolderPropertiesDlg dlg(*item->folder_info);
+            dlg.DoModal();
+        }
+        else if (item->IsPlaylist())
+        {
+            CPlaylistPropertiesDlg dlg(*item->playlist_info);
+            dlg.DoModal();
+        }
+        else if (item->IsMedialib())
+        {
+            CMediaLibItemPropertiesDlg dlg(*item->medialib_info);
+            dlg.DoModal();
+        }
+    }
+}
+
+
+void CMoreRecentItemDlg::OnInitMenu(CMenu* pMenu)
+{
+    CBaseDialog::OnInitMenu(pMenu);
+
+    //选中项是否可以删除
+    bool delete_enable{ false };
+    bool select_valid{ false };
+    auto& data_list{ m_searched ? m_search_result : CRecentFolderAndPlaylist::Instance().GetItemList() };
+    if (m_selected_item >= 0 && m_selected_item < static_cast<int>(data_list.size()))
+    {
+        select_valid = true;
+        delete_enable = m_selected_item > 0;      //除了第一个都可以删除
+    }
+
+    pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RECENT_PLAYED_REMOVE, MF_BYCOMMAND | (delete_enable ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_COPY_TEXT, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_VIEW_IN_MEDIA_LIB, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 }

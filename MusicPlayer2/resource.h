@@ -971,13 +971,14 @@
 #define ID_LIB_FOLDER_SORT_PATH         33474
 #define ID_LIB_PLAYLIST_PROPERTIES      33475
 #define ID_LIB_FOLDER_PROPERTIES        33476
+#define ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES 33477
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        613
-#define _APS_NEXT_COMMAND_VALUE         33477
+#define _APS_NEXT_COMMAND_VALUE         33478
 #define _APS_NEXT_CONTROL_VALUE         1366
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

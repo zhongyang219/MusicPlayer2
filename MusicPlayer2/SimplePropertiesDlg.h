@@ -13,6 +13,11 @@ public:
     CSimplePropertiesDlg(CWnd* pParent = nullptr);   // 标准构造函数
     virtual ~CSimplePropertiesDlg();
 
+    // 对话框数据
+#ifdef AFX_DESIGN_TIME
+    enum { IDD = IDD_SELECT_ITEM_DIALOG };
+#endif
+
 protected:
     //对话框中每一行的内容
     struct Item

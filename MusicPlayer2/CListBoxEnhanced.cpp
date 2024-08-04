@@ -59,7 +59,7 @@ int CListBoxEnhanced::CalculateColumnWidth()
 
 BEGIN_MESSAGE_MAP(CListBoxEnhanced, CListCtrlEx)
 	ON_NOTIFY_REFLECT(NM_CLICK, &CListBoxEnhanced::OnNMClick)
-	ON_NOTIFY_REFLECT(NM_RCLICK, &CListBoxEnhanced::OnNMRClick)
+    ON_NOTIFY_REFLECT_EX(NM_RCLICK, &CListBoxEnhanced::OnNMRClick)
     ON_WM_SIZE()
 END_MESSAGE_MAP()
 
@@ -83,7 +83,7 @@ void CListBoxEnhanced::OnNMClick(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-void CListBoxEnhanced::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
+BOOL CListBoxEnhanced::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
@@ -92,6 +92,7 @@ void CListBoxEnhanced::OnNMRClick(NMHDR *pNMHDR, LRESULT *pResult)
 		pParent->SendMessage(WM_LISTBOX_SEL_CHANGED, (WPARAM)this, (LPARAM)pNMItemActivate->iItem);
 
 	*pResult = 0;
+    return FALSE;
 }
 
 

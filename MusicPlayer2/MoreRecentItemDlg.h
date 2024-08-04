@@ -41,9 +41,16 @@ public:
     virtual BOOL OnInitDialog();
     virtual void OnOK();
     afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
+    afx_msg void OnNMRClickList1(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnEnChangeSearchEdit();
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnListboxSelChanged(WPARAM wParam, LPARAM lParam);
-    afx_msg void OnBnClickedDeleteButton();
+public:
+    afx_msg void OnPlayItem();
+    afx_msg void OnRecentPlayedRemove();
+    afx_msg void OnCopyText();
+    afx_msg void OnViewInMediaLib();
+    afx_msg void OnLibRecentPlayedItemProperties();
+    afx_msg void OnInitMenu(CMenu* pMenu);
 };
