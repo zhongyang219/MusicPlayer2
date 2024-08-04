@@ -137,4 +137,5 @@ public:
     afx_msg void OnLibPlaylistSortRecentPlayed();
     afx_msg void OnLibPlaylistSortRecentCreated();
     afx_msg void OnLibPlaylistSortName();
+    afx_msg void OnLibPlaylistProperties();
 };

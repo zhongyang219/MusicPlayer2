@@ -6,6 +6,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
 #include "COSUPlayerHelper.h"
+#include "PlaylistPropertiesDlg.h"
 
 CUIWindowCmdHelper::CUIWindowCmdHelper(IPlayerUI* pUI)
     : m_pUI(pUI)
@@ -342,6 +343,11 @@ void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* 
     else if (command == ID_NEW_PLAYLIST)
     {
         helper.OnNewPlaylist();
+    }
+    else if (command == ID_LIB_PLAYLIST_PROPERTIES)
+    {
+        CPlaylistPropertiesDlg dlg(playlist);
+        dlg.DoModal();
     }
 }
 

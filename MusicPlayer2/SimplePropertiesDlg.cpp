@@ -61,7 +61,7 @@ BOOL CSimplePropertiesDlg::OnInitDialog()
     CRect rect;
     m_list_ctrl.GetWindowRect(rect);
     m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_GRIDLINES);
-    int width0 = rect.Width() / 2;
+    int width0 = (std::min)(rect.Width() / 2, theApp.DPI(160));
     int width1 = rect.Width() - width0 - theApp.DPI(20) - 1;
     m_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_ITEM").c_str(), LVCFMT_LEFT, width0);
     m_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_VALUE").c_str(), LVCFMT_LEFT, width1);

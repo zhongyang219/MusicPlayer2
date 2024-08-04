@@ -797,6 +797,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_PLAYLIST_FIX_PATH_ERROR), IconMgr::IconType::IT_Fix);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_NEW_PLAYLIST), IconMgr::IconType::IT_Add);
+        menu.AppendItem(EX_ID(ID_LIB_PLAYLIST_PROPERTIES), IconMgr::IconType::IT_Info);
         break;
     case MenuMgr::LibLeftMenu:
         menu.CreateMenu(true, false);

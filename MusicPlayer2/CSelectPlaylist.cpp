@@ -12,6 +12,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "CommonDialogMgr.h"
 #include "FilterHelper.h"
+#include "PlaylistPropertiesDlg.h"
 
 // CSelectPlaylist 对话框
 
@@ -255,6 +256,7 @@ BEGIN_MESSAGE_MAP(CSelectPlaylistDlg, CMediaLibTabDlg)
     ON_COMMAND(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, &CSelectPlaylistDlg::OnLibPlaylistSortRecentPlayed)
     ON_COMMAND(ID_LIB_PLAYLIST_SORT_RECENT_CREATED, &CSelectPlaylistDlg::OnLibPlaylistSortRecentCreated)
     ON_COMMAND(ID_LIB_PLAYLIST_SORT_NAME, &CSelectPlaylistDlg::OnLibPlaylistSortName)
+    ON_COMMAND(ID_LIB_PLAYLIST_PROPERTIES, &CSelectPlaylistDlg::OnLibPlaylistProperties)
 END_MESSAGE_MAP()
 
 
@@ -773,4 +775,10 @@ void CSelectPlaylistDlg::OnLibPlaylistSortName()
     {
         ShowPathList();
     }
+}
+
+void CSelectPlaylistDlg::OnLibPlaylistProperties()
+{
+    CPlaylistPropertiesDlg dlg(GetSelectedPlaylist());
+    dlg.DoModal();
 }
