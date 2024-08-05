@@ -66,13 +66,12 @@ bool CAboutDlg::InitializeControls()
     SetDlgItemTextW(IDOK, temp.c_str());
 
     RepositionTextBasedControls({
-        { CtrlTextInfo::L2, IDC_SYSLINK1, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L1, IDC_SYSLINK2, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L2, IDC_GITHUB_SYSLINK, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L1, IDC_LICENSE_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L3, IDC_SYSLINK1, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L2, IDC_SYSLINK2, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L1, IDC_GITHUB_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L3, IDC_LICENSE_SYSLINK, CtrlTextInfo::W_50 },
         { CtrlTextInfo::L2, IDC_DONATE_SYSLINK, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L1, IDC_ACKNOWLEDGEMENT_SYSLINK, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 }
+        { CtrlTextInfo::L1, IDC_ACKNOWLEDGEMENT_SYSLINK, CtrlTextInfo::W_50 }
         });
 
     return true;
@@ -130,9 +129,9 @@ BOOL CAboutDlg::OnInitDialog()
     if (m_rc_pic.Height() <= 0)
         m_rc_pic.bottom = m_rc_pic.top + theApp.DPI(50);
     // 计算背景白色区域高度
-    ::GetWindowRect(GetDlgItem(IDC_SYSLINK1)->GetSafeHwnd(), rect);
+    ::GetWindowRect(GetDlgItem(IDOK)->GetSafeHwnd(), rect);
     ScreenToClient(rect);
-    m_white_height = rect.top - theApp.DPI(6);
+    m_white_height = rect.top - theApp.DPI(8);
 
     //载入图片
     m_about_pic.LoadFromResource(AfxGetResourceHandle(), IDB_DEFAULT_COVER);
