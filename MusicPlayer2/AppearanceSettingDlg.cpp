@@ -112,8 +112,10 @@ bool CAppearanceSettingDlg::InitializeControls()
 
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR");
     SetDlgItemTextW(IDC_TXT_TITLE_BAR_STATIC, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_USE_SYSTEM_TITLE_BAR");
-    SetDlgItemTextW(IDC_SHOW_SYSTEM_TITLEBAR_CHECK, temp.c_str());
+
+    SetDlgControlText(IDC_USE_SYSTEM_TITLEBAR_RADIO, L"TXT_OPT_APC_USE_SYSTEM_TITLE_BAR");
+    SetDlgControlText(IDC_USE_OWNER_DRAW_TITLEBAR_RADIO, L"TXT_OPT_APC_USE_OWNER_DRAW_TITLE_BAR");
+
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_SEL");
     SetDlgItemTextW(IDC_TXT_TITLE_BAR_BTN_SEL_STATIC, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_SETTING");
@@ -243,7 +245,7 @@ void CAppearanceSettingDlg::SetControlEnable()
     EnableDlgCtrl(IDC_SHOW_MAXIMIZE_BTN_CHECK, !m_data.show_window_frame);
 }
 
-void CAppearanceSettingDlg::CalculateNotifyIconPreviewRect()
+void CAppearanceSettingDlg::CalculatePreviewBitmapRect()
 {
     CWnd* pStatic = GetDlgItem(IDC_PREVIEW_STATIC);
     if (pStatic != nullptr)
@@ -256,6 +258,26 @@ void CAppearanceSettingDlg::CalculateNotifyIconPreviewRect()
         m_notify_icon_preview.right = m_notify_icon_preview.left + PREVIEW_WIDTH;
         m_notify_icon_preview.bottom = m_notify_icon_preview.top + PREVIEW_HEIGHT;
     }
+
+    CWnd* use_system_titlebar_radio = GetDlgItem(IDC_USE_SYSTEM_TITLEBAR_RADIO);
+    if (use_system_titlebar_radio != nullptr)
+    {
+        ::GetWindowRect(use_system_titlebar_radio->GetSafeHwnd(), m_system_titlebar_preview_rect);
+        ScreenToClient(m_system_titlebar_preview_rect);
+        m_system_titlebar_preview_rect.bottom = m_system_titlebar_preview_rect.top - theApp.DPI(4);
+        m_system_titlebar_preview_rect.top = m_system_titlebar_preview_rect.bottom - theApp.DPI(50);
+    }
+
+    CWnd* use_owner_draw_titlebar_radio = GetDlgItem(IDC_USE_OWNER_DRAW_TITLEBAR_RADIO);
+    if (use_owner_draw_titlebar_radio != nullptr)
+    {
+        ::GetWindowRect(use_owner_draw_titlebar_radio->GetSafeHwnd(), m_owner_draw_titlebar_preview_rect);
+        ScreenToClient(m_owner_draw_titlebar_preview_rect);
+        m_owner_draw_titlebar_preview_rect.bottom = m_owner_draw_titlebar_preview_rect.top - theApp.DPI(4);
+        m_owner_draw_titlebar_preview_rect.top = m_owner_draw_titlebar_preview_rect.bottom - theApp.DPI(50);
+        m_owner_draw_titlebar_preview_rect.right = m_owner_draw_titlebar_preview_rect.left + m_system_titlebar_preview_rect.Width();
+    }
+
 }
 
 void CAppearanceSettingDlg::GetDataFromUi()
@@ -263,7 +285,7 @@ void CAppearanceSettingDlg::GetDataFromUi()
     m_data.ui_refresh_interval = m_ui_refresh_interval_edit.GetValue();
 
     m_data.always_show_statusbar = (IsDlgButtonChecked(IDC_ALWAYS_SHOW_STATUSBAR_CHECK) != 0);
-    m_data.show_window_frame = (IsDlgButtonChecked(IDC_SHOW_SYSTEM_TITLEBAR_CHECK) != 0);
+    m_data.show_window_frame = (IsDlgButtonChecked(IDC_USE_SYSTEM_TITLEBAR_RADIO) != 0);
 
     m_data.show_settings_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_SETTINGS_BTN_CHECK) != 0);
     m_data.show_skin_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_SKIN_BTN_CHECK) != 0);
@@ -323,8 +345,9 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_USE_DESKTOP_BACKGROUND_CHECK, &CAppearanceSettingDlg::OnBnClickedUseDesktopBackgroundCheck)
     ON_BN_CLICKED(IDC_SHOW_NEXT_CHECK, &CAppearanceSettingDlg::OnBnClickedShowNextCheck)
     ON_BN_CLICKED(IDC_SHOW_FPS_CHECK, &CAppearanceSettingDlg::OnBnClickedShowFpsCheck)
-    ON_BN_CLICKED(IDC_SHOW_SYSTEM_TITLEBAR_CHECK, &CAppearanceSettingDlg::OnBnClickedShowSystemTitlebarCheck)
     ON_BN_CLICKED(IDC_ALWAYS_SHOW_STATUSBAR_CHECK, &CAppearanceSettingDlg::OnBnClickedAlwaysShowStatusbarCheck)
+    ON_BN_CLICKED(IDC_USE_SYSTEM_TITLEBAR_RADIO, &CAppearanceSettingDlg::OnBnClickedUseSystemTitlebarRadio)
+    ON_BN_CLICKED(IDC_USE_OWNER_DRAW_TITLEBAR_RADIO, &CAppearanceSettingDlg::OnBnClickedUseOwnerDrawTitlebarRadio)
 END_MESSAGE_MAP()
 
 
@@ -443,7 +466,10 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     CheckDlgButton(IDC_SHOW_NEXT_CHECK, m_data.show_next_track);
     CheckDlgButton(IDC_SHOW_FPS_CHECK, m_data.show_fps);
 
-    CheckDlgButton(IDC_SHOW_SYSTEM_TITLEBAR_CHECK, m_data.show_window_frame);
+    if (m_data.show_window_frame)
+        CheckDlgButton(IDC_USE_SYSTEM_TITLEBAR_RADIO, TRUE);
+    else
+        CheckDlgButton(IDC_USE_OWNER_DRAW_TITLEBAR_RADIO, TRUE);
     CheckDlgButton(IDC_SHOW_SETTINGS_BTN_CHECK, m_data.show_settings_btn_in_titlebar);
     CheckDlgButton(IDC_SHOW_SKIN_BTN_CHECK, m_data.show_skin_btn_in_titlebar);
     CheckDlgButton(IDC_SHOW_MINI_MODE_BTN_CHECK, m_data.show_minimode_btn_in_titlebar);
@@ -453,11 +479,13 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     CheckDlgButton(IDC_SHOW_DARK_LIGHT_BTN_CHECK, m_data.show_dark_light_btn_in_titlebar);
 
     //设置通知区图标预览区域的位置
-    CalculateNotifyIconPreviewRect();
+    CalculatePreviewBitmapRect();
 
     //载入预览图
     m_preview_dark.LoadBitmap(IDB_NOTIFY_ICON_PREVIEW);
     m_preview_light.LoadBitmap(IDB_NOTIFY_ICON_PREVIEW_LIGHT);
+    m_preview_system_titlebar.LoadBitmap(IDB_SYSTEM_TITLEBAR_PREVIEW);
+    m_preview_owner_draw_titlebar.LoadBitmap(IDB_OWNER_DRAW_TITLEBAR_PREVIEW);
 
     SetControlEnable();
 
@@ -723,9 +751,11 @@ void CAppearanceSettingDlg::OnPaint()
                        // TODO: 在此处添加消息处理程序代码
                        // 不为绘图消息调用 CTabDlg::OnPaint()
 
-    CalculateNotifyIconPreviewRect();
+    CalculatePreviewBitmapRect();
     CDrawCommon drawer;
     drawer.Create(&dc);
+    
+    //绘制通知区图标预览图
     CBitmap& bitmap{ m_data.notify_icon_selected == 2 ? m_preview_light : m_preview_dark };
     //绘制背景
     drawer.DrawBitmap(bitmap, m_notify_icon_preview.TopLeft(), m_notify_icon_preview.Size(), CDrawCommon::StretchMode::STRETCH);
@@ -736,6 +766,10 @@ void CAppearanceSettingDlg::OnPaint()
             CPoint(m_notify_icon_preview.left + ICON_X, m_notify_icon_preview.top + ICON_Y),
             CSize(theApp.DPI(16), theApp.DPI(16)));
     }
+
+    //绘制标题栏预览图
+    drawer.DrawBitmap(m_preview_system_titlebar, m_system_titlebar_preview_rect.TopLeft(), m_system_titlebar_preview_rect.Size(), CDrawCommon::StretchMode::FIT);
+    drawer.DrawBitmap(m_preview_owner_draw_titlebar, m_owner_draw_titlebar_preview_rect.TopLeft(), m_owner_draw_titlebar_preview_rect.Size(), CDrawCommon::StretchMode::FIT);
 }
 
 
@@ -814,15 +848,22 @@ void CAppearanceSettingDlg::OnBnClickedShowFpsCheck()
 }
 
 
-void CAppearanceSettingDlg::OnBnClickedShowSystemTitlebarCheck()
+void CAppearanceSettingDlg::OnBnClickedAlwaysShowStatusbarCheck()
 {
-    m_data.show_window_frame = (IsDlgButtonChecked(IDC_SHOW_SYSTEM_TITLEBAR_CHECK) != 0);
+    m_data.always_show_statusbar = (IsDlgButtonChecked(IDC_ALWAYS_SHOW_STATUSBAR_CHECK) != 0);
     SetControlEnable();
 }
 
 
-void CAppearanceSettingDlg::OnBnClickedAlwaysShowStatusbarCheck()
+void CAppearanceSettingDlg::OnBnClickedUseSystemTitlebarRadio()
 {
-    m_data.always_show_statusbar = (IsDlgButtonChecked(IDC_ALWAYS_SHOW_STATUSBAR_CHECK) != 0);
+    m_data.show_window_frame = true;
+    SetControlEnable();
+}
+
+
+void CAppearanceSettingDlg::OnBnClickedUseOwnerDrawTitlebarRadio()
+{
+    m_data.show_window_frame = false;
     SetControlEnable();
 }

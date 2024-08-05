@@ -76,8 +76,13 @@ protected:
     CButton m_btn_round_corners_chk;
 
     CRect m_notify_icon_preview;
+    CRect m_system_titlebar_preview_rect;
+    CRect m_owner_draw_titlebar_preview_rect;
+
     CBitmap m_preview_dark;
     CBitmap m_preview_light;
+    CBitmap m_preview_system_titlebar;
+    CBitmap m_preview_owner_draw_titlebar;
 
     CBrowseEdit m_default_background_edit;
     CBrowseEdit m_album_cover_name_edit;
@@ -92,7 +97,7 @@ protected:
     static int SpectrumHeightRChg(int value);		//使用二次函数将0~100范围内的值映射到10~300范围内
 
     void SetControlEnable();
-    void CalculateNotifyIconPreviewRect();
+    void CalculatePreviewBitmapRect();
 
     virtual void GetDataFromUi() override;
     virtual void ApplyDataToUi() override;
@@ -134,6 +139,7 @@ public:
     afx_msg void OnBnClickedUseDesktopBackgroundCheck();
     afx_msg void OnBnClickedShowNextCheck();
     afx_msg void OnBnClickedShowFpsCheck();
-    afx_msg void OnBnClickedShowSystemTitlebarCheck();
     afx_msg void OnBnClickedAlwaysShowStatusbarCheck();
+    afx_msg void OnBnClickedUseSystemTitlebarRadio();
+    afx_msg void OnBnClickedUseOwnerDrawTitlebarRadio();
 };

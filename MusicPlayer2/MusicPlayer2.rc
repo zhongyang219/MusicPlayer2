@@ -486,6 +486,10 @@ IDB_NOTIFY_ICON_PREVIEW_LIGHT BITMAP                  "res\\notify_preview_light
 
 IDB_DEFAULT_COVER       BITMAP                  "res\\default_cover.bmp"
 
+IDB_SYSTEM_TITLEBAR_PREVIEW BITMAP                  "res\\system_titlebar_preview.bmp"
+
+IDB_OWNER_DRAW_TITLEBAR_PREVIEW BITMAP                  "res\\owner_draw_titlebar_preview.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -684,7 +688,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,165,148,50,14,WS_GROUP
 END
 
-IDD_APPEREANCE_SETTING_DLG DIALOGEX 0, 0, 344, 587
+IDD_APPEREANCE_SETTING_DLG DIALOGEX 0, 0, 344, 624
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "Segoe UI", 400, 0, 0x0
 BEGIN
@@ -747,30 +751,32 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,342,316,8
     CONTROL         "Show next track",IDC_SHOW_NEXT_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,353,126,8
     CONTROL         "Show fps",IDC_SHOW_FPS_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,353,180,8
-    GROUPBOX        "Title bar",IDC_TXT_TITLE_BAR_STATIC,7,372,330,82,WS_GROUP
-    CONTROL         "Use system standard title bar",IDC_SHOW_SYSTEM_TITLEBAR_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,383,316,8
-    LTEXT           "Buttons displayed in the title bar:",IDC_TXT_TITLE_BAR_BTN_SEL_STATIC,14,394,316,9
-    CONTROL         "Settings",IDC_SHOW_SETTINGS_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,406,126,8
-    CONTROL         "Switch UI",IDC_SHOW_SKIN_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,406,180,8
-    CONTROL         "Mini mode",IDC_SHOW_MINI_MODE_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,417,180,8
-    CONTROL         "Full screen",IDC_SHOW_FULLSCREEN_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,429,126,8
-    CONTROL         "Minimize",IDC_SHOW_MINIMIZE_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,429,180,8
-    CONTROL         "Maximize/Restore",IDC_SHOW_MAXIMIZE_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,441,126,8
-    GROUPBOX        "Notification Area Icon",IDC_NA_ICO_STATIC,7,459,330,65,WS_GROUP
-    LTEXT           "Preview:",IDC_PREVIEW_STATIC,14,471,126,8
-    LTEXT           "Select notification area icon:",IDC_TXT_NA_ICO_SEL_STATIC,150,471,180,8
-    COMBOBOX        IDC_COMBO1,150,485,100,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Title bar",IDC_TXT_TITLE_BAR_STATIC,7,372,330,111,WS_GROUP
+    CONTROL         "Use system standard title bar",IDC_USE_SYSTEM_TITLEBAR_RADIO,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,14,411,126,10
+    CONTROL         "Use self-drawn title bar",IDC_USE_OWNER_DRAW_TITLEBAR_RADIO,
+                    "Button",BS_AUTORADIOBUTTON,150,411,180,10
+    LTEXT           "Buttons displayed in the title bar:",IDC_TXT_TITLE_BAR_BTN_SEL_STATIC,14,424,316,9
+    CONTROL         "Settings",IDC_SHOW_SETTINGS_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,434,126,8
+    CONTROL         "Switch UI",IDC_SHOW_SKIN_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,434,180,8
+    CONTROL         "Mini mode",IDC_SHOW_MINI_MODE_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,445,180,8
+    CONTROL         "Full screen",IDC_SHOW_FULLSCREEN_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,457,126,8
+    CONTROL         "Minimize",IDC_SHOW_MINIMIZE_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,457,180,8
+    CONTROL         "Maximize/Restore",IDC_SHOW_MAXIMIZE_BTN_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,469,126,8
+    GROUPBOX        "Notification Area Icon",IDC_NA_ICO_STATIC,7,489,330,65,WS_GROUP
+    LTEXT           "Preview:",IDC_PREVIEW_STATIC,14,501,126,8
+    LTEXT           "Select notification area icon:",IDC_TXT_NA_ICO_SEL_STATIC,150,501,180,8
+    COMBOBOX        IDC_COMBO1,150,515,100,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Automatically adapt to Windows 10 dark/light mode when using the monochrome icons.",IDC_NOTIFY_ICON_AUTO_ADAPT_CHECK,
-                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,14,502,316,18
-    GROUPBOX        "Advanced",IDC_TXT_ADV_STATIC,7,529,330,46,WS_GROUP
-    RTEXT           "Interface refresh interval (ms):",IDC_TXT_UI_INTERVAL_STATIC,14,542,126,8
-    EDITTEXT        IDC_UI_INTERVAL_EDIT,150,541,51,12,ES_AUTOHSCROLL | ES_NUMBER
-    PUSHBUTTON      "Restore Defaults",IDC_RESTORE_DEFAULT_BUTTON,260,540,70,14
+                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,14,532,316,18
+    GROUPBOX        "Advanced",IDC_TXT_ADV_STATIC,7,559,330,46,WS_GROUP
+    RTEXT           "Interface refresh interval (ms):",IDC_TXT_UI_INTERVAL_STATIC,14,572,126,8
+    EDITTEXT        IDC_UI_INTERVAL_EDIT,150,571,51,12,ES_AUTOHSCROLL | ES_NUMBER
+    PUSHBUTTON      "Restore Defaults",IDC_RESTORE_DEFAULT_BUTTON,260,570,70,14
     CONTROL         "Album covers use GDI+ drawing (higher quality but will take up more CPU resources)",IDC_DEFAULT_ALBUM_COVER_HQ,
-                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,14,555,316,17
+                    "Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,14,585,316,17
     CONTROL         "Switch to dark/light mode",IDC_SHOW_DARK_LIGHT_BTN_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,417,126,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,445,126,8
 END
 
 IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 369, 247
@@ -1699,7 +1705,7 @@ BEGIN
         VERTGUIDE, 260
         VERTGUIDE, 330
         TOPMARGIN, 4
-        BOTTOMMARGIN, 580
+        BOTTOMMARGIN, 617
     END
 
     IDD_OPTIONS_DIALOG, DIALOG
@@ -2213,7 +2219,8 @@ BEGIN
     0, 0, 40, 0,
     40, 0, 60, 0,
     0, 0, 100, 0,
-    0, 0, 100, 0,
+    0, 0, 40, 0,
+    40, 0, 60, 0,
     0, 0, 100, 0,
     0, 0, 40, 0,
     40, 0, 60, 0,

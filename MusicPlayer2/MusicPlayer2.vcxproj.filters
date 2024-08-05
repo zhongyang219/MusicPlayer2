@@ -2007,5 +2007,11 @@
     <Image Include="res\karaoke.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\owner_draw_titlebar_preview.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\system_titlebar_preview.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

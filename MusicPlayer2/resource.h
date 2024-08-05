@@ -242,6 +242,8 @@
 #define IDI_NOW_PLAYING_D               610
 #define IDI_KARAOKE                     611
 #define IDI_KARAOKE_D                   612
+#define IDB_OWNER_DRAW_TITLEBAR_PREVIEW 613
+#define IDB_SYSTEM_TITLEBAR_PREVIEW     614
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -733,6 +735,8 @@
 #define IDC_DOWN_LOAD_LYRIC_TRANSLATION_FORMAT_STATIC 1363
 #define IDC_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE_RADIO 1364
 #define IDC_SORT_BUTTON                 1365
+#define IDC_USE_SYSTEM_TITLEBAR_RADIO   1366
+#define IDC_USE_OWNER_DRAW_TITLEBAR_RADIO 1367
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -977,9 +981,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        613
+#define _APS_NEXT_RESOURCE_VALUE        615
 #define _APS_NEXT_COMMAND_VALUE         33478
-#define _APS_NEXT_CONTROL_VALUE         1366
+#define _APS_NEXT_CONTROL_VALUE         1368
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

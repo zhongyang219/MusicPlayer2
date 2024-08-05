@@ -676,6 +676,7 @@
     <Image Include="res\now_playing_d.ico" />
     <Image Include="res\ok.ico" />
     <Image Include="res\online_d.ico" />
+    <Image Include="res\owner_draw_titlebar_preview.bmp" />
     <Image Include="res\pause_dark.ico" />
     <Image Include="res\pause_white.ico" />
     <Image Include="res\pin_d.ico" />
@@ -720,6 +721,7 @@
     <Image Include="res\stop_white.ico" />
     <Image Include="res\switch.ico" />
     <Image Include="res\switch_d.ico" />
+    <Image Include="res\system_titlebar_preview.bmp" />
     <Image Include="res\tag.ico" />
     <Image Include="res\toolbar1.bmp" />
     <Image Include="res\unlink.ico" />
