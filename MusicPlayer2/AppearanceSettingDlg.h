@@ -79,10 +79,10 @@ protected:
     CRect m_system_titlebar_preview_rect;
     CRect m_owner_draw_titlebar_preview_rect;
 
-    CBitmap m_preview_dark;
-    CBitmap m_preview_light;
-    CBitmap m_preview_system_titlebar;
-    CBitmap m_preview_owner_draw_titlebar;
+    CImage m_preview_dark;
+    CImage m_preview_light;
+    CImage m_preview_system_titlebar;
+    CImage m_preview_owner_draw_titlebar;
 
     CBrowseEdit m_default_background_edit;
     CBrowseEdit m_album_cover_name_edit;

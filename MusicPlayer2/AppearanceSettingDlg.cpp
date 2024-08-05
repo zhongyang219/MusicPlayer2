@@ -482,10 +482,10 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     CalculatePreviewBitmapRect();
 
     //载入预览图
-    m_preview_dark.LoadBitmap(IDB_NOTIFY_ICON_PREVIEW);
-    m_preview_light.LoadBitmap(IDB_NOTIFY_ICON_PREVIEW_LIGHT);
-    m_preview_system_titlebar.LoadBitmap(IDB_SYSTEM_TITLEBAR_PREVIEW);
-    m_preview_owner_draw_titlebar.LoadBitmap(IDB_OWNER_DRAW_TITLEBAR_PREVIEW);
+    m_preview_dark.LoadFromResource(AfxGetResourceHandle(), IDB_NOTIFY_ICON_PREVIEW);
+    m_preview_light.LoadFromResource(AfxGetResourceHandle(), IDB_NOTIFY_ICON_PREVIEW_LIGHT);
+    m_preview_system_titlebar.LoadFromResource(AfxGetResourceHandle(), IDB_SYSTEM_TITLEBAR_PREVIEW);
+    m_preview_owner_draw_titlebar.LoadFromResource(AfxGetResourceHandle(), IDB_OWNER_DRAW_TITLEBAR_PREVIEW);
 
     SetControlEnable();
 
@@ -756,9 +756,9 @@ void CAppearanceSettingDlg::OnPaint()
     drawer.Create(&dc);
     
     //绘制通知区图标预览图
-    CBitmap& bitmap{ m_data.notify_icon_selected == 2 ? m_preview_light : m_preview_dark };
+    CImage& image{ m_data.notify_icon_selected == 2 ? m_preview_light : m_preview_dark };
     //绘制背景
-    drawer.DrawBitmap(bitmap, m_notify_icon_preview.TopLeft(), m_notify_icon_preview.Size(), CDrawCommon::StretchMode::STRETCH);
+    drawer.DrawImage(image, m_notify_icon_preview.TopLeft(), m_notify_icon_preview.Size(), CDrawCommon::StretchMode::STRETCH);
     //绘制图标
     if (m_data.notify_icon_selected >= 0 && m_data.notify_icon_selected < MAX_NOTIFY_ICON)
     {
@@ -768,8 +768,8 @@ void CAppearanceSettingDlg::OnPaint()
     }
 
     //绘制标题栏预览图
-    drawer.DrawBitmap(m_preview_system_titlebar, m_system_titlebar_preview_rect.TopLeft(), m_system_titlebar_preview_rect.Size(), CDrawCommon::StretchMode::FIT);
-    drawer.DrawBitmap(m_preview_owner_draw_titlebar, m_owner_draw_titlebar_preview_rect.TopLeft(), m_owner_draw_titlebar_preview_rect.Size(), CDrawCommon::StretchMode::FIT);
+    drawer.DrawImage(m_preview_system_titlebar, m_system_titlebar_preview_rect.TopLeft(), m_system_titlebar_preview_rect.Size(), CDrawCommon::StretchMode::FIT);
+    drawer.DrawImage(m_preview_owner_draw_titlebar, m_owner_draw_titlebar_preview_rect.TopLeft(), m_owner_draw_titlebar_preview_rect.Size(), CDrawCommon::StretchMode::FIT);
 }
 
 
