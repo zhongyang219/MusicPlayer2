@@ -157,6 +157,17 @@ BOOL CMediaLibTabDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     CMusicPlayerCmdHelper cmd_helper;
     cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
 
+    //响应右键菜单中的分级
+    if ((command >= ID_RATING_1 && command <= ID_RATING_5) || command == ID_RATING_NONE)    //如果命令是歌曲分级（应确保分级命令的ID是连续的）
+    {
+        std::vector<SongInfo> songs_selected;
+        GetSongsSelected(songs_selected);
+        for (const auto& song : songs_selected)
+        {
+            cmd_helper.OnRating(song, command);
+        }
+    }
+
     return CTabDlg::OnCommand(wParam, lParam);
 }
 

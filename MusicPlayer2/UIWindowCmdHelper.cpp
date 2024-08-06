@@ -420,6 +420,11 @@ bool CUIWindowCmdHelper::OnSongListCommand(const SongInfo& song_info, DWORD comm
         vector<SongInfo> songs{ song_info };
         helper.DeleteSongsFromDisk(songs);
     }
+    //分级
+    else if ((command >= ID_RATING_1 && command <= ID_RATING_5) || command == ID_RATING_NONE)    //如果命令是歌曲分级（应确保分级命令的ID是连续的）
+    {
+        helper.OnRating(song_info, command);
+    }
     //添加到播放列表
     else
     {

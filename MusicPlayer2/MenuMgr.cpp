@@ -818,6 +818,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendSeparator();
         menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
         menu.AppendItem(EX_ID(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY), IconMgr::IconType::IT_Play_In_Playlist);
+        menu.AppendSubMenu(RateMenu, IconMgr::IconType::IT_Star);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
         menu.AppendItem(EX_ID(ID_FORMAT_CONVERT), IconMgr::IconType::IT_Convert);
@@ -836,6 +837,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendSeparator();
         menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
         menu.AppendItem(EX_ID(ID_ADD_TO_NEW_PLAYLIST_AND_PLAY), IconMgr::IconType::IT_Play_In_Playlist);
+        menu.AppendSubMenu(RateMenu, IconMgr::IconType::IT_Star);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
         menu.AppendItem(EX_ID(ID_FORMAT_CONVERT), IconMgr::IconType::IT_Convert);
@@ -885,6 +887,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_PLAY_AS_NEXT), IconMgr::IconType::IT_Play_As_Next);
         menu.AppendItem(EX_ID(ID_PLAY_ITEM_IN_FOLDER_MODE), IconMgr::IconType::IT_Play_In_Folder);
         menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
+        menu.AppendSubMenu(RateMenu, IconMgr::IconType::IT_Star);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
         menu.AppendItem(EX_ID(ID_FORMAT_CONVERT), IconMgr::IconType::IT_Convert);
