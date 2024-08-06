@@ -166,6 +166,7 @@ void CAppearanceSettingDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_COLOR_STATIC5, m_color_static4);
     DDX_Control(pDX, IDC_COLOR_STATIC6, m_color_static5);
     DDX_Control(pDX, IDC_COLOR_STATIC7, m_color_static6);
+    DDX_Control(pDX, IDC_COLOR_STATIC8, m_color_static7);
     DDX_Control(pDX, IDC_FOLLOW_SYSTEM_COLOR_CHECK, m_follow_system_color_check);
     DDX_Control(pDX, IDC_SPECTRUM_HEIGHT_SLIDER, m_spectrum_height_slid);
     DDX_Control(pDX, IDC_SHOW_ALBUM_COVER_CHECK, m_show_album_cover_chk);
@@ -310,6 +311,7 @@ void CAppearanceSettingDlg::DrawColor()
     m_color_static4.SetFillColor(m_color4);
     m_color_static5.SetFillColor(m_color5);
     m_color_static6.SetFillColor(m_color6);
+    m_color_static7.SetFillColor(m_color7);
 }
 
 
@@ -323,6 +325,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_STN_CLICKED(IDC_COLOR_STATIC5, &CAppearanceSettingDlg::OnStnClickedColorStatic5)
     ON_STN_CLICKED(IDC_COLOR_STATIC6, &CAppearanceSettingDlg::OnStnClickedColorStatic6)
     ON_STN_CLICKED(IDC_COLOR_STATIC7, &CAppearanceSettingDlg::OnStnClickedColorStatic7)
+    ON_STN_CLICKED(IDC_COLOR_STATIC8, &CAppearanceSettingDlg::OnStnClickedColorStatic8)
     ON_BN_CLICKED(IDC_FOLLOW_SYSTEM_COLOR_CHECK, &CAppearanceSettingDlg::OnBnClickedFollowSystemColorCheck)
     ON_BN_CLICKED(IDC_SHOW_ALBUM_COVER_CHECK, &CAppearanceSettingDlg::OnBnClickedShowAlbumCoverCheck)
     ON_CBN_SELCHANGE(IDC_ALBUM_FIT_COMBO, &CAppearanceSettingDlg::OnCbnSelchangeAlbumFitCombo)
@@ -380,6 +383,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     ::SetWindowLong(m_color_static4.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
     ::SetWindowLong(m_color_static5.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
     ::SetWindowLong(m_color_static6.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
+    ::SetWindowLong(m_color_static7.GetSafeHwnd(), GWL_STYLE, dwStyle | SS_NOTIFY);
 
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
@@ -390,6 +394,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     m_toolTip.AddTool(&m_color_static4, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_CYAN_GREEN").c_str());
     m_toolTip.AddTool(&m_color_static5, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_PINK").c_str());
     m_toolTip.AddTool(&m_color_static6, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_LIGHT_PURPLE").c_str());
+    m_toolTip.AddTool(&m_color_static7, theApp.m_str_table.LoadText(L"TIP_OPT_APC_COLOR_GRAY").c_str());
 
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
@@ -618,6 +623,12 @@ void CAppearanceSettingDlg::OnStnClickedColorStatic7()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.theme_color.original_color = m_color6;
+    ClickColor();
+}
+
+void CAppearanceSettingDlg::OnStnClickedColorStatic8()
+{
+    m_data.theme_color.original_color = m_color7;
     ClickColor();
 }
 

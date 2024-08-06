@@ -44,6 +44,7 @@ protected:
     CColorStatic m_color_static4;
     CColorStatic m_color_static5;
     CColorStatic m_color_static6;
+    CColorStatic m_color_static7;
 
     const COLORREF m_color1{ RGB(134,186,249) };		//天蓝色
     const COLORREF m_color2{ RGB(115,210,45) };			//绿色
@@ -51,6 +52,7 @@ protected:
     const COLORREF m_color4{ RGB(33,147,167) };			//青绿色
     const COLORREF m_color5{ RGB(249,153,197) };		//浅红色
     const COLORREF m_color6{ RGB(162,161,216) };		//淡紫色
+    const COLORREF m_color7{ RGB(110,110,110) };		//灰色
 
     CToolTipCtrl m_toolTip;
 
@@ -114,6 +116,7 @@ public:
     afx_msg void OnStnClickedColorStatic5();
     afx_msg void OnStnClickedColorStatic6();
     afx_msg void OnStnClickedColorStatic7();
+    afx_msg void OnStnClickedColorStatic8();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnBnClickedFollowSystemColorCheck();
     afx_msg void OnBnClickedShowAlbumCoverCheck();

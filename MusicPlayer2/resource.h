@@ -377,6 +377,7 @@
 #define IDC_BITS_DIPTH                  1046
 #define IDC_COLOR_STATIC7               1047
 #define IDC_CHANNELS                    1047
+#define IDC_COLOR_STATIC8               1048
 #define IDC_YEAR_EDIT                   1050
 #define IDC_COMMENT_EDIT                1052
 #define IDC_EDIT1                       1061
