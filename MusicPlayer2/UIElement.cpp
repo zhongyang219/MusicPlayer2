@@ -1876,6 +1876,7 @@ void UiElement::ClassicalControlBar::Draw()
 
 void UiElement::NavigationBar::Draw()
 {
+    CalculateRect();
     ui->DrawNavigationBar(rect, this);
     Element::Draw();
 }
@@ -2586,6 +2587,7 @@ IconMgr::IconType UiElement::AllTracksList::GetUnHoverIcon(int index, int row)
 
 void UiElement::MiniSpectrum::Draw()
 {
+    CalculateRect();
     ui->DrawMiniSpectrum(rect);
     Element::Draw();
 }
