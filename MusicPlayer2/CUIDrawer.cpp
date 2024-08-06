@@ -260,48 +260,64 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
         Time time{ CPlayer::GetInstance().GetCurrentPosition() };
         CLyrics::Lyric current_lyric{ now_lyrics.GetLyric(time, false, ignore_blank, karaoke) };
         int progress{ now_lyrics.GetLyricProgress(time, ignore_blank, karaoke, [this](const wstring& str) { return GetTextExtent(str.c_str()).cx; }) };
-        bool switch_flag{ flag > 5000 };
-        switch_flag ^= (flag % 5000) > progress;
-        flag = switch_flag ? 10000 + progress : progress;
-
-        if (current_lyric.text.empty())
-            current_lyric.text = empty_lyric;
-        //双行显示歌词
-        if (double_line && (current_lyric.translate.empty() || !theApp.m_lyric_setting_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
+        
+        //当前歌词为空，且持续了超过了20秒
+        bool no_lyric = (current_lyric.text.empty() && CPlayer::GetInstance().GetCurrentPosition() - current_lyric.time_start > 20000) || progress >= 1000;
+        //当指定了show_song_info时，如果当前歌词为空，且持续了超过了20秒，则显示歌曲信息
+        if (no_lyric && show_song_info)
         {
-            wstring next_lyric_text;
-            next_lyric_text = now_lyrics.GetLyric(time, true, ignore_blank, karaoke).text;
-            if (next_lyric_text.empty())
-                next_lyric_text = empty_lyric;
-            //这里实现文本从非高亮缓慢变化到高亮效果
-            int last_time_span = time - current_lyric.time_start;     //当前播放的歌词已持续的时间
-            int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
-            if (progress == 1000) fade_percent = 0;         // 进度为1000时当前歌词“已完成”不再高亮
-            // 这里的fade_percent当合并空行开启时可能为负，在颜色渐变处规范取值，此处不再处理
-            DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), align, progress, switch_flag, fade_percent);
+            //显示歌曲信息
+            CString song_info_str;
+            const SongInfo& cur_song{ CPlayer::GetInstance().GetCurrentSongInfo() };
+            song_info_str.Format(_T("%s - %s"), cur_song.GetArtist().c_str(), cur_song.GetTitle().c_str());
+            static CDrawCommon::ScrollInfo lyric_scroll_info;
+            DrawScrollText(rect, song_info_str, m_colors.color_text, CPlayerUIHelper::GetScrollTextPixel(), theApp.m_lyric_setting_data.lyric_align != Alignment::LEFT, lyric_scroll_info);
         }
         else
         {
-            // AUTO时单行歌词居中显示
-            if (align == Alignment::AUTO) align = Alignment::CENTER;
-            // 单行歌词在这里显示翻译，同时更新歌词区域为单行有翻译时的位置
-            if (theApp.m_lyric_setting_data.show_translate && !current_lyric.translate.empty() && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
-            {
-                lyric_rect.bottom = lyric_rect.top + rect.Height() / 2;
-                CRect translate_rect = lyric_rect;
-                translate_rect.MoveToY(lyric_rect.bottom);
+            bool switch_flag{ flag > 5000 };
+            switch_flag ^= (flag % 5000) > progress;
+            flag = switch_flag ? 10000 + progress : progress;
 
-                SetFont(m_lyric_tr_font);
-                DrawWindowText(translate_rect, current_lyric.translate.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
+            if (current_lyric.text.empty())
+                current_lyric.text = empty_lyric;
+            //双行显示歌词
+            if (double_line && (current_lyric.translate.empty() || !theApp.m_lyric_setting_data.show_translate) && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
+            {
+                wstring next_lyric_text;
+                next_lyric_text = now_lyrics.GetLyric(time, true, ignore_blank, karaoke).text;
+                if (next_lyric_text.empty())
+                    next_lyric_text = empty_lyric;
+                //这里实现文本从非高亮缓慢变化到高亮效果
+                int last_time_span = time - current_lyric.time_start;     //当前播放的歌词已持续的时间
+                int fade_percent = last_time_span / 8;         //计算颜色高亮变化的百分比，除数越大则持续时间越长，10则为1秒
+                if (progress == 1000) fade_percent = 0;         // 进度为1000时当前歌词“已完成”不再高亮
+                // 这里的fade_percent当合并空行开启时可能为负，在颜色渐变处规范取值，此处不再处理
+                DrawLyricDoubleLine(lyric_rect, current_lyric.text.c_str(), next_lyric_text.c_str(), align, progress, switch_flag, fade_percent);
             }
-            // 绘制单行歌词
-            SetFont(m_lyric_font);
-            if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
-                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
-            else if (0 < progress && progress < 1000)   // 仅高亮“正在进行”的歌词
-                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
             else
-                DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text_2, m_colors.color_text_2, progress, align, true);
+            {
+                // AUTO时单行歌词居中显示
+                if (align == Alignment::AUTO) align = Alignment::CENTER;
+                // 单行歌词在这里显示翻译，同时更新歌词区域为单行有翻译时的位置
+                if (theApp.m_lyric_setting_data.show_translate && !current_lyric.translate.empty() && rect.Height() > static_cast<int>(GetLyricTextHeight() * 1.73))
+                {
+                    lyric_rect.bottom = lyric_rect.top + rect.Height() / 2;
+                    CRect translate_rect = lyric_rect;
+                    translate_rect.MoveToY(lyric_rect.bottom);
+
+                    SetFont(m_lyric_tr_font);
+                    DrawWindowText(translate_rect, current_lyric.translate.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
+                }
+                // 绘制单行歌词
+                SetFont(m_lyric_font);
+                if (theApp.m_lyric_setting_data.lyric_karaoke_disp)
+                    DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text_2, progress, align, true);
+                else if (0 < progress && progress < 1000)   // 仅高亮“正在进行”的歌词
+                    DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text, m_colors.color_text, progress, align, true);
+                else
+                    DrawWindowText(lyric_rect, current_lyric.text.c_str(), m_colors.color_text_2, m_colors.color_text_2, progress, align, true);
+            }
         }
     }
 
