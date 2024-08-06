@@ -14,6 +14,7 @@
 #include "CommonDialogMgr.h"
 #include "FilterHelper.h"
 #include "UiMediaLibItemMgr.h"
+#include "SongInfoHelper.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -1052,7 +1053,16 @@ bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const std::vector<SongInfo>& so
     if (songs.empty())
         return false;
     std::wstring playlist_name = CPlaylistMgr::GetPlaylistDisplayName(playlist_path);
-    std::wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_REMOVE_FROM_PLAYLIST_INQUIRY", { playlist_name, songs.size() });
+    std::wstring info;
+    if (songs.size() == 1)
+    {
+        std::wstring song_display_name = CSongInfoHelper::GetDisplayStr(songs.front(), theApp.m_media_lib_setting_data.display_format);
+        info = theApp.m_str_table.LoadTextFormat(L"MSG_REMOVE_SINGLE_ITEM_FROM_PLAYLIST_INQUIRY", { playlist_name, song_display_name });
+    }
+    else
+    {
+        info = theApp.m_str_table.LoadTextFormat(L"MSG_REMOVE_FROM_PLAYLIST_INQUIRY", { playlist_name, songs.size() });
+    }
     if (GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
     {
         //如果当前列表正在播放
@@ -1092,10 +1102,25 @@ bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const std::vector<SongInfo>& so
 
 bool CMusicPlayerCmdHelper::OnRemoveFromCurrentPlaylist(const std::vector<int>& indexs)
 {
-    if (CPlayer::GetInstance().IsPlaylistMode())
+    if (!indexs.empty() && CPlayer::GetInstance().IsPlaylistMode())
     {
         std::wstring playlist_name = CPlaylistMgr::GetPlaylistDisplayName(CPlayer::GetInstance().GetPlaylistPath());
-        std::wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_REMOVE_FROM_PLAYLIST_INQUIRY", { playlist_name, indexs.size() });
+        std::wstring info;
+        if (indexs.size() == 1)
+        {
+            std::wstring song_display_name;
+            int index = indexs.front();
+            if (index >= 0 && index < CPlayer::GetInstance().GetSongNum())
+            {
+                SongInfo song = CPlayer::GetInstance().GetPlayList()[index];
+                song_display_name = CSongInfoHelper::GetDisplayStr(song, theApp.m_media_lib_setting_data.display_format);
+            }
+            info = theApp.m_str_table.LoadTextFormat(L"MSG_REMOVE_SINGLE_ITEM_FROM_PLAYLIST_INQUIRY", { playlist_name, song_display_name });
+        }
+        else
+        {
+            info = theApp.m_str_table.LoadTextFormat(L"MSG_REMOVE_FROM_PLAYLIST_INQUIRY", { playlist_name, indexs.size() });
+        }
         if (GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
         {
             CPlayer::GetInstance().RemoveSongs(indexs);
