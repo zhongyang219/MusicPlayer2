@@ -554,25 +554,6 @@ void UiElement::StackElement::SwitchDisplay(bool previous)
 void UiElement::StackElement::Draw()
 {
     auto cur_element{ CurrentElement() };
-    if (cur_element != nullptr)
-        cur_element->Draw();
-    //只绘制一个子元素
-    //不调用基类的Draw方法。
-
-    //判断一个界面元素下是否存在指定类型的按钮
-    auto isButtonExist = [](UiElement::Element* root, CPlayerUIBase::BtnKey key) ->bool {
-        bool rtn = false;
-        root->IterateAllElements([&](UiElement::Element* element) ->bool {
-            Button* button = dynamic_cast<Button*>(element);
-            if (button != nullptr && button->key == key)
-            {
-                rtn = true;
-                return true;
-            }
-            return false;
-        });
-        return rtn;
-    };
 
     //清空不显示的子元素的矩形区域
     for (size_t i{}; i < childLst.size(); i++)
@@ -580,20 +561,17 @@ void UiElement::StackElement::Draw()
         if (cur_element != childLst[i])
         {
             childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
-                Button* button = dynamic_cast<Button*>(element);
-                if (button != nullptr)
-                {
-                    //如果按钮在当前页面下也存在，则不清除
-                    if (isButtonExist(cur_element.get(), button->key))
-                        return false;
-                }
-
                 if (element != nullptr)
                     element->ClearRect();
                 return false;
             });
         }
     }
+
+    if (cur_element != nullptr)
+        cur_element->Draw();
+    //只绘制一个子元素
+    //不调用基类的Draw方法。
 
     //绘制指示器
     if (show_indicator)
