@@ -3309,6 +3309,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_MINI_TITLEBAR, tip_str.c_str());
     // 曲目信息（属性）
     AddMouseToolTip(BTN_INFO, m_info_tip.c_str());
+    UpdateSongInfoToolTip();
     // 停止
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
     AddMouseToolTip(BTN_STOP, tip_str.c_str());

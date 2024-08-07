@@ -215,6 +215,7 @@ public:
 protected:
     void SetPlayListColor(bool highlight_visible = true);
     void SwitchTrack();		//当切换正在播放的歌曲时的处理
+    void UpdateSongInfoToolTip();
     void SetPlaylistVisible();
     void SetMenubarVisible();
 

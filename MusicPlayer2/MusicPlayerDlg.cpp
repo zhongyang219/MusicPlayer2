@@ -990,9 +990,20 @@ void CMusicPlayerDlg::SwitchTrack()
 
     DrawInfo(true);
 
+    UpdateSongInfoToolTip();
+}
+
+void CMusicPlayerDlg::UpdateSongInfoToolTip()
+{
     for (auto& ui : m_ui_list)
     {
         ui->UpdateSongInfoToolTip();
+    }
+    if (IsMiniMode())
+    {
+        CPlayerUIBase* minimode_ui = m_miniModeDlg.GetCurUi();
+        if (minimode_ui != nullptr)
+            minimode_ui->UpdateSongInfoToolTip();
     }
 }
 
@@ -4052,10 +4063,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniComplate(WPARAM wParam, LPARAM lPa
     UpdatePlayPauseButton();
     //ShowTime();
 
-    for (auto& ui : m_ui_list)
-    {
-        ui->UpdateSongInfoToolTip();
-    }
+    UpdateSongInfoToolTip();
 
     EnablePlaylist(true);
     theApp.DoWaitCursor(-1);
@@ -4761,10 +4769,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnAlbumCoverDownloadComplete(WPARAM wParam, LPA
 
     if (theApp.m_nc_setting_data.show_cover_tip)
     {
-        for (auto& ui : m_ui_list)
-        {
-            ui->UpdateSongInfoToolTip();
-        }
+        UpdateSongInfoToolTip();
     }
 
     return 0;

@@ -682,6 +682,9 @@ BOOL CMiniModeDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     if (command >= ID_MINIMODE_UI_DEFAULT && command <= ID_MINIMODE_UI_MAX)
     {
         m_ui_index = command - ID_MINIMODE_UI_DEFAULT;
+        CPlayerUIBase* cur_ui = GetCurUi();
+        if (cur_ui != nullptr)
+            cur_ui->UpdateSongInfoToolTip();
         AdjustWindowSize();
         return TRUE;
     }
