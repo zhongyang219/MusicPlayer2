@@ -346,6 +346,17 @@ void CRecentFolderMgr::SaveData() const
     file.Close();
 }
 
+void CRecentFolderMgr::GetFolderAudioFiles(const PathInfo& path_info, std::vector<SongInfo>& song_list)
+{
+    if (!path_info.path.empty())
+    {
+        if (COSUPlayerHelper::IsOsuFolder(path_info.path))
+            COSUPlayerHelper::GetOSUAudioFiles(path_info.path, song_list);
+        else
+            CAudioCommon::GetAudioFiles(path_info.path, song_list, MAX_SONG_NUM, path_info.contain_sub_folder);
+    }
+}
+
 CRecentFolderMgr::CRecentFolderMgr()
 {
 }

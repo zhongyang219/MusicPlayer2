@@ -67,7 +67,7 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     {
         SetMediaLibItemListMenuState(pMenu);
     }
-    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::UiLibSetPathMenu))
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu))
     {
         SetMediaLibFolderMenuState(pMenu);
     }
@@ -264,6 +264,10 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
     PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
     CMusicPlayerCmdHelper helper;
 
+    auto getSongList = [&](std::vector<SongInfo>& song_list) {
+        CRecentFolderMgr::GetFolderAudioFiles(path_info, song_list);
+    };
+
     if (command == ID_PLAY_PATH)
     {
         helper.OnFolderSelected(path_info, true);
@@ -311,7 +315,17 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
     {
         CFolderPropertiesDlg dlg(path_info);
         dlg.DoModal();
-
+    }
+    //添加到新播放列表
+    else if (command == ID_ADD_TO_NEW_PLAYLIST)
+    {
+        wstring playlist_path;
+        helper.OnAddToNewPlaylist(getSongList, playlist_path, CFilePathHelper(path_info.path).GetFolderName());
+    }
+    //添加到播放列表
+    else
+    {
+        helper.OnAddToPlaylistCommand(getSongList, command);
     }
 }
 
@@ -622,6 +636,8 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_BROWSE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid && contain_sub_folder ? MF_CHECKED : MF_UNCHECKED));
+
+    SetAddToPlaylistMenuState(pMenu);
 }
 
 void CUIWindowCmdHelper::SetMediaLibPlaylistMenuState(CMenu* pMenu)

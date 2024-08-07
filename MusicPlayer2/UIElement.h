@@ -535,6 +535,14 @@ namespace UiElement
             COL_MAX
         };
 
+        //鼠标指向一行时显示的按钮
+        enum BtnKey
+        {
+            BTN_PLAY,
+            BTN_ADD,
+            BTN_MAX
+        };
+
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;

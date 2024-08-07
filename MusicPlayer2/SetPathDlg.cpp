@@ -8,6 +8,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "RecentFolderAndPlaylist.h"
 #include "FolderPropertiesDlg.h"
+#include "COSUPlayerHelper.h"
 
 
 // CSetPathDlg 对话框
@@ -244,6 +245,8 @@ BEGIN_MESSAGE_MAP(CSetPathDlg, CTabDlg)
     ON_COMMAND(ID_LIB_FOLDER_SORT_RECENT_ADDED, &CSetPathDlg::OnLibFolderSortRecentAdded)
     ON_COMMAND(ID_LIB_FOLDER_SORT_PATH, &CSetPathDlg::OnLibFolderSortPath)
     ON_COMMAND(ID_LIB_FOLDER_PROPERTIES, &CSetPathDlg::OnLibFolderProperties)
+    ON_COMMAND(ID_FILE_OPEN_FOLDER, &CSetPathDlg::OnFileOpenFolder)
+    ON_COMMAND(ID_ADD_TO_NEW_PLAYLIST, &CSetPathDlg::OnAddToNewPlaylist)
 END_MESSAGE_MAP()
 
 
@@ -431,6 +434,10 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
     case CRecentFolderMgr::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_PATH, MF_BYCOMMAND | MF_CHECKED); break;
     }
 
+    for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
+    {
+        pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
+    }
 }
 
 
@@ -561,4 +568,36 @@ void CSetPathDlg::OnLibFolderProperties()
 {
     CFolderPropertiesDlg dlg(GetSelPath());
     dlg.DoModal();
+}
+
+
+void CSetPathDlg::OnFileOpenFolder()
+{
+    OnBnClickedOpenFolder();
+}
+
+
+BOOL CSetPathDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+    WORD command = LOWORD(wParam);
+    PathInfo path_info = GetSelPath();
+    auto getSelectedItems = [&](std::vector<SongInfo>& song_list) {
+        CRecentFolderMgr::GetFolderAudioFiles(path_info, song_list);
+    };
+    CMusicPlayerCmdHelper helper(this);
+    helper.OnAddToPlaylistCommand(getSelectedItems, command);
+
+    return CTabDlg::OnCommand(wParam, lParam);
+}
+
+
+void CSetPathDlg::OnAddToNewPlaylist()
+{
+    PathInfo path_info = GetSelPath();
+    auto getSelectedItems = [&](std::vector<SongInfo>& song_list) {
+        CRecentFolderMgr::GetFolderAudioFiles(path_info, song_list);
+    };
+    CMusicPlayerCmdHelper cmd_helper(this);
+    wstring playlist_path;
+    cmd_helper.OnAddToNewPlaylist(getSelectedItems, playlist_path, CFilePathHelper(path_info.path).GetFolderName());
 }

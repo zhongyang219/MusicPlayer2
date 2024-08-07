@@ -2030,7 +2030,7 @@ int UiElement::MediaLibFolder::GetColumnScrollTextWhenSelected()
 
 CMenu* UiElement::MediaLibFolder::GetContextMenu(bool item_selected)
 {
-    return theApp.m_menu_mgr.GetMenu(MenuMgr::UiLibSetPathMenu);
+    return theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu);
 }
 
 CWnd* UiElement::MediaLibFolder::GetCmdRecivedWnd()
@@ -2053,7 +2053,7 @@ void UiElement::MediaLibFolder::OnDoubleClicked()
 
 int UiElement::MediaLibFolder::GetHoverButtonCount()
 {
-    return 1;
+    return BTN_MAX;
 }
 
 int UiElement::MediaLibFolder::GetHoverButtonColumn()
@@ -2063,15 +2063,21 @@ int UiElement::MediaLibFolder::GetHoverButtonColumn()
 
 IconMgr::IconType UiElement::MediaLibFolder::GetHoverButtonIcon(int index, int row)
 {
-    if (index == 0)
-        return IconMgr::IT_Play;
+    switch (index)
+    {
+    case BTN_PLAY: return IconMgr::IT_Play;
+    case BTN_ADD: return IconMgr::IT_Add;
+    }
     return IconMgr::IT_NO_ICON;
 }
 
 std::wstring UiElement::MediaLibFolder::GetHoverButtonTooltip(int index, int row)
 {
-    if (index == 0)
-        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    switch (index)
+    {
+    case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    }
     return std::wstring();
 }
 
@@ -2087,6 +2093,12 @@ void UiElement::MediaLibFolder::OnHoverButtonClicked(int btn_index, int row)
             CMusicPlayerCmdHelper helper;
             helper.OnFolderSelected(path_info, true);
         }
+    }
+    //点击了“添加到播放列表”按钮
+    else if (btn_index == BTN_ADD)
+    {
+        CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
+        ShowContextMenu(menu, GetCmdRecivedWnd());
     }
 }
 

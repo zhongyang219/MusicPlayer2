@@ -56,6 +56,8 @@ public:
     //将数据写入文件
     void SaveData() const;
 
+    static void GetFolderAudioFiles(const PathInfo& path_info, std::vector<SongInfo>& song_list);
+
 private:
     CRecentFolderMgr();
     void SortPath();
