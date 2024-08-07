@@ -570,16 +570,19 @@ void CUIWindowCmdHelper::OnFolderOrPlaylistSortCommand(DWORD command)
     else if (command == ID_LIB_PLAYLIST_SORT_RECENT_PLAYED)
     {
         CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_PLAYED);
+        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
     //播放列表-最近创建
     else if (command == ID_LIB_PLAYLIST_SORT_RECENT_CREATED)
     {
         CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_CREATED);
+        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
     //播放列表-名称
     else if (command == ID_LIB_PLAYLIST_SORT_NAME)
     {
         CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_NAME);
+        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
 }
 

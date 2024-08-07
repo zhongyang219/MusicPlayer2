@@ -756,6 +756,7 @@ void CSelectPlaylistDlg::OnLibPlaylistSortRecentPlayed()
     if (CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_PLAYED))
     {
         ShowPathList();
+        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
 }
 
@@ -765,6 +766,7 @@ void CSelectPlaylistDlg::OnLibPlaylistSortRecentCreated()
     if (CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_CREATED))
     {
         ShowPathList();
+        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
 }
 
@@ -774,6 +776,7 @@ void CSelectPlaylistDlg::OnLibPlaylistSortName()
     if (CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_NAME))
     {
         ShowPathList();
+        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
 }
 
