@@ -689,6 +689,10 @@ int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std
         lyric_current_time = time.toInt();
         lyric_last_time = max(m_lyrics[0].time_start, 1);
     }
+    else if (now_index >= static_cast<int>(m_lyrics.size()))
+    {
+        return 0;
+    }
     // 处于进度符号
     else if (time < m_lyrics[now_index].time_start)
     {
