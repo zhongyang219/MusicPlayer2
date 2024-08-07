@@ -2013,5 +2013,17 @@
     <Image Include="res\system_titlebar_preview.bmp">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\refresh.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\refresh_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\new_folder.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\new_folder_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -518,7 +518,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_FORMAT_CONVERT1), IconMgr::IconType::IT_Convert);
         menu.AppendItem(EX_ID(ID_CURRENT_EXPLORE_ONLINE), IconMgr::IconType::IT_Online);
         menu.AppendSeparator();
-        menu.AppendItem(EX_ID(ID_RE_INI_BASS), IconMgr::IconType::IT_Loop_Playlist);
+        menu.AppendItem(EX_ID(ID_RE_INI_BASS), IconMgr::IconType::IT_Refresh);
         menu.AppendSubMenu(MainToolCreateShortcutMenu, IconMgr::IconType::IT_Shortcut);
         menu.AppendSeparator();
         menu.AppendSubMenu(MainToolAlbumCoverMenu, IconMgr::IconType::IT_Album_Cover);

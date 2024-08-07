@@ -425,6 +425,14 @@ IDI_KARAOKE             ICON                    "res\\karaoke.ico"
 
 IDI_KARAOKE_D           ICON                    "res\\karaoke_d.ico"
 
+IDI_REFRESH_D           ICON                    "res\\refresh_d.ico"
+
+IDI_REFRESH             ICON                    "res\\refresh.ico"
+
+IDI_NEW_FOLDER          ICON                    "res\\new_folder.ico"
+
+IDI_NEW_FOLDER_D        ICON                    "res\\new_folder_d.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

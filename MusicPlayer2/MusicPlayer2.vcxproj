@@ -668,6 +668,8 @@
     <Image Include="res\MusicPlayer2_debug.ico" />
     <Image Include="res\MusicPlayer2_light.ico" />
     <Image Include="res\music_d.ico" />
+    <Image Include="res\new_folder.ico" />
+    <Image Include="res\new_folder_d.ico" />
     <Image Include="res\next_dark.ico" />
     <Image Include="res\next_white.ico" />
     <Image Include="res\notify_preview.bmp" />
@@ -694,6 +696,8 @@
     <Image Include="res\previous_white.ico" />
     <Image Include="res\recent_songs.ico" />
     <Image Include="res\recent_songs_d.ico" />
+    <Image Include="res\refresh.ico" />
+    <Image Include="res\refresh_d.ico" />
     <Image Include="res\rename_d.ico" />
     <Image Include="res\Replace.ico" />
     <Image Include="res\ReplaceTag.ico" />

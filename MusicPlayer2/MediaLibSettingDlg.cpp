@@ -355,7 +355,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     int cur_index = m_data.write_id3_v2_3 ? 0 : 1;
     m_id3v2_type_combo.SetCurSel(cur_index);
 
-    SetButtonIcon(IDC_REFRESH_MEDIA_LIB_BUTTON, IconMgr::IconType::IT_Loop_Playlist);
+    SetButtonIcon(IDC_REFRESH_MEDIA_LIB_BUTTON, IconMgr::IconType::IT_Refresh);
 
     m_lastfm_least_perdur.SetRange(10, 90, 10);
     m_lastfm_least_perdur.SetValue(m_data.lastfm_least_perdur);

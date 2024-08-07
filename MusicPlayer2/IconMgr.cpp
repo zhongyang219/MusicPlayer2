@@ -263,6 +263,10 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
         return { IDI_NOW_PLAYING_D, IDI_NOW_PLAYING, NULL, NULL };
     case IconMgr::IconType::IT_Karaoke:
         return { IDI_KARAOKE_D, IDI_KARAOKE, NULL, NULL };
+    case IconMgr::IconType::IT_Refresh:
+        return { IDI_REFRESH_D, IDI_REFRESH, NULL, NULL };
+    case IconMgr::IconType::IT_NewFolder:
+        return { IDI_NEW_FOLDER_D, IDI_NEW_FOLDER, NULL, NULL };
     case IconMgr::IconType::IT_Le_Tag_Insert:
         return { NULL, NULL, NULL, IDI_ADD_TAG };
     case IconMgr::IconType::IT_Le_Tag_Replace:

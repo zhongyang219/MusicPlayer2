@@ -832,7 +832,7 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
     case MENU_HELP:
         return IconMgr::IconType::IT_Help;
     case BTN_OPEN_FOLDER:
-        return IconMgr::IconType::IT_Folder;
+        return IconMgr::IconType::IT_NewFolder;
     case BTN_NEW_PLAYLIST:
         return IconMgr::IconType::IT_Add;
     case BTN_PLAY_MY_FAVOURITE:

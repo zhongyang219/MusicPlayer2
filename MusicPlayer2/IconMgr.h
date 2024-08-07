@@ -101,6 +101,8 @@ public:
         IT_More,                    // 更多
         IT_NowPlaying,              // 正在播放
         IT_Karaoke,                 // 歌词卡拉OK效果
+        IT_Refresh,                 // 刷新
+        IT_NewFolder,               // 添加新文件夹
 
         IT_Le_Tag_Insert,           // Le 插入时间标签
         IT_Le_Tag_Replace,          // Le 替换时间标签

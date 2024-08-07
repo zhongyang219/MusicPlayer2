@@ -259,6 +259,7 @@ BOOL CSetPathDlg::OnInitDialog()
     //设置列表控件主题颜色
     //m_path_list.SetColor(theApp.m_app_setting_data.theme_color);
 
+    SetButtonIcon(IDC_OPEN_FOLDER, IconMgr::IconType::IT_NewFolder);
     SetButtonIcon(IDC_SORT_BUTTON, IconMgr::IconType::IT_Sort_Mode);
 
     //初始化播放列表控件
