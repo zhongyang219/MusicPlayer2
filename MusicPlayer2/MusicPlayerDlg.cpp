@@ -673,8 +673,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_play_setting_data.stop_when_error = ini.GetBool(L"config", L"stop_when_error", true);
     theApp.m_play_setting_data.auto_play_when_start = ini.GetBool(L"config", L"auto_play_when_start", false);
     theApp.m_play_setting_data.continue_when_switch_playlist = ini.GetBool(L"config", L"continue_when_switch_playlist", false);
-    theApp.m_play_setting_data.show_taskbar_progress = ini.GetBool(L"config", L"show_taskbar_progress", true);
-    theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(L"config", L"show_playstate_icon", true);
+    theApp.m_play_setting_data.show_taskbar_progress = ini.GetBool(L"config", L"show_taskbar_progress", !CWinVersionHelper::IsWindows11OrLater());
+    theApp.m_play_setting_data.show_playstate_icon = ini.GetBool(L"config", L"show_playstate_icon", !CWinVersionHelper::IsWindows11OrLater());
     theApp.m_play_setting_data.fade_effect = ini.GetBool(L"config", L"fade_effect", true);
     theApp.m_play_setting_data.fade_time = ini.GetInt(L"config", L"fade_time", 500);
     if (theApp.m_play_setting_data.fade_time < 0)
