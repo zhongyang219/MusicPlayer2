@@ -1176,6 +1176,14 @@ bool UiElement::ListElement::MouseWheel(int delta, CPoint point)
     return false;
 }
 
+void UiElement::ListElement::MouseLeave()
+{
+    hover = false;
+    mouse_pressed = false;
+    scrollbar_hover = false;
+    scrollbar_handle_pressed = false;
+}
+
 bool UiElement::ListElement::DoubleClick(CPoint point)
 {
     if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point) && item_selected >= 0)

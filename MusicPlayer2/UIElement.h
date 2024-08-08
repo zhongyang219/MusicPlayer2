@@ -276,6 +276,7 @@ namespace UiElement
         void ShowContextMenu(CMenu* menu, CWnd* cmd_reciver);
         virtual void RButtonDown(CPoint point) override;
         virtual bool MouseWheel(int delta, CPoint point) override;
+        virtual void MouseLeave() override;
         virtual bool DoubleClick(CPoint point) override;
         virtual void ClearRect() override;
 
