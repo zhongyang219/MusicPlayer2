@@ -3240,10 +3240,10 @@ void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
     CPoint pos_icon{ rect.left + (rect.Width() - size_icon.cx) / 2 , rect.top + (rect.Height() - size_icon.cy) / 2 };
     CRect draw_icon_rect(pos_icon, size_icon);
     draw_icon_rect.bottom -= DPI(2);
-    int gap_width{ DPI(2) };
-    if (theApp.GetDPI() % 48 == 24)       //DPI对48取余等于24意味着对“2”这个数进行DPI变换后会有0.5的小数，此时让柱形的间隙增加1像素
-        gap_width++;
-    m_draw.DrawSpectrum(CRect(pos_icon, size_icon), DPI(2), gap_width, 4, icon_color, false, false, Alignment::CENTER, false, 180);
+    const int spectrum_unit_width = DPI(4);     //柱形+间隙的宽度
+    int col_width = DPI(2);                     //柱形的宽度
+    int gap_width = spectrum_unit_width - col_width; //间隙的宽度
+    m_draw.DrawSpectrum(CRect(pos_icon, size_icon), col_width, gap_width, 4, icon_color, false, false, Alignment::CENTER, false, 180);
 }
 
 void CPlayerUIBase::DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style, IconMgr::IconSize icon_size)
