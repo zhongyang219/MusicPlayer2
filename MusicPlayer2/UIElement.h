@@ -287,6 +287,9 @@ namespace UiElement
         int ItemHeight() const;
         void SetItemSelected(int index);
         int GetItemSelected() const;
+        void SetItemsSelected(const vector<int>& indexes);
+        void GetItemsSelected(vector<int>& indexes) const;
+        bool IsItemSelected(int index) const;
 
         virtual std::wstring GetItemText(int row, int col) = 0;
         virtual int GetRowCount() = 0;
@@ -313,12 +316,13 @@ namespace UiElement
         virtual int GetUnHoverIconCount(int row) { return 0; }          //获取鼠标未指向的行要显示的图标数量（列为GetHoverButtonColumn返回的列）
         virtual IconMgr::IconType GetUnHoverIcon(int index, int row) { return IconMgr::IT_NO_ICON; }   //获取鼠标未指向的行要显示的图标
 
+        virtual bool IsMultipleSelectionEnable() { return false; }
+
         int item_height{ 28 };
         int font_size{ 9 };
 
     protected:
         int GetListIndexByPoint(CPoint point);
-        void Clicked(CPoint point);     //当播放列表被点击时调用此函数
 
     protected:
         bool mouse_pressed{ };          //鼠标左键是否按下
@@ -327,7 +331,7 @@ namespace UiElement
         CPoint mouse_pressed_pos;       //鼠标按下时的位置
         int mouse_pressed_offset{};     //鼠标按下时播放列表的位移
         int playlist_offset{};          //当前播放列表滚动的位移
-        int item_selected{ -1 };        //选中项的序号
+        std::set<int> items_selected; //选中的序号
         CDrawCommon::ScrollInfo selected_item_scroll_info;  //绘制选中项滚动文本的结构体
         std::vector<CRect> item_rects;  //播放列表中每个项目的矩形区域
         CRect scrollbar_rect{};         //滚动条的位置
@@ -381,6 +385,8 @@ namespace UiElement
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
         virtual int GetUnHoverIconCount(int row) override;
         virtual IconMgr::IconType GetUnHoverIcon(int index, int row) override;
+
+        virtual bool IsMultipleSelectionEnable() override { return true; }
 
     private:
         int last_highlight_row{ -1 };

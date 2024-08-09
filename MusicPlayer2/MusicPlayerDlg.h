@@ -205,7 +205,7 @@ private:
 public:
     void ShowPlayList(bool highlight_visible = true);
     void SetMenuState(CMenu* pMenu);
-    void SetPlaylistSelected(int index);
+    void SetPlaylistSelected(const vector<int>& indexes);
     void SetUiPlaylistSelected(int index);
 
     static bool IsPointValid(CPoint);

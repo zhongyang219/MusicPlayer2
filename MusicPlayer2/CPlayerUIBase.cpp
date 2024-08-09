@@ -2627,7 +2627,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
             {
                 COLORREF back_color{};
                 //选中项目的背景
-                if (i == list_element->item_selected)
+                if (list_element->IsItemSelected(i))
                 {
                     back_color = m_colors.color_button_back;
                 }
@@ -2731,7 +2731,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     //绘制文本
                     {
                         DrawAreaGuard guard(&m_draw, rect & rect_text);
-                        if (i == list_element->item_selected && j == list_element->GetColumnScrollTextWhenSelected())
+                        if (i == list_element->GetItemSelected() && j == list_element->GetColumnScrollTextWhenSelected())
                             m_draw.DrawScrollText(rect_text, display_name.c_str(), m_colors.color_text, GetScrollTextPixel(), false, list_element->selected_item_scroll_info, false, true);
                         else
                             m_draw.DrawWindowText(rect_text, display_name.c_str(), m_colors.color_text, Alignment::LEFT, true);

@@ -18,6 +18,7 @@ public:
     int GetCurSel() const;		//获取当前选中的项目
     void SetCurSel(int select);
     void SetCurSel(int first, int last);
+    void SetCurSel(const vector<int> indexes);
     void SelectAll();
     void SelectNone();
     void SelectReverse();

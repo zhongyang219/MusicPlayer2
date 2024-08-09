@@ -1692,15 +1692,16 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
 }
 
 
-void CMusicPlayerDlg::SetPlaylistSelected(int index)
+void CMusicPlayerDlg::SetPlaylistSelected(const vector<int>& indexes)
 {
-    m_item_selected = index;
-    m_items_selected.clear();
-    m_items_selected.push_back(index);
-    m_playlist_list.SetCurSel(index);
+    if (!indexes.empty())
+        m_item_selected = indexes.front();
+    else
+        m_item_selected = -1;
+    m_items_selected = indexes;
+    m_playlist_list.SetCurSel(indexes);
     if (m_pFloatPlaylistDlg->GetSafeHwnd() != NULL)
-        m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(index);
-
+        m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(indexes);
 }
 
 void CMusicPlayerDlg::SetUiPlaylistSelected(int index)

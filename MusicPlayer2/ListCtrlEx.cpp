@@ -82,6 +82,19 @@ void CListCtrlEx::SetCurSel(int first, int last)
     }
 }
 
+void CListCtrlEx::SetCurSel(const vector<int> indexes)
+{
+    int itemCnt = GetItemCount();
+    for (int i = 0; i < itemCnt; i++)
+    {
+        auto iter = std::find(indexes.begin(), indexes.end(), i);
+        if (iter != indexes.end())
+            SetItemState(i, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+        else
+            SetItemState(i, 0, LVIS_SELECTED);
+    }
+}
+
 void CListCtrlEx::SelectAll()
 {
     int itemCnt = GetItemCount();

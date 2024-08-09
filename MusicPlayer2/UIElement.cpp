@@ -1015,15 +1015,19 @@ void UiElement::ListElement::LButtonUp(CPoint point)
 
 void UiElement::ListElement::LButtonDown(CPoint point)
 {
+    //点击了控件区域
     if (rect.PtInRect(point))
     {
+        //点击了滚动条区域
         if (scrollbar_rect.PtInRect(point))
         {
+            //点击了滚动条把手区域
             if (scrollbar_handle_rect.PtInRect(point))
             {
                 scrollbar_handle_pressed = true;
             }
         }
+        //点击了列表区域
         else
         {
             //设置按钮的按下状态
@@ -1033,12 +1037,54 @@ void UiElement::ListElement::LButtonDown(CPoint point)
                 btn.pressed = btn.rect.PtInRect(point);
             }
 
-            Clicked(point);
+            int clicked_index{ GetListIndexByPoint(point) };        //点击的行
+            //允许多选时
+            if (IsMultipleSelectionEnable())
+            {
+                //是否按下Ctrl键
+                if (GetKeyState(VK_CONTROL) & 0x80)
+                {
+                    if (items_selected.contains(clicked_index))
+                        items_selected.erase(clicked_index);
+                    else
+                        items_selected.insert(clicked_index);
+                }
+                //是否按下Shift键，并且至少选中了一行
+                else if (GetKeyState(VK_SHIFT) & 0x8000 && !items_selected.empty())
+                {
+                    int first_selected = *items_selected.begin();   //选中的第一行
+                    items_selected.clear();
+                    //点击的行在选中的第一行后面
+                    if (first_selected < clicked_index)
+                    {
+                        for (int i = first_selected; i <= clicked_index; i++)
+                            items_selected.insert(i);
+                    }
+                    //点击的行在选中的第一行前面
+                    else
+                    {
+                        for (int i = clicked_index; i <= first_selected; i++)
+                            items_selected.insert(i);
+                    }
+                }
+                else
+                {
+                    SetItemSelected(clicked_index);
+                }
+            }
+            //仅单选时
+            else
+            {
+                SetItemSelected(clicked_index);
+            }
+            OnClicked();
+            selected_item_scroll_info.Reset();
         }
         mouse_pressed_offset = playlist_offset;
         mouse_pressed = true;
         mouse_pressed_pos = point;
     }
+    //点击了控件外
     else
     {
         mouse_pressed = false;
@@ -1125,7 +1171,7 @@ bool UiElement::ListElement::RButtunUp(CPoint point)
     if (rect.PtInRect(point))
     {
         mouse_pressed = false;
-        CMenu* menu{ GetContextMenu(item_selected >= 0 && !scrollbar_rect.PtInRect(point)) };
+        CMenu* menu{ GetContextMenu(GetItemSelected() >= 0 && !scrollbar_rect.PtInRect(point))};
         ShowContextMenu(menu, GetCmdRecivedWnd());
         return true;
     }
@@ -1152,11 +1198,17 @@ void UiElement::ListElement::RButtonDown(CPoint point)
     mouse_pressed = false;
     if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point))
     {
-        Clicked(point);
+        int clicked_index{ GetListIndexByPoint(point) };        //点击的行
+        if (!IsItemSelected(clicked_index))
+        {
+            SetItemSelected(clicked_index);
+            OnClicked();
+        }
+        selected_item_scroll_info.Reset();
     }
     else
     {
-        item_selected = -1;
+        items_selected.clear();
     }
 }
 
@@ -1186,7 +1238,7 @@ void UiElement::ListElement::MouseLeave()
 
 bool UiElement::ListElement::DoubleClick(CPoint point)
 {
-    if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point) && item_selected >= 0)
+    if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point) && GetItemSelected() >= 0)
     {
         OnDoubleClicked();
     }
@@ -1272,13 +1324,36 @@ int UiElement::ListElement::ItemHeight() const
 
 void UiElement::ListElement::SetItemSelected(int index)
 {
-    item_selected = index;
+    items_selected.clear();
+    items_selected.insert(index);
     EnsureItemVisible(index);
 }
 
 int UiElement::ListElement::GetItemSelected() const
 {
-    return item_selected;
+    if (!items_selected.empty())
+        return *items_selected.begin();
+    return -1;
+}
+
+void UiElement::ListElement::SetItemsSelected(const vector<int>& indexes)
+{
+    items_selected.clear();
+    for (int index : indexes)
+        items_selected.insert(index);
+}
+
+void UiElement::ListElement::GetItemsSelected(vector<int>& indexes) const
+{
+    indexes.clear();
+    for (int index : items_selected)
+        indexes.push_back(index);
+}
+
+bool UiElement::ListElement::IsItemSelected(int index) const
+{
+    auto iter = std::find(items_selected.begin(), items_selected.end(), index);
+    return iter != items_selected.end();
 }
 
 CWnd* UiElement::ListElement::GetCmdRecivedWnd()
@@ -1299,13 +1374,6 @@ int UiElement::ListElement::GetListIndexByPoint(CPoint point)
             return static_cast<int>(i);
     }
     return -1;
-}
-
-void UiElement::ListElement::Clicked(CPoint point)
-{
-    item_selected = GetListIndexByPoint(point);
-    OnClicked();
-    selected_item_scroll_info.Reset();
 }
 
 std::wstring UiElement::Playlist::GetItemText(int row, int col)
@@ -1422,7 +1490,11 @@ void UiElement::Playlist::OnClicked()
 {
     CMusicPlayerDlg* pMainWnd = CMusicPlayerDlg::GetInstance();
     if (pMainWnd != nullptr)
-        pMainWnd->SetPlaylistSelected(item_selected);
+    {
+        std::vector<int> indexes;
+        GetItemsSelected(indexes);
+        pMainWnd->SetPlaylistSelected(indexes);
+    }
 }
 
 int UiElement::Playlist::GetHoverButtonCount()
@@ -1584,7 +1656,7 @@ bool UiElement::RecentPlayedList::HasIcon()
 void UiElement::RecentPlayedList::OnDoubleClicked()
 {
     CMusicPlayerCmdHelper helper;
-    helper.OnRecentItemSelected(item_selected, true);
+    helper.OnRecentItemSelected(GetItemSelected(), true);
 }
 
 CMenu* UiElement::RecentPlayedList::GetContextMenu(bool item_selected)
@@ -1724,6 +1796,7 @@ CWnd* UiElement::MediaLibItemList::GetCmdRecivedWnd()
 
 void UiElement::MediaLibItemList::OnDoubleClicked()
 {
+    int item_selected = GetItemSelected();
     if (item_selected >= 0 && item_selected < CUiMediaLibItemMgr::Instance().GetItemCount(type))
     {
         std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
@@ -1768,6 +1841,7 @@ void UiElement::MediaLibItemList::OnHoverButtonClicked(int btn_index, int row)
     //点击了“播放”按钮
     if (btn_index == BTN_PLAY)
     {
+        int item_selected = GetItemSelected();
         if (item_selected >= 0 && item_selected < GetRowCount())
         {
             std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
@@ -2051,6 +2125,7 @@ CWnd* UiElement::MediaLibFolder::GetCmdRecivedWnd()
 
 void UiElement::MediaLibFolder::OnDoubleClicked()
 {
+    int item_selected = GetItemSelected();
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
         const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
@@ -2180,6 +2255,7 @@ CWnd* UiElement::MediaLibPlaylist::GetCmdRecivedWnd()
 
 void UiElement::MediaLibPlaylist::OnDoubleClicked()
 {
+    int item_selected = GetItemSelected();
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
         PlaylistInfo info;
@@ -2330,6 +2406,7 @@ CWnd* UiElement::MyFavouriteList::GetCmdRecivedWnd()
 
 void UiElement::MyFavouriteList::OnDoubleClicked()
 {
+    int item_selected = GetItemSelected();
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
         CMusicPlayerCmdHelper helper;
@@ -2380,6 +2457,7 @@ void UiElement::MyFavouriteList::OnHoverButtonClicked(int btn_index, int row)
     //点击了“播放”按钮
     if (btn_index == BTN_PLAY)
     {
+        int item_selected = GetItemSelected();
         if (item_selected >= 0 && item_selected < GetRowCount())
         {
             CMusicPlayerCmdHelper helper;
@@ -2487,6 +2565,7 @@ CWnd* UiElement::AllTracksList::GetCmdRecivedWnd()
 
 void UiElement::AllTracksList::OnDoubleClicked()
 {
+    int item_selected = GetItemSelected();
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
         const SongInfo& song{ CUiAllTracksMgr::Instance().GetSongInfo(item_selected) };
