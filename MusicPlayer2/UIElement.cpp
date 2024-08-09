@@ -1356,6 +1356,35 @@ bool UiElement::ListElement::IsItemSelected(int index) const
     return iter != items_selected.end();
 }
 
+void UiElement::ListElement::SelectAll()
+{
+    if (IsMultipleSelectionEnable())
+    {
+        items_selected.clear();
+        for (int i{}; i < GetRowCount(); i++)
+            items_selected.insert(i);
+    }
+}
+
+void UiElement::ListElement::SelectNone()
+{
+    items_selected.clear();
+}
+
+void UiElement::ListElement::SelectReversed()
+{
+    if (IsMultipleSelectionEnable())
+    {
+        auto items_selected_old{ items_selected };
+        items_selected.clear();
+        for (int i{}; i < GetRowCount(); i++)
+        {
+            if (!items_selected_old.contains(i))
+                items_selected.insert(i);
+        }
+    }
+}
+
 CWnd* UiElement::ListElement::GetCmdRecivedWnd()
 {
     return theApp.m_pMainWnd;

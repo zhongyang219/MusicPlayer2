@@ -1709,15 +1709,10 @@ void CMusicPlayerDlg::SetUiPlaylistSelected(int index)
     CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
     if (user_ui != nullptr)
     {
-        user_ui->IterateAllElementsInAllUi([index](UiElement::Element* ele) ->bool
-            {
-                UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(ele) };
-                if (playlist_element != nullptr)
-                {
-                    playlist_element->SetItemSelected(index);
-                }
-                return false;
-            });
+        user_ui->IterateAllElements<UiElement::Playlist>([index](UiElement::Playlist* playlist_element) ->bool {
+            playlist_element->SetItemSelected(index);
+            return false;
+        });
         m_ui_thread_para.ui_force_refresh = true;
     }
 }
@@ -5616,6 +5611,15 @@ void CMusicPlayerDlg::OnPlaylistSelectAll()
     // TODO: 在此添加命令处理程序代码
     m_playlist_list.SelectAll();
     GetPlaylistItemSelected();
+
+    CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
+    if (user_ui != nullptr)
+    {
+        user_ui->IterateAllElements<UiElement::Playlist>([](UiElement::Playlist* playlist_element) ->bool {
+            playlist_element->SelectAll();
+            return false;
+        });
+    }
 }
 
 
@@ -5624,6 +5628,15 @@ void CMusicPlayerDlg::OnPlaylistSelectNone()
     // TODO: 在此添加命令处理程序代码
     m_playlist_list.SelectNone();
     GetPlaylistItemSelected();
+
+    CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
+    if (user_ui != nullptr)
+    {
+        user_ui->IterateAllElements<UiElement::Playlist>([](UiElement::Playlist* playlist_element) ->bool {
+            playlist_element->SelectNone();
+            return false;
+        });
+    }
 }
 
 
@@ -5632,6 +5645,15 @@ void CMusicPlayerDlg::OnPlaylistSelectRevert()
     // TODO: 在此添加命令处理程序代码
     m_playlist_list.SelectReverse();
     GetPlaylistItemSelected();
+
+    CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
+    if (user_ui != nullptr)
+    {
+        user_ui->IterateAllElements<UiElement::Playlist>([](UiElement::Playlist* playlist_element) ->bool {
+            playlist_element->SelectReversed();
+            return false;
+        });
+    }
 }
 
 

@@ -285,11 +285,15 @@ namespace UiElement
         void RestrictOffset();             //将播放列表偏移量限制在正确的范围
         void CalculateItemRects();         //计算播放列表中每一项的矩形区域，保存在playlist_info.item_rects中
         int ItemHeight() const;
-        void SetItemSelected(int index);
-        int GetItemSelected() const;
-        void SetItemsSelected(const vector<int>& indexes);
-        void GetItemsSelected(vector<int>& indexes) const;
-        bool IsItemSelected(int index) const;
+        void SetItemSelected(int index);    //设置单个项目选中
+        int GetItemSelected() const;        //获取单个项目选中
+        void SetItemsSelected(const vector<int>& indexes);  //设置多个项目选中
+        void GetItemsSelected(vector<int>& indexes) const;  //获取多个项目选中
+        bool IsItemSelected(int index) const;   //判断指定行是否选中
+
+        void SelectAll();                   //全选（仅IsMultipleSelectionEnable返回true时支持）
+        void SelectNone();                  //取消所有选择
+        void SelectReversed();              //反向选择（仅IsMultipleSelectionEnable返回true时支持）
 
         virtual std::wstring GetItemText(int row, int col) = 0;
         virtual int GetRowCount() = 0;
@@ -316,7 +320,7 @@ namespace UiElement
         virtual int GetUnHoverIconCount(int row) { return 0; }          //获取鼠标未指向的行要显示的图标数量（列为GetHoverButtonColumn返回的列）
         virtual IconMgr::IconType GetUnHoverIcon(int index, int row) { return IconMgr::IT_NO_ICON; }   //获取鼠标未指向的行要显示的图标
 
-        virtual bool IsMultipleSelectionEnable() { return false; }
+        virtual bool IsMultipleSelectionEnable() { return false; }      //是否允许多选
 
         int item_height{ 28 };
         int font_size{ 9 };

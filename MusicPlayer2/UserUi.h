@@ -26,6 +26,8 @@ public:
 
     template<class T>
     T* FindElement();
+    template<class T>
+    void IterateAllElements(std::function<bool(T*)> func);
 
     enum { SHOW_VOLUME_TIMER_ID = 1635 };
 
@@ -89,4 +91,17 @@ inline T* CUserUi::FindElement()
     });
 
     return element_found;
+}
+
+template<class T>
+inline void CUserUi::IterateAllElements(std::function<bool(T*)> func)
+{
+    IterateAllElements([&](UiElement::Element* element) ->bool {
+        T* ele = dynamic_cast<T*>(element);
+        if (ele != nullptr)
+        {
+            return func(ele);
+        }
+        return false;
+    });
 }
