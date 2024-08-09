@@ -3490,6 +3490,12 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
     case HK_SHOW_HIDE_DESKTOP_LYRIC:
         OnShowDesktopLyric();
         break;
+    case HK_ADD_TO_MY_FAVOURITE:
+    {
+        CMusicPlayerCmdHelper helper(this);
+        helper.OnAddToFavourite();
+    }
+        break;
     }
 
     CMainDialogBase::OnHotKey(nHotKeyId, nKey1, nKey2);
