@@ -59,6 +59,11 @@ bool CMiniModeUserUi::GetUiSize(int& width, int& height, int& height_with_playli
     return false;
 }
 
+std::shared_ptr<UiElement::Playlist> CMiniModeUserUi::GetPlaylist() const
+{
+    return std::dynamic_pointer_cast<UiElement::Playlist>(m_playlist_emelment);
+}
+
 void CMiniModeUserUi::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
 {
     if (m_root_default != nullptr)

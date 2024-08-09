@@ -234,7 +234,10 @@ BOOL CMiniModeDlg::OnInitDialog()
 
     //如果使用UI播放列表，则隐藏播放列表控件
     if (m_use_ui_playlist)
+    {
         m_playlist_ctrl.ShowWindow(SW_HIDE);
+        m_playlist_ctrl.SetCtrlAEnable(false);
+    }
 
     m_pDC = GetDC();
     for (auto& ui : m_ui_list)
@@ -397,6 +400,18 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
             {
                 OnShowPlayList();
                 return TRUE;
+            }
+
+            //按Ctrl+A自绘播放列表全选
+            if (pMsg->wParam == 'A')
+            {
+                CMiniModeUserUi* cur_ui{ dynamic_cast<CMiniModeUserUi*>(GetCurUi()) };
+                if (cur_ui != nullptr)
+                {
+                    auto playlist = cur_ui->GetPlaylist();
+                    if (playlist != nullptr)
+                        playlist->SelectAll();
+                }
             }
         }
 

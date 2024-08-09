@@ -9,6 +9,7 @@ public:
     ~CMiniModeUserUi();
 
     bool GetUiSize(int& width, int& height, int& height_with_playlist);
+    std::shared_ptr<UiElement::Playlist> GetPlaylist() const;
 
 private:
     void InitUiPlaylist();
