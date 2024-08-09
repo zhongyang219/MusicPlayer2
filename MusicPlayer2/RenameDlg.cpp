@@ -10,8 +10,9 @@
 
 IMPLEMENT_DYNAMIC(CRenameDlg, CTagSelBaseDlg)
 
-CRenameDlg::CRenameDlg(CWnd* pParent)
+CRenameDlg::CRenameDlg(int file_num, CWnd* pParent)
     : CTagSelBaseDlg(false, pParent)
+    , m_file_num(file_num)
 {
 }
 
@@ -27,7 +28,10 @@ CString CRenameDlg::GetDialogName() const
 bool CRenameDlg::InitializeControls()
 {
     wstring temp;
-    temp = theApp.m_str_table.LoadText(L"TITLE_RENAME_SONG");
+    if (m_file_num <= 1)
+        temp = theApp.m_str_table.LoadText(L"TITLE_RENAME_SONG");
+    else
+        temp = theApp.m_str_table.LoadTextFormat(L"TITLE_RENAME_SONG_BATCH", { m_file_num });
     SetWindowTextW(temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_RENAME_SONG_INFO");
     SetDlgItemTextW(IDC_INFO_STATIC, temp.c_str());

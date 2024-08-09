@@ -6103,7 +6103,7 @@ void CMusicPlayerDlg::OnRename()
 {
     // TODO: 在此添加命令处理程序代码
     int count{}, fail_count{};
-    CRenameDlg dlg;
+    CRenameDlg dlg(m_items_selected.size());
     auto& cur_playlist = CPlayer::GetInstance().GetPlayList();
     // 单选曲目重命名时建议当前名称
     if (m_items_selected.size() <= 1 && m_item_selected >= 0 && m_item_selected < static_cast<int>(cur_playlist.size()))
