@@ -1012,6 +1012,13 @@ void UiElement::ListElement::Draw()
     CalculateRect();
     RestrictOffset();
     CalculateItemRects();
+
+    if (last_row_count != GetRowCount())
+    {
+        OnRowCountChanged();
+        last_row_count = GetRowCount();
+    }
+
     ui->DrawList(rect, this, ItemHeight());
     Element::Draw();
 }
@@ -1418,6 +1425,12 @@ IPlayerUI::UIButton& UiElement::ListElement::GetHoverButtonState(int btn_index)
     return hover_buttons[btn_index];
 }
 
+void UiElement::ListElement::OnRowCountChanged()
+{
+    //如果列表的行数有变化，则清除选中
+    SelectNone();
+}
+
 int UiElement::ListElement::GetListIndexByPoint(CPoint point)
 {
     for (size_t i{}; i < item_rects.size(); i++)
@@ -1628,6 +1641,13 @@ IconMgr::IconType UiElement::Playlist::GetUnHoverIcon(int index, int row)
         return IconMgr::IT_Favorite_Off;
     }
     return IconMgr::IT_NO_ICON;
+}
+
+void UiElement::Playlist::OnRowCountChanged()
+{
+    ListElement::OnRowCountChanged();
+    //播放列表行数改变时，通知主窗口取消播放列表选中项
+    ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAYLIST_SELECT_NONE, 0);
 }
 
 int UiElement::Playlist::GetRowCount()

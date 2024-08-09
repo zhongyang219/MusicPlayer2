@@ -323,6 +323,7 @@ namespace UiElement
         virtual IconMgr::IconType GetUnHoverIcon(int index, int row) { return IconMgr::IT_NO_ICON; }   //获取鼠标未指向的行要显示的图标
 
         virtual bool IsMultipleSelectionEnable() { return false; }      //是否允许多选
+        virtual void OnRowCountChanged();       //当列表行数发生变化时响应此函数
 
         int item_height{ 28 };
         int font_size{ 9 };
@@ -346,6 +347,7 @@ namespace UiElement
         bool scrollbar_handle_pressed{};    //滚动条把手被按下
         int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
         std::map<int, IPlayerUI::UIButton> hover_buttons;   //鼠标指向时的按钮
+        int last_row_count{};
     };
 
 
@@ -393,6 +395,7 @@ namespace UiElement
         virtual IconMgr::IconType GetUnHoverIcon(int index, int row) override;
 
         virtual bool IsMultipleSelectionEnable() override { return true; }
+        virtual void OnRowCountChanged() override;
 
     private:
         int last_highlight_row{ -1 };
