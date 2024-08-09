@@ -61,10 +61,10 @@ bool CUserUi::IsIndexValid() const
     return m_index != INT_MAX;
 }
 
-void CUserUi::IterateAllElements(std::function<bool(UiElement::Element*)> func)
+void CUserUi::IterateAllElements(std::function<bool(UiElement::Element*)> func, bool visible_only)
 {
     std::shared_ptr<UiElement::Element> draw_element = GetCurrentTypeUi();
-    draw_element->IterateAllElements(func);
+    draw_element->IterateAllElements(func, visible_only);
 }
 
 void CUserUi::IterateAllElementsInAllUi(std::function<bool(UiElement::Element*)> func)

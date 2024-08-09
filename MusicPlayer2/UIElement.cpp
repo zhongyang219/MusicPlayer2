@@ -184,7 +184,7 @@ void UiElement::Element::CalculateRect()
 }
 
 
-void UiElement::Element::IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func)
+void UiElement::Element::IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func, bool visible_only)
 {
     if (parent_element != nullptr)
     {
@@ -192,14 +192,34 @@ void UiElement::Element::IterateElements(UiElement::Element* parent_element, std
             return;
         for (const auto& ele : parent_element->childLst)
         {
-            IterateElements(ele.get(), func);
+            if (visible_only)
+            {
+                StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(ele.get());
+                if (stack_element != nullptr)
+                {
+                    func(stack_element);
+                    int cur_index = stack_element->GetCurIndex();
+                    if (cur_index >= 0 && cur_index < static_cast<int>(stack_element->childLst.size()))
+                    {
+                        IterateElements(stack_element->childLst[cur_index].get(), func, visible_only);
+                    }
+                }
+                else
+                {
+                    IterateElements(ele.get(), func, visible_only);
+                }
+            }
+            else
+            {
+                IterateElements(ele.get(), func, visible_only);
+            }
         }
     }
 }
 
-void UiElement::Element::IterateAllElements(std::function<bool(UiElement::Element*)> func)
+void UiElement::Element::IterateAllElements(std::function<bool(UiElement::Element*)> func, bool visible_only)
 {
-    IterateElements(this, func);
+    IterateElements(this, func, visible_only);
 }
 
 void UiElement::Element::SetUi(CPlayerUIBase* _ui)

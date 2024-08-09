@@ -5615,10 +5615,10 @@ void CMusicPlayerDlg::OnPlaylistSelectAll()
     CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
     if (user_ui != nullptr)
     {
-        user_ui->IterateAllElements<UiElement::Playlist>([](UiElement::Playlist* playlist_element) ->bool {
-            playlist_element->SelectAll();
+        user_ui->IterateAllElements<UiElement::ListElement>([](UiElement::ListElement* list_element) ->bool {
+            list_element->SelectAll();
             return false;
-        });
+        }, true);
     }
 }
 
@@ -5632,10 +5632,10 @@ void CMusicPlayerDlg::OnPlaylistSelectNone()
     CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
     if (user_ui != nullptr)
     {
-        user_ui->IterateAllElements<UiElement::Playlist>([](UiElement::Playlist* playlist_element) ->bool {
-            playlist_element->SelectNone();
+        user_ui->IterateAllElements<UiElement::ListElement>([](UiElement::ListElement* list_element) ->bool {
+            list_element->SelectNone();
             return false;
-        });
+        }, true);
     }
 }
 
@@ -5649,10 +5649,10 @@ void CMusicPlayerDlg::OnPlaylistSelectRevert()
     CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
     if (user_ui != nullptr)
     {
-        user_ui->IterateAllElements<UiElement::Playlist>([](UiElement::Playlist* playlist_element) ->bool {
-            playlist_element->SelectReversed();
+        user_ui->IterateAllElements<UiElement::ListElement>([](UiElement::ListElement* list_element) ->bool {
+            list_element->SelectReversed();
             return false;
-        });
+        }, true);
     }
 }
 

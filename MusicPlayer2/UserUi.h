@@ -15,7 +15,9 @@ public:
     void SetIndex(int index);
     bool IsIndexValid() const;
 
-    void IterateAllElements(std::function<bool(UiElement::Element*)> func);  //遍历所有界面元素
+    //遍历所有界面元素
+    //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点
+    void IterateAllElements(std::function<bool(UiElement::Element*)> func, bool visible_only = false);
     void IterateAllElementsInAllUi(std::function<bool(UiElement::Element*)> func);    //遍历每一个界面中的所有元素（包含big、narrow、small三个界面）
     void VolumeAdjusted();      //当音量调整时需要调用此函数
     void ResetVolumeToPlayTime();   //定时器SHOW_VOLUME_TIMER_ID响应时需要调用此函数
@@ -24,10 +26,14 @@ public:
     void SaveStatackElementIndex(CArchive& archive);
     void LoadStatackElementIndex(CArchive& archive);
 
+    //查找一个UiElement中指定类型的元素
     template<class T>
     T* FindElement();
+
+    //遍历所有指定类型的元素
+    //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点
     template<class T>
-    void IterateAllElements(std::function<bool(T*)> func);
+    void IterateAllElements(std::function<bool(T*)> func, bool visible_only = false);
 
     enum { SHOW_VOLUME_TIMER_ID = 1635 };
 
@@ -94,7 +100,7 @@ inline T* CUserUi::FindElement()
 }
 
 template<class T>
-inline void CUserUi::IterateAllElements(std::function<bool(T*)> func)
+inline void CUserUi::IterateAllElements(std::function<bool(T*)> func, bool visible_only)
 {
     IterateAllElements([&](UiElement::Element* element) ->bool {
         T* ele = dynamic_cast<T*>(element);
@@ -103,5 +109,5 @@ inline void CUserUi::IterateAllElements(std::function<bool(T*)> func)
             return func(ele);
         }
         return false;
-    });
+    }, visible_only);
 }

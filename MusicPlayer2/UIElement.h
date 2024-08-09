@@ -51,7 +51,9 @@ namespace UiElement
         void SetRect(CRect _rect);
         virtual void ClearRect();
         Element* RootElement();       //获取根节点
-        void IterateAllElements(std::function<bool(UiElement::Element*)> func);  //遍历所有界面元素
+        //遍历所有界面元素
+        //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点
+        void IterateAllElements(std::function<bool(UiElement::Element*)> func, bool visible_only = false);
         void SetUi(CPlayerUIBase* _ui);
         void AddChild(std::shared_ptr<Element> child);
 
@@ -69,7 +71,7 @@ namespace UiElement
     protected:
         CRect ParentRect() const;
         virtual void CalculateRect();           //计算此元素在界面中的矩形区域
-        static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func);
+        static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func, bool visible_only = false);
 
         CRect rect;     //用于保存计算得到的元素的矩形区域
         CPlayerUIBase* ui{};
