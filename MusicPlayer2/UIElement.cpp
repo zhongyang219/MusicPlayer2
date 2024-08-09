@@ -1216,15 +1216,18 @@ void UiElement::ListElement::ShowContextMenu(CMenu* menu, CWnd* cmd_reciver)
 void UiElement::ListElement::RButtonDown(CPoint point)
 {
     mouse_pressed = false;
-    if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point))
+    if (rect.PtInRect(point))
     {
-        int clicked_index{ GetListIndexByPoint(point) };        //点击的行
-        if (!IsItemSelected(clicked_index))
+        if (!scrollbar_rect.PtInRect(point))
         {
-            SetItemSelected(clicked_index);
-            OnClicked();
+            int clicked_index{ GetListIndexByPoint(point) };        //点击的行
+            if (!IsItemSelected(clicked_index))
+            {
+                SetItemSelected(clicked_index);
+                OnClicked();
+            }
+            selected_item_scroll_info.Reset();
         }
-        selected_item_scroll_info.Reset();
     }
     else
     {
