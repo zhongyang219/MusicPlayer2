@@ -392,6 +392,10 @@ bool CUIWindowCmdHelper::OnSongListCommand(const std::vector<SongInfo>& songs, D
     if (songs.empty())
         return false;
 
+    auto getSongList = [&](std::vector<SongInfo>& song_list) {
+        song_list = songs;
+    };
+
     CMusicPlayerCmdHelper helper;
     //下一首播放
     if (command == ID_PLAY_AS_NEXT)
@@ -436,12 +440,15 @@ bool CUIWindowCmdHelper::OnSongListCommand(const std::vector<SongInfo>& songs, D
     {
         helper.OnRating(songs.front(), command);
     }
+    //添加到新播放列表
+    else if (command == ID_ADD_TO_NEW_PLAYLIST)
+    {
+        wstring playlist_path;
+        helper.OnAddToNewPlaylist(getSongList, playlist_path);
+    }
     //添加到播放列表
     else
     {
-        auto getSongList = [&](std::vector<SongInfo>& song_list) {
-            song_list = songs;
-        };
         return helper.OnAddToPlaylistCommand(getSongList, command);
     }
     return true;

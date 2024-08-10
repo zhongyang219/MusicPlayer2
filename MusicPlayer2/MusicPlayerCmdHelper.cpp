@@ -123,7 +123,19 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
 
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
-        if (!playlist.AddSongsToPlaylist(selected_item_path, theApp.m_media_lib_setting_data.insert_begin_of_playlist)) // 这里由于是空列表所以实际上设置无效不过仍然传递设置
+        int rtn = playlist.AddSongsToPlaylist(selected_item_path, theApp.m_media_lib_setting_data.insert_begin_of_playlist); // 这里由于是空列表所以实际上设置无效不过仍然传递设置
+        if (rtn > 0)
+        {
+            //显示添加成功提示
+            CPlayerUIBase* ui = pPlayerDlg->GetCurrentUi();
+            if (ui != nullptr)
+            {
+                wstring playlist_display_name{ CPlaylistMgr::GetPlaylistDisplayName(playlist_path) };
+                const wstring& info = theApp.m_str_table.LoadTextFormat(L"MSG_ADD_TO_PLAYLIST_SUCCEED", { rtn, playlist_display_name });
+                ui->ShowUiTipInfo(info);
+            }
+        }
+        else
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");
             pPlayerDlg->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
