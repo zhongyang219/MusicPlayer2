@@ -329,6 +329,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_WM_POWERBROADCAST()
     ON_MESSAGE(WM_SET_UI_FORCE_FRESH_FLAG, &CMusicPlayerDlg::OnSetUiForceFreshFlag)
     ON_COMMAND(ID_MORE_RECENT_ITEMS, &CMusicPlayerDlg::OnMoreRecentItems)
+    ON_WM_NCCALCSIZE()
 END_MESSAGE_MAP()
 
 
@@ -435,6 +436,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"show_skin_btn_in_titlebar", theApp.m_app_setting_data.show_skin_btn_in_titlebar);
     ini.WriteBool(L"config", L"show_settings_btn_in_titlebar", theApp.m_app_setting_data.show_settings_btn_in_titlebar);
     ini.WriteBool(L"config", L"show_dark_light_btn_in_titlebar", theApp.m_app_setting_data.show_dark_light_btn_in_titlebar);
+
+    ini.WriteBool(L"config", L"remove_titlebar_top_frame", theApp.m_app_setting_data.remove_titlebar_top_frame);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -634,6 +637,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.show_skin_btn_in_titlebar = ini.GetBool(L"config", L"show_skin_btn_in_titlebar", false);
     theApp.m_app_setting_data.show_settings_btn_in_titlebar = ini.GetBool(L"config", L"show_settings_btn_in_titlebar", false);
     theApp.m_app_setting_data.show_dark_light_btn_in_titlebar = ini.GetBool(L"config", L"show_dark_light_btn_in_titlebar", false);
+
+    theApp.m_app_setting_data.remove_titlebar_top_frame = ini.GetBool(L"config", L"remove_titlebar_top_frame", false);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
@@ -6555,4 +6560,18 @@ void CMusicPlayerDlg::OnMoreRecentItems()
         CMusicPlayerCmdHelper helper;
         helper.OnRecentItemSelected(item);
     }
+}
+
+
+void CMusicPlayerDlg::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp)
+{
+    if (theApp.m_app_setting_data.remove_titlebar_top_frame && CWinVersionHelper::IsWindows10OrLater() && !theApp.m_app_setting_data.show_window_frame && !IsZoomed() && !theApp.m_ui_data.full_screen)
+    {
+        if (bCalcValidRects)
+        {
+            //这里去掉使用了自绘标题栏时顶部的白边
+            lpncsp->rgrc[0].top -= theApp.DPI(6);
+        }
+    }
+    CMainDialogBase::OnNcCalcSize(bCalcValidRects, lpncsp);
 }

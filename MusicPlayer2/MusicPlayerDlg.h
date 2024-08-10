@@ -536,4 +536,6 @@ public:
 protected:
     afx_msg LRESULT OnSetUiForceFreshFlag(WPARAM wParam, LPARAM lParam);
     afx_msg void OnMoreRecentItems();
+public:
+    afx_msg void OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp);
 };
