@@ -73,7 +73,7 @@ void CFolderPropertiesDlg::InitData()
     }
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_SORT"), str_sort_mode);
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK"), std::to_wstring(m_folder_info.track_num));
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH"), Time(m_folder_info.total_time).toString());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH"), Time(m_folder_info.total_time).toString3());
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER"), theApp.m_str_table.LoadText(m_folder_info.contain_sub_folder ? L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER_YES" : L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER_NO"));
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TIME"), m_folder_info.last_played_time == 0 ? L"-" : CTime(m_folder_info.last_played_time).Format(_T("%F %T")).GetString());
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_ADD_TIME"), m_folder_info.add_time == 0 ? L"-" : CTime(m_folder_info.add_time).Format(_T("%F %T")).GetString());
