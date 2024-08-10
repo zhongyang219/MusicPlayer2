@@ -10,55 +10,50 @@
 #include "FolderPropertiesDlg.h"
 #include "MediaLibItemPropertiesDlg.h"
 
-CUIWindowCmdHelper::CUIWindowCmdHelper(IPlayerUI* pUI)
-    : m_pUI(pUI)
+CUIWindowCmdHelper::CUIWindowCmdHelper(UiElement::Element* sender)
+    : m_context_menu_sender(sender)
 {
 }
 
 void CUIWindowCmdHelper::OnUiCommand(DWORD command)
 {
-    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
-    if (pUi != nullptr)
+    //获取命令的发送者
+    UiElement::MediaLibItemList* medialib_item_list = dynamic_cast<UiElement::MediaLibItemList*>(m_context_menu_sender);
+    if (medialib_item_list != nullptr)
     {
-        //获取命令的发送者
-        UiElement::MediaLibItemList* medialib_item_list = dynamic_cast<UiElement::MediaLibItemList*>(pUi->m_context_menu_sender);
-        if (medialib_item_list != nullptr)
-        {
-            OnMediaLibItemListCommand(medialib_item_list, command);
-        }
-        UiElement::RecentPlayedList* recent_played_list = dynamic_cast<UiElement::RecentPlayedList*>(pUi->m_context_menu_sender);
-        if (recent_played_list != nullptr)
-        {
-            OnRecentPlayedListCommand(recent_played_list, command);
-        }
-        UiElement::MediaLibFolder* medialib_folder = dynamic_cast<UiElement::MediaLibFolder*>(pUi->m_context_menu_sender);
-        if (medialib_folder != nullptr)
-        {
-            OnMediaLibFolderCommand(medialib_folder, command);
-        }
-        UiElement::MediaLibPlaylist* medialib_playlist = dynamic_cast<UiElement::MediaLibPlaylist*>(pUi->m_context_menu_sender);
-        if (medialib_playlist != nullptr)
-        {
-            OnMediaLibPlaylistCommand(medialib_playlist, command);
-        }
-        UiElement::MyFavouriteList* my_favourite_list = dynamic_cast<UiElement::MyFavouriteList*>(pUi->m_context_menu_sender);
-        if (my_favourite_list != nullptr)
-        {
-            OnMyFavouriteListCommand(my_favourite_list, command);
-        }
-        UiElement::AllTracksList* all_tracks_list = dynamic_cast<UiElement::AllTracksList*>(pUi->m_context_menu_sender);
-        if (all_tracks_list != nullptr)
-        {
-            OnAllTracksListCommand(all_tracks_list, command);
-        }
-        UiElement::Playlist* playlist = dynamic_cast<UiElement::Playlist*>(pUi->m_context_menu_sender);
-        if (playlist != nullptr)
-        {
-            OnAddToPlaystCommand(playlist, command);
-        }
-        OnFolderOrPlaylistSortCommand(command);
-        pUi->m_context_menu_sender = nullptr;   //命令被响应后清空上次保存的命令发送者
+        OnMediaLibItemListCommand(medialib_item_list, command);
     }
+    UiElement::RecentPlayedList* recent_played_list = dynamic_cast<UiElement::RecentPlayedList*>(m_context_menu_sender);
+    if (recent_played_list != nullptr)
+    {
+        OnRecentPlayedListCommand(recent_played_list, command);
+    }
+    UiElement::MediaLibFolder* medialib_folder = dynamic_cast<UiElement::MediaLibFolder*>(m_context_menu_sender);
+    if (medialib_folder != nullptr)
+    {
+        OnMediaLibFolderCommand(medialib_folder, command);
+    }
+    UiElement::MediaLibPlaylist* medialib_playlist = dynamic_cast<UiElement::MediaLibPlaylist*>(m_context_menu_sender);
+    if (medialib_playlist != nullptr)
+    {
+        OnMediaLibPlaylistCommand(medialib_playlist, command);
+    }
+    UiElement::MyFavouriteList* my_favourite_list = dynamic_cast<UiElement::MyFavouriteList*>(m_context_menu_sender);
+    if (my_favourite_list != nullptr)
+    {
+        OnMyFavouriteListCommand(my_favourite_list, command);
+    }
+    UiElement::AllTracksList* all_tracks_list = dynamic_cast<UiElement::AllTracksList*>(m_context_menu_sender);
+    if (all_tracks_list != nullptr)
+    {
+        OnAllTracksListCommand(all_tracks_list, command);
+    }
+    UiElement::Playlist* playlist = dynamic_cast<UiElement::Playlist*>(m_context_menu_sender);
+    if (playlist != nullptr)
+    {
+        OnAddToPlaystCommand(playlist, command);
+    }
+    OnFolderOrPlaylistSortCommand(command);
 }
 
 void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
@@ -588,16 +583,12 @@ void CUIWindowCmdHelper::OnFolderOrPlaylistSortCommand(DWORD command)
 
 void CUIWindowCmdHelper::SetRecentPlayedListMenuState(CMenu* pMenu)
 {
-    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
-    if (pUi != nullptr)
+    UiElement::RecentPlayedList* recent_played = dynamic_cast<UiElement::RecentPlayedList*>(m_context_menu_sender);
+    if (recent_played != nullptr)
     {
-        UiElement::RecentPlayedList* recent_played = dynamic_cast<UiElement::RecentPlayedList*>(pUi->m_context_menu_sender);
-        if (recent_played != nullptr)
-        {
-            int item_selected{ recent_played->GetItemSelected() };
-            //最近播放中排在第一个的项目为正在播放的项目，不允许移除
-            pMenu->EnableMenuItem(ID_RECENT_PLAYED_REMOVE, MF_BYCOMMAND | (item_selected > 0 ? MF_ENABLED : MF_GRAYED));
-        }
+        int item_selected{ recent_played->GetItemSelected() };
+        //最近播放中排在第一个的项目为正在播放的项目，不允许移除
+        pMenu->EnableMenuItem(ID_RECENT_PLAYED_REMOVE, MF_BYCOMMAND | (item_selected > 0 ? MF_ENABLED : MF_GRAYED));
     }
 }
 
@@ -618,12 +609,7 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
 {
     bool select_valid{};
     bool contain_sub_folder{};
-    UiElement::MediaLibFolder* medialib_folder{};
-    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
-    if (pUi != nullptr)
-    {
-        medialib_folder = dynamic_cast<UiElement::MediaLibFolder*>(pUi->m_context_menu_sender);
-    }
+    UiElement::MediaLibFolder* medialib_folder{ dynamic_cast<UiElement::MediaLibFolder*>(m_context_menu_sender) };
     if (medialib_folder != nullptr)
     {
         int item_selected{ medialib_folder->GetItemSelected() };
@@ -647,20 +633,16 @@ void CUIWindowCmdHelper::SetMediaLibPlaylistMenuState(CMenu* pMenu)
 {
     bool select_valid{};
     PlaylistInfo selected_playlist;
-    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
-    if (pUi != nullptr)
+    UiElement::MediaLibPlaylist* medialib_playlist = dynamic_cast<UiElement::MediaLibPlaylist*>(m_context_menu_sender);
+    if (medialib_playlist != nullptr)
     {
-        UiElement::MediaLibPlaylist* medialib_playlist = dynamic_cast<UiElement::MediaLibPlaylist*>(pUi->m_context_menu_sender);
-        if (medialib_playlist != nullptr)
+        int item_selected{ medialib_playlist->GetItemSelected() };
+        if (item_selected >= 0 && item_selected < static_cast<int>(CPlaylistMgr::Instance().GetPlaylistNum()))
         {
-            int item_selected{ medialib_playlist->GetItemSelected() };
-            if (item_selected >= 0 && item_selected < static_cast<int>(CPlaylistMgr::Instance().GetPlaylistNum()))
-            {
-                select_valid = true;
-                CPlaylistMgr::Instance().GetPlaylistInfo(item_selected, [&](const PlaylistInfo& playlist_info) {
-                    selected_playlist = playlist_info;
-                });
-            }
+            select_valid = true;
+            CPlaylistMgr::Instance().GetPlaylistInfo(item_selected, [&](const PlaylistInfo& playlist_info) {
+                selected_playlist = playlist_info;
+            });
         }
     }
 
@@ -686,25 +668,21 @@ void CUIWindowCmdHelper::SetMyFavouriteListMenuState(CMenu* pMenu)
 {
     bool selected_in_current_playing_list{ false }; //选中是否正在播放
     bool can_del{ false };
-    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
-    if (pUi != nullptr)
+    UiElement::MyFavouriteList* my_favourite_list = dynamic_cast<UiElement::MyFavouriteList*>(m_context_menu_sender);
+    if (my_favourite_list != nullptr)
     {
-        UiElement::MyFavouriteList* my_favourite_list = dynamic_cast<UiElement::MyFavouriteList*>(pUi->m_context_menu_sender);
-        if (my_favourite_list != nullptr)
+        int item_selected{ my_favourite_list->GetItemSelected() };
+        if (item_selected >= 0 && item_selected < static_cast<int>(CUiMyFavouriteItemMgr::Instance().GetSongCount()))
         {
-            int item_selected{ my_favourite_list->GetItemSelected() };
-            if (item_selected >= 0 && item_selected < static_cast<int>(CUiMyFavouriteItemMgr::Instance().GetSongCount()))
-            {
-                //获取选中曲目
-                const SongInfo& selected_song{ CUiMyFavouriteItemMgr::Instance().GetSongInfo(item_selected) };
-                std::vector<SongInfo> selected_songs{ selected_song };
-                //判断是否可以下一首播放
-                selected_in_current_playing_list = CPlayer::GetInstance().IsSongsInPlayList(selected_songs);
-                //判断是否可以从磁盘删除
-                can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
-                    !selected_song.is_cue &&
-                    !COSUPlayerHelper::IsOsuFile(selected_song.file_path);
-            }
+            //获取选中曲目
+            const SongInfo& selected_song{ CUiMyFavouriteItemMgr::Instance().GetSongInfo(item_selected) };
+            std::vector<SongInfo> selected_songs{ selected_song };
+            //判断是否可以下一首播放
+            selected_in_current_playing_list = CPlayer::GetInstance().IsSongsInPlayList(selected_songs);
+            //判断是否可以从磁盘删除
+            can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
+                !selected_song.is_cue &&
+                !COSUPlayerHelper::IsOsuFile(selected_song.file_path);
         }
     }
 
@@ -716,25 +694,21 @@ void CUIWindowCmdHelper::SetAllTracksListMenuState(CMenu* pMenu)
 {
     bool selected_in_current_playing_list{ false }; //选中是否正在播放
     bool can_del{ false };
-    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
-    if (pUi != nullptr)
+    UiElement::AllTracksList* all_tracks_list = dynamic_cast<UiElement::AllTracksList*>(m_context_menu_sender);
+    if (all_tracks_list != nullptr)
     {
-        UiElement::AllTracksList* all_tracks_list = dynamic_cast<UiElement::AllTracksList*>(pUi->m_context_menu_sender);
-        if (all_tracks_list != nullptr)
+        int item_selected{ all_tracks_list->GetItemSelected() };
+        if (item_selected >= 0 && item_selected < static_cast<int>(CUiAllTracksMgr::Instance().GetSongCount()))
         {
-            int item_selected{ all_tracks_list->GetItemSelected() };
-            if (item_selected >= 0 && item_selected < static_cast<int>(CUiAllTracksMgr::Instance().GetSongCount()))
-            {
-                //获取选中曲目
-                const SongInfo& selected_song{ CUiAllTracksMgr::Instance().GetSongInfo(item_selected) };
-                std::vector<SongInfo> selected_songs{ selected_song };
-                //判断是否可以下一首播放
-                selected_in_current_playing_list = CPlayer::GetInstance().IsSongsInPlayList(selected_songs);
-                //判断是否可以从磁盘删除
-                can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
-                    !selected_song.is_cue &&
-                    !COSUPlayerHelper::IsOsuFile(selected_song.file_path);
-            }
+            //获取选中曲目
+            const SongInfo& selected_song{ CUiAllTracksMgr::Instance().GetSongInfo(item_selected) };
+            std::vector<SongInfo> selected_songs{ selected_song };
+            //判断是否可以下一首播放
+            selected_in_current_playing_list = CPlayer::GetInstance().IsSongsInPlayList(selected_songs);
+            //判断是否可以从磁盘删除
+            can_del = !theApp.m_media_lib_setting_data.disable_delete_from_disk &&
+                !selected_song.is_cue &&
+                !COSUPlayerHelper::IsOsuFile(selected_song.file_path);
         }
     }
 
@@ -745,14 +719,8 @@ void CUIWindowCmdHelper::SetAllTracksListMenuState(CMenu* pMenu)
 void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
 {
     //判断菜单的发送者
-    UiElement::Playlist* playlist{};
-    UiElement::MyFavouriteList* my_favourite_list{};
-    CUserUi* pUi = dynamic_cast<CUserUi*>(m_pUI);
-    if (pUi != nullptr)
-    {
-        playlist = dynamic_cast<UiElement::Playlist*>(pUi->m_context_menu_sender);
-        my_favourite_list = dynamic_cast<UiElement::MyFavouriteList*>(pUi->m_context_menu_sender);
-    }
+    UiElement::Playlist* playlist{ dynamic_cast<UiElement::Playlist*>(m_context_menu_sender) };
+    UiElement::MyFavouriteList* my_favourite_list{ dynamic_cast<UiElement::MyFavouriteList*>(m_context_menu_sender) };
     //我喜欢的音乐菜单的名称
     wstring str_my_favourite{ theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_MY_FAVOURITE")};
     //正在播放的播放列表在菜单中的名称

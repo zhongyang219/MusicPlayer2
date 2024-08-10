@@ -915,9 +915,6 @@
     <ClInclude Include="UiMediaLibItemMgr.h">
       <Filter>功能逻辑类\UiMediaLibItemMgr</Filter>
     </ClInclude>
-    <ClInclude Include="UIWindowCmdHelper.h">
-      <Filter>UIWindow</Filter>
-    </ClInclude>
     <ClInclude Include="SimplePropertiesDlg.h">
       <Filter>对话框类\媒体库对话框\属性对话框</Filter>
     </ClInclude>
@@ -929,6 +926,9 @@
     </ClInclude>
     <ClInclude Include="MediaLibItemPropertiesDlg.h">
       <Filter>对话框类\媒体库对话框\属性对话框</Filter>
+    </ClInclude>
+    <ClInclude Include="UIWindowCmdHelper.h">
+      <Filter>PlayerUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1403,9 +1403,6 @@
     <ClCompile Include="UiMediaLibItemMgr.cpp">
       <Filter>功能逻辑类\UiMediaLibItemMgr</Filter>
     </ClCompile>
-    <ClCompile Include="UIWindowCmdHelper.cpp">
-      <Filter>UIWindow</Filter>
-    </ClCompile>
     <ClCompile Include="SimplePropertiesDlg.cpp">
       <Filter>对话框类\媒体库对话框\属性对话框</Filter>
     </ClCompile>
@@ -1417,6 +1414,9 @@
     </ClCompile>
     <ClCompile Include="MediaLibItemPropertiesDlg.cpp">
       <Filter>对话框类\媒体库对话框\属性对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="UIWindowCmdHelper.cpp">
+      <Filter>PlayerUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

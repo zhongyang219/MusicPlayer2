@@ -7,6 +7,7 @@
 #include "UiMediaLibItemMgr.h"
 #include "UserUi.h"
 #include "MusicPlayerCmdHelper.h"
+#include "UIWindowCmdHelper.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1209,13 +1210,21 @@ void UiElement::ListElement::ShowContextMenu(CMenu* menu, CWnd* cmd_reciver)
 {
     if (menu != nullptr)
     {
-        CUserUi* pUi = dynamic_cast<CUserUi*>(ui);
-        if (pUi != nullptr)
-            pUi->m_context_menu_sender = this;      //保存右键菜单的发送者
-
         CPoint cursor_pos;
         GetCursorPos(&cursor_pos);
-        menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cursor_pos.x, cursor_pos.y, cmd_reciver); //在指定位置显示弹出菜单
+        if (cmd_reciver != nullptr)
+        {
+            //弹出右键菜单，当选择了一个菜单命令时向cmd_reciver发送WM_COMMAND消息
+            menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cursor_pos.x, cursor_pos.y, cmd_reciver);
+        }
+        else
+        {
+            CUIWindowCmdHelper helper(this);
+            helper.SetMenuState(menu);
+            //使用TPM_RETURNCMD标志指定菜单命令使用返回值返回，TPM_NONOTIFY标志指定选择了菜单命令后不会向窗口发送WM_COMMAND消息，但是仍然必须传递一个有效的窗口句柄
+            UINT command = menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD | TPM_NONOTIFY, cursor_pos.x, cursor_pos.y, theApp.m_pMainWnd);
+            helper.OnUiCommand(command);
+        }
     }
 }
 
@@ -1415,11 +1424,6 @@ void UiElement::ListElement::SelectReversed()
     }
 }
 
-CWnd* UiElement::ListElement::GetCmdRecivedWnd()
-{
-    return theApp.m_pMainWnd;
-}
-
 IPlayerUI::UIButton& UiElement::ListElement::GetHoverButtonState(int btn_index)
 {
     return hover_buttons[btn_index];
@@ -1546,6 +1550,12 @@ CMenu* UiElement::Playlist::GetContextMenu(bool item_selected)
     return nullptr;
 }
 
+CWnd* UiElement::Playlist::GetCmdRecivedWnd()
+{
+    //Playlist中的右键菜单命令在主窗口中响应
+    return theApp.m_pMainWnd;
+}
+
 void UiElement::Playlist::OnDoubleClicked()
 {
     ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAY_ITEM, 0);
@@ -1612,11 +1622,7 @@ void UiElement::Playlist::OnHoverButtonClicked(int btn_index, int row)
     else if (btn_index == BTN_ADD)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
-        CWnd* cmd_reciver{};
-        CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-        if (pDlg != nullptr)
-            cmd_reciver = &pDlg->GetUIWindow();
-        ShowContextMenu(menu, cmd_reciver);
+        ShowContextMenu(menu, nullptr);
     }
     //点击了“添加到我喜欢的音乐”按钮
     else if (btn_index == BTN_FAVOURITE)
@@ -1740,15 +1746,6 @@ CMenu* UiElement::RecentPlayedList::GetContextMenu(bool item_selected)
     return nullptr;
 }
 
-CWnd* UiElement::RecentPlayedList::GetCmdRecivedWnd()
-{
-    //这里让右键菜单命令发送给CUIWindow处理
-    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-    if (pDlg != nullptr)
-        return &pDlg->GetUIWindow();
-    return nullptr;
-}
-
 int UiElement::RecentPlayedList::GetHoverButtonCount()
 {
     return 1;
@@ -1857,15 +1854,6 @@ CMenu* UiElement::MediaLibItemList::GetContextMenu(bool item_selected)
     return nullptr;
 }
 
-CWnd* UiElement::MediaLibItemList::GetCmdRecivedWnd()
-{
-    //这里让右键菜单命令发送给CUIWindow处理
-    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-    if (pDlg != nullptr)
-        return &pDlg->GetUIWindow();
-    return nullptr;
-}
-
 void UiElement::MediaLibItemList::OnDoubleClicked()
 {
     int item_selected = GetItemSelected();
@@ -1925,7 +1913,7 @@ void UiElement::MediaLibItemList::OnHoverButtonClicked(int btn_index, int row)
     else if (btn_index == BTN_ADD)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
-        ShowContextMenu(menu, GetCmdRecivedWnd());
+        ShowContextMenu(menu, nullptr);
     }
 }
 
@@ -2187,14 +2175,6 @@ CMenu* UiElement::MediaLibFolder::GetContextMenu(bool item_selected)
     return theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu);
 }
 
-CWnd* UiElement::MediaLibFolder::GetCmdRecivedWnd()
-{
-    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-    if (pDlg != nullptr)
-        return &pDlg->GetUIWindow();
-    return nullptr;
-}
-
 void UiElement::MediaLibFolder::OnDoubleClicked()
 {
     int item_selected = GetItemSelected();
@@ -2253,7 +2233,7 @@ void UiElement::MediaLibFolder::OnHoverButtonClicked(int btn_index, int row)
     else if (btn_index == BTN_ADD)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
-        ShowContextMenu(menu, GetCmdRecivedWnd());
+        ShowContextMenu(menu, nullptr);
     }
 }
 
@@ -2315,14 +2295,6 @@ int UiElement::MediaLibPlaylist::GetColumnScrollTextWhenSelected()
 CMenu* UiElement::MediaLibPlaylist::GetContextMenu(bool item_selected)
 {
     return theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistMenu);
-}
-
-CWnd* UiElement::MediaLibPlaylist::GetCmdRecivedWnd()
-{
-    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-    if (pDlg != nullptr)
-        return &pDlg->GetUIWindow();
-    return nullptr;
 }
 
 void UiElement::MediaLibPlaylist::OnDoubleClicked()
@@ -2468,14 +2440,6 @@ CMenu* UiElement::MyFavouriteList::GetContextMenu(bool item_selected)
     return nullptr;
 }
 
-CWnd* UiElement::MyFavouriteList::GetCmdRecivedWnd()
-{
-    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-    if (pDlg != nullptr)
-        return &pDlg->GetUIWindow();
-    return nullptr;
-}
-
 void UiElement::MyFavouriteList::OnDoubleClicked()
 {
     int item_selected = GetItemSelected();
@@ -2540,7 +2504,7 @@ void UiElement::MyFavouriteList::OnHoverButtonClicked(int btn_index, int row)
     else if (btn_index == BTN_ADD)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
-        ShowContextMenu(menu, GetCmdRecivedWnd());
+        ShowContextMenu(menu, nullptr);
     }
 }
 
@@ -2627,14 +2591,6 @@ CMenu* UiElement::AllTracksList::GetContextMenu(bool item_selected)
     return nullptr;
 }
 
-CWnd* UiElement::AllTracksList::GetCmdRecivedWnd()
-{
-    CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-    if (pDlg != nullptr)
-        return &pDlg->GetUIWindow();
-    return nullptr;
-}
-
 void UiElement::AllTracksList::OnDoubleClicked()
 {
     int item_selected = GetItemSelected();
@@ -2705,7 +2661,7 @@ void UiElement::AllTracksList::OnHoverButtonClicked(int btn_index, int row)
     else if (btn_index == BTN_ADD)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
-        ShowContextMenu(menu, GetCmdRecivedWnd());
+        ShowContextMenu(menu, nullptr);
     }
     //点击了“添加到我喜欢的音乐”按钮
     else if (btn_index == BTN_FAVOURITE)

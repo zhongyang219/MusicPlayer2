@@ -2,7 +2,6 @@
 #include "UIWindow.h"
 #include "MusicPlayer2.h"
 #include "MusicPlayerDlg.h"
-#include "UIWindowCmdHelper.h"
 
 IPlayerUI* CUIWindow::GetCurUi() const
 {
@@ -253,24 +252,4 @@ void CUIWindow::OnRButtonDown(UINT nFlags, CPoint point)
     m_pUI->RButtonDown(point);
 
     CStatic::OnRButtonDown(nFlags, point);
-}
-
-
-BOOL CUIWindow::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-    // TODO: 在此添加专用代码和/或调用基类
-    WORD command = LOWORD(wParam);
-
-    CUIWindowCmdHelper helper(GetCurUi());
-    helper.OnUiCommand(command);
-
-    return CStatic::OnCommand(wParam, lParam);
-}
-
-void CUIWindow::OnInitMenu(CMenu* pMenu)
-{
-    CStatic::OnInitMenu(pMenu);
-
-    CUIWindowCmdHelper helper(GetCurUi());
-    helper.SetMenuState(pMenu);
 }

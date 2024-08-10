@@ -310,7 +310,7 @@ namespace UiElement
         virtual std::wstring GetToolTipText(int row) { return std::wstring(); }
         virtual int GetToolTipIndex() const { return 0; }
         virtual CMenu* GetContextMenu(bool item_selected) { return nullptr; }
-        virtual CWnd* GetCmdRecivedWnd();
+        virtual CWnd* GetCmdRecivedWnd() { return nullptr; }        //获取右键菜单命令的接收窗口，如果返回空指针，则在CUIWindowCmdHelper中响应
         virtual void OnDoubleClicked() {};
         virtual void OnClicked() {};
         virtual int GetHoverButtonCount() { return 0; }     //获取鼠标指向一行时要显示的按钮数量
@@ -384,6 +384,7 @@ namespace UiElement
         virtual std::wstring GetToolTipText(int row) override;
         virtual int GetToolTipIndex() const override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
+        virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
         virtual void OnClicked() override;
         virtual int GetHoverButtonCount() override;
@@ -422,7 +423,6 @@ namespace UiElement
         virtual bool HasIcon() override;
         virtual void OnDoubleClicked() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
-        virtual CWnd* GetCmdRecivedWnd() override;
         virtual int GetHoverButtonCount() override;
         virtual int GetHoverButtonColumn() override;
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
@@ -460,7 +460,6 @@ namespace UiElement
         virtual int GetHighlightRow() override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
-        virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
         virtual int GetHoverButtonCount() override;
         virtual int GetHoverButtonColumn() override;
@@ -567,7 +566,6 @@ namespace UiElement
         virtual int GetHighlightRow() override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
-        virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
         virtual int GetHoverButtonCount() override;
         virtual int GetHoverButtonColumn() override;
@@ -595,7 +593,6 @@ namespace UiElement
         virtual int GetHighlightRow() override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
-        virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
         virtual int GetHoverButtonCount() override;
         virtual int GetHoverButtonColumn() override;
@@ -632,7 +629,6 @@ namespace UiElement
         virtual int GetHighlightRow() override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
-        virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
         virtual std::wstring GetEmptyString() override;
         virtual int GetHoverButtonCount() override;
@@ -671,7 +667,6 @@ namespace UiElement
         virtual int GetHighlightRow() override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
-        virtual CWnd* GetCmdRecivedWnd() override;
         virtual void OnDoubleClicked() override;
         virtual std::wstring GetEmptyString() override;
         virtual int GetHoverButtonCount() override;

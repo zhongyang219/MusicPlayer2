@@ -1,11 +1,10 @@
 ﻿#pragma once
-#include "IPlayerUI.h"
 #include "UIElement.h"
 
 class CUIWindowCmdHelper
 {
 public:
-    CUIWindowCmdHelper(IPlayerUI* pUI);
+    CUIWindowCmdHelper(UiElement::Element* sender);
     void OnUiCommand(DWORD command);
     void SetMenuState(CMenu* pMenu);
 
@@ -31,6 +30,6 @@ private:
     void SetPlaylistSortMenuState(CMenu* pMenu);
 
 private:
-    IPlayerUI* m_pUI;
+    UiElement::Element* m_context_menu_sender{};
 };
 

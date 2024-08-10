@@ -50,8 +50,6 @@ public:
     virtual bool DoubleClick(CPoint point) override;
     virtual void UiSizeChanged() override;
 
-    UiElement::Element* m_context_menu_sender{};
-
 protected:
     int m_index{ INT_MAX };
     std::wstring m_xml_path;
