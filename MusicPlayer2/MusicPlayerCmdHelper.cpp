@@ -1328,13 +1328,35 @@ void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, co
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
             pPlayerDlg->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
         }
+        else
+        {
+            //显示添加成功提示
+            CPlayerUIBase* ui = pPlayerDlg->GetCurrentUi();
+            if (ui != nullptr)
+            {
+                wstring playlist_display_name{ CPlaylistMgr::GetPlaylistDisplayName(playlist_path) };
+                const wstring& info = theApp.m_str_table.LoadTextFormat(L"MSG_ADD_TO_PLAYLIST_SUCCEED", { rtn, playlist_display_name });
+                ui->ShowUiTipInfo(info);
+            }
+        }
     }
     else
     {
         CPlaylistFile playlist;
         playlist.LoadFromFile(playlist_path);
-        if (playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.insert_begin_of_playlist))
+        int rtn = playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.insert_begin_of_playlist);
+        if (rtn)
+        {
             playlist.SaveToFile(playlist_path);
+            //显示添加成功提示
+            CPlayerUIBase* ui = pPlayerDlg->GetCurrentUi();
+            if (ui != nullptr)
+            {
+                wstring playlist_display_name{ CPlaylistMgr::GetPlaylistDisplayName(playlist_path) };
+                const wstring& info = theApp.m_str_table.LoadTextFormat(L"MSG_ADD_TO_PLAYLIST_SUCCEED", { rtn, playlist_display_name });
+                ui->ShowUiTipInfo(info);
+            }
+        }
         else
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");

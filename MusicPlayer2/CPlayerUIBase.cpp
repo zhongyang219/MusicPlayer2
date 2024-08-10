@@ -7,6 +7,8 @@
 #include "MediaLibPlaylistMgr.h"
 #include "MusicPlayerCmdHelper.h"
 
+bool CPlayerUIBase::m_show_ui_tip_info = false;
+
 CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
     : m_ui_data(ui_data), m_pMainWnd(pMainWnd)
 {
@@ -116,6 +118,30 @@ void CPlayerUIBase::DrawInfo(bool reset)
         //绘制界面中其他信息
         _DrawInfo(draw_rect, reset);
 
+        //绘制提示信息
+        if (m_show_ui_tip_info)
+        {
+            UiFontGuard guard(this, 10);
+            //根据文本的长度计算提示信息的矩形区域
+            CSize text_size = m_draw.GetTextExtent(m_ui_tip_info.c_str());
+            int tip_max_width = draw_rect.Width() - EdgeMargin() * 2 - DPI(40);
+            int lines = text_size.cx / tip_max_width + 1;
+            int tip_width = tip_max_width;
+            if (lines == 1)
+                tip_width = text_size.cx;
+            int tip_height = lines * text_size.cy;
+            CRect tip_rect{ draw_rect };
+            tip_rect.top += (draw_rect.Height() - tip_height) / 2;
+            tip_rect.left += (draw_rect.Width() - tip_width) / 2;
+            tip_rect.bottom = tip_rect.top + tip_height;
+            tip_rect.right = tip_rect.left + tip_width;
+            //画背景
+            CRect back_rect{ tip_rect };
+            back_rect.InflateRect(DPI(20), DPI(20));
+            DrawRectangle(back_rect);
+            //画文字
+            m_draw.DrawWindowText(tip_rect, m_ui_tip_info.c_str(), m_colors.color_text, Alignment::CENTER, true, true);
+        }
 
         //如果切换了显示/隐藏状态栏，则需要更新鼠标提示的位置
         static bool last_draw_status_bar{ false };
@@ -391,6 +417,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
 
             case BTN_AB_REPEAT:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_AB_REPEAT);
+                ShowUiTipInfo(L"很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的测试文本。");
                 return true;
 
             case BTN_STOP:
@@ -1438,6 +1465,19 @@ void CPlayerUIBase::UpdateToolTipPosition()
     {
         m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetToolTipIdOffset(), btn.second.rect);
     }
+}
+
+void CPlayerUIBase::ShowUiTipInfo(const std::wstring& info)
+{
+    m_show_ui_tip_info = true;
+    m_ui_tip_info = info;
+    KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), UI_TIP_INFO_TIMER_ID);
+
+    //设置一个定时器，5秒后m_show_ui_tip_info变为false
+    SetTimer(theApp.m_pMainWnd->GetSafeHwnd(), UI_TIP_INFO_TIMER_ID, 5000, [](HWND Arg1, UINT Arg2, UINT_PTR Arg3, DWORD Arg4) {
+        KillTimer(theApp.m_pMainWnd->GetSafeHwnd(), UI_TIP_INFO_TIMER_ID);
+        m_show_ui_tip_info = false;
+    });
 }
 
 void CPlayerUIBase::SetRepeatModeToolTipText()

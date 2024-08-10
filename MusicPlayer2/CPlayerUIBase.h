@@ -316,6 +316,8 @@ protected:
 public:
     virtual int GetUiIndex() { return 1; }  //UI的序号，用于区分每个界面，不会为0
 
+    void ShowUiTipInfo(const std::wstring& info);       //在界面的中央显示一个提示信息，几秒钟后自动消失
+
 private:
     void SetRepeatModeToolTipText();
     void SetSongInfoToolTipText();
@@ -360,6 +362,11 @@ private:
     CBitmap m_mem_bitmap_static;
 
     bool m_need_update_tooltip_pos{ false };   //是否需要更新鼠标提示
+
+    enum { UI_TIP_INFO_TIMER_ID = 1728 };
+
+    static bool m_show_ui_tip_info;
+    wstring m_ui_tip_info;
 };
 
 //用于在UI中设置字体。
