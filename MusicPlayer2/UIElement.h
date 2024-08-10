@@ -292,6 +292,7 @@ namespace UiElement
         void SetItemsSelected(const vector<int>& indexes);  //设置多个项目选中
         void GetItemsSelected(vector<int>& indexes) const;  //获取多个项目选中
         bool IsItemSelected(int index) const;   //判断指定行是否选中
+        bool IsMultipleSelected() const;        //是否选中了超过1个项目
 
         void SelectAll();                   //全选（仅IsMultipleSelectionEnable返回true时支持）
         void SelectNone();                  //取消所有选择
@@ -636,6 +637,7 @@ namespace UiElement
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
         virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
+        virtual bool IsMultipleSelectionEnable() override;
     };
 
     //所有曲目列表
@@ -676,6 +678,7 @@ namespace UiElement
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
         virtual int GetUnHoverIconCount(int row) override;
         virtual IconMgr::IconType GetUnHoverIcon(int index, int row) override;
+        virtual bool IsMultipleSelectionEnable() override;
 
     private:
         int last_highlight_row{ -1 };

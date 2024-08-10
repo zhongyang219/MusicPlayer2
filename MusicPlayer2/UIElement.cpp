@@ -1364,8 +1364,11 @@ int UiElement::ListElement::ItemHeight() const
 void UiElement::ListElement::SetItemSelected(int index)
 {
     items_selected.clear();
-    items_selected.insert(index);
-    EnsureItemVisible(index);
+    if (index >= 0)
+    {
+        items_selected.insert(index);
+        EnsureItemVisible(index);
+    }
 }
 
 int UiElement::ListElement::GetItemSelected() const
@@ -1393,6 +1396,11 @@ bool UiElement::ListElement::IsItemSelected(int index) const
 {
     auto iter = std::find(items_selected.begin(), items_selected.end(), index);
     return iter != items_selected.end();
+}
+
+bool UiElement::ListElement::IsMultipleSelected() const
+{
+    return items_selected.size() > 1;
 }
 
 void UiElement::ListElement::SelectAll()
@@ -2508,6 +2516,11 @@ void UiElement::MyFavouriteList::OnHoverButtonClicked(int btn_index, int row)
     }
 }
 
+bool UiElement::MyFavouriteList::IsMultipleSelectionEnable()
+{
+    return true;
+}
+
 std::wstring UiElement::AllTracksList::GetItemText(int row, int col)
 {
     if (row >= 0 && row < GetRowCount())
@@ -2688,6 +2701,11 @@ IconMgr::IconType UiElement::AllTracksList::GetUnHoverIcon(int index, int row)
         return IconMgr::IT_Favorite_Off;
     }
     return IconMgr::IT_NO_ICON;
+}
+
+bool UiElement::AllTracksList::IsMultipleSelectionEnable()
+{
+    return true;
 }
 
 void UiElement::MiniSpectrum::Draw()

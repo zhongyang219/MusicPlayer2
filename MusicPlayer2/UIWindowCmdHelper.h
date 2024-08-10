@@ -13,7 +13,7 @@ private:
     void OnRecentPlayedListCommand(UiElement::RecentPlayedList* medialib_item_list, DWORD command);
     void OnMediaLibFolderCommand(UiElement::MediaLibFolder* medialib_folder, DWORD command);
     void OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command);
-    bool OnSongListCommand(const SongInfo& song, DWORD command);
+    bool OnSongListCommand(const std::vector<SongInfo>& songs, DWORD command);
     void OnMyFavouriteListCommand(UiElement::MyFavouriteList* my_favourite_list, DWORD command);
     void OnAllTracksListCommand(UiElement::AllTracksList* all_tracks_list, DWORD command);
     void OnAddToPlaystCommand(UiElement::Playlist* playlist, DWORD command);

@@ -387,19 +387,21 @@ void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* 
     }
 }
 
-bool CUIWindowCmdHelper::OnSongListCommand(const SongInfo& song_info, DWORD command)
+bool CUIWindowCmdHelper::OnSongListCommand(const std::vector<SongInfo>& songs, DWORD command)
 {
+    if (songs.empty())
+        return false;
+
     CMusicPlayerCmdHelper helper;
     //下一首播放
     if (command == ID_PLAY_AS_NEXT)
     {
-        vector<SongInfo> songs{ song_info };
         CPlayer::GetInstance().PlayAfterCurrentTrack(songs);
     }
     //在文件夹模式中播放
     else if (command == ID_PLAY_ITEM_IN_FOLDER_MODE)
     {
-        if (!CPlayer::GetInstance().OpenASongInFolderMode(song_info, true))
+        if (!CPlayer::GetInstance().OpenASongInFolderMode(songs.front(), true))
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
             AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
@@ -408,38 +410,37 @@ bool CUIWindowCmdHelper::OnSongListCommand(const SongInfo& song_info, DWORD comm
     //在线查看
     else if (command == ID_EXPLORE_ONLINE)
     {
-        AfxBeginThread(CMusicPlayerCmdHelper::ViewOnlineThreadFunc, (LPVOID)&song_info);
+        static SongInfo song_view_online;
+        song_view_online = songs.front();
+        AfxBeginThread(CMusicPlayerCmdHelper::ViewOnlineThreadFunc, (LPVOID)&song_view_online);
     }
     //格式转换
     else if (command == ID_FORMAT_CONVERT)
     {
-        vector<SongInfo> songs{ song_info };
         helper.FormatConvert(songs);
     }
     //打开文件位置
     else if (command == ID_EXPLORE_TRACK)
     {
         CString str;
-        str.Format(_T("/select,\"%s\""), song_info.file_path.c_str());
+        str.Format(_T("/select,\"%s\""), songs.front().file_path.c_str());
         ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
     }
     //从磁盘删除
     else if (command == ID_DELETE_FROM_DISK)
     {
-        vector<SongInfo> songs{ song_info };
         helper.DeleteSongsFromDisk(songs);
     }
     //分级
     else if ((command >= ID_RATING_1 && command <= ID_RATING_5) || command == ID_RATING_NONE)    //如果命令是歌曲分级（应确保分级命令的ID是连续的）
     {
-        helper.OnRating(song_info, command);
+        helper.OnRating(songs.front(), command);
     }
     //添加到播放列表
     else
     {
         auto getSongList = [&](std::vector<SongInfo>& song_list) {
-            song_list.clear();
-            song_list.push_back(song_info);
+            song_list = songs;
         };
         return helper.OnAddToPlaylistCommand(getSongList, command);
     }
@@ -448,14 +449,23 @@ bool CUIWindowCmdHelper::OnSongListCommand(const SongInfo& song_info, DWORD comm
 
 void CUIWindowCmdHelper::OnMyFavouriteListCommand(UiElement::MyFavouriteList* my_favourite_list, DWORD command)
 {
-    int item_selected{ my_favourite_list->GetItemSelected() };
-    if (item_selected < 0 || item_selected >= CUiMyFavouriteItemMgr::Instance().GetSongCount())
+    std::vector<int> indexes;
+    my_favourite_list->GetItemsSelected(indexes);
+    vector<SongInfo> songs;
+    for (int i : indexes)
+    {
+        if (i >= 0 && i < CUiMyFavouriteItemMgr::Instance().GetSongCount())
+            songs.push_back(CUiMyFavouriteItemMgr::Instance().GetSongInfo(i));
+    }
+
+    if (songs.empty())
         return;
 
-    const SongInfo& song_info = CUiMyFavouriteItemMgr::Instance().GetSongInfo(item_selected);
+    int item_selected{ my_favourite_list->GetItemSelected() };
+
     CMusicPlayerCmdHelper helper;
 
-    if (!OnSongListCommand(song_info, command))
+    if (!OnSongListCommand(songs, command))
     {
         //播放
         if (command == ID_PLAY_ITEM)
@@ -465,16 +475,23 @@ void CUIWindowCmdHelper::OnMyFavouriteListCommand(UiElement::MyFavouriteList* my
         //从列表中删除
         else if (command == ID_REMOVE_FROM_PLAYLIST)
         {
-            vector<SongInfo> songs{ song_info };
             helper.OnRemoveFromPlaylist(songs, theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME);
         }
         //属性
         else if (command == ID_ITEM_PROPERTY)
         {
-            std::vector<SongInfo> songs;
-            CUiMyFavouriteItemMgr::Instance().GetSongList(songs);
-            CPropertyDlg dlg(songs, item_selected, false);
-            dlg.DoModal();
+            if (my_favourite_list->IsMultipleSelected())
+            {
+                CPropertyDlg dlg(songs);
+                dlg.DoModal();
+            }
+            else
+            {
+                std::vector<SongInfo> song_list;
+                CUiMyFavouriteItemMgr::Instance().GetSongList(song_list);
+                CPropertyDlg dlg(song_list, item_selected, false);
+                dlg.DoModal();
+            }
         }
         //复制文本
         else if (command == ID_COPY_TEXT)
@@ -488,27 +505,45 @@ void CUIWindowCmdHelper::OnMyFavouriteListCommand(UiElement::MyFavouriteList* my
 
 void CUIWindowCmdHelper::OnAllTracksListCommand(UiElement::AllTracksList* all_tracks_list, DWORD command)
 {
-    int item_selected{ all_tracks_list->GetItemSelected() };
-    if (item_selected < 0 || item_selected >= CUiAllTracksMgr::Instance().GetSongCount())
+    std::vector<int> indexes;
+    all_tracks_list->GetItemsSelected(indexes);
+    vector<SongInfo> songs;
+    for (int i : indexes)
+    {
+        if (i >= 0 && i < CUiAllTracksMgr::Instance().GetSongCount())
+            songs.push_back(CUiAllTracksMgr::Instance().GetSongInfo(i));
+    }
+
+    if (songs.empty())
         return;
 
-    const SongInfo& song_info = CUiAllTracksMgr::Instance().GetSongInfo(item_selected);
+    int item_selected{ all_tracks_list->GetItemSelected() };
+
     CMusicPlayerCmdHelper helper;
 
-    if (!OnSongListCommand(song_info, command))
+    if (!OnSongListCommand(songs, command))
     {
         //播放
         if (command == ID_PLAY_ITEM)
         {
+            const SongInfo& song_info = CUiAllTracksMgr::Instance().GetSongInfo(item_selected);
             helper.OnPlayAllTrack(song_info);
         }
         //属性
         else if (command == ID_ITEM_PROPERTY)
         {
-            std::vector<SongInfo> songs;
-            CUiAllTracksMgr::Instance().GetSongList(songs);
-            CPropertyDlg dlg(songs, item_selected, false);
-            dlg.DoModal();
+            if (all_tracks_list->IsMultipleSelected())
+            {
+                CPropertyDlg dlg(songs);
+                dlg.DoModal();
+            }
+            else
+            {
+                std::vector<SongInfo> song_list;
+                CUiAllTracksMgr::Instance().GetSongList(song_list);
+                CPropertyDlg dlg(song_list, item_selected, false);
+                dlg.DoModal();
+            }
         }
         //复制文本
         else if (command == ID_COPY_TEXT)
