@@ -294,6 +294,7 @@ struct GeneralSettingData
     bool check_update_when_start{ true };		//是否在程序启动时检查更新
     int update_source{};                        //更新源。0: GitHub; 1: Gitee
     bool minimize_to_notify_icon{ false };		//是否最小到通知区图标
+    bool global_mouse_wheel_volume_adjustment{ true };  //全局鼠标滚轮音量调节
 
     wstring language_;                          // 这个是设置状态（空字符串为跟随系统）
     bool portable_mode{ false };                //如果为true，则程序所有数据都保存到exe所在目录下，否则保存到Appdata\Romaing目录下

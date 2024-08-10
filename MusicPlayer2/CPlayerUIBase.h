@@ -145,6 +145,8 @@ public:
 
     static CString GetCmdShortcutKeyForTooltips(UINT id);      //获取用于显示在鼠标提示中的键盘快捷键
 
+    CRect GetVolumeRect() const;    //获取音量图标的矩形区域
+
 protected:
     // 将字符串形如“%(KEY_STR)”格式的字符替换成当前<language>.ini中对应id的字符串
     static void ReplaceUiStringRes(wstring& str);

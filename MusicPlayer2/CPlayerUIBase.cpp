@@ -2398,6 +2398,11 @@ CString CPlayerUIBase::GetCmdShortcutKeyForTooltips(UINT id)
     return CString();
 }
 
+CRect CPlayerUIBase::GetVolumeRect() const
+{
+    return m_buttons.at(BTN_VOLUME).rect;
+}
+
 void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
 {
     size_t index{};

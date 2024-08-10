@@ -84,6 +84,9 @@ bool CDataSettingsDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_ONLY_WHEN_TAG_FULL");
     SetDlgItemTextW(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK, temp.c_str());
 
+    SetDlgControlText(IDC_TXT_OPERATION_SETTINGS_STATIC, L"TXT_OPT_DATA_OPERATION_SETTINGS");
+    SetDlgControlText(IDC_GLOBAL_MOUSE_WHEEL_VOLUME_ADJUSTMENT_CHECK, L"TXT_OPT_DATA_GLOBAL_MOUSE_WHEEL_VOLUME_ADJUSTMENT");
+
     return false;
 }
 
@@ -124,6 +127,8 @@ void CDataSettingsDlg::GetDataFromUi()
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_OPT_DATA_CFG_DIR_CHANGED_INFO");
         MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
     }
+
+    m_data.global_mouse_wheel_volume_adjustment = (IsDlgButtonChecked(IDC_GLOBAL_MOUSE_WHEEL_VOLUME_ADJUSTMENT_CHECK) != 0);
 }
 
 void CDataSettingsDlg::ApplyDataToUi()
@@ -220,11 +225,14 @@ BOOL CDataSettingsDlg::OnInitDialog()
         m_data.save_album_to_song_folder = true;
     }
 
+    CheckDlgButton(IDC_GLOBAL_MOUSE_WHEEL_VOLUME_ADJUSTMENT_CHECK, m_data.global_mouse_wheel_volume_adjustment);
+
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
     m_toolTip.AddTool(GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_AUTO_DL_ONLY_WHEN_TAG_FULL").c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_APPDATA_RADIO), theApp.m_appdata_dir.c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_PROGRAM_DIR_RADIO), theApp.m_module_dir.c_str());
+    m_toolTip.AddTool(GetDlgItem(IDC_GLOBAL_MOUSE_WHEEL_VOLUME_ADJUSTMENT_CHECK), theApp.m_str_table.LoadText(L"TXT_OPT_DATA_GLOBAL_MOUSE_WHEEL_VOLUME_ADJUSTMENT_TIP").c_str());
 
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
