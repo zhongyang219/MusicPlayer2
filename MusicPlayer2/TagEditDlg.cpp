@@ -137,7 +137,7 @@ BOOL CTagEditDlg::OnInitDialog()
     CBaseDialog::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
-
+    SetIcon(IconMgr::IconType::IT_Edit, FALSE);
     SetButtonIcon(IDC_PREVIOUS_BUTTON, IconMgr::IconType::IT_Triangle_Left);
     SetButtonIcon(IDC_NEXT_BUTTON, IconMgr::IconType::IT_Triangle_Right);
     SetButtonIcon(IDC_SAVE_BUTTON, IconMgr::IconType::IT_Save);
