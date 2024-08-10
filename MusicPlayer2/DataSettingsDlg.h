@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "TabDlg.h"
-#include "BrowseEdit.h"
 #include "MyComboBox.h"
 
 // CDataSettingsDlg 对话框
@@ -25,7 +24,6 @@ public:
 
 private:
     CToolTipCtrl m_toolTip;
-    CBrowseEdit m_sf2_path_edit;
     CMyComboBox m_language_combo;
     bool m_auto_run_modified{};
 
@@ -45,12 +43,8 @@ public:
     afx_msg void OnBnClickedCheckUpdateCheck();
     //afx_msg void OnBnClickedBrowseButton();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
-    afx_msg void OnBnClickedMidiUseInnerLyricCheck();
     afx_msg void OnBnClickedDownloadWhenTagFullCheck();
-    afx_msg void OnEnChangeSf2PathEdit();
     virtual void OnOK();
-protected:
-    afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnBnClickedAutoRunCheck();
     afx_msg void OnBnClickedGithubRadio();

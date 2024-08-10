@@ -467,8 +467,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"general", L"save_lyric_to_song_folder", theApp.m_general_setting_data.save_lyric_to_song_folder);
     ini.WriteBool(L"general", L"save_album_to_song_folder", theApp.m_general_setting_data.save_album_to_song_folder);
     ini.WriteBool(L"general", L"download_lyric_text_and_translation_in_same_line", theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
-    ini.WriteString(L"general", L"sf2_path", theApp.m_general_setting_data.sf2_path);
-    ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_general_setting_data.midi_use_inner_lyric);
+    ini.WriteString(L"general", L"sf2_path", theApp.m_play_setting_data.sf2_path);
+    ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_play_setting_data.midi_use_inner_lyric);
     ini.WriteBool(L"general", L"minimize_to_notify_icon", theApp.m_general_setting_data.minimize_to_notify_icon);
 
     ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
@@ -668,8 +668,8 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_general_setting_data.save_lyric_to_song_folder = ini.GetBool(L"general", L"save_lyric_to_song_folder", true);
     theApp.m_general_setting_data.save_album_to_song_folder = ini.GetBool(L"general", L"save_album_to_song_folder", true);
     theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line = ini.GetBool(L"general", L"download_lyric_text_and_translation_in_same_line", true);
-    theApp.m_general_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
-    theApp.m_general_setting_data.midi_use_inner_lyric = ini.GetBool(L"general", L"midi_use_inner_lyric", 0);
+    theApp.m_play_setting_data.sf2_path = ini.GetString(L"general", L"sf2_path", L"");
+    theApp.m_play_setting_data.midi_use_inner_lyric = ini.GetBool(L"general", L"midi_use_inner_lyric", 0);
     theApp.m_general_setting_data.minimize_to_notify_icon = ini.GetBool(L"general", L"minimize_to_notify_icon", false);
 
     bool is_zh_cn = theApp.m_str_table.IsSimplifiedChinese();       //当前语言是否为简体中文
@@ -1186,7 +1186,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         m_cortana_lyric.ResetCortanaText();
     m_cortana_lyric.SetEnable(optionDlg.m_tab1_dlg.m_data.cortana_info_enable);
 
-    bool reload_sf2{ theApp.m_general_setting_data.sf2_path != optionDlg.m_tab3_dlg.m_data.sf2_path };
+    bool reload_sf2{ theApp.m_play_setting_data.sf2_path != optionDlg.m_tab4_dlg.m_data.sf2_path };
     bool gauss_blur_changed{ theApp.m_app_setting_data.background_gauss_blur != optionDlg.m_tab2_dlg.m_data.background_gauss_blur
                              || theApp.m_app_setting_data.gauss_blur_radius != optionDlg.m_tab2_dlg.m_data.gauss_blur_radius
                              || theApp.m_app_setting_data.album_cover_as_background != optionDlg.m_tab2_dlg.m_data.album_cover_as_background
@@ -1632,7 +1632,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
         pMenu->CheckMenuRadioItem(ID_DOCKED_PLAYLIST, ID_FLOATED_PLAYLIST, ID_DOCKED_PLAYLIST, MF_BYCOMMAND | MF_CHECKED);
 
     //根据歌词是否存在设置启用或禁用菜单项
-    bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
+    bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_play_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
     bool lyric_disable{ midi_lyric || CPlayer::GetInstance().m_Lyrics.IsEmpty() };
     bool no_lyric{ CPlayer::GetInstance().m_Lyrics.IsEmpty() && CPlayer::GetInstance().MidiNoLyric() };
     //pMenu->EnableMenuItem(ID_RELOAD_LYRIC, MF_BYCOMMAND | (!CPlayer::GetInstance().m_Lyrics.IsEmpty() ? MF_ENABLED : MF_GRAYED));
@@ -3867,7 +3867,7 @@ void CMusicPlayerDlg::OnSongInfo()
 void CMusicPlayerDlg::OnCopyCurrentLyric()
 {
     // TODO: 在此添加命令处理程序代码
-    bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
+    bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_play_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric() };
     wstring lyric_str;
     if (midi_lyric)
     {
@@ -4214,7 +4214,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     }
 
     bool download_cover{ theApp.m_general_setting_data.auto_download_album_cover && !CPlayer::GetInstance().AlbumCoverExist() && !song_info_ori.is_cue && !song_info_ori.NoOnlineAlbumCover() };
-    bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric };
+    bool midi_lyric{ CPlayer::GetInstance().IsMidi() && theApp.m_play_setting_data.midi_use_inner_lyric };
     bool download_lyric{ theApp.m_general_setting_data.auto_download_lyric && CPlayer::GetInstance().m_Lyrics.IsEmpty() && !midi_lyric && !song_info_ori.NoOnlineLyric() };
     CInternetCommon::ItemInfo match_item;
     if (download_cover || download_lyric)

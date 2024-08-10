@@ -293,8 +293,6 @@ struct GeneralSettingData
     bool download_lyric_text_and_translation_in_same_line{ true };  //下载的歌词原文和翻译在同一行
     bool check_update_when_start{ true };		//是否在程序启动时检查更新
     int update_source{};                        //更新源。0: GitHub; 1: Gitee
-    wstring sf2_path;							//MIDI音色库路径
-    bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
     bool minimize_to_notify_icon{ false };		//是否最小到通知区图标
 
     wstring language_;                          // 这个是设置状态（空字符串为跟随系统）
@@ -329,6 +327,10 @@ struct PlaySettingData
     int ffmpeg_core_enable_WASAPI_exclusive_mode { false };
     /// ffmpeg内核seek等操作最大等待时间
     int ffmpeg_core_max_wait_time { 3000 };
+
+    //MIDI设置
+    wstring sf2_path;							//MIDI音色库路径
+    bool midi_use_inner_lyric{ false };			//播放MIDI音乐时显示内嵌歌词
 };
 
 struct GlobalHotKeySettingData

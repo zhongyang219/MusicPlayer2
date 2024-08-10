@@ -436,7 +436,6 @@
 #define IDC_GAUSS_BLURE_RADIUS_SLIDER   1094
 #define IDC_LYRIC_DOUBLE_LINE_CHECK     1095
 #define IDC_USE_OUT_IMAGE_CHECK         1095
-#define IDC_MIDI_USE_INNER_LYRIC_CHECK  1095
 #define IDC_SOUND_FADE_CHECK            1095
 #define IDC_CHANGE_FREQ_CHECK           1095
 #define IDC_INSERT_BEGIN_CHECK          1095
@@ -742,6 +741,7 @@
 #define IDC_SORT_BUTTON                 1365
 #define IDC_USE_SYSTEM_TITLEBAR_RADIO   1366
 #define IDC_USE_OWNER_DRAW_TITLEBAR_RADIO 1367
+#define IDC_MIDI_USE_INNER_LYRIC_CHECK  1368
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -988,7 +988,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        619
 #define _APS_NEXT_COMMAND_VALUE         33478
-#define _APS_NEXT_CONTROL_VALUE         1368
+#define _APS_NEXT_CONTROL_VALUE         1369
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

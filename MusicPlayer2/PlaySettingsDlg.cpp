@@ -7,6 +7,7 @@
 #include "PlaySettingsDlg.h"
 #include "FfmpegCore.h"
 #include "WinVersionHelper.h"
+#include "FilterHelper.h"
 
 
 // CPlaySettingsDlg 对话框
@@ -82,6 +83,10 @@ void CPlaySettingsDlg::EnableControl()
     m_ffmpeg_max_wait_time.EnableWindow(max_wait_time_support);
     EnableDlgCtrl(IDC_FFMPEG_ENABLE_WASAPI, wasapi_support);
     EnableDlgCtrl(IDC_FFMPEG_ENABLE_WASAPI_EXCLUSIVE, wasapi_support && m_data.ffmpeg_core_enable_WASAPI);
+
+    bool midi_enable = !theApp.m_play_setting_data.use_ffmpeg && !theApp.m_play_setting_data.use_mci;
+    m_sf2_path_edit.EnableWindow(midi_enable && theApp.m_format_convert_dialog_exit);		//正在进行格式转换时不允许更改音色库
+    EnableDlgCtrl(IDC_MIDI_USE_INNER_LYRIC_CHECK, midi_enable);
 }
 
 void CPlaySettingsDlg::GetDataFromUi()
@@ -165,6 +170,14 @@ bool CPlaySettingsDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_FFMPEG_CORE_ENABLE_WASAPI_EXCLUSIVE");
     SetDlgItemTextW(IDC_FFMPEG_ENABLE_WASAPI_EXCLUSIVE, temp.c_str());
 
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_MIDI_SETTING");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_MIDI_SETTING_STATIC, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_MIDI_INNER_LYRIC_FIRST");
+    SetDlgItemTextW(IDC_MIDI_USE_INNER_LYRIC_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_MIDI_SF2_PATH");
+    SetDlgItemTextW(IDC_TXT_OPT_DATA_MIDI_SF2_PATH_STATIC, temp.c_str());
+    // IDC_SF2_PATH_EDIT
+
     RepositionTextBasedControls({
         { CtrlTextInfo::L1, IDC_FFMPEG_RADIO, CtrlTextInfo::W16 },
         { CtrlTextInfo::C0, IDC_FFMPEG_DOWN_SYSLINK }
@@ -172,6 +185,10 @@ bool CPlaySettingsDlg::InitializeControls()
     RepositionTextBasedControls({
         { CtrlTextInfo::L1, IDC_TXT_OPT_PLAY_DEVICE_SEL_STATIC },
         { CtrlTextInfo::C0, IDC_OUTPUT_DEVICE_COMBO }
+        });
+    RepositionTextBasedControls({
+        { CtrlTextInfo::L1, IDC_TXT_OPT_DATA_MIDI_SF2_PATH_STATIC },
+        { CtrlTextInfo::C0, IDC_SF2_PATH_EDIT }
         });
 
     return true;
@@ -186,6 +203,7 @@ void CPlaySettingsDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_FFMPEG_MAX_RETRY_COUNT, m_ffmpeg_max_retry_count);
     DDX_Control(pDX, IDC_FFMPEG_URL_RETRY_INTERVAL, m_ffmpeg_url_retry_interval);
     DDX_Control(pDX, IDC_FFMPEG_MAX_WAIT_TIME, m_ffmpeg_max_wait_time);
+    DDX_Control(pDX, IDC_SF2_PATH_EDIT, m_sf2_path_edit);
 }
 
 
@@ -193,6 +211,9 @@ BEGIN_MESSAGE_MAP(CPlaySettingsDlg, CTabDlg)
     ON_CBN_SELCHANGE(IDC_OUTPUT_DEVICE_COMBO, &CPlaySettingsDlg::OnCbnSelchangeOutputDeviceCombo)
     ON_NOTIFY(NM_CLICK, IDC_FFMPEG_DOWN_SYSLINK, &CPlaySettingsDlg::OnNMClickFfmpegDownSyslink)
     ON_BN_CLICKED(IDC_FFMPEG_ENABLE_WASAPI, &CPlaySettingsDlg::OnBnClickedFfmpegEnableWasapi)
+    ON_BN_CLICKED(IDC_MIDI_USE_INNER_LYRIC_CHECK, &CPlaySettingsDlg::OnBnClickedMidiUseInnerLyricCheck)
+    ON_EN_CHANGE(IDC_SF2_PATH_EDIT, &CPlaySettingsDlg::OnEnChangeSf2PathEdit)
+    ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CPlaySettingsDlg::OnEditBrowseChanged)
 END_MESSAGE_MAP()
 
 
@@ -210,6 +231,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
     m_toolTip.AddTool(GetDlgItem(IDC_MCI_RADIO), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_CORE_MCI").c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_FFMPEG_RADIO), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_CORE_FFMPEG").c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_CONTINUE_WHEN_SWITCH_PLAYLIST").c_str());
+    m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_MIDI_INNER_LYRIC_FIRST").c_str());
     m_toolTip.SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
     //初始化各控件的状态
@@ -283,6 +305,11 @@ BOOL CPlaySettingsDlg::OnInitDialog()
     m_ffmpeg_max_wait_time.SetRange(100, 30000, 100);
     m_ffmpeg_max_wait_time.SetValue(theApp.m_play_setting_data.ffmpeg_core_max_wait_time);
 
+    m_sf2_path_edit.SetWindowText(m_data.sf2_path.c_str());
+    wstring sf2_filter = FilterHelper::GetSF2FileFilter();
+    m_sf2_path_edit.EnableFileBrowseButton(L"SF2", sf2_filter.c_str());
+    CheckDlgButton(IDC_MIDI_USE_INNER_LYRIC_CHECK, m_data.midi_use_inner_lyric);
+
     //设置控件不响应鼠标滚轮消息
     m_output_device_combo.SetMouseWheelEnable(false);
     m_ffmpeg_cache_length.SetMouseWheelEnable(false);
@@ -329,4 +356,34 @@ void CPlaySettingsDlg::OnNMClickFfmpegDownSyslink(NMHDR* pNMHDR, LRESULT* pResul
 void CPlaySettingsDlg::OnBnClickedFfmpegEnableWasapi() {
     m_data.ffmpeg_core_enable_WASAPI = (IsDlgButtonChecked(IDC_FFMPEG_ENABLE_WASAPI) != FALSE);
     EnableDlgCtrl(IDC_FFMPEG_ENABLE_WASAPI_EXCLUSIVE, m_data.ffmpeg_core_enable_WASAPI);
+}
+
+void CPlaySettingsDlg::OnBnClickedMidiUseInnerLyricCheck()
+{
+    // TODO: 在此添加控件通知处理程序代码
+    m_data.midi_use_inner_lyric = (((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->GetCheck() != 0);
+}
+
+void CPlaySettingsDlg::OnEnChangeSf2PathEdit()
+{
+    // TODO:  如果该控件是 RICHEDIT 控件，它将不
+    // 发送此通知，除非重写 CTabDlg::OnInitDialog()
+    // 函数并调用 CRichEditCtrl().SetEventMask()，
+    // 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+    if (m_sf2_path_edit.GetModify())
+    {
+        CString str;
+        m_sf2_path_edit.GetWindowText(str);
+        m_data.sf2_path = str;
+    }
+
+    // TODO:  在此添加控件通知处理程序代码
+}
+
+LRESULT CPlaySettingsDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lParam)
+{
+    CString str;
+    m_sf2_path_edit.GetWindowText(str);
+    m_data.sf2_path = str;
+    return 0;
 }

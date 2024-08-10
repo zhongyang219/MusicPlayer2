@@ -138,7 +138,7 @@ void CBassCore::InitCore()
             m_sfont.font = 0;
             if (m_bass_midi_lib.IsSucceed())
             {
-                wstring sf2_path = theApp.m_general_setting_data.sf2_path;
+                wstring sf2_path = theApp.m_play_setting_data.sf2_path;
                 if (!CCommon::FileExist(sf2_path))		//如果设置的音色库路径不存在，则从.\Plugins\soundfont\目录下查找音色库文件
                 {
                     vector<wstring> sf2s;

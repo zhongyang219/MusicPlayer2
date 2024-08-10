@@ -3,6 +3,7 @@
 #include "ListCtrlEx.h"
 #include "MyComboBox.h"
 #include "SpinEdit.h"
+#include "BrowseEdit.h"
 
 // CPlaySettingsDlg 对话框
 
@@ -29,6 +30,7 @@ protected:
     CSpinEdit m_ffmpeg_url_retry_interval;
     CToolTipCtrl m_toolTip;
     CSpinEdit m_ffmpeg_max_wait_time;
+    CBrowseEdit m_sf2_path_edit;
 
 protected:
     void ShowDeviceInfo();
@@ -46,4 +48,8 @@ public:
     virtual BOOL PreTranslateMessage(MSG* pMsg);
     afx_msg void OnNMClickFfmpegDownSyslink(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnBnClickedFfmpegEnableWasapi();
+    afx_msg void OnBnClickedMidiUseInnerLyricCheck();
+    afx_msg void OnEnChangeSf2PathEdit();
+protected:
+    afx_msg LRESULT OnEditBrowseChanged(WPARAM wParam, LPARAM lParam);
 };

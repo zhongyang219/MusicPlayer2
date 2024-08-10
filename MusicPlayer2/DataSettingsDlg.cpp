@@ -5,7 +5,6 @@
 #include "MusicPlayer2.h"
 #include "DataSettingsDlg.h"
 #include "UpdateHelper.h"
-#include "FilterHelper.h"
 
 
 // CDataSettingsDlg 对话框
@@ -84,13 +83,6 @@ bool CDataSettingsDlg::InitializeControls()
     SetDlgItemTextW(IDC_SAVE_TO_ALBUM_FOLDER3, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_AUTO_DL_ONLY_WHEN_TAG_FULL");
     SetDlgItemTextW(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_MIDI_SETTING");
-    SetDlgItemTextW(IDC_TXT_OPT_DATA_MIDI_SETTING_STATIC, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_MIDI_INNER_LYRIC_FIRST");
-    SetDlgItemTextW(IDC_MIDI_USE_INNER_LYRIC_CHECK, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_OPT_DATA_MIDI_SF2_PATH");
-    SetDlgItemTextW(IDC_TXT_OPT_DATA_MIDI_SF2_PATH_STATIC, temp.c_str());
-    // IDC_SF2_PATH_EDIT
 
     return false;
 }
@@ -98,7 +90,6 @@ bool CDataSettingsDlg::InitializeControls()
 void CDataSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_SF2_PATH_EDIT, m_sf2_path_edit);
     DDX_Control(pDX, IDC_COMBO1, m_language_combo);
 }
 
@@ -145,10 +136,7 @@ BEGIN_MESSAGE_MAP(CDataSettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_COVER_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedCoverAutoDownloadCheck)
     ON_BN_CLICKED(IDC_LYRIC_AUTO_DOWNLOAD_CHECK, &CDataSettingsDlg::OnBnClickedLyricAutoDownloadCheck)
     ON_BN_CLICKED(IDC_CHECK_UPDATE_CHECK, &CDataSettingsDlg::OnBnClickedCheckUpdateCheck)
-    ON_BN_CLICKED(IDC_MIDI_USE_INNER_LYRIC_CHECK, &CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck)
     ON_BN_CLICKED(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK, &CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck)
-    ON_EN_CHANGE(IDC_SF2_PATH_EDIT, &CDataSettingsDlg::OnEnChangeSf2PathEdit)
-    ON_MESSAGE(WM_EDIT_BROWSE_CHANGED, &CDataSettingsDlg::OnEditBrowseChanged)
     ON_BN_CLICKED(IDC_AUTO_RUN_CHECK, &CDataSettingsDlg::OnBnClickedAutoRunCheck)
     ON_BN_CLICKED(IDC_GITHUB_RADIO, &CDataSettingsDlg::OnBnClickedGithubRadio)
     ON_BN_CLICKED(IDC_GITEE_RADIO, &CDataSettingsDlg::OnBnClickedGiteeRadio)
@@ -196,10 +184,6 @@ BOOL CDataSettingsDlg::OnInitDialog()
     CheckDlgButton(IDC_LYRIC_AND_TRANSLATION_IN_SAME_LINE_RADIO, m_data.download_lyric_text_and_translation_in_same_line);
     CheckDlgButton(IDC_LYRIC_AND_TRANSLATION_IN_DIFFERENT_LINE_RADIO, !m_data.download_lyric_text_and_translation_in_same_line);
 
-    m_sf2_path_edit.SetWindowText(m_data.sf2_path.c_str());
-    wstring sf2_filter = FilterHelper::GetSF2FileFilter();
-    m_sf2_path_edit.EnableFileBrowseButton(L"SF2", sf2_filter.c_str());
-    ((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->SetCheck(m_data.midi_use_inner_lyric);
     if (m_data.minimize_to_notify_icon)
         ((CButton*)GetDlgItem(IDC_MINIMIZE_TO_NOTIFY_RADIO))->SetCheck(TRUE);
     else
@@ -239,8 +223,6 @@ BOOL CDataSettingsDlg::OnInitDialog()
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
     m_toolTip.AddTool(GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_AUTO_DL_ONLY_WHEN_TAG_FULL").c_str());
-    //m_toolTip.AddTool(GetDlgItem(IDC_SF2_PATH_EDIT), _T("需要额外的音色库才能播放 MIDI 音乐。"));
-    m_toolTip.AddTool(GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_DATA_MIDI_INNER_LYRIC_FIRST").c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_APPDATA_RADIO), theApp.m_appdata_dir.c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_SAVE_TO_PROGRAM_DIR_RADIO), theApp.m_module_dir.c_str());
 
@@ -260,13 +242,9 @@ void CDataSettingsDlg::EnableControl()
 {
     // bool enable = CPlayer::GetInstance().IsBassCore();
     bool enable = !theApp.m_play_setting_data.use_ffmpeg && !theApp.m_play_setting_data.use_mci;
-    m_sf2_path_edit.EnableWindow(enable && theApp.m_format_convert_dialog_exit);		//正在进行格式转换时不允许更改音色库
     CWnd* pWnd = GetDlgItem(IDC_BROWSE_BUTTON);
     if (pWnd != nullptr)
         pWnd->EnableWindow(enable && theApp.m_format_convert_dialog_exit);
-    pWnd = GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK);
-    if (pWnd != nullptr)
-        pWnd->EnableWindow(enable);
 
     ((CButton*)GetDlgItem(IDC_SAVE_TO_SONG_FOLDER))->EnableWindow(m_data.auto_download_lyric);
     ((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->EnableWindow(m_data.auto_download_lyric && CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path));
@@ -309,34 +287,10 @@ BOOL CDataSettingsDlg::PreTranslateMessage(MSG* pMsg)
 }
 
 
-void CDataSettingsDlg::OnBnClickedMidiUseInnerLyricCheck()
-{
-    // TODO: 在此添加控件通知处理程序代码
-    m_data.midi_use_inner_lyric = (((CButton*)GetDlgItem(IDC_MIDI_USE_INNER_LYRIC_CHECK))->GetCheck() != 0);
-}
-
-
 void CDataSettingsDlg::OnBnClickedDownloadWhenTagFullCheck()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_data.auto_download_only_tag_full = (((CButton*)GetDlgItem(IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK))->GetCheck() != 0);
-}
-
-
-void CDataSettingsDlg::OnEnChangeSf2PathEdit()
-{
-    // TODO:  如果该控件是 RICHEDIT 控件，它将不
-    // 发送此通知，除非重写 CTabDlg::OnInitDialog()
-    // 函数并调用 CRichEditCtrl().SetEventMask()，
-    // 同时将 ENM_CHANGE 标志“或”运算到掩码中。
-    if (m_sf2_path_edit.GetModify())
-    {
-        CString str;
-        m_sf2_path_edit.GetWindowText(str);
-        m_data.sf2_path = str;
-    }
-
-    // TODO:  在此添加控件通知处理程序代码
 }
 
 
@@ -346,15 +300,6 @@ void CDataSettingsDlg::OnOK()
 
 
     CTabDlg::OnOK();
-}
-
-
-afx_msg LRESULT CDataSettingsDlg::OnEditBrowseChanged(WPARAM wParam, LPARAM lParam)
-{
-    CString str;
-    m_sf2_path_edit.GetWindowText(str);
-    m_data.sf2_path = str;
-    return 0;
 }
 
 

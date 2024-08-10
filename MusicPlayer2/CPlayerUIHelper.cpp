@@ -75,7 +75,7 @@ UIColors CPlayerUIHelper::GetUIColors(const ColorTable & colorTable, bool dark, 
 
 bool CPlayerUIHelper::IsMidiLyric()
 {
-    return CPlayer::GetInstance().IsMidi() && theApp.m_general_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric();
+    return CPlayer::GetInstance().IsMidi() && theApp.m_play_setting_data.midi_use_inner_lyric && !CPlayer::GetInstance().MidiNoLyric();
 }
 
 bool CPlayerUIHelper::IsDrawStatusBar()
