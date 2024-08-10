@@ -3208,7 +3208,7 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
                     icon_rect.MoveToX(icon_rect.left + DPI(4));
             }
             //使用跳动的频谱代替正在播放图标
-            if (item_str == "now_playing" && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED)
+            if (item_str == "now_playing" && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED && !CPlayer::GetInstance().IsMciCore())
             {
                 DrawMiniSpectrum(icon_rect);
             }
