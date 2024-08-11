@@ -119,7 +119,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
         _DrawInfo(draw_rect, reset);
 
         //绘制提示信息
-        if (m_show_ui_tip_info)
+        if (m_show_ui_tip_info && !m_ui_tip_info.empty())
         {
             UiFontGuard guard(this, 10);
             //根据文本的长度计算提示信息的矩形区域
@@ -130,17 +130,21 @@ void CPlayerUIBase::DrawInfo(bool reset)
             if (lines == 1)
                 tip_width = text_size.cx;
             int tip_height = lines * text_size.cy;
-            CRect tip_rect{ draw_rect };
-            tip_rect.top += (draw_rect.Height() - tip_height) / 2;
-            tip_rect.left += (draw_rect.Width() - tip_width) / 2;
-            tip_rect.bottom = tip_rect.top + tip_height;
-            tip_rect.right = tip_rect.left + tip_width;
-            //画背景
-            CRect back_rect{ tip_rect };
-            back_rect.InflateRect(DPI(20), DPI(20));
-            DrawRectangle(back_rect);
-            //画文字
-            m_draw.DrawWindowText(tip_rect, m_ui_tip_info.c_str(), m_colors.color_text, Alignment::CENTER, true, true);
+            //仅当界面高度不小于提示信息矩形区域高度时才显示提示信息
+            if (draw_rect.Height() >= tip_height)
+            {
+                CRect tip_rect{ draw_rect };
+                tip_rect.top += (draw_rect.Height() - tip_height) / 2;
+                tip_rect.left += (draw_rect.Width() - tip_width) / 2;
+                tip_rect.bottom = tip_rect.top + tip_height;
+                tip_rect.right = tip_rect.left + tip_width;
+                //画背景
+                CRect back_rect{ tip_rect };
+                back_rect.InflateRect(DPI(20), DPI(20));
+                DrawRectangle(back_rect);
+                //画文字
+                m_draw.DrawWindowText(tip_rect, m_ui_tip_info.c_str(), m_colors.color_text, Alignment::CENTER, true, true);
+            }
         }
 
         //如果切换了显示/隐藏状态栏，则需要更新鼠标提示的位置
