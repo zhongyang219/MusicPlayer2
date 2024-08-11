@@ -14,7 +14,8 @@
 						  <horizontalLayout>
 							  <albumCover square="true" margin="8" width="30%"/>
 							  <verticalLayout margin="8">
-								  <text type="title" style="scroll" height="38" font_size="12"/>
+                  <placeHolder show_when_use_system_titlebar="true" height="12"/>
+                  <text type="title" style="scroll" height="38" font_size="12"/>
 								  <text type="artist" style="scroll" height="24" font_size="10"/>
 								  <text type="album" style="scroll" height="24" font_size="10"/>
 								  <spectrum draw_reflex="true" fixed_width="true" margin-top="8" max-height="80"/>
@@ -218,7 +219,8 @@
 			<horizontalLayout margin="4">
 				<albumCover width="120" square="true" margin="4"/>
 				<verticalLayout margin="4">
-					<text type="title" style="scroll" height="24" font_size="11"/>
+          <placeHolder show_when_use_system_titlebar="true" height="20"/>
+          <text type="title" style="scroll" height="24" font_size="11"/>
 					<text type="artist" style="scroll" height="24" font_size="10"/>
 					<text type="album" style="scroll" height="24" font_size="10"/>
 					<text type="format" style="scroll" height="22"/>

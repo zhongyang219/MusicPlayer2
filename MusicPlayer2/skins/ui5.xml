@@ -2,6 +2,7 @@
       index="5">
   <ui>
     <verticalLayout margin="4">
+      <placeHolder show_when_use_system_titlebar="true" height="28"/>
       <lyrics/>
       <horizontalLayout height="98">
         <albumCover width="82" margin="8" margin-left="4"/>

@@ -3,6 +3,7 @@
 
   <ui>
     <verticalLayout margin="4">
+      <placeHolder show_when_use_system_titlebar="true" height="28"/>
       <horizontalLayout height="90">
         <rectangle width="118" no_corner_radius="true">
           <albumCover margin="2">
@@ -53,38 +54,41 @@
 
   <ui type="small">
     <verticalLayout margin="4">
-      <horizontalLayout height="90">
-        <rectangle width="118" no_corner_radius="true">
-          <albumCover margin="2">
-            <spectrum draw_reflex="false" fixed_width="true" alignment="left" height="60%" margin-bottom="0"/>
-          </albumCover>
+      <placeHolder show_when_use_system_titlebar="true" height="28"/>
+      <verticalLayout>
+        <horizontalLayout height="90">
+          <rectangle width="118" no_corner_radius="true">
+            <albumCover margin="2">
+              <spectrum draw_reflex="false" fixed_width="true" alignment="left" height="60%" margin-bottom="0"/>
+            </albumCover>
+          </rectangle>
+          <verticalLayout margin-left="4">
+            <trackInfo/>
+            <horizontalLayout>
+              <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
+              <text type="title" style="scroll"/>
+            </horizontalLayout>
+            <horizontalLayout>
+              <text width="54" type="userDefine" text="%(TXT_ARTIST):"/>
+              <text type="artist" style="scroll"/>
+            </horizontalLayout>
+            <horizontalLayout>
+              <text width="54" type="userDefine" text="%(TXT_ALBUM):"/>
+              <text type="album" style="scroll"/>
+            </horizontalLayout>
+            <horizontalLayout>
+              <text width="54" type="userDefine" text="%(TXT_UI_FORMAT):"/>
+              <text type="format" style="scroll"/>
+            </horizontalLayout>
+          </verticalLayout>
+        </horizontalLayout>
+        <rectangle height="24" margin-top="4">
+          <toolbar show_translate_btn="false"/>
         </rectangle>
-        <verticalLayout margin-left="4">
-          <trackInfo/>
-          <horizontalLayout>
-            <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
-            <text type="title" style="scroll"/>
-          </horizontalLayout>
-          <horizontalLayout>
-            <text width="54" type="userDefine" text="%(TXT_ARTIST):"/>
-            <text type="artist" style="scroll"/>
-          </horizontalLayout>
-          <horizontalLayout>
-            <text width="54" type="userDefine" text="%(TXT_ALBUM):"/>
-            <text type="album" style="scroll"/>
-          </horizontalLayout>
-          <horizontalLayout>
-            <text width="54" type="userDefine" text="%(TXT_UI_FORMAT):"/>
-            <text type="format" style="scroll"/>
-          </horizontalLayout>
-        </verticalLayout>
-      </horizontalLayout>
-      <rectangle height="24" margin-top="4">
-        <toolbar show_translate_btn="false"/>
-      </rectangle>
-      <lyrics margin-top="4" hide-height="192"/>
-	  <classicalControlBar/>
-	</verticalLayout>
+        <lyrics margin-top="4" hide-height="192"/>
+	      <classicalControlBar/>
+      </verticalLayout>
+	  </verticalLayout>
   </ui>
 
 

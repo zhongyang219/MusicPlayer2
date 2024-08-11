@@ -53,6 +53,7 @@
           <text type="artist" style="scroll" height="24" alignment="center"/>
         </verticalLayout>
         <verticalLayout margin="16">
+          <placeHolder show_when_use_system_titlebar="true" height="20"/>
           <horizontalLayout height="96">
             <albumCover square="true" width="96"/>
             <verticalLayout margin-left="12">

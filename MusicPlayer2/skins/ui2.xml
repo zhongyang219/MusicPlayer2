@@ -58,6 +58,7 @@
 
   <ui type="narrow">
     <verticalLayout>
+      <placeHolder show_when_use_system_titlebar="true" height="20"/>
       <verticalLayout margin="12">
         <trackInfo height="20"/>
         <text type="format" style="scroll" height="20"/>
@@ -93,6 +94,7 @@
 
   <ui type="small">
     <verticalLayout margin="4">
+      <placeHolder show_when_use_system_titlebar="true" height="28"/>
       <trackInfo height="20" hide-height="180" />
       <horizontalLayout margin="4">
         <rectangle max-height="80">

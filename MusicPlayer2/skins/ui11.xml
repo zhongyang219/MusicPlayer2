@@ -23,6 +23,7 @@
             <spectrum max-height="80" fixed_width="true" draw_reflex="true" margin-top="24" proportion="4"/>
           </verticalLayout>
           <verticalLayout>
+            <placeHolder show_when_use_system_titlebar="true" height="12"/>
             <text type="title" font_size="12" style="scroll" height="32"/>
             <text type="artist" font_size="10" style="scroll" height="32"/>
             <lyrics margin="8"/>
@@ -57,6 +58,7 @@
           <spectrum max-height="80" fixed_width="true" draw_reflex="true" proportion="10"/>
         </verticalLayout>
         <verticalLayout>
+          <placeHolder show_when_use_system_titlebar="true" height="16"/>
           <horizontalLayout height="64" hide-height="200">
             <albumCover square="true" width="64"/>
             <verticalLayout margin-left="16">
@@ -81,14 +83,17 @@
   <ui type="small">
     <verticalLayout margin="8">
       <stackElement show_indicator="true" margin="8" margin-bottom="14">
-        <horizontalLayout>
-          <albumCover square="true" width="100"/>
-          <verticalLayout margin-left="16">
-            <text type="title" font_size="12" style="scroll" height="32"/>
-            <text type="artist" font_size="10" style="scroll" height="32"/>
-            <text type="album" font_size="10" style="scroll" height="32" hide-height="96"/>
-          </verticalLayout>
-        </horizontalLayout>
+        <verticalLayout>
+          <placeHolder show_when_use_system_titlebar="true" height="16"/>
+          <horizontalLayout>
+            <albumCover square="true" width="100"/>
+            <verticalLayout margin-left="16">
+              <text type="title" font_size="12" style="scroll"/>
+              <text type="artist" font_size="10" style="scroll"/>
+              <text type="album" font_size="10" style="scroll" hide-height="96"/>
+            </verticalLayout>
+          </horizontalLayout>
+        </verticalLayout>
         <verticalLayout margin-left="8" margin-right="8">
           <text type="title" font_size="12" style="scroll" height="24"/>
           <text type="artist" font_size="10" style="scroll" height="20"/>

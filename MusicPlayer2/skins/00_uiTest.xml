@@ -58,8 +58,9 @@
 
   <ui type="narrow">
     <verticalLayout>
+      <placeHolder show_when_use_system_titlebar="true" height="28"/>
       <trackInfo height="24" margin="4"/>
-      <stackElement ckick_to_switch="false" show_indicator="true" margin-bottom="14">
+      <stackElement show_indicator="true" margin-bottom="14">
         <albumCover square="true" margin="20">
           <verticalLayout>
             <placeHolder/>
@@ -94,13 +95,14 @@
   </ui>
   <ui type="small">
     <verticalLayout>
+      <placeHolder show_when_use_system_titlebar="true" height="28"/>
       <trackInfo height="20" margin-left="4" margin-right="4" margin-top="4"/>
       <horizontalLayout margin="4">
         <albumCover square="true" margin="4" width="100"/>
         <verticalLayout margin="4">
           <text type="title" style="scroll" height="24" alignment="center" font_size="10"/>
           <text type="artist" style="scroll" height="24" alignment="center"/>
-          <spectrum draw_reflex="true" fixed_width="true" height="38" margin="4" alignment="center"/>
+          <spectrum draw_reflex="true" fixed_width="true" margin="4" alignment="center"/>
         </verticalLayout>
       </horizontalLayout>
       <rectangle height="74">
