@@ -6,6 +6,7 @@
 #include "UIElement.h"
 #include "MediaLibPlaylistMgr.h"
 #include "MusicPlayerCmdHelper.h"
+#include "UIWindowCmdHelper.h"
 
 bool CPlayerUIBase::m_show_ui_tip_info = false;
 
@@ -564,10 +565,6 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
             }
             case BTN_MEDIALIB_FOLDER_SORT:
             {
-                CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-                CWnd* pUiWnd{};
-                if (pDlg != nullptr)
-                    pUiWnd = &pDlg->GetUIWindow();
                 CRect btn_rect(m_buttons[BTN_MEDIALIB_FOLDER_SORT].rect);
                 CPoint point(btn_rect.left, btn_rect.bottom);
                 ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
@@ -575,16 +572,15 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 ASSERT(add_to_menu != nullptr);
                 if (add_to_menu != nullptr)
                 {
-                    add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pUiWnd);
+                    CUIWindowCmdHelper helper(nullptr);
+                    helper.SetMenuState(add_to_menu);
+                    UINT command = add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD | TPM_NONOTIFY, point.x, point.y, theApp.m_pMainWnd);
+                    helper.OnUiCommand(command);
                 }
                 return true;
             }
             case BTN_MEDIALIB_PLAYLIST_SORT:
             {
-                CMusicPlayerDlg* pDlg = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
-                CWnd* pUiWnd{};
-                if (pDlg != nullptr)
-                    pUiWnd = &pDlg->GetUIWindow();
                 CRect btn_rect(m_buttons[BTN_MEDIALIB_PLAYLIST_SORT].rect);
                 CPoint point(btn_rect.left, btn_rect.bottom);
                 ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
@@ -592,7 +588,10 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                 ASSERT(add_to_menu != nullptr);
                 if (add_to_menu != nullptr)
                 {
-                    add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, pUiWnd);
+                    CUIWindowCmdHelper helper(nullptr);
+                    helper.SetMenuState(add_to_menu);
+                    UINT command = add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD | TPM_NONOTIFY, point.x, point.y, theApp.m_pMainWnd);
+                    helper.OnUiCommand(command);
                 }
                 return true;
             }
