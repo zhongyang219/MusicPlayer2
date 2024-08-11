@@ -5901,7 +5901,7 @@ void CMusicPlayerDlg::OnCreateMiniModeShortCut()
         CCommon::FileNameNormalize(file_name);
         if (CCommon::CreateFileShortcut(theApp.m_module_dir.c_str(), NULL, file_name.c_str(), NULL, 0, 0, 1, L"-mini"))
         {
-            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SHORTCUT_CREATED", { theApp.m_desktop_path });
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_SHORTCUT_CREATED", { theApp.m_module_dir });
             MessageBox(info.c_str(), NULL, MB_ICONINFORMATION);
         }
         else
