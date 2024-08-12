@@ -1894,6 +1894,9 @@ void CPlayerUIBase::DrawControlBar(CRect rect, bool draw_switch_display_btn)
     }
 
     rc_btn.MoveToX(rc_btn.left - btn_side);
+    DrawControlBarBtn(rc_btn, BTN_ADD_TO_PLAYLIST);
+
+    rc_btn.MoveToX(rc_btn.left - btn_side);
     DrawControlBarBtn(rc_btn, BTN_FAVOURITE);
 
     if (!progress_on_top)
