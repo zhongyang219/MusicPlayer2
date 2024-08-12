@@ -1,6 +1,63 @@
-**[简体中文](./update_log.md) | English**<br>
+**[简体中文](./update_log.md) | English**
 
 # MusicPlayer2 Update log
+## V2.77 (2024/08/12)
+
+**bug fixes:**
+
+* Fixed the problem that "ALBUMARTIS" and "DISCNUMBER" fields are duplicated when editing the label information of audio files.
+* Fixed the problem that the taskbar of Windows 11 not responding.
+* Fixed the problem that the tabs of the Options Settings dialog and the self-drawn playlist scroll too fast when using touchpad gestures.
+* Fixed the problem that the volume adjustment too fast when using touchpad gestures.
+* Fixed the problem that buttons not shown in the interface can still be clicked after the stackElement is switched.
+* Fixed the problem that some icons in the interface are not clear when the system scaling ratio is 125% and 150%.
+* Fixed the problem that the button in the top right corner overlaps with other elements in the interface when "Use system standard title bar" is enabled.
+* Fixed the problem that strings containing numeric prefixes are not sorted by value when the playlist is sorted.
+* Fixed the problem that the functions of "Select All", "Select None" and "Select Reverse" in the playlist menu don't work for the self-drawn playlist.
+* Fix the problem that tracks can still be deleted by pressing the Delete key after deleting them from the playlist.
+
+**New Features:**
+
+* Added the splitter control in main window and media library window.
+* Added the option to ignore audio files that are too short when the media library is updated.
+* Added "Auto" for lyrics alignment in lyrics settings. Lyrics alignment is valid for double line display mode.
+* Added the option of "Insert at the start of the playlist when adding songs, not at the end".
+* Add the function of "Sort by listen time" in the playlist sorting menu.
+* When playing from the "Artist", "Album", "All Tracks", etc. in the media library, it will play directly from the media library mode instead of adding it to the [Temporary playlist].
+* Added the recently played media library item to playlist dropdown menu
+* Added the "Navigation Bar", "Recently Played", "Folder", "Playlist", "My Favorite", "Media Library Items" and "All Tracks" element to the user-defined interface.
+* UI "Groove Music Style", "Groove Music Style (Windows 11)" updated, added the left navigation bar.
+* Added the UI12.
+* Added the "font_size" attribute to "playlist", "playlistIndicator" and "trackInfo" element in user-defined interface.
+* Added the "show_text" and "font_size" attributes to the button element in the user-defined interface. The button can display text on the right side of the icon.
+* The maximum font size in user-defined interface is increased to 16 pounds.
+* The path of a local file or folder is allow to entered in the edit box  in the "Open url" dialog.
+* Added the "Mini mode 3" UI.
+* Added buttons of "Play", "Add to Playlist", "Add to My Favorite" in the corresponding rows when the mouse is pointed to the playlist.
+* If the song in the playlist is in "My Favorite", a red heart icon will be shown on the right side.
+* Added the function of "Remove from playlist" in the context menu of the list on the right side of the "Playlist" tab in the "Media Library" dialog box.
+* Added the function of "Sort mode" to the interface of "Folder" and "Playlist" in Media Library.
+* Removing a track from a playlist displays a confirmation dialog to avoid misoperation.
+* Added the "Add to playlist" command to the folder context menu.
+* Added the "Add to my favorite" option to "Global shortcut key".
+* Added support for multi-selection of self-drawn playlists. Added support for selecting all by pressing Ctrl+A.
+* After successfully executing the "Add to Playlist" command, a success message will be displayed in the center of the interface.
+* Added the option of whether to allow "Global Mouse Wheel Volume Adjustment" in General Settings.
+
+**Update Note:**
+
+* After version 2.77, the translation files are stored in the "language" directory. When updating, please make sure to copy the language directory to the MusicPlayer2 directory as well.
+
+* The layout of the controls in the Option Settings dialog has changed since version 2.77, this is to ensure that the text is fully displayed in different languages.
+
+* About the white border at the top of the title bar on Windows 10/11, an option has been added in this version to remove this white border:
+
+  Just open the configuration file "config.ini" while making sure the program exits, find the "remove_titlebar_top_frame" option under [config] and change it to "true". This feature is turned off by default and not added to the UI as there are still some issues with the window flickering when it gains and loses focus.
+
+## V2.76.1 (2023/04/22)
+
+Urgently fix the problem of not being able to automatically associate lyrics files.It is recommended that all users with version V2.76 update to this version.
+
 ## V2.76 (2023/04/02)
 
 * Added the function of customizing the mini mode UI. Added 2 mini mode UI.
