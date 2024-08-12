@@ -105,19 +105,26 @@ bool CMusicPlayerCmdHelper::OnAddToNewPlaylist(std::function<void(std::vector<So
             GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
             return false;
         }
-        playlist_path = theApp.m_playlist_dir + playlist_name + PLAYLIST_EXTENSION;
-        if (CCommon::FileExist(playlist_path))
-        {
-            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_EXIST_WARNING", { playlist_name });
-            GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
-            return false;
-        }
-        //添加空的播放列表
-        CPlaylistMgr::Instance().AddNewPlaylist(playlist_path);
 
         //获取选中的曲目的路径
         std::vector<SongInfo> selected_item_path;
         get_song_list(selected_item_path);
+        
+        playlist_path = theApp.m_playlist_dir + playlist_name + PLAYLIST_EXTENSION;
+        if (CCommon::FileExist(playlist_path))
+        {
+            //播放列表已存在，询问是否要添加到已存在的播放列表
+            wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_PLAYLIST_EXIST_INQUIRY", { playlist_name, selected_item_path.size()});
+            if (GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) != IDYES)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            //播放列表不存在，添加空的播放列表
+            CPlaylistMgr::Instance().AddNewPlaylist(playlist_path);
+        }
 
         CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
 

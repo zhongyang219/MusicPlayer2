@@ -203,7 +203,7 @@ public:
     //替换一个字符串中指定的字符
     static bool StringCharacterReplace(wstring& str, wchar_t ch, wchar_t ch_replaced);
 
-    static void StringReplace(wstring& str, const wstring& str_old, const wstring& str_new);
+    static bool StringReplace(wstring& str, const wstring& str_old, const wstring& str_new);
 
     static CString DataSizeToString(size_t data_size);
 

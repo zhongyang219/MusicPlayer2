@@ -134,14 +134,13 @@ wstring StrTable::LoadTextFormat(const wstring& key, const std::initializer_list
     for (const auto& para : paras)
     {
         wstring format_str{ L"<%" + std::to_wstring(index) + L"%>" };
-        size_t pos = str.find(format_str);
-        if (pos == wstring::npos)   // 当前取得的翻译字符串中缺少paras指定的<%序号%>占位符
+        if (!CCommon::StringReplace(str, format_str, para.ToString().GetString()))
         {
+            // 当前取得的翻译字符串中缺少paras指定的<%序号%>占位符
             std::lock_guard<std::mutex> lock(error_mutex);
             m_error_para_key.insert(key);
             continue;
         }
-        str.replace(pos, format_str.size(), para.ToString());
         ++index;
     }
     return str;

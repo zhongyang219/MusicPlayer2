@@ -740,16 +740,19 @@ bool CCommon::StringCharacterReplace(wstring& str, wchar_t ch, wchar_t ch_replac
     return replaced;
 }
 
-void CCommon::StringReplace(wstring& str, const wstring& str_old, const wstring& str_new)
+bool CCommon::StringReplace(wstring& str, const wstring& str_old, const wstring& str_new)
 {
     if (str.empty())
-        return;
+        return false;
+    bool replaced{ false };
     size_t pos = 0;
     while ((pos = str.find(str_old, pos)) != std::wstring::npos)
     {
         str.replace(pos, str_old.length(), str_new);
+        replaced = true;
         pos += str_new.length();    // 前进到替换后的字符串末尾
     }
+    return replaced;
 }
 
 CString CCommon::DataSizeToString(size_t data_size)
