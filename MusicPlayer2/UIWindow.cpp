@@ -156,6 +156,7 @@ void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
         if (theApp.m_app_setting_data.show_minimode_btn_in_titlebar) ++cnt;
         if (theApp.m_app_setting_data.show_skin_btn_in_titlebar) ++cnt;
         if (theApp.m_app_setting_data.show_settings_btn_in_titlebar) ++cnt;
+        if (theApp.m_app_setting_data.show_dark_light_btn_in_titlebar) ++cnt;
         if (theApp.m_ui_data.ShowWindowMenuBar()) ++cnt;
         // 硬编码的按钮尺寸
         cnt *= theApp.DPI(30);
