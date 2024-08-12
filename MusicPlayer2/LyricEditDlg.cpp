@@ -557,6 +557,14 @@ BOOL CLyricEditDlg::PreTranslateMessage(MSG* pMsg)
             return TRUE;
         }
     }
+
+    //按下F10时pMsg->message的值是WM_SYSKEYDOWN而不是WM_KEYDOWN
+    if (pMsg->message == WM_SYSKEYDOWN && pMsg->wParam == VK_F10)
+    {
+        OpreateTag(TagOpreation::DELETE_);
+        return TRUE;
+    }
+
     //if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
     //	return TRUE;
     //if (pMsg->message == WM_MOUSEMOVE)
@@ -902,7 +910,7 @@ BOOL CLyricEditDlg::OnToolTipText(UINT, NMHDR* pNMHDR, LRESULT* pResult)
         tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_REPLACE_TIME_TAG") + L" (F9)";
         break;
     case ID_LYRIC_DELETE_TAG:
-        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_DELETE_TIME_TAG") + L" (Ctrl+Del)";
+        tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_DELETE_TIME_TAG") + L" (F10)";
         break;
     case ID_LYRIC_SAVE:
         tipInfo = theApp.m_str_table.LoadText(L"TIP_LYRIC_EDIT_SAVE") + L" (Ctrl+S)";

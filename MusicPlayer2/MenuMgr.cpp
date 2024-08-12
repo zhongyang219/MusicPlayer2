@@ -918,7 +918,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.CreateMenu(true, false);
         menu.AppendItem(EX_ID(ID_LYRIC_INSERT_TAG), IconMgr::IconType::IT_Le_Tag_Insert, L"F8");
         menu.AppendItem(EX_ID(ID_LYRIC_REPLACE_TAG), IconMgr::IconType::IT_Le_Tag_Replace, L"F9");
-        menu.AppendItem(EX_ID(ID_LYRIC_DELETE_TAG), IconMgr::IconType::IT_Le_Tag_Delete, L"Ctrl+Del");
+        menu.AppendItem(EX_ID(ID_LYRIC_DELETE_TAG), IconMgr::IconType::IT_Le_Tag_Delete, L"F10");
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_LYRIC_FIND), IconMgr::IconType::IT_Le_Find, L"Ctrl+F");
         menu.AppendItem(EX_ID(ID_LYRIC_REPLACE), IconMgr::IconType::IT_Le_Replace, L"Ctrl+H");
