@@ -959,7 +959,7 @@ void UiElement::Lyrics::Draw()
 {
     CalculateRect();
 
-    bool big_font = theApp.m_ui_data.full_screen;
+    bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
     CFont* lyric_font = &theApp.m_font_set.lyric.GetFont(big_font);
     CFont* lyric_tr_font = &theApp.m_font_set.lyric_translate.GetFont(big_font);
 

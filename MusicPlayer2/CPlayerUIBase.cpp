@@ -1526,7 +1526,7 @@ void CPlayerUIBase::SetCoverToolTipText()
 int CPlayerUIBase::Margin() const
 {
     int margin = m_layout.margin;
-    if (m_ui_data.full_screen)
+    if (m_ui_data.full_screen && IsDrawLargeIcon())
         margin = static_cast<int>(margin * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR * 1.5);
 
     return margin;
@@ -1539,7 +1539,7 @@ int CPlayerUIBase::EdgeMargin(bool x) const
     此计算方法可以确保边距占屏幕宽度的比例与屏幕宽度的英寸值成正比，即界面看起来越空旷，外侧边距就越大
     最后取以上值和theApp.DPI(40)两者中较大的值。
     */
-    if (m_ui_data.full_screen)
+    if (m_ui_data.full_screen && IsDrawLargeIcon())
     {
         int draw_size = (x ? m_draw_rect.Width() : m_draw_rect.Height());
         int margin = draw_size * draw_size / theApp.GetDPI() / 300;
