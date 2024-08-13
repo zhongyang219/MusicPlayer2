@@ -667,6 +667,7 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_BROWSE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid && contain_sub_folder ? MF_CHECKED : MF_UNCHECKED));
+    pMenu->EnableMenuItem(ID_LIB_FOLDER_PROPERTIES, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 
     SetAddToPlaylistMenuState(pMenu);
 }
@@ -730,6 +731,8 @@ void CUIWindowCmdHelper::SetMyFavouriteListMenuState(CMenu* pMenu)
 
     pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (selected_in_current_playing_list ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
+
+    SetAddToPlaylistMenuState(pMenu);
 }
 
 void CUIWindowCmdHelper::SetAllTracksListMenuState(CMenu* pMenu)
@@ -763,6 +766,7 @@ void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
     //判断菜单的发送者
     UiElement::Playlist* playlist{ dynamic_cast<UiElement::Playlist*>(m_context_menu_sender) };
     UiElement::MyFavouriteList* my_favourite_list{ dynamic_cast<UiElement::MyFavouriteList*>(m_context_menu_sender) };
+    UiElement::MediaLibFolder* medialib_folder{ dynamic_cast<UiElement::MediaLibFolder*>(m_context_menu_sender) };
     //我喜欢的音乐菜单的名称
     wstring str_my_favourite{ theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_MY_FAVOURITE")};
     //正在播放的播放列表在菜单中的名称
@@ -781,13 +785,35 @@ void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
         pMenu->GetMenuString(id, menu_string, 0);
         //发送者是播放列表，则将当前播放列表禁用
         if (playlist != nullptr)
+        {
             pMenu->EnableMenuItem(id, MF_BYCOMMAND | (current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+        }
         //发送者是我喜欢的音乐列表，则将当前我喜欢的音乐禁用
         else if (my_favourite_list != nullptr)
+        {
             pMenu->EnableMenuItem(id, MF_BYCOMMAND | (str_my_favourite != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+        }
+        else if (medialib_folder != nullptr)
+        {
+            bool select_valid{ medialib_folder->GetItemSelected() >= 0 };
+            pMenu->EnableMenuItem(id, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+        }
         else
+        {
             pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
+        }
 
+    }
+    if (medialib_folder != nullptr)
+    {
+        bool select_valid{ medialib_folder->GetItemSelected() >= 0 };
+        pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+        pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    }
+    else
+    {
+        pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
+        pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
     }
 }
 
