@@ -23,8 +23,6 @@ public:
 
 private:
     void DoAnalysis();
-    Time PhaseIndex(size_t pos);
-    std::string TimeToString(const Time& pos);
     static wstring GetCommand(const wstring& str_contents, const wstring& str, size_t pos = 0);
 
     //查找str_contents中的所有属性，并添加到property_map中
