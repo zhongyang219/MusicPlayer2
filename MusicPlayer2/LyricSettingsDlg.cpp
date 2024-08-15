@@ -7,6 +7,7 @@
 #include "CortanaLyric.h"
 #include "MusicPlayerDlg.h"
 #include "WinVersionHelper.h"
+#include "FontDialogEx.h"
 
 // CLyricSettingsDlg 对话框
 
@@ -542,7 +543,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont()
     LOGFONT lf{};
     theApp.m_font_set.cortana.GetFont().GetLogFont(&lf);
     CCommon::NormalizeFont(lf);
-    CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
+    CFontDialogEx fontDlg(&lf, false);	//构造字体对话框，初始选择字体为之前字体
     fontDlg.m_cf.Flags |= CF_NOVERTFONTS;   //仅列出水平方向的字体
     if (IDOK == fontDlg.DoModal())     // 显示字体对话框
     {
@@ -604,7 +605,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont2()
     UIFont::CreateFontSimple(font, m_data.desktop_lyric_data.lyric_font.size, m_data.desktop_lyric_data.lyric_font.name.c_str(), m_data.desktop_lyric_data.lyric_font.style);
     font.GetLogFont(&lf);
     CCommon::NormalizeFont(lf);
-    CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
+    CFontDialogEx fontDlg(&lf, false);	//构造字体对话框，初始选择字体为之前字体
     fontDlg.m_cf.Flags |= CF_NOVERTFONTS;   //仅列出水平方向的字体
     if (IDOK == fontDlg.DoModal())     // 显示字体对话框
     {
@@ -863,7 +864,7 @@ void CLyricSettingsDlg::OnBnClickedSetFontButton()
     LOGFONT lf{};             //LOGFONT变量
     theApp.m_font_set.lyric.GetFont().GetLogFont(&lf);
     CCommon::NormalizeFont(lf);
-    CFontDialog fontDlg(&lf);	//构造字体对话框，初始选择字体为之前字体
+    CFontDialogEx fontDlg(&lf, false);	//构造字体对话框，初始选择字体为之前字体
     fontDlg.m_cf.Flags |= CF_NOVERTFONTS;   //仅列出水平方向的字体
     if (IDOK == fontDlg.DoModal())     // 显示字体对话框
     {

@@ -263,6 +263,7 @@
     <ClInclude Include="FilterHelper.h" />
     <ClInclude Include="FlacEncodeCfgDlg.h" />
     <ClInclude Include="FolderPropertiesDlg.h" />
+    <ClInclude Include="FontDialogEx.h" />
     <ClInclude Include="GetTagOnlineDlg.h" />
     <ClInclude Include="HorizontalSplitter.h" />
     <ClInclude Include="IconMgr.h" />
@@ -435,6 +436,7 @@
     <ClCompile Include="FilterHelper.cpp" />
     <ClCompile Include="FlacEncodeCfgDlg.cpp" />
     <ClCompile Include="FolderPropertiesDlg.cpp" />
+    <ClCompile Include="FontDialogEx.cpp" />
     <ClCompile Include="GetTagOnlineDlg.cpp" />
     <ClCompile Include="HorizontalSplitter.cpp" />
     <ClCompile Include="IconMgr.cpp" />
