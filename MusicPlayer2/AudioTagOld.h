@@ -36,7 +36,7 @@ private:
 
 
 	//获取ID3V2标签区域的内容
-	string GetID3V2TagContents();
+	string GetID3V2TagContents() const;
 
 	//从ID3V2标签区域的内容中提取出指定的ID3标签
 	//tag_contents：整个标签区域的内容

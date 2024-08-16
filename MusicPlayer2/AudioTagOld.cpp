@@ -377,31 +377,58 @@ bool CAudioTagOld::GetTagDefault()
 
 string CAudioTagOld::GetAlbumCoverDefault(int& image_type)
 {
-    const char* id3v2 = BASS_ChannelGetTags(m_hStream, BASS_TAG_ID3V2);
-    if (id3v2 != nullptr)
-    {
-        const char* size;
-        size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
-        const int id3tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
-        string tag_content;
-        tag_content.assign(id3v2, id3tag_size);	//将标签区域的内容保存到一个string对象里
+    string tag_content = GetID3V2TagContents();
+    if (!tag_content.empty())
         return FindID3V2AlbumCover(tag_content, image_type);
-    }
     return string();
 }
 
-string CAudioTagOld::GetID3V2TagContents()
+string CAudioTagOld::GetID3V2TagContents() const
 {
-	const char* id3v2;
-	id3v2 = BASS_ChannelGetTags(m_hStream, BASS_TAG_ID3V2);
 	string tag_content;
-	if (id3v2 != nullptr)
-	{
-		const char* size;
-		size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
-		const int tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
-		tag_content.assign(id3v2, tag_size);	//将标签区域的内容保存到一个string对象里
-	}
+    //从BASS句柄获取id3v2标签内容
+    if (m_hStream != NULL)
+    {
+        const char* id3v2;
+        id3v2 = BASS_ChannelGetTags(m_hStream, BASS_TAG_ID3V2);
+        if (id3v2 != nullptr)
+        {
+            const char* size;
+            size = id3v2 + 6;	//标签头开始往后偏移6个字节开始的4个字节是整个标签的大小
+            const int tag_size{ (size[0] & 0x7F) * 0x200000 + (size[1] & 0x7F) * 0x4000 + (size[2] & 0x7F) * 0x80 + (size[3] & 0x7F) };	//获取标签区域的总大小
+            tag_content.assign(id3v2, tag_size);	//将标签区域的内容保存到一个string对象里
+        }
+    }
+    //直接从文件获取id3v2标签内容
+    else
+    {
+        std::ifstream file{ m_song_info.file_path.c_str(), std::ios::binary };
+        if (!file.fail())
+        {
+            //从文件前10个字节获取标签大小
+            char tag_head[10];
+            file.read(tag_head, 10);
+
+            int tag_size{};
+
+            //id3v2标签位于文件头部，且前3个字节必须是"ID3"，否则认为标签不存在
+            if (std::string(tag_head, 3) == "ID3")
+            {
+                //读取大小
+                tag_size = (tag_head[6] & 0x7F) * 0x200000 + (tag_head[7] & 0x7F) * 0x4000 + (tag_head[8] & 0x7F) * 0x80 + (tag_head[9] & 0x7F);	//获取标签区域的总大小
+            }
+
+            //读取到了标签大小，开始获取标签内容
+            if (tag_size > 0)
+            {
+                file.seekg(std::ios::beg);  //移动到文件最前面
+                char* buff = new char[tag_size];
+                file.read(buff, tag_size);
+                tag_content.assign(buff, tag_size);
+                delete[] buff;
+            }
+        }
+    }
 	return tag_content;
 }
 
