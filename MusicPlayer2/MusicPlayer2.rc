@@ -433,6 +433,8 @@ IDI_NEW_FOLDER          ICON                    "res\\new_folder.ico"
 
 IDI_NEW_FOLDER_D        ICON                    "res\\new_folder_d.ico"
 
+IDI_BACKGROUND_D        ICON                    "res\\background_d.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

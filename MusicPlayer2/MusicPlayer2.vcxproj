@@ -579,7 +579,6 @@
     <None Include="language\English.ini" />
     <None Include="res\drag.cur" />
     <None Include="res\MusicPlayer2.rc2" />
-    <None Include="res\text1.bin" />
     <None Include="skins\ui1.xml" />
     <None Include="skins\ui2.xml" />
     <None Include="skins\miniMode\miniMode00.xml" />
@@ -595,6 +594,7 @@
     <Image Include="res\album_d.ico" />
     <Image Include="res\artist.ico" />
     <Image Include="res\artist_d.ico" />
+    <Image Include="res\background_d.ico" />
     <Image Include="res\bitrate.ico" />
     <Image Include="res\bitrate_d.ico" />
     <Image Include="res\close.ico" />

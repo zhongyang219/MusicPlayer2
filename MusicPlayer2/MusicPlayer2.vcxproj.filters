@@ -1450,9 +1450,6 @@
     <None Include="language\English.ini">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="res\text1.bin">
-      <Filter>资源文件</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\AddTag.ico">
@@ -2013,12 +2010,6 @@
     <Image Include="res\karaoke.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\owner_draw_titlebar_preview.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\system_titlebar_preview.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\refresh.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
@@ -2030,6 +2021,15 @@
     </Image>
     <Image Include="res\new_folder_d.ico">
       <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\background_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\owner_draw_titlebar_preview.bmp">
+      <Filter>资源文件\bitmaps</Filter>
+    </Image>
+    <Image Include="res\system_titlebar_preview.bmp">
+      <Filter>资源文件\bitmaps</Filter>
     </Image>
   </ItemGroup>
 </Project>
