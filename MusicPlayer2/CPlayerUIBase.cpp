@@ -422,7 +422,6 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
 
             case BTN_AB_REPEAT:
                 theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_AB_REPEAT);
-                ShowUiTipInfo(L"很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的测试文本。");
                 return true;
 
             case BTN_STOP:
