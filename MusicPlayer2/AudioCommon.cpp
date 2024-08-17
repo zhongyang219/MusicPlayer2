@@ -285,9 +285,9 @@ void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
 }
 
 
-void CAudioCommon::FixErrorCueAudioPath(vector<SongInfo>& track_from_text)
+void CAudioCommon::CheckCueAudioPath(vector<SongInfo>& track_from_text)
 {
-    // file_path如果不存在那么试着模糊匹配一个音频文件，没能成功找到时不修改file_path
+    // file_path如果不存在那么试着模糊匹配一个音频文件，没能成功找到时清空file_path
     wstring audio_path; // 存储上一个存在的song的音频文件（正常情况下用来避免反复CCommon::FileExist）
     for (SongInfo& song : track_from_text)    // track_from_text是CCueFile给出的文本解析结果
     {
@@ -300,44 +300,49 @@ void CAudioCommon::FixErrorCueAudioPath(vector<SongInfo>& track_from_text)
             audio_path = song.file_path;                // 更新audio_path
             continue;
         }
-        // 文件不存在，以下开始模糊匹配
-        auto GetFirstMatchAudioAndFix = [&](const wstring& path_mode, const wstring& dir)->bool {
-            bool succeed = false;
-            intptr_t hFile = 0;     // 文件句柄
-            _wfinddata_t fileinfo;  //文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
-            if ((hFile = _wfindfirst(path_mode.c_str(), &fileinfo)) != -1)
-            {
-                do
+        // 试着修正文件不存在的file_path(这是可选的，但如果切换是否启用那些涉及此功能的现有条目会出问题)
+        if (!song.file_path.empty() && true)
+        {
+            // 文件不存在，以下开始模糊匹配
+            auto GetFirstMatchAudioAndFix = [&](const wstring& path_mode, const wstring& dir)->bool {
+                bool succeed = false;
+                intptr_t hFile = 0;     // 文件句柄
+                _wfinddata_t fileinfo;  //文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
+                if ((hFile = _wfindfirst(path_mode.c_str(), &fileinfo)) != -1)
                 {
-                    wstring name{ fileinfo.name };
-                    if (CFilePathHelper(name).GetFileExtension() != L"cue" && FileIsAudio(name))
+                    do
                     {
-                        song.file_path = dir + name;
-                        succeed = true;
-                        break;
-                    }
-                } while (_wfindnext(hFile, &fileinfo) == 0);
-            }
-            _findclose(hFile);
-            return succeed;
-        };
-        wstring match_name;
-        // 匹配任意格式的音频文件
-        CFilePathHelper path(song.file_path);
-        if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
-            continue;
-        // 匹配与cue同名的任意格式音频文件
-        path.SetFilePath(song.cue_file_path);
-        if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
-            continue;
-        // 处理cue有表示语言的双重后缀的情况，例如“filename.jp.cue”匹配“filename.*”的音频文件
-        path.SetFilePath(path.GetDir() + path.GetFileNameWithoutExtension());   // 将path设置为不含“.cue”的cue路径
-        if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
-            continue;
-        // 再进行一次
-        path.SetFilePath(path.GetDir() + path.GetFileNameWithoutExtension());
-        if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
-            continue;
+                        wstring name{ fileinfo.name };
+                        if (CFilePathHelper(name).GetFileExtension() != L"cue" && FileIsAudio(name))
+                        {
+                            song.file_path = dir + name;
+                            succeed = true;
+                            break;
+                        }
+                    } while (_wfindnext(hFile, &fileinfo) == 0);
+                }
+                _findclose(hFile);
+                return succeed;
+                };
+            // 匹配任意格式的音频文件
+            CFilePathHelper path(song.file_path);
+            if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
+                continue;
+            // 匹配与cue同名的任意格式音频文件
+            path.SetFilePath(song.cue_file_path);
+            if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
+                continue;
+            // 处理cue有表示语言的双重后缀的情况，例如“filename.jp.cue”匹配“filename.*”的音频文件
+            path.SetFilePath(path.GetDir() + path.GetFileNameWithoutExtension());   // 将path设置为不含“.cue”的cue路径
+            if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
+                continue;
+            // 再进行一次
+            path.SetFilePath(path.GetDir() + path.GetFileNameWithoutExtension());
+            if (GetFirstMatchAudioAndFix(path.ReplaceFileExtension(L"*"), path.GetDir()))
+                continue;
+        }
+        // 标记此cue解析得到的SongInfo没有音频文件
+        song.file_path.clear();
     }
 }
 
@@ -389,13 +394,12 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
         CCueFile cue_file{ item.first };
         // CCueFile暂时不支持内嵌cue有待修改，(这里需要内嵌cue的GetAnalysisResult返回track_from_text中cue_file_path项为音频路径)
         vector<SongInfo> track_from_text = cue_file.GetAnalysisResult();
-        // 移除文本解析结果中file_path为空的项目，如果CCueFile::GetAnalysisResult保证file_path不空则这里可以换成断言
+        
+        CheckCueAudioPath(track_from_text);
+        // 移除结果中file_path为空的项目
         auto new_end = std::remove_if(track_from_text.begin(), track_from_text.end(),
             [&](const SongInfo& song_info) { return song_info.file_path.empty(); });
         track_from_text.erase(new_end, track_from_text.end());
-
-        // 试着修正文件不存在的file_path(这是可选的，但如果切换是否启用那些涉及此功能的现有条目会出问题)
-        FixErrorCueAudioPath(track_from_text);
 
         // 此处的false是个预留设置项，用于files中存在cue原始文件时控制cue新增方式
         // true时会移除原有全部音轨并集中添加到cue位置，false时不改变既有音轨位置仅将比现有多出来的音轨添加到cue位置
