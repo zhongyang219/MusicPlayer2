@@ -356,6 +356,7 @@ BEGIN_MESSAGE_MAP(CAllMediaDlg, CMediaLibTabDlg)
     ON_NOTIFY(NM_RCLICK, IDC_SONG_LIST, &CAllMediaDlg::OnNMRClickSongList)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CAllMediaDlg::OnNMDblclkSongList)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CAllMediaDlg::OnSearchEditBtnClicked)
+    ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 
@@ -546,3 +547,18 @@ afx_msg LRESULT CAllMediaDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lPara
     return 0;
 }
 
+
+
+void CAllMediaDlg::OnInitMenu(CMenu* pMenu)
+{
+    CMediaLibTabDlg::OnInitMenu(pMenu);
+
+    //设置“添加到播放列表”子菜单状态
+    //未选中状态不会弹出右键菜单，因此“添加到播放列表”子菜单全部设置为可用状态
+    for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
+    {
+        pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
+    }
+    pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
+    pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
+}

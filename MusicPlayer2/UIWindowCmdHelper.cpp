@@ -637,14 +637,7 @@ void CUIWindowCmdHelper::SetRecentPlayedListMenuState(CMenu* pMenu)
 void CUIWindowCmdHelper::SetMediaLibItemListMenuState(CMenu* pMenu)
 {
     //设置“添加到播放列表”子菜单项的可用状态
-    for (UINT id = ID_ADD_TO_MY_FAVOURITE + 1; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
-    {
-        CString menu_string;
-        pMenu->GetMenuString(id, menu_string, 0);
-        pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
-    }
-    pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
-    pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
+    SetAddToPlaylistMenuState(pMenu);
 }
 
 void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
@@ -759,6 +752,7 @@ void CUIWindowCmdHelper::SetAllTracksListMenuState(CMenu* pMenu)
 
     pMenu->EnableMenuItem(ID_PLAY_AS_NEXT, MF_BYCOMMAND | (selected_in_current_playing_list ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_FROM_DISK, MF_BYCOMMAND | (can_del ? MF_ENABLED : MF_GRAYED));
+    SetAddToPlaylistMenuState(pMenu);
 }
 
 void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
@@ -766,54 +760,59 @@ void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
     //判断菜单的发送者
     UiElement::Playlist* playlist{ dynamic_cast<UiElement::Playlist*>(m_context_menu_sender) };
     UiElement::MyFavouriteList* my_favourite_list{ dynamic_cast<UiElement::MyFavouriteList*>(m_context_menu_sender) };
-    UiElement::MediaLibFolder* medialib_folder{ dynamic_cast<UiElement::MediaLibFolder*>(m_context_menu_sender) };
-    //我喜欢的音乐菜单的名称
-    wstring str_my_favourite{ theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_MY_FAVOURITE")};
-    //正在播放的播放列表在菜单中的名称
-    wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
-    if (CPlayer::GetInstance().IsPlaylistMode())
+    UiElement::ListElement* list_element{ dynamic_cast<UiElement::ListElement*>(m_context_menu_sender) };
+
+    //设置默认状态
+    if (list_element != nullptr)
     {
-        switch (CPlaylistMgr::Instance().GetCurPlaylistType())
+        bool select_valid{ list_element->GetItemSelected() >= 0 };
+        for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
         {
-        case PT_DEFAULT: current_playlist = theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_DEFAULT_PLAYLIST"); break;
-        case PT_FAVOURITE: current_playlist = str_my_favourite; break;
-        }
-    }
-    for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
-    {
-        CString menu_string;
-        pMenu->GetMenuString(id, menu_string, 0);
-        //发送者是播放列表，则将当前播放列表禁用
-        if (playlist != nullptr)
-        {
-            pMenu->EnableMenuItem(id, MF_BYCOMMAND | (current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
-        }
-        //发送者是我喜欢的音乐列表，则将当前我喜欢的音乐禁用
-        else if (my_favourite_list != nullptr)
-        {
-            pMenu->EnableMenuItem(id, MF_BYCOMMAND | (str_my_favourite != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
-        }
-        else if (medialib_folder != nullptr)
-        {
-            bool select_valid{ medialib_folder->GetItemSelected() >= 0 };
             pMenu->EnableMenuItem(id, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
         }
-        else
-        {
-            pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
-        }
-
-    }
-    if (medialib_folder != nullptr)
-    {
-        bool select_valid{ medialib_folder->GetItemSelected() >= 0 };
         pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
         pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     }
     else
     {
+        for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
+        {
+            pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
+        }
         pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
         pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
+    }
+
+    //设置播放列表和我喜欢的音乐“添加到”子菜单的状态
+    if (playlist != nullptr || my_favourite_list != nullptr)
+    {
+        //我喜欢的音乐菜单的名称
+        wstring str_my_favourite{ theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_MY_FAVOURITE") };
+        //正在播放的播放列表在菜单中的名称
+        wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
+        if (CPlayer::GetInstance().IsPlaylistMode())
+        {
+            switch (CPlaylistMgr::Instance().GetCurPlaylistType())
+            {
+            case PT_DEFAULT: current_playlist = theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_DEFAULT_PLAYLIST"); break;
+            case PT_FAVOURITE: current_playlist = str_my_favourite; break;
+            }
+        }
+        for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
+        {
+            CString menu_string;
+            pMenu->GetMenuString(id, menu_string, 0);
+            //发送者是播放列表，则将当前播放列表禁用
+            if (playlist != nullptr)
+            {
+                pMenu->EnableMenuItem(id, MF_BYCOMMAND | (current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+            }
+            //发送者是我喜欢的音乐列表，则将当前我喜欢的音乐禁用
+            else if (my_favourite_list != nullptr)
+            {
+                pMenu->EnableMenuItem(id, MF_BYCOMMAND | (str_my_favourite != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
+            }
+        }
     }
 }
 

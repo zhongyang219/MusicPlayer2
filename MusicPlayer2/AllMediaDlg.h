@@ -95,4 +95,6 @@ public:
     afx_msg void OnNMDblclkSongList(NMHDR *pNMHDR, LRESULT *pResult);
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnInitMenu(CMenu* pMenu);
 };
