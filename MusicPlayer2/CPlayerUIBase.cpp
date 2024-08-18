@@ -3415,7 +3415,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_LRYIC, tip_str.c_str());
     // AB重复
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_AB_REPEAT");
-    tip_str = GetCmdShortcutKeyForTooltips(ID_AB_REPEAT);
+    tip_str += GetCmdShortcutKeyForTooltips(ID_AB_REPEAT);
     AddMouseToolTip(BTN_AB_REPEAT, tip_str.c_str());
     // 关闭
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE");

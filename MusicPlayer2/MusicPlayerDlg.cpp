@@ -1950,7 +1950,7 @@ void CMusicPlayerDlg::UpdateABRepeatToolTip()
     else if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
         tip_str = theApp.m_str_table.LoadTextFormat(L"UI_TXT_AB_REPEAT_ON", { CPlayer::GetInstance().GetARepeatPosition().toString(false), CPlayer::GetInstance().GetBRepeatPosition().toString(false) });
     else
-        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_AB_REPEAT");
+        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_AB_REPEAT") + CPlayerUIBase::GetCmdShortcutKeyForTooltips(ID_AB_REPEAT).GetString();
     m_pUI->UpdateMouseToolTip(CPlayerUIBase::BTN_AB_REPEAT, tip_str.c_str());
 }
 
