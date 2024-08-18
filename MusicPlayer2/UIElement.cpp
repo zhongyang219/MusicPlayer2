@@ -1829,8 +1829,12 @@ int UiElement::MediaLibItemList::GetColumnWidth(int col, int total_width)
 
 std::wstring UiElement::MediaLibItemList::GetEmptyString()
 {
-    const wstring& info = theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
-    return info;
+    if (CUiMediaLibItemMgr::Instance().IsLoading())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_LOADING_INFO");
+    else if (!CUiMediaLibItemMgr::Instance().IsInited())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_UNINITED_INFO");
+    else
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
 }
 
 int UiElement::MediaLibItemList::GetHighlightRow()
@@ -2461,8 +2465,11 @@ void UiElement::MyFavouriteList::OnDoubleClicked()
 std::wstring UiElement::MyFavouriteList::GetEmptyString()
 {
     if (CUiMyFavouriteItemMgr::Instance().IsLoading())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_LOADING_INFO");
+    else if (!CUiMyFavouriteItemMgr::Instance().IsInited())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_UNINITED_INFO");
+    else
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
-    return std::wstring();
 }
 
 int UiElement::MyFavouriteList::GetHoverButtonCount()
@@ -2618,8 +2625,11 @@ void UiElement::AllTracksList::OnDoubleClicked()
 std::wstring UiElement::AllTracksList::GetEmptyString()
 {
     if (CUiAllTracksMgr::Instance().IsLoading())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_LOADING_INFO");
+    else if (!CUiAllTracksMgr::Instance().IsInited())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_UNINITED_INFO");
+    else
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
-    return std::wstring();
 }
 
 int UiElement::AllTracksList::GetHoverButtonCount()
