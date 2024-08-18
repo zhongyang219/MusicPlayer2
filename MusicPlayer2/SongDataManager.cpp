@@ -240,9 +240,8 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_info.total_discs;
             }
             m_song_data[song_info] = song_info;     // 将读取到的一首歌曲信息添加到映射容器中
-
-            std::wstring file_name{ song_info.GetFileName() };
-            m_song_file_name_map[file_name].push_back(song_info.file_path);
+            
+            UpdateFileNameMap(song_info);
         }
     }
     catch (CArchiveException* exception)
@@ -402,6 +401,7 @@ void CSongDataManager::AddItem(const SongInfo& song)
     ASSERT(!song.file_path.empty());
     m_song_data[song] = song;
     m_song_data_modified = true;
+    UpdateFileNameMap(song);
 }
 
 bool CSongDataManager::RemoveItem(const SongKey& key)
@@ -471,6 +471,12 @@ void CSongDataManager::ChangeFilePath(const wstring& file_path, const wstring& n
     }
 }
 
+void CSongDataManager::UpdateFileNameMap(const SongInfo& song)
+{
+    std::wstring file_name{ song.GetFileName() };
+    m_song_file_name_map[file_name].insert(song.file_path);
+}
+
 //计算两个字符串右侧匹配的字符数量
 static int CalcualteStringRightMatchedCharNum(const std::wstring& str1, const std::wstring& str2)
 {
@@ -496,23 +502,23 @@ bool CSongDataManager::FixWrongFilePath(wstring& file_path) const
     {
         if (iter->second.size() == 1)      //媒体库中同名的文件只有一个时，直接修改为该文件的路径
         {
-            file_path = iter->second.front();
+            file_path = *iter->second.begin();
             fixed = true;
         }
         else if (iter->second.size() > 1)   //媒体库中同名的文件有多个时，查找两个路径末尾相同字符数量最多的那项
         {
-            size_t best_match_index{};
+            std::wstring best_match_path;
             int max_matched_char_mun{};
-            for (size_t i{}; i < iter->second.size(); i++)
+            for (const auto& path : iter->second)
             {
-                int cur_matched_char_num = CalcualteStringRightMatchedCharNum(file_path, iter->second[i]);
+                int cur_matched_char_num = CalcualteStringRightMatchedCharNum(file_path, path);
                 if (cur_matched_char_num > max_matched_char_mun)
                 {
                     max_matched_char_mun = cur_matched_char_num;
-                    best_match_index = i;
+                    best_match_path = path;
                 }
             }
-            file_path = iter->second[best_match_index];
+            file_path = best_match_path;
             fixed = true;
         }
     }
