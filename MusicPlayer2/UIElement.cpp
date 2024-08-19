@@ -1054,6 +1054,11 @@ void UiElement::ListElement::LButtonDown(CPoint point)
             {
                 scrollbar_handle_pressed = true;
             }
+            //点击了滚动条空白区域
+            else
+            {
+                mouse_pressed = false;
+            }
         }
         //点击了列表区域
         else
@@ -1107,9 +1112,9 @@ void UiElement::ListElement::LButtonDown(CPoint point)
             }
             OnClicked();
             selected_item_scroll_info.Reset();
+            mouse_pressed = true;
         }
         mouse_pressed_offset = playlist_offset;
-        mouse_pressed = true;
         mouse_pressed_pos = point;
     }
     //点击了控件外
