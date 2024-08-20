@@ -262,9 +262,9 @@ void CCueFile::DoAnalysis()
             size_t index00_pos{}, index01_pos{};
             index00_pos = m_file_content_wcs.find(L"INDEX 00", index_track + 6);
             index01_pos = m_file_content_wcs.find(L"INDEX 01", index_track + 6);
-            if (index00_pos < next_track_index && index00_pos + 17 < m_file_content_wcs.size())
+            if (index00_pos < next_track_index && index00_pos + 16 < m_file_content_wcs.size())
                 time_index00 = CueTime2Time(m_file_content_wcs.substr(index00_pos + 9, 8));
-            if (index01_pos < next_track_index && index01_pos + 17 < m_file_content_wcs.size())
+            if (index01_pos < next_track_index && index01_pos + 16 < m_file_content_wcs.size())
                 time_index01 = CueTime2Time(m_file_content_wcs.substr(index01_pos + 9, 8));
 
             song_info.start_pos = time_index01;
