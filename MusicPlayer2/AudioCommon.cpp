@@ -348,7 +348,8 @@ void CAudioCommon::CheckCueAudioPath(vector<SongInfo>& track_from_text)
 
 void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, MediaLibRefreshMode refresh_mode)
 {
-    std::map<wstring, vector<SongInfo>> cue_file;
+    // 收集files内所有与cue相关的项目信息，wstring为cue路径，vector为此cue中存在于files的下辖曲目
+    map<wstring, vector<SongInfo>> cue_file_tmp;
     for (const SongInfo& song : files)
     {
         if (exit_flag) return;
@@ -359,12 +360,12 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
             // 设置了合适“媒体库目录”之后“强制重新加载”可以使得媒体库能够转换旧播放列表到新格式
             SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
             if (!song_info.cue_file_path.empty())   // 如果媒体库内仍然没有cue_file_path那么什么也不会做（和之前一样）
-                cue_file[song_info.cue_file_path].push_back(song_info);
+                cue_file_tmp[song_info.cue_file_path].push_back(std::move(song_info));
         }
         else if (CFilePathHelper(song.file_path).GetFileExtension() == L"cue")
         {
-            vector<SongInfo>& a = cue_file[song.file_path]; // 此处file_path为cue路径
-            a.insert(a.begin(), song);              // is_cue为false的此项存在于开头说明添加全部track
+            auto& a = cue_file_tmp[song.file_path];         // 此处file_path为cue路径
+            a.insert(a.begin(), song);                      // is_cue为false的此项存在于开头说明添加此cue全部track
         }
         /* 不再支持内嵌cue，主要是架构问题现有很多代码都不适于内嵌cue需要加写特殊处理 (CCueFile也没有准备好支持内嵌cue等等等)
         else
@@ -373,126 +374,138 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
             // 与refresh_mode的MR_MIN_REQUIRED有冲突 属性编辑等功能也没有支持内嵌cue
             CAudioTag audio_tag(song.file_path);
             wstring song_cue_text{ audio_tag.GetAudioCue() };// 对于ape文件即使是固态硬盘这步也非常慢（不适合对所有音频遍历执行）
-            if (!song_cue_text.empty())             // 如果音频有内嵌cue那么将其加入cue_file
+            if (!song_cue_text.empty())             // 如果音频有内嵌cue那么将其加入cue_file_tmp
             {
-                vector<SongInfo>& a = cue_file[song.file_path];
-                a.insert(a.begin(), song);          // is_cue为false的此项存在于开头说明添加此cue全部track
+                auto& a = cue_file_tmp[song.file_path];     // 此处file_path为cue路径
+                a.insert(a.begin(), song);                  // is_cue为false的此项存在于开头说明添加此cue全部track
             }
         }
         */
     }
-    // cue同时有多个语言版本时，这里行为会有点怪，更合理应当总是取修改时间最大的那个cue但开销略大（使用一个辅助变量以cue修改时间升序遍历cue_file）我觉得暂时没必要
-    std::set<wstring> audio_path;   // 被cue使用的音频路径，添加完cue音轨之后统一移除
-    for (const auto& item : cue_file)
+
+    struct A_Cue_File
+    {
+        wstring cue_path;
+        unsigned __int64 modified_time{};
+        vector<SongInfo> tracks_in_cue;
+        vector<SongInfo> tracks_in_files;
+    };
+    vector<A_Cue_File> cue_file;
+    map<wstring, map<int, SongInfo>> audio_file;
+    for (auto& [cue_path, tracks_in_files] : cue_file_tmp)
     {
         if (exit_flag) return;
-        unsigned __int64 modified_time_cue{};
-        // 确认cue文件是否存在（同时获取修改时间），文件不存在时不进行接下来的步骤（原样保留files中此cue相关文件(item.second)）
-        if (!CCommon::GetFileLastModified(item.first, modified_time_cue))
+        audio_file[cue_path];   // 在audio_file中插入cue_path键，以免文件不存在或解析结果为空导致最后的时候cue原始文件没有从files中移除
+        unsigned __int64 modified_time{};
+        // 确认cue文件是否存在（同时获取修改时间）
+        if (!CCommon::GetFileLastModified(cue_path, modified_time) || tracks_in_files.empty())
             continue;
-        ASSERT(CFilePathHelper(item.first).GetFileExtension() == L"cue");    // CCueFile只接受cue文件
-        CCueFile cue_file{ item.first };
-        // CCueFile暂时不支持内嵌cue有待修改，(这里需要内嵌cue的GetAnalysisResult返回track_from_text中cue_file_path项为音频路径)
-        vector<SongInfo> track_from_text = cue_file.GetAnalysisResult();
-        
-        CheckCueAudioPath(track_from_text);
+        ASSERT(CFilePathHelper(cue_path).GetFileExtension() == L"cue");     // CCueFile只接受cue文件
+        // CCueFile暂时不支持内嵌cue有待修改，(这里需要内嵌cue的GetAnalysisResult返回SongInfo中cue_file_path项为音频路径)
+        CCueFile cue_analysis(cue_path);
+        vector<SongInfo> tracks_in_cue;
+        cue_analysis.MoveToSongList(tracks_in_cue);
+        // 试着检查&更正音频文件路径，将文件不存在的song.file_path清空，参数是一个cue的文件解析结果
+        CheckCueAudioPath(tracks_in_cue);
         // 移除结果中file_path为空的项目
-        auto new_end = std::remove_if(track_from_text.begin(), track_from_text.end(),
-            [&](const SongInfo& song_info) { return song_info.file_path.empty(); });
-        track_from_text.erase(new_end, track_from_text.end());
-
-        // 此处的false是个预留设置项，用于files中存在cue原始文件时控制cue新增方式
-        // true时会移除原有全部音轨并集中添加到cue位置，false时不改变既有音轨位置仅将比现有多出来的音轨添加到cue位置
-        bool remove_all{ false && !item.second.front().is_cue };    // 如果second含有cue文件则首个SongInfo.is_cue为false
-        // 此方法(GetCueTracks)仅维护参数files到SongDataMapKey级别
-        // 此处使用track_from_text代换files中的item.second项目，会保证item.second全部移除（或更新）
-        // 其中音频路径二者有可能不同（若cue有修改(FixErrorCueAudioPath)），故此处靠音轨号匹配
-        std::set<int> added_track;  // 以此记录添加过的音轨号以抵抗files内的重复（如果有）
-        // 逆序遍历以使得cue原始文件条目（如果存在）被最后处理
-        for (auto it = item.second.rbegin(); it != item.second.rend(); ++it)
+        std::erase_if(tracks_in_cue, [&](const SongInfo& song_info) { return song_info.file_path.empty(); });
+        if (!tracks_in_cue.empty())
+            cue_file.emplace_back(A_Cue_File{ cue_path, modified_time, std::move(tracks_in_cue), std::move(tracks_in_files) });
+    }
+    std::stable_sort(cue_file.begin(), cue_file.end(),
+        [](const A_Cue_File& a, const A_Cue_File& b) { return a.modified_time < b.modified_time; });
+    // 此处是按修改时间升序遍历，也就是每个SongKey曲目若同时被多个cue描述则最后留在媒体库的版本会是修改时间最大的那个cue
+    // 这使得不修改任何PT文件直接建立自己的新cue重新描述音轨是可能的
+    for (A_Cue_File& item : cue_file)
+    {
+        if (exit_flag) return;
+        for (auto it = files.begin(); it != files.end();)
         {
-            auto iter_in_files = std::find_if(files.begin(), files.end(),
-                [&](const SongInfo& song_info) { return song_info.IsSameSong(*it); });
-            ASSERT(iter_in_files != files.end());
-            if (iter_in_files == files.end()) continue; // 理论上总能找到，保险起见
-            if (iter_in_files->is_cue)
+            bool in_files = std::find_if(item.tracks_in_files.begin(), item.tracks_in_files.end(),
+                [&](const SongInfo& song_info) { return song_info.IsSameSong(*it); }) != item.tracks_in_files.end();
+            bool in_cue = std::find_if(item.tracks_in_cue.begin(), item.tracks_in_cue.end(),
+                [&](const SongInfo& song_info) { return song_info.IsSameSong(*it); }) != item.tracks_in_cue.end();
+            bool remove_it{}, add_all{};
+            if (!item.tracks_in_files.front().is_cue)           // 如果存在原始cue
             {
-                auto iter = std::find_if(track_from_text.begin(), track_from_text.end(),
-                    [&](const SongInfo& song_info) { return song_info.track == iter_in_files->track; });
-                if (remove_all || iter == track_from_text.end() || added_track.find(iter_in_files->track) != added_track.end())
-                    files.erase(iter_in_files);
-                else
-                {
-                    // 更新iter_in_files代替对files插入iter + 移除iter_in_files
-                    iter_in_files->file_path = iter->file_path;
-                    audio_path.insert(iter->file_path);
-                    added_track.insert(iter->track);
-                }
+                remove_it = (in_cue || in_files);               // 删除files内所有与此cue相关条目（存在多个cue时这也会移除之前cue的同SongKey条目）
+                add_all = (in_files && !it->is_cue);            // 特别的，对于cue原始文件将其代换为tracks_in_cue
             }
-            else    // iter_in_files是cue文件，此时将iter_in_files代换为track_from_text中不存在于added_track中的项目
-            {
-                // 将track_from_text中已存在于added_track的项目排到new_end后面（下面还使用track_from_text所以不能移除）
-                auto new_end = std::remove_if(track_from_text.begin(), track_from_text.end(),
-                    [&](const SongInfo& song_info) { return added_track.find(song_info.track) != added_track.end(); });
-                for (auto iter = track_from_text.begin(); iter != new_end; ++iter)
-                {
-                    audio_path.insert(iter->file_path);
-                    added_track.insert(iter->track);    // 这里仍然需要维护added_track，以处理cue文件本身重复的情况
-                }
-                auto ins_pos = files.erase(iter_in_files);
-                files.insert(ins_pos, track_from_text.begin(), new_end);
+            else if (in_files && !in_cue)                       // 没有原始cue，此时一般来说不用处理
+            {                                                   // 除了这个特殊情况，it存在于files却不存在于tracks_in_cue
+                auto fixed_track = std::find_if(item.tracks_in_cue.begin(), item.tracks_in_cue.end(),
+                    [&](const SongInfo& song_info) { return song_info.track == it->track; });
+                if (fixed_track != item.tracks_in_cue.end())    // 找到了同trackSongInfo说明cue有修改，其更换了音频文件
+                    it->file_path = fixed_track->file_path;     // 更新音频文件路径
+                else                                            // 或此cue已不再有此track
+                    remove_it = true;                           // 移除it
             }
+            if (remove_it)
+                it = files.erase(it);   // erase返回指向下一个元素的迭代器
+            if (add_all)                // 这里为insert返回迭代器加 tracks_in_cue.size() 使其指向下一个元素
+                it = files.insert(it, item.tracks_in_cue.begin(), item.tracks_in_cue.end()) + item.tracks_in_cue.size();
+            if (!remove_it && !add_all) // 没有erase/insert时直接自增使其指向下一个元素
+                ++it;
         }
-        // 判断是否需要获取音频信息，这里将cue作为一个整体，如果需要则刷新全部
+        for (SongInfo& new_track : item.tracks_in_cue)
+        {
+            new_track.modified_time = item.modified_time;
+            audio_file[new_track.file_path][new_track.track] = new_track;
+        }
+    }
+    // audio_file结构上已对SongInfo去重，audio_file的第一层key即cue文件的FILE标签，第二层key是此FILE下包含哪些track
+    for (auto& [audio_path, item] : audio_file)
+    {
+        if (exit_flag) return;
         bool need_get_info{ refresh_mode == MR_FOECE_FULL };
-        for (SongInfo& song : track_from_text)
+        for (auto& [track, song] : item)
         {
             if (need_get_info) break;
-            const SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfo3(song);     // 这个song_info仅用来确认是否必须刷新
+            const SongInfo& song_info = CSongDataManager::GetInstance().GetSongInfo(song);     // 这个song_info仅用来确认是否必须刷新
             need_get_info |= (song_info.modified_time == 0 || !song_info.info_acquired || !song_info.ChannelInfoAcquired());
-            if (refresh_mode == MR_MIN_REQUIRED)
-                continue;
+            // 对cue即使是MR_MIN_REQUIRED也确认修改时间，因为此时cue已获取修改时间，这不会增加额外耗时
+            // if (refresh_mode == MR_MIN_REQUIRED) continue;
             // 使用cue修改时间作为SongInfo修改时间(无法发现音频文件需要更新)(但按修改时间排序时比较合适，如需音频修改时间再另加变量)
-            need_get_info |= (modified_time_cue != song_info.modified_time);
+            need_get_info |= (song.modified_time != song_info.modified_time);
         }
-        if (!need_get_info)
+        if (!need_get_info || item.empty())
             continue;
-        // 找出每个FILE的最后音轨获取音频属性，以及获取还没有获取修改时间的项目的修改时间
-        for (SongInfo& song : track_from_text)
+
+        SongInfo& last_song = item.rbegin()->second;
+        Time file_length{};
+        std::swap(last_song.end_pos, file_length);
+        // IPlayerCore::GetAudioInfo只能用于每个FILE的最后一个音轨（会把音频时长直接写入end_pos）（这是预定行为，一个cue可以含有多个FILE）
+        int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;
+        CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(audio_path.c_str(), last_song, flag);
+        std::swap(last_song.end_pos, file_length);
+
+        for (auto& [track, song] : item)     // 这个遍历也包括last_song自身
         {
-            if (song.end_pos.toInt() != 0)  // 结束时间不为0说明这不是一个FILE的最后一个音轨，跳过
-                continue;
-            // 使用cue修改时间作为SongInfo修改时间(无法发现音频文件需要更新)
-            song.modified_time = modified_time_cue;
-            // IPlayerCore::GetAudioInfo只能用于每个FILE的最后一个音轨（会把音频时长直接写入end_pos）（这是预定行为，一个cue可以含有多个FILE）
-            int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;
-            CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(song.file_path.c_str(), song, flag);
-            bool info_succeed{ song.end_pos.toInt() != 0 };
-            for (SongInfo& a : track_from_text)     // 这个遍历也包括song自身
+            // FILE可能在此次更新中由支持的文件变为不支持的文件所以即使获取时长失败以下项目也总是更新
+            song.bitrate = last_song.bitrate;
+            song.freq = last_song.freq;
+            song.bits = last_song.bits;
+            song.channels = last_song.channels;
+            // 获取时长失败则标记此FILE下所有音轨(包括last_song)为无效条目
+            if (file_length.isZero())
+                song.end_pos = song.start_pos;
+            else
             {
-                if (a.file_path != song.file_path)  // 与song共有FILE的条目应当从song取得其他信息
-                    continue;
-                if (!info_succeed)      // 获取时长失败则标记此FILE下所有音轨(包括song)为无效条目
-                    a.end_pos = a.start_pos;
-                // FILE可能在此次更新中由支持的文件变为不支持的文件所以即使获取时长失败以下项目也总是更新
-                a.modified_time = song.modified_time;
-                a.bitrate = song.bitrate;
-                a.freq = song.freq;
-                a.bits = song.bits;
-                a.channels = song.channels;
+                if (song.end_pos > file_length || song.end_pos.isZero())
+                    song.end_pos = file_length;
+                if (song.start_pos > song.end_pos)
+                    song.end_pos = song.start_pos;
             }
         }
-        update_cnt += track_from_text.size();   // cue文件有不同语言版本时这里会反复刷写，这会导致update_cnt大于实际更新数
-        // 更新track_from_text中的信息到媒体库
-        CSongDataManager::GetInstance().SaveCueSongInfo(track_from_text);
+        // 更新item中的信息到媒体库
+        vector<SongInfo> tmp;
+        std::transform(item.begin(), item.end(), std::back_inserter(tmp), [](auto& it) { return std::move(it.second); });
+        CSongDataManager::GetInstance().SaveCueSongInfo(tmp);
+        update_cnt += item.size();
     }
     // 移除files中的cue关联原始音频文件条目（在这之后才能进行普通音频的处理以避免cue关联音轨进入媒体库）
-    if (!audio_path.empty())
-    {
-        auto new_end = std::remove_if(files.begin(), files.end(),
-            [&](const SongInfo& song_info) { return !song_info.is_cue && audio_path.find(song_info.file_path) != audio_path.end(); });
-        files.erase(new_end, files.end());
-    }
+    if (!audio_file.empty())
+        std::erase_if(files, [&](const SongInfo& song_info) { return !song_info.is_cue && audio_file.contains(song_info.file_path); });
 }
 
 void CAudioCommon::GetAudioInfo(vector<SongInfo>& files, int& update_cnt, bool& exit_flag, int& process_percent, MediaLibRefreshMode refresh_mode, bool ignore_short)

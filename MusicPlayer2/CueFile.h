@@ -9,6 +9,8 @@ public:
     CCueFile();
     ~CCueFile();
 
+    // 使用移动语义覆盖参数song_list，调用后此CCueFile对象不再可用
+    void MoveToSongList(vector<SongInfo>& song_list);
     std::vector<SongInfo>& GetAnalysisResult();
 
     //将所有cue音轨保存到cue文件

@@ -49,6 +49,11 @@ CCueFile::~CCueFile()
 {
 }
 
+void CCueFile::MoveToSongList(vector<SongInfo>& song_list)
+{
+    song_list = std::move(m_result);
+}
+
 std::vector<SongInfo>& CCueFile::GetAnalysisResult()
 {
     return m_result;
