@@ -1054,6 +1054,11 @@ void UiElement::ListElement::LButtonDown(CPoint point)
             {
                 scrollbar_handle_pressed = true;
             }
+            //点击了滚动条空白区域
+            else
+            {
+                mouse_pressed = false;
+            }
         }
         //点击了列表区域
         else
@@ -1107,9 +1112,9 @@ void UiElement::ListElement::LButtonDown(CPoint point)
             }
             OnClicked();
             selected_item_scroll_info.Reset();
+            mouse_pressed = true;
         }
         mouse_pressed_offset = playlist_offset;
-        mouse_pressed = true;
         mouse_pressed_pos = point;
     }
     //点击了控件外
@@ -1829,8 +1834,12 @@ int UiElement::MediaLibItemList::GetColumnWidth(int col, int total_width)
 
 std::wstring UiElement::MediaLibItemList::GetEmptyString()
 {
-    const wstring& info = theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
-    return info;
+    if (CUiMediaLibItemMgr::Instance().IsLoading())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_LOADING_INFO");
+    else if (!CUiMediaLibItemMgr::Instance().IsInited())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_UNINITED_INFO");
+    else
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
 }
 
 int UiElement::MediaLibItemList::GetHighlightRow()
@@ -2461,8 +2470,11 @@ void UiElement::MyFavouriteList::OnDoubleClicked()
 std::wstring UiElement::MyFavouriteList::GetEmptyString()
 {
     if (CUiMyFavouriteItemMgr::Instance().IsLoading())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_LOADING_INFO");
+    else if (!CUiMyFavouriteItemMgr::Instance().IsInited())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_UNINITED_INFO");
+    else
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
-    return std::wstring();
 }
 
 int UiElement::MyFavouriteList::GetHoverButtonCount()
@@ -2618,8 +2630,11 @@ void UiElement::AllTracksList::OnDoubleClicked()
 std::wstring UiElement::AllTracksList::GetEmptyString()
 {
     if (CUiAllTracksMgr::Instance().IsLoading())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_LOADING_INFO");
+    else if (!CUiAllTracksMgr::Instance().IsInited())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_UNINITED_INFO");
+    else
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
-    return std::wstring();
 }
 
 int UiElement::AllTracksList::GetHoverButtonCount()

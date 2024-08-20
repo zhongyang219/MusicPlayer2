@@ -83,7 +83,11 @@ public:
     void OnViewAlbum(const SongInfo& song_info);
 
     //修正播放列表中的错误的路径
-    int FixPlaylistPathError(const std::wstring& path);
+    int FixPlaylistPathError(const std::wstring& path) const;
+
+    //如果file_path不存在，则从媒体库中查找文件名相同的最佳匹配的项目，并将file_path更改为正确的路径
+    //file_name_map 保存媒体库目录下音频文件文件名和文件路径的对应关系
+    bool FixWrongFilePath(wstring& file_path, const std::unordered_map<std::wstring, std::set<std::wstring>>& file_name_map) const;
 
     void OnFolderSelected(const PathInfo& path_info, bool play = false);
 
@@ -119,7 +123,6 @@ public:
     bool OnAddRemoveFromFavourite(int track);
     bool OnAddRemoveFromFavourite(const SongInfo& song);
     bool OnAddToFavourite();
-
 
 protected:
     void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);

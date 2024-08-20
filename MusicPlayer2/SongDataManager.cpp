@@ -240,9 +240,6 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_info.total_discs;
             }
             m_song_data[song_info] = song_info;     // 将读取到的一首歌曲信息添加到映射容器中
-
-            std::wstring file_name{ song_info.GetFileName() };
-            m_song_file_name_map[file_name].push_back(song_info.file_path);
         }
     }
     catch (CArchiveException* exception)
@@ -469,52 +466,4 @@ void CSongDataManager::ChangeFilePath(const wstring& file_path, const wstring& n
             song.file_path = new_path;
         m_song_data[new_path] = song;
     }
-}
-
-//计算两个字符串右侧匹配的字符数量
-static int CalcualteStringRightMatchedCharNum(const std::wstring& str1, const std::wstring& str2)
-{
-    size_t index1{ str1.size() - 1 };
-    size_t index2{ str2.size() - 1 };
-    int char_matched{};
-    for (; index1 >= 0 && index2 >= 0; index1--, index2--)
-    {
-        if (str1[index1] == str2[index2])
-            char_matched++;
-        else
-            break;
-    }
-    return char_matched;
-}
-
-bool CSongDataManager::FixWrongFilePath(wstring& file_path) const
-{
-    std::wstring file_name{ CFilePathHelper(file_path).GetFileName() };
-    bool fixed{ false };
-    auto iter = m_song_file_name_map.find(file_name);
-    if (iter != m_song_file_name_map.end())
-    {
-        if (iter->second.size() == 1)      //媒体库中同名的文件只有一个时，直接修改为该文件的路径
-        {
-            file_path = iter->second.front();
-            fixed = true;
-        }
-        else if (iter->second.size() > 1)   //媒体库中同名的文件有多个时，查找两个路径末尾相同字符数量最多的那项
-        {
-            size_t best_match_index{};
-            int max_matched_char_mun{};
-            for (size_t i{}; i < iter->second.size(); i++)
-            {
-                int cur_matched_char_num = CalcualteStringRightMatchedCharNum(file_path, iter->second[i]);
-                if (cur_matched_char_num > max_matched_char_mun)
-                {
-                    max_matched_char_mun = cur_matched_char_num;
-                    best_match_index = i;
-                }
-            }
-            file_path = iter->second[best_match_index];
-            fixed = true;
-        }
-    }
-    return CCommon::FileExist(file_path);
 }

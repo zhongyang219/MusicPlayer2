@@ -49,6 +49,7 @@ void CUiMediaLibItemMgr::Init()
     GetClassifiedMeidaLibItemList(CMediaClassifier::CT_RATING);
 
     m_loading = false;
+    m_inited = true;
 }
 
 int CUiMediaLibItemMgr::GetItemCount(CMediaClassifier::ClassificationType type) const
@@ -187,6 +188,7 @@ void CUiMyFavouriteItemMgr::UpdateMyFavourite()
     CSongDataManager::GetInstance().LoadSongsInfo(m_may_favourite_song_list);  // 从媒体库加载歌曲属性
 
     m_loading = false;
+    m_inited = true;
 }
 
 void CUiMyFavouriteItemMgr::GetSongList(std::vector<SongInfo>& song_list) const

@@ -740,8 +740,20 @@ void CMusicPlayerCmdHelper::OnViewAlbum(const SongInfo& song_info)
     OnViewInMediaLib(CMusicPlayerCmdHelper::ML_ALBUM, album);
 }
 
-int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
+int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path) const
 {
+    std::unordered_map<std::wstring, std::set<std::wstring>> song_file_name_map;
+    CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map) {
+        for (const auto& song_item : song_data_map)
+        {
+            if (!song_item.second.is_cue)
+            {
+                std::wstring file_name = song_item.second.GetFileName();
+                song_file_name_map[file_name].insert(song_item.second.file_path);
+            }
+        }
+    });
+
     vector<SongInfo> song_list;
     CPlaylistFile playlist_file;
     playlist_file.LoadFromFile(path);
@@ -749,19 +761,9 @@ int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
     int fixed_count{};
     for (auto& song : song_list)
     {
-        if (!CCommon::FileExist(song.file_path))
+        if (!song.is_cue && !CCommon::FileExist(song.file_path))
         {
-            //std::wstring file_name{ song.GetFileName() };
-            ////文件不存在，从媒体库中寻找匹配的文件
-            //for (const auto& song_info : CSongDataManager::GetInstance().GetSongData())
-            //{
-            //    if (CCommon::FileExist(song_info.second.file_path) && song_info.second.GetFileName() == file_name)
-            //    {
-            //        song.file_path = song_info.second.file_path;
-            //        fixed_count++;
-            //    }
-            //}
-            if (CSongDataManager::GetInstance().FixWrongFilePath(song.file_path))
+            if (FixWrongFilePath(song.file_path, song_file_name_map))
                 fixed_count++;
         }
     }
@@ -778,6 +780,60 @@ int CMusicPlayerCmdHelper::FixPlaylistPathError(const std::wstring& path)
     }
     return fixed_count;
 }
+
+//计算两个字符串右侧匹配的字符数量
+static int CalcualteStringRightMatchedCharNum(const std::wstring& str1, const std::wstring& str2)
+{
+    size_t index1{ str1.size() - 1 };
+    size_t index2{ str2.size() - 1 };
+    int char_matched{};
+    for (; index1 >= 0 && index2 >= 0; index1--, index2--)
+    {
+        if (str1[index1] == str2[index2])
+            char_matched++;
+        else
+            break;
+    }
+    return char_matched;
+}
+
+bool CMusicPlayerCmdHelper::FixWrongFilePath(wstring& file_path, const std::unordered_map<std::wstring, std::set<std::wstring>>& song_file_name_map) const
+{
+    std::wstring file_name{ CFilePathHelper(file_path).GetFileName() };
+    bool fixed{ false };
+    auto iter = song_file_name_map.find(file_name);
+    if (iter != song_file_name_map.end())
+    {
+        if (iter->second.size() == 1)      //媒体库中同名的文件只有一个时，直接修改为该文件的路径
+        {
+            if (CCommon::FileExist(*iter->second.begin()))
+            {
+                file_path = *iter->second.begin();
+                fixed = true;
+            }
+        }
+        else if (iter->second.size() > 1)   //媒体库中同名的文件有多个时，查找两个路径末尾相同字符数量最多的那项
+        {
+            std::wstring best_match_path;
+            int max_matched_char_mun{};
+            for (const auto& path : iter->second)
+            {
+                if (!CCommon::FileExist(path))
+                    continue;
+                int cur_matched_char_num = CalcualteStringRightMatchedCharNum(file_path, path);
+                if (cur_matched_char_num > max_matched_char_mun)
+                {
+                    max_matched_char_mun = cur_matched_char_num;
+                    best_match_path = path;
+                }
+            }
+            file_path = best_match_path;
+            fixed = true;
+        }
+    }
+    return fixed;
+}
+
 
 void CMusicPlayerCmdHelper::OnFolderSelected(const PathInfo& path_info, bool play)
 {

@@ -440,6 +440,7 @@ BEGIN_MESSAGE_MAP(CMediaClassifyDlg, CMediaLibTabDlg)
     ON_NOTIFY(HDN_ITEMCLICK, 0, &CMediaClassifyDlg::OnHdnItemclickSongList)
     ON_WM_SIZE()
     ON_WM_DESTROY()
+    ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 
@@ -716,4 +717,19 @@ void CMediaClassifyDlg::OnDestroy()
 
     // TODO: 在此处添加消息处理程序代码
     m_classifer.ClearResult();
+}
+
+
+void CMediaClassifyDlg::OnInitMenu(CMenu* pMenu)
+{
+    CMediaLibTabDlg::OnInitMenu(pMenu);
+
+    //设置“添加到播放列表”子菜单状态
+    //未选中状态不会弹出右键菜单，因此“添加到播放列表”子菜单全部设置为可用状态
+    for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
+    {
+        pMenu->EnableMenuItem(id, MF_BYCOMMAND | MF_ENABLED);
+    }
+    pMenu->EnableMenuItem(ID_ADD_TO_NEW_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
+    pMenu->EnableMenuItem(ID_ADD_TO_OTHER_PLAYLIST, MF_BYCOMMAND | MF_ENABLED);
 }

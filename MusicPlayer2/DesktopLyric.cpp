@@ -328,7 +328,7 @@ void CDesktopLyric::DrawToolbar(Gdiplus::Graphics* pGraphics)
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, IconMgr::IconType::IT_Double_Line, rcIcon, BTN_DOUBLE_LINE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_double_line);
         rcIcon.MoveToX(rcIcon.right);
-        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Skin, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
+        DrawToolIcon(pGraphics, IconMgr::IconType::IT_Background, rcIcon, BTN_BACKGROUND_PENETRATE, theApp.m_lyric_setting_data.desktop_lyric_data.lyric_background_penetrate);
         rcIcon.MoveToX(rcIcon.right);
         DrawToolIcon(pGraphics, IconMgr::IconType::IT_Lock, rcIcon, BTN_LOCK);
         rcIcon.MoveToX(rcIcon.right);

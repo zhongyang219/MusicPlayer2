@@ -621,6 +621,9 @@ wstring CAudioCommon::GenreConvert(wstring genre)
 
 void CAudioCommon::TagStrNormalize(wstring & str)
 {
+    str.erase(std::remove(str.begin(), str.end(), '\r'), str.end());
+    str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+
     for (size_t i{}; i < str.size(); i++)
     {
         if (str[i] < 32 || str[i] >= static_cast<wchar_t>(0xfff0))
@@ -629,7 +632,6 @@ void CAudioCommon::TagStrNormalize(wstring & str)
             return;
         }
     }
-
 }
 
 wstring CAudioCommon::GetBASSChannelDescription(DWORD ctype)

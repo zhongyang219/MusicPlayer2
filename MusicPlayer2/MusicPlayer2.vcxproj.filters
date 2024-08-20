@@ -315,9 +315,6 @@
     <Filter Include="对话框类\SelectItemDlg">
       <UniqueIdentifier>{beb65fcf-7504-452f-9251-416aee0d7410}</UniqueIdentifier>
     </Filter>
-    <Filter Include="派生的控件类\CSliderCtrlEx">
-      <UniqueIdentifier>{78135dff-6314-498c-8709-88751407abde}</UniqueIdentifier>
-    </Filter>
     <Filter Include="stdafx">
       <UniqueIdentifier>{31edd60e-adb8-4131-88d9-e72e22bddf9b}</UniqueIdentifier>
     </Filter>
@@ -407,6 +404,9 @@
     </Filter>
     <Filter Include="对话框类\媒体库对话框\属性对话框">
       <UniqueIdentifier>{4fb739d3-9132-4e7c-a046-8cdf7b3436e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="派生的控件类\FontDialogEx">
+      <UniqueIdentifier>{93d51c6b-2246-43a7-9251-d30cbcde6d27}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -930,6 +930,9 @@
     <ClInclude Include="UIWindowCmdHelper.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="FontDialogEx.h">
+      <Filter>派生的控件类\FontDialogEx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1418,6 +1421,9 @@
     <ClCompile Include="UIWindowCmdHelper.cpp">
       <Filter>PlayerUI</Filter>
     </ClCompile>
+    <ClCompile Include="FontDialogEx.cpp">
+      <Filter>派生的控件类\FontDialogEx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
@@ -1442,9 +1448,6 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="language\English.ini">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="res\text1.bin">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
@@ -2007,12 +2010,6 @@
     <Image Include="res\karaoke.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\owner_draw_titlebar_preview.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
-    <Image Include="res\system_titlebar_preview.bmp">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\refresh.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
@@ -2024,6 +2021,15 @@
     </Image>
     <Image Include="res\new_folder_d.ico">
       <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\background_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\owner_draw_titlebar_preview.bmp">
+      <Filter>资源文件\bitmaps</Filter>
+    </Image>
+    <Image Include="res\system_titlebar_preview.bmp">
+      <Filter>资源文件\bitmaps</Filter>
     </Image>
   </ItemGroup>
 </Project>

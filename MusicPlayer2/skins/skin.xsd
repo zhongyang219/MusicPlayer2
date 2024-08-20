@@ -129,37 +129,37 @@
       </xs:attribute>
     </xs:attributeGroup>
     <xs:group name="elements">
-        <xs:sequence><!--sequence 和 choice 配合使用，使得元素可以以任意顺序出现任意次数-->
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element name="element" type="elementType"></xs:element>
-                <xs:element name="verticalLayout" type="verticalLayoutType"></xs:element>
-                <xs:element name="horizontalLayout" type="horizontalLayoutType"></xs:element>
-                <xs:element name="stackElement" type="stackElementType"></xs:element>
-                <xs:element name="rectangle" type="rectangleType"></xs:element>
-                <xs:element name="button" type="buttonType"></xs:element>
-                <xs:element name="text" type="textType"></xs:element>
-                <xs:element name="albumCover" type="albumCoverType"></xs:element>
-                <xs:element name="spectrum" type="spectrumType"></xs:element>
-                <xs:element name="trackInfo" type="trackInfoType"></xs:element>
-                <xs:element name="toolbar" type="toolbarType"></xs:element>
-                <xs:element name="progressBar" type="progressBarType"></xs:element>
-                <xs:element name="lyrics" type="lyricsType"></xs:element>
-                <xs:element name="volume" type="volumeType"></xs:element>
-                <xs:element name="beatIndicator" type="beatIndicatorType"></xs:element>
-                <xs:element name="placeHolder" type="placeHolderType"></xs:element>
-                <xs:element name="playlist" type="playlistType"></xs:element>
-                <xs:element name="recentPlayedList" type="recentPlayedListType"></xs:element>
-                <xs:element name="playlistIndicator" type="playlistIndicatorType"></xs:element>
-                <xs:element name="mediaLibItemList" type="mediaLibItemListType"></xs:element>
-                <xs:element name="mediaLibFolder" type="mediaLibFolderType"></xs:element>
-                <xs:element name="mediaLibPlaylist" type="mediaLibPlaylistType"></xs:element>
-                <xs:element name="myFavouriteList" type="myFavouriteListType"></xs:element>
-                <xs:element name="navigationBar" type="navigationBarType"></xs:element>
-                <xs:element name="miniSpectrum" type="miniSpectrumType"></xs:element>
-                <xs:element name="allTracksList" type="allTracksListType"></xs:element>
-				<xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
-			</xs:choice>
-        </xs:sequence>
+      <xs:sequence><!--sequence 和 choice 配合使用，使得元素可以以任意顺序出现任意次数-->
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="element" type="elementType"></xs:element>
+          <xs:element name="verticalLayout" type="verticalLayoutType"></xs:element>
+          <xs:element name="horizontalLayout" type="horizontalLayoutType"></xs:element>
+          <xs:element name="stackElement" type="stackElementType"></xs:element>
+          <xs:element name="rectangle" type="rectangleType"></xs:element>
+          <xs:element name="button" type="buttonType"></xs:element>
+          <xs:element name="text" type="textType"></xs:element>
+          <xs:element name="albumCover" type="albumCoverType"></xs:element>
+          <xs:element name="spectrum" type="spectrumType"></xs:element>
+          <xs:element name="trackInfo" type="trackInfoType"></xs:element>
+          <xs:element name="toolbar" type="toolbarType"></xs:element>
+          <xs:element name="progressBar" type="progressBarType"></xs:element>
+          <xs:element name="lyrics" type="lyricsType"></xs:element>
+          <xs:element name="volume" type="volumeType"></xs:element>
+          <xs:element name="beatIndicator" type="beatIndicatorType"></xs:element>
+          <xs:element name="placeHolder" type="placeHolderType"></xs:element>
+          <xs:element name="playlist" type="playlistType"></xs:element>
+          <xs:element name="recentPlayedList" type="recentPlayedListType"></xs:element>
+          <xs:element name="playlistIndicator" type="playlistIndicatorType"></xs:element>
+          <xs:element name="mediaLibItemList" type="mediaLibItemListType"></xs:element>
+          <xs:element name="mediaLibFolder" type="mediaLibFolderType"></xs:element>
+          <xs:element name="mediaLibPlaylist" type="mediaLibPlaylistType"></xs:element>
+          <xs:element name="myFavouriteList" type="myFavouriteListType"></xs:element>
+          <xs:element name="navigationBar" type="navigationBarType"></xs:element>
+          <xs:element name="miniSpectrum" type="miniSpectrumType"></xs:element>
+          <xs:element name="allTracksList" type="allTracksListType"></xs:element>
+          <xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
+        </xs:choice>
+      </xs:sequence>
     </xs:group>
     <xs:element name="root"><!--定义root元素信息-->
         <xs:annotation>
@@ -818,12 +818,12 @@
             <xs:documentation>一个由包含进度条，以及停止、上一曲、播放/暂停、下一曲、收藏、媒体库、播放列表按钮的播放控制栏。</xs:documentation>
         </xs:annotation>
         <xs:group ref="elements"></xs:group>
-		<xs:attribute name="show_switch_display_btn" type="xs:boolean" default="false">
-			<xs:annotation>
-				<xs:documentation>是否显示“切换界面”按钮。</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    <xs:attribute name="show_switch_display_btn" type="xs:boolean" default="false">
+      <xs:annotation>
+        <xs:documentation>是否显示“切换界面”按钮。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="placeHolderType">
       <xs:annotation>
