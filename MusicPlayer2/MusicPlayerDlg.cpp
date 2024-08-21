@@ -3610,7 +3610,17 @@ void CMusicPlayerDlg::OnDeleteFromDisk()
 
     if (m_item_selected < 0 || m_item_selected >= CPlayer::GetInstance().GetSongNum())
         return;
-    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUIRY", { m_items_selected.size() });
+
+    wstring info;
+    if (m_items_selected.size() == 1)
+    {
+        const auto& song = CPlayer::GetInstance().GetPlayList()[m_items_selected.front()];
+        info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUIRY", { song.file_path });
+    }
+    else
+    {
+        info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUIRY", { m_items_selected.size() });
+    }
     if (MessageBoxW(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK) return;
     // 以下操作可能涉及MusicControl，先取得锁
     if (!CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000))) return;
@@ -5918,8 +5928,15 @@ void CMusicPlayerDlg::OnRemoveCurrentFromPlaylist()
     // TODO: 在此添加命令处理程序代码
     if (CPlayer::GetInstance().IsPlaylistMode())
     {
-        CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
-        ShowPlayList(false);
+        const SongInfo& song = CPlayer::GetInstance().GetCurrentSongInfo();
+        std::wstring song_display_name = CSongInfoHelper::GetDisplayStr(song, theApp.m_media_lib_setting_data.display_format);
+        std::wstring playlist_name = CPlaylistMgr::GetPlaylistDisplayName(CPlayer::GetInstance().GetPlaylistPath());
+        std::wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_REMOVE_SINGLE_ITEM_FROM_PLAYLIST_INQUIRY", { playlist_name, song_display_name });
+        if (MessageBox(info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+        {
+            CPlayer::GetInstance().RemoveSong(CPlayer::GetInstance().GetIndex());
+            ShowPlayList(false);
+        }
     }
 }
 
