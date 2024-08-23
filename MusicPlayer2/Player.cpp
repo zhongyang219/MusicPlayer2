@@ -2173,27 +2173,8 @@ void CPlayer::SortPlaylist(bool is_init)
     if (m_loading && !is_init) return;
     CWaitCursor wait_cursor;
     SongInfo current_song = GetCurrentSongInfo();
-    auto sort_fun = SongInfo::ByFileName;
-    switch (m_sort_mode)
-    {
-    case SM_U_FILE: sort_fun = SongInfo::ByFileName; break;
-    case SM_D_FILE: sort_fun = SongInfo::ByFileNameDecending; break;
-    case SM_U_PATH: sort_fun = SongInfo::ByPath; break;
-    case SM_D_PATH: sort_fun = SongInfo::ByPathDecending; break;
-    case SM_U_TITLE: sort_fun = SongInfo::ByTitle; break;
-    case SM_D_TITLE: sort_fun = SongInfo::ByTitleDecending; break;
-    case SM_U_ARTIST: sort_fun = SongInfo::ByArtist; break;
-    case SM_D_ARTIST: sort_fun = SongInfo::ByArtistDecending; break;
-    case SM_U_ALBUM: sort_fun = SongInfo::ByAlbum; break;
-    case SM_D_ALBUM: sort_fun = SongInfo::ByAlbumDecending; break;
-    case SM_U_TRACK: sort_fun = SongInfo::ByTrack; break;
-    case SM_D_TRACK: sort_fun = SongInfo::ByTrackDecending; break;
-    case SM_U_LISTEN: sort_fun = SongInfo::ByListenTime; break;
-    case SM_D_LISTEN: sort_fun = SongInfo::ByListenTimeDecending; break;
-    case SM_U_TIME: sort_fun = SongInfo::ByModifiedTime; break;
-    case SM_D_TIME: sort_fun = SongInfo::ByModifiedTimeDecending; break;
-    default: ASSERT(FALSE); break;
-    }
+    ASSERT(m_sort_mode != SM_UNSORT);
+    auto sort_fun = SongInfo::GetSortFunc(m_sort_mode == SM_UNSORT ? SM_U_FILE : m_sort_mode);
     std::stable_sort(m_playlist.begin(), m_playlist.end(), sort_fun);
 
     if (!is_init)   // 由初始化完成方法调用时不重新查找index

@@ -25,29 +25,6 @@ enum AudioType
     AU_OTHER
 };
 
-//排序方式
-enum SortMode
-{
-    SM_U_FILE = 0,
-    SM_D_FILE,
-    SM_U_PATH,
-    SM_D_PATH,
-    SM_U_TITLE,
-    SM_D_TITLE,
-    SM_U_ARTIST,
-    SM_D_ARTIST,
-    SM_U_ALBUM,
-    SM_D_ALBUM,
-    SM_U_TRACK,
-    SM_D_TRACK,
-    SM_U_LISTEN,            // 累计播放时间 升序
-    SM_D_LISTEN,            // 累计播放时间 降序
-    SM_U_TIME,              // 修改日期 升序
-    SM_D_TIME,              // 修改日期 降序
-
-    SM_UNSORT = 100,        // 未排序（进入播放列表模式时总是设置为此排序方式，且不进行持久化）
-};
-
 
 // ID3v1 tag structure
 struct TAG_ID3V1

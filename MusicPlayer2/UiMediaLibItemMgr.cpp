@@ -295,31 +295,13 @@ void CUiAllTracksMgr::UpdateAllTracks()
     //从CMediaLibPlaylistMgr中查找“所有曲目”，并获取排序方式
     auto info = CMediaLibPlaylistMgr::Instance().FindItem(CMediaClassifier::CT_NONE, std::wstring());
     //对所有曲目排序
-    auto sort_fun = [&](const UTrackInfo& a, const UTrackInfo& b) {
+    auto sort_fun = SongInfo::GetSortFunc(info.sort_mode == SM_UNSORT ? SM_U_FILE : info.sort_mode);
+    auto u_sort_fun = [&](const UTrackInfo& a, const UTrackInfo& b) {
         SongInfo song_a{ CSongDataManager::GetInstance().GetSongInfo(a.song_key) };
         SongInfo song_b{ CSongDataManager::GetInstance().GetSongInfo(b.song_key) };
-        switch (info.sort_mode)
-        {
-        case SM_U_FILE: return SongInfo::ByFileName(song_a, song_b);
-        case SM_D_FILE: return SongInfo::ByFileNameDecending(song_a, song_b);
-        case SM_U_PATH: return SongInfo::ByPath(song_a, song_b);
-        case SM_D_PATH: return SongInfo::ByPathDecending(song_a, song_b);
-        case SM_U_TITLE: return SongInfo::ByTitle(song_a, song_b);
-        case SM_D_TITLE: return SongInfo::ByTitleDecending(song_a, song_b);
-        case SM_U_ARTIST: return SongInfo::ByArtist(song_a, song_b);
-        case SM_D_ARTIST: return SongInfo::ByArtistDecending(song_a, song_b);
-        case SM_U_ALBUM: return SongInfo::ByAlbum(song_a, song_b);
-        case SM_D_ALBUM: return SongInfo::ByAlbumDecending(song_a, song_b);
-        case SM_U_TRACK: return SongInfo::ByTrack(song_a, song_b);
-        case SM_D_TRACK: return SongInfo::ByTrackDecending(song_a, song_b);
-        case SM_U_LISTEN: return SongInfo::ByListenTime(song_a, song_b);
-        case SM_D_LISTEN: return SongInfo::ByListenTimeDecending(song_a, song_b);
-        case SM_U_TIME: return SongInfo::ByModifiedTime(song_a, song_b);
-        case SM_D_TIME: return SongInfo::ByModifiedTimeDecending(song_a, song_b);
-        default: return SongInfo::ByFileName(song_a, song_b);
-        }
+        return sort_fun(song_a, song_b);
     };
-    std::stable_sort(m_all_tracks_list.begin(), m_all_tracks_list.end(), sort_fun);
+    std::stable_sort(m_all_tracks_list.begin(), m_all_tracks_list.end(), u_sort_fun);
 
     m_loading = false;
     m_inited = true;

@@ -11,6 +11,35 @@ enum eTagType
     T_MP4 = 1 << 4,
 };
 
+//排序方式
+enum SortMode
+{
+    SM_U_FILE = 0,          // 文件名 升序
+    SM_D_FILE,              // 文件名 降序
+    SM_U_PATH,              // 路径 升序
+    SM_D_PATH,              // 路径 降序
+    SM_U_TITLE,             // 标题 升序
+    SM_D_TITLE,             // 标题 降序
+    SM_U_ARTIST,            // 艺术家 升序
+    SM_D_ARTIST,            // 艺术家 降序
+    SM_U_ALBUM,             // 专辑 升序
+    SM_D_ALBUM,             // 专辑 降序
+    SM_U_TRACK,             // 音轨号 升序
+    SM_D_TRACK,             // 音轨号 降序
+    SM_U_LISTEN,            // 累计播放时间 升序
+    SM_D_LISTEN,            // 累计播放时间 降序
+    SM_U_TIME,              // 修改日期 升序
+    SM_D_TIME,              // 修改日期 降序
+    SM_U_GENRE,             // 流派 升序
+    SM_D_GENRE,             // 流派 降序
+    SM_U_YEAR,              // 年份 升序
+    SM_D_YEAR,              // 年份 降序
+    SM_U_BITRATE,           // 比特率 升序
+    SM_D_BITRATE,           // 比特率 降序
+
+    SM_UNSORT = 100,        // 未排序（进入播放列表模式时总是设置为此排序方式，且不进行持久化）
+};
+
 //一首歌曲的信息
 struct SongInfo
 {
@@ -63,43 +92,6 @@ struct SongInfo
     // 采样率、位深度、声道数信息是否已获取<flags bit3>
     void SetChannelInfoAcquired(bool val);
 
-    //根据文件名的比较函数，用于以文件名排序
-    static bool ByFileName(const SongInfo& a, const SongInfo& b);
-    static bool ByFileNameDecending(const SongInfo& a, const SongInfo& b);
-    //根据文件路径的比较函数，用于以文件路径排序
-    static bool ByPath(const SongInfo& a, const SongInfo& b);
-    static bool ByPathDecending(const SongInfo& a, const SongInfo& b);
-    //根据标题的比较函数，用于以标题排序
-    static bool ByTitle(const SongInfo& a, const SongInfo& b);
-    static bool ByTitleDecending(const SongInfo& a, const SongInfo& b);
-    //根据艺术家的比较函数，用于以艺术家排序
-    static bool ByArtist(const SongInfo& a, const SongInfo& b);
-    static bool ByArtistDecending(const SongInfo& a, const SongInfo& b);
-    //根据唱片集的比较函数，用于以唱片集排序
-    static bool ByAlbum(const SongInfo& a, const SongInfo& b);
-    static bool ByAlbumDecending(const SongInfo& a, const SongInfo& b);
-    //根据音轨序号的比较函数，用于以音轨序号排序
-    static bool ByTrack(const SongInfo& a, const SongInfo& b);
-    static bool ByTrackDecending(const SongInfo& a, const SongInfo& b);
-    //根据流派的比较函数，用于以流派排序
-    static bool ByGenre(const SongInfo& a, const SongInfo& b);
-    static bool ByGenreDecending(const SongInfo& a, const SongInfo& b);
-    //根据比特率的比较函数，用于以比特率排序
-    static bool ByBitrate(const SongInfo& a, const SongInfo& b);
-    static bool ByBitrateDecending(const SongInfo& a, const SongInfo& b);
-    //根据年份的比较函数，用于以年份排序
-    static bool ByYear(const SongInfo& a, const SongInfo& b);
-    static bool ByYearDecending(const SongInfo& a, const SongInfo& b);
-    //根据累计播放时间的比较函数，用于以累计播放时间排序
-    static bool ByListenTime(const SongInfo& a, const SongInfo& b);
-    static bool ByListenTimeDecending(const SongInfo& a, const SongInfo& b);
-    //根据文件修改时间的比较函数，用于以文件修改时间排序
-    static bool ByModifiedTime(const SongInfo& a, const SongInfo& b);
-    static bool ByModifiedTimeDecending(const SongInfo& a, const SongInfo& b);
-    //根据最后播放时间的比较函数，用于以最后播放时间排序
-    static bool ByLastPlay(const SongInfo& a, const SongInfo& b);
-    static bool ByLastPlayDecending(const SongInfo& a, const SongInfo& b);
-
     //从另一个SongInfo对象复制标签信息
     void CopyAudioTag(const SongInfo& song_info);
 
@@ -133,6 +125,9 @@ struct SongInfo
     bool IsSameSong(const SongInfo& song) const;
     // 清除歌曲信息中的<>内的默认字符串
     void Normalize();
+
+    // 获取SongInfo的排序谓词方法
+    static std::function<bool(const SongInfo& a, const SongInfo& b)> GetSortFunc(SortMode sort_mode);
 };
 
 struct SongKey

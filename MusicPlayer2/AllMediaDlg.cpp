@@ -412,61 +412,21 @@ void CAllMediaDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
 
         if (phdr->iItem > COL_INDEX && phdr->iItem < COL_MAX)
         {
-            auto so = CCommon::sort_permutation(list_songs, [&](const SongInfo& a, const SongInfo& b)
-                {
-                    if (ascending)
-                    {
-                        switch (phdr->iItem)
-                        {
-                        case COL_TITLE:
-                            return SongInfo::ByTitle(a, b); break;
-                        case COL_ARTIST:
-                            return SongInfo::ByArtist(a, b); break;
-                        case COL_ALBUM:
-                            return SongInfo::ByAlbum(a, b); break;
-                        case COL_TRACK:
-                            return SongInfo::ByTrack(a, b); break;
-                        case COL_GENRE:
-                            return SongInfo::ByGenre(a, b); break;
-                        case COL_BITRATE:
-                            return SongInfo::ByBitrate(a, b); break;
-                        case COL_YEAR:
-                            return SongInfo::ByYear(a, b); break;
-                        case COL_PATH:
-                            return SongInfo::ByPath(a, b); break;
-                        case COL_LAST_PLAYED_TIME:
-                            return SongInfo::ByLastPlay(a, b); break;
-                        default: 
-                            return SongInfo::ByTitle(a, b); break;    // 默认按标题排序
-                        }
-                    }
-                    else
-                    {
-                        switch (phdr->iItem)
-                        {
-                        case COL_TITLE:
-                            return SongInfo::ByTitleDecending(a, b); break;
-                        case COL_ARTIST:
-                            return SongInfo::ByArtistDecending(a, b); break;
-                        case COL_ALBUM:
-                            return SongInfo::ByAlbumDecending(a, b); break;
-                        case COL_TRACK:
-                            return SongInfo::ByTrackDecending(a, b); break;
-                        case COL_GENRE:
-                            return SongInfo::ByGenreDecending(a, b); break;
-                        case COL_BITRATE:
-                            return SongInfo::ByBitrateDecending(a, b); break;
-                        case COL_YEAR:
-                            return SongInfo::ByYearDecending(a, b); break;
-                        case COL_PATH:
-                            return SongInfo::ByPathDecending(a, b); break;
-                        case COL_LAST_PLAYED_TIME:
-                            return SongInfo::ByLastPlayDecending(a, b); break;
-                        default:
-                            return SongInfo::ByTitleDecending(a, b); break;   // 默认按标题排序
-                        }
-                    }
-                });
+            SortMode sort_mode = SM_U_TITLE;
+            switch (phdr->iItem)
+            {
+            case COL_TITLE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_ARTIST: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_ALBUM: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_TRACK: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_GENRE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_BITRATE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_YEAR: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_PATH: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_LAST_PLAYED_TIME: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            default: break;
+            }
+            auto so = CCommon::sort_permutation(list_songs, SongInfo::GetSortFunc(sort_mode));
             list_data = CCommon::apply_permutation(list_data, so);
             list_songs = CCommon::apply_permutation(list_songs, so);
             if (!m_searched)
