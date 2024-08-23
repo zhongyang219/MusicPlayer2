@@ -1,6 +1,16 @@
 **[简体中文](./update_log.md) | English**
 
 # MusicPlayer2 Update log
+## V2.77.1 (2024/08/23)
+
+This update fixed several issues since version 2.77. No new features added.
+* Fixed the problem that the "Add to Playlist" submenu in the context menu sometimes abnormally disabled.
+* Fixed the problem that the test text was not deleted when clicking the "AB Repeat" button.
+* Fixed the problem that the mouse tooltip of the "AB Repeat" button was not correct.
+* Fixed the problem that the control in the dialog box is too crowded vertically at 100% zoom ratio.
+* Fixed the problem that lyrics text is too big and incomplete when entering mini mode from full screen mode.
+* Fixed the problem that the internal album cover of acc files can not be displayed in the property dialog box.
+
 ## V2.77 (2024/08/12)
 
 **bug fixes:**
