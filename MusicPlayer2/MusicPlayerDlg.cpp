@@ -1685,9 +1685,21 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->CheckMenuItem(ID_SHOW_DESKTOP_LYRIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.show_desktop_lyric ? MF_CHECKED : MF_UNCHECKED));
     pMenu->EnableMenuItem(ID_LOCK_DESKTOP_LRYIC, MF_BYCOMMAND | (theApp.m_lyric_setting_data.show_desktop_lyric ? MF_ENABLED : MF_GRAYED));
 
+    bool current_song_valid{ !CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty() };
+
+    //播放控制
+    pMenu->EnableMenuItem(ID_REW, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_FF, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_SPEED_UP, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_SLOW_DOWN, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ORIGINAL_SPEED, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+
     //AB重复
-    pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_SET_B_POINT, MF_BYCOMMAND | (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (current_song_valid && CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_SET_B_POINT, MF_BYCOMMAND | (current_song_valid && CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_AB_REPEAT, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_SET_A_POINT, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_RESET_AB_REPEAT, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
 
     // 工具->删除正在播放的曲目
     pMenu->EnableMenuItem(ID_REMOVE_CURRENT_FROM_PLAYLIST, MF_BYCOMMAND | (playlist_mode && !CPlayer::GetInstance().IsPlaylistEmpty() ? MF_ENABLED : MF_GRAYED));
@@ -5700,21 +5712,24 @@ void CMusicPlayerDlg::OnOnlineHelp()
 void CMusicPlayerDlg::OnSpeedUp()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().SpeedUp();
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+        CPlayer::GetInstance().SpeedUp();
 }
 
 
 void CMusicPlayerDlg::OnSlowDown()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().SlowDown();
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+        CPlayer::GetInstance().SlowDown();
 }
 
 
 void CMusicPlayerDlg::OnOriginalSpeed()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().SetOrignalSpeed();
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+        CPlayer::GetInstance().SetOrignalSpeed();
 }
 
 
@@ -5782,40 +5797,55 @@ afx_msg LRESULT CMusicPlayerDlg::OnRecentPlayedListCleared(WPARAM wParam, LPARAM
 void CMusicPlayerDlg::OnAbRepeat()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().DoABRepeat();
-    UpdateABRepeatToolTip();
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+    {
+        CPlayer::GetInstance().DoABRepeat();
+        UpdateABRepeatToolTip();
+    }
 }
 
 
 void CMusicPlayerDlg::OnSetAPoint()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().SetARepeatPoint();
-    UpdateABRepeatToolTip();
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+    {
+        CPlayer::GetInstance().SetARepeatPoint();
+        UpdateABRepeatToolTip();
+    }
 }
 
 
 void CMusicPlayerDlg::OnSetBPoint()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().SetBRepeatPoint();
-    UpdateABRepeatToolTip();
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+    {
+        CPlayer::GetInstance().SetBRepeatPoint();
+        UpdateABRepeatToolTip();
+    }
 }
 
 
 void CMusicPlayerDlg::OnResetAbRepeat()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().ResetABRepeat();
-    UpdateABRepeatToolTip();
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+    {
+        CPlayer::GetInstance().ResetABRepeat();
+        UpdateABRepeatToolTip();
+    }
 }
 
 
 void CMusicPlayerDlg::OnNextAbRepeat()
 {
     // TODO: 在此添加命令处理程序代码
-    CPlayer::GetInstance().ContinueABRepeat();
-    UpdateABRepeatToolTip();
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+    {
+        CPlayer::GetInstance().ContinueABRepeat();
+        UpdateABRepeatToolTip();
+    }
 }
 
 

@@ -2603,6 +2603,7 @@ void CPlayerUIBase::DrawABRepeatButton(CRect rect)
         info = _T("A-B");
     CFont* pOldFont = m_draw.GetFont();
     m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
+    m_buttons[BTN_AB_REPEAT].enable = (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
     DrawTextButton(rect, BTN_AB_REPEAT, info, ab_repeat_mode != CPlayer::AM_NONE);
     m_draw.SetFont(pOldFont);
 }
