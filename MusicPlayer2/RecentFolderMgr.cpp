@@ -1,16 +1,8 @@
 ﻿#include "stdafx.h"
 #include "RecentFolderMgr.h"
 #include "MusicPlayer2.h"
-#include "COSUPlayerHelper.h"
-#include "Player.h"
 
 
-bool PathInfo::IsEmpty() const
-{
-    return path.empty();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 CRecentFolderMgr CRecentFolderMgr::m_instance;
 
 CRecentFolderMgr::~CRecentFolderMgr()
@@ -22,12 +14,29 @@ CRecentFolderMgr& CRecentFolderMgr::Instance()
     return m_instance;
 }
 
+bool CRecentFolderMgr::SetSortMode(FolderSortMode sort_mode)
+{
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
+    if (m_sort_mode != sort_mode)
+    {
+        m_sort_mode = sort_mode;
+        SortPath();
+        return true;
+    }
+    return false;
+}
+
+CRecentFolderMgr::FolderSortMode CRecentFolderMgr::GetSortMode() const
+{
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
+    return m_sort_mode;
+}
+
 void CRecentFolderMgr::EmplaceRecentFolder(const std::wstring& path, int track, int position, SortMode sort_mode, int track_num, int totla_time, bool contain_sub_folder)
 {
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(), [&](const PathInfo& path_info) {
-        return path == path_info.path;
-    });
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
+    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
+        [&](const PathInfo& path_info) { return path == path_info.path; });
 
     PathInfo path_info;
     path_info.path = path;
@@ -58,7 +67,7 @@ void CRecentFolderMgr::EmplaceRecentFolder(const std::wstring& path, int track, 
         if (track_num > 0)      //仅当路径中有文件时才保存
         {
             path_info.add_time = CCommon::GetCurTimeElapse();
-            m_recent_path.push_front(path_info);        // 当前路径插入到m_recent_path的前面
+            m_recent_path.push_back(path_info);
         }
     }
 
@@ -66,36 +75,9 @@ void CRecentFolderMgr::EmplaceRecentFolder(const std::wstring& path, int track, 
     SortPath();
 }
 
-PathInfo& CRecentFolderMgr::FindItem(const std::wstring& path)
+PathInfo CRecentFolderMgr::GetCurrentListInfo() const
 {
-    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
-        [&](const PathInfo& path_info) { return path_info.path == path; });
-    if (iter != m_recent_path.end())
-    {
-        return *iter;
-    }
-    else
-    {
-        static PathInfo empty_item;
-        return empty_item;
-    }
-}
-
-bool CRecentFolderMgr::FindItem(const std::wstring& path, std::function<void(PathInfo&)> func)
-{
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    PathInfo& path_info{ FindItem(path) };
-    if (!path_info.path.empty())
-    {
-        func(path_info);
-        return true;
-    }
-    return false;
-}
-
-const PathInfo& CRecentFolderMgr::GetCurrentItem()
-{
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     if (!m_recent_path.empty())
     {
         //查找播放时间最近的路径
@@ -107,51 +89,14 @@ const PathInfo& CRecentFolderMgr::GetCurrentItem()
         }
         return *latest_path;
     }
-    static PathInfo empty_item;
-    return empty_item;
+    return PathInfo();
 }
 
-int CRecentFolderMgr::GetItemSize() const
+bool CRecentFolderMgr::RemoveItem(const std::wstring& path)
 {
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    return static_cast<int>(m_recent_path.size());
-}
-
-void CRecentFolderMgr::IteratePathInfo(std::function<void(const PathInfo&)> func)
-{
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    for (const auto& path_info : m_recent_path)
-    {
-        func(path_info);
-    }
-}
-
-PathInfo& CRecentFolderMgr::GetItem(int index)
-{
-    if (index >= 0 && index < static_cast<int>(m_recent_path.size()))
-    {
-        return m_recent_path[index];
-    }
-    else
-    {
-        static PathInfo empty_item;
-        return empty_item;
-    }
-}
-
-void CRecentFolderMgr::GetItem(int index, std::function<void(const PathInfo&)> func)
-{
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    const PathInfo& path_info{ GetItem(index) };
-    func(path_info);
-}
-
-bool CRecentFolderMgr::DeleteItem(const std::wstring& path)
-{
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(), [&](const PathInfo& path_info) {
-        return path_info.path == path;
-    });
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
+    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
+        [&](const PathInfo& path_info) { return path_info.path == path; });
     if (iter != m_recent_path.end())
     {
         m_recent_path.erase(iter);        // 删除选中的路径
@@ -160,28 +105,42 @@ bool CRecentFolderMgr::DeleteItem(const std::wstring& path)
     return false;
 }
 
-int CRecentFolderMgr::DeleteInvalidItems()
+int CRecentFolderMgr::RemoveItemIf(std::function<bool(const PathInfo&)> fun_condition)
 {
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    int cleard_cnt{};
-    for (size_t i{}; i < m_recent_path.size(); i++)
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
+    int removedCount{};
+    auto iter = m_recent_path.begin();
+    while (iter != m_recent_path.end())
     {
-        if (!CAudioCommon::IsPathContainsAudioFile(m_recent_path[i].path, m_recent_path[i].contain_sub_folder) && !COSUPlayerHelper::IsOsuFolder(m_recent_path[i].path))
+        if (fun_condition(*iter))
         {
-            m_recent_path.erase(m_recent_path.begin() + i);		//删除不存在的路径
-            i--;
-            cleard_cnt++;
+            iter = m_recent_path.erase(iter);
+            ++removedCount;
         }
+        else
+            ++iter;
     }
-    return cleard_cnt;
+    return removedCount;
+}
+
+bool CRecentFolderMgr::SetContainSubFolder(const wstring& path)
+{
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
+    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
+        [&](const PathInfo& path_info) { return path_info.path == path; });
+    if (iter != m_recent_path.end())
+    {
+        m_recent_path.erase(iter);        // 删除选中的路径
+        return true;
+    }
+    return false;
 }
 
 bool CRecentFolderMgr::ResetLastPlayedTime(const std::wstring& path)
 {
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(), [&](const PathInfo& path_info) {
-        return path_info.path == path;
-        });
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
+    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
+        [&](const PathInfo& path_info) { return path_info.path == path; });
     if (iter != m_recent_path.end())
     {
         iter->last_played_time = 0;
@@ -190,36 +149,48 @@ bool CRecentFolderMgr::ResetLastPlayedTime(const std::wstring& path)
     return false;
 }
 
-int CRecentFolderMgr::GetCurrentPlaylistIndex() const
+int CRecentFolderMgr::GetItemSize() const
 {
-    if (CPlayer::GetInstance().IsFolderMode())
-    {
-        std::wstring current_path{ CPlayer::GetInstance().GetCurrentDir2() };
-        auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(), [&](const PathInfo& path_info) {
-            return path_info.path == current_path;
-        });
-        if (iter != m_recent_path.end())
-            return iter - m_recent_path.begin();
-    }
-
-    return -1;
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
+    return static_cast<int>(m_recent_path.size());
 }
 
-bool CRecentFolderMgr::SetSortMode(FolderSortMode sort_mode)
+PathInfo CRecentFolderMgr::GetItem(const wstring& path) const
 {
-    if (m_sort_mode != sort_mode)
-    {
-        std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
-        m_sort_mode = sort_mode;
-        SortPath();
-        return true;
-    }
-    return false;
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
+    auto iter = std::find_if(m_recent_path.begin(), m_recent_path.end(),
+        [&](const PathInfo& path_info) { return path_info.path == path; });
+    if (iter != m_recent_path.end())
+        return *iter;
+    return PathInfo();
 }
 
-CRecentFolderMgr::FolderSortMode CRecentFolderMgr::GetSortMode() const
+void CRecentFolderMgr::IteratePathInfo(std::function<void(const PathInfo&)> func) const
 {
-    return m_sort_mode;
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
+    for (const auto& path_info : m_recent_path)
+    {
+        func(path_info);
+    }
+}
+
+PathInfo CRecentFolderMgr::GetItem(int index) const
+{
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
+    if (index >= 0 && index < static_cast<int>(m_recent_path.size()))
+    {
+        return m_recent_path[index];
+    }
+    return PathInfo();
+}
+
+void CRecentFolderMgr::GetItem(int index, std::function<void(const PathInfo&)> func) const
+{
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
+    if (index >= 0 && index < static_cast<int>(m_recent_path.size()))
+    {
+         func(m_recent_path[index]);
+    }
 }
 
 bool CRecentFolderMgr::LoadData()
@@ -227,11 +198,11 @@ bool CRecentFolderMgr::LoadData()
     // 打开文件
     CFile file;
     BOOL bRet = file.Open(theApp.m_recent_path_dat_path.c_str(), CFile::modeRead);
-    if (!bRet)		//文件不存在
+    if (!bRet)      //文件不存在
     {
         return false;
     }
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     //为了保持和以前版本的数据兼容，先读取前8个字节，以判断是否是以前版本
     char buff[8]{};
     file.Read(buff, 8);
@@ -294,7 +265,7 @@ bool CRecentFolderMgr::LoadData()
             if (path_info.path.empty() || path_info.path.size() < 2) continue;		//如果路径为空或路径太短，就忽略它
             if (path_info.path.back() != L'/' && path_info.path.back() != L'\\')	//如果读取到的路径末尾没有斜杠，则在末尾加上一个
                 path_info.path.push_back(L'\\');
-            m_recent_path.push_back(path_info);
+            m_recent_path.push_back(std::move(path_info));
         }
     }
     catch (CArchiveException* exception)
@@ -316,18 +287,18 @@ void CRecentFolderMgr::SaveData() const
     CFile file;
     BOOL bRet = file.Open(theApp.m_recent_path_dat_path.c_str(),
         CFile::modeCreate | CFile::modeWrite);
-    if (!bRet)		//打开文件失败
+    if (!bRet)      //打开文件失败
     {
         return;
     }
-    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
     const unsigned int version{ 5u };
     ar << static_cast<unsigned int>(m_recent_path.size());		//写入m_recent_path容器的大小
     ar << version;     //写入文件的版本
-    for (auto& path_info : m_recent_path)
+    for (const auto& path_info : m_recent_path)
     {
         ar << CString(path_info.path.c_str())
             << path_info.track
@@ -346,16 +317,6 @@ void CRecentFolderMgr::SaveData() const
     file.Close();
 }
 
-void CRecentFolderMgr::GetFolderAudioFiles(const PathInfo& path_info, std::vector<SongInfo>& song_list)
-{
-    if (!path_info.path.empty())
-    {
-        if (COSUPlayerHelper::IsOsuFolder(path_info.path))
-            COSUPlayerHelper::GetOSUAudioFiles(path_info.path, song_list);
-        else
-            CAudioCommon::GetAudioFiles(path_info.path, song_list, MAX_SONG_NUM, path_info.contain_sub_folder);
-    }
-}
 
 CRecentFolderMgr::CRecentFolderMgr()
 {
@@ -367,13 +328,13 @@ void CRecentFolderMgr::SortPath()
     {
         switch (m_sort_mode)
         {
-        case CRecentFolderMgr::SM_RECENT_PLAYED:
+        case CRecentFolderMgr::FolderSortMode::SM_RECENT_PLAYED:
             std::stable_sort(m_recent_path.begin(), m_recent_path.end(), [](const PathInfo& a, const PathInfo& b) { return a.last_played_time > b.last_played_time; });
             break;
-        case CRecentFolderMgr::SM_RECENT_ADDED:
+        case CRecentFolderMgr::FolderSortMode::SM_RECENT_ADDED:
             std::stable_sort(m_recent_path.begin(), m_recent_path.end(), [](const PathInfo& a, const PathInfo& b) { return a.add_time > b.add_time; });
             break;
-        case CRecentFolderMgr::SM_PATH:
+        case CRecentFolderMgr::FolderSortMode::SM_PATH:
             std::stable_sort(m_recent_path.begin(), m_recent_path.end(), [](const PathInfo& a, const PathInfo& b) { return a.path < b.path; });
             break;
         default:

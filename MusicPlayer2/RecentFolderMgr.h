@@ -1,20 +1,18 @@
 ﻿#pragma once
-#include "AudioCommon.h"
+#include "SongInfo.h"
 
 //文件夹模式下一个文件夹的信息
 struct PathInfo
 {
-    wstring path;		//路径
-    int track{};			//最后播放到的曲目号
-    int position{};		//最后播放到的位置
-    SortMode sort_mode{};	//路径中文件的排序方式
-    int track_num{};		//路径中音频文件的数量
-    int total_time{};		//路径中音频文件的总时间
-    bool contain_sub_folder{};  //是否包含子文件夹
-    unsigned __int64 last_played_time{};    //上次播放的时间
-    unsigned __int64 add_time{};            //添加时间
-
-    bool IsEmpty() const;
+    wstring path;                               // 路径
+    int track{};                                // 最后播放到的曲目号
+    int position{};                             // 最后播放到的位置
+    SortMode sort_mode{};                       // 路径中文件的排序方式
+    int track_num{};                            // 路径中音频文件的数量
+    int total_time{};                           // 路径中音频文件的总时间
+    bool contain_sub_folder{};                  // 是否包含子文件夹
+    unsigned __int64 last_played_time{};        // 上次播放的时间
+    unsigned __int64 add_time{};                // 添加时间
 };
 
 class CRecentFolderMgr
@@ -24,7 +22,7 @@ public:
     static CRecentFolderMgr& Instance();
 
     //文件夹排序方式
-    enum FolderSortMode
+    enum class FolderSortMode
     {
         SM_UNSORTED,        //未排序
         SM_RECENT_PLAYED,   //最近播放
@@ -32,40 +30,47 @@ public:
         SM_PATH             //路径
     };
 
-    //deque<PathInfo>& GetRecentPath() { return m_recent_path; }    //返回最近播放路径列表的引用
-    bool IsEmpty() { return m_recent_path.empty(); }
-    void EmplaceRecentFolder(const std::wstring& path, int track, int position, SortMode sort_mode, int track_num, int totla_time, bool contain_sub_folder);
-    PathInfo& FindItem(const std::wstring& path);
-    bool FindItem(const std::wstring& path, std::function<void(PathInfo&)> func);   //查找一个PathInfo对象，找到后会调用func，并通过参数传递找到的对象，func仅调用一次
-    const PathInfo& GetCurrentItem();
-    int GetItemSize() const;
-    void IteratePathInfo(std::function<void(const PathInfo&)> func);
-    PathInfo& GetItem(int index);
-    void GetItem(int index, std::function<void(const PathInfo&)> func);
-    bool DeleteItem(const std::wstring& path);
-    int DeleteInvalidItems();
-    bool ResetLastPlayedTime(const std::wstring& path);     //将上次播放时间清空，使它从“最近播放”中移除
-
-    int GetCurrentPlaylistIndex() const;
-
+    // 设置排序方式
     bool SetSortMode(FolderSortMode sort_mode);
+    // 获取排序方式
     FolderSortMode GetSortMode() const;
+    // 创建/更新 一个文件夹项目
+    void EmplaceRecentFolder(const std::wstring& path, int track, int position, SortMode sort_mode, int track_num, int totla_time, bool contain_sub_folder);
+    // 获取最近播放的文件夹项目
+    PathInfo GetCurrentListInfo() const;
+    // 删除指定项目
+    bool RemoveItem(const std::wstring& path);
+    // 删除符合条件的项目，返回已删除个数
+    int RemoveItemIf(std::function<bool(const PathInfo&)> fun_condition);
+    // 翻转指定PathInfo的contain_sub_folder成员
+    bool SetContainSubFolder(const wstring& path);
+    // 将上次播放时间清空，使它从“最近播放”中移除
+    bool ResetLastPlayedTime(const std::wstring& path);
+
+    // 遍历所有PathInfo (仍有线程安全问题，外部不应自行保存参数对象指针，接下来会解决这个)
+    void IteratePathInfo(std::function<void(const PathInfo&)> func) const;
+
+    // 获取PathInfo数量
+    int GetItemSize() const;
+    // 获取path指定PathInfo的副本
+    PathInfo GetItem(const wstring& path) const;
+    // 获取index指定PathInfo的副本
+    PathInfo GetItem(int index) const;
+    // 在func中读取index指定PathInfo
+    void GetItem(int index, std::function<void(const PathInfo&)> func) const;
 
     //从文件读取数据
     bool LoadData();
     //将数据写入文件
     void SaveData() const;
 
-    static void GetFolderAudioFiles(const PathInfo& path_info, std::vector<SongInfo>& song_list);
-
 private:
     CRecentFolderMgr();
     void SortPath();
 
-    static CRecentFolderMgr m_instance;     //CRecentFolderMgr类唯一的对象
-    deque<PathInfo> m_recent_path;      //最近打开过的路径
-    FolderSortMode m_sort_mode{ SM_UNSORTED };
-    mutable std::shared_mutex m_shared_mutex;
-
+    static CRecentFolderMgr m_instance;             // CRecentFolderMgr类唯一的对象
+    vector<PathInfo> m_recent_path;                 // 最近打开过的路径
+    FolderSortMode m_sort_mode{};
+    mutable std::shared_mutex m_shared_mutex;       // 保护此类数据对象 m_recent_path & m_sort_mode 的读写
 };
 

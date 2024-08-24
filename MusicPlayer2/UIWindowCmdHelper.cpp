@@ -256,11 +256,11 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
 {
     int item_selected{ medialib_folder->GetItemSelected() };
 
-    PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
+    PathInfo path_info = CRecentFolderMgr::Instance().GetItem(item_selected);
     CMusicPlayerCmdHelper helper;
 
     auto getSongList = [&](std::vector<SongInfo>& song_list) {
-        CRecentFolderMgr::GetFolderAudioFiles(path_info, song_list);
+        CAudioCommon::GetAudioFiles(path_info.path, song_list, MAX_SONG_NUM, path_info.contain_sub_folder);
     };
 
     if (command == ID_PLAY_PATH)
@@ -288,7 +288,7 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
         }
         else
         {
-            path_info.contain_sub_folder = !path_info.contain_sub_folder;
+            CRecentFolderMgr::Instance().SetContainSubFolder(path_info.path);
         }
 
     }
@@ -297,7 +297,8 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
         const wstring& inquiry_info = theApp.m_str_table.LoadText(L"MSG_LIB_PATH_CLEAR_INQUIRY");
         if (AfxMessageBox(inquiry_info.c_str(), MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
             return;
-        int cleard_cnt = CRecentFolderMgr::Instance().DeleteInvalidItems();
+        int cleard_cnt = CRecentFolderMgr::Instance().RemoveItemIf([](const PathInfo& path_info)
+            { return !CAudioCommon::IsPathContainsAudioFile(path_info.path, path_info.contain_sub_folder); });
         CRecentFolderAndPlaylist::Instance().Init();
         wstring complete_info = theApp.m_str_table.LoadTextFormat(L"MSG_LIB_PATH_CLEAR_COMPLETE", { cleard_cnt });
         AfxMessageBox(complete_info.c_str(), MB_ICONINFORMATION | MB_OK);
@@ -591,17 +592,17 @@ void CUIWindowCmdHelper::OnFolderOrPlaylistSortCommand(DWORD command)
     //文件夹-最近播放
     if (command == ID_LIB_FOLDER_SORT_RECENT_PLAYED)
     {
-        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::SM_RECENT_PLAYED);
+        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::FolderSortMode::SM_RECENT_PLAYED);
     }
     //文件夹-最近添加
     else if (command == ID_LIB_FOLDER_SORT_RECENT_ADDED)
     {
-        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::SM_RECENT_ADDED);
+        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::FolderSortMode::SM_RECENT_ADDED);
     }
     //文件夹-路径
     else if (command == ID_LIB_FOLDER_SORT_PATH)
     {
-        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::SM_PATH);
+        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::FolderSortMode::SM_PATH);
     }
     //播放列表-最近播放
     else if (command == ID_LIB_PLAYLIST_SORT_RECENT_PLAYED)
@@ -651,7 +652,7 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
         if (item_selected >= 0 && item_selected < CRecentFolderMgr::Instance().GetItemSize())
             select_valid = true;
 
-        const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
+        PathInfo path_info = CRecentFolderMgr::Instance().GetItem(item_selected);
         contain_sub_folder = path_info.contain_sub_folder;
     }
 
@@ -820,9 +821,9 @@ void CUIWindowCmdHelper::SetFolderSortMenuState(CMenu* pMenu)
 {
     switch (CRecentFolderMgr::Instance().GetSortMode())
     {
-    case CRecentFolderMgr::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
-    case CRecentFolderMgr::SM_RECENT_ADDED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_ADDED, MF_BYCOMMAND | MF_CHECKED); break;
-    case CRecentFolderMgr::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_PATH, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentFolderMgr::FolderSortMode::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentFolderMgr::FolderSortMode::SM_RECENT_ADDED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_ADDED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentFolderMgr::FolderSortMode::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_PATH, MF_BYCOMMAND | MF_CHECKED); break;
     }
 }
 

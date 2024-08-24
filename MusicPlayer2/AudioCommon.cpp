@@ -155,6 +155,13 @@ wstring CAudioCommon::GetAudioDescriptionByExtension(wstring extension)
 
 void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t max_file, bool include_sub_dir)
 {
+    if (path.empty())
+        return;
+    if (COSUPlayerHelper::IsOsuFolder(path))
+    {
+        COSUPlayerHelper::GetOSUAudioFiles(path, files);
+        return;
+    }
     //文件句柄
     intptr_t hFile = 0;
     //文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
@@ -190,6 +197,13 @@ void CAudioCommon::GetAudioFiles(wstring path, vector<SongInfo>& files, size_t m
 
 void CAudioCommon::GetAudioFiles(wstring path, std::vector<std::wstring>& files, size_t max_file, bool include_sub_dir)
 {
+    if (path.empty())
+        return;
+    if (COSUPlayerHelper::IsOsuFolder(path))
+    {
+        COSUPlayerHelper::GetOSUAudioFiles(path, files);
+        return;
+    }
     //文件句柄
     intptr_t hFile = 0;
     //文件信息
@@ -223,6 +237,8 @@ void CAudioCommon::GetAudioFiles(wstring path, std::vector<std::wstring>& files,
 
 bool CAudioCommon::IsPathContainsAudioFile(std::wstring path, bool include_sub_dir /*= false*/)
 {
+    if (COSUPlayerHelper::IsOsuFolder(path))
+        return true;
     //文件句柄
     intptr_t hFile = 0;
     //文件信息

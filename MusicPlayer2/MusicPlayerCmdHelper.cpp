@@ -571,11 +571,7 @@ int CMusicPlayerCmdHelper::UpdateMediaLib()
     //获取所有音频文件的路径
     for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
     {
-        // 这里还是特殊处理比较好，避免自动加入大量无关文件（比如配的视频等等）
-        if (!COSUPlayerHelper::IsOsuFolder(item))
-            CAudioCommon::GetAudioFiles(item, all_media_songs, MAX_SONG_NUM, true);
-        else
-            COSUPlayerHelper::GetOSUAudioFiles(item, all_media_songs);
+        CAudioCommon::GetAudioFiles(item, all_media_songs, MAX_SONG_NUM, true);
     }
 
     CAudioCommon::GetAudioInfo(all_media_songs,
@@ -596,7 +592,9 @@ int CMusicPlayerCmdHelper::CleanUpSongData(std::function<bool(const SongInfo&)> 
 
 int CMusicPlayerCmdHelper::CleanUpRecentFolders()
 {
-    return CRecentFolderMgr::Instance().DeleteInvalidItems();
+    int cleard_cnt = CRecentFolderMgr::Instance().RemoveItemIf([](const PathInfo& path_info)
+        { return !CAudioCommon::IsPathContainsAudioFile(path_info.path, path_info.contain_sub_folder); });
+    return cleard_cnt;
 }
 
 std::wstring CMusicPlayerCmdHelper::GetMediaLibTabName(eMediaLibTab tab)
@@ -1079,7 +1077,7 @@ bool CMusicPlayerCmdHelper::OnDeleteRecentFolder(std::wstring folder_path)
         }
         else
         {
-            if (CRecentFolderMgr::Instance().DeleteItem(folder_path))
+            if (CRecentFolderMgr::Instance().RemoveItem(folder_path))
             {
                 CRecentFolderAndPlaylist::Instance().Init();
                 return true;

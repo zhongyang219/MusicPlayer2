@@ -496,7 +496,7 @@ void CMusicPlayerDlg::SaveConfig()
     m_hot_key.SaveToTni(ini);
 
     ini.WriteInt(L"other", L"playlist_sort_mode", CPlaylistMgr::Instance().GetSortMode());
-    ini.WriteInt(L"other", L"folder_sort_mode", CRecentFolderMgr::Instance().GetSortMode());
+    ini.WriteInt(L"other", L"folder_sort_mode", static_cast<int>(CRecentFolderMgr::Instance().GetSortMode()));
 
     //保存桌面歌词预设
     m_desktop_lyric.SaveDefaultStyle(ini);
@@ -714,7 +714,7 @@ void CMusicPlayerDlg::LoadConfig()
 
     CPlaylistMgr::PlaylistSortMode playlist_sort_mode = static_cast<CPlaylistMgr::PlaylistSortMode>(ini.GetInt(L"other", L"playlist_sort_mode", CPlaylistMgr::SM_RECENT_PLAYED));
     CPlaylistMgr::Instance().SetSortMode(playlist_sort_mode);
-    CRecentFolderMgr::FolderSortMode folder_sort_mode = static_cast<CRecentFolderMgr::FolderSortMode>(ini.GetInt(L"other", L"folder_sort_mode", CRecentFolderMgr::SM_RECENT_PLAYED));
+    CRecentFolderMgr::FolderSortMode folder_sort_mode = static_cast<CRecentFolderMgr::FolderSortMode>(ini.GetInt(L"other", L"folder_sort_mode", static_cast<int>(CRecentFolderMgr::FolderSortMode::SM_RECENT_PLAYED)));
     CRecentFolderMgr::Instance().SetSortMode(folder_sort_mode);
 
     //载入热键设置
@@ -4435,7 +4435,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnPlaylistIniStart(WPARAM wParam, LPARAM lParam
     {
         if (CCommon::IsFolder(remove_list_path))
         {
-            CRecentFolderMgr::Instance().DeleteItem(remove_list_path);
+            CRecentFolderMgr::Instance().RemoveItem(remove_list_path);
         }
         else if (CPlaylistFile::IsPlaylistFile(remove_list_path))
         {
@@ -5404,14 +5404,7 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
         include_sub_dir = (checked != FALSE);
 #endif
         std::vector<wstring> file_list;
-        if (COSUPlayerHelper::IsOsuFolder(wstring(folderPickerDlg.GetPathName())) && !include_sub_dir)
-        {   // 此次添加的是osu!的Songs文件夹
-            COSUPlayerHelper::GetOSUAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list);
-        }
-        else
-        {
-            CAudioCommon::GetAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list, MAX_SONG_NUM, include_sub_dir);
-        }
+        CAudioCommon::GetAudioFiles(wstring(folderPickerDlg.GetPathName()), file_list, MAX_SONG_NUM, include_sub_dir);
         int rtn = CPlayer::GetInstance().AddFilesToPlaylist(file_list);
         if (rtn == 0)
         {
@@ -5540,10 +5533,7 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
         //如果输入的是文件夹路径，则将文件夹内的音频文件添加到播放列表
         if (CCommon::FolderExist(strUrl))
         {
-            if (COSUPlayerHelper::IsOsuFolder(strUrl))
-                COSUPlayerHelper::GetOSUAudioFiles(strUrl, vecUrl);
-            else
-                CAudioCommon::GetAudioFiles(strUrl, vecUrl);
+            CAudioCommon::GetAudioFiles(strUrl, vecUrl);
         }
         else
         {

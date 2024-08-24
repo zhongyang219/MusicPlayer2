@@ -102,27 +102,28 @@ void CPlayer::Create()
     IniPlayerCore();
     LoadConfig();
     m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
-    const PathInfo& path_info{ CRecentFolderMgr::Instance().GetCurrentItem() };
-    bool change_to_default_playlist{ m_playlist_mode == PM_FOLDER && (CRecentFolderMgr::Instance().IsEmpty() || (!COSUPlayerHelper::IsOsuFolder(path_info.path) && !CAudioCommon::IsPathContainsAudioFile(path_info.path, path_info.contain_sub_folder)))};
-    // 如果文件夹模式且当前文件夹没有音频文件那么切换到默认播放列表，清理无效（空）文件夹会在启动时更新媒体库进行（如果启用remove_file_not_exist_when_update）
-    if (change_to_default_playlist)
+    if (m_playlist_mode == PM_FOLDER)
     {
-        const PlaylistInfo& playlist_info = CPlaylistMgr::Instance().GetDefaultPlaylist();
-        SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position);
-    }
-    else if (m_playlist_mode == PM_FOLDER)
-    {
-        SetPath(path_info);
+        // 如果文件夹模式且当前文件夹没有音频文件那么切换到默认播放列表
+        // 清理无效（空）文件夹会在启动时更新媒体库进行（如果启用remove_file_not_exist_when_update）
+        auto list_info = CRecentFolderMgr::Instance().GetCurrentListInfo();
+        if (!list_info.path.empty() && CAudioCommon::IsPathContainsAudioFile(list_info.path, list_info.contain_sub_folder))
+            SetPath(list_info);
+        else
+        {
+            auto list_info = CPlaylistMgr::Instance().GetDefaultPlaylist();
+            SetPlaylist(list_info.path, list_info.track, list_info.position);
+        }
     }
     else if (m_playlist_mode == PM_MEDIA_LIB)
     {
-        auto playlist_info = CMediaLibPlaylistMgr::Instance().GetCurrentPlaylistInfo();
-        SetMediaLibPlaylist(playlist_info.medialib_type, playlist_info.path);
+        auto list_info = CMediaLibPlaylistMgr::Instance().GetCurrentPlaylistInfo();
+        SetMediaLibPlaylist(list_info.medialib_type, list_info.path);
     }
     else
     {
-        const PlaylistInfo& playlist_info = CPlaylistMgr::Instance().GetCurrentPlaylistInfo();
-        SetPlaylist(playlist_info.path, playlist_info.track, playlist_info.position);
+        auto list_info = CPlaylistMgr::Instance().GetCurrentPlaylistInfo();
+        SetPlaylist(list_info.path, list_info.track, list_info.position);
     }
 }
 
@@ -176,10 +177,7 @@ void CPlayer::IniPlayList(bool play, MediaLibRefreshMode refresh_mode)
     {
         if (m_path.empty() || (m_path.back() != L'/' && m_path.back() != L'\\'))        //如果输入的新路径为空或末尾没有斜杠，则在末尾加上一个
             m_path.append(1, L'\\');
-        if (COSUPlayerHelper::IsOsuFolder(m_path))
-            COSUPlayerHelper::GetOSUAudioFiles(m_path, m_playlist);
-        else
-            CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM, m_contain_sub_folder);
+        CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM, m_contain_sub_folder);
     }
 
     m_thread_info.refresh_mode = refresh_mode;
@@ -1001,8 +999,8 @@ bool CPlayer::OpenFolder(wstring path, bool contain_sub_folder, bool play)
     m_current_position.fromInt(0);
 
     // 如果是打开过的文件夹那么用保存的设置覆盖默认值
-    const auto& path_info = CRecentFolderMgr::Instance().FindItem(m_path);
-    if (!path_info.IsEmpty())
+    PathInfo path_info = CRecentFolderMgr::Instance().GetItem(m_path);
+    if (!path_info.path.empty())
     {
         m_sort_mode = path_info.sort_mode;
         m_index = path_info.track;
@@ -1125,7 +1123,8 @@ bool CPlayer::OpenASongInFolderMode(const SongInfo& song, bool play)
     m_current_position.fromInt(0);
 
     // 如果是打开过的文件夹那么用保存的设置覆盖默认值
-    const auto& path_info = CRecentFolderMgr::Instance().FindItem(m_path);
+    PathInfo path_info = CRecentFolderMgr::Instance().GetItem(m_path);
+    if (!path_info.path.empty())
     {
         m_sort_mode = path_info.sort_mode;
         m_contain_sub_folder = path_info.contain_sub_folder;

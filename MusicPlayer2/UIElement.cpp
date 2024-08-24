@@ -2145,7 +2145,7 @@ std::wstring UiElement::MediaLibFolder::GetItemText(int row, int col)
     }
     else if (col == COL_COUNT)
     {
-        int track_num;
+        int track_num{};
         CRecentFolderMgr::Instance().GetItem(row, [&](const PathInfo& path_info) {
             track_num = path_info.track_num;
         });
@@ -2176,10 +2176,19 @@ int UiElement::MediaLibFolder::GetColumnWidth(int col, int total_width)
 
 int UiElement::MediaLibFolder::GetHighlightRow()
 {
+    int high_light{ -1 };
     if (CPlayer::GetInstance().IsFolderMode())
-        return CRecentFolderMgr::Instance().GetCurrentPlaylistIndex();
-    else
-        return -1;
+    {
+        int cnt{};
+        wstring cur_path = CPlayer::GetInstance().GetCurrentDir2();
+        CRecentFolderMgr::Instance().IteratePathInfo([&](const PathInfo& path_info)
+            {
+                if (path_info.path == cur_path)
+                    high_light = cnt;
+                ++cnt;
+            });
+    }
+    return high_light;
 }
 
 int UiElement::MediaLibFolder::GetColumnScrollTextWhenSelected()
@@ -2197,7 +2206,7 @@ void UiElement::MediaLibFolder::OnDoubleClicked()
     int item_selected = GetItemSelected();
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
-        const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
+        PathInfo path_info = CRecentFolderMgr::Instance().GetItem(item_selected);
         CMusicPlayerCmdHelper helper;
         helper.OnFolderSelected(path_info, true);
     }
@@ -2241,7 +2250,7 @@ void UiElement::MediaLibFolder::OnHoverButtonClicked(int btn_index, int row)
     {
         if (row >= 0 && row < GetRowCount())
         {
-            const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(row) };
+            PathInfo path_info = CRecentFolderMgr::Instance().GetItem(row);
             CMusicPlayerCmdHelper helper;
             helper.OnFolderSelected(path_info, true);
         }
