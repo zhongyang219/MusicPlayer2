@@ -158,6 +158,7 @@
           <xs:element name="miniSpectrum" type="miniSpectrumType"></xs:element>
           <xs:element name="allTracksList" type="allTracksListType"></xs:element>
           <xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
+          <xs:element name="medialibFolderExplore" type="medialibFolderExploreType"></xs:element>
         </xs:choice>
       </xs:sequence>
     </xs:group>
@@ -1029,5 +1030,13 @@
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="medialibFolderExploreType">
+    <xs:annotation>
+      <xs:documentation>媒体库中的文件夹浏览。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

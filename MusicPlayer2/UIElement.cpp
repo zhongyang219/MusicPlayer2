@@ -8,6 +8,7 @@
 #include "UserUi.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UIWindowCmdHelper.h"
+#include <stack>
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -2826,10 +2827,205 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::MiniSpectrum>();
     else if (name == "placeHolder")
         element = std::make_shared<UiElement::PlaceHolder>();
+    else if (name == "medialibFolderExplore")
+        element = std::make_shared<UiElement::TestTree>();
     else if (name == "ui" || name == "root" || name == "element")
         element = std::make_shared<UiElement::Element>();
 
     if (element != nullptr)
         element->SetUi(ui);
     return element;
+}
+
+void UiElement::TreeElement::Node::AddChild(std::shared_ptr<Node> child)
+{
+    child->parent = this;
+    child_list.push_back(child);
+}
+
+int UiElement::TreeElement::Node::GetLevel() const
+{
+    int level{};
+    const Node* node{ this };
+    while (node != nullptr && node->parent != nullptr)
+    {
+        node = node->parent;
+        level++;
+    }
+    return level;
+}
+
+void UiElement::TreeElement::Node::IterateNodeInOrder(std::function<void(Node*)> func, bool ignore_invisible)
+{
+    std::stack<UiElement::TreeElement::Node*> nodeStack;
+    nodeStack.push(this);
+    while (!nodeStack.empty())
+    {
+        UiElement::TreeElement::Node* pCurNode = nodeStack.top();
+        nodeStack.pop();
+
+        func(pCurNode);
+
+        //如果当前节点已经折叠，且需要忽略已折叠的节点，则不再遍历其子节点
+        if (pCurNode->collapsed && ignore_invisible)
+            continue;
+
+        for (auto& child : pCurNode->child_list)
+        {
+            nodeStack.push(child.get());
+        }
+    }
+}
+
+std::wstring UiElement::TreeElement::GetItemText(int row, int col)
+{
+    //查找节点
+    const Node* node = GetNodeByIndex(row);
+    if (node != nullptr)
+    {
+        auto iter = node->texts.find(col);
+        if (iter != node->texts.end())
+            return iter->second;
+    }
+    return std::wstring();
+}
+
+int UiElement::TreeElement::GetRowCount()
+{
+    const auto& root_nodes{ GetRootNodes() };
+    int row_count{};
+    for (const auto& root : root_nodes)
+    {
+        root->IterateNodeInOrder([&](const Node*) {
+            row_count++;
+        }, true);
+    }
+    return row_count;
+}
+
+int UiElement::TreeElement::GetItemLevel(int row)
+{
+    const Node* node = GetNodeByIndex(row);
+    if (node != nullptr)
+        return node->GetLevel();
+    return 0;
+}
+
+bool UiElement::TreeElement::IsCollapsable(int row)
+{
+    const Node* node = GetNodeByIndex(row);
+    if (node != nullptr)
+        return !node->child_list.empty();
+    return false;
+}
+
+bool UiElement::TreeElement::IsCollapsed(int row)
+{
+    const Node* node = GetNodeByIndex(row);
+    if (node != nullptr)
+        return node->collapsed;
+    return false;
+}
+
+void UiElement::TreeElement::LButtonUp(CPoint point)
+{
+    //获取点击的行
+    int row = GetListIndexByPoint(point);
+    if (row >= 0)
+    {
+        auto iter = collapsd_rects.find(row);
+        if (iter != collapsd_rects.end())
+        {
+            CRect rect_collapsd = iter->second;
+            //点击了折叠标志
+            if (rect_collapsd.PtInRect(point))
+            {
+                Node* node = GetNodeByIndex(row);
+                node->collapsed = !node->collapsed;
+            }
+        }
+    }
+
+    ListElement::LButtonUp(point);
+}
+
+int UiElement::TreeElement::GetNodeIndex(const Node* node)
+{
+    const auto& root_nodes{ GetRootNodes() };
+    int i{};
+    int rtn_index{ -1 };
+    for (const auto& root : root_nodes)
+    {
+        root->IterateNodeInOrder([&](const Node* cur_node) {
+            if (cur_node == node)
+                rtn_index = i;
+            i++;
+        }, true);
+    }
+
+    return rtn_index;
+}
+
+UiElement::TreeElement::Node* UiElement::TreeElement::GetNodeByIndex(int index)
+{
+    if (index >= 0)
+    {
+        Node* find_node{};
+        auto& root_nodes{ GetRootNodes() };
+        int i{};
+        for (auto& root : root_nodes)
+        {
+            root->IterateNodeInOrder([&](Node* cur_node) {
+                if (i == index)
+                    find_node = cur_node;
+                i++;
+            }, true);
+        }
+        return find_node;
+    }
+
+    return nullptr;
+}
+
+UiElement::TestTree::TestTree()
+{
+    //创建测试节点
+    std::shared_ptr<Node> root1 = CreateNode(L"根节点1", nullptr);
+    std::shared_ptr<Node> root2 = CreateNode(L"根节点2", nullptr);
+
+    CreateNode(L"子节点11", root1);
+    auto node12 = CreateNode(L"子节点12", root1);
+
+    CreateNode(L"子节点121", node12);
+    CreateNode(L"子节点122", node12);
+
+    CreateNode(L"子节点21", root2);
+    CreateNode(L"子节点22", root2);
+
+    root_nodes.push_back(root1);
+    root_nodes.push_back(root2);
+}
+
+std::shared_ptr<UiElement::TreeElement::Node> UiElement::TestTree::CreateNode(std::wstring name, std::shared_ptr<Node> parent)
+{
+    std::shared_ptr<Node> node = std::make_shared<Node>();
+    node->texts[0] = name;
+    if (parent != nullptr)
+        parent->AddChild(node);
+    return node;
+}
+
+int UiElement::TestTree::GetColumnCount()
+{
+    return 1;
+}
+
+int UiElement::TestTree::GetColumnWidth(int col, int total_width)
+{
+    return total_width;
+}
+
+std::vector<std::shared_ptr<UiElement::TestTree::Node>>& UiElement::TestTree::GetRootNodes()
+{
+    return root_nodes;
 }

@@ -2711,14 +2711,40 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                 }
 
                 int col_x = rect_item.left + DPI(4);
+
+                int indent_space{};    //缩进距离
+                UiElement::TreeElement* tree_element = dynamic_cast<UiElement::TreeElement*>(list_element);
+                //如果是树控件
+                if (tree_element != nullptr)
+                {
+                    const int indent_per_level = DPI(8);    //每一级缩进距离
+                    indent_space = indent_per_level * tree_element->GetItemLevel(i);    //缩进距离
+                    //再留出一定距离用于绘制折叠标志
+                    const int collapse_width = DPI(12);
+                    //如果当前行可折叠，绘制折叠标志
+                    if (tree_element->IsCollapsable(i))
+                    {
+                        //绘制折叠标志
+                        CRect rect_collapsd{ rect_item };
+                        rect_collapsd.left = col_x + indent_space;
+                        rect_collapsd.right = rect_collapsd.left + collapse_width;
+                        m_draw.DrawWindowText(rect_collapsd, (tree_element->IsCollapsed(i) ? _T("-") : _T("+")), m_colors.color_text, Alignment::CENTER, true);
+                        //保存折叠标志矩形区域
+                        if (tree_element != nullptr)
+                            tree_element->collapsd_rects[i] = rect_collapsd;
+                    }
+                    indent_space += collapse_width;
+                }
+
                 //绘制图标
                 if (list_element->HasIcon())
                 {
                     CRect rect_icon{ rect_item };
                     rect_icon.left = col_x;
                     rect_icon.right = rect_icon.left + DPI(20);
-                    DrawUiIcon(rect_icon, list_element->GetIcon(i));
                     col_x = rect_icon.right;
+                    rect_icon.MoveToX(rect_icon.left + indent_space);
+                    DrawUiIcon(rect_icon, list_element->GetIcon(i));
                 }
 
                 //绘制列
@@ -2730,6 +2756,13 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     rect_cell.right = rect_cell.left + list_element->GetColumnWidth(j, total_width);
                     std::wstring display_name{ list_element->GetItemText(i, j) };
                     rect_cell.left += DPI(4);       //绘制文字时左侧留出4个像素
+
+                    //第1列缩进
+                    if (j == 0)
+                    {
+                        rect_cell.left += indent_space;
+                    }
+
                     DrawAreaGuard guard(&m_draw, rect & rect_cell);
 
                     CRect rect_text{ rect_cell };
