@@ -719,7 +719,11 @@ namespace UiElement
 
             void AddChild(std::shared_ptr<Node> child);
             int GetLevel() const;       //获取节点的级别，如果节点没有父节点，则级别为0
-            void IterateNodeInOrder(std::function<void(Node*)> func, bool ignore_invisible);   //按顺序遍历子节点（ignore_invisible：忽略被折叠的节点）
+
+            //按顺序遍历子节点
+            //func：遍历节点时的回调函数，如果要结束遍历，则返回true，否则返回false
+            //ignore_invisible：忽略被折叠的节点
+            void IterateNodeInOrder(std::function<bool(Node*)> func, bool ignore_invisible);
         };
 
         virtual std::vector<std::shared_ptr<Node>>& GetRootNodes() = 0;   //获取顶级节点
@@ -730,12 +734,15 @@ namespace UiElement
 
         // 通过 Element 继承
         virtual void LButtonUp(CPoint point) override;
+        virtual void MouseMove(CPoint point) override;
+        virtual void MouseLeave() override;
 
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
 
         std::map<int, CRect> collapsd_rects;     //折叠标志的矩形区域（key是行）
+        int collaps_indicator_hover_row{ -1 };    //鼠标指向的折叠标志的行号
 
     protected:
         int GetNodeIndex(const Node* node);     //查找一个节点的序号（如果节点被折叠或不存在则返回-1）

@@ -2720,15 +2720,33 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     const int indent_per_level = DPI(8);    //每一级缩进距离
                     indent_space = indent_per_level * tree_element->GetItemLevel(i);    //缩进距离
                     //再留出一定距离用于绘制折叠标志
-                    const int collapse_width = DPI(12);
+                    const int collapse_width = DPI(16);
                     //如果当前行可折叠，绘制折叠标志
                     if (tree_element->IsCollapsable(i))
                     {
-                        //绘制折叠标志
+                        //计算折叠标志区域
                         CRect rect_collapsd{ rect_item };
                         rect_collapsd.left = col_x + indent_space;
                         rect_collapsd.right = rect_collapsd.left + collapse_width;
-                        m_draw.DrawWindowText(rect_collapsd, (tree_element->IsCollapsed(i) ? _T("-") : _T("+")), m_colors.color_text, Alignment::CENTER, true);
+                        //如果鼠标指向，则绘制背景
+                        if (tree_element->collaps_indicator_hover_row == i)
+                        {
+                            //背景区域为矩形
+                            CRect rect_background{ rect_collapsd };
+                            rect_background.top += (rect_collapsd.Height() - collapse_width) / 2;
+                            rect_background.bottom = rect_background.top + collapse_width;
+                            BYTE alpha;
+                            if (IsDrawBackgroundAlpha())
+                                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+                            else
+                                alpha = 255;
+                            if (!theApp.m_app_setting_data.button_round_corners)
+                                m_draw.FillAlphaRect(rect_background, m_colors.color_button_hover, alpha, true);
+                            else
+                                m_draw.DrawRoundRect(rect_background, m_colors.color_button_hover, CalculateRoundRectRadius(rect_background), alpha);
+                        }
+                        //绘制折叠标志
+                        m_draw.DrawWindowText(rect_collapsd, (tree_element->IsCollapsed(i) ? _T("+") : _T("-")), m_colors.color_text, Alignment::CENTER, true);
                         //保存折叠标志矩形区域
                         if (tree_element != nullptr)
                             tree_element->collapsd_rects[i] = rect_collapsd;

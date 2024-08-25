@@ -2855,7 +2855,7 @@ int UiElement::TreeElement::Node::GetLevel() const
     return level;
 }
 
-void UiElement::TreeElement::Node::IterateNodeInOrder(std::function<void(Node*)> func, bool ignore_invisible)
+void UiElement::TreeElement::Node::IterateNodeInOrder(std::function<bool(Node*)> func, bool ignore_invisible)
 {
     std::stack<UiElement::TreeElement::Node*> nodeStack;
     nodeStack.push(this);
@@ -2864,7 +2864,8 @@ void UiElement::TreeElement::Node::IterateNodeInOrder(std::function<void(Node*)>
         UiElement::TreeElement::Node* pCurNode = nodeStack.top();
         nodeStack.pop();
 
-        func(pCurNode);
+        if (func(pCurNode))
+            break;
 
         //如果当前节点已经折叠，且需要忽略已折叠的节点，则不再遍历其子节点
         if (pCurNode->collapsed && ignore_invisible)
@@ -2896,8 +2897,9 @@ int UiElement::TreeElement::GetRowCount()
     int row_count{};
     for (const auto& root : root_nodes)
     {
-        root->IterateNodeInOrder([&](const Node*) {
+        root->IterateNodeInOrder([&](const Node*) ->bool {
             row_count++;
+            return false;
         }, true);
     }
     return row_count;
@@ -2949,6 +2951,33 @@ void UiElement::TreeElement::LButtonUp(CPoint point)
     ListElement::LButtonUp(point);
 }
 
+void UiElement::TreeElement::MouseMove(CPoint point)
+{
+    //获取鼠标指向的行
+    int row = GetListIndexByPoint(point);
+    collaps_indicator_hover_row = -1;
+    if (row >= 0)
+    {
+        auto iter = collapsd_rects.find(row);
+        if (iter != collapsd_rects.end())
+        {
+            CRect rect_collapsd = iter->second;
+            //指向了折叠标志
+            if (rect_collapsd.PtInRect(point))
+            {
+                collaps_indicator_hover_row = row;
+            }
+        }
+    }
+
+    ListElement::MouseMove(point);
+}
+
+void UiElement::TreeElement::MouseLeave()
+{
+    collaps_indicator_hover_row = -1;
+}
+
 int UiElement::TreeElement::GetNodeIndex(const Node* node)
 {
     const auto& root_nodes{ GetRootNodes() };
@@ -2956,11 +2985,17 @@ int UiElement::TreeElement::GetNodeIndex(const Node* node)
     int rtn_index{ -1 };
     for (const auto& root : root_nodes)
     {
-        root->IterateNodeInOrder([&](const Node* cur_node) {
+        root->IterateNodeInOrder([&](const Node* cur_node) ->bool {
             if (cur_node == node)
+            {
                 rtn_index = i;
+                return true;
+            }
             i++;
+            return false;
         }, true);
+        if (rtn_index >= 0)
+            break;
     }
 
     return rtn_index;
@@ -2975,11 +3010,17 @@ UiElement::TreeElement::Node* UiElement::TreeElement::GetNodeByIndex(int index)
         int i{};
         for (auto& root : root_nodes)
         {
-            root->IterateNodeInOrder([&](Node* cur_node) {
+            root->IterateNodeInOrder([&](Node* cur_node) ->bool {
                 if (i == index)
+                {
                     find_node = cur_node;
+                    return true;
+                }
                 i++;
+                return false;
             }, true);
+            if (find_node != nullptr)
+                break;
         }
         return find_node;
     }
@@ -3009,6 +3050,7 @@ UiElement::TestTree::TestTree()
 std::shared_ptr<UiElement::TreeElement::Node> UiElement::TestTree::CreateNode(std::wstring name, std::shared_ptr<Node> parent)
 {
     std::shared_ptr<Node> node = std::make_shared<Node>();
+    node->collapsed = true;
     node->texts[0] = name;
     if (parent != nullptr)
         parent->AddChild(node);
