@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <map>
 #include "MediaLibHelper.h"
+#include "UIElement.h"
 
 class CUiMediaLibItemMgr
 {
@@ -102,4 +103,29 @@ private:
     int m_current_index{ -1 };              //正在播放的曲目在m_all_tracks_list中的序号
     bool m_inited{};                        //如果已经初始化过，则为true
     mutable std::shared_mutex m_shared_mutex;
+};
+
+
+class CUiFolderExploreMgr
+{
+public:
+    static CUiFolderExploreMgr& Instance();
+
+    std::vector<std::shared_ptr<UiElement::TreeElement::Node>>& GetRootNodes();
+    void UpdateFolders();
+    bool IsLoading() const { return m_loading; }
+    bool IsInited() const { return m_inited; }
+
+private:
+    CUiFolderExploreMgr();
+    void CreateFolderNodeByPath(std::wstring path, std::shared_ptr<UiElement::TreeElement::Node> parent);
+    int GetAudioFilesNum(std::wstring path);
+
+    static CUiFolderExploreMgr m_instance;
+
+    bool m_loading{};                       //如果正在初始化中，则为true
+    bool m_inited{};                        //如果已经初始化过，则为true
+
+    std::vector<std::shared_ptr<UiElement::TreeElement::Node>> m_root_nodes;
+    std::map<std::wstring, int> m_folder_audio_files_num;       //保存每个文件夹下音频文件的数量
 };

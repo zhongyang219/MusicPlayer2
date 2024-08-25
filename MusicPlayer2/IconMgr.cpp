@@ -196,7 +196,7 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
     case IconMgr::IconType::IT_Unlink:
         return { IDI_UNLINK_D, IDI_UNLINK, NULL, NULL };
     case IconMgr::IconType::IT_Folder_Explore:
-        return { IDI_FOLDER_EXPLORE_D, NULL, NULL, NULL };
+        return { IDI_FOLDER_EXPLORE_D, IDI_FOLDER_EXPLORE, NULL, NULL };
     case IconMgr::IconType::IT_Internal_Lyric:
         return { IDI_INTERNAL_LYRIC_D, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Download:

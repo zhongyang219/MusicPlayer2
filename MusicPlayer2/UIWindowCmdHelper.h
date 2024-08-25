@@ -16,6 +16,7 @@ private:
     bool OnSongListCommand(const std::vector<SongInfo>& songs, DWORD command);
     void OnMyFavouriteListCommand(UiElement::MyFavouriteList* my_favourite_list, DWORD command);
     void OnAllTracksListCommand(UiElement::AllTracksList* all_tracks_list, DWORD command);
+    void OnMedialibFolderExploreCommand(UiElement::FolderExploreTree* folder_explore, DWORD command);
     void OnAddToPlaystCommand(UiElement::Playlist* playlist, DWORD command);
     void OnFolderOrPlaylistSortCommand(DWORD command);
 

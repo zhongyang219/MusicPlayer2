@@ -420,12 +420,8 @@ void CFolderExploreDlg::OnOK()
     if (m_left_selected)        //选中左侧树时，播放选中文件夹
     {
         wstring folder_path{ m_folder_explore_tree.GetItemPath(m_tree_item_selected) };
-        if (!CPlayer::GetInstance().OpenFolder(folder_path, true, true))
-        {
-            const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
-            MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
-        }
-        else
+        CMusicPlayerCmdHelper helper(this);
+        if (helper.OnOpenFolder(folder_path, true, true))
         {
             CTabDlg::OnOK();
             CWnd* pParent = GetParentWindow();

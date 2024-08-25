@@ -1117,17 +1117,35 @@ bool CMusicPlayerCmdHelper::OnOpenFolder()
         folderPickerDlg.GetCheckButtonState(IDC_OPEN_CHECKBOX, checked);
         include_sub_dir = (checked != FALSE);
 #endif
-        if (!CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir))
+        return OnOpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir, false);
+    }
+    return false;
+}
+
+bool CMusicPlayerCmdHelper::OnOpenFolder(std::wstring folder_path, bool include_sub_dir, bool play)
+{
+    if (!folder_path.empty() && folder_path.back() != L'\\' && folder_path.back() != L'/')
+        folder_path.push_back(L'\\');
+    PathInfo path_info = CRecentFolderMgr::Instance().FindItem(folder_path);
+    if (!path_info.IsEmpty())
+    {
+        path_info.contain_sub_folder = include_sub_dir;
+        OnFolderSelected(path_info, play);
+        return true;
+    }
+    else
+    {
+        if (!CPlayer::GetInstance().OpenFolder(folder_path, include_sub_dir, play))
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
             GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            return false;
         }
         else
         {
             return true;
         }
     }
-    return false;
 }
 
 bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)

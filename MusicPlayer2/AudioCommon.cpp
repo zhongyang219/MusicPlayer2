@@ -264,6 +264,41 @@ bool CAudioCommon::IsPathContainsAudioFile(std::wstring path, bool include_sub_d
     return false;
 }
 
+int CAudioCommon::GetAudioFilesNum(std::wstring path, bool include_sub_dir)
+{
+    int audio_file_count = 0;
+    //文件句柄
+    intptr_t hFile = 0;
+    //文件信息
+    _wfinddata_t fileinfo;
+    if (path.back() != '\\' && path.back() != '/')
+        path.push_back('\\');
+    if ((hFile = _wfindfirst((path + L"*").c_str(), &fileinfo)) != -1)
+    {
+        do
+        {
+            wstring file_name = fileinfo.name;
+            if (file_name == L"." || file_name == L"..")
+                continue;
+
+            if (CCommon::IsFolder(path + file_name))        //当前是文件夹，则递归调用
+            {
+                if (include_sub_dir)
+                {
+                    audio_file_count += GetAudioFilesNum(path + file_name, include_sub_dir);
+                }
+            }
+            else
+            {
+                if (FileIsAudio(file_name))	//找到了音频文件
+                    audio_file_count++;
+            }
+        } while (_wfindnext(hFile, &fileinfo) == 0);
+    }
+    _findclose(hFile);
+    return audio_file_count;
+}
+
 void CAudioCommon::GetLyricFiles(wstring path, vector<wstring>& files)
 {
     //文件句柄

@@ -632,6 +632,7 @@
     <Image Include="res\file_relate_d.ico" />
     <Image Include="res\Find.ico" />
     <Image Include="res\fix_d.ico" />
+    <Image Include="res\folder_explore.ico" />
     <Image Include="res\folder_explore_d.ico" />
     <Image Include="res\genre.ico" />
     <Image Include="res\genre_d.ico" />

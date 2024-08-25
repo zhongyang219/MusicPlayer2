@@ -249,6 +249,8 @@
 #define IDI_NEW_FOLDER                  617
 #define IDI_NEW_FOLDER_D                618
 #define IDI_BACKGROUND_D                619
+#define IDI_ICON1                       620
+#define IDI_FOLDER_EXPLORE              620
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -989,7 +991,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        620
+#define _APS_NEXT_RESOURCE_VALUE        621
 #define _APS_NEXT_COMMAND_VALUE         33478
 #define _APS_NEXT_CONTROL_VALUE         1371
 #define _APS_NEXT_SYMED_VALUE           101

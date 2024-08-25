@@ -2717,7 +2717,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                 //如果是树控件
                 if (tree_element != nullptr)
                 {
-                    const int indent_per_level = DPI(8);    //每一级缩进距离
+                    const int indent_per_level = DPI(10);    //每一级缩进距离
                     indent_space = indent_per_level * tree_element->GetItemLevel(i);    //缩进距离
                     //再留出一定距离用于绘制折叠标志
                     const int collapse_width = DPI(16);
@@ -3202,6 +3202,11 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
         {
             if (draw_icon) icon = IconMgr::IT_Media_Lib;
             if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS");
+        }
+        else if (item_str == "folder_explore")
+        {
+            if (draw_icon) icon = IconMgr::IT_Folder_Explore;
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_FOLDER_EXPLORE");
         }
         else
         {
