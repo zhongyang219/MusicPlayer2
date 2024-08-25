@@ -2901,6 +2901,7 @@ void UiElement::TreeElement::MouseMove(CPoint point)
 void UiElement::TreeElement::MouseLeave()
 {
     collaps_indicator_hover_row = -1;
+    ListElement::MouseLeave();
 }
 
 int UiElement::TreeElement::GetNodeIndex(const Node* node)
