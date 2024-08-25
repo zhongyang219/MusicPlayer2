@@ -120,6 +120,9 @@ public:
         IT_Ok,                      // 圆/确认
         IT_Cancel,                  // 叉/取消
 
+        IT_TreeCollapsed,           // 折叠的树节点
+        IT_TreeExpanded,            // 展开的树节点
+
         IT_Default_Cover_Playing,   // 默认封面（播放中）
         IT_Default_Cover_Stopped,   // 默认封面（已停止）
 

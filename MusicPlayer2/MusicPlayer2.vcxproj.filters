@@ -2034,5 +2034,17 @@
     <Image Include="res\folder_explore.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\tree_branch_collapsed.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\tree_branch_collapsed_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\tree_branch_expanded.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\tree_branch_expanded_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

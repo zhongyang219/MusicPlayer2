@@ -2728,28 +2728,27 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                         CRect rect_collapsd{ rect_item };
                         rect_collapsd.left = col_x + indent_space;
                         rect_collapsd.right = rect_collapsd.left + collapse_width;
+                        //保存折叠标志矩形区域
+                        if (tree_element != nullptr)
+                            tree_element->collapsd_rects[i] = rect_collapsd;
+                        //将折叠标志区域改为正方形
+                        rect_collapsd.top += (rect_collapsd.Height() - collapse_width) / 2;
+                        rect_collapsd.bottom = rect_collapsd.top + collapse_width;
                         //如果鼠标指向，则绘制背景
                         if (tree_element->collaps_indicator_hover_row == i)
                         {
-                            //背景区域为矩形
-                            CRect rect_background{ rect_collapsd };
-                            rect_background.top += (rect_collapsd.Height() - collapse_width) / 2;
-                            rect_background.bottom = rect_background.top + collapse_width;
                             BYTE alpha;
                             if (IsDrawBackgroundAlpha())
                                 alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
                             else
                                 alpha = 255;
                             if (!theApp.m_app_setting_data.button_round_corners)
-                                m_draw.FillAlphaRect(rect_background, m_colors.color_button_hover, alpha, true);
+                                m_draw.FillAlphaRect(rect_collapsd, m_colors.color_button_hover, alpha, true);
                             else
-                                m_draw.DrawRoundRect(rect_background, m_colors.color_button_hover, CalculateRoundRectRadius(rect_background), alpha);
+                                m_draw.DrawRoundRect(rect_collapsd, m_colors.color_button_hover, CalculateRoundRectRadius(rect_collapsd), alpha);
                         }
                         //绘制折叠标志
-                        m_draw.DrawWindowText(rect_collapsd, (tree_element->IsCollapsed(i) ? _T("+") : _T("-")), m_colors.color_text, Alignment::CENTER, true);
-                        //保存折叠标志矩形区域
-                        if (tree_element != nullptr)
-                            tree_element->collapsd_rects[i] = rect_collapsd;
+                        DrawUiIcon(rect_collapsd, (tree_element->IsCollapsed(i) ? IconMgr::IT_TreeCollapsed : IconMgr::IT_TreeExpanded));
                     }
                     indent_space += collapse_width;
                 }

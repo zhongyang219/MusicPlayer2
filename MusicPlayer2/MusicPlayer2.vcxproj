@@ -731,6 +731,10 @@
     <Image Include="res\system_titlebar_preview.bmp" />
     <Image Include="res\tag.ico" />
     <Image Include="res\toolbar1.bmp" />
+    <Image Include="res\tree_branch_collapsed.ico" />
+    <Image Include="res\tree_branch_collapsed_d.ico" />
+    <Image Include="res\tree_branch_expanded.ico" />
+    <Image Include="res\tree_branch_expanded_d.ico" />
     <Image Include="res\unlink.ico" />
     <Image Include="res\unlink_d.ico" />
     <Image Include="res\up_d.ico" />

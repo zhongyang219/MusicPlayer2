@@ -293,6 +293,10 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
         return { IDI_OK_D, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Cancel:
         return { IDI_CLOSE_D, NULL, NULL, NULL };
+    case IconMgr::IconType::IT_TreeCollapsed:
+        return { IDI_TREE_COLLAPSED_D, IDI_TREE_COLLAPSED, NULL, NULL };
+    case IconMgr::IconType::IT_TreeExpanded:
+        return { IDI_TREE_EXPANDED_D, IDI_TREE_EXPANDED, NULL, NULL };
     case IconMgr::IconType::IT_Default_Cover_Playing:
         return { NULL, NULL, NULL, IDI_DEFAULT_COVER };
     case IconMgr::IconType::IT_Default_Cover_Stopped:
