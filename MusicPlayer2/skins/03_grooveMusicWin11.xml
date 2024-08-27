@@ -135,7 +135,7 @@
 							  </verticalLayout>
 						  </horizontalLayout>
 					  </rectangle>
- 					  <lyrics margin="4"/>
+ 					  <lyrics/>
 				  </verticalLayout>
           <!--播放队列-->
           <verticalLayout>
