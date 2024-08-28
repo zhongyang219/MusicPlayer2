@@ -94,6 +94,7 @@ CMusicPlayerDlg::~CMusicPlayerDlg()
     CCommon::DeleteModelessDialog(m_pSoundEffecDlg);
     CCommon::DeleteModelessDialog(m_pFormatConvertDlg);
     CCommon::DeleteModelessDialog(m_pFloatPlaylistDlg);
+    CCommon::DeleteModelessDialog(m_pUiSearchBox);
 }
 
 CMusicPlayerDlg* CMusicPlayerDlg::GetInstance()
@@ -109,6 +110,14 @@ bool CMusicPlayerDlg::IsMiniMode() const
 CMiniModeDlg* CMusicPlayerDlg::GetMinimodeDlg()
 {
     return &m_miniModeDlg;
+}
+
+void CMusicPlayerDlg::ShowUiSearchBox(CRect rect)
+{
+    m_pUiSearchBox->ShowWindow(SW_SHOW);
+    m_pUiSearchBox->SetRelativePos(rect.TopLeft());
+    ClientToScreen(&rect);
+    m_pUiSearchBox->MoveWindow(rect);
 }
 
 void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
@@ -2079,6 +2088,9 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     m_miniModeDlg.Init();
 
+    m_pUiSearchBox = new CUiSearchBox();
+    m_pUiSearchBox->Create(IDD_UI_SEARCH_BOX_DIALOG, this);
+
     //只有Windows Vista以上的系统才能跟随系统主题色
 #ifdef COMPILE_IN_WIN_XP
     theApp.m_app_setting_data.theme_color_follow_system = false;
@@ -3352,6 +3364,7 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     case ID_TEST:
         CTest::Test();
         //CPlayer::GetInstance().DoABRepeat();
+        ShowUiSearchBox(CRect(CPoint(theApp.DPI(30), theApp.DPI(30)), CSize(theApp.DPI(100), theApp.DPI(26))));
         break;
     case ID_TEST_DIALOG:
     {
@@ -6470,6 +6483,9 @@ void CMusicPlayerDlg::OnMove(int x, int y)
 
     //移动主窗口时同步移动浮动播放列表的位置
     MoveFloatPlaylistPos();
+
+    //同步移动UI搜索框的位置
+    m_pUiSearchBox->MainWindowMoved(this);
 }
 
 

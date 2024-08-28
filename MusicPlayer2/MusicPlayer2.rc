@@ -60,6 +60,60 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_UI_SEARCH_BOX_DIALOG DIALOGEX 0, 0, 138, 17
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_UI_SEARCH_BOX_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,0,0,80,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_UI_SEARCH_BOX_DIALOG, DIALOG
+    BEGIN
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_UI_SEARCH_BOX_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_UI_SEARCH_BOX_DIALOG DLGINIT
+BEGIN
+    IDC_UI_SEARCH_BOX_EDIT, 0x37c, 42, 0
+0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
+0x3e65, 0x3c31, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
+0x4d5f, 0x646f, 0x3e65, 
+    0
+END
+
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
