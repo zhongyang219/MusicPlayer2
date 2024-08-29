@@ -4,15 +4,22 @@
 
 // CUiSearchBox 对话框
 
+namespace UiElement
+{
+    class SearchBox;
+}
+
 class CUiSearchBox : public CDialog
 {
 	DECLARE_DYNAMIC(CUiSearchBox)
 
 public:
-	CUiSearchBox(CWnd* pParent = nullptr);   // 标准构造函数
+	CUiSearchBox(CWnd* pParent);   // 标准构造函数
+    void Create();
 	virtual ~CUiSearchBox();
-    void MainWindowMoved(CWnd* pWnd);
-    void SetRelativePos(CPoint pos);
+    void Show(UiElement::SearchBox* ui_search_box);
+    void Clear();
+    void UpdatePos();
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -30,7 +37,12 @@ public:
     virtual void OnCancel();
 
 private:
-    CPoint m_relative_pos;         //搜索框以主窗口左上角为原点的相对位置
+    UiElement::SearchBox* m_ui_search_box{};
+
 public:
     afx_msg void OnEnKillfocusUiSearchBoxEdit();
+protected:
+    afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg void OnEnChangeUiSearchBoxEdit();
 };

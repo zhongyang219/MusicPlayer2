@@ -31,7 +31,6 @@
 #include "HorizontalSplitter.h"
 #include "powrprof.h"
 #include "CHotkeyManager.h"
-#include "UiSearchBox.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -56,7 +55,6 @@ public:
     CUIWindow& GetUIWindow() { return m_ui_static_ctrl; }
     bool IsMiniMode() const;
     CMiniModeDlg* GetMinimodeDlg();
-    void ShowUiSearchBox(CRect rect);
 
     // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -130,7 +128,6 @@ protected:
     CSoundEffectDlg* m_pSoundEffecDlg;		//音效设定对话框（非模态对话框）
     CFormatConvertDlg* m_pFormatConvertDlg;		//格式转换对话框（非模态对话框）
     CFloatPlaylistDlg* m_pFloatPlaylistDlg;		//浮动播放列表对话框
-    CUiSearchBox* m_pUiSearchBox;       //用于UI的搜索框
     CPoint m_float_playlist_pos{ INT_MAX, INT_MAX };				//浮动播放列表的位置
 
     CWinThread* m_pThread;		//执行在线查看的线程

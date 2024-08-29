@@ -9,6 +9,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "UIWindowCmdHelper.h"
 #include <stack>
+#include "UiSearchBox.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -3156,6 +3157,74 @@ std::vector<std::shared_ptr<UiElement::TestTree::Node>>& UiElement::FolderExplor
     return CUiFolderExploreMgr::Instance().GetRootNodes();
 }
 
+UiElement::SearchBox::SearchBox()
+{
+}
+
+UiElement::SearchBox::~SearchBox()
+{
+    CCommon::DeleteModelessDialog(search_box_ctrl);
+}
+
+void UiElement::SearchBox::InitSearchBoxControl(CWnd* pWnd)
+{
+    search_box_ctrl = new CUiSearchBox(pWnd);
+    search_box_ctrl->Create();
+}
+
+void UiElement::SearchBox::Draw()
+{
+    CalculateRect();
+    ui->DrawSearchBox(rect, this);
+    Element::Draw();
+}
+
+void UiElement::SearchBox::MouseMove(CPoint point)
+{
+    hover = false;
+    clear_btn.hover = false;
+    //鼠标指向图标区域
+    if (icon_rect.PtInRect(point))
+    {
+        clear_btn.hover = true;
+        //更新鼠标提示
+        if (!key_word.empty())
+            ui->UpdateMouseToolTipPosition(TooltipIndex::SEARCHBOX_CLEAR_BTN, clear_btn.rect);
+        else
+            ui->UpdateMouseToolTipPosition(TooltipIndex::SEARCHBOX_CLEAR_BTN, CRect());
+    }
+    //指向搜索框区域
+    else if (rect.PtInRect(point))
+    {
+        hover = true;
+    }
+}
+
+void UiElement::SearchBox::MouseLeave()
+{
+    hover = false;
+    clear_btn.hover = false;
+}
+
+void UiElement::SearchBox::LButtonUp(CPoint point)
+{
+    clear_btn.pressed = false;
+    //点击清除按钮时清除搜索结果
+    if (icon_rect.PtInRect(point))
+        search_box_ctrl->Clear();
+    //点击搜索框区域时显示搜索框控件
+    else if (search_box_ctrl != nullptr && rect.PtInRect(point))
+        search_box_ctrl->Show(this);
+}
+
+void UiElement::SearchBox::LButtonDown(CPoint point)
+{
+    if (icon_rect.PtInRect(point))
+    {
+        clear_btn.pressed = true;
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name, CPlayerUIBase* ui)
@@ -3223,6 +3292,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::PlaceHolder>();
     else if (name == "medialibFolderExplore")
         element = std::make_shared<UiElement::FolderExploreTree>();
+    else if (name == "searchBox")
+        element = std::make_shared<UiElement::SearchBox>();
     else if (name == "ui" || name == "root" || name == "element")
         element = std::make_shared<UiElement::Element>();
 

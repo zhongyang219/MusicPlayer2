@@ -2,6 +2,8 @@
 #include "CPlayerUIBase.h"
 #include "MediaLibHelper.h"
 
+class CUiSearchBox;
+
 //定义界面元素
 namespace UiElement
 {
@@ -83,6 +85,7 @@ namespace UiElement
         const int TAB_ELEMENT = 901;
         const int PLAYLIST_DROP_DOWN_BTN = 902;
         const int PLAYLIST_MENU_BTN = 903;
+        const int SEARCHBOX_CLEAR_BTN = 904;
     }
 
     //布局
@@ -805,6 +808,27 @@ namespace UiElement
         virtual bool IsMultipleSelectionEnable() override;
 
         virtual std::vector<std::shared_ptr<Node>>& GetRootNodes() override;
+    };
+
+    //搜索框
+    class SearchBox : public Element
+    {
+    public:
+        SearchBox();
+        ~SearchBox();
+        void InitSearchBoxControl(CWnd* pWnd);  //初始化搜索框控件。pWnd：父窗口
+
+        virtual void Draw() override;
+        virtual void MouseMove(CPoint point) override;
+        virtual void MouseLeave() override;
+        virtual void LButtonUp(CPoint point) override;
+        virtual void LButtonDown(CPoint point) override;
+
+        bool hover{};       //如果鼠标指向搜索框，则为true
+        std::wstring key_word;  //搜索框中的文本
+        CUiSearchBox* search_box_ctrl{};    //搜索框控件
+        CRect icon_rect;    //图标的区域
+        CPlayerUIBase::UIButton clear_btn;      //清除按钮
     };
 }
 

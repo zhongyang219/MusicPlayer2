@@ -23,6 +23,7 @@ public:
     void ResetVolumeToPlayTime();   //定时器SHOW_VOLUME_TIMER_ID响应时需要调用此函数
     void PlaylistLocateToCurrent();     //播放列表控件使正在播放的条目可见
     void ListLocateToCurrent();         //ui中的所有列表使正在播放的条目可见
+    void InitSearchBox(CWnd* pWnd);
     void SaveStatackElementIndex(CArchive& archive);
     void LoadStatackElementIndex(CArchive& archive);
 
@@ -49,6 +50,7 @@ public:
     virtual bool MouseWheel(int delta, CPoint point) override;
     virtual bool DoubleClick(CPoint point) override;
     virtual void UiSizeChanged() override;
+    virtual bool SetCursor() override;
 
 protected:
     int m_index{ INT_MAX };

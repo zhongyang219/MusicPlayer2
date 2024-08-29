@@ -84,12 +84,15 @@
           <text type="album" font_size="12" style="scroll" height="32"/>
           <!--<placeHolder height="24" hide-height="200"/>-->
           <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
-          <rectangle height="26" margin="4">
-            <horizontalLayout>
-              <button key="karaoke" width="22" height="22"/>
-              <placeHolder/>
-            </horizontalLayout>
-          </rectangle>
+          <horizontalLayout height="30" margin="4">
+            <rectangle height="26">
+              <horizontalLayout>
+                <button key="karaoke" width="22" height="22"/>
+                <placeHolder/>
+              </horizontalLayout>
+            </rectangle>
+            <searchBox width="180" height="26" margin-left="4"/>
+          </horizontalLayout>
           <rectangle proportion="1">
             <lyrics margin="8" use_default_font="true" font_size="9"/>
           </rectangle>
@@ -105,7 +108,7 @@
               <spectrum type="8col" margin="8" min-height="40" width="13%"/>
             </horizontalLayout>
           </verticalLayout>
-          <verticalLayout height="32">
+          <verticalLayout>
             <horizontalLayout height="32">
               <button key="menu" height="28" margin="2" show_text="true" font_size="10"/>
               <button key="miniMode" height="28" margin="2" show_text="true"/>
@@ -128,10 +131,14 @@
               <button key="locateTrack" width="82" height="24" margin="2" show_text="true"/>
               <placeHolder/>
             </horizontalLayout>-->
+            <horizontalLayout height="32">
+              <searchBox height="28" margin-left="4"/>
+              <placeHolder/>
+            </horizontalLayout>
           </verticalLayout>
         </verticalLayout>
         
-        <!--第4页-->
+        <!--第5页-->
         <medialibFolderExplore/>
         
       </stackElement>

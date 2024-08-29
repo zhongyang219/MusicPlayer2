@@ -712,7 +712,7 @@ bool CPlayerUIBase::SetCursor()
 {
     if (m_buttons[BTN_PROGRESS].hover)
     {
-        ::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(32649)));
+        ::SetCursor(::LoadCursor(NULL, IDC_HAND));
         return true;
     }
     return false;
@@ -3352,6 +3352,53 @@ void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
     m_draw.DrawSpectrum(CRect(pos_icon, size_icon), col_width, gap_width, 4, icon_color, false, false, Alignment::CENTER, false, 180);
 }
 
+void CPlayerUIBase::DrawSearchBox(CRect rect, UiElement::SearchBox* search_box)
+{
+    //绘制背景
+    COLORREF back_color;
+    if (search_box->hover)
+        back_color = m_colors.color_button_hover;
+    else
+        back_color = m_colors.color_control_bar_back;
+    bool draw_background{ IsDrawBackgroundAlpha() };
+    BYTE alpha;
+    if (!draw_background)
+        alpha = 255;
+    else if (theApp.m_app_setting_data.dark_mode || search_box->hover)
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    else
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+    if (!theApp.m_app_setting_data.button_round_corners)
+        m_draw.FillAlphaRect(rect, back_color, alpha);
+    else
+        m_draw.DrawRoundRect(rect, back_color, CalculateRoundRectRadius(rect), alpha);
+    //绘制文本
+    CRect rect_text{ rect };
+    rect_text.left += DPI(4);
+    rect_text.right -= rect.Height();
+    std::wstring text = search_box->key_word;
+    COLORREF text_color = m_colors.color_text;
+    if (text.empty())
+    {
+        text = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT");
+        text_color = m_colors.color_text_heighlight;
+    }
+    m_draw.DrawWindowText(rect_text, text.c_str(), text_color, Alignment::LEFT, true);
+    //绘制图标
+    search_box->icon_rect = rect;;
+    search_box->icon_rect.left = rect_text.right;
+    if (search_box->key_word.empty())
+    {
+        DrawUiIcon(search_box->icon_rect, IconMgr::IT_Find);
+    }
+    else
+    {
+        CRect btn_rect{ search_box->icon_rect };
+        btn_rect.DeflateRect(DPI(2), DPI(2));
+        DrawUIButton(btn_rect, search_box->clear_btn, IconMgr::IT_Close);
+    }
+}
+
 void CPlayerUIBase::DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style, IconMgr::IconSize icon_size)
 {
     // style为IS_Auto时根据深色模式设置向IconMgr要求深色/浅色图标，没有对应风格图标时IconMgr会自行fallback
@@ -3518,4 +3565,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_PLAY_MY_FAVOURITE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_MY_FAVOURITE").c_str());
     //歌词卡拉OK样式显示
     AddMouseToolTip(BTN_KARAOKE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_KARAOKE").c_str());
+    //搜索框清除按钮
+    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::SEARCHBOX_CLEAR_BTN), theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str());
 }

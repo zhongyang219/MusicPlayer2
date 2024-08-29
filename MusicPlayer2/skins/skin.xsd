@@ -159,6 +159,7 @@
           <xs:element name="allTracksList" type="allTracksListType"></xs:element>
           <xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
           <xs:element name="medialibFolderExplore" type="medialibFolderExploreType"></xs:element>
+          <xs:element name="searchBox" type="searchBoxType"></xs:element>
         </xs:choice>
       </xs:sequence>
     </xs:group>
@@ -1038,5 +1039,12 @@
     <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="searchBoxType">
+    <xs:annotation>
+      <xs:documentation>搜索框。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

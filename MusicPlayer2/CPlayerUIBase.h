@@ -35,6 +35,7 @@ namespace UiElement
     class AllTracksList;
     class MiniSpectrum;
     class FolderExploreTree;
+    class SearchBox;
 }
 
 struct SLayoutData
@@ -89,6 +90,7 @@ public:
     friend class UiElement::AllTracksList;
     friend class UiElement::MiniSpectrum;
     friend class UiElement::FolderExploreTree;
+    friend class UiElement::SearchBox;
 
     friend class UiFontGuard;
 
@@ -199,7 +201,7 @@ public:
         BTN_PLAY_MY_FAVOURITE,  //播放“我喜欢的音乐”
         BTN_MEDIALIB_FOLDER_SORT, //媒体库“文件夹”排序方式
         BTN_MEDIALIB_PLAYLIST_SORT, //媒体库“播放列表”排序方式
-        BTN_KARAOKE,
+        BTN_KARAOKE,            //歌词卡拉OK模式显示
 
         //菜单栏
         MENU_FILE,
@@ -271,6 +273,7 @@ protected:
     void DrawUiMenuBar(CRect rect);
     void DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element);
     void DrawMiniSpectrum(CRect rect);      //绘制图标大小的迷你频谱
+    void DrawSearchBox(CRect rect, UiElement::SearchBox* search_box);
 
     // 实际绘制一个图标
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
