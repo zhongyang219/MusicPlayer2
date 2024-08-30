@@ -3339,6 +3339,7 @@ UiElement::SearchBox::~SearchBox()
 
 void UiElement::SearchBox::InitSearchBoxControl(CWnd* pWnd)
 {
+    CCommon::DeleteModelessDialog(search_box_ctrl);
     search_box_ctrl = new CUiSearchBox(pWnd);
     search_box_ctrl->Create();
 }

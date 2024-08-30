@@ -858,7 +858,6 @@ namespace UiElement
         void FindListElement();         //查找ListElement
         bool find_list_element{};       //如果已经查找过ListElement，则为true
         ListElement* list_element{};    //关联的ListElement
-
     };
 }
 

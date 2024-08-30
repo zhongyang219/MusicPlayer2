@@ -37,6 +37,10 @@ void CMiniModeUserUi::InitUiPlaylist()
             ui_new->AddChild(vertical_layout);
             //原来的UI添加到垂直布局中
             vertical_layout->AddChild(m_ui_element);
+            //添加一个搜索框
+            std::shared_ptr<UiElement::Element> search_box = factory.CreateElement("searchBox", this);
+            search_box->height.FromString("26");
+            vertical_layout->AddChild(search_box);
             //添加一个播放列表
             m_playlist_emelment = factory.CreateElement("playlist", this);
             vertical_layout->AddChild(m_playlist_emelment);
@@ -158,6 +162,13 @@ bool CMiniModeUserUi::PointInControlArea(CPoint point) const
 
             UiElement::ListElement* list_emement = dynamic_cast<UiElement::ListElement*>(ele);
             if (list_emement != nullptr && list_emement->GetRect().PtInRect(point))
+            {
+                rtn = true;
+                return true;
+            }
+
+            UiElement::SearchBox* search_box = dynamic_cast<UiElement::SearchBox*>(ele);
+            if (search_box != nullptr && search_box->GetRect().PtInRect(point))
             {
                 rtn = true;
                 return true;
