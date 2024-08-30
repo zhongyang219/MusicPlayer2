@@ -2405,7 +2405,10 @@ CString CPlayerUIBase::GetCmdShortcutKeyForTooltips(UINT id)
 
 CRect CPlayerUIBase::GetVolumeRect() const
 {
-    return m_buttons.at(BTN_VOLUME).rect;
+    auto iter = m_buttons.find(BTN_VOLUME);
+    if (iter != m_buttons.end())
+        return iter->second.rect;
+    return CRect();
 }
 
 void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
