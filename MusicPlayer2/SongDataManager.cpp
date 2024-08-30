@@ -86,6 +86,8 @@ void CSongDataManager::LoadSongData(std::wstring path)
     CFile file;
     BOOL bRet = file.Open(path.c_str(), CFile::modeRead);
     if (!bRet) return;
+    // LoadSongData执行时主窗口还未启动应该没有其他线程，不过还是加上
+    std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     // 构造CArchive对象
     CArchive ar(&file, CArchive::load);
     // 读数据
@@ -108,8 +110,6 @@ void CSongDataManager::LoadSongData(std::wstring path)
             ar >> size_1;
             size = static_cast<int>(size_1);
         }
-        // LoadSongData执行时主窗口还未启动应该没有其他线程，不过还是加上
-        std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
         m_song_data.reserve(size);
         for (int i{}; i < size; i++)
         {
@@ -414,7 +414,7 @@ bool CSongDataManager::RemoveItem(const SongKey& key)
     return false;
 }
 
-int CSongDataManager::RemoveItemIf(std::function<bool(const SongInfo&)>& fun_condition)
+int CSongDataManager::RemoveItemIf(std::function<bool(const SongInfo&)> fun_condition)
 {
     std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     // 遍历映射容器，删除不必要的条目。

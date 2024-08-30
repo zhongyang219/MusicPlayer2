@@ -11,7 +11,6 @@
 #include "Playlist.h"
 #include "AddToPlaylistDlg.h"
 #include "SongDataManager.h"
-#include "COSUPlayerHelper.h"
 
 
 // CFolderExploreDlg 对话框
@@ -88,10 +87,8 @@ void CFolderExploreDlg::ShowSongList()
     m_right_items.clear();
 
     // 此处在主线程更新cue条目到媒体库并加载歌曲信息，如果有大量cue且没有提前“更新媒体库”第一次进行耗时可能很长
-    if (COSUPlayerHelper::IsOsuFolder(m_folder_path_selected))
-        COSUPlayerHelper::GetOSUAudioFiles(m_folder_path_selected, m_right_items);
-    else    // 播放左侧目录的OpenFolder包含子文件夹所以这里也包含子文件夹
-        CAudioCommon::GetAudioFiles(m_folder_path_selected, m_right_items, MAX_SONG_NUM, true);
+    // 播放左侧目录的OpenFolder包含子文件夹所以这里也包含子文件夹
+    CAudioCommon::GetAudioFiles(m_folder_path_selected, m_right_items, MAX_SONG_NUM, true);
 
     bool exit_flag{};
     int update_cnt{};

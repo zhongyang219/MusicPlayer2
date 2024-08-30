@@ -155,13 +155,13 @@ void CMediaClassifier::ClassifyMedia()
             }
         }
         if (m_type == CT_ARTIST)
-            std::sort(other_list.begin(), other_list.end(), SongInfo::ByArtist);
+            std::sort(other_list.begin(), other_list.end(), SongInfo::GetSortFunc(SM_U_ARTIST));
         else if (m_type == CT_ALBUM)
-            std::sort(other_list.begin(), other_list.end(), SongInfo::ByAlbum);
+            std::sort(other_list.begin(), other_list.end(), SongInfo::GetSortFunc(SM_U_ALBUM));
         else if (m_type == CT_GENRE)
-            std::sort(other_list.begin(), other_list.end(), [](const SongInfo& a, const SongInfo& b) {return a.genre < b.genre; });
+            std::sort(other_list.begin(), other_list.end(), SongInfo::GetSortFunc(SM_U_GENRE));
         //else if (m_type == CT_YEAR)
-        //    std::sort(other_list.begin(), other_list.end(), [](const SongInfo& a, const SongInfo& b) {return a.year < b.year; });
+        //    std::sort(other_list.begin(), other_list.end(), SongInfo::GetSortFunc(SM_U_YEAR));
         if (!other_list.empty())
             m_media_list[STR_OTHER_CLASSIFY_TYPE] = other_list;
     }
@@ -190,9 +190,9 @@ void CMediaClassifier::ClassifyMedia()
         if (item.first != STR_OTHER_CLASSIFY_TYPE)
         {
             if (m_type == CT_ALBUM)    //“唱片集”类别中，默认按音轨序号排序
-                std::sort(item.second.begin(), item.second.end(), SongInfo::ByTrack);
+                std::sort(item.second.begin(), item.second.end(), SongInfo::GetSortFunc(SM_U_TRACK));
             else    //其他类别默认按文件路径排序
-                std::sort(item.second.begin(), item.second.end(), SongInfo::ByPath);
+                std::sort(item.second.begin(), item.second.end(), SongInfo::GetSortFunc(SM_U_PATH));
         }
     }
 }
