@@ -6,22 +6,50 @@
         <placeHolder show_when_use_system_titlebar="true" height="24"/>
         <navigationBar height="30" icon_type="icon_only" item_space="4" item_list="album_cover,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album"/>
         <stackElement margin-top="8">
+          <!--专辑封面-->
           <verticalLayout margin-bottom="16">
             <albumCover square="true" margin="12"/>
             <text type="title" style="scroll" height="36" font_size="12" margin-left="16" margin-right="16" alignment="center"/>
             <text type="artist_album" style="scroll" height="24" font_size="10" margin-left="16" margin-right="16" alignment="center"/>
           </verticalLayout>
+          <!--专辑封面-->
           <lyrics/>
+          <!--播放队列-->
           <verticalLayout>
             <playlistIndicator height="30" margin-bottom="4"/>
+            <searchBox height="26" margin-bottom="4"/>
             <playlist item_height="32"/>
           </verticalLayout>
-          <recentPlayedList item_height="32"/>
-          <mediaLibFolder item_height="32"/>
-          <mediaLibPlaylist item_height="32"/>
-          <myFavouriteList item_height="32"/>
-          <mediaLibItemList type="artist" item_height="32"/>
-          <mediaLibItemList type="album" item_height="32"/>
+          <!--最近播放-->
+          <verticalLayout>
+            <searchBox height="26" margin-bottom="4"/>
+            <recentPlayedList item_height="32"/>
+          </verticalLayout>
+          <!--文件夹-->
+          <verticalLayout>
+            <searchBox height="26" margin-bottom="4"/>
+            <mediaLibFolder item_height="32"/>
+          </verticalLayout>
+          <!--播放列表-->
+          <verticalLayout>
+            <searchBox height="26" margin-bottom="4"/>
+            <mediaLibPlaylist item_height="32"/>
+          </verticalLayout>
+          <!--我喜欢的音乐-->
+          <verticalLayout>
+            <searchBox height="26" margin-bottom="4"/>
+            <myFavouriteList item_height="32"/>
+          </verticalLayout>
+          <!--艺术家-->
+          <verticalLayout>
+            <searchBox height="26" margin-bottom="4"/>
+            <mediaLibItemList type="artist" item_height="32"/>
+          </verticalLayout>
+          <!--唱片集-->
+          <verticalLayout>
+            <searchBox height="26" margin-bottom="4"/>
+            <mediaLibItemList type="album" item_height="32"/>
+          </verticalLayout>
         </stackElement>
       </verticalLayout>
       <progressBar show_play_time="false" height="4"/>
@@ -81,16 +109,42 @@
                 <button key="karaoke" width="24" height="24" margin="2"/>
               </horizontalLayout>
             </verticalLayout>
+            <!--播放队列-->
             <verticalLayout>
               <playlistIndicator height="30" margin-bottom="4"/>
+              <searchBox height="26" margin-bottom="4"/>
               <playlist item_height="32"/>
             </verticalLayout>
-            <recentPlayedList item_height="32"/>
-            <mediaLibFolder item_height="32"/>
-            <mediaLibPlaylist item_height="32"/>
-            <myFavouriteList item_height="32"/>
-            <mediaLibItemList type="artist" item_height="32"/>
-            <mediaLibItemList type="album" item_height="32"/>
+            <!--最近播放-->
+            <verticalLayout>
+              <searchBox height="26" margin-bottom="4"/>
+              <recentPlayedList item_height="32"/>
+            </verticalLayout>
+            <!--文件夹-->
+            <verticalLayout>
+              <searchBox height="26" margin-bottom="4"/>
+              <mediaLibFolder item_height="32"/>
+            </verticalLayout>
+            <!--播放列表-->
+            <verticalLayout>
+              <searchBox height="26" margin-bottom="4"/>
+              <mediaLibPlaylist item_height="32"/>
+            </verticalLayout>
+            <!--我喜欢的音乐-->
+            <verticalLayout>
+              <searchBox height="26" margin-bottom="4"/>
+              <myFavouriteList item_height="32"/>
+            </verticalLayout>
+            <!--艺术家-->
+            <verticalLayout>
+              <searchBox height="26" margin-bottom="4"/>
+              <mediaLibItemList type="artist" item_height="32"/>
+            </verticalLayout>
+            <!--唱片集-->
+            <verticalLayout>
+              <searchBox height="26" margin-bottom="4"/>
+              <mediaLibItemList type="album" item_height="32"/>
+            </verticalLayout>
           </stackElement>
         </verticalLayout>
       </horizontalLayout>

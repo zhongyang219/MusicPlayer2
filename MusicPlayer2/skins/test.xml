@@ -143,7 +143,10 @@
         </verticalLayout>
         
         <!--第5页-->
-        <medialibFolderExplore/>
+        <verticalLayout>
+          <searchBox height="26" margin-bottom="4"/>
+          <medialibFolderExplore/>
+        </verticalLayout>
         
       </stackElement>
 

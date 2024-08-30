@@ -22,6 +22,7 @@
           <lyrics margin="4"/>
           <verticalLayout margin="4">
             <playlistIndicator margin-bottom="6" height="28"/>
+            <searchBox height="26" margin-bottom="4"/>
             <playlist/>
           </verticalLayout>
         </stackElement>
