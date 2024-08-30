@@ -2952,12 +2952,15 @@ void UiElement::TreeElement::QuickSearch(const std::wstring& key_word)
     if (key_word.empty())
         return;
     //遍历所有节点，获取匹配的节点，并添加到tree_search_result中
-    const auto& root_nodes{ GetRootNodes() };
-    for (const auto& root : root_nodes)
+    auto& root_nodes{ GetRootNodes() };
+    for (auto& root : root_nodes)
     {
-        root->IterateNodeInOrder([&](const Node* cur_node) ->bool {
+        root->IterateNodeInOrder([&](Node* cur_node) ->bool {
             if (IsNodeMathcKeyWord(cur_node, key_word))
+            {
                 tree_search_result.insert(cur_node);
+                cur_node->collapsed = false;    //匹配的节点全部展开
+            }
             return false;
         }, false);
     }
