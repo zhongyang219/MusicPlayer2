@@ -556,6 +556,10 @@ void CMiniModeDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
     //if(!m_ui.PointInControlArea(point))
     //	OnOK();
 
+    CPlayerUIBase* cur_ui{ GetCurUi() };
+    if (cur_ui != nullptr)
+        cur_ui->DoubleClick(point);
+
     CDialogEx::OnLButtonDblClk(nFlags, point);
 }
 
