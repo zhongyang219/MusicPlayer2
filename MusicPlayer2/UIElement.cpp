@@ -1241,7 +1241,10 @@ void UiElement::ListElement::MouseMove(CPoint point)
                 std::wstring str_tip = GetToolTipText(row);
 
                 ui->UpdateMouseToolTip(GetToolTipIndex(), str_tip.c_str());
-                ui->UpdateMouseToolTipPosition(GetToolTipIndex(), item_rects[row]);
+                int display_row = row;
+                AbsoluteRowToDisplayRow(display_row);
+                if (display_row >= 0 && display_row < static_cast<int>(item_rects.size()))
+                    ui->UpdateMouseToolTipPosition(GetToolTipIndex(), item_rects[display_row]);
             }
         }
     }
