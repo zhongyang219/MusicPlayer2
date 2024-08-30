@@ -2936,16 +2936,31 @@ std::wstring UiElement::TreeElement::GetItemText(int row, int col)
 
 int UiElement::TreeElement::GetRowCount()
 {
-    const auto& root_nodes{ GetRootNodes() };
     int row_count{};
+    IterateDisplayedNodeInOrder([&](const Node*) ->bool {
+        row_count++;
+        return false;
+    });
+    return row_count;
+}
+
+void UiElement::TreeElement::QuickSearch(const std::wstring& key_word)
+{
+    tree_searched = !key_word.empty();
+
+    tree_search_result.clear();
+    if (key_word.empty())
+        return;
+    //遍历所有节点，获取匹配的节点，并添加到tree_search_result中
+    const auto& root_nodes{ GetRootNodes() };
     for (const auto& root : root_nodes)
     {
-        root->IterateNodeInOrder([&](const Node*) ->bool {
-            row_count++;
+        root->IterateNodeInOrder([&](const Node* cur_node) ->bool {
+            if (IsNodeMathcKeyWord(cur_node, key_word))
+                tree_search_result.insert(cur_node);
             return false;
-        }, true);
+        }, false);
     }
-    return row_count;
 }
 
 int UiElement::TreeElement::GetItemLevel(int row)
@@ -3024,23 +3039,17 @@ void UiElement::TreeElement::MouseLeave()
 
 int UiElement::TreeElement::GetNodeIndex(const Node* node)
 {
-    const auto& root_nodes{ GetRootNodes() };
     int i{};
     int rtn_index{ -1 };
-    for (const auto& root : root_nodes)
-    {
-        root->IterateNodeInOrder([&](const Node* cur_node) ->bool {
-            if (cur_node == node)
-            {
-                rtn_index = i;
-                return true;
-            }
-            i++;
-            return false;
-        }, true);
-        if (rtn_index >= 0)
-            break;
-    }
+    IterateDisplayedNodeInOrder([&](const Node* cur_node) ->bool {
+        if (cur_node == node)
+        {
+            rtn_index = i;
+            return true;
+        }
+        i++;
+        return false;
+    });
 
     return rtn_index;
 }
@@ -3050,26 +3059,65 @@ UiElement::TreeElement::Node* UiElement::TreeElement::GetNodeByIndex(int index)
     if (index >= 0)
     {
         Node* find_node{};
-        auto& root_nodes{ GetRootNodes() };
         int i{};
-        for (auto& root : root_nodes)
-        {
-            root->IterateNodeInOrder([&](Node* cur_node) ->bool {
-                if (i == index)
-                {
-                    find_node = cur_node;
-                    return true;
-                }
-                i++;
-                return false;
-            }, true);
-            if (find_node != nullptr)
-                break;
-        }
+        IterateDisplayedNodeInOrder([&](Node* cur_node) ->bool {
+            if (i == index)
+            {
+                find_node = cur_node;
+                return true;
+            }
+            i++;
+            return false;
+        });
         return find_node;
     }
 
     return nullptr;
+}
+
+bool UiElement::TreeElement::IsNodeMathcKeyWord(const Node* node, const std::wstring& key_word)
+{
+    //判断节点本身是否匹配
+    for (const auto& item : node->texts)
+    {
+        const std::wstring& text{ item.second };
+        if (!text.empty() && theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, text))
+            return true;
+    }
+
+    //如果节点本身不匹配，则遍历所有子节点，如果有一个子节点匹配，则节点匹配
+    for (const auto& child : node->child_list)
+    {
+        if (IsNodeMathcKeyWord(child.get(), key_word))
+            return true;
+    }
+
+    return false;
+}
+
+bool UiElement::TreeElement::IsNodeDisplayed(const Node* node)
+{
+    if (node != nullptr)
+    {
+        if (tree_searched)
+            return tree_search_result.contains(node);
+        else
+            return true;
+    }
+    return false;
+}
+
+void UiElement::TreeElement::IterateDisplayedNodeInOrder(std::function<bool(Node*)> func)
+{
+    const auto& root_nodes{ GetRootNodes() };
+    for (const auto& root : root_nodes)
+    {
+        root->IterateNodeInOrder([&](Node* cur_node) ->bool {
+            if (IsNodeDisplayed(cur_node))
+                return func(cur_node);
+            return false;
+        }, true);
+    }
 }
 
 UiElement::TestTree::TestTree()

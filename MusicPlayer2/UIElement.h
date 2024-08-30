@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CPlayerUIBase.h"
 #include "MediaLibHelper.h"
+#include <set>
 
 class CUiSearchBox;
 
@@ -329,7 +330,7 @@ namespace UiElement
         virtual bool IsMultipleSelectionEnable() { return false; }      //是否允许多选
         virtual void OnRowCountChanged();       //当列表行数发生变化时响应此函数
 
-        void QuickSearch(const std::wstring& key_word);                 //根据关键执行快速搜索（筛选出匹配的项）
+        virtual void QuickSearch(const std::wstring& key_word);         //根据关键执行快速搜索（筛选出匹配的项）
         virtual bool IsItemMatchKeyWord(int row, const std::wstring& key_word);     //判断指定行是否匹配关键字（用于快速搜索功能，默认匹配每一列中的文本，只要有一列的文本匹配就返回true，派生类可重写此函数）
 
         int GetDisplayRowCount();       //获取要显示的行数。（处于搜索状态时返回搜索结果数量，正常状态下同GetRowCount）
@@ -363,6 +364,7 @@ namespace UiElement
         int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
         std::map<int, IPlayerUI::UIButton> hover_buttons;   //鼠标指向时的按钮
         int last_row_count{};
+    private:
         std::vector<int> search_result; //保存搜索结果的序号
         bool searched{};                //是否处于搜索状态
     };
@@ -758,14 +760,20 @@ namespace UiElement
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
+        //树控件不使用基类ListElement的搜索逻辑
+        virtual void QuickSearch(const std::wstring& key_word) override;
 
         std::map<int, CRect> collapsd_rects;     //折叠标志的矩形区域（key是行）
         int collaps_indicator_hover_row{ -1 };    //鼠标指向的折叠标志的行号
 
     protected:
         int GetNodeIndex(const Node* node);     //查找一个节点的序号（如果节点被折叠或不存在则返回-1）
-        Node* GetNodeByIndex(int index);  //根据一个节点的序号查找节点（忽略被折叠的节点）
-
+        Node* GetNodeByIndex(int index);    //根据一个节点的序号查找节点（忽略被折叠的节点）
+        bool IsNodeMathcKeyWord(const Node* node, const std::wstring& key_word);  //判断一个节点是否匹配关键字
+        bool IsNodeDisplayed(const Node* node);
+        void IterateDisplayedNodeInOrder(std::function<bool(Node*)> func);      //遍历所有可见的节点
+        std::set<const Node*> tree_search_result; //保存搜索结果
+        bool tree_searched{};               //是否处于搜索状态
     };
 
     class TestTree : public TreeElement
