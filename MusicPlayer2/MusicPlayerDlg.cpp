@@ -111,6 +111,11 @@ CMiniModeDlg* CMusicPlayerDlg::GetMinimodeDlg()
     return &m_miniModeDlg;
 }
 
+void CMusicPlayerDlg::UiForceRefresh()
+{
+    m_ui_thread_para.ui_force_refresh = true;
+}
+
 void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
 {
     CMainDialogBase::DoDataExchange(pDX);

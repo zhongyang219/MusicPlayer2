@@ -2667,11 +2667,16 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
         //设置字体
         UiFontGuard set_font(this, list_element->font_size);
 
+        //displayed_row_index为显示的行号，for循环中的i为实际的行号
+        int displayed_row_index{};
         for (int i{}; i < list_element->GetRowCount(); i++)
         {
             if (i < 0 || i >= static_cast<int>(list_element->item_rects.size()))
                 break;
-            CRect rect_item{ list_element->item_rects[i] };
+            //跳过不显示的行
+            if (!list_element->IsRowDisplayed(i))
+                continue;
+            CRect rect_item{ list_element->item_rects[displayed_row_index] };
             rect_item.right -= SCROLLBAR_WIDTH;      //留出一定距离用于绘制滚动条
             //如果绘制的行在播放列表区域之外，则不绘制该行
             if (!(rect_item & rect).IsRectEmpty())
@@ -2683,7 +2688,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     back_color = m_colors.color_button_back;
                 }
                 //偶数行的背景
-                else if (i % 2 == 0)
+                else if (displayed_row_index % 2 == 0)
                 {
                     back_color = m_colors.color_control_bar_back;
                 }
@@ -2840,6 +2845,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     col_x = rect_cell.right;
                 }
             }
+            displayed_row_index++;
         }
 
         //绘制滚动条
@@ -2864,7 +2870,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                 };
 
             //开始绘制滚动条
-            if (list_element->GetRowCount() > 1 && item_height * list_element->GetRowCount() > rect.Height())
+            if (list_element->GetDisplayRowCount() > 1 && item_height * list_element->GetDisplayRowCount() > rect.Height())
             {
                 //填充滚动条背景
                 if (list_element->scrollbar_hover || list_element->scrollbar_handle_pressed)
@@ -2872,7 +2878,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
 
                 //画滚动条把手
                 //计算滚动条的长度
-                int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * list_element->GetRowCount()) };
+                int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * list_element->GetDisplayRowCount()) };
                 list_element->scroll_handle_length_comp = 0;
                 if (scroll_handle_length < MIN_SCROLLBAR_LENGTH)
                 {
@@ -2880,7 +2886,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     scroll_handle_length = MIN_SCROLLBAR_LENGTH;
                 }
                 //根据播放列表偏移量计算滚动条的位置
-                int scroll_pos{ (rect.Height() - list_element->scroll_handle_length_comp) * list_element->playlist_offset / (item_height * list_element->GetRowCount()) };
+                int scroll_pos{ (rect.Height() - list_element->scroll_handle_length_comp) * list_element->playlist_offset / (item_height * list_element->GetDisplayRowCount()) };
                 list_element->scrollbar_handle_rect = scrollbar_rect;
                 list_element->scrollbar_handle_rect.top = scrollbar_rect.top + scroll_pos;
                 list_element->scrollbar_handle_rect.bottom = list_element->scrollbar_handle_rect.top + scroll_handle_length;

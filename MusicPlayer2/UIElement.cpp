@@ -12,6 +12,52 @@
 #include "UiSearchBox.h"
 
 ///////////////////////////////////////////////////////////////////////////////
+//查找一个关联的节点
+//element：被查找的节点
+//返回值：查找结果
+template<class T>
+static T* FindRelatedElement(UiElement::Element* element)
+{
+    UiElement::Element* parent = element->pParent;
+    T* rtn_element = nullptr;
+    while (parent != nullptr)
+    {
+        //依次查找所有父节点下面的指定类型节点
+        for (const auto& ele : parent->childLst)
+        {
+            T* _element = dynamic_cast<T*>(ele.get());
+            if (_element != nullptr)
+            {
+                rtn_element = _element;
+                return rtn_element;
+            }
+        }
+        parent = parent->pParent;
+    }
+
+    //如果没有找到，则查找整个界面第一个指定类型节点
+    if (rtn_element == nullptr)
+    {
+        UiElement::Element* root = element->RootElement();
+        if (root != nullptr)
+        {
+            root->IterateAllElements([&](UiElement::Element* ele)->bool {
+                T* _element = dynamic_cast<T*>(ele);
+                if (_element != nullptr)
+                {
+                    rtn_element = _element;
+                    return true;
+                }
+                return false;
+            });
+            if (rtn_element != nullptr)
+                return rtn_element;
+        }
+    }
+    return nullptr;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 UiElement::Element::Value::Value(bool _is_vertical, Element* _owner)
     : is_vertical(_is_vertical), owner(_owner)
@@ -1142,7 +1188,7 @@ void UiElement::ListElement::MouseMove(CPoint point)
         int scroll_area_height = rect.Height() - scroll_handle_length_comp;
         if (scroll_area_height > 0)
         {
-            int delta_playlist_offset = delta_scrollbar_offset * (ItemHeight() * GetRowCount()) / scroll_area_height;
+            int delta_playlist_offset = delta_scrollbar_offset * (ItemHeight() * GetDisplayRowCount()) / scroll_area_height;
             playlist_offset = mouse_pressed_offset - delta_playlist_offset;
         }
     }
@@ -1309,7 +1355,8 @@ void UiElement::ListElement::EnsureItemVisible(int index)
     CalculateRect();
     CalculateItemRects();
 
-    if (index >= static_cast<int>(item_rects.size()))
+    AbsoluteRowToDisplayRow(index);
+    if (index < 0 || index >= static_cast<int>(item_rects.size()))
         return;
 
     CRect item_rect{ item_rects[index] };
@@ -1340,7 +1387,7 @@ void UiElement::ListElement::RestrictOffset()
     int& offset{ playlist_offset };
     if (offset < 0)
         offset = 0;
-    int offset_max{ ItemHeight() * GetRowCount() - rect.Height() };
+    int offset_max{ ItemHeight() * GetDisplayRowCount() - rect.Height() };
     if (offset_max <= 0)
         offset = 0;
     else if (offset > offset_max)
@@ -1450,7 +1497,98 @@ void UiElement::ListElement::OnRowCountChanged()
     SelectNone();
 }
 
+void UiElement::ListElement::QuickSearch(const std::wstring& key_word)
+{
+    searched = !key_word.empty();
+
+    //查找匹配的序号
+    search_result.clear();
+    if (key_word.empty())
+        return;
+    for (int i = 0; i < GetRowCount(); i++)
+    {
+        if (IsItemMatchKeyWord(i, key_word))
+            search_result.push_back(i);
+    }
+}
+
+bool UiElement::ListElement::IsItemMatchKeyWord(int row, const std::wstring& key_word)
+{
+    bool rtn = false;
+    //默认匹配每一列中的文本
+    for (int i = 0; i < GetColumnCount(); i++)
+    {
+        std::wstring text = GetItemText(row, i);
+        if (!text.empty() && theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, text))
+            return true;
+    }
+    return false;
+}
+
+int UiElement::ListElement::GetDisplayRowCount()
+{
+    if (searched)
+        return search_result.size();
+    else
+        return GetRowCount();
+}
+
+bool UiElement::ListElement::IsRowDisplayed(int row)
+{
+    if (row >= 0 && row < GetRowCount())
+    {
+        //搜索状态下，仅搜索结果中的行显示
+        if (searched)
+        {
+            return CCommon::IsItemInVector(search_result, row);
+        }
+        //非搜索状态下，所有行都显示
+        else
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void UiElement::ListElement::DisplayRowToAbsoluteRow(int& row)
+{
+    if (searched)       //查找状态下需要转换行号
+    {
+        if (row >= 0 && row < static_cast<int>(search_result.size()))
+            row = search_result[row];
+        else
+            row = -1;
+    }
+}
+
+void UiElement::ListElement::AbsoluteRowToDisplayRow(int& row)
+{
+    if (searched)       //查找状态下需要转换行号
+    {
+        bool row_exist{};
+        for (int i{}; i < static_cast<int>(search_result.size()); i++)
+        {
+            if (row == search_result[i])
+            {
+                row = i;
+                row_exist = true;
+                break;
+            }
+        }
+        if (!row_exist)
+            row = -1;
+    }
+}
+
 int UiElement::ListElement::GetListIndexByPoint(CPoint point)
+{
+    int index = GetDisplayedIndexByPoint(point);
+    DisplayRowToAbsoluteRow(index);
+    return index;
+}
+
+int UiElement::ListElement::GetDisplayedIndexByPoint(CPoint point)
 {
     for (size_t i{}; i < item_rects.size(); i++)
     {
@@ -1669,6 +1807,19 @@ void UiElement::Playlist::OnRowCountChanged()
     ListElement::OnRowCountChanged();
     //播放列表行数改变时，通知主窗口取消播放列表选中项
     ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAYLIST_SELECT_NONE, 0);
+}
+
+bool UiElement::Playlist::IsItemMatchKeyWord(int row, const std::wstring& key_word)
+{
+    if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+    {
+        const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+        return (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, song_info.GetFileName())
+            || theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, song_info.title)
+            || theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, song_info.artist)
+            || theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, song_info.album));
+    }
+    return false;
 }
 
 int UiElement::Playlist::GetRowCount()
@@ -2096,41 +2247,7 @@ void UiElement::NavigationBar::FindStackElement()
 {
     if (!find_stack_element)
     {
-        UiElement::Element* parent = pParent;
-        while (parent != nullptr)
-        {
-            //依次查找所有父节点下面的StackElement
-            for (const auto& ele : parent->childLst)
-            {
-                StackElement* _stack_element = dynamic_cast<StackElement*>(ele.get());
-                if (_stack_element != nullptr)
-                {
-                    stack_element = _stack_element;
-                    find_stack_element = true;
-                    return;
-                }
-            }
-            parent = parent->pParent;
-        }
-
-        //如果没有找到，则查找整个界面第一个StackElement
-        if (stack_element == nullptr)
-        {
-            Element* root = RootElement();
-            if (root != nullptr)
-            {
-                root->IterateAllElements([&](Element* ele)->bool {
-                    StackElement* _stack_element = dynamic_cast<StackElement*>(ele);
-                    if (_stack_element != nullptr)
-                    {
-                        stack_element = _stack_element;
-                        return true;
-                    }
-                    return false;
-                });
-            }
-        }
-
+        stack_element = FindRelatedElement<StackElement>(this);
         find_stack_element = true;  //找过一次没找到就不找了
     }
 }
@@ -3172,6 +3289,13 @@ void UiElement::SearchBox::InitSearchBoxControl(CWnd* pWnd)
     search_box_ctrl->Create();
 }
 
+void UiElement::SearchBox::OnKeyWordsChanged()
+{
+    FindListElement();
+    if (list_element != nullptr)
+        list_element->QuickSearch(key_word);
+}
+
 void UiElement::SearchBox::Draw()
 {
     CalculateRect();
@@ -3222,6 +3346,15 @@ void UiElement::SearchBox::LButtonDown(CPoint point)
     if (icon_rect.PtInRect(point))
     {
         clear_btn.pressed = true;
+    }
+}
+
+void UiElement::SearchBox::FindListElement()
+{
+    if (!find_list_element)
+    {
+        list_element = FindRelatedElement<ListElement>(this);
+        find_list_element = true;  //找过一次没找到就不找了
     }
 }
 

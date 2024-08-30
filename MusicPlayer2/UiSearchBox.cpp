@@ -6,6 +6,7 @@
 #include "afxdialogex.h"
 #include "UiSearchBox.h"
 #include "UIElement.h"
+#include "MusicPlayerDlg.h"
 
 
 // CUiSearchBox 对话框
@@ -143,6 +144,10 @@ void CUiSearchBox::OnEnChangeUiSearchBoxEdit()
         CString str;
         m_search_box.GetWindowText(str);
         m_ui_search_box->key_word = str.GetString();
+        m_ui_search_box->OnKeyWordsChanged();
+        //通知线程强制重绘
+        CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
+        if (pMainWindow != nullptr)
+            pMainWindow->UiForceRefresh();
     }
-
 }

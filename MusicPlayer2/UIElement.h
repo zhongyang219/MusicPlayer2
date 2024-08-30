@@ -329,8 +329,19 @@ namespace UiElement
         virtual bool IsMultipleSelectionEnable() { return false; }      //是否允许多选
         virtual void OnRowCountChanged();       //当列表行数发生变化时响应此函数
 
+        void QuickSearch(const std::wstring& key_word);                 //根据关键执行快速搜索（筛选出匹配的项）
+        virtual bool IsItemMatchKeyWord(int row, const std::wstring& key_word);     //判断指定行是否匹配关键字（用于快速搜索功能，默认匹配每一列中的文本，只要有一列的文本匹配就返回true，派生类可重写此函数）
+
+        int GetDisplayRowCount();       //获取要显示的行数。（处于搜索状态时返回搜索结果数量，正常状态下同GetRowCount）
+        bool IsRowDisplayed(int row);   //判断一行是否显示。（仅处于搜索状态时不匹配的行会返回false）
+
         int item_height{ 28 };
         int font_size{ 9 };
+
+    private:
+        void DisplayRowToAbsoluteRow(int& row); //将显示的行号转换为绝对行号
+        void AbsoluteRowToDisplayRow(int& row); //将绝对行号转换为显示的行号
+        int GetDisplayedIndexByPoint(CPoint point);
 
     protected:
         int GetListIndexByPoint(CPoint point);
@@ -352,6 +363,8 @@ namespace UiElement
         int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
         std::map<int, IPlayerUI::UIButton> hover_buttons;   //鼠标指向时的按钮
         int last_row_count{};
+        std::vector<int> search_result; //保存搜索结果的序号
+        bool searched{};                //是否处于搜索状态
     };
 
 
@@ -401,6 +414,8 @@ namespace UiElement
 
         virtual bool IsMultipleSelectionEnable() override { return true; }
         virtual void OnRowCountChanged() override;
+
+        virtual bool IsItemMatchKeyWord(int row, const std::wstring& key_word);
 
     private:
         int last_highlight_row{ -1 };
@@ -817,6 +832,7 @@ namespace UiElement
         SearchBox();
         ~SearchBox();
         void InitSearchBoxControl(CWnd* pWnd);  //初始化搜索框控件。pWnd：父窗口
+        void OnKeyWordsChanged();
 
         virtual void Draw() override;
         virtual void MouseMove(CPoint point) override;
@@ -829,6 +845,12 @@ namespace UiElement
         CUiSearchBox* search_box_ctrl{};    //搜索框控件
         CRect icon_rect;    //图标的区域
         CPlayerUIBase::UIButton clear_btn;      //清除按钮
+
+    private:
+        void FindListElement();         //查找ListElement
+        bool find_list_element{};       //如果已经查找过ListElement，则为true
+        ListElement* list_element{};    //关联的ListElement
+
     };
 }
 
