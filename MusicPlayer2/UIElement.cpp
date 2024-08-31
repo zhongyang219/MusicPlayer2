@@ -1498,6 +1498,9 @@ void UiElement::ListElement::OnRowCountChanged()
 {
     //如果列表的行数有变化，则清除选中
     SelectNone();
+    //清除搜索框
+    if (related_search_box != nullptr)
+        related_search_box->Clear();
 }
 
 void UiElement::ListElement::QuickSearch(const std::wstring& key_word)
@@ -2969,6 +2972,11 @@ void UiElement::TreeElement::QuickSearch(const std::wstring& key_word)
     }
 }
 
+void UiElement::TreeElement::OnRowCountChanged()
+{
+    //树控件的行数变化可能只是节点的展开或折叠，因此不执行基类中OnRowCountChanged的处理。
+}
+
 int UiElement::TreeElement::GetItemLevel(int row)
 {
     const Node* node = GetNodeByIndex(row);
@@ -3351,6 +3359,11 @@ void UiElement::SearchBox::OnKeyWordsChanged()
         list_element->QuickSearch(key_word);
 }
 
+void UiElement::SearchBox::Clear()
+{
+    search_box_ctrl->Clear();
+}
+
 void UiElement::SearchBox::Draw()
 {
     CalculateRect();
@@ -3409,6 +3422,8 @@ void UiElement::SearchBox::FindListElement()
     if (!find_list_element)
     {
         list_element = FindRelatedElement<ListElement>(this);
+        if (list_element != nullptr)
+            list_element->SetRelatedSearchBox(this);
         find_list_element = true;  //找过一次没找到就不找了
     }
 }

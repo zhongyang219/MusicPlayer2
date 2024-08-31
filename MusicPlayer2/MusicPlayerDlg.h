@@ -539,4 +539,6 @@ protected:
     afx_msg void OnMoreRecentItems();
 public:
     afx_msg void OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp);
+protected:
+    afx_msg LRESULT OnClearUiSerchBox(WPARAM wParam, LPARAM lParam);
 };

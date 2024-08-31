@@ -24,6 +24,11 @@ public:
     void PlaylistLocateToCurrent();     //播放列表控件使正在播放的条目可见
     void ListLocateToCurrent();         //ui中的所有列表使正在播放的条目可见
     void InitSearchBox(CWnd* pWnd);
+
+    //清除所有搜索框的搜索状态。其中模板参数T是搜索框关联的列表元素的类型
+    template<class T>
+    void ClearSearchResult();
+
     void SaveStatackElementIndex(CArchive& archive);
     void LoadStatackElementIndex(CArchive& archive);
 
@@ -81,6 +86,23 @@ protected:
 protected:
     virtual void SwitchStackElement() override;
 };
+
+template<class T>
+inline void CUserUi::ClearSearchResult()
+{
+    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool {
+        UiElement::SearchBox* search_box{ dynamic_cast<UiElement::SearchBox*>(element) };
+        if (search_box != nullptr)
+        {
+            T* list_emelent = dynamic_cast<T*>(search_box->GetListElement());
+            if (list_emelent != nullptr)
+            {
+                search_box->Clear();
+            }
+        }
+        return false;
+    });
+}
 
 template<class T>
 inline T* CUserUi::FindElement()

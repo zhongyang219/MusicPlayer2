@@ -48,6 +48,7 @@ void CRecentFolderAndPlaylist::Init()
     //向主窗口发送通知
     ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED, 0, 0);  // 重新初始化快捷菜单
     ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_INIT_ADD_TO_MENU, 0, 0);   // 重新初始化右键菜单中的“添加到播放列表”子菜单
+    theApp.m_pMainWnd->PostMessage(WM_CLEAR_UI_SERCH_BOX, UI_LIST_TYPE_RECENT_PLAYED);   //清除UI中的搜索框
 }
 
 const std::vector<CRecentFolderAndPlaylist::Item>& CRecentFolderAndPlaylist::GetItemList() const

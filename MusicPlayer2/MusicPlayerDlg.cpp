@@ -335,6 +335,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_MESSAGE(WM_SET_UI_FORCE_FRESH_FLAG, &CMusicPlayerDlg::OnSetUiForceFreshFlag)
     ON_COMMAND(ID_MORE_RECENT_ITEMS, &CMusicPlayerDlg::OnMoreRecentItems)
     ON_WM_NCCALCSIZE()
+    ON_MESSAGE(WM_CLEAR_UI_SERCH_BOX, &CMusicPlayerDlg::OnClearUiSerchBox)
 END_MESSAGE_MAP()
 
 
@@ -6644,4 +6645,30 @@ void CMusicPlayerDlg::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpnc
         }
     }
     CMainDialogBase::OnNcCalcSize(bCalcValidRects, lpncsp);
+}
+
+
+afx_msg LRESULT CMusicPlayerDlg::OnClearUiSerchBox(WPARAM wParam, LPARAM lParam)
+{
+    for (auto& ui : m_ui_list)
+    {
+        CUserUi* cur_ui{ dynamic_cast<CUserUi*>(ui.get()) };
+        if (cur_ui != nullptr)
+        {
+            switch (wParam)
+            {
+            case UI_LIST_TYPE_RECENT_PLAYED:
+                cur_ui->ClearSearchResult<UiElement::RecentPlayedList>();
+                break;
+            case UI_LIST_TYPE_FOLDER:
+                cur_ui->ClearSearchResult<UiElement::MediaLibFolder>();
+                break;
+            case UI_LIST_TYPE_PLAYLIST:
+                cur_ui->ClearSearchResult<UiElement::MediaLibPlaylist>();
+                break;
+            }
+        }
+    }
+
+    return 0;
 }

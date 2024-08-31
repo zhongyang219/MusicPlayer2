@@ -212,6 +212,7 @@ bool CRecentFolderMgr::SetSortMode(FolderSortMode sort_mode)
         std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
         m_sort_mode = sort_mode;
         SortPath();
+        theApp.m_pMainWnd->PostMessage(WM_CLEAR_UI_SERCH_BOX, UI_LIST_TYPE_FOLDER);
         return true;
     }
     return false;
