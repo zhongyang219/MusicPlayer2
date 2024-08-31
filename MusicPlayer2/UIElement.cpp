@@ -3403,10 +3403,15 @@ void UiElement::SearchBox::LButtonUp(CPoint point)
     clear_btn.pressed = false;
     //点击清除按钮时清除搜索结果
     if (icon_rect.PtInRect(point))
+    {
         search_box_ctrl->Clear();
+    }
     //点击搜索框区域时显示搜索框控件
     else if (search_box_ctrl != nullptr && rect.PtInRect(point))
-        search_box_ctrl->Show(this);
+    {
+        bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
+        search_box_ctrl->Show(this, big_font);
+    }
 }
 
 void UiElement::SearchBox::LButtonDown(CPoint point)
