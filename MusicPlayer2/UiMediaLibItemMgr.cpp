@@ -5,6 +5,7 @@
 #include "Playlist.h"
 #include "SongDataManager.h"
 #include "SongInfoHelper.h"
+#include "Player.h"
 
 CUiMediaLibItemMgr CUiMediaLibItemMgr::m_instance;
 
@@ -373,6 +374,13 @@ void CUiFolderExploreMgr::UpdateFolders()
     m_loading = true;
 
     m_root_nodes.clear();
+
+    //这里等待播放内核加载完成，否则无法判断文件夹内音频文件数量
+    while (!CPlayer::GetInstance().IsPlayerCoreInited())
+    {
+        Sleep(20);
+    }
+
     //获取媒体库目录
     for (const auto& default_folder : theApp.m_media_lib_setting_data.media_folders)
     {
@@ -430,8 +438,33 @@ int CUiFolderExploreMgr::GetAudioFilesNum(std::wstring path)
     }
     else
     {
-        int audio_file_num = CAudioCommon::GetAudioFilesNum(path, true);
-        m_folder_audio_files_num[path] = audio_file_num;
-        return audio_file_num;
+        int audio_file_count = 0;
+        //文件句柄
+        intptr_t hFile = 0;
+        //文件信息
+        _wfinddata_t fileinfo;
+        if ((hFile = _wfindfirst((path + L"*").c_str(), &fileinfo)) != -1)
+        {
+            do
+            {
+                wstring file_name = fileinfo.name;
+                if (file_name == L"." || file_name == L"..")
+                    continue;
+
+                if (CCommon::IsFolder(path + file_name))        //是文件夹，则递归调用
+                {
+                    audio_file_count += GetAudioFilesNum(path + file_name);
+                }
+                else
+                {
+                    if (CAudioCommon::FileIsAudio(path + file_name))	//找到了音频文件
+                        audio_file_count++;
+                }
+            } while (_wfindnext(hFile, &fileinfo) == 0);
+        }
+        _findclose(hFile);
+
+        m_folder_audio_files_num[path] = audio_file_count;
+        return audio_file_count;
     }
 }

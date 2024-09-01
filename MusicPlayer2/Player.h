@@ -168,6 +168,7 @@ private:
     ABRepeatMode m_ab_repeat_mode{};
 
     bool m_file_opend{ false };             //如果打开了一个文件，则为true
+    bool m_player_core_inited{ false };     //播放内核是否初始化
     bool m_contain_sub_folder{ false };     //文件夹模式是否包含子文件夹
 
     AlbumCoverInfo m_album_cover_info;
@@ -526,6 +527,8 @@ public:
     bool IsBassCore() const;
     bool IsFfmpegCore() const;
     bool IsFileOpened() const { return m_file_opend; }
+    //播放内核是否初始化完成
+    bool IsPlayerCoreInited() const { return m_player_core_inited; }
     bool IsContainSubFolder() const { return m_contain_sub_folder; }
 
 
