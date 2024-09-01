@@ -23,10 +23,7 @@
                 </verticalLayout>
               </horizontalLayout>
             </rectangle>
-            <stackElement>
-              <lyrics/>
-              <playlist item_height="30"/>
-            </stackElement>
+            <lyrics/>
           </verticalLayout>
           <!--播放队列-->
           <verticalLayout>
