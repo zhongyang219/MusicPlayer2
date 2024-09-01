@@ -3126,11 +3126,20 @@ void UiElement::TreeElement::IterateDisplayedNodeInOrder(std::function<bool(Node
     const auto& root_nodes{ GetRootNodes() };
     for (const auto& root : root_nodes)
     {
+        bool exit{};
         root->IterateNodeInOrder([&](Node* cur_node) ->bool {
             if (IsNodeDisplayed(cur_node))
-                return func(cur_node);
+            {
+                if (func(cur_node))
+                {
+                    exit = true;
+                    return true;
+                }
+            }
             return false;
         }, true);
+        if (exit)
+            break;
     }
 }
 
