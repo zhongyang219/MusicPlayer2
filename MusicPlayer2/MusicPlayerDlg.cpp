@@ -1201,6 +1201,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
                              || theApp.m_app_setting_data.enable_background != optionDlg.m_tab2_dlg.m_data.enable_background };
     bool output_device_changed{ theApp.m_play_setting_data.device_selected != optionDlg.m_tab4_dlg.m_data.device_selected };
     bool player_core_changed{ theApp.m_play_setting_data.use_mci != optionDlg.m_tab4_dlg.m_data.use_mci || theApp.m_play_setting_data.use_ffmpeg != optionDlg.m_tab4_dlg.m_data.use_ffmpeg };
+    bool media_lib_folder_changed{ theApp.m_media_lib_setting_data.media_folders != optionDlg.m_media_lib_dlg.m_data.media_folders };
     bool media_lib_setting_changed{ theApp.m_media_lib_setting_data.hide_only_one_classification != optionDlg.m_media_lib_dlg.m_data.hide_only_one_classification
                                     || theApp.m_media_lib_setting_data.media_folders != optionDlg.m_media_lib_dlg.m_data.media_folders
                                     || theApp.m_media_lib_setting_data.recent_played_range != optionDlg.m_media_lib_dlg.m_data.recent_played_range
@@ -1263,6 +1264,12 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
             m_pMediaLibDlg->m_folder_explore_dlg->RefreshData();
             m_pMediaLibDlg->m_recent_media_dlg->RefreshData();
         }
+    }
+
+    if (media_lib_folder_changed)
+    {
+        //更新UI中的文件夹浏览
+        CUiFolderExploreMgr::Instance().UpdateFolders();
     }
 
     UpdatePlayPauseButton();
