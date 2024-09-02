@@ -3051,6 +3051,17 @@ void UiElement::TreeElement::MouseLeave()
     ListElement::MouseLeave();
 }
 
+bool UiElement::TreeElement::DoubleClick(CPoint point)
+{
+    //如果双击了折叠标志，则不执行双击动作
+    for (const auto& rect : collapsd_rects)
+    {
+        if (rect.second.PtInRect(point))
+            return false;
+    }
+    return ListElement::DoubleClick(point);
+}
+
 int UiElement::TreeElement::GetNodeIndex(const Node* node)
 {
     int i{};

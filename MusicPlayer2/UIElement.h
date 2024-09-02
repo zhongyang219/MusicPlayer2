@@ -759,6 +759,7 @@ namespace UiElement
         virtual void LButtonUp(CPoint point) override;
         virtual void MouseMove(CPoint point) override;
         virtual void MouseLeave() override;
+        virtual bool DoubleClick(CPoint point) override;
 
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
