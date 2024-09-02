@@ -89,4 +89,5 @@ protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
 public:
     virtual void OnOK();
+    afx_msg void OnBrowsePath();
 };

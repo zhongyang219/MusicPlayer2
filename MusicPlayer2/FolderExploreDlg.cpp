@@ -216,6 +216,7 @@ BEGIN_MESSAGE_MAP(CFolderExploreDlg, CMediaLibTabDlg)
     ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CFolderExploreDlg::OnNMDblclkSongList)
     ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CFolderExploreDlg::OnEnChangeMfceditbrowse1)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFolderExploreDlg::OnSearchEditBtnClicked)
+    ON_COMMAND(ID_BROWSE_PATH, &CFolderExploreDlg::OnBrowsePath)
 END_MESSAGE_MAP()
 
 
@@ -298,7 +299,7 @@ void CFolderExploreDlg::OnNMRClickFolderExploreTree(NMHDR *pNMHDR, LRESULT *pRes
                 m_folder_explore_tree.GetWindowRect(window_rect);       //获取列表控件的矩形区域（以屏幕左上角为原点）
                 point.y = window_rect.top + item_rect.bottom;   //设置鼠标要弹出的y坐标为选中项目的下边框位置，防止右键菜单挡住选中的项目
             }
-            CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibLeftMenu);
+            CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibFolderExploreMenu);
             pMenu->TrackPopupMenu(TPM_LEFTBUTTON | TPM_LEFTALIGN, point.x, point.y, this);
         }
     }
@@ -432,5 +433,16 @@ void CFolderExploreDlg::OnOK()
     else
     {
         CMediaLibTabDlg::OnOK();
+    }
+}
+
+
+void CFolderExploreDlg::OnBrowsePath()
+{
+    // TODO: 在此添加命令处理程序代码
+    if (m_left_selected)        //选中左侧树时，播放选中文件夹
+    {
+        wstring folder_path{ m_folder_explore_tree.GetItemPath(m_tree_item_selected) };
+        ShellExecute(NULL, _T("open"), _T("explorer"), folder_path.c_str(), NULL, SW_SHOWNORMAL);
     }
 }
