@@ -28,7 +28,7 @@
           <!--播放队列-->
           <verticalLayout>
             <placeHolder show_when_use_system_titlebar="true" height="20"/>
-            <horizontalLayout height="56" margin-right="8">
+            <horizontalLayout height="56" margin-right="10">
               <text type="userDefine" text="%(UI_TXT_PLAY_QUEUE)" height="56" font_size="12" margin-left="8"/>
               <searchBox height="26" max-width="200"/>
             </horizontalLayout>
@@ -38,7 +38,7 @@
           <!--最近播放-->
           <verticalLayout>
             <placeHolder show_when_use_system_titlebar="true" height="20"/>
-            <horizontalLayout height="56" margin-right="8">
+            <horizontalLayout height="56" margin-right="10">
               <text type="userDefine" text="%(TXT_RECENT_PLAYED)" height="56" font_size="12" margin-left="8"/>
               <searchBox height="26" max-width="200"/>
             </horizontalLayout>
@@ -47,7 +47,7 @@
           <!--文件夹-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_FOLDER)" height="56" font_size="12" margin-left="8"/>
-            <horizontalLayout height="32" margin-right="8" margin-bottom="4">
+            <horizontalLayout height="32" margin-right="10" margin-bottom="4">
               <button key="openFolder" height="32" show_text="true" proportion="10"/>
               <button key="medialibFolderSort" height="32" show_text="true" proportion="10"/>
               <placeHolder proportion="1"/>
@@ -58,7 +58,7 @@
           <!--播放列表-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_PLAYLIST)" height="56" font_size="12" margin-left="8"/>
-            <horizontalLayout height="32" margin-right="8" margin-bottom="4">
+            <horizontalLayout height="32" margin-right="10" margin-bottom="4">
               <button key="newPlaylist" height="32" show_text="true" proportion="10"/>
               <button key="medialibPlaylistSort" height="32" show_text="true" proportion="10"/>
               <placeHolder proportion="1"/>
@@ -69,7 +69,7 @@
           <!--我喜欢的音乐-->
           <verticalLayout>
             <text type="userDefine" text="%(TXT_MY_FAVOURITE)" height="56" font_size="12" margin-left="8"/>
-            <horizontalLayout height="32" margin-right="8" margin-bottom="4">
+            <horizontalLayout height="32" margin-right="10" margin-bottom="4">
               <button key="playMyFavourite" height="32" show_text="true" proportion="10"/>
               <placeHolder proportion="1"/>
               <searchBox height="26" max-width="200" proportion="10"/>
@@ -84,27 +84,27 @@
               <stackElement>
                 <!--艺术家-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <mediaLibItemList type="artist" item_height="30"/>
                 </verticalLayout>
                 <!--唱片集-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <mediaLibItemList type="album" item_height="30"/>
                 </verticalLayout>
                 <!--流派-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <mediaLibItemList type="genre" item_height="30"/>
                 </verticalLayout>
                 <!--所有曲目-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <allTracksList item_height="30"/>
                 </verticalLayout>
                 <!--文件夹浏览-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <medialibFolderExplore item_height="30"/>
                 </verticalLayout>
               </stackElement>

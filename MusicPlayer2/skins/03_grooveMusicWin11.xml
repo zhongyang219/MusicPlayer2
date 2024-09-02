@@ -227,27 +227,27 @@
               <stackElement>
                 <!--艺术家-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <mediaLibItemList type="artist" item_height="30"/>
                 </verticalLayout>
                 <!--唱片集-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <mediaLibItemList type="album" item_height="30"/>
                 </verticalLayout>
                 <!--流派-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <mediaLibItemList type="genre" item_height="30"/>
                 </verticalLayout>
                 <!--所有曲目-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <allTracksList item_height="30"/>
                 </verticalLayout>
                 <!--文件夹浏览-->
                 <verticalLayout>
-                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="8"/>
+                  <searchBox height="26" max-width="200" margin-bottom="4" margin-right="10"/>
                   <medialibFolderExplore item_height="30"/>
                 </verticalLayout>
               </stackElement>
