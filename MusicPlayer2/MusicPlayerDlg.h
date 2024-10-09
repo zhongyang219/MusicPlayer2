@@ -31,6 +31,7 @@
 #include "HorizontalSplitter.h"
 #include "powrprof.h"
 #include "CHotkeyManager.h"
+#include "ListCache.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
 
@@ -67,19 +68,28 @@ protected:
 public:
     CMenu* m_pCurMenu{};       //当前弹出的菜单
 
-    // 实现
+    // 为主窗口停靠播放列表部分控件显示缓存当前ListItem，与控件显示状态应总是保持同步
+    // 主线程可以从这里取得当前ListItem，***限制此对象仅能在主线程使用***
+    CListCache m_current_cache;
+    // 为“最近播放”菜单缓存ListItem，总是与MenuMgr::RecentFolderPlaylistMenu一致
+    // 主线程可以从这里获取此菜单当前内容数据，***限制此对象仅能在主线程使用***
+    CListCache m_recent_cache;
+
 protected:
     HICON m_hIcon;
-    CToolTipCtrl m_tool_tip;
     //控件变量
-    CPlayListCtrl m_playlist_list{ CPlayer::GetInstance().GetPlayList() };		//播放列表控件(初始化时通过构造函数传递歌曲信息的引用，
-    //用于支持鼠标指向列表中的项目时显示歌曲信息)
+
+    CUIWindow m_ui_static_ctrl{ m_pUI };
+    CHorizontalSplitter m_splitter_ctrl;
     CStaticEx m_path_static;
     CMenuEditCtrl m_path_edit;
     CButton m_media_lib_button;
     CSearchEditCtrl m_search_edit;
-    //CButton m_clear_search_button;
-    CUIWindow m_ui_static_ctrl{ m_pUI };
+    CPlayerToolBar m_playlist_toolbar;
+    //播放列表控件(初始化时通过构造函数传递歌曲信息的引用，用于支持鼠标指向列表中的项目时显示歌曲信息）
+    CPlayListCtrl m_playlist_list{ CPlayer::GetInstance().GetPlayList() };
+
+    CToolTipCtrl m_tool_tip;
 
 #ifndef COMPILE_IN_WIN_XP
     THUMBBUTTON m_thumbButton[3]{};
@@ -154,8 +164,6 @@ protected:
     int m_fps_cnt{};            //用于统计当前帧率
 
     CNotifyIcon m_notify_icon;
-    CPlayerToolBar m_playlist_toolbar;
-    CHorizontalSplitter m_splitter_ctrl;
 
     bool m_ignore_color_change{ false };    //当它为true时，不响应颜色变化，防止短时间内重复收到主题颜色变化的消息
     enum { INGORE_COLOR_CHANGE_TIMER_ID = 1200 };
@@ -209,7 +217,7 @@ public:
     void SetUiPlaylistSelected(int index);
 
     static bool IsPointValid(CPoint);
-    static int UpdatePlaylistCtrlPosition(CWnd* pParent, CWnd* pStatic, CWnd* pEdit);     //更新播放列表上方的CStatic和CEdit控件的大小和位置，返回CStatic的宽度
+    int UpdatePlaylistCtrlPosition(CWnd* pParent, CWnd* pStatic, CWnd* pEdit);     //更新播放列表上方的CStatic和CEdit控件的大小和位置，返回CStatic的宽度
     int GetPathStaticWidth() const { return m_part_static_width; }
 
 protected:

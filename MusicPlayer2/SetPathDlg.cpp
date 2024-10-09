@@ -6,9 +6,9 @@
 #include "Player.h"
 #include "SetPathDlg.h"
 #include "MusicPlayerCmdHelper.h"
-#include "RecentFolderAndPlaylist.h"
 #include "FolderPropertiesDlg.h"
 #include "COSUPlayerHelper.h"
+#include "CRecentList.h"
 
 
 // CSetPathDlg 对话框
@@ -17,6 +17,7 @@ IMPLEMENT_DYNAMIC(CSetPathDlg, CTabDlg)
 
 CSetPathDlg::CSetPathDlg(CWnd* pParent /*=NULL*/)
     : CTabDlg(IDD_SET_PATH_DIALOG, pParent)
+    , m_list_cache(LT_FOLDER)
 {
 
 }
@@ -28,9 +29,9 @@ CSetPathDlg::~CSetPathDlg()
 void CSetPathDlg::QuickSearch(const wstring & key_word)
 {
     m_search_result.clear();
-    for (size_t i{}; i < m_path_list_info.size(); ++i)
+    for (size_t i{}; i < m_list_cache.size(); ++i)
     {
-        if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, m_path_list_info[i].path))
+        if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, m_list_cache.at(i).path))
             m_search_result.push_back(i);
     }
 }
@@ -54,9 +55,9 @@ bool CSetPathDlg::SetCurSel(const wstring& folder_path)
     if (!m_searched)
     {
         int index{ -1 };
-        for (size_t i{}; i < m_path_list_info.size(); i++)
+        for (size_t i{}; i < m_list_cache.size(); i++)
         {
-            if (m_path_list_info[i].path == folder_path)
+            if (m_list_cache.at(i).path == folder_path)
                 index = i;
         }
 
@@ -76,23 +77,23 @@ bool CSetPathDlg::SelectValid() const
     int index{ m_list_selected };
     if (m_searched && index >= 0 && index < static_cast<int>(m_search_result.size()))
         index = m_search_result[index];
-    return index >= 0 && index < static_cast<int>(m_path_list_info.size());
+    return index >= 0 && index < static_cast<int>(m_list_cache.size());
 }
 
-PathInfo CSetPathDlg::GetSelPath() const
+const ListItem& CSetPathDlg::GetSelPath() const
 {
     if (SelectValid())
         if (m_searched)
-            return m_path_list_info[m_search_result[m_list_selected]];
+            return m_list_cache.at(m_search_result[m_list_selected]);
         else
-            return m_path_list_info[m_list_selected];
-    else
-        return PathInfo();
+            return m_list_cache.at(m_list_selected);
+    static ListItem empty{};
+    return empty;
 }
 
 bool CSetPathDlg::SelectedCanPlay() const
 {
-    return SelectValid() && (!CPlayer::GetInstance().IsFolderMode() || GetSelPath().path != CPlayer::GetInstance().GetCurrentDir2());
+    return SelectValid() && CRecentList::Instance().IsCurrentList(GetSelPath());
 }
 
 void CSetPathDlg::SetButtonsEnable()
@@ -105,26 +106,18 @@ void CSetPathDlg::SetButtonsEnable()
 
 void CSetPathDlg::ShowPathList()
 {
-    // 这里的更新m_path_list_info操作本应有独立方法不过暂时还不必要，先放这里
-    m_path_list_info.clear();
-    int highlight_index{ -1 }, i{};
-    CRecentFolderMgr::Instance().IteratePathInfo([&](const PathInfo& path_info) {
-        m_path_list_info.push_back(path_info);
-        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == m_path_list_info[i].path)
-            highlight_index = i;
-        ++i;
-    });
+    m_list_cache.reload();
 
     m_path_list.EnableWindow(TRUE);
     m_path_list.DeleteAllItems();
     if (!m_searched)        //显示所有项目
     {
-        for (size_t i{}; i < m_path_list_info.size(); ++i)
+        for (size_t i{}; i < m_list_cache.size(); ++i)
         {
             m_path_list.InsertItem(i, std::to_wstring(i + 1).c_str());
-            SetListRowData(i, m_path_list_info[i]);
+            SetListRowData(i, m_list_cache.at(i));
         }
-        m_path_list.SetHightItem(highlight_index);
+        m_path_list.SetHightItem(m_list_cache.playing_index());
     }
     else        //只显示搜索结果的曲目
     {
@@ -143,8 +136,8 @@ void CSetPathDlg::ShowPathList()
         for (size_t i : m_search_result)
         {
             m_path_list.InsertItem(index, std::to_wstring(i + 1).c_str());
-            SetListRowData(index, m_path_list_info[i]);
-            if (highlight_index == i)
+            SetListRowData(index, m_list_cache.at(i));
+            if (m_list_cache.playing_index() == i)
                 highlight_index_searched = index;
             ++index;
         }
@@ -167,26 +160,20 @@ void CSetPathDlg::CalculateColumeWidth(vector<int>& width)
     width[2] = rect.Width() - width[1] - width[3] - width[4] - width[5] - width[6] - width[0] - theApp.DPI(20) - 1;
 }
 
-void CSetPathDlg::SetListRowData(int index, const PathInfo & path_info)
+void CSetPathDlg::SetListRowData(int index, const ListItem& list_item)
 {
-    CFilePathHelper path_helper(path_info.path);
+    CFilePathHelper path_helper(list_item.path);
     m_path_list.SetItemText(index, 1, path_helper.GetFolderName().c_str());
-    m_path_list.SetItemText(index, 2, path_info.path.c_str());
+    m_path_list.SetItemText(index, 2, list_item.path.c_str());
 
-    if (path_info.contain_sub_folder)
+    if (list_item.contain_sub_folder)
         m_path_list.SetItemText(index, 3, theApp.m_str_table.LoadText(L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER_YES").c_str());
     else
         m_path_list.SetItemText(index, 3, _T(""));
 
-    CString str;
-    str.Format(_T("%d"), path_info.track + 1);
-    m_path_list.SetItemText(index, 4, str);
-
-    str.Format(_T("%d"), path_info.track_num);
-    m_path_list.SetItemText(index, 5, str);
-
-    Time total_time{ path_info.total_time };
-    m_path_list.SetItemText(index, 6, total_time.toString3().c_str());
+    m_path_list.SetItemText(index, 4, list_item.GetLastTrackDisplayName().c_str());
+    m_path_list.SetItemText(index, 5, std::to_wstring(list_item.total_num).c_str());
+    m_path_list.SetItemText(index, 6, Time(list_item.total_time).toString3().c_str());
 }
 
 void CSetPathDlg::OnTabEntered()
@@ -340,8 +327,7 @@ void CSetPathDlg::OnOK()
     // TODO: 在此添加专用代码和/或调用基类
     if (SelectedCanPlay())
     {
-        PathInfo path_info = GetSelPath();
-        if (!CPlayer::GetInstance().SetPath(path_info))
+        if (!CPlayer::GetInstance().SetList(GetSelPath()))
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
             MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
@@ -383,9 +369,8 @@ void CSetPathDlg::OnDeletePath()
     // TODO: 在此添加命令处理程序代码
     if (SelectValid())
     {
-        wstring del_path = GetSelPath().path;
         CMusicPlayerCmdHelper helper(this);
-        if (helper.OnDeleteRecentFolder(del_path))
+        if (helper.OnDeleteRecentListItem(GetSelPath()))
         {
             ShowPathList();                 // 重新显示路径列表
         }
@@ -409,7 +394,6 @@ void CSetPathDlg::OnClearInvalidPath()
         return;
     int cleard_cnt = CMusicPlayerCmdHelper::CleanUpRecentFolders();
     ShowPathList();     // 重新显示路径列表
-    CRecentFolderAndPlaylist::Instance().Init();
     wstring complete_info = theApp.m_str_table.LoadTextFormat(L"MSG_LIB_PATH_CLEAR_COMPLETE", { cleard_cnt });
     MessageBox(complete_info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
 }
@@ -428,11 +412,11 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
     bool contain_sub_folder{ select_valid && GetSelPath().contain_sub_folder };
     pMenu->CheckMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (contain_sub_folder ? MF_CHECKED : MF_UNCHECKED));
 
-    switch (CRecentFolderMgr::Instance().GetSortMode())
+    switch (CRecentList::Instance().GetSortMode(LT_FOLDER))
     {
-    case CRecentFolderMgr::FolderSortMode::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
-    case CRecentFolderMgr::FolderSortMode::SM_RECENT_ADDED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_ADDED, MF_BYCOMMAND | MF_CHECKED); break;
-    case CRecentFolderMgr::FolderSortMode::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_PATH, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentList::listSortMode::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentList::listSortMode::SM_RECENT_CREATED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_ADDED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentList::listSortMode::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_PATH, MF_BYCOMMAND | MF_CHECKED); break;
     }
 
     for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
@@ -499,10 +483,8 @@ void CSetPathDlg::OnContainSubFolder()
     // TODO: 在此添加命令处理程序代码
     if (SelectValid())
     {
-        wstring sel_path = GetSelPath().path;       // 当前选中项
-
         // 如果是当前播放则使用CPlayer成员方法更改（会启动播放列表初始化）不需要操作CPlayer::GetInstance().GetRecentPath()
-        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == sel_path)
+        if (CRecentList::Instance().IsCurrentList(GetSelPath()))
         {
             if (!CPlayer::GetInstance().SetContainSubFolder())
             {
@@ -512,7 +494,7 @@ void CSetPathDlg::OnContainSubFolder()
         }
         else
         {
-            if (CRecentFolderMgr::Instance().SetContainSubFolder(sel_path))
+            if (CRecentList::Instance().SetContainSubFolder(GetSelPath()))
             {
                 ShowPathList();     // 重新显示路径列表
             }
@@ -540,7 +522,7 @@ void CSetPathDlg::OnBnClickedSortButton()
 
 void CSetPathDlg::OnLibFolderSortRecentPlayed()
 {
-    if (CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::FolderSortMode::SM_RECENT_PLAYED))
+    if (CRecentList::Instance().SetSortMode(LT_FOLDER, CRecentList::listSortMode::SM_RECENT_PLAYED))
     {
         ShowPathList();
     }
@@ -549,7 +531,7 @@ void CSetPathDlg::OnLibFolderSortRecentPlayed()
 
 void CSetPathDlg::OnLibFolderSortRecentAdded()
 {
-    if (CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::FolderSortMode::SM_RECENT_ADDED))
+    if (CRecentList::Instance().SetSortMode(LT_FOLDER, CRecentList::listSortMode::SM_RECENT_CREATED))
     {
         ShowPathList();
     }
@@ -558,7 +540,7 @@ void CSetPathDlg::OnLibFolderSortRecentAdded()
 
 void CSetPathDlg::OnLibFolderSortPath()
 {
-    if (CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::FolderSortMode::SM_PATH))
+    if (CRecentList::Instance().SetSortMode(LT_FOLDER, CRecentList::listSortMode::SM_PATH))
     {
         ShowPathList();
     }
@@ -581,9 +563,12 @@ void CSetPathDlg::OnFileOpenFolder()
 BOOL CSetPathDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
     WORD command = LOWORD(wParam);
-    PathInfo path_info = GetSelPath();
+    const ListItem& list_item = GetSelPath();
     auto getSelectedItems = [&](std::vector<SongInfo>& song_list) {
-        CAudioCommon::GetAudioFiles(path_info.path, song_list, MAX_SONG_NUM, path_info.contain_sub_folder);
+        CAudioCommon::GetAudioFiles(list_item.path, song_list, MAX_SONG_NUM, list_item.contain_sub_folder);
+        int cnt{};
+        bool flag{};
+        CAudioCommon::GetCueTracks(song_list, cnt, flag, MR_MIN_REQUIRED);
     };
     CMusicPlayerCmdHelper helper(this);
     helper.OnAddToPlaylistCommand(getSelectedItems, command);
@@ -594,11 +579,14 @@ BOOL CSetPathDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void CSetPathDlg::OnAddToNewPlaylist()
 {
-    PathInfo path_info = GetSelPath();
+    const ListItem& list_item = GetSelPath();
     auto getSelectedItems = [&](std::vector<SongInfo>& song_list) {
-        CAudioCommon::GetAudioFiles(path_info.path, song_list, MAX_SONG_NUM, path_info.contain_sub_folder);
-    };
+        CAudioCommon::GetAudioFiles(list_item.path, song_list, MAX_SONG_NUM, list_item.contain_sub_folder);
+        int cnt{};
+        bool flag{};
+        CAudioCommon::GetCueTracks(song_list, cnt, flag, MR_MIN_REQUIRED);
+        };
     CMusicPlayerCmdHelper cmd_helper(this);
     wstring playlist_path;
-    cmd_helper.OnAddToNewPlaylist(getSelectedItems, playlist_path, CFilePathHelper(path_info.path).GetFolderName());
+    cmd_helper.OnAddToNewPlaylist(getSelectedItems, playlist_path, CFilePathHelper(list_item.path).GetFolderName());
 }

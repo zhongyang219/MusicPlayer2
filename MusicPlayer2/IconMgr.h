@@ -3,7 +3,7 @@ class IconMgr
 {
 public:
     IconMgr();
-    virtual ~IconMgr();
+    ~IconMgr();
 
     enum IconType
     {   // 命名以其(点击时的)功能为准

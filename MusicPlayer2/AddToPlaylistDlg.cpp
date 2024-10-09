@@ -4,16 +4,15 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "AddToPlaylistDlg.h"
-#include "PlaylistMgr.h"
 #include "FilePathHelper.h"
-
+#include "ListCache.h"
 
 // CAddToPlaylistDlg 对话框
 
 IMPLEMENT_DYNAMIC(CAddToPlaylistDlg, CBaseDialog)
 
 CAddToPlaylistDlg::CAddToPlaylistDlg(CWnd* pParent /*=nullptr*/)
-	: CBaseDialog(IDD_ADD_TO_PLAYLIST_DIALOG, pParent)
+    : CBaseDialog(IDD_ADD_TO_PLAYLIST_DIALOG, pParent)
 {
 
 }
@@ -82,10 +81,10 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
     m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
 
     //初始化列表
-    CPlaylistMgr::Instance().IterateItemsWithoutSpecialPlaylist([&](PlaylistInfo& item) {
-        CFilePathHelper playlist_path{ item.path };
-        m_list.push_back(playlist_path.GetFileNameWithoutExtension());
-    });
+    CListCache list_cache(LT_PLAYLIST_NO_SPEC);
+    list_cache.reload();
+    for (size_t i{}; i < list_cache.size(); ++i)
+        m_list.push_back(CFilePathHelper(list_cache.at(i).path).GetFileNameWithoutExtension());
     ShowList();
 
     return TRUE;  // return TRUE unless you set the focus to a control

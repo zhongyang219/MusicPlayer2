@@ -4,6 +4,12 @@
 #include "SongDataManager.h"
 #include "FilePathHelper.h"
 
+
+bool StringComparerNoCase::operator()(const std::wstring& a, const std::wstring& b) const
+{
+    return CCommon::StringCompareInLocalLanguage(a, b, true) < 0;
+}
+
 CMediaClassifier::CMediaClassifier(ClassificationType type, bool hide_only_one_classification)
     : m_type(type), m_hide_only_one_classification(hide_only_one_classification)
 {

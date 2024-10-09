@@ -319,13 +319,12 @@ void CAllMediaDlg::OnOK()
     if (!songs.empty() || m_type == DT_ALL_MEDIA)
     {
         bool ok{};
-        //所有曲目使用媒体库模式播放
-        if (m_type == DT_ALL_MEDIA)
+        // 所有曲目单选时使用媒体库模式播放
+        if (m_type == DT_ALL_MEDIA && songs.size() == 1)
         {
-            if (songs.empty())
-                ok = CPlayer::GetInstance().SetMediaLibPlaylist(CMediaClassifier::CT_NONE, std::wstring());
-            else
-                ok = CPlayer::GetInstance().SetMediaLibPlaylist(CMediaClassifier::CT_NONE, std::wstring(), -1, songs.front(), true, true);
+            ListItem list_item{ LT_MEDIA_LIB, L"", CMediaClassifier::CT_NONE};
+            list_item.SetPlayTrack(songs.front());
+            ok = CPlayer::GetInstance().SetList(list_item, true, true);
         }
         else
         {

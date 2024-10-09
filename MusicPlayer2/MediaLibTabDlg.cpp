@@ -97,13 +97,17 @@ void CMediaLibTabDlg::OnOK()
         wstring item_name = GetClassificationItemName();
         if (type != CMediaClassifier::CT_NONE && item_name != STR_OTHER_CLASSIFY_TYPE)
         {
+            ListItem list_item{ LT_MEDIA_LIB, item_name, type };
             int item_selected = GetItemSelected();
             //右侧选中了曲目，则播放选中的曲目
             if (item_selected >= 0)
-                ok = CPlayer::GetInstance().SetMediaLibPlaylist(type, item_name, -1, songs.front(), true, true);
+            {
+                list_item.SetPlayTrack(songs.front());
+                ok = CPlayer::GetInstance().SetList(list_item, true, true);
+            }
             //右侧没有选中曲目，则不指定播放曲目（继续播放上次播放的曲目）
             else
-                ok = CPlayer::GetInstance().SetMediaLibPlaylist(type, item_name, -1, SongInfo(), true, true);
+                ok = CPlayer::GetInstance().SetList(list_item, true);
         }
         else
         {

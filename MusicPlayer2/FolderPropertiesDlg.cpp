@@ -9,7 +9,7 @@
 
 IMPLEMENT_DYNAMIC(CFolderPropertiesDlg, CSimplePropertiesDlg)
 
-CFolderPropertiesDlg::CFolderPropertiesDlg(const PathInfo& folder_info, CWnd* pParent /*=nullptr*/)
+CFolderPropertiesDlg::CFolderPropertiesDlg(const ListItem& folder_info, CWnd* pParent /*=nullptr*/)
     : CSimplePropertiesDlg(pParent)
     , m_folder_info(folder_info)
 {
@@ -48,33 +48,12 @@ BOOL CFolderPropertiesDlg::OnInitDialog()
 void CFolderPropertiesDlg::InitData()
 {
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_PATH"), m_folder_info.path);
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TRACK"), std::to_wstring(m_folder_info.track + 1));
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_LAST_PLAYED_POSITION"), Time(m_folder_info.position).toString());
-    std::wstring str_sort_mode;
-    switch (m_folder_info.sort_mode)
-    {
-    case SM_U_FILE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_FILE"); break;
-    case SM_D_FILE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_FILE"); break;
-    case SM_U_PATH: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_PATH"); break;
-    case SM_D_PATH: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_PATH"); break;
-    case SM_U_TITLE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TITLE"); break;
-    case SM_D_TITLE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TITLE"); break;
-    case SM_U_ARTIST: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_ARTIST"); break;
-    case SM_D_ARTIST: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_ARTIST"); break;
-    case SM_U_ALBUM: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_ALBUM"); break;
-    case SM_D_ALBUM: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_ALBUM"); break;
-    case SM_U_TRACK: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TRACK"); break;
-    case SM_D_TRACK: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TRACK"); break;
-    case SM_U_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_LISTEN"); break;
-    case SM_D_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_LISTEN"); break;
-    case SM_U_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TIME"); break;
-    case SM_D_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TIME"); break;
-    case SM_UNSORT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_UNSORT"); break;
-    }
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_SORT"), str_sort_mode);
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK"), std::to_wstring(m_folder_info.track_num));
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TRACK"), m_folder_info.GetLastTrackDisplayName());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_LAST_PLAYED_POSITION"), Time(m_folder_info.last_position).toString());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_SORT"), SongInfo::GetSortModeDisplayName(m_folder_info.sort_mode));
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK"), std::to_wstring(m_folder_info.total_num));
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH"), Time(m_folder_info.total_time).toString3());
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER"), theApp.m_str_table.LoadText(m_folder_info.contain_sub_folder ? L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER_YES" : L"TXT_LIB_PATH_IS_CONTAIN_SUB_FOLDER_NO"));
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TIME"), m_folder_info.last_played_time == 0 ? L"-" : CTime(m_folder_info.last_played_time).Format(_T("%F %T")).GetString());
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_ADD_TIME"), m_folder_info.add_time == 0 ? L"-" : CTime(m_folder_info.add_time).Format(_T("%F %T")).GetString());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_ADD_TIME"), m_folder_info.create_time == 0 ? L"-" : CTime(m_folder_info.create_time).Format(_T("%F %T")).GetString());
 }

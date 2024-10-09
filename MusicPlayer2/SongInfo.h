@@ -128,6 +128,8 @@ struct SongInfo
 
     // 获取SongInfo的排序谓词方法
     static std::function<bool(const SongInfo& a, const SongInfo& b)> GetSortFunc(SortMode sort_mode);
+    // 获取排序方式的显示名称
+    static wstring GetSortModeDisplayName(SortMode sort_mode);
 };
 
 struct SongKey
@@ -156,6 +158,16 @@ struct SongKey
         if (int pathComparison = path.compare(key.path))
             return pathComparison < 0;
         return cue_track < key.cue_track;
+    }
+    bool operator==(const SongInfo& other) const
+    {
+        if ((cue_track > 0) != other.is_cue)                // is_cue不同
+            return false;
+        if (path != other.file_path)                        // 路径不同
+            return false;
+        if ((cue_track > 0) && cue_track != other.track)    // is_cue为true时音轨号不同
+            return false;
+        return true;
     }
 };
 

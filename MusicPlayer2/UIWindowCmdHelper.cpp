@@ -9,6 +9,7 @@
 #include "PlaylistPropertiesDlg.h"
 #include "FolderPropertiesDlg.h"
 #include "MediaLibItemPropertiesDlg.h"
+#include "CRecentList.h"
 
 CUIWindowCmdHelper::CUIWindowCmdHelper(UiElement::Element* sender)
     : m_context_menu_sender(sender)
@@ -107,11 +108,12 @@ void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* 
             song_list = classifier.GetMeidaList()[item_name];
         };
     CMusicPlayerCmdHelper helper;
+    ListItem list_item{ LT_MEDIA_LIB, item_name, medialib_item_list->type };
 
     //播放
     if (command == ID_PLAY_ITEM)
     {
-        helper.OnMediaLibItemSelected(medialib_item_list->type, item_name, true);
+        helper.OnListItemSelected(list_item, true);
     }
     //添加到新播放列表
     else if (command == ID_ADD_TO_NEW_PLAYLIST)
@@ -165,59 +167,40 @@ void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* 
 void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* medialib_item_list, DWORD command)
 {
     int item_selected{ medialib_item_list->GetItemSelected() };
-    if (item_selected < 0 || item_selected >= static_cast<int>(CRecentFolderAndPlaylist::Instance().GetItemList().size()))
+    ListItem list_item = medialib_item_list->m_list_cache.GetItem(item_selected);
+    if (list_item.empty())
         return;
-
-    const CRecentFolderAndPlaylist::Item& item{ CRecentFolderAndPlaylist::Instance().GetItemList()[item_selected] };
 
     //播放
     if (command == ID_PLAY_ITEM)
     {
         CMusicPlayerCmdHelper helper;
-        helper.OnRecentItemSelected(item_selected, true);
+        helper.OnListItemSelected(list_item, true);
     }
     //移除
     else if (command == ID_RECENT_PLAYED_REMOVE)
     {
-        CString item_str;
-        std::wstring type_name;
-        if (item.IsMedialib())
-            type_name = CMediaLibPlaylistMgr::GetTypeName(item.medialib_info->medialib_type);
-        else if (item.IsFolder())
-            type_name = theApp.m_str_table.LoadText(L"TXT_FOLDER");
-        else if (item.IsPlaylist())
-            type_name = theApp.m_str_table.LoadText(L"TXT_PLAYLIST");
-        item_str.Format(_T("%s: %s"), type_name.c_str(), item.GetName().c_str());
-        std::wstring messagebox_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_RECENTPLAYED_ITEM_INQUIRY", { item_str });
-        if (AfxMessageBox(messagebox_info.c_str(), MB_ICONQUESTION | MB_YESNO) == IDYES)
-        {
-            CRecentFolderAndPlaylist::Instance().RemoveItem(item);
-        }
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_RECENTPLAYED_ITEM_INQUIRY", { list_item.GetTypeDisplayName(), list_item.GetDisplayName() });
+        if (AfxMessageBox(info.c_str(), MB_ICONQUESTION | MB_YESNO) == IDYES)
+            CRecentList::Instance().ResetLastPlayedTime(list_item);
     }
     //复制文本
     else if (command == ID_COPY_TEXT)
     {
-        if (!CCommon::CopyStringToClipboard(item.GetName()))
+        if (!CCommon::CopyStringToClipboard(list_item.GetDisplayName()))
             AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), MB_ICONWARNING);
     }
     //在媒体库中查看
     else if (command == ID_VIEW_IN_MEDIA_LIB)
     {
         CMusicPlayerCmdHelper helper;
-        if (item.IsFolder())
+        CMusicPlayerCmdHelper::eMediaLibTab tab{};
+        switch (list_item.type)
         {
-            wstring folder_path{ item.folder_info->path };
-            helper.OnViewInMediaLib(CMusicPlayerCmdHelper::ML_FOLDER, folder_path);
-        }
-        else if (item.IsPlaylist())
-        {
-            wstring playlist_path{ item.playlist_info->path };
-            helper.OnViewInMediaLib(CMusicPlayerCmdHelper::ML_PLAYLIST, playlist_path);
-        }
-        else if (item.IsMedialib())
-        {
-            CMusicPlayerCmdHelper::eMediaLibTab tab{};
-            switch (item.medialib_info->medialib_type)
+        case LT_FOLDER: tab = CMusicPlayerCmdHelper::ML_FOLDER; break;
+        case LT_PLAYLIST: tab = CMusicPlayerCmdHelper::ML_PLAYLIST; break;
+        case LT_MEDIA_LIB:
+            switch (list_item.medialib_type)
             {
             case CMediaClassifier::CT_ARTIST: tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
             case CMediaClassifier::CT_ALBUM: tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
@@ -228,25 +211,25 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
             case CMediaClassifier::CT_RATING: tab = CMusicPlayerCmdHelper::ML_RATING; break;
             case CMediaClassifier::CT_NONE: tab = CMusicPlayerCmdHelper::ML_ALL; break;
             }
-            helper.OnViewInMediaLib(tab, item.medialib_info->path);
         }
+        helper.OnViewInMediaLib(tab, list_item.path);
     }
     //属性
     else if (command == ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES)
     {
-        if (item.IsFolder())
+        if (list_item.type == LT_FOLDER)
         {
-            CFolderPropertiesDlg dlg(*item.folder_info);
+            CFolderPropertiesDlg dlg(list_item);
             dlg.DoModal();
         }
-        else if (item.IsPlaylist())
+        else if (list_item.type == LT_PLAYLIST)
         {
-            CPlaylistPropertiesDlg dlg(*item.playlist_info);
+            CPlaylistPropertiesDlg dlg(list_item);
             dlg.DoModal();
         }
-        else if (item.IsMedialib())
+        else if (list_item.type == LT_MEDIA_LIB)
         {
-            CMediaLibItemPropertiesDlg dlg(*item.medialib_info);
+            CMediaLibItemPropertiesDlg dlg(list_item);
             dlg.DoModal();
         }
     }
@@ -256,29 +239,32 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
 {
     int item_selected{ medialib_folder->GetItemSelected() };
 
-    PathInfo path_info = CRecentFolderMgr::Instance().GetItem(item_selected);
+    ListItem list_item = UiElement::MediaLibFolder::m_list_cache.GetItem(item_selected);
     CMusicPlayerCmdHelper helper;
 
     auto getSongList = [&](std::vector<SongInfo>& song_list) {
-        CAudioCommon::GetAudioFiles(path_info.path, song_list, MAX_SONG_NUM, path_info.contain_sub_folder);
+        CAudioCommon::GetAudioFiles(list_item.path, song_list, MAX_SONG_NUM, list_item.contain_sub_folder);
+        int cnt{};
+        bool flag{};
+        CAudioCommon::GetCueTracks(song_list, cnt, flag, MR_MIN_REQUIRED);
     };
 
     if (command == ID_PLAY_PATH)
     {
-        helper.OnFolderSelected(path_info, true);
+        helper.OnListItemSelected(list_item, true);
     }
     else if (command == ID_DELETE_PATH)
     {
-        helper.OnDeleteRecentFolder(path_info.path);
+        helper.OnDeleteRecentListItem(list_item);
     }
     else if (command == ID_BROWSE_PATH)
     {
-        ShellExecute(NULL, _T("open"), _T("explorer"), path_info.path.c_str(), NULL, SW_SHOWNORMAL);
+        ShellExecute(NULL, _T("open"), _T("explorer"), list_item.path.c_str(), NULL, SW_SHOWNORMAL);
     }
     else if (command == ID_CONTAIN_SUB_FOLDER)
     {
-        // 如果是当前播放则使用CPlayer成员方法更改（会启动播放列表初始化）不需要操作CPlayer::GetInstance().GetRecentPath()
-        if (CPlayer::GetInstance().IsFolderMode() && CPlayer::GetInstance().GetCurrentDir2() == path_info.path)
+        // 如果是当前播放则使用CPlayer成员方法更改（会启动播放列表初始化）
+        if (CRecentList::Instance().IsCurrentList(list_item))
         {
             if (!CPlayer::GetInstance().SetContainSubFolder())
             {
@@ -288,7 +274,7 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
         }
         else
         {
-            CRecentFolderMgr::Instance().SetContainSubFolder(path_info.path);
+            CRecentList::Instance().SetContainSubFolder(list_item);
         }
 
     }
@@ -297,9 +283,9 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
         const wstring& inquiry_info = theApp.m_str_table.LoadText(L"MSG_LIB_PATH_CLEAR_INQUIRY");
         if (AfxMessageBox(inquiry_info.c_str(), MB_ICONQUESTION | MB_OKCANCEL) == IDCANCEL)
             return;
-        int cleard_cnt = CRecentFolderMgr::Instance().RemoveItemIf([](const PathInfo& path_info)
-            { return !CAudioCommon::IsPathContainsAudioFile(path_info.path, path_info.contain_sub_folder); });
-        CRecentFolderAndPlaylist::Instance().Init();
+        int cleard_cnt = CRecentList::Instance().RemoveItemIf([](const ListItem& list_item)
+            { return list_item.type == LT_FOLDER && !CAudioCommon::IsPathContainsAudioFile(list_item.path, list_item.contain_sub_folder); });
+        CRecentList::Instance().SaveData();
         wstring complete_info = theApp.m_str_table.LoadTextFormat(L"MSG_LIB_PATH_CLEAR_COMPLETE", { cleard_cnt });
         AfxMessageBox(complete_info.c_str(), MB_ICONINFORMATION | MB_OK);
     }
@@ -309,14 +295,14 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
     }
     else if (command == ID_LIB_FOLDER_PROPERTIES)
     {
-        CFolderPropertiesDlg dlg(path_info);
+        CFolderPropertiesDlg dlg(list_item);
         dlg.DoModal();
     }
     //添加到新播放列表
     else if (command == ID_ADD_TO_NEW_PLAYLIST)
     {
         wstring playlist_path;
-        helper.OnAddToNewPlaylist(getSongList, playlist_path, CFilePathHelper(path_info.path).GetFolderName());
+        helper.OnAddToNewPlaylist(getSongList, playlist_path, CFilePathHelper(list_item.path).GetFolderName());
     }
     //添加到播放列表
     else
@@ -328,54 +314,42 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
 void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command)
 {
     int item_selected{ medialib_folder->GetItemSelected() };
-
-    PlaylistInfo playlist;
-    CPlaylistMgr::Instance().GetPlaylistInfo(item_selected, [&](const PlaylistInfo& playlist_info) {
-        playlist = playlist_info;
-    });
+    ListItem list_item = medialib_folder->m_list_cache.GetItem(item_selected);
     CMusicPlayerCmdHelper helper;
 
     if (command == ID_PLAY_PLAYLIST)
     {
-        helper.OnPlaylistSelected(playlist, true);
+        helper.OnListItemSelected(list_item, true);
     }
     else if (command == ID_RENAME_PLAYLIST)
     {
-        helper.OnRenamePlaylist(playlist.path);
+        helper.OnRenamePlaylist(list_item);
     }
     else if (command == ID_DELETE_PLAYLIST)
     {
-        helper.OnDeletePlaylist(playlist.path);
+        helper.OnDeleteRecentListItem(list_item);
     }
     else if (command == ID_SAVE_AS_NEW_PLAYLIST)
     {
-        wstring new_playlist_path = helper.OnNewPlaylist();
-        if (!new_playlist_path.empty())
-        {
-            PlaylistInfo playlist_info{ playlist };
-            CopyFile(playlist_info.path.c_str(), new_playlist_path.c_str(), FALSE);
-            playlist_info.path = new_playlist_path;
-            playlist_info.last_played_time = 0;
-            CPlaylistMgr::Instance().UpdatePlaylistInfo(playlist_info);
-        }
+        helper.OnNewPlaylist(list_item.path);
     }
     else if (command == ID_PLAYLIST_SAVE_AS)
     {
-        helper.OnPlaylistSaveAs(playlist.path);
+        helper.OnPlaylistSaveAs(list_item.path);
 
     }
     else if (command == ID_PLAYLIST_BROWSE_FILE)
     {
-        if (!playlist.path.empty())
+        if (!list_item.path.empty())
         {
             CString str;
-            str.Format(_T("/select,\"%s\""), playlist.path.c_str());
+            str.Format(_T("/select,\"%s\""), list_item.path.c_str());
             ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
         }
     }
     else if (command == ID_PLAYLIST_FIX_PATH_ERROR)
     {
-        helper.OnPlaylistFixPathError(playlist.path);
+        helper.OnPlaylistFixPathError(list_item.path);
     }
     else if (command == ID_NEW_PLAYLIST)
     {
@@ -383,7 +357,7 @@ void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* 
     }
     else if (command == ID_LIB_PLAYLIST_PROPERTIES)
     {
-        CPlaylistPropertiesDlg dlg(playlist);
+        CPlaylistPropertiesDlg dlg(list_item);
         dlg.DoModal();
     }
 }
@@ -470,6 +444,7 @@ void CUIWindowCmdHelper::OnMyFavouriteListCommand(UiElement::MyFavouriteList* my
         return;
 
     int item_selected{ my_favourite_list->GetItemSelected() };
+    SongInfo song_info{ CUiMyFavouriteItemMgr::Instance().GetSongInfo(item_selected) };
 
     CMusicPlayerCmdHelper helper;
 
@@ -478,12 +453,12 @@ void CUIWindowCmdHelper::OnMyFavouriteListCommand(UiElement::MyFavouriteList* my
         //播放
         if (command == ID_PLAY_ITEM)
         {
-            helper.OnPlayMyFavourite(item_selected);
+            helper.OnPlayMyFavourite(song_info);
         }
         //从列表中删除
         else if (command == ID_REMOVE_FROM_PLAYLIST)
         {
-            helper.OnRemoveFromPlaylist(songs, theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME);
+            helper.OnRemoveFromPlaylist(CRecentList::Instance().GetSpecPlaylist(CRecentList::PT_FAVOURITE), songs);
         }
         //属性
         else if (command == ID_ITEM_PROPERTY)
@@ -592,34 +567,34 @@ void CUIWindowCmdHelper::OnFolderOrPlaylistSortCommand(DWORD command)
     //文件夹-最近播放
     if (command == ID_LIB_FOLDER_SORT_RECENT_PLAYED)
     {
-        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::FolderSortMode::SM_RECENT_PLAYED);
+        CRecentList::Instance().SetSortMode(LT_FOLDER, CRecentList::listSortMode::SM_RECENT_PLAYED);
     }
     //文件夹-最近添加
     else if (command == ID_LIB_FOLDER_SORT_RECENT_ADDED)
     {
-        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::FolderSortMode::SM_RECENT_ADDED);
+        CRecentList::Instance().SetSortMode(LT_FOLDER, CRecentList::listSortMode::SM_RECENT_CREATED);
     }
     //文件夹-路径
     else if (command == ID_LIB_FOLDER_SORT_PATH)
     {
-        CRecentFolderMgr::Instance().SetSortMode(CRecentFolderMgr::FolderSortMode::SM_PATH);
+        CRecentList::Instance().SetSortMode(LT_FOLDER, CRecentList::listSortMode::SM_PATH);
     }
     //播放列表-最近播放
     else if (command == ID_LIB_PLAYLIST_SORT_RECENT_PLAYED)
     {
-        CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_PLAYED);
+        CRecentList::Instance().SetSortMode(LT_PLAYLIST, CRecentList::listSortMode::SM_RECENT_PLAYED);
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
     //播放列表-最近创建
     else if (command == ID_LIB_PLAYLIST_SORT_RECENT_CREATED)
     {
-        CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_RECENT_CREATED);
+        CRecentList::Instance().SetSortMode(LT_PLAYLIST, CRecentList::listSortMode::SM_RECENT_CREATED);
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
     //播放列表-名称
     else if (command == ID_LIB_PLAYLIST_SORT_NAME)
     {
-        CPlaylistMgr::Instance().SetSortMode(CPlaylistMgr::SM_NAME);
+        CRecentList::Instance().SetSortMode(LT_PLAYLIST, CRecentList::listSortMode::SM_PATH);
         theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
 }
@@ -649,11 +624,9 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
     if (medialib_folder != nullptr)
     {
         int item_selected{ medialib_folder->GetItemSelected() };
-        if (item_selected >= 0 && item_selected < CRecentFolderMgr::Instance().GetItemSize())
-            select_valid = true;
-
-        PathInfo path_info = CRecentFolderMgr::Instance().GetItem(item_selected);
-        contain_sub_folder = path_info.contain_sub_folder;
+        ListItem list_item = UiElement::MediaLibFolder::m_list_cache.GetItem(item_selected);
+        select_valid = !list_item.empty();
+        contain_sub_folder = list_item.contain_sub_folder;
     }
 
     pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
@@ -669,31 +642,21 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
 void CUIWindowCmdHelper::SetMediaLibPlaylistMenuState(CMenu* pMenu)
 {
     bool select_valid{};
-    PlaylistInfo selected_playlist;
+    ListItem selected_playlist;
     UiElement::MediaLibPlaylist* medialib_playlist = dynamic_cast<UiElement::MediaLibPlaylist*>(m_context_menu_sender);
     if (medialib_playlist != nullptr)
     {
         int item_selected{ medialib_playlist->GetItemSelected() };
-        if (item_selected >= 0 && item_selected < static_cast<int>(CPlaylistMgr::Instance().GetPlaylistNum()))
-        {
-            select_valid = true;
-            CPlaylistMgr::Instance().GetPlaylistInfo(item_selected, [&](const PlaylistInfo& playlist_info) {
-                selected_playlist = playlist_info;
-            });
-        }
+        selected_playlist = medialib_playlist->m_list_cache.GetItem(item_selected);
+        select_valid = !selected_playlist.empty();
     }
 
-    bool selected_can_play{ select_valid &&
-        (
-            !CPlayer::GetInstance().IsPlaylistMode() ||
-            selected_playlist.path != CPlayer::GetInstance().GetPlaylistPath()
-        )};
+    bool selected_can_play{ select_valid && !CRecentList::Instance().IsCurrentList(selected_playlist) };
 
-    wstring sel_playlist_name = CFilePathHelper(selected_playlist.path).GetFileName();
-    bool is_spec_playlist{ sel_playlist_name == DEFAULT_PLAYLIST_NAME || sel_playlist_name == FAVOURITE_PLAYLIST_NAME };
-    bool is_temp_playlist{ sel_playlist_name == TEMP_PLAYLIST_NAME };
-    pMenu->EnableMenuItem(ID_RENAME_PLAYLIST, MF_BYCOMMAND | (select_valid && !is_spec_playlist && !is_temp_playlist ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (select_valid && !is_spec_playlist ? MF_ENABLED : MF_GRAYED));
+    bool is_spec_playlist = CRecentList::IsSpecPlaylist(selected_playlist);
+    bool is_cant_del = CRecentList::IsSpecPlaylist(selected_playlist, CRecentList::PT_DEFAULT) || CRecentList::IsSpecPlaylist(selected_playlist, CRecentList::PT_FAVOURITE);
+    pMenu->EnableMenuItem(ID_RENAME_PLAYLIST, MF_BYCOMMAND | (select_valid && !is_spec_playlist ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (select_valid && !is_cant_del ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (selected_can_play ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_SAVE_AS_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_SAVE_AS, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
@@ -785,54 +748,48 @@ void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
     }
 
     //设置播放列表和我喜欢的音乐“添加到”子菜单的状态
-    if (playlist != nullptr || my_favourite_list != nullptr)
+    wstring disable_item_name;
+    if (my_favourite_list)
     {
-        //我喜欢的音乐菜单的名称
-        wstring str_my_favourite{ theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_MY_FAVOURITE") };
-        //正在播放的播放列表在菜单中的名称
-        wstring current_playlist{ CPlayer::GetInstance().GetCurrentFolderOrPlaylistName() };
-        if (CPlayer::GetInstance().IsPlaylistMode())
-        {
-            switch (CPlaylistMgr::Instance().GetCurPlaylistType())
-            {
-            case PT_DEFAULT: current_playlist = theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_DEFAULT_PLAYLIST"); break;
-            case PT_FAVOURITE: current_playlist = str_my_favourite; break;
-            }
-        }
+        disable_item_name = theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_MY_FAVOURITE");
+    }
+    else if (playlist)
+    {
+        ListItem list_item = CRecentList::Instance().GetCurrentList();
+        if (CRecentList::IsSpecPlaylist(list_item, CRecentList::PT_DEFAULT))
+            disable_item_name = theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_DEFAULT_PLAYLIST");
+        else if (CRecentList::IsSpecPlaylist(list_item, CRecentList::PT_FAVOURITE))
+            disable_item_name = theApp.m_str_table.LoadMenuText(L"ADD_TO_PLAYLIST", L"ID_ADD_TO_MY_FAVOURITE");
+        else if (!CRecentList::IsSpecPlaylist(list_item, CRecentList::PT_TEMP)) // 临时播放列表不会出现在菜单中，所以不用禁用
+            disable_item_name = CFilePathHelper(list_item.path).GetFileNameWithoutExtension();
+    }
+    if (!disable_item_name.empty())
+    {
         for (UINT id = ID_ADD_TO_DEFAULT_PLAYLIST; id < ID_ADD_TO_MY_FAVOURITE + ADD_TO_PLAYLIST_MAX_SIZE + 1; id++)
         {
             CString menu_string;
             pMenu->GetMenuString(id, menu_string, 0);
-            //发送者是播放列表，则将当前播放列表禁用
-            if (playlist != nullptr)
-            {
-                pMenu->EnableMenuItem(id, MF_BYCOMMAND | (current_playlist != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
-            }
-            //发送者是我喜欢的音乐列表，则将当前我喜欢的音乐禁用
-            else if (my_favourite_list != nullptr)
-            {
-                pMenu->EnableMenuItem(id, MF_BYCOMMAND | (str_my_favourite != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
-            }
+            pMenu->EnableMenuItem(id, MF_BYCOMMAND | (disable_item_name != menu_string.GetString() ? MF_ENABLED : MF_GRAYED));
         }
     }
 }
 
 void CUIWindowCmdHelper::SetFolderSortMenuState(CMenu* pMenu)
 {
-    switch (CRecentFolderMgr::Instance().GetSortMode())
+    switch (CRecentList::Instance().GetSortMode(LT_FOLDER))
     {
-    case CRecentFolderMgr::FolderSortMode::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
-    case CRecentFolderMgr::FolderSortMode::SM_RECENT_ADDED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_ADDED, MF_BYCOMMAND | MF_CHECKED); break;
-    case CRecentFolderMgr::FolderSortMode::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_PATH, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentList::listSortMode::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentList::listSortMode::SM_RECENT_CREATED: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_RECENT_ADDED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentList::listSortMode::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_FOLDER_SORT_RECENT_PLAYED, ID_LIB_FOLDER_SORT_PATH, ID_LIB_FOLDER_SORT_PATH, MF_BYCOMMAND | MF_CHECKED); break;
     }
 }
 
 void CUIWindowCmdHelper::SetPlaylistSortMenuState(CMenu* pMenu)
 {
-    switch (CPlaylistMgr::Instance().GetSortMode())
+    switch (CRecentList::Instance().GetSortMode(LT_PLAYLIST))
     {
-    case CPlaylistMgr::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
-    case CPlaylistMgr::SM_RECENT_CREATED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_CREATED, MF_BYCOMMAND | MF_CHECKED); break;
-    case CPlaylistMgr::SM_NAME: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_NAME, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentList::listSortMode::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentList::listSortMode::SM_RECENT_CREATED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_CREATED, MF_BYCOMMAND | MF_CHECKED); break;
+    case CRecentList::listSortMode::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_NAME, MF_BYCOMMAND | MF_CHECKED); break;
     }
 }

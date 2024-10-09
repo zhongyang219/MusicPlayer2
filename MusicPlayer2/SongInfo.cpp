@@ -403,3 +403,29 @@ std::function<bool(const SongInfo& a, const SongInfo& b)> SongInfo::GetSortFunc(
     default: return [](const SongInfo& a, const SongInfo& b) { return true; };
     }
 }
+
+wstring SongInfo::GetSortModeDisplayName(SortMode sort_mode)
+{
+    std::wstring str_sort_mode;
+    switch (sort_mode)
+    {
+    case SM_U_FILE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_FILE"); break;
+    case SM_D_FILE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_FILE"); break;
+    case SM_U_PATH: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_PATH"); break;
+    case SM_D_PATH: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_PATH"); break;
+    case SM_U_TITLE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TITLE"); break;
+    case SM_D_TITLE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TITLE"); break;
+    case SM_U_ARTIST: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_ARTIST"); break;
+    case SM_D_ARTIST: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_ARTIST"); break;
+    case SM_U_ALBUM: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_ALBUM"); break;
+    case SM_D_ALBUM: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_ALBUM"); break;
+    case SM_U_TRACK: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TRACK"); break;
+    case SM_D_TRACK: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TRACK"); break;
+    case SM_U_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_LISTEN"); break;
+    case SM_D_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_LISTEN"); break;
+    case SM_U_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TIME"); break;
+    case SM_D_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TIME"); break;
+    case SM_UNSORT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_UNSORT"); break;
+    }
+    return str_sort_mode;
+}

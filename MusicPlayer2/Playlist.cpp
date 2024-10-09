@@ -3,7 +3,6 @@
 #include "Common.h"
 #include "FilePathHelper.h"
 #include "SongDataManager.h"
-#include "PlaylistMgr.h"
 
 const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8" };
 
@@ -118,9 +117,6 @@ void CPlaylistFile::SavePlaylistToFile(const vector<SongInfo>& song_list, const 
         }
     }
     stream.close();
-
-    //更新播放列表的曲目数
-    CPlaylistMgr::Instance().UpdatePlaylistTrackNum(file_path, song_list.size());
 }
 
 const vector<SongInfo>& CPlaylistFile::GetPlaylist() const
@@ -167,17 +163,7 @@ int CPlaylistFile::GetSongIndexInPlaylist(const SongInfo& song)
 
 void CPlaylistFile::RemoveSong(const SongInfo& song)
 {
-    while (true)
-    {
-        auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&song](const SongInfo& item)
-        {
-            return song.IsSameSong(item);
-        });
-        if (iter != m_playlist.end())
-            m_playlist.erase(iter);
-        else
-            break;
-    }
+    std::erase_if(m_playlist, [&](const SongInfo& item) { return song.IsSameSong(item); });
 }
 
 bool CPlaylistFile::IsPlaylistFile(const wstring& file_path)

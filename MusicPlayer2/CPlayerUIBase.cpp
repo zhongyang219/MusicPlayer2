@@ -4,7 +4,6 @@
 #include "MiniModeUserUi.h"
 #include "SongInfoHelper.h"
 #include "UIElement.h"
-#include "MediaLibPlaylistMgr.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UIWindowCmdHelper.h"
 
@@ -2857,24 +2856,12 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
 
 void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::PlaylistIndicator* playlist_indicator)
 {
-    IconMgr::IconType icon_type{};
-    wstring str;
-    if (CPlayer::GetInstance().IsPlaylistMode())
-    {
-        icon_type = IconMgr::IconType::IT_Playlist;
-        str = theApp.m_str_table.LoadText(L"TXT_PLAYLIST");
-    }
-    else if (CPlayer::GetInstance().IsFolderMode())
-    {
-        icon_type = IconMgr::IconType::IT_Folder;
-        str = theApp.m_str_table.LoadText(L"TXT_FOLDER");
-    }
-    else
-    {
-        auto type = CPlayer::GetInstance().GetMediaLibPlaylistType();
-        icon_type = CMediaLibPlaylistMgr::GetIcon(type);
-        str = CMediaLibPlaylistMgr::GetTypeName(type);
-    }
+    // 此m_list_cache为UI线程缓存当前列表，只有at(0)是有效的
+    ASSERT(playlist_indicator->m_list_cache.size() == 1);
+    const ListItem& list_item = playlist_indicator->m_list_cache.at(0);
+
+    IconMgr::IconType icon_type = list_item.GetTypeIcon();
+    wstring str = list_item.GetTypeDisplayName();
     //绘制图标
     CRect rect_icon{ rect };
     rect_icon.right = rect_icon.left + DPI(26);
@@ -2907,7 +2894,7 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::Playlist
     rect_name.left += DPI(6);
     rect_name.right -= DPI(30);
     static CDrawCommon::ScrollInfo name_scroll_info;
-    m_draw.DrawScrollText(rect_name, CPlayer::GetInstance().GetCurrentFolderOrPlaylistName().c_str(), m_colors.color_text_heighlight, GetScrollTextPixel(), false, name_scroll_info);
+    m_draw.DrawScrollText(rect_name, list_item.GetDisplayName().c_str(), m_colors.color_text_heighlight, GetScrollTextPixel(), false, name_scroll_info);
     //绘制下拉按钮
     CRect rect_drop_down{ rect };
     rect_drop_down.left = rect_name.right + DPI(2);

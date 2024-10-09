@@ -5,13 +5,12 @@
 #include "FilePathHelper.h"
 #include "BASSMidiLibrary.h"
 #include "GaussBlur.h"
-#include "PlaylistMgr.h"
 #include "IPlayerCore.h"
 #include "BassCore.h"
 #include "SpectralDataHelper.h"
 #include "MediaTransControls.h"
 #include "MediaLibHelper.h"
-#include "RecentFolderMgr.h"
+#include "ListItem.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)         // 播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)      // 播放列表加载完成消息
@@ -82,6 +81,10 @@ private:
     IPlayerCore* m_pCore{};
 
     vector<SongInfo> m_playlist;        // 播放列表，储存每个音乐文件的各种信息
+
+private:
+
+
     wstring m_path;                     // 文件夹模式下，当前播放文件的目录
     wstring m_playlist_path;            // 当前播放列表文件的路径
     CMediaClassifier::ClassificationType m_media_lib_playlist_type;     //播放列表模式为PM_MEDIA_LIB时的媒体库项目类型
@@ -181,7 +184,7 @@ private:
     // 调用完此方法后请尽快返回并且尽量不要执行任何操作，应当提前进行或安排在IniPlaylistComplate中进行
     // 此方法返回后的任何修改数据的操作都应视为（实际上也是如此）与IniPlaylistThreadFunc及IniPlaylistComplate处于竞争状态
     // play参数会传递到IniPlaylistComplate指示是否播放，refresh_info指示初始化线程刷新级别
-    void IniPlayList(bool play = false, MediaLibRefreshMode refresh_mode = MR_MIN_REQUIRED);
+    void IniPlayList(bool play = false, MediaLibRefreshMode refresh_mode = MR_MIN_REQUIRED, SongKey song = {});
 
     //应用一个均衡器通道的增益
     void ApplyEqualizer(int channel, int gain);
@@ -297,8 +300,12 @@ public:
 
 #pragma region 列表初始化方法
 
-    // 切换到指定路径的文件夹模式，没有PathInfo时应使用CPlayer::OpenFolder（没能取得播放状态锁返回false）
-    bool SetPath(const PathInfo& path_info, bool play = false);
+    // 切换为播放指定ListItem表示的列表，play表示是否立即播放
+    // force为false时允许continue_when_switch_playlist设置项的覆盖维持当前播放状态
+    // continue_when_switch_playlist条件不满足时会还原此列表上次关闭时的状态(从CRecentList加载)
+    // force为true时会强制播放参数list_item成员last_track指示曲目
+    bool SetList(ListItem list_item, bool play = false, bool force = false);
+
     // 切换到指定路径的播放列表模式/通过“打开文件夹”来设置路径的处理
     // （不进行“切换播放列表时继续播放”）（没能取得播放状态锁返回false）
     bool OpenFolder(wstring path, bool contain_sub_folder = false, bool play = false);
@@ -319,12 +326,6 @@ public:
     bool OpenSongsInTempPlaylist(const vector<SongInfo>& songs, int play_index = 0, bool play = true);
     // 切换到此歌曲音频文件目录的文件夹模式并播放此歌曲
     bool OpenASongInFolderMode(const SongInfo& song, bool play = false);
-
-    //切换到媒体库模式
-    //play_index为-1表示按上次播放状态还原(默认为0)，如果为大于等于0的值，则视为从头播放指定曲目; play用来设置是否立即播放
-    //play_song用于指定要播放的曲目，如果指定了play_song，则忽略play_index参数
-    //force为false时列表初始化完成后会尝试执行切换播放列表时继续播放
-    bool SetMediaLibPlaylist(CMediaClassifier::ClassificationType type, const std::wstring& name, int play_index = -1, const SongInfo& play_song = SongInfo(), bool play = false, bool force = false);
 
     // 向当前播放列表添加文件，仅在播放列表模式可用，返回成功添加的数量（拒绝重复曲目）
     // 由于cue解析问题，请在判断需要“添加歌曲”而不是“添加文件”时尽量使用CPlayer::AddSongs代替此方法而不是使用path构建SongInfo
@@ -397,7 +398,6 @@ public:
     wstring GetCurrentDir() const;
     //获取当前目录（文件夹模式下获取文件夹的目录，而不是正在播放曲目的目录）
     wstring GetCurrentDir2() const;
-    wstring GetCurrentFolderOrPlaylistName() const;
     // 获取正在播放文件的路径（涉及cue时不能用来判断是否为当前歌曲，判断请使用SongInfo，旧代码正在修改）
     wstring GetCurrentFilePath() const;
     //获取当前播放的曲目序号

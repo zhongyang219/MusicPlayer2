@@ -1,7 +1,6 @@
 ﻿#pragma once
-#include "SongInfo.h"
+#include "ListItem.h"
 #include "FormatConvertDlg.h"
-#include "RecentFolderAndPlaylist.h"
 
 class CMusicPlayerCmdHelper
 {
@@ -89,32 +88,30 @@ public:
     //file_name_map 保存媒体库目录下音频文件文件名和文件路径的对应关系
     bool FixWrongFilePath(wstring& file_path, const std::unordered_map<std::wstring, std::set<std::wstring>>& file_name_map) const;
 
-    void OnFolderSelected(const PathInfo& path_info, bool play = false);
+    // 播放一个ListItem，play为true用于直接双击ListItem列表及一系列等价情况
+    // play为false用于快捷切换列表菜单命令处理
+    // 不设置播放特定曲目，list_item为空时直接返回
+    void OnListItemSelected(const ListItem& list_item, bool play = false);
 
-    void OnPlaylistSelected(const PlaylistInfo& playlist_info, bool play = false);
-
-    void OnMediaLibItemSelected(CMediaClassifier::ClassificationType type, const std::wstring& name, bool play = false);
-
-    //响应播放列表上方下拉列表项
-    void OnRecentItemSelected(const CRecentFolderAndPlaylist::Item* item, bool play = false);
-    void OnRecentItemSelected(int index, bool play = false);
-
-    bool OnRenamePlaylist(const std::wstring& playlist_path);
-    bool OnDeletePlaylist(std::wstring playlist_path);   //执行删除播放列表操作，仅当要删除的不是正在播放的播放列表时返回true
-    std::wstring OnNewPlaylist();
+    bool OnRenamePlaylist(const ListItem& list_item);
+    // 询问新播放列表名称后创建新播放列表，返回新播放列表的路径
+    // 提供源播放列表copy_from时执行创建播放列表副本
+    wstring OnNewPlaylist(const wstring& copy_from_playlist = {});
     void OnPlaylistSaveAs(const std::wstring& playlist_path);
     bool OnPlaylistFixPathError(const std::wstring& playlist_path);
 
-    bool OnDeleteRecentFolder(std::wstring folder_path);    //执行删除最近播放文件夹操作，仅当要删除的不是正在播放的文件夹时返回true
+    // 询问后执行删除最近播放项目操作，需要刷新显示时返回true
+    // 目前仅能用于LT_FOLDER/LT_PLAYLIST
+    bool OnDeleteRecentListItem(const ListItem& list_item);
 
     bool OnOpenFolder();
 
     //从播放列表中移除
-    bool OnRemoveFromPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
+    bool OnRemoveFromPlaylist(const ListItem& list_item, const std::vector<SongInfo>& songs);
     //从正在播放的播放列表中移除
     bool OnRemoveFromCurrentPlaylist(const std::vector<int>& indexs);
 
-    void OnPlayMyFavourite(int index);
+    void OnPlayMyFavourite(const SongKey& song_key);
     void OnPlayMyFavourite();
     void OnPlayAllTrack(const SongInfo& song);
 
