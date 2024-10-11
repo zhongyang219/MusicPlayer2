@@ -255,6 +255,7 @@
 #define IDI_TREE_COLLAPSED              623
 #define IDI_ICON2                       624
 #define IDI_TREE_EXPANDED               624
+#define IDD_UI_SEARCH_BOX_DIALOG        625
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -751,6 +752,7 @@
 #define IDC_MIDI_USE_INNER_LYRIC_CHECK  1368
 #define IDC_TXT_OPERATION_SETTINGS_STATIC 1369
 #define IDC_GLOBAL_MOUSE_WHEEL_VOLUME_ADJUSTMENT_CHECK 1370
+#define IDC_UI_SEARCH_BOX_EDIT          1371
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -995,9 +997,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        625
+#define _APS_NEXT_RESOURCE_VALUE        628
 #define _APS_NEXT_COMMAND_VALUE         33478
-#define _APS_NEXT_CONTROL_VALUE         1371
+#define _APS_NEXT_CONTROL_VALUE         1372
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

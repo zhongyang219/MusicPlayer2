@@ -112,6 +112,11 @@ CMiniModeDlg* CMusicPlayerDlg::GetMinimodeDlg()
     return &m_miniModeDlg;
 }
 
+void CMusicPlayerDlg::UiForceRefresh()
+{
+    m_ui_thread_para.ui_force_refresh = true;
+}
+
 void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
 {
     CMainDialogBase::DoDataExchange(pDX);
@@ -2071,6 +2076,13 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
 
     m_miniModeDlg.Init();
+
+    for (auto& ui : m_ui_list)
+    {
+        CUserUi* cur_ui{ dynamic_cast<CUserUi*>(ui.get()) };
+        if (cur_ui != nullptr)
+            cur_ui->InitSearchBox(this);
+    }
 
     //只有Windows Vista以上的系统才能跟随系统主题色
 #ifdef COMPILE_IN_WIN_XP

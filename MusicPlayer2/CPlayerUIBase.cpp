@@ -711,7 +711,7 @@ bool CPlayerUIBase::SetCursor()
 {
     if (m_buttons[BTN_PROGRESS].hover)
     {
-        ::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(32649)));
+        ::SetCursor(::LoadCursor(NULL, IDC_HAND));
         return true;
     }
     return false;
@@ -2404,7 +2404,10 @@ CString CPlayerUIBase::GetCmdShortcutKeyForTooltips(UINT id)
 
 CRect CPlayerUIBase::GetVolumeRect() const
 {
-    return m_buttons.at(BTN_VOLUME).rect;
+    auto iter = m_buttons.find(BTN_VOLUME);
+    if (iter != m_buttons.end())
+        return iter->second.rect;
+    return CRect();
 }
 
 void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
@@ -2666,11 +2669,16 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
         //设置字体
         UiFontGuard set_font(this, list_element->font_size);
 
+        //displayed_row_index为显示的行号，for循环中的i为实际的行号
+        int displayed_row_index{};
         for (int i{}; i < list_element->GetRowCount(); i++)
         {
             if (i < 0 || i >= static_cast<int>(list_element->item_rects.size()))
                 break;
-            CRect rect_item{ list_element->item_rects[i] };
+            //跳过不显示的行
+            if (!list_element->IsRowDisplayed(i))
+                continue;
+            CRect rect_item{ list_element->item_rects[displayed_row_index] };
             rect_item.right -= SCROLLBAR_WIDTH;      //留出一定距离用于绘制滚动条
             //如果绘制的行在播放列表区域之外，则不绘制该行
             if (!(rect_item & rect).IsRectEmpty())
@@ -2682,7 +2690,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     back_color = m_colors.color_button_back;
                 }
                 //偶数行的背景
-                else if (i % 2 == 0)
+                else if (displayed_row_index % 2 == 0)
                 {
                     back_color = m_colors.color_control_bar_back;
                 }
@@ -2839,6 +2847,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     col_x = rect_cell.right;
                 }
             }
+            displayed_row_index++;
         }
 
         //绘制滚动条
@@ -2863,7 +2872,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                 };
 
             //开始绘制滚动条
-            if (list_element->GetRowCount() > 1 && item_height * list_element->GetRowCount() > rect.Height())
+            if (list_element->GetDisplayRowCount() > 1 && item_height * list_element->GetDisplayRowCount() > rect.Height())
             {
                 //填充滚动条背景
                 if (list_element->scrollbar_hover || list_element->scrollbar_handle_pressed)
@@ -2871,7 +2880,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
 
                 //画滚动条把手
                 //计算滚动条的长度
-                int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * list_element->GetRowCount()) };
+                int scroll_handle_length{ rect.Height() * rect.Height() / (item_height * list_element->GetDisplayRowCount()) };
                 list_element->scroll_handle_length_comp = 0;
                 if (scroll_handle_length < MIN_SCROLLBAR_LENGTH)
                 {
@@ -2879,7 +2888,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     scroll_handle_length = MIN_SCROLLBAR_LENGTH;
                 }
                 //根据播放列表偏移量计算滚动条的位置
-                int scroll_pos{ (rect.Height() - list_element->scroll_handle_length_comp) * list_element->playlist_offset / (item_height * list_element->GetRowCount()) };
+                int scroll_pos{ (rect.Height() - list_element->scroll_handle_length_comp) * list_element->playlist_offset / (item_height * list_element->GetDisplayRowCount()) };
                 list_element->scrollbar_handle_rect = scrollbar_rect;
                 list_element->scrollbar_handle_rect.top = scrollbar_rect.top + scroll_pos;
                 list_element->scrollbar_handle_rect.bottom = list_element->scrollbar_handle_rect.top + scroll_handle_length;
@@ -3339,6 +3348,53 @@ void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
     m_draw.DrawSpectrum(CRect(pos_icon, size_icon), col_width, gap_width, 4, icon_color, false, false, Alignment::CENTER, false, 180);
 }
 
+void CPlayerUIBase::DrawSearchBox(CRect rect, UiElement::SearchBox* search_box)
+{
+    //绘制背景
+    COLORREF back_color;
+    if (search_box->hover)
+        back_color = m_colors.color_button_hover;
+    else
+        back_color = m_colors.color_control_bar_back;
+    bool draw_background{ IsDrawBackgroundAlpha() };
+    BYTE alpha;
+    if (!draw_background)
+        alpha = 255;
+    else if (theApp.m_app_setting_data.dark_mode || search_box->hover)
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    else
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+    if (!theApp.m_app_setting_data.button_round_corners)
+        m_draw.FillAlphaRect(rect, back_color, alpha);
+    else
+        m_draw.DrawRoundRect(rect, back_color, CalculateRoundRectRadius(rect), alpha);
+    //绘制文本
+    CRect rect_text{ rect };
+    rect_text.left += DPI(4);
+    rect_text.right -= rect.Height();
+    std::wstring text = search_box->key_word;
+    COLORREF text_color = m_colors.color_text;
+    if (text.empty())
+    {
+        text = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT");
+        text_color = m_colors.color_text_heighlight;
+    }
+    m_draw.DrawWindowText(rect_text, text.c_str(), text_color, Alignment::LEFT, true);
+    //绘制图标
+    search_box->icon_rect = rect;;
+    search_box->icon_rect.left = rect_text.right;
+    if (search_box->key_word.empty())
+    {
+        DrawUiIcon(search_box->icon_rect, IconMgr::IT_Find);
+    }
+    else
+    {
+        CRect btn_rect{ search_box->icon_rect };
+        btn_rect.DeflateRect(DPI(2), DPI(2));
+        DrawUIButton(btn_rect, search_box->clear_btn, IconMgr::IT_Close);
+    }
+}
+
 void CPlayerUIBase::DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style, IconMgr::IconSize icon_size)
 {
     // style为IS_Auto时根据深色模式设置向IconMgr要求深色/浅色图标，没有对应风格图标时IconMgr会自行fallback
@@ -3505,4 +3561,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_PLAY_MY_FAVOURITE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_MY_FAVOURITE").c_str());
     //歌词卡拉OK样式显示
     AddMouseToolTip(BTN_KARAOKE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_KARAOKE").c_str());
+    //搜索框清除按钮
+    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::SEARCHBOX_CLEAR_BTN), theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str());
 }

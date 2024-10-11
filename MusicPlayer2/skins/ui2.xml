@@ -6,6 +6,7 @@
       <trackInfo height="20" margin="4" margin-bottom="0"/>
       <text type="format" style="scroll" height="20" margin-left="4" margin-right="4"/>
       <stackElement margin-left="4" margin-right="4" margin-bottom="8" show_indicator="true" indicator_offset="-8">
+        <!--第1页-->
         <horizontalLayout>
           <verticalLayout>
             <albumCover square="true" height="70%" margin="8"/>
@@ -16,6 +17,7 @@
           </verticalLayout>
           <lyrics margin="4" margin-left="8" margin-bottom="16"/>
         </horizontalLayout>
+        <!--第2页-->
         <horizontalLayout>
           <verticalLayout margin-bottom="12">
             <albumCover square="true" margin="8"/>
@@ -26,9 +28,11 @@
           </verticalLayout>
           <verticalLayout margin="4" margin-left="8" margin-bottom="16">
             <playlistIndicator height="30" margin-bottom="4"/>
+            <searchBox height="26" margin-bottom="4"/>
             <playlist item_height="32"/>
           </verticalLayout>
         </horizontalLayout>
+        <!--第3页-->
         <horizontalLayout>
           <verticalLayout margin="8" margin-bottom="12">
             <rectangle height="80">
@@ -45,6 +49,7 @@
           </verticalLayout>
           <verticalLayout margin="4" margin-left="8" margin-bottom="16">
             <playlistIndicator height="30" margin-bottom="4"/>
+            <searchBox height="26" margin-bottom="4"/>
             <playlist item_height="32"/>
           </verticalLayout>
         </horizontalLayout>

@@ -212,7 +212,7 @@ void CUIWindow::OnPaint()
     CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
     //需要重绘时通知线程强制重绘
     if (pMainWindow != nullptr)
-        pMainWindow->m_ui_thread_para.ui_force_refresh = true;
+        pMainWindow->UiForceRefresh();
 }
 
 
@@ -226,9 +226,7 @@ void CUIWindow::OnSize(UINT nType, int cx, int cy)
 
     CMusicPlayerDlg* pMainWindow = CMusicPlayerDlg::GetInstance();
     if (pMainWindow != nullptr)
-    {
-        pMainWindow->m_ui_thread_para.ui_force_refresh = true;
-    }
+        pMainWindow->UiForceRefresh();
 }
 
 

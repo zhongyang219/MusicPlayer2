@@ -305,6 +305,7 @@
     <ClInclude Include="TinyXml2Helper.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
     <ClInclude Include="UIElement.h" />
+    <ClInclude Include="UiSearchBox.h" />
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="UIWindowCmdHelper.h" />
     <ClInclude Include="UserUi.h" />
@@ -482,6 +483,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UIElement.cpp" />
+    <ClCompile Include="UiSearchBox.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="UIWindowCmdHelper.cpp" />
     <ClCompile Include="UserUi.cpp" />

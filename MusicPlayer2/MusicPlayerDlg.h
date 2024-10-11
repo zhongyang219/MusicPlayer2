@@ -56,6 +56,7 @@ public:
     CUIWindow& GetUIWindow() { return m_ui_static_ctrl; }
     bool IsMiniMode() const;
     CMiniModeDlg* GetMinimodeDlg();
+    void UiForceRefresh();      //通知UI线程强制刷新一次
 
     // 对话框数据
 #ifdef AFX_DESIGN_TIME

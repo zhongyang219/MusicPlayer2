@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "UserUi.h"
+#include "UiSearchBox.h"
 
 CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
     : CPlayerUIBase(theApp.m_ui_data, pMainWnd), m_xml_path(xml_path)
@@ -72,6 +73,7 @@ void CUserUi::IterateAllElementsInAllUi(std::function<bool(UiElement::Element*)>
     m_root_ui_big->IterateAllElements(func);
     m_root_ui_narrow->IterateAllElements(func);
     m_root_ui_small->IterateAllElements(func);
+    m_root_default->IterateAllElements(func);
 }
 
 void CUserUi::VolumeAdjusted()
@@ -126,6 +128,16 @@ void CUserUi::ListLocateToCurrent()
         {
             playlist_element->EnsureHighlightItemVisible();
         }
+        return false;
+    });
+}
+
+void CUserUi::InitSearchBox(CWnd* pWnd)
+{
+    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool {
+        UiElement::SearchBox* search_box{ dynamic_cast<UiElement::SearchBox*>(element) };
+        if (search_box != nullptr)
+            search_box->InitSearchBoxControl(pWnd);
         return false;
     });
 }
@@ -467,6 +479,26 @@ bool CUserUi::DoubleClick(CPoint point)
 void CUserUi::UiSizeChanged()
 {
     ListLocateToCurrent();
+}
+
+bool CUserUi::SetCursor()
+{
+    bool cursor_changed = false;
+    //如果鼠标指向搜索框，则更改鼠标指针
+    IterateAllElements<UiElement::SearchBox>([&](UiElement::SearchBox* search_box) ->bool {
+        if (search_box->hover)
+        {
+            ::SetCursor(::LoadCursor(NULL, IDC_IBEAM));
+            cursor_changed = true;
+            return true;
+        }
+        return false;
+    }, true);
+
+    if (cursor_changed)
+        return true;
+
+    return CPlayerUIBase::SetCursor();
 }
 
 int CUserUi::GetUiIndex()

@@ -405,6 +405,9 @@
     <Filter Include="功能逻辑类\RecentList">
       <UniqueIdentifier>{dc707968-ea88-4d72-bba2-1ea31a6b632c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\UiSearchBox">
+      <UniqueIdentifier>{9ad9ec41-d87b-446a-b551-36879fbdb950}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -925,7 +928,10 @@
       <Filter>功能逻辑类\RecentList</Filter>
     </ClInclude>
     <ClInclude Include="ListItem.h">
-      <Filter>头文件</Filter>
+      <Filter>功能逻辑类\RecentList</Filter>
+    </ClInclude>
+    <ClInclude Include="UiSearchBox.h">
+      <Filter>对话框类\UiSearchBox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1412,7 +1418,12 @@
     <ClCompile Include="ListCache.cpp">
       <Filter>功能逻辑类\RecentList</Filter>
     </ClCompile>
-    <ClCompile Include="ListItem.cpp" />
+    <ClCompile Include="ListItem.cpp">
+      <Filter>功能逻辑类\RecentList</Filter>
+    </ClCompile>
+    <ClCompile Include="UiSearchBox.cpp">
+      <Filter>对话框类\UiSearchBox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
