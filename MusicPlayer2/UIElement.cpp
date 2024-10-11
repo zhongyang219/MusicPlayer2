@@ -1498,6 +1498,9 @@ void UiElement::ListElement::OnRowCountChanged()
 {
     //如果列表的行数有变化，则清除选中
     SelectNone();
+    //清除搜索框
+    if (related_search_box != nullptr)
+        related_search_box->Clear();
 }
 
 void UiElement::ListElement::QuickSearch(const std::wstring& key_word)
@@ -2952,6 +2955,11 @@ void UiElement::TreeElement::QuickSearch(const std::wstring& key_word)
     }
 }
 
+void UiElement::TreeElement::OnRowCountChanged()
+{
+    //树控件的行数变化可能只是节点的展开或折叠，因此不执行基类中OnRowCountChanged的处理。
+}
+
 int UiElement::TreeElement::GetItemLevel(int row)
 {
     const Node* node = GetNodeByIndex(row);
@@ -3024,6 +3032,17 @@ void UiElement::TreeElement::MouseLeave()
 {
     collaps_indicator_hover_row = -1;
     ListElement::MouseLeave();
+}
+
+bool UiElement::TreeElement::DoubleClick(CPoint point)
+{
+    //如果双击了折叠标志，则不执行双击动作
+    for (const auto& rect : collapsd_rects)
+    {
+        if (rect.second.PtInRect(point))
+            return false;
+    }
+    return ListElement::DoubleClick(point);
 }
 
 int UiElement::TreeElement::GetNodeIndex(const Node* node)
@@ -3101,11 +3120,20 @@ void UiElement::TreeElement::IterateDisplayedNodeInOrder(std::function<bool(Node
     const auto& root_nodes{ GetRootNodes() };
     for (const auto& root : root_nodes)
     {
+        bool exit{};
         root->IterateNodeInOrder([&](Node* cur_node) ->bool {
             if (IsNodeDisplayed(cur_node))
-                return func(cur_node);
+            {
+                if (func(cur_node))
+                {
+                    exit = true;
+                    return true;
+                }
+            }
             return false;
         }, true);
+        if (exit)
+            break;
     }
 }
 
@@ -3216,7 +3244,7 @@ CMenu* UiElement::FolderExploreTree::GetContextMenu(bool item_selected)
 {
     if (item_selected)
     {
-        return theApp.m_menu_mgr.GetMenu(MenuMgr::LibLeftMenu);
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::LibFolderExploreMenu);
     }
     return nullptr;
 }
@@ -3334,6 +3362,11 @@ void UiElement::SearchBox::OnKeyWordsChanged()
         list_element->QuickSearch(key_word);
 }
 
+void UiElement::SearchBox::Clear()
+{
+    search_box_ctrl->Clear();
+}
+
 void UiElement::SearchBox::Draw()
 {
     CalculateRect();
@@ -3373,10 +3406,15 @@ void UiElement::SearchBox::LButtonUp(CPoint point)
     clear_btn.pressed = false;
     //点击清除按钮时清除搜索结果
     if (icon_rect.PtInRect(point))
+    {
         search_box_ctrl->Clear();
+    }
     //点击搜索框区域时显示搜索框控件
     else if (search_box_ctrl != nullptr && rect.PtInRect(point))
-        search_box_ctrl->Show(this);
+    {
+        bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
+        search_box_ctrl->Show(this, big_font);
+    }
 }
 
 void UiElement::SearchBox::LButtonDown(CPoint point)
@@ -3392,6 +3430,8 @@ void UiElement::SearchBox::FindListElement()
     if (!find_list_element)
     {
         list_element = FindRelatedElement<ListElement>(this);
+        if (list_element != nullptr)
+            list_element->SetRelatedSearchBox(this);
         find_list_element = true;  //找过一次没找到就不找了
     }
 }

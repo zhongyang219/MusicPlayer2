@@ -335,6 +335,8 @@ namespace UiElement
         int GetDisplayRowCount();       //获取要显示的行数。（处于搜索状态时返回搜索结果数量，正常状态下同GetRowCount）
         bool IsRowDisplayed(int row);   //判断一行是否显示。（仅处于搜索状态时不匹配的行会返回false）
 
+        void SetRelatedSearchBox(SearchBox* search_box) { related_search_box = search_box; }
+
         int item_height{ 28 };
         int font_size{ 9 };
 
@@ -366,6 +368,7 @@ namespace UiElement
     private:
         std::vector<int> search_result; //保存搜索结果的序号
         bool searched{};                //是否处于搜索状态
+        SearchBox* related_search_box{};    //关联的键框
     };
 
 
@@ -763,12 +766,14 @@ namespace UiElement
         virtual void LButtonUp(CPoint point) override;
         virtual void MouseMove(CPoint point) override;
         virtual void MouseLeave() override;
+        virtual bool DoubleClick(CPoint point) override;
 
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         //树控件不使用基类ListElement的搜索逻辑
         virtual void QuickSearch(const std::wstring& key_word) override;
+        virtual void OnRowCountChanged() override;
 
         std::map<int, CRect> collapsd_rects;     //折叠标志的矩形区域（key是行）
         int collaps_indicator_hover_row{ -1 };    //鼠标指向的折叠标志的行号
@@ -848,6 +853,8 @@ namespace UiElement
         ~SearchBox();
         void InitSearchBoxControl(CWnd* pWnd);  //初始化搜索框控件。pWnd：父窗口
         void OnKeyWordsChanged();
+        void Clear();
+        ListElement* GetListElement() { return list_element; }
 
         virtual void Draw() override;
         virtual void MouseMove(CPoint point) override;

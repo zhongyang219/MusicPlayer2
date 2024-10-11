@@ -165,7 +165,14 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define WM_RECENT_FOLDER_OR_PLAYLIST_CHANGED (WM_USER+140)  //最近打开的文件夹或播放列表发生了改变
 #define WM_SET_UI_FORCE_FRESH_FLAG (WM_USER+141)            // 通知主窗口设置UI强制刷新标志m_ui_thread_para.ui_force_refresh
 
-#define WM_NEXT_USER_MSG (WM_USER+142)
+//通知主窗口清除UI中搜索框中搜索结果，其中wPara为搜索框关联列表元素的类型，在下面几行定义
+//仅当列表元素的内容发生了改变但是总行数未变的情况下需要发送此消息，行数变化的情况已经在UiElement::ListElement::OnRowCountChanged中处理
+#define WM_CLEAR_UI_SERCH_BOX ((WM_USER+142)) 
+#define UI_LIST_TYPE_RECENT_PLAYED 0
+#define UI_LIST_TYPE_FOLDER 1
+#define UI_LIST_TYPE_PLAYLIST 2
+
+#define WM_NEXT_USER_MSG (WM_USER+143)
 
 #ifdef _DEBUG
 #define ADD_TO_PLAYLIST_MAX_SIZE 10         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）

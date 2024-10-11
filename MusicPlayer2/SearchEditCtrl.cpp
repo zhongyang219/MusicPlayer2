@@ -81,8 +81,9 @@ void CSearchEditCtrl::OnDrawBrowseButton(CDC * pDC, CRect rect, BOOL bIsButtonPr
     IconMgr::IconType icon_type = IconMgr::IconType::IT_Find;
     if (m_draw_clear_btn)   // 文本框为空时显示搜索图标，否则显示关闭图标
         icon_type = IconMgr::IconType::IT_Cancel;
-    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
-    CSize icon_size = IconMgr::GetIconSize(IconMgr::IconSize::IS_DPI_16);
+    IconMgr::IconSize size_type = m_big_icon ? IconMgr::IconSize::IS_DPI_16_Full_Screen : IconMgr::IconSize::IS_DPI_16;
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(icon_type, IconMgr::IconStyle::IS_OutlinedDark, size_type);
+    CSize icon_size = IconMgr::GetIconSize(size_type);
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + (rc_draw.Width() - icon_size.cx) / 2;
     icon_top_left.y = rc_draw.top + (rc_draw.Height() - icon_size.cy) / 2;
@@ -120,6 +121,11 @@ void CSearchEditCtrl::OnChangeLayout()
         m_rectBtn.SetRectEmpty();
     }
 
+}
+
+void CSearchEditCtrl::SetBigIcon(bool big_icon)
+{
+    m_big_icon = big_icon;
 }
 
 void CSearchEditCtrl::UpdateToolTipPosition()

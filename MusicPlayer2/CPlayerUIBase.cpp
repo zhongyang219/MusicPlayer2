@@ -29,6 +29,8 @@ void CPlayerUIBase::Init(CDC* pDC)
 
     m_tool_tip.Create(m_pMainWnd, TTS_ALWAYSTIP);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
+    //为CToolTipCtrl设置鼠标穿透
+    SetWindowLong(m_tool_tip.GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(m_tool_tip.GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_TRANSPARENT);
     m_first_draw = true;
 }
 

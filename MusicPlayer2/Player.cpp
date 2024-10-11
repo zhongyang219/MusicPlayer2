@@ -82,6 +82,7 @@ void CPlayer::IniPlayerCore()
         }
 
         m_pCore->InitCore();
+        m_player_core_inited = true;
     }
 }
 
@@ -89,6 +90,7 @@ void CPlayer::UnInitPlayerCore()
 {
     if (m_pCore != nullptr)
     {
+        m_player_core_inited = false;
         m_pCore->UnInitCore();
         delete m_pCore;
         m_pCore = nullptr;

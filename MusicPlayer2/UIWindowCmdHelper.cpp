@@ -100,6 +100,10 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     {
         SetPlaylistSortMenuState(pMenu);
     }
+    else
+    {
+        SetAddToPlaylistMenuState(pMenu);
+    }
 }
 
 void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* medialib_item_list, DWORD command)
@@ -584,6 +588,11 @@ void CUIWindowCmdHelper::OnMedialibFolderExploreCommand(UiElement::FolderExplore
     {
         if (!CCommon::CopyStringToClipboard(folder_name))
             AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), MB_ICONWARNING);
+    }
+    //打开文件夹位置
+    else if (command == ID_BROWSE_PATH)
+    {
+        ShellExecute(NULL, _T("open"), _T("explorer"), folder_path.c_str(), NULL, SW_SHOWNORMAL);
     }
     //添加到新播放列表
     else if (command == ID_ADD_TO_NEW_PLAYLIST)

@@ -28,16 +28,20 @@ CUiSearchBox::~CUiSearchBox()
 {
 }
 
-void CUiSearchBox::Show(UiElement::SearchBox* ui_search_box)
+void CUiSearchBox::Show(UiElement::SearchBox* ui_search_box, bool big_icon)
 {
     m_ui_search_box = ui_search_box;
     ASSERT(m_pParentWnd != nullptr);
     if (m_pParentWnd != nullptr)
     {
+        CFont& font{ theApp.m_font_set.dlg.GetFont(big_icon) };
+        CCommon::SetDialogFont(this, &font);
         ShowWindow(SW_SHOW);
         CRect rect = ui_search_box->GetRect();
         m_pParentWnd->ClientToScreen(&rect);
         MoveWindow(rect);
+        m_search_box.OnChangeLayout();
+        m_search_box.SetBigIcon(big_icon);
     }
 }
 
