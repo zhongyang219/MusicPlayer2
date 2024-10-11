@@ -8,6 +8,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "UIWindowCmdHelper.h"
 #include "CRecentList.h"
+#include <stack>
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -2744,6 +2745,400 @@ bool UiElement::PlaceHolder::IsHide() const
         && (!theApp.m_ui_data.full_screen) || (theApp.m_ui_data.show_menu_bar && is_all_titlebar_icon_hide));
 }
 
+void UiElement::TreeElement::Node::AddChild(std::shared_ptr<Node> child)
+{
+    child->parent = this;
+    child_list.push_back(child);
+}
+
+int UiElement::TreeElement::Node::GetLevel() const
+{
+    int level{};
+    const Node* node{ this };
+    while (node != nullptr && node->parent != nullptr)
+    {
+        node = node->parent;
+        level++;
+    }
+    return level;
+}
+
+void UiElement::TreeElement::Node::IterateNodeInOrder(std::function<bool(Node*)> func, bool ignore_invisible)
+{
+    std::stack<UiElement::TreeElement::Node*> nodeStack;
+    nodeStack.push(this);
+    while (!nodeStack.empty())
+    {
+        UiElement::TreeElement::Node* pCurNode = nodeStack.top();
+        nodeStack.pop();
+
+        if (func(pCurNode))
+            break;
+
+        //如果当前节点已经折叠，且需要忽略已折叠的节点，则不再遍历其子节点
+        if (pCurNode->collapsed && ignore_invisible)
+            continue;
+
+        for (auto& child : pCurNode->child_list)
+        {
+            nodeStack.push(child.get());
+        }
+    }
+}
+
+std::wstring UiElement::TreeElement::GetItemText(int row, int col)
+{
+    //查找节点
+    const Node* node = GetNodeByIndex(row);
+    if (node != nullptr)
+    {
+        auto iter = node->texts.find(col);
+        if (iter != node->texts.end())
+            return iter->second;
+    }
+    return std::wstring();
+}
+
+int UiElement::TreeElement::GetRowCount()
+{
+    const auto& root_nodes{ GetRootNodes() };
+    int row_count{};
+    for (const auto& root : root_nodes)
+    {
+        root->IterateNodeInOrder([&](const Node*) ->bool {
+            row_count++;
+            return false;
+        }, true);
+    }
+    return row_count;
+}
+
+int UiElement::TreeElement::GetItemLevel(int row)
+{
+    const Node* node = GetNodeByIndex(row);
+    if (node != nullptr)
+        return node->GetLevel();
+    return 0;
+}
+
+bool UiElement::TreeElement::IsCollapsable(int row)
+{
+    const Node* node = GetNodeByIndex(row);
+    if (node != nullptr)
+        return !node->child_list.empty();
+    return false;
+}
+
+bool UiElement::TreeElement::IsCollapsed(int row)
+{
+    const Node* node = GetNodeByIndex(row);
+    if (node != nullptr)
+        return node->collapsed;
+    return false;
+}
+
+void UiElement::TreeElement::LButtonUp(CPoint point)
+{
+    //获取点击的行
+    int row = GetListIndexByPoint(point);
+    if (row >= 0)
+    {
+        auto iter = collapsd_rects.find(row);
+        if (iter != collapsd_rects.end())
+        {
+            CRect rect_collapsd = iter->second;
+            //点击了折叠标志
+            if (rect_collapsd.PtInRect(point))
+            {
+                Node* node = GetNodeByIndex(row);
+                node->collapsed = !node->collapsed;
+            }
+        }
+    }
+
+    ListElement::LButtonUp(point);
+}
+
+void UiElement::TreeElement::MouseMove(CPoint point)
+{
+    //获取鼠标指向的行
+    int row = GetListIndexByPoint(point);
+    collaps_indicator_hover_row = -1;
+    if (row >= 0)
+    {
+        auto iter = collapsd_rects.find(row);
+        if (iter != collapsd_rects.end())
+        {
+            CRect rect_collapsd = iter->second;
+            //指向了折叠标志
+            if (rect_collapsd.PtInRect(point))
+            {
+                collaps_indicator_hover_row = row;
+            }
+        }
+    }
+
+    ListElement::MouseMove(point);
+}
+
+void UiElement::TreeElement::MouseLeave()
+{
+    collaps_indicator_hover_row = -1;
+    ListElement::MouseLeave();
+}
+
+int UiElement::TreeElement::GetNodeIndex(const Node* node)
+{
+    const auto& root_nodes{ GetRootNodes() };
+    int i{};
+    int rtn_index{ -1 };
+    for (const auto& root : root_nodes)
+    {
+        root->IterateNodeInOrder([&](const Node* cur_node) ->bool {
+            if (cur_node == node)
+            {
+                rtn_index = i;
+                return true;
+            }
+            i++;
+            return false;
+        }, true);
+        if (rtn_index >= 0)
+            break;
+    }
+
+    return rtn_index;
+}
+
+UiElement::TreeElement::Node* UiElement::TreeElement::GetNodeByIndex(int index)
+{
+    if (index >= 0)
+    {
+        Node* find_node{};
+        auto& root_nodes{ GetRootNodes() };
+        int i{};
+        for (auto& root : root_nodes)
+        {
+            root->IterateNodeInOrder([&](Node* cur_node) ->bool {
+                if (i == index)
+                {
+                    find_node = cur_node;
+                    return true;
+                }
+                i++;
+                return false;
+            }, true);
+            if (find_node != nullptr)
+                break;
+        }
+        return find_node;
+    }
+
+    return nullptr;
+}
+
+UiElement::TestTree::TestTree()
+{
+    //创建测试节点
+    std::shared_ptr<Node> root1 = CreateNode(L"根节点1", nullptr);
+    std::shared_ptr<Node> root2 = CreateNode(L"根节点2", nullptr);
+
+    CreateNode(L"子节点11", root1);
+    auto node12 = CreateNode(L"子节点12", root1);
+
+    CreateNode(L"子节点121", node12);
+    CreateNode(L"子节点122", node12);
+
+    CreateNode(L"子节点21", root2);
+    CreateNode(L"子节点22", root2);
+
+    root_nodes.push_back(root1);
+    root_nodes.push_back(root2);
+}
+
+std::shared_ptr<UiElement::TreeElement::Node> UiElement::TestTree::CreateNode(std::wstring name, std::shared_ptr<Node> parent)
+{
+    std::shared_ptr<Node> node = std::make_shared<Node>();
+    node->collapsed = true;
+    node->texts[0] = name;
+    if (parent != nullptr)
+        parent->AddChild(node);
+    return node;
+}
+
+int UiElement::TestTree::GetColumnCount()
+{
+    return 1;
+}
+
+int UiElement::TestTree::GetColumnWidth(int col, int total_width)
+{
+    return total_width;
+}
+
+std::vector<std::shared_ptr<UiElement::TestTree::Node>>& UiElement::TestTree::GetRootNodes()
+{
+    return root_nodes;
+}
+
+std::shared_ptr<UiElement::TestTree::Node> UiElement::FolderExploreTree::CreateNode(std::wstring name, int song_num, std::shared_ptr<Node> parent)
+{
+    std::shared_ptr<Node> node = std::make_shared<Node>();
+    node->collapsed = true;
+    node->texts[COL_NAME] = name;
+    node->texts[COL_COUNT] = std::to_wstring(song_num);
+    if (parent != nullptr)
+        parent->AddChild(node);
+    return node;
+}
+
+std::wstring UiElement::FolderExploreTree::GetNodePath(Node* node)
+{
+    std::wstring path{ node->texts[COL_NAME] };
+    Node* cur_node{ node };
+    while (cur_node != nullptr && cur_node->parent != nullptr)
+    {
+        cur_node = cur_node->parent;
+        std::wstring parent_name = cur_node->texts[COL_NAME];
+        if (!parent_name.empty() && parent_name.back() != L'\\' && parent_name.back() != L'/')
+            parent_name.push_back(L'\\');
+        path = parent_name + path;
+    }
+
+    return path;
+}
+
+std::wstring UiElement::FolderExploreTree::GetSelectedPath()
+{
+    int item_selected = GetItemSelected();
+    if (item_selected >= 0 && item_selected < GetRowCount())
+    {
+        auto selected_node = GetNodeByIndex(item_selected);
+        if (selected_node != nullptr)
+            return GetNodePath(selected_node);
+    }
+    return std::wstring();
+}
+
+int UiElement::FolderExploreTree::GetColumnCount()
+{
+    return COL_MAX;
+}
+
+int UiElement::FolderExploreTree::GetColumnWidth(int col, int total_width)
+{
+    const int count_width{ ui->DPI(40) };
+    if (col == COL_NAME)
+        return total_width - count_width;
+    else if (col == COL_COUNT)
+        return count_width;
+    return 0;
+}
+
+int UiElement::FolderExploreTree::GetColumnScrollTextWhenSelected()
+{
+    return COL_NAME;
+}
+
+CMenu* UiElement::FolderExploreTree::GetContextMenu(bool item_selected)
+{
+    if (item_selected)
+    {
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::LibLeftMenu);
+    }
+    return nullptr;
+}
+
+void UiElement::FolderExploreTree::OnDoubleClicked()
+{
+    int item_selected = GetItemSelected();
+    if (item_selected >= 0 && item_selected < GetRowCount())
+    {
+        auto selected_node = GetNodeByIndex(item_selected);
+        if (selected_node != nullptr)
+        {
+            std::wstring folder_path = GetNodePath(selected_node);
+            CMusicPlayerCmdHelper helper;
+            helper.OnOpenFolder(folder_path, true, true);
+        }
+    }
+}
+
+std::wstring UiElement::FolderExploreTree::GetEmptyString()
+{
+    if (CUiFolderExploreMgr::Instance().IsLoading())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_LOADING_INFO");
+    else if (!CUiFolderExploreMgr::Instance().IsInited())
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_UNINITED_INFO");
+    else
+        return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
+}
+
+int UiElement::FolderExploreTree::GetHoverButtonCount()
+{
+    return BTN_MAX;
+}
+
+int UiElement::FolderExploreTree::GetHoverButtonColumn()
+{
+    return COL_NAME;
+}
+
+IconMgr::IconType UiElement::FolderExploreTree::GetHoverButtonIcon(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return IconMgr::IT_Play;
+    case BTN_ADD: return IconMgr::IT_Add;
+    }
+    return IconMgr::IT_NO_ICON;
+}
+
+std::wstring UiElement::FolderExploreTree::GetHoverButtonTooltip(int index, int row)
+{
+    switch (index)
+    {
+    case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    }
+    return std::wstring();
+}
+
+void UiElement::FolderExploreTree::OnHoverButtonClicked(int btn_index, int row)
+{
+    CMusicPlayerCmdHelper helper;
+    //点击了“播放”按钮
+    if (btn_index == 0)
+    {
+        if (row >= 0 && row < GetRowCount())
+        {
+            auto selected_node = GetNodeByIndex(row);
+            if (selected_node != nullptr)
+            {
+                std::wstring folder_path = GetNodePath(selected_node);
+                CMusicPlayerCmdHelper helper;
+                helper.OnOpenFolder(folder_path, true, true);
+            }
+        }
+    }
+    //点击了“添加到播放列表”按钮
+    else if (btn_index == BTN_ADD)
+    {
+        CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
+        ShowContextMenu(menu, nullptr);
+    }
+}
+
+bool UiElement::FolderExploreTree::IsMultipleSelectionEnable()
+{
+    return false;
+}
+
+std::vector<std::shared_ptr<UiElement::TestTree::Node>>& UiElement::FolderExploreTree::GetRootNodes()
+{
+    return CUiFolderExploreMgr::Instance().GetRootNodes();
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::string& name, CPlayerUIBase* ui)
@@ -2809,6 +3204,8 @@ std::shared_ptr<UiElement::Element> CElementFactory::CreateElement(const std::st
         element = std::make_shared<UiElement::MiniSpectrum>();
     else if (name == "placeHolder")
         element = std::make_shared<UiElement::PlaceHolder>();
+    else if (name == "medialibFolderExplore")
+        element = std::make_shared<UiElement::FolderExploreTree>();
     else if (name == "ui" || name == "root" || name == "element")
         element = std::make_shared<UiElement::Element>();
 

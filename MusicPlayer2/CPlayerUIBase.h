@@ -34,6 +34,7 @@ namespace UiElement
     class MyFavouriteList;
     class AllTracksList;
     class MiniSpectrum;
+    class FolderExploreTree;
 }
 
 struct SLayoutData
@@ -87,6 +88,7 @@ public:
     friend class UiElement::MyFavouriteList;
     friend class UiElement::AllTracksList;
     friend class UiElement::MiniSpectrum;
+    friend class UiElement::FolderExploreTree;
 
     friend class UiFontGuard;
 

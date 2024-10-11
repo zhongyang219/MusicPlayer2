@@ -49,6 +49,11 @@ void CUIWindowCmdHelper::OnUiCommand(DWORD command)
     {
         OnAllTracksListCommand(all_tracks_list, command);
     }
+    UiElement::FolderExploreTree* folder_explore = dynamic_cast<UiElement::FolderExploreTree*>(m_context_menu_sender);
+    if (folder_explore != nullptr)
+    {
+        OnMedialibFolderExploreCommand(folder_explore, command);
+    }
     UiElement::Playlist* playlist = dynamic_cast<UiElement::Playlist*>(m_context_menu_sender);
     if (playlist != nullptr)
     {
@@ -537,6 +542,61 @@ void CUIWindowCmdHelper::OnAllTracksListCommand(UiElement::AllTracksList* all_tr
         }
 
     }
+}
+
+void CUIWindowCmdHelper::OnMedialibFolderExploreCommand(UiElement::FolderExploreTree* folder_explore, DWORD command)
+{
+    std::wstring folder_path = folder_explore->GetSelectedPath();
+    if (folder_path.empty())
+        return;
+
+    std::wstring folder_name = folder_explore->GetItemText(folder_explore->GetItemSelected(), UiElement::FolderExploreTree::COL_NAME);
+
+    CMusicPlayerCmdHelper helper;
+
+    auto getSongList = [&](std::vector<SongInfo>& song_list) {
+        if (COSUPlayerHelper::IsOsuFolder(folder_path))
+            COSUPlayerHelper::GetOSUAudioFiles(folder_path, song_list);
+        else
+            CAudioCommon::GetAudioFiles(folder_path, song_list, MAX_SONG_NUM, true);
+    };
+
+    //播放
+    if (command == ID_PLAY_ITEM)
+    {
+        helper.OnOpenFolder(folder_path, true, true);
+    }
+    //添加到新播放列表并播放
+    else if (command == ID_ADD_TO_NEW_PLAYLIST_AND_PLAY)
+    {
+        wstring playlist_path;
+        if (helper.OnAddToNewPlaylist(getSongList, playlist_path, folder_name))
+        {
+            if (!CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true))
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
+            }
+        }
+    }
+    //复制文本
+    else if (command == ID_COPY_TEXT)
+    {
+        if (!CCommon::CopyStringToClipboard(folder_name))
+            AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), MB_ICONWARNING);
+    }
+    //添加到新播放列表
+    else if (command == ID_ADD_TO_NEW_PLAYLIST)
+    {
+        wstring playlist_path;
+        helper.OnAddToNewPlaylist(getSongList, playlist_path, folder_name);
+    }
+    //添加到播放列表
+    else
+    {
+        helper.OnAddToPlaylistCommand(getSongList, command);
+    }
+
 }
 
 void CUIWindowCmdHelper::OnAddToPlaystCommand(UiElement::Playlist* playlist, DWORD command)

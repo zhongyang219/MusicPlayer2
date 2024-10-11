@@ -234,7 +234,14 @@ bool CMusicPlayerCmdHelper::DeleteSongsFromDisk(const std::vector<SongInfo>& fil
     if (theApp.m_media_lib_setting_data.disable_delete_from_disk)
         return false;
 
-    wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUIRY", { files.size() });
+    if (files.empty())
+        return false;
+
+    wstring info;
+    if (files.size() == 1)
+        info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SINGLE_FILE_INQUIRY", { files.front().file_path });
+    else
+        info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_SEL_AUDIO_FILE_INQUIRY", { files.size() });
     if (GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OKCANCEL) != IDOK)
         return false;
 
@@ -1030,17 +1037,35 @@ bool CMusicPlayerCmdHelper::OnOpenFolder()
         folderPickerDlg.GetCheckButtonState(IDC_OPEN_CHECKBOX, checked);
         include_sub_dir = (checked != FALSE);
 #endif
-        if (!CPlayer::GetInstance().OpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir))
+        return OnOpenFolder(wstring(folderPickerDlg.GetPathName()), include_sub_dir, false);
+    }
+    return false;
+}
+
+bool CMusicPlayerCmdHelper::OnOpenFolder(std::wstring folder_path, bool include_sub_dir, bool play)
+{
+    if (!folder_path.empty() && folder_path.back() != L'\\' && folder_path.back() != L'/')
+        folder_path.push_back(L'\\');
+    ListItem list_item{ LT_FOLDER, folder_path };
+    if (CRecentList::Instance().LoadItem(list_item))
+    {
+        list_item.contain_sub_folder = include_sub_dir;
+        OnListItemSelected(list_item, play);
+        return true;
+    }
+    else
+    {
+        if (!CPlayer::GetInstance().OpenFolder(folder_path, include_sub_dir, play))
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
             GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            return false;
         }
         else
         {
             return true;
         }
     }
-    return false;
 }
 
 bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const ListItem& list_item, const std::vector<SongInfo>& songs)

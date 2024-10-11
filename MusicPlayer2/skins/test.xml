@@ -131,6 +131,9 @@
           </verticalLayout>
         </verticalLayout>
         
+        <!--第4页-->
+        <medialibFolderExplore/>
+        
       </stackElement>
 
       <!--底部控制栏-->

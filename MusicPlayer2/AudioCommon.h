@@ -93,6 +93,9 @@ public:
     //判断一个目录下是否包含音频文件 (对osu!的Songs文件夹返回true)
     static bool IsPathContainsAudioFile(std::wstring path, bool include_sub_dir = false);
 
+    //统计一个目录下音频文件的数量, 不识别osu!的Songs文件夹
+    static int GetAudioFilesNum(std::wstring path, bool include_sub_dir = false);
+
     //查找path目录下的所有歌词文件，并将文件名保存到files容器中
     static void GetLyricFiles(wstring path, vector<wstring>& files);
 

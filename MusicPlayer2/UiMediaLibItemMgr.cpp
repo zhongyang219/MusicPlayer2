@@ -5,6 +5,7 @@
 #include "SongDataManager.h"
 #include "SongInfoHelper.h"
 #include "CRecentList.h"
+#include "AudioCommon.h"
 
 
 CUiMediaLibItemMgr CUiMediaLibItemMgr::m_instance;
@@ -328,4 +329,94 @@ void CUiAllTracksMgr::AddOrRemoveMyFavourite(int index)
 
 CUiAllTracksMgr::CUiAllTracksMgr()
 {
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CUiFolderExploreMgr CUiFolderExploreMgr::m_instance;
+
+CUiFolderExploreMgr& CUiFolderExploreMgr::Instance()
+{
+    return m_instance;
+}
+
+std::vector<std::shared_ptr<UiElement::TreeElement::Node>>& CUiFolderExploreMgr::GetRootNodes()
+{
+    if (m_loading)
+    {
+        static std::vector<std::shared_ptr<UiElement::TreeElement::Node>> empty_nodes;
+        return empty_nodes;
+    }
+    else
+    {
+        return m_root_nodes;
+    }
+}
+
+void CUiFolderExploreMgr::UpdateFolders()
+{
+    m_loading = true;
+
+    m_root_nodes.clear();
+    //获取媒体库目录
+    for (const auto& default_folder : theApp.m_media_lib_setting_data.media_folders)
+    {
+        int audo_file_count = GetAudioFilesNum(default_folder);
+        auto root_node = UiElement::FolderExploreTree::CreateNode(default_folder, audo_file_count, nullptr);
+        root_node->collapsed = false;       //默认展开顶级节点
+        m_root_nodes.push_back(root_node);
+        CreateFolderNodeByPath(default_folder, root_node);
+    }
+
+    m_loading = false;
+}
+
+CUiFolderExploreMgr::CUiFolderExploreMgr()
+{
+}
+
+void CUiFolderExploreMgr::CreateFolderNodeByPath(std::wstring path, std::shared_ptr<UiElement::TreeElement::Node> parent)
+{
+    //文件句柄
+    intptr_t hFile = 0;
+    //文件信息
+    _wfinddata_t fileinfo;
+    if (path.back() != '\\' && path.back() != '/')
+        path.push_back('\\');
+    if ((hFile = _wfindfirst((path + L"*").c_str(), &fileinfo)) != -1)
+    {
+        do
+        {
+            std::wstring file_name = fileinfo.name;
+            if (file_name == L"." || file_name == L"..")
+                continue;
+
+            std::wstring sub_file_path = path + file_name;
+            int audo_file_count = GetAudioFilesNum(sub_file_path);
+            if (CCommon::IsFolder(sub_file_path) && audo_file_count > 0)        //当前是文件夹且包含音频文件，则递归调用
+            {
+                auto sub_node = UiElement::FolderExploreTree::CreateNode(file_name, audo_file_count, parent);
+                CreateFolderNodeByPath(sub_file_path, sub_node);
+            }
+        } while (_wfindnext(hFile, &fileinfo) == 0);
+    }
+    _findclose(hFile);
+}
+
+int CUiFolderExploreMgr::GetAudioFilesNum(std::wstring path)
+{
+    if (path.back() != '\\' && path.back() != '/')
+        path.push_back('\\');
+
+    auto iter = m_folder_audio_files_num.find(path);
+    if (iter != m_folder_audio_files_num.end())
+    {
+        return iter->second;
+    }
+    else
+    {
+        int audio_file_num = CAudioCommon::GetAudioFilesNum(path, true);
+        m_folder_audio_files_num[path] = audio_file_num;
+        return audio_file_num;
+    }
 }

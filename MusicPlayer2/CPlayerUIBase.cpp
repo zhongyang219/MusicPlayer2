@@ -2602,6 +2602,7 @@ void CPlayerUIBase::DrawABRepeatButton(CRect rect)
         info = _T("A-B");
     CFont* pOldFont = m_draw.GetFont();
     m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
+    m_buttons[BTN_AB_REPEAT].enable = (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
     DrawTextButton(rect, BTN_AB_REPEAT, info, ab_repeat_mode != CPlayer::AM_NONE);
     m_draw.SetFont(pOldFont);
 }
@@ -2709,14 +2710,57 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                 }
 
                 int col_x = rect_item.left + DPI(4);
+
+                int indent_space{};    //缩进距离
+                UiElement::TreeElement* tree_element = dynamic_cast<UiElement::TreeElement*>(list_element);
+                //如果是树控件
+                if (tree_element != nullptr)
+                {
+                    const int indent_per_level = DPI(10);    //每一级缩进距离
+                    indent_space = indent_per_level * tree_element->GetItemLevel(i);    //缩进距离
+                    //再留出一定距离用于绘制折叠标志
+                    const int collapse_width = DPI(16);
+                    //如果当前行可折叠，绘制折叠标志
+                    if (tree_element->IsCollapsable(i))
+                    {
+                        //计算折叠标志区域
+                        CRect rect_collapsd{ rect_item };
+                        rect_collapsd.left = col_x + indent_space;
+                        rect_collapsd.right = rect_collapsd.left + collapse_width;
+                        //保存折叠标志矩形区域
+                        if (tree_element != nullptr)
+                            tree_element->collapsd_rects[i] = rect_collapsd;
+                        //将折叠标志区域改为正方形
+                        rect_collapsd.top += (rect_collapsd.Height() - collapse_width) / 2;
+                        rect_collapsd.bottom = rect_collapsd.top + collapse_width;
+                        //如果鼠标指向，则绘制背景
+                        if (tree_element->collaps_indicator_hover_row == i)
+                        {
+                            BYTE alpha;
+                            if (IsDrawBackgroundAlpha())
+                                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+                            else
+                                alpha = 255;
+                            if (!theApp.m_app_setting_data.button_round_corners)
+                                m_draw.FillAlphaRect(rect_collapsd, m_colors.color_button_hover, alpha, true);
+                            else
+                                m_draw.DrawRoundRect(rect_collapsd, m_colors.color_button_hover, CalculateRoundRectRadius(rect_collapsd), alpha);
+                        }
+                        //绘制折叠标志
+                        DrawUiIcon(rect_collapsd, (tree_element->IsCollapsed(i) ? IconMgr::IT_TreeCollapsed : IconMgr::IT_TreeExpanded));
+                    }
+                    indent_space += collapse_width;
+                }
+
                 //绘制图标
                 if (list_element->HasIcon())
                 {
                     CRect rect_icon{ rect_item };
                     rect_icon.left = col_x;
                     rect_icon.right = rect_icon.left + DPI(20);
-                    DrawUiIcon(rect_icon, list_element->GetIcon(i));
                     col_x = rect_icon.right;
+                    rect_icon.MoveToX(rect_icon.left + indent_space);
+                    DrawUiIcon(rect_icon, list_element->GetIcon(i));
                 }
 
                 //绘制列
@@ -2728,6 +2772,13 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     rect_cell.right = rect_cell.left + list_element->GetColumnWidth(j, total_width);
                     std::wstring display_name{ list_element->GetItemText(i, j) };
                     rect_cell.left += DPI(4);       //绘制文字时左侧留出4个像素
+
+                    //第1列缩进
+                    if (j == 0)
+                    {
+                        rect_cell.left += indent_space;
+                    }
+
                     DrawAreaGuard guard(&m_draw, rect & rect_cell);
 
                     CRect rect_text{ rect_cell };
@@ -3137,6 +3188,11 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
         {
             if (draw_icon) icon = IconMgr::IT_Media_Lib;
             if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS");
+        }
+        else if (item_str == "folder_explore")
+        {
+            if (draw_icon) icon = IconMgr::IT_Folder_Explore;
+            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_FOLDER_EXPLORE");
         }
         else
         {

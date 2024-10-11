@@ -105,6 +105,7 @@ public:
     bool OnDeleteRecentListItem(const ListItem& list_item);
 
     bool OnOpenFolder();
+    bool OnOpenFolder(std::wstring folder_path, bool include_sub_dir, bool play);
 
     //从播放列表中移除
     bool OnRemoveFromPlaylist(const ListItem& list_item, const std::vector<SongInfo>& songs);

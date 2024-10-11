@@ -24,7 +24,7 @@
               </horizontalLayout>
             </rectangle>
             <stackElement>
-              <lyrics margin="4"/>
+              <lyrics/>
               <playlist item_height="30"/>
             </stackElement>
           </verticalLayout>
@@ -72,12 +72,13 @@
           <verticalLayout>
             <placeHolder show_when_use_system_titlebar="true" height="20"/>
             <verticalLayout>
-              <navigationBar height="34" margin-top="12" margin-bottom="12" margin-left="8" orientation="horizontal" item_space="6" icon_type="icon_and_text" item_list="artist,album,genre,all_tracks"/>
+              <navigationBar height="34" margin-top="12" margin-bottom="12" margin-left="8" orientation="horizontal" item_space="6" icon_type="icon_and_text" item_list="artist,album,genre,all_tracks,folder_explore"/>
               <stackElement>
                 <mediaLibItemList type="artist" item_height="30"/>
                 <mediaLibItemList type="album" item_height="30"/>
                 <mediaLibItemList type="genre" item_height="30"/>
                 <allTracksList item_height="30"/>
+                <medialibFolderExplore item_height="30"/>
               </stackElement>
             </verticalLayout>
           </verticalLayout>
@@ -139,7 +140,7 @@
                 </verticalLayout>
               </horizontalLayout>
             </rectangle>
-            <lyrics margin="4"/>
+            <lyrics/>
           </verticalLayout>
           <!--播放队列-->
           <verticalLayout>
@@ -185,12 +186,13 @@
           <verticalLayout>
             <placeHolder show_when_use_system_titlebar="true" height="20"/>
             <verticalLayout>
-              <navigationBar height="34" margin-top="12" margin-bottom="12" margin-left="8" orientation="horizontal" item_space="6" icon_type="icon_only" item_list="artist,album,genre,all_tracks"/>
+              <navigationBar height="34" margin-top="12" margin-bottom="12" margin-left="8" orientation="horizontal" item_space="6" icon_type="icon_only" item_list="artist,album,genre,all_tracks,folder_explore"/>
               <stackElement>
                 <mediaLibItemList type="artist" item_height="30"/>
                 <mediaLibItemList type="album" item_height="30"/>
                 <mediaLibItemList type="genre" item_height="30"/>
                 <allTracksList item_height="30"/>
+                <medialibFolderExplore item_height="30"/>
               </stackElement>
             </verticalLayout>
           </verticalLayout>

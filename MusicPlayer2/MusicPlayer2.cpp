@@ -643,6 +643,7 @@ void CMusicPlayerApp::StartUpdateMediaLib(bool force)
                 theApp.m_media_lib_updating = false;
                 //更新UI中我喜欢的音乐、所有曲目和媒体库项目列表
                 CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
+                CUiFolderExploreMgr::Instance().UpdateFolders();
                 CUiAllTracksMgr::Instance().UpdateAllTracks();
                 CUiMediaLibItemMgr::Instance().Init();
                 return 0;
@@ -838,6 +839,7 @@ void CMusicPlayerApp::UpdateUiMeidaLibItems()
         if (!theApp.m_media_lib_setting_data.update_media_lib_when_start_up)
         {
             CUiMyFavouriteItemMgr::Instance().UpdateMyFavourite();
+            CUiFolderExploreMgr::Instance().UpdateFolders();
             CUiAllTracksMgr::Instance().UpdateAllTracks();
             CUiMediaLibItemMgr::Instance().Init();
         }
