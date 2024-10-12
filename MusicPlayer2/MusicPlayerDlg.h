@@ -75,6 +75,9 @@ public:
     // 为“最近播放”菜单缓存ListItem，总是与MenuMgr::RecentFolderPlaylistMenu一致
     // 主线程可以从这里获取此菜单当前内容数据，***限制此对象仅能在主线程使用***
     CListCache m_recent_cache;
+    // 为“添加到播放列表”菜单缓存ListItem，总是与MenuMgr::AddToPlaylistMenu一致
+    // 主线程可以从这里获取此菜单当前内容数据，***限制此对象仅能在主线程使用***
+    CListCache m_playlist_cache;
 
 protected:
     HICON m_hIcon;

@@ -8,12 +8,6 @@ enum ListType
     LT_PLAYLIST,
     LT_MEDIA_LIB,
     LT_MAX,
-
-    // 以下项目仅用来构造CListCache时表示某个列表集合，不能出现在其他情况下
-
-    LT_RECENT,              // 最近播放的列表
-    LT_PLAYLIST_NO_SPEC,    // 除特殊播放列表外的播放列表
-    LT_CURRENT,             // 当前播放列表
 };
 
 // ListItem描述一个“作为列表的可播放对象”的全部信息

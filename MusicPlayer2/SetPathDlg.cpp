@@ -17,7 +17,7 @@ IMPLEMENT_DYNAMIC(CSetPathDlg, CTabDlg)
 
 CSetPathDlg::CSetPathDlg(CWnd* pParent /*=NULL*/)
     : CTabDlg(IDD_SET_PATH_DIALOG, pParent)
-    , m_list_cache(LT_FOLDER)
+    , m_list_cache(CListCache::SubsetType::ST_FOLDER)
 {
 
 }

@@ -17,7 +17,7 @@ IMPLEMENT_DYNAMIC(CSelectPlaylistDlg, CMediaLibTabDlg)
 
 CSelectPlaylistDlg::CSelectPlaylistDlg(CWnd* pParent /*=nullptr*/)
     : CMediaLibTabDlg(IDD_SELECT_PLAYLIST_DIALOG, pParent)
-    , m_list_cache(LT_PLAYLIST)
+    , m_list_cache(CListCache::SubsetType::ST_PLAYLIST)
 {
 
 }

@@ -6,21 +6,33 @@
 class CListCache
 {
 public:
-    CListCache(ListType type) : m_type(type) { ASSERT(type != LT_MAX); }
-    ~CListCache() {};
+    enum class SubsetType
+    {
+        ST_CURRENT,             // 仅含当前播放的列表
+        ST_RECENT,              // 最近播放的列表
+        ST_FOLDER,              // 文件夹
+        ST_PLAYLIST,            // 播放列表
+        ST_PLAYLIST_NO_SPEC,    // 除特殊播放列表外的播放列表
+        ST_MEDIA_LIB,           // 媒体库
+        ST_MAX,
+    };
+
+    // allow_un_safe为false时使用ASSERT限制小写方法的调用在同一线程（Release时无效）
+    CListCache(SubsetType type, bool allow_un_safe = false);
+    ~CListCache();
 
 ////////////////////////////////////////////////////////////////////////////////
-//  以下所有小写的方法要求总是在同一个线程调用才能够保证线程安全
+//  以下所有小写的方法使用的数据对象没有使用锁保护，要求总是在同一个线程调用才能够保证线程安全
 //  如果reload返回true表示数据可能有变化，必要重绘
 
     // 重新载入数据
     bool reload();
     // 获取ListItem总数
-    size_t size() const { return m_ui_list.size(); }
+    size_t size() const;
     // 获取位于特定index的ListItem，不允许超过size()的参数
-    const ListItem& at(size_t index) const { return m_ui_list.at(index); }
+    const ListItem& at(size_t index) const;
     // 当前播放的列表在m_ui_list中时返回其在m_ui_list的索引，否则返回-1
-    int playing_index() const { return m_ui_current_play_index; }
+    int playing_index() const;
 
 ////////////////////////////////////////////////////////////////////////////////
 //  以下方法直接基于CRecentList的数据提供，有线程安全保证，但因为锁粒度问题不能用于绘制UI
@@ -39,11 +51,13 @@ public:
 
 private:
     // 先锁定CRecentList的m_mutex再调用，返回的指针在解锁前有效
-    vector<const ListItem*> BuildSubList() const;
+    void BuildSubList(vector<const ListItem*>& sub_list) const;
 
 private:
     // 在构造时确定，表示此对象用来缓存哪个列表集合
-    const ListType m_type;
+    const SubsetType m_type;
+    // 断言小写方法仅限此ID线程调用
+    DWORD m_ui_thread_id{};
     // 约定m_ui_开头的成员变量只允许小写的成员方法访问
     vector<ListItem> m_ui_list;
     int m_ui_current_play_index{ -1 };

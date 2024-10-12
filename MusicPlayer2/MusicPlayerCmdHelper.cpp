@@ -210,9 +210,12 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         else        //添加到选中的播放列表
         {
             int index = command - ID_ADD_TO_MY_FAVOURITE - 1;
-            CListCache list_cache(LT_PLAYLIST_NO_SPEC); // 应改为让theApp持有此CListCache，仅在菜单重建前reload
-            list_cache.reload();
-            ListItem list_item = list_cache.GetItem(index);
+            ListItem list_item{};
+
+            CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
+            if (index >= 0 && index < static_cast<int>(pPlayerDlg->m_playlist_cache.size()))
+                list_item = pPlayerDlg->m_playlist_cache.at(index);
+
             if (CCommon::FileExist(list_item.path))
             {
                 AddToPlaylist(selected_item_path, list_item.path);

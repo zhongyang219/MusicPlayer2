@@ -81,12 +81,11 @@ BOOL CAddToPlaylistDlg::OnInitDialog()
     m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
 
     //初始化列表
-    CListCache list_cache(LT_PLAYLIST_NO_SPEC);
+    CListCache list_cache(CListCache::SubsetType::ST_PLAYLIST_NO_SPEC);
     list_cache.reload();
     for (size_t i{}; i < list_cache.size(); ++i)
-        m_list.push_back(CFilePathHelper(list_cache.at(i).path).GetFileNameWithoutExtension());
+        m_list.push_back(list_cache.at(i).GetDisplayName());
     ShowList();
-
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
