@@ -203,9 +203,7 @@ void CUiMyFavouriteItemMgr::GetSongList(std::vector<SongInfo>& song_list) const
 
 bool CUiMyFavouriteItemMgr::Contains(const SongInfo& song) const
 {
-    auto iter = std::find_if(m_may_favourite_song_list.begin(), m_may_favourite_song_list.end(), [&](const SongInfo& a) {
-        return a.IsSameSong(song);
-    });
+    auto iter = std::find(m_may_favourite_song_list.begin(), m_may_favourite_song_list.end(), song);
     return iter != m_may_favourite_song_list.end();
 }
 

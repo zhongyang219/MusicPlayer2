@@ -184,7 +184,7 @@ void CMediaClassifyDlg::ShowSongList()
                 m_right_items.push_back(song);  // 更新显示列表同时存储一份右侧列表SongInfo
 
                 //判断正在播放项
-                if (song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()))
+                if (song == CPlayer::GetInstance().GetCurrentSongInfo())
                     highlight_item = right_index;
 
                 CListCtrlEx::RowData row_data;

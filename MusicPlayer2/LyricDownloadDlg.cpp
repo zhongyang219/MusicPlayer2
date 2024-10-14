@@ -439,7 +439,7 @@ UINT CLyricDownloadDlg::LyricSearchThreadFunc(LPVOID lpParam)
     if (theApp.m_lyric_download_dialog_exit) return 0;
     // 此处（以及大部分网络相关）有线程安全问题，HttpPost可能卡30s网络超时，要解决此问题CInternetSession的封装应当提供退出flag参数
     // 此时如果歌词下载窗口关闭则pInfo会是野指针（比如关闭再打开此对话框会使得上面的检查无效）
-    pInfo->rtn = rtn;
+   pInfo->rtn = rtn;
 	pInfo->result = result;
 	::PostMessage(pInfo->hwnd, WM_SEARCH_COMPLATE, 0, 0);		//搜索完成后发送一个搜索完成的消息
 
@@ -614,7 +614,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 			lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
 		}
 
-		if (m_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()))		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
+        if (m_song == CPlayer::GetInstance().GetCurrentSongInfo())         //如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
 			CPlayer::GetInstance().IniLyrics(saved_path);
         wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_LYRIC_DOWNLOAD_COMPLETE_SAVED", { saved_path });
         MessageBox(info.c_str(), NULL, MB_ICONINFORMATION);
@@ -655,7 +655,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 				lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
 			}
 
-            if (m_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()))		//如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
+            if (m_song == CPlayer::GetInstance().GetCurrentSongInfo())      //如果正在播放的歌曲还是当前下载歌词的歌曲，才更新歌词显示
                 CPlayer::GetInstance().IniLyrics(saved_path);
 		}
 	}

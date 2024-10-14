@@ -443,7 +443,7 @@ void CCoverDownloadDlg::OnDestroy()
 afx_msg LRESULT CCoverDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lParam)
 {
     //重新从本地获取专辑封面
-    if (CPlayer::GetInstance().GetCurrentSongInfo().IsSameSong(m_song))
+    if (CPlayer::GetInstance().GetCurrentSongInfo() == m_song)
     {
         CPlayer::GetInstance().SearchOutAlbumCover();
         CPlayer::GetInstance().AlbumCoverGaussBlur();

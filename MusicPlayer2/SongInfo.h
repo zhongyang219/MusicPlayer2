@@ -40,6 +40,8 @@ enum SortMode
     SM_UNSORT = 100,        // 未排序（进入播放列表模式时总是设置为此排序方式，且不进行持久化）
 };
 
+struct SongKey;
+
 //一首歌曲的信息
 struct SongInfo
 {
@@ -121,8 +123,6 @@ struct SongInfo
 
     bool IsEmpty() const;
     Time length() const;
-    // 判断是否为相同歌曲，原比较代码有漏洞，请迁移所有比较到使用此方法
-    bool IsSameSong(const SongInfo& song) const;
     // 清除歌曲信息中的<>内的默认字符串
     void Normalize();
 
@@ -130,6 +130,10 @@ struct SongInfo
     static std::function<bool(const SongInfo& a, const SongInfo& b)> GetSortFunc(SortMode sort_mode);
     // 获取排序方式的显示名称
     static wstring GetSortModeDisplayName(SortMode sort_mode);
+
+    bool operator==(const SongKey& other) const;
+    // 判断是否为同一歌曲，原比较代码有漏洞，请迁移所有比较到使用此方法
+    bool operator==(const SongInfo& other) const;
 };
 
 struct SongKey
@@ -158,6 +162,10 @@ struct SongKey
         if (int pathComparison = path.compare(key.path))
             return pathComparison < 0;
         return cue_track < key.cue_track;
+    }
+    bool operator==(const SongKey& other) const
+    {
+        return cue_track == other.cue_track && path == other.path;
     }
     bool operator==(const SongInfo& other) const
     {

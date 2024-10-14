@@ -6174,7 +6174,7 @@ void CMusicPlayerDlg::OnRename()
         SongInfo& song = cur_playlist[index];
         if (song.is_cue || COSUPlayerHelper::IsOsuFile(song.file_path))
             continue;
-        CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
+        CPlayer::ReOpen reopen(song == CPlayer::GetInstance().GetCurrentSongInfo());
         if (!reopen.IsLockSuccess())
             continue;
         wstring new_name = CRenameDlg::FileNameFromTag(formular, song);

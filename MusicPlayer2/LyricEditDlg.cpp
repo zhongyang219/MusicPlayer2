@@ -463,7 +463,7 @@ void CLyricEditDlg::OnDestroy()
     CBaseDialog::OnDestroy();
 
     m_dlg_exist = false;
-    if (m_current_edit_song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && m_lyric_saved)       // 关闭歌词编辑窗口时如果正在播放的歌曲没有变，且执行过保存操作，就重新初始化歌词
+    if (m_current_edit_song == CPlayer::GetInstance().GetCurrentSongInfo() && m_lyric_saved)       // 关闭歌词编辑窗口时如果正在播放的歌曲没有变，且执行过保存操作，就重新初始化歌词
     {
         if (CPlayer::GetInstance().IsInnerLyric())
         {

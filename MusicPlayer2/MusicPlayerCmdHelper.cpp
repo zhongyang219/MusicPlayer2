@@ -190,10 +190,7 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
             for (const auto& item : selected_item_path)
             {
                 auto& cur_playlist{ CPlayer::GetInstance().GetPlayList() };
-                auto iter = std::find_if(cur_playlist.begin(), cur_playlist.end(), [&](const SongInfo& song)
-                    {
-                        return item.IsSameSong(song);
-                    });
+                auto iter = std::find(cur_playlist.begin(), cur_playlist.end(), item);
                 if (iter != cur_playlist.end())
                     iter->is_favourite = true;
             }
@@ -1095,9 +1092,7 @@ bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const ListItem& list_item, cons
         std::vector<int> indexs;    // 这里问题很大，之后要重新设计
         for (const auto& song : songs)
         {
-            auto iter = std::find_if(CPlayer::GetInstance().GetPlayList().begin(), CPlayer::GetInstance().GetPlayList().end(), [&](const SongInfo& a) {
-                return a.IsSameSong(song);
-            });
+            auto iter = std::find(CPlayer::GetInstance().GetPlayList().begin(), CPlayer::GetInstance().GetPlayList().end(), song);
             if (iter != CPlayer::GetInstance().GetPlayList().end())
                 indexs.push_back(iter - CPlayer::GetInstance().GetPlayList().begin());
         }
@@ -1261,9 +1256,7 @@ bool CMusicPlayerCmdHelper::OnAddRemoveFromFavourite(int track)
 bool CMusicPlayerCmdHelper::OnAddRemoveFromFavourite(const SongInfo& song)
 {
     auto& playlist{ CPlayer::GetInstance().GetPlayList() };
-    auto iter = std::find_if(playlist.begin(), playlist.end(), [&](const SongInfo& a) {
-        return a.IsSameSong(song);
-        });
+    auto iter = std::find(playlist.begin(), playlist.end(), song);
     if (iter != playlist.end() && CRecentList::Instance().IsPlayingSpecPlaylist(CRecentList::PT_FAVOURITE))
     {
         //如果当前播放列表就是“我喜欢”播放列表，则直接将歌曲从列表中移除

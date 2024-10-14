@@ -437,10 +437,8 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
         if (exit_flag) return;
         for (auto it = files.begin(); it != files.end();)
         {
-            bool in_files = std::find_if(item.tracks_in_files.begin(), item.tracks_in_files.end(),
-                [&](const SongInfo& song_info) { return song_info.IsSameSong(*it); }) != item.tracks_in_files.end();
-            bool in_cue = std::find_if(item.tracks_in_cue.begin(), item.tracks_in_cue.end(),
-                [&](const SongInfo& song_info) { return song_info.IsSameSong(*it); }) != item.tracks_in_cue.end();
+            bool in_files = std::find(item.tracks_in_files.begin(), item.tracks_in_files.end(), *it) != item.tracks_in_files.end();
+            bool in_cue = std::find(item.tracks_in_cue.begin(), item.tracks_in_cue.end(), *it) != item.tracks_in_cue.end();
             bool remove_it{}, add_all{};
             if (!item.tracks_in_files.front().is_cue)           // 如果存在原始cue
             {
