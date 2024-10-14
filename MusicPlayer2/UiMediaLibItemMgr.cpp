@@ -5,6 +5,7 @@
 #include "SongDataManager.h"
 #include "SongInfoHelper.h"
 #include "CRecentList.h"
+#include "MediaLibHelper.h"
 #include "Player.h"
 
 CUiMediaLibItemMgr CUiMediaLibItemMgr::m_instance;
@@ -18,7 +19,7 @@ CUiMediaLibItemMgr& CUiMediaLibItemMgr::Instance()
     return m_instance;
 }
 
-void CUiMediaLibItemMgr::GetClassifiedMeidaLibItemList(CMediaClassifier::ClassificationType type)
+void CUiMediaLibItemMgr::GetClassifiedMeidaLibItemList(ListItem::ClassificationType type)
 {
     auto& item_list{ m_item_map[type] };
     item_list.clear();
@@ -26,7 +27,7 @@ void CUiMediaLibItemMgr::GetClassifiedMeidaLibItemList(CMediaClassifier::Classif
     classifier.ClassifyMedia();
     for (const auto& item : classifier.GetMeidaList())
     {
-        if (item.first != STR_OTHER_CLASSIFY_TYPE)
+        if (item.first != ListItem::STR_OTHER_CLASSIFY_TYPE)
         {
             ItemInfo info;
             info.name = item.first;
@@ -41,19 +42,19 @@ void CUiMediaLibItemMgr::Init()
     m_loading = true;
     std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
 
-    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_ARTIST);
-    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_ALBUM);
-    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_GENRE);
-    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_YEAR);
-    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_TYPE);
-    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_BITRATE);
-    GetClassifiedMeidaLibItemList(CMediaClassifier::CT_RATING);
+    GetClassifiedMeidaLibItemList(ListItem::ClassificationType::CT_ARTIST);
+    GetClassifiedMeidaLibItemList(ListItem::ClassificationType::CT_ALBUM);
+    GetClassifiedMeidaLibItemList(ListItem::ClassificationType::CT_GENRE);
+    GetClassifiedMeidaLibItemList(ListItem::ClassificationType::CT_YEAR);
+    GetClassifiedMeidaLibItemList(ListItem::ClassificationType::CT_TYPE);
+    GetClassifiedMeidaLibItemList(ListItem::ClassificationType::CT_BITRATE);
+    GetClassifiedMeidaLibItemList(ListItem::ClassificationType::CT_RATING);
 
     m_loading = false;
     m_inited = true;
 }
 
-int CUiMediaLibItemMgr::GetItemCount(CMediaClassifier::ClassificationType type) const
+int CUiMediaLibItemMgr::GetItemCount(ListItem::ClassificationType type) const
 {
     if (!m_loading)
     {
@@ -64,7 +65,7 @@ int CUiMediaLibItemMgr::GetItemCount(CMediaClassifier::ClassificationType type) 
     return 0;
 }
 
-std::wstring CUiMediaLibItemMgr::GetItemDisplayName(CMediaClassifier::ClassificationType type, int index) const
+std::wstring CUiMediaLibItemMgr::GetItemDisplayName(ListItem::ClassificationType type, int index) const
 {
     if (!m_loading)
     {
@@ -76,7 +77,7 @@ std::wstring CUiMediaLibItemMgr::GetItemDisplayName(CMediaClassifier::Classifica
     return std::wstring();
 }
 
-const CUiMediaLibItemMgr::ItemInfo& CUiMediaLibItemMgr::GetItemInfo(CMediaClassifier::ClassificationType type, int index) const
+const CUiMediaLibItemMgr::ItemInfo& CUiMediaLibItemMgr::GetItemInfo(ListItem::ClassificationType type, int index) const
 {
     if (!m_loading)
     {
@@ -94,23 +95,23 @@ const CUiMediaLibItemMgr::ItemInfo& CUiMediaLibItemMgr::GetItemInfo(CMediaClassi
     return empty_info;
 }
 
-const std::wstring& CUiMediaLibItemMgr::GetItemName(CMediaClassifier::ClassificationType type, int index) const
+const std::wstring& CUiMediaLibItemMgr::GetItemName(ListItem::ClassificationType type, int index) const
 {
     return GetItemInfo(type, index).name;
 }
 
-int CUiMediaLibItemMgr::GetItemSongCount(CMediaClassifier::ClassificationType type, int index) const
+int CUiMediaLibItemMgr::GetItemSongCount(ListItem::ClassificationType type, int index) const
 {
     return GetItemInfo(type, index).count;
 }
 
-void CUiMediaLibItemMgr::SetCurrentName(CMediaClassifier::ClassificationType type, const std::wstring& name)
+void CUiMediaLibItemMgr::SetCurrentName(ListItem::ClassificationType type, const std::wstring& name)
 {
     m_current_name_map[type] = name;
     m_current_index_map.erase(type);
 }
 
-int CUiMediaLibItemMgr::GetCurrentIndex(CMediaClassifier::ClassificationType type)
+int CUiMediaLibItemMgr::GetCurrentIndex(ListItem::ClassificationType type)
 {
     if (!m_loading)
     {
@@ -291,8 +292,7 @@ void CUiAllTracksMgr::UpdateAllTracks()
     });
 
     //从CRecentList中查找“所有曲目”，并获取排序方式
-    ListItem list_item{ LT_MEDIA_LIB, L"" };
-    list_item.medialib_type = CMediaClassifier::CT_NONE;
+    ListItem list_item{ LT_MEDIA_LIB, L"", ListItem::ClassificationType::CT_NONE };
     CRecentList::Instance().LoadItem(list_item);
     //对所有曲目排序
     auto sort_fun = SongInfo::GetSortFunc(list_item.GetDefaultSortMode());

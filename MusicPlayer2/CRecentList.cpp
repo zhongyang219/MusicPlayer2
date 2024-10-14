@@ -303,7 +303,7 @@ bool CRecentList::LoadData()
                 ar >> list_item.last_played_time;
                 ar >> list_item.create_time;
                 ar >> temp_int;
-                list_item.medialib_type = static_cast<CMediaClassifier::ClassificationType>(temp_int);
+                list_item.medialib_type = static_cast<ListItem::ClassificationType>(temp_int);
                 ar >> temp_int;
                 list_item.contain_sub_folder = static_cast<bool>(temp_int);
 
@@ -346,7 +346,7 @@ void CRecentList::AfterLoadData()
             {
             case LT_FOLDER: return list_item.path.size() < 2;
             case LT_PLAYLIST: return std::find(file_list.begin(), file_list.end(), CFilePathHelper(list_item.path).GetFileName()) == file_list.end();
-            case LT_MEDIA_LIB: return list_item.medialib_type < 0 || list_item.medialib_type >= CMediaClassifier::CT_MAX;
+            case LT_MEDIA_LIB: return list_item.medialib_type < ListItem::ClassificationType() || list_item.medialib_type >= ListItem::ClassificationType::CT_MAX;
             default: return true;
             }
         });
@@ -564,7 +564,7 @@ void CRecentList::LoadOldData()
                 ar >> list_item.total_time;
                 ar >> list_item.last_played_time;
                 ar >> temp;
-                list_item.medialib_type = static_cast<CMediaClassifier::ClassificationType>(temp);
+                list_item.medialib_type = static_cast<ListItem::ClassificationType>(temp);
                 ar >> temp;
                 list_item.sort_mode = static_cast<SortMode>(temp);
 

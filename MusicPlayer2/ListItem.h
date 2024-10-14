@@ -1,6 +1,6 @@
 ﻿#pragma once
+#include "SongInfo.h"
 #include "IconMgr.h"
-#include "MediaLibHelper.h"
 
 enum ListType
 {
@@ -23,15 +23,29 @@ struct ListItem
     uint64_t last_played_time{};                // 上次播放的时间 (time_t)
     uint64_t create_time{};                     // 创建/添加时间 (time_t)
 
+    enum class ClassificationType
+    {
+        CT_ARTIST,
+        CT_ALBUM,
+        CT_GENRE,
+        CT_YEAR,
+        CT_TYPE,
+        CT_BITRATE,
+        CT_RATING,
+        CT_NONE,
+        CT_MAX
+    };
+    // type为LT_MEDIA_LIB时path为此字符串表示<其他>分类
+    static inline const wstring STR_OTHER_CLASSIFY_TYPE = L"eRk0Q6ov";
     // 媒体库列表时存储列表种类 否则应保持默认
     // 例如medialib_type为CT_ARTIST，则path字段储存的是艺术家的名称
     // 特别的，CT_NONE表示所有曲目，此时path应留空
-    CMediaClassifier::ClassificationType medialib_type{};
+    ClassificationType medialib_type{};
     // 文件夹列表时存储是否包含子文件夹 否则应保持默认
     bool contain_sub_folder{};
 
     ListItem() {}
-    ListItem(ListType _type, wstring _path, CMediaClassifier::ClassificationType _medialib_type = {});
+    ListItem(ListType _type, wstring _path, ClassificationType _medialib_type = {});
 
     bool operator==(const ListItem& other) const
     {

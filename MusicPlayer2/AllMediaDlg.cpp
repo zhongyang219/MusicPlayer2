@@ -322,7 +322,7 @@ void CAllMediaDlg::OnOK()
         // 所有曲目单选时使用媒体库模式播放
         if (m_type == DT_ALL_MEDIA && songs.size() == 1)
         {
-            ListItem list_item{ LT_MEDIA_LIB, L"", CMediaClassifier::CT_NONE};
+            ListItem list_item{ LT_MEDIA_LIB, L"", ListItem::ClassificationType::CT_NONE};
             list_item.SetPlayTrack(songs.front());
             ok = CPlayer::GetInstance().SetList(list_item, true, true);
         }

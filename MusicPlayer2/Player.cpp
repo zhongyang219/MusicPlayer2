@@ -12,6 +12,7 @@
 #include <random>
 #include "IniHelper.h"
 #include "CRecentList.h"
+#include "MediaLibHelper.h"
 
 CPlayer CPlayer::m_instance;
 
@@ -157,7 +158,7 @@ void CPlayer::IniPlayList(bool play, MediaLibRefreshMode refresh_mode, SongKey s
     else if (m_playlist_mode == PM_MEDIA_LIB)
     {
         // 根据类型和名称获取音频文件列表
-        if (m_media_lib_playlist_type == CMediaClassifier::CT_NONE)
+        if (m_media_lib_playlist_type == ListItem::ClassificationType::CT_NONE)
         {
             //返回所有曲目
             CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map)
@@ -170,7 +171,7 @@ void CPlayer::IniPlayList(bool play, MediaLibRefreshMode refresh_mode, SongKey s
         }
         else
         {
-            CMediaClassifier classifier(m_media_lib_playlist_type, m_media_lib_playlist_name == STR_OTHER_CLASSIFY_TYPE);
+            CMediaClassifier classifier(m_media_lib_playlist_type, m_media_lib_playlist_name == ListItem::STR_OTHER_CLASSIFY_TYPE);
             classifier.ClassifyMedia();
             m_playlist = classifier.GetMeidaList()[m_media_lib_playlist_name];
         }
@@ -2501,7 +2502,7 @@ bool CPlayer::IsMediaLibMode() const
     return m_playlist_mode == PM_MEDIA_LIB;
 }
 
-CMediaClassifier::ClassificationType CPlayer::GetMediaLibPlaylistType() const
+ListItem::ClassificationType CPlayer::GetMediaLibPlaylistType() const
 {
     return m_media_lib_playlist_type;
 }

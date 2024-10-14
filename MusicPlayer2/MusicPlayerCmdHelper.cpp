@@ -1187,7 +1187,7 @@ void CMusicPlayerCmdHelper::OnPlayMyFavourite()
 
 void CMusicPlayerCmdHelper::OnPlayAllTrack(const SongInfo& song)
 {
-    ListItem list_item{ LT_MEDIA_LIB, L"", CMediaClassifier::CT_NONE };
+    ListItem list_item{ LT_MEDIA_LIB, L"", ListItem::ClassificationType::CT_NONE };
     list_item.SetPlayTrack(song);
     bool ok = CPlayer::GetInstance().SetList(list_item, true, true);
     if (!ok)

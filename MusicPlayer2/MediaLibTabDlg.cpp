@@ -93,9 +93,9 @@ void CMediaLibTabDlg::OnOK()
     if (!songs.empty())
     {
         bool ok{};
-        CMediaClassifier::ClassificationType type = GetClassificationType();
+        ListItem::ClassificationType type = GetClassificationType();
         wstring item_name = GetClassificationItemName();
-        if (type != CMediaClassifier::CT_NONE && item_name != STR_OTHER_CLASSIFY_TYPE)
+        if (type != ListItem::ClassificationType::CT_NONE && item_name != ListItem::STR_OTHER_CLASSIFY_TYPE)
         {
             ListItem list_item{ LT_MEDIA_LIB, item_name, type };
             int item_selected = GetItemSelected();

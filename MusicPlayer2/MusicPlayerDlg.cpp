@@ -2838,13 +2838,13 @@ void CMusicPlayerDlg::OnMediaLib()
     {
         switch (CPlayer::GetInstance().GetMediaLibPlaylistType())
         {
-        case CMediaClassifier::CT_ARTIST: cur_tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
-        case CMediaClassifier::CT_ALBUM: cur_tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
-        case CMediaClassifier::CT_GENRE: cur_tab = CMusicPlayerCmdHelper::ML_GENRE; break;
-        case CMediaClassifier::CT_YEAR: cur_tab = CMusicPlayerCmdHelper::ML_YEAR; break;
-        case CMediaClassifier::CT_TYPE: cur_tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
-        case CMediaClassifier::CT_BITRATE: cur_tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
-        case CMediaClassifier::CT_RATING: cur_tab = CMusicPlayerCmdHelper::ML_RATING; break;
+        case ListItem::ClassificationType::CT_ARTIST: cur_tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
+        case ListItem::ClassificationType::CT_ALBUM: cur_tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
+        case ListItem::ClassificationType::CT_GENRE: cur_tab = CMusicPlayerCmdHelper::ML_GENRE; break;
+        case ListItem::ClassificationType::CT_YEAR: cur_tab = CMusicPlayerCmdHelper::ML_YEAR; break;
+        case ListItem::ClassificationType::CT_TYPE: cur_tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
+        case ListItem::ClassificationType::CT_BITRATE: cur_tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
+        case ListItem::ClassificationType::CT_RATING: cur_tab = CMusicPlayerCmdHelper::ML_RATING; break;
         }
     }
 

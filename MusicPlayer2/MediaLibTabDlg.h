@@ -31,7 +31,7 @@ protected:
     // _OnAddToNewPlaylist以此方法获取建议的新播放列表名称
     virtual wstring GetNewPlaylistName() const { return L""; };
 
-    virtual CMediaClassifier::ClassificationType GetClassificationType() const { return CMediaClassifier::CT_NONE; }
+    virtual ListItem::ClassificationType GetClassificationType() const { return ListItem::ClassificationType::CT_NONE; }
     virtual std::wstring GetClassificationItemName() const { return std::wstring(); }
     
     virtual void OnTabEntered() override;

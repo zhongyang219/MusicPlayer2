@@ -9,7 +9,6 @@
 #include "BassCore.h"
 #include "SpectralDataHelper.h"
 #include "MediaTransControls.h"
-#include "MediaLibHelper.h"
 #include "ListItem.h"
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)         // 播放列表开始加载时的消息
@@ -87,7 +86,7 @@ private:
 
     wstring m_path;                     // 文件夹模式下，当前播放文件的目录
     wstring m_playlist_path;            // 当前播放列表文件的路径
-    CMediaClassifier::ClassificationType m_media_lib_playlist_type;     //播放列表模式为PM_MEDIA_LIB时的媒体库项目类型
+    ListItem::ClassificationType m_media_lib_playlist_type;     //播放列表模式为PM_MEDIA_LIB时的媒体库项目类型
     wstring m_media_lib_playlist_name;  //播放列表模式为PM_MEDIA_LIB时媒体库项目的名称
 
     SongInfo m_current_song_tmp;        // 临时存储歌曲的信息并在播放列表初始化完成后查找播放
@@ -516,7 +515,7 @@ public:
     bool IsFolderMode() const;      //是否为文件夹模式
     bool IsMediaLibMode() const;    //是否为媒体库模式
     //当前播放列表模式为PM_MEDIA_LIB时，获取当前播放的媒体库项目类型
-    CMediaClassifier::ClassificationType GetMediaLibPlaylistType() const;
+    ListItem::ClassificationType GetMediaLibPlaylistType() const;
     bool IsPlaylistEmpty() const;
 
     // 重命名播放列表后使用此方法更新播放实例（不会重新载入播放列表）
