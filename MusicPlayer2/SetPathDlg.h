@@ -3,7 +3,7 @@
 #include "ListCtrlEx.h"
 #include "TabDlg.h"
 #include "SearchEditCtrl.h"
-#include "ListCache.h"
+#include "ListSearchCache.h"
 
 // CSetPathDlg 对话框
 // #define WM_PATH_SELECTED (WM_USER+107) 不再使用
@@ -22,36 +22,24 @@ public:
 #endif
 
 public:
-    void QuickSearch(const wstring& key_words);     //根据关键字执行快速查找（更新m_search_result）
     void AdjustColumnWidth();                       //自动调整列表宽度
     void RefreshTabData();                          //刷新标签页数据
-    bool SetCurSel(const wstring& folder_path);
+    bool SetCurSel(const ListItem& list_item);
 
 protected:
-    bool m_searched{ false };           // 是否处于搜索状态
-    wstring m_searched_str;
-    vector<size_t> m_search_result;     // 储存快速搜索结果的歌曲序号
-
-    CListCache m_list_cache;            // 缓存此窗口使用的所有ListItem
-    CListCtrlEx m_path_list;            // 列表对象，数据加载自m_list_cache，搜索状态下经过m_search_result筛选
-    int m_list_selected{};              // 选中的列表数据索引（搜索状态下不是m_list_cache的索引）
+    CListSearchCache m_list_search_cache;           // 缓存此窗口使用的所有ListItem
+    CListCtrlEx m_path_list;                        // 列表对象，数据与m_list_search_cache同步
+    int m_list_selected{};                          // 选中的列表数据索引
 
     CEdit m_path_name;
     CSearchEditCtrl m_search_edit;
 
-    // 判断选择是否有效
-    bool SelectValid() const;
-    // 获取选择的项目
-    const ListItem& GetSelPath() const;
-    // 返回当前选中GetSelPath()是否能够播放
-    bool SelectedCanPlay() const;
-    // 判断并设置“播放选中”按钮状态
+    // 选中有效时启用“播放选中”按钮
     void SetButtonsEnable();
-    // 更新m_path_list_info和m_path_list，搜索状态下请确保m_search_result不越界
+    // 更新m_list_search_cache和m_path_list
     void ShowPathList();
     // 计算列宽
     void CalculateColumeWidth(vector<int>& width);
-    void SetListRowData(int index, const ListItem& list_item);
 
     virtual void OnTabEntered() override;
     virtual bool InitializeControls() override;

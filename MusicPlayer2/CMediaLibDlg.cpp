@@ -39,13 +39,13 @@ bool CMediaLibDlg::NavigateToItem(const wstring& item)
     CSetPathDlg* folder_dlg = dynamic_cast<CSetPathDlg*>(pCurTab);
     if (folder_dlg != nullptr)
     {
-        return folder_dlg->SetCurSel(item);
+        return folder_dlg->SetCurSel(ListItem{ LT_FOLDER, item });
     }
 
     CSelectPlaylistDlg* playlist_dlg = dynamic_cast<CSelectPlaylistDlg*>(pCurTab);
     if (playlist_dlg != nullptr)
     {
-        return playlist_dlg->SetCurSel(item);
+        return playlist_dlg->SetCurSel(ListItem{ LT_PLAYLIST, item });
     }
 
     return false;

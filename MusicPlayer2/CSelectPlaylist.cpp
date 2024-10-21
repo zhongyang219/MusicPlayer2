@@ -17,7 +17,7 @@ IMPLEMENT_DYNAMIC(CSelectPlaylistDlg, CMediaLibTabDlg)
 
 CSelectPlaylistDlg::CSelectPlaylistDlg(CWnd* pParent /*=nullptr*/)
     : CMediaLibTabDlg(IDD_SELECT_PLAYLIST_DIALOG, pParent)
-    , m_list_cache(CListCache::SubsetType::ST_PLAYLIST)
+    , m_list_search_cache(CListCache::SubsetType::ST_PLAYLIST)
 {
 
 }
@@ -45,15 +45,17 @@ void CSelectPlaylistDlg::RefreshTabData()
     ShowSongList();
 }
 
-bool CSelectPlaylistDlg::SetCurSel(const wstring& playlist_path)
+bool CSelectPlaylistDlg::SetCurSel(const ListItem& list_item)
 {
-    if (m_searched)
-        return true;
-    int index = m_list_cache.GetIndex(ListItem{ LT_PLAYLIST, playlist_path });
+    // 不更新m_search_edit控件文本，使得已处于搜索状态时则m_search_edit控件会与列表控件失去同步直到下次手动修改m_search_edit控件
+    // 此处优先保证SetCurSel执行及返回值的正确
+    // m_search_edit.SetWindowTextW(L"");   // 使用这行时不再需要下面两行，OnEnChangeSearchEdit 已有同样处理
+    m_list_search_cache.SetSearchStr();     // 清除搜索状态（但保留搜索控件文本）
+    ShowPathList();                         // 重新显示列表
+    int index = m_list_search_cache.GetIndex(list_item);
     if (index < 0)
         return false;
-    m_playlist_ctrl.SetCurSel(index);
-    m_playlist_ctrl.EnsureVisible(index, FALSE);
+    m_playlist_ctrl.SetCurSel(index);       // 这行效果包括使选中项可见
     LeftListClicked(index);
     return true;
 }
@@ -67,24 +69,14 @@ void CSelectPlaylistDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_HSPLITER_STATIC, m_splitter_ctrl);
 }
 
-
-void CSelectPlaylistDlg::QuickSearch(const wstring& key_words)
-{
-    m_search_result.clear();
-    // 此处不再跳过特殊播放列表，以其显示名称进入搜索
-    for (size_t i{}; i < m_list_cache.size(); ++i)
-        if (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_words, m_list_cache.at(i).GetDisplayName()))
-            m_search_result.push_back(i);
-}
-
 void CSelectPlaylistDlg::ShowSongList()
 {
     CWaitCursor wait_cursor;
     m_list_data.clear();
     int highlight_item{ -1 };
-    if (LeftSelectValid())
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
     {
-        const ListItem& list_item = GetSelectedPlaylist();
         CPlaylistFile playlist_file;
         playlist_file.LoadFromFile(list_item.path);
         // 如果是当前播放列表则设置当前播放高亮
@@ -259,9 +251,8 @@ BOOL CSelectPlaylistDlg::OnInitDialog()
     // ShowPathList初始化m_list_cache，需要在其他方法之前
     ShowPathList();
     // 初始化时选中正在播放的播放列表
-    m_playlist_ctrl.SetCurSel(m_list_cache.playing_index());
-    m_playlist_ctrl.EnsureVisible(m_list_cache.playing_index(), FALSE);
-    LeftListClicked(m_list_cache.playing_index());
+    m_playlist_ctrl.SetCurSel(m_list_search_cache.playing_index());
+    LeftListClicked(m_list_search_cache.playing_index());
     // 初始时将焦点设置到搜索框
     m_search_edit.SetFocus();
     wstring prompt_str = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT") + L"(F)";
@@ -291,82 +282,37 @@ void CSelectPlaylistDlg::CalculateColumeWidth(vector<int>& width)
 
 void CSelectPlaylistDlg::ShowPathList()
 {
-    // 更新m_list_cache
-    m_list_cache.reload();
+    m_list_search_cache.reload();
 
     m_playlist_ctrl.EnableWindow(TRUE);
     m_playlist_ctrl.DeleteAllItems();
-    if (!m_searched)        //显示所有项目
+
+    if (m_list_search_cache.size() == 0)
     {
-        for (size_t i{}; i < m_list_cache.size(); ++i)
-        {
-            SetListRowData(i, m_list_cache.at(i));
-        }
-        m_playlist_ctrl.SetHightItem(m_list_cache.playing_index());
+        m_playlist_ctrl.InsertItem(0, L"");
+        m_playlist_ctrl.SetItemText(0, 1, theApp.m_str_table.LoadText(L"TXT_PLAYLIST_CTRL_NO_RESULT_TO_SHOW").c_str());
+        m_playlist_ctrl.EnableWindow(FALSE);
+        return;
     }
-    else        //只显示搜索结果的曲目
+    for (size_t i{}; i < m_list_search_cache.size(); ++i)
     {
-        QuickSearch(m_searcher_str);
-        if (m_search_result.empty())
-        {
-            m_playlist_ctrl.InsertItem(0, _T(""));
-            m_playlist_ctrl.SetItemText(0, 1, theApp.m_str_table.LoadText(L"TXT_PLAYLIST_CTRL_NO_RESULT_TO_SHOW").c_str());
-            m_playlist_ctrl.EnableWindow(FALSE);
-            return;
-        }
-        int index{};
-        int highlight_index_searched{ -1 };
-        for (size_t i : m_search_result)
-        {
-            SetListRowData(index, m_list_cache.at(i));
-            if (m_list_cache.playing_index() == i)
-                highlight_index_searched = index;
-            ++index;
-        }
-        m_playlist_ctrl.SetHightItem(highlight_index_searched);
+        const ListItem& list_item = m_list_search_cache.at(i);
+        m_playlist_ctrl.InsertItem(i, m_list_search_cache.display_index(i).c_str());
+        m_playlist_ctrl.SetItemText(i, 1, list_item.GetDisplayName().c_str());
+        m_playlist_ctrl.SetItemText(i, 2, list_item.GetLastTrackDisplayName().c_str());
+        m_playlist_ctrl.SetItemText(i, 3, std::to_wstring(list_item.total_num).c_str());
+        m_playlist_ctrl.SetItemText(i, 4, Time(list_item.total_time).toString3().c_str());
     }
-}
-
-void CSelectPlaylistDlg::SetListRowData(int index, const ListItem& list_item)
-{
-    m_playlist_ctrl.InsertItem(index, std::to_wstring(index + 1).c_str());
-    m_playlist_ctrl.SetItemText(index, 1, list_item.GetDisplayName().c_str());
-    m_playlist_ctrl.SetItemText(index, 2, list_item.GetLastTrackDisplayName().c_str());
-    m_playlist_ctrl.SetItemText(index, 3, std::to_wstring(list_item.total_num).c_str());
-    m_playlist_ctrl.SetItemText(index, 4, Time(list_item.total_time).toString3().c_str());
-}
-
-bool CSelectPlaylistDlg::LeftSelectValid() const
-{
-    int index{ m_left_selected_item };
-    if (m_searched && index >= 0 && index < static_cast<int>(m_search_result.size()))
-        index = m_search_result[index];
-    return index >= 0 && index < static_cast<int>(m_list_cache.size());
-}
-
-const ListItem& CSelectPlaylistDlg::GetSelectedPlaylist() const
-{
-    if (LeftSelectValid())
-        if (m_searched)
-            return m_list_cache.at(m_search_result[m_left_selected_item]);
-        else
-            return m_list_cache.at(m_left_selected_item);
-    static ListItem empty{};
-    return empty;
+    m_playlist_ctrl.SetHightItem(m_list_search_cache.playing_index());
 }
 
 void CSelectPlaylistDlg::SetButtonsEnable()
 {
-    bool enable = SelectedCanPlay();
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
     CWnd* pParent = GetParentWindow();
-    ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
+    ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(!list_item.empty()), 0);
 }
 
-bool CSelectPlaylistDlg::SelectedCanPlay() const
-{
-    // 左侧选中不是当前列表或右侧有选中时能够播放（不再要求右侧选中不是当前播放，没有必要）
-    return LeftSelectValid() && (!CRecentList::Instance().IsCurrentList(GetSelectedPlaylist()) || m_right_selected_item >= 0);
-}
 
 void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
@@ -383,18 +329,18 @@ void CSelectPlaylistDlg::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 void CSelectPlaylistDlg::OnOK()
 {
     // TODO: 在此添加专用代码和/或调用基类
-    if (SelectedCanPlay())
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
     {
         bool ok{};
-        ListItem sel_playlist = GetSelectedPlaylist();
         // 左侧选中或右侧选中无效则使用之前保存的信息播放选中播放列表，设置play为false，force为false
         if (m_left_selected || m_right_selected_item < 0 || m_right_selected_item >= static_cast<int>(m_cur_song_list.size()))
-            ok = CPlayer::GetInstance().SetList(sel_playlist);
+            ok = CPlayer::GetInstance().SetList(list_item);
         // 否则播放m_right_selected_item指定曲目，设置play为true，force为true
         else
         {
-            sel_playlist.SetPlayTrack(m_cur_song_list.at(m_right_selected_item));
-            ok = CPlayer::GetInstance().SetList(sel_playlist, true, true);
+            list_item.SetPlayTrack(m_cur_song_list.at(m_right_selected_item));
+            ok = CPlayer::GetInstance().SetList(list_item, true, true);
         }
         if (!ok)
         {
@@ -419,18 +365,10 @@ void CSelectPlaylistDlg::OnBnClickedNewPlaylist()
     if (!new_path.empty())
     {
         ShowPathList();
-        if (!m_searched)    // 添加新的播放列表后选中新增的播放列表
-        {
-            int new_index = m_list_cache.GetIndex(ListItem{ LT_PLAYLIST, new_path });
-            m_playlist_ctrl.SetCurSel(new_index);
-            m_playlist_ctrl.EnsureVisible(new_index, FALSE);
-            LeftListClicked(new_index);
-        }
-        else
-        {
-            m_playlist_ctrl.SetCurSel(-1);
-            LeftListClicked(-1);
-        }
+        // 添加新的播放列表后选中新增的播放列表
+        int new_index = m_list_search_cache.GetIndex(ListItem{ LT_PLAYLIST, new_path });
+        m_playlist_ctrl.SetCurSel(new_index);
+        LeftListClicked(new_index);
     }
 }
 
@@ -445,10 +383,11 @@ void CSelectPlaylistDlg::OnPlayPlaylist()
 void CSelectPlaylistDlg::OnRenamePlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    if (LeftSelectValid())
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
     {
         CMusicPlayerCmdHelper helper(this);
-        if (helper.OnRenamePlaylist(GetSelectedPlaylist()))
+        if (helper.OnRenamePlaylist(list_item))
             ShowPathList();
     }
 }
@@ -457,23 +396,16 @@ void CSelectPlaylistDlg::OnRenamePlaylist()
 void CSelectPlaylistDlg::OnDeletePlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    if (LeftSelectValid())
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
     {
         CMusicPlayerCmdHelper helper(this);
-        if (helper.OnDeleteRecentListItem(GetSelectedPlaylist()))
+        if (helper.OnDeleteRecentListItem(list_item))
         {
             ShowPathList();
-            if (!m_searched)
-            {
-                m_playlist_ctrl.SetCurSel(m_list_cache.playing_index());
-                m_playlist_ctrl.EnsureVisible(m_list_cache.playing_index(), FALSE);
-                LeftListClicked(m_list_cache.playing_index());
-            }
-            else
-            {
-                m_playlist_ctrl.SetCurSel(-1);
-                LeftListClicked(-1);
-            }
+            int playing_index = m_list_search_cache.playing_index();
+            m_playlist_ctrl.SetCurSel(playing_index);
+            LeftListClicked(playing_index);
         }
     }
 }
@@ -509,17 +441,19 @@ void CSelectPlaylistDlg::OnInitMenu(CMenu* pMenu)
     CMediaLibTabDlg::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
-    bool select_valid{ LeftSelectValid() };
-    wstring sel_playlist_name = CFilePathHelper(GetSelectedPlaylist().path).GetFileName();
-    bool is_spec_playlist = CRecentList::IsSpecPlaylist(GetSelectedPlaylist());
-    bool is_cant_del = CRecentList::IsSpecPlaylist(GetSelectedPlaylist(), CRecentList::PT_DEFAULT) || CRecentList::IsSpecPlaylist(GetSelectedPlaylist(), CRecentList::PT_FAVOURITE);
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    bool select_valid = !list_item.empty();
+    bool is_spec_playlist = CRecentList::IsSpecPlaylist(list_item);
+    bool is_cant_del = CRecentList::IsSpecPlaylist(list_item, CRecentList::PT_DEFAULT) || CRecentList::IsSpecPlaylist(list_item, CRecentList::PT_FAVOURITE);
+
     pMenu->EnableMenuItem(ID_RENAME_PLAYLIST, MF_BYCOMMAND | (select_valid && !is_spec_playlist ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_PLAYLIST, MF_BYCOMMAND | (select_valid && !is_cant_del ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAY_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_SAVE_AS_NEW_PLAYLIST, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_SAVE_AS, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_FIX_PATH_ERROR, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_PLAYLIST_BROWSE_FILE, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_LIB_PLAYLIST_PROPERTIES, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 
     switch (CRecentList::Instance().GetSortMode(LT_PLAYLIST))
     {
@@ -548,25 +482,16 @@ void CSelectPlaylistDlg::OnEnChangeSearchEdit()
     // TODO:  在此添加控件通知处理程序代码
     CString key_word;
     m_search_edit.GetWindowText(key_word);
-    m_searcher_str = key_word;
-    m_searched = !m_searcher_str.empty();
+    m_list_search_cache.SetSearchStr(key_word.GetString());
     ShowPathList();
-    LeftListClicked(-1);    // 清空所有选中状态及右侧列表
+    if (key_word.IsEmpty())
+        LeftListClicked(-1);    // 清空所有选中状态及右侧列表
+    else
+    {
+        m_playlist_ctrl.SetCurSel(m_list_search_cache.playing_index());
+        LeftListClicked(m_list_search_cache.playing_index());
+    }
 }
-
-
-//void CSelectPlaylistDlg::OnBnClickedClearButton()
-//{
-//    // TODO: 在此添加控件通知处理程序代码
-//    if (m_searched)
-//    {
-//        //清除搜索结果
-//        m_searched = false;
-//        m_search_edit.SetWindowText(_T(""));
-//        ShowPathList();
-//        SetHighlightItem();
-//    }
-//}
 
 
 BOOL CSelectPlaylistDlg::PreTranslateMessage(MSG* pMsg)
@@ -590,16 +515,7 @@ BOOL CSelectPlaylistDlg::PreTranslateMessage(MSG* pMsg)
 
 afx_msg LRESULT CSelectPlaylistDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam)
 {
-    if (m_searched)
-    {
-        //清除搜索结果
-        m_searched = false;
-        m_search_edit.SetWindowTextW(L"");
-        ShowPathList();
-        m_playlist_ctrl.SetCurSel(m_list_cache.playing_index());
-        m_playlist_ctrl.EnsureVisible(m_list_cache.playing_index(), FALSE);
-        LeftListClicked(m_list_cache.playing_index());
-    }
+    m_search_edit.SetWindowTextW(L"");
     return 0;
 }
 
@@ -649,26 +565,18 @@ void CSelectPlaylistDlg::OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult)
 void CSelectPlaylistDlg::OnSaveAsNewPlaylist()
 {
     // TODO: 在此添加命令处理程序代码
-    if (LeftSelectValid())
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
     {
-        const ListItem& list_item = GetSelectedPlaylist();
         CMusicPlayerCmdHelper helper(this);
         wstring new_path = helper.OnNewPlaylist(list_item.path);
         if (!new_path.empty())
         {
             ShowPathList();
-            if (!m_searched)    // 添加新的播放列表后选中新增的播放列表
-            {
-                int new_index = m_list_cache.GetIndex(ListItem{ LT_PLAYLIST, new_path });
-                m_playlist_ctrl.SetCurSel(new_index);
-                m_playlist_ctrl.EnsureVisible(new_index, FALSE);
-                LeftListClicked(new_index);
-            }
-            else
-            {
-                m_playlist_ctrl.SetCurSel(-1);
-                LeftListClicked(-1);
-            }
+            // 添加新的播放列表后选中新增的播放列表
+            int new_index = m_list_search_cache.GetIndex(ListItem{ LT_PLAYLIST, new_path });
+            m_playlist_ctrl.SetCurSel(new_index);
+            LeftListClicked(new_index);
         }
     }
 }
@@ -677,20 +585,22 @@ void CSelectPlaylistDlg::OnSaveAsNewPlaylist()
 void CSelectPlaylistDlg::OnPlaylistSaveAs()
 {
     // TODO: 在此添加命令处理程序代码
-    if (LeftSelectValid())
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
     {
         CMusicPlayerCmdHelper helper(this);
-        helper.OnPlaylistSaveAs(GetSelectedPlaylist().path);
+        helper.OnPlaylistSaveAs(list_item.path);
     }
 }
 
 
 void CSelectPlaylistDlg::OnPlaylistFixPathError()
 {
-    if (LeftSelectValid())
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
     {
         CMusicPlayerCmdHelper helper(this);
-        if (helper.OnPlaylistFixPathError(GetSelectedPlaylist().path))
+        if (helper.OnPlaylistFixPathError(list_item.path))
         {
             ShowSongList();
         }
@@ -700,10 +610,11 @@ void CSelectPlaylistDlg::OnPlaylistFixPathError()
 
 void CSelectPlaylistDlg::OnPlaylistBrowseFile()
 {
-    if (LeftSelectValid())
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
     {
         CString str;
-        str.Format(_T("/select,\"%s\""), GetSelectedPlaylist().path.c_str());
+        str.Format(_T("/select,\"%s\""), list_item.path.c_str());
         ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
     }
 }
@@ -711,25 +622,15 @@ void CSelectPlaylistDlg::OnPlaylistBrowseFile()
 
 void CSelectPlaylistDlg::OnRemoveFromPlaylist()
 {
-    if (LeftSelectValid())
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
     {
         vector<SongInfo> songs_selected;
         GetSongsSelected(songs_selected);
         CMusicPlayerCmdHelper helper;
-        if (helper.OnRemoveFromPlaylist(GetSelectedPlaylist(), songs_selected))
+        if (helper.OnRemoveFromPlaylist(list_item, songs_selected))
         {
             ShowSongList();
-            if (!m_searched)
-            {
-                m_playlist_ctrl.SetCurSel(m_list_cache.playing_index());
-                m_playlist_ctrl.EnsureVisible(m_list_cache.playing_index(), FALSE);
-                LeftListClicked(m_list_cache.playing_index());
-            }
-            else
-            {
-                m_playlist_ctrl.SetCurSel(-1);
-                LeftListClicked(-1);
-            }
         }
     }
 }
@@ -759,7 +660,6 @@ void CSelectPlaylistDlg::OnLibPlaylistSortRecentPlayed()
         ShowPathList();
         m_playlist_ctrl.SetCurSel(-1);
         LeftListClicked(-1);
-        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
 }
 
@@ -771,7 +671,6 @@ void CSelectPlaylistDlg::OnLibPlaylistSortRecentCreated()
         ShowPathList();
         m_playlist_ctrl.SetCurSel(-1);
         LeftListClicked(-1);
-        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
 }
 
@@ -783,12 +682,15 @@ void CSelectPlaylistDlg::OnLibPlaylistSortName()
         ShowPathList();
         m_playlist_ctrl.SetCurSel(-1);
         LeftListClicked(-1);
-        theApp.m_pMainWnd->SendMessage(WM_INIT_ADD_TO_MENU);
     }
 }
 
 void CSelectPlaylistDlg::OnLibPlaylistProperties()
 {
-    CPlaylistPropertiesDlg dlg(GetSelectedPlaylist());
-    dlg.DoModal();
+    ListItem list_item = m_list_search_cache.GetItem(m_left_selected_item);
+    if (!list_item.empty())
+    {
+        CPlaylistPropertiesDlg dlg(list_item);
+        dlg.DoModal();
+    }
 }
