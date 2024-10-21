@@ -17,8 +17,7 @@ public:
         ST_MAX,
     };
 
-    // allow_un_safe为false时使用ASSERT限制小写方法的调用在同一线程（Release时无效）
-    CListCache(SubsetType type, bool allow_un_safe = false);
+    CListCache(SubsetType type);
     ~CListCache();
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,8 +55,6 @@ private:
 private:
     // 在构造时确定，表示此对象用来缓存哪个列表集合
     const SubsetType m_type;
-    // 断言小写方法仅限此ID线程调用
-    DWORD m_ui_thread_id{};
     // 约定m_ui_开头的成员变量只允许小写的成员方法访问
     vector<ListItem> m_ui_list;
     int m_ui_current_play_index{ -1 };

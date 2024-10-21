@@ -1836,7 +1836,7 @@ int UiElement::Playlist::GetRowCount()
     return song_num;
 }
 
-CListCache UiElement::RecentPlayedList::m_list_cache(CListCache::SubsetType::ST_RECENT, true);
+CListCache UiElement::RecentPlayedList::m_list_cache(CListCache::SubsetType::ST_RECENT);
 
 void UiElement::RecentPlayedList::Draw()
 {
@@ -2260,7 +2260,7 @@ void UiElement::NavigationBar::FindStackElement()
     }
 }
 
-CListCache UiElement::MediaLibFolder::m_list_cache(CListCache::SubsetType::ST_FOLDER, true);
+CListCache UiElement::MediaLibFolder::m_list_cache(CListCache::SubsetType::ST_FOLDER);
 
 void UiElement::MediaLibFolder::Draw()
 {
@@ -2377,7 +2377,7 @@ void UiElement::MediaLibFolder::OnHoverButtonClicked(int btn_index, int row)
     }
 }
 
-CListCache UiElement::MediaLibPlaylist::m_list_cache(CListCache::SubsetType::ST_PLAYLIST, true);
+CListCache UiElement::MediaLibPlaylist::m_list_cache(CListCache::SubsetType::ST_PLAYLIST);
 
 void UiElement::MediaLibPlaylist::Draw()
 {

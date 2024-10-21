@@ -4,20 +4,12 @@
 #include "Common.h"
 
 
-CListCache::CListCache(SubsetType type, bool allow_un_safe) : m_type(type)
-{
-    if (!allow_un_safe)
-        m_ui_thread_id = 1;
-}
+CListCache::CListCache(SubsetType type) : m_type(type) {}
 
 CListCache::~CListCache() {}
 
 bool CListCache::reload()
 {
-    if (m_ui_thread_id == 1)    // 记住第一次调用的线程ID
-        m_ui_thread_id = GetCurrentThreadId();
-    ASSERT(m_ui_thread_id == 0 || m_ui_thread_id == GetCurrentThreadId());
-
     // 如果m_ver没变则返回false表示CRecentList数据没有变化
     if (m_ui_ver == CRecentList::m_instance.m_ver)
         return false;
@@ -44,19 +36,16 @@ bool CListCache::reload()
 
 size_t CListCache::size() const
 {
-    ASSERT(m_ui_thread_id == 0 || m_ui_thread_id == GetCurrentThreadId());
     return m_ui_list.size();
 }
 
 const ListItem& CListCache::at(size_t index) const
 {
-    ASSERT(m_ui_thread_id == 0 || m_ui_thread_id == GetCurrentThreadId());
     return m_ui_list.at(index);
 }
 
 int CListCache::playing_index() const
 {
-    ASSERT(m_ui_thread_id == 0 || m_ui_thread_id == GetCurrentThreadId());
     return m_ui_current_play_index;
 }
 
