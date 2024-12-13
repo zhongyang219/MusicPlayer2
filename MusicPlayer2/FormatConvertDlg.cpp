@@ -858,14 +858,11 @@ void CFormatConvertDlg::OnAddFile()
     //显示打开文件对话框
     if (IDOK == fileDlg.DoModal())
     {
-        wchar_t* pos = buffer.data();
-        wchar_t* end = pos + buffer.size();
-        while (pos < end && *pos != L'\0')
+        POSITION posFile = fileDlg.GetStartPosition();
+        while (posFile != NULL)
         {
-            wstring file_name(pos);
-            // 将指针移动到下一个文件名的起始位置
-            pos += file_name.size() + 1;
-            m_file_list.push_back(SongInfo(file_name));
+            CString file_path = fileDlg.GetNextPathName(posFile);
+            m_file_list.push_back(SongInfo(file_path.GetString()));
         }
         // 音频文件信息更新到媒体库，并解析cue，(对于大量不存在于媒体库的新文件此方法很慢)
         int cnt{}, percent{};
