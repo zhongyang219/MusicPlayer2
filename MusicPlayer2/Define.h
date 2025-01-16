@@ -29,7 +29,8 @@ using std::map;
 using std::pair;
 
 //用于BASS音频库的支持
-#include"bass.h"
+#include "bass.h"
+#include "bass_fx.h"
 //#ifdef _M_X64
 //#pragma comment(lib,"bass_x64.lib")
 //#else

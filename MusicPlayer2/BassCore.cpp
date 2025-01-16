@@ -331,9 +331,9 @@ void CBassCore::Open(const wchar_t * file_path)
 
     m_file_path = file_path;
     if (CCommon::IsURL(m_file_path))
-        m_musicStream = BASS_StreamCreateURL(file_path, 0, BASS_SAMPLE_FLOAT, NULL, NULL);
+        m_musicStream = BASS_StreamCreateURL(file_path, 0, BASS_SAMPLE_FLOAT | BASS_STREAM_DECODE, NULL, NULL);
     else
-        m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, BASS_SAMPLE_FLOAT);
+        m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, BASS_SAMPLE_FLOAT | BASS_STREAM_DECODE);
     BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
     m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
     if (m_bass_midi_lib.IsSucceed() && m_is_midi && m_sfont.font != 0)
@@ -358,7 +358,7 @@ void CBassCore::Open(const wchar_t * file_path)
         m_midi_lyric.midi_no_lyric = true;
     }
     SetFXHandle();
-    BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_FREQ, &m_freq);
+    m_musicStream = BASS_FX_TempoCreate(m_musicStream, BASS_FX_FREESOURCE);
 }
 
 void CBassCore::Close()
@@ -454,11 +454,10 @@ void CBassCore::SetVolume(int vol)
 
 void CBassCore::SetSpeed(float speed)
 {
-    float freq;
     if (std::fabs(speed) < 0.01 || std::fabs(speed - 1) < 0.01 || speed < MIN_PLAY_SPEED || speed > MAX_PLAY_SPEED)
-        speed = 0;
-    freq = m_freq * speed;
-    BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_FREQ, freq);
+        speed = 1;
+    float tempo = (speed - 1) * 100;
+    BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_TEMPO, tempo);
 }
 
 bool CBassCore::SongIsOver()

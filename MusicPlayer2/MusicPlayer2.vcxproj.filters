@@ -939,6 +939,9 @@
     <ClInclude Include="UiSearchBox.h">
       <Filter>对话框类\UiSearchBox</Filter>
     </ClInclude>
+    <ClInclude Include="bass_fx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
