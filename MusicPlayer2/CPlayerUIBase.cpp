@@ -1043,8 +1043,6 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
         wchar_t sign = pitch > 0 ? L'+' : L'-';
         swprintf_s(buff, L"K%c%d", sign, std::abs(pitch));
         tag_str = buff;
-        if (!tag_str.empty() && tag_str.back() == L'0')
-            tag_str.pop_back();
         available_width = rect.right - rc_tmp.right;
         if (available_width >= DPI(50))
         {
