@@ -1035,6 +1035,26 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
         }
     }
 
+    // 绘制播放变调
+    if (CPlayer::GetInstance().GetPitch() != 0)
+    {
+        wchar_t buff[64];
+        int pitch = CPlayer::GetInstance().GetPitch();
+        wchar_t sign = pitch > 0 ? L'+' : L'-';
+        swprintf_s(buff, L"K%c%d", sign, std::abs(pitch));
+        tag_str = buff;
+        if (!tag_str.empty() && tag_str.back() == L'0')
+            tag_str.pop_back();
+        available_width = rect.right - rc_tmp.right;
+        if (available_width >= DPI(50))
+        {
+            int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
+            rc_tmp.MoveToX(rc_tmp.right + DPI(2));
+            rc_tmp.right = rc_tmp.left + width;
+            DrawPlayTag(rc_tmp, tag_str.c_str());
+        }
+    }
+
     //绘制文件名
     rc_tmp.MoveToX(rc_tmp.right + (tag_str.empty() ? 0 : DPI(4)));
     rc_tmp.right = rect.right;

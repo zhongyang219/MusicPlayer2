@@ -460,6 +460,9 @@ public:
     afx_msg void OnSpeedUp();
     afx_msg void OnSlowDown();
     afx_msg void OnOriginalSpeed();
+    afx_msg void OnPitchUp();
+    afx_msg void OnPitchDown();
+    afx_msg void OnOriginalPitch();
 protected:
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnInitAddToMenu(WPARAM wParam, LPARAM lParam);

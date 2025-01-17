@@ -460,6 +460,15 @@ void CBassCore::SetSpeed(float speed)
     BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_TEMPO, tempo);
 }
 
+void CBassCore::SetPitch(int pitch)
+{
+    if (pitch < MIN_PLAY_PITCH || pitch > MAX_PLAY_PITCH)
+    {
+        pitch = 0;
+    }
+    BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_TEMPO_PITCH, pitch);
+}
+
 bool CBassCore::SongIsOver()
 {
     DWORD state = BASS_ChannelIsActive(m_musicStream);

@@ -204,6 +204,10 @@ void CFfmpegCore::SetSpeed(float speed) {
     }
 }
 
+void CFfmpegCore::SetPitch(int pitch)
+{
+}
+
 bool CFfmpegCore::SongIsOver() {
     if (IsSucceed() && handle) {
         return ffmpeg_core_song_is_over(handle);

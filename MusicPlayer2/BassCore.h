@@ -32,6 +32,7 @@ public:
     virtual void Stop() override;
     virtual void SetVolume(int volume) override;
     virtual void SetSpeed(float speed) override;
+    virtual void SetPitch(int pitch) override;
     virtual bool SongIsOver() override;
 
     virtual int GetCurPosition() override;

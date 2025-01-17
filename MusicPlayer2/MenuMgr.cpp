@@ -385,6 +385,10 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_SLOW_DOWN), IconMgr::IconType::IT_Slow_Down);
         menu.AppendItem(EX_ID(ID_ORIGINAL_SPEED));
         menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_PITCH_UP));
+        menu.AppendItem(EX_ID(ID_PITCH_DOWN));
+        menu.AppendItem(EX_ID(ID_ORIGINAL_PITCH));
+        menu.AppendSeparator();
         menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu);
         menu.AppendSubMenu(MainPlayCtrlAbRepeatMenu);
         break;
