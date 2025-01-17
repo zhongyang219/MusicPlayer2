@@ -26,6 +26,18 @@ bool MediaTransControls::InitSMTC(bool enable)
     /// Windows 8.1 or later is required
     if (!CWinVersionHelper::IsWindows81OrLater())
         return false;
+    // 必须在开始菜单中创建一个快捷方式，才能在 SMTC 中显示 app 图标和名称，否则会显示“未知应用”
+    wstring programs_dir = CCommon::GetSpecialDir(CSIDL_PROGRAMS);
+    if (!programs_dir.empty())
+    {
+        wchar_t buff[MAX_PATH];
+        DWORD len = MAX_PATH;
+        // 获取 exe 物理路径，不能包含 Junction，如 scoop 创建的 current 目录，所以不能使用 GetModuleFileName
+        if (QueryFullProcessImageName(GetCurrentProcess(), 0, buff, &len))
+        {
+            CCommon::CreateFileShortcut(programs_dir.c_str(), buff, L"MusicPlayer2.lnk");
+        }
+    }
     auto ButtonCallback = [](SystemMediaTransportControlsButton type)
         {
             switch (type)
