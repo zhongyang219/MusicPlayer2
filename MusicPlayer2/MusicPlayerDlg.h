@@ -122,7 +122,7 @@ protected:
     bool m_searched;		//播放列表是否处于搜索状态
 
     unsigned int m_timer_count{};
-
+    unsigned int m_one_sec_timer_counter{};
 
     int m_item_selected{ -1 };		//播放列表中鼠标选中的项目
     vector<int> m_items_selected;
@@ -166,8 +166,7 @@ protected:
 
     CNotifyIcon m_notify_icon;
 
-    bool m_ignore_color_change{ false };    //当它为true时，不响应颜色变化，防止短时间内重复收到主题颜色变化的消息
-    enum { INGORE_COLOR_CHANGE_TIMER_ID = 1200 };
+    bool m_theme_color_changed{ false };
 
     CDevicesManager* devicesManager;
 

@@ -1401,6 +1401,7 @@ void CMusicPlayerDlg::ThemeColorChanged()
     {
         theApp.m_app_setting_data.theme_color.original_color = color;
         ApplyThemeColor();
+        TRACE("Theme color changed: %x\n", color);
     }
     m_ui_thread_para.ui_force_refresh = true;
 }
@@ -1994,7 +1995,7 @@ void CMusicPlayerDlg::LoadDefaultBackground()
         theApp.m_ui_data.default_background.Load((theApp.m_local_dir + DEFAULT_BACKGROUND_NAME).c_str());
     if (theApp.m_ui_data.default_background.IsNull())
         theApp.m_ui_data.default_background.LoadFromResource(AfxGetResourceHandle(), IDB_DEFAULT_COVER);
-}
+    }
 
 void CMusicPlayerDlg::SelectUi(int ui_selected)
 {
@@ -2602,6 +2603,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
     //响应1秒定时器
     else if (nIDEvent == TIMER_1_SEC)
     {
+        m_one_sec_timer_counter++;
         if (CPlayer::GetInstance().IsPlaying())
         {
             CPlayer::GetInstance().AddListenTime(1);
@@ -2623,15 +2625,23 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             }
         }
 
+        //响应主题颜色变化（两秒响应一次）
+        if (m_one_sec_timer_counter % 2 == 1 && m_theme_color_changed)
+        {
+            //响应主题颜色改变消息
+            ThemeColorChanged();
+
+            //如果设置了使用桌面背景为背景，则重新载入背景图片
+            if (theApp.m_app_setting_data.use_desktop_background)
+                LoadDefaultBackground();
+
+            //响应完成后重置标志
+            m_theme_color_changed = false;
+        }
+
         //每隔一秒保存一次统计的帧率
         theApp.m_fps = m_fps_cnt;
         m_fps_cnt = 0;
-    }
-
-    else if (nIDEvent == INGORE_COLOR_CHANGE_TIMER_ID)
-    {
-        KillTimer(INGORE_COLOR_CHANGE_TIMER_ID);
-        m_ignore_color_change = false;
     }
 
     else if (nIDEvent == CUserUi::SHOW_VOLUME_TIMER_ID)
@@ -4832,21 +4842,12 @@ void CMusicPlayerDlg::OnColorizationColorChanged(DWORD dwColorizationColor, BOOL
     // 此功能要求 Windows Vista 或更高版本。
     // _WIN32_WINNT 符号必须 >= 0x0600。
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-
-    if (!m_ignore_color_change)
+    static DWORD last_color;
+    if (last_color != dwColorizationColor)
     {
-        //响应主题颜色改变消息
-        ThemeColorChanged();
-
-        //如果设置了使用桌面背景为背景，则重新载入背景图片
-        if (theApp.m_app_setting_data.use_desktop_background)
-            LoadDefaultBackground();
-
-        //响应此消息后设置定时器，两秒内不再响应此消息
-        m_ignore_color_change = true;
-        SetTimer(INGORE_COLOR_CHANGE_TIMER_ID, 2000, NULL);
+        last_color = dwColorizationColor;
+        m_theme_color_changed = true;
     }
-
 
     CMainDialogBase::OnColorizationColorChanged(dwColorizationColor, bOpacity);
 }
