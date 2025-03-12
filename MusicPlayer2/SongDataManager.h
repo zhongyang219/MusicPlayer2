@@ -41,7 +41,8 @@ public:
     bool IsItemExist(const SongKey& key) const;
     void AddItem(const SongInfo& song);
     bool RemoveItem(const SongKey& key);
-    int RemoveItemIf(std::function<bool(const SongInfo&)>& fun_condition);       //删除符合条件的项目，返回已删除个数
+    // 删除符合条件的项目，返回已删除个数
+    int RemoveItemIf(std::function<bool(const SongInfo&)> fun_condition);
 
     void ClearPlayTime();       //清除播放时间统计数据
     void ClearLastPlayedTime();     //清除上次播放时间

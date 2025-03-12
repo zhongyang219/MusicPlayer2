@@ -3,11 +3,11 @@
 #include "MusicPlayer2.h"
 #include "MusicPlayerDlg.h"
 #include "SongInfoHelper.h"
-#include "RecentFolderAndPlaylist.h"
 #include "UiMediaLibItemMgr.h"
 #include "UserUi.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UIWindowCmdHelper.h"
+#include "CRecentList.h"
 #include <stack>
 #include "UiSearchBox.h"
 
@@ -1836,25 +1836,25 @@ int UiElement::Playlist::GetRowCount()
     return song_num;
 }
 
+CListCache UiElement::RecentPlayedList::m_list_cache(LT_RECENT);
+
+void UiElement::RecentPlayedList::Draw()
+{
+    m_list_cache.reload();
+    ListElement::Draw();
+}
+
 std::wstring UiElement::RecentPlayedList::GetItemText(int row, int col)
 {
     if (row >= 0 && row < GetRowCount())
     {
         if (col == COL_NAME)
         {
-            std::wstring name;
-            CRecentFolderAndPlaylist::Instance().GetItem(row, [&](const CRecentFolderAndPlaylist::Item& item) {
-                name = item.GetName();
-            });
-            return name;
+            return m_list_cache.at(row).GetDisplayName();
         }
         else if (col == COL_COUNT)
         {
-            int track_num{};
-            CRecentFolderAndPlaylist::Instance().GetItem(row, [&](const CRecentFolderAndPlaylist::Item& item) {
-                track_num = item.GetTrackNum();
-            });
-            return std::to_wstring(track_num);
+            return std::to_wstring(m_list_cache.at(row).total_num);
         }
     }
     return std::wstring();
@@ -1862,7 +1862,7 @@ std::wstring UiElement::RecentPlayedList::GetItemText(int row, int col)
 
 int UiElement::RecentPlayedList::GetRowCount()
 {
-    return CRecentFolderAndPlaylist::Instance().GetSize();
+    return m_list_cache.size();
 }
 
 int UiElement::RecentPlayedList::GetColumnCount()
@@ -1889,11 +1889,7 @@ IconMgr::IconType UiElement::RecentPlayedList::GetIcon(int row)
 {
     if (row >= 0 && row < GetRowCount())
     {
-        IconMgr::IconType icon{ IconMgr::IT_NO_ICON };
-        CRecentFolderAndPlaylist::Instance().GetItem(row, [&](const CRecentFolderAndPlaylist::Item& item) {
-            icon = item.GetIcon();
-        });
-        return icon;
+        return m_list_cache.at(row).GetTypeIcon();
     }
     return IconMgr::IT_NO_ICON;
 }
@@ -1905,8 +1901,9 @@ bool UiElement::RecentPlayedList::HasIcon()
 
 void UiElement::RecentPlayedList::OnDoubleClicked()
 {
+    int sel_index = GetItemSelected();
     CMusicPlayerCmdHelper helper;
-    helper.OnRecentItemSelected(GetItemSelected(), true);
+    helper.OnListItemSelected(m_list_cache.GetItem(sel_index), true);
 }
 
 CMenu* UiElement::RecentPlayedList::GetContextMenu(bool item_selected)
@@ -1951,7 +1948,7 @@ void UiElement::RecentPlayedList::OnHoverButtonClicked(int btn_index, int row)
         if (row >= 0 && row < GetRowCount())
         {
             CMusicPlayerCmdHelper helper;
-            helper.OnRecentItemSelected(row, true);
+            helper.OnListItemSelected(m_list_cache.GetItem(row), true);
         }
     }
 }
@@ -2037,7 +2034,8 @@ void UiElement::MediaLibItemList::OnDoubleClicked()
     {
         std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
         CMusicPlayerCmdHelper helper;
-        helper.OnMediaLibItemSelected(type, item_name, true);
+        ListItem list_item{ LT_MEDIA_LIB, item_name, type };
+        helper.OnListItemSelected(list_item, true);
     }
 }
 
@@ -2082,7 +2080,8 @@ void UiElement::MediaLibItemList::OnHoverButtonClicked(int btn_index, int row)
         {
             std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
             CMusicPlayerCmdHelper helper;
-            helper.OnMediaLibItemSelected(type, item_name, true);
+            ListItem list_item{ LT_MEDIA_LIB, item_name, type };
+            helper.OnListItemSelected(list_item, true);
         }
     }
     //点击了“添加到播放列表”按钮
@@ -2093,8 +2092,11 @@ void UiElement::MediaLibItemList::OnHoverButtonClicked(int btn_index, int row)
     }
 }
 
+CListCache UiElement::PlaylistIndicator::m_list_cache(LT_CURRENT);
+
 void UiElement::PlaylistIndicator::Draw()
 {
+    m_list_cache.reload();
     CalculateRect();
     ui->DrawCurrentPlaylistIndicator(rect, this);
     Element::Draw();
@@ -2258,30 +2260,30 @@ void UiElement::NavigationBar::FindStackElement()
     }
 }
 
+CListCache UiElement::MediaLibFolder::m_list_cache(LT_FOLDER);
+
+void UiElement::MediaLibFolder::Draw()
+{
+    m_list_cache.reload();
+    ListElement::Draw();
+}
+
 std::wstring UiElement::MediaLibFolder::GetItemText(int row, int col)
 {
     if (col == COL_NAME)
     {
-        wstring text;
-        CRecentFolderMgr::Instance().GetItem(row, [&](const PathInfo& path_info) {
-            text = path_info.path;
-        });
-        return text;
+        return m_list_cache.at(row).path;
     }
     else if (col == COL_COUNT)
     {
-        int track_num;
-        CRecentFolderMgr::Instance().GetItem(row, [&](const PathInfo& path_info) {
-            track_num = path_info.track_num;
-        });
-        return std::to_wstring(track_num);
+        return std::to_wstring(m_list_cache.at(row).total_num);
     }
     return std::wstring();
 }
 
 int UiElement::MediaLibFolder::GetRowCount()
 {
-    return CRecentFolderMgr::Instance().GetItemSize();
+    return m_list_cache.size();
 }
 
 int UiElement::MediaLibFolder::GetColumnCount()
@@ -2301,10 +2303,7 @@ int UiElement::MediaLibFolder::GetColumnWidth(int col, int total_width)
 
 int UiElement::MediaLibFolder::GetHighlightRow()
 {
-    if (CPlayer::GetInstance().IsFolderMode())
-        return CRecentFolderMgr::Instance().GetCurrentPlaylistIndex();
-    else
-        return -1;
+    return m_list_cache.playing_index();
 }
 
 int UiElement::MediaLibFolder::GetColumnScrollTextWhenSelected()
@@ -2322,9 +2321,9 @@ void UiElement::MediaLibFolder::OnDoubleClicked()
     int item_selected = GetItemSelected();
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
-        const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(item_selected) };
+        ListItem list_item = m_list_cache.GetItem(item_selected);
         CMusicPlayerCmdHelper helper;
-        helper.OnFolderSelected(path_info, true);
+        helper.OnListItemSelected(list_item, true);
     }
 }
 
@@ -2360,15 +2359,14 @@ std::wstring UiElement::MediaLibFolder::GetHoverButtonTooltip(int index, int row
 
 void UiElement::MediaLibFolder::OnHoverButtonClicked(int btn_index, int row)
 {
-    CMusicPlayerCmdHelper helper;
     //点击了“播放”按钮
-    if (btn_index == 0)
+    if (btn_index == BTN_PLAY)
     {
         if (row >= 0 && row < GetRowCount())
         {
-            const PathInfo& path_info{ CRecentFolderMgr::Instance().GetItem(row) };
+            ListItem list_item = m_list_cache.GetItem(row);
             CMusicPlayerCmdHelper helper;
-            helper.OnFolderSelected(path_info, true);
+            helper.OnListItemSelected(list_item, true);
         }
     }
     //点击了“添加到播放列表”按钮
@@ -2379,30 +2377,30 @@ void UiElement::MediaLibFolder::OnHoverButtonClicked(int btn_index, int row)
     }
 }
 
+CListCache UiElement::MediaLibPlaylist::m_list_cache(LT_PLAYLIST);
+
+void UiElement::MediaLibPlaylist::Draw()
+{
+    m_list_cache.reload();
+    ListElement::Draw();
+}
+
 std::wstring UiElement::MediaLibPlaylist::GetItemText(int row, int col)
 {
     if (col == COL_NAME)
     {
-        wstring text;
-        CPlaylistMgr::Instance().GetPlaylistInfo(row, [&](const PlaylistInfo& playlist_info) {
-            text = playlist_info.path;
-        });
-        return CPlaylistMgr::Instance().GetPlaylistDisplayName(text);
+        return m_list_cache.at(row).GetDisplayName();
     }
     else if (col == COL_COUNT)
     {
-        int track_num{};
-        CPlaylistMgr::Instance().GetPlaylistInfo(row, [&](const PlaylistInfo& playlist_info) {
-            track_num = playlist_info.track_num;;
-        });
-        return std::to_wstring(track_num);
+        return std::to_wstring(m_list_cache.at(row).total_num);
     }
     return std::wstring();
 }
 
 int UiElement::MediaLibPlaylist::GetRowCount()
 {
-    return CPlaylistMgr::Instance().GetPlaylistNum();
+    return m_list_cache.size();
 }
 
 int UiElement::MediaLibPlaylist::GetColumnCount()
@@ -2422,11 +2420,7 @@ int UiElement::MediaLibPlaylist::GetColumnWidth(int col, int total_width)
 
 int UiElement::MediaLibPlaylist::GetHighlightRow()
 {
-    if (CPlayer::GetInstance().IsPlaylistMode())
-    {
-        return CPlaylistMgr::Instance().GetCurrentPlaylistIndex();
-    }
-    return -1;
+    return m_list_cache.playing_index();
 }
 
 int UiElement::MediaLibPlaylist::GetColumnScrollTextWhenSelected()
@@ -2442,17 +2436,11 @@ CMenu* UiElement::MediaLibPlaylist::GetContextMenu(bool item_selected)
 void UiElement::MediaLibPlaylist::OnDoubleClicked()
 {
     int item_selected = GetItemSelected();
-    if (item_selected >= 0 && item_selected < GetRowCount())
+    ListItem list_item = m_list_cache.GetItem(item_selected);
+    if (!list_item.empty())
     {
-        PlaylistInfo info;
-        CPlaylistMgr::Instance().GetPlaylistInfo(item_selected, [&](const PlaylistInfo& playlist_info) {
-            info = playlist_info;
-        });
-        if (!info.path.empty())
-        {
-            CMusicPlayerCmdHelper helper;
-            helper.OnPlaylistSelected(info, true);
-        }
+        CMusicPlayerCmdHelper helper;
+        helper.OnListItemSelected(list_item, true);
     }
 }
 
@@ -2482,21 +2470,14 @@ std::wstring UiElement::MediaLibPlaylist::GetHoverButtonTooltip(int index, int r
 
 void UiElement::MediaLibPlaylist::OnHoverButtonClicked(int btn_index, int row)
 {
-    CMusicPlayerCmdHelper helper;
     //点击了“播放”按钮
     if (btn_index == 0)
     {
-        if (row >= 0 && row < GetRowCount())
+        ListItem list_item = m_list_cache.GetItem(row);
+        if (!list_item.empty())
         {
-            PlaylistInfo info;
-            CPlaylistMgr::Instance().GetPlaylistInfo(row, [&](const PlaylistInfo& playlist_info) {
-                info = playlist_info;
-                });
-            if (!info.path.empty())
-            {
-                CMusicPlayerCmdHelper helper;
-                helper.OnPlaylistSelected(info, true);
-            }
+            CMusicPlayerCmdHelper helper;
+            helper.OnListItemSelected(list_item, true);
         }
     }
 }
@@ -2561,7 +2542,7 @@ int UiElement::MyFavouriteList::GetColumnWidth(int col, int total_width)
 
 int UiElement::MyFavouriteList::GetHighlightRow()
 {
-    if (CPlayer::GetInstance().IsPlaylistMode() && CPlaylistMgr::Instance().GetCurPlaylistType() == PT_FAVOURITE)
+    if (CRecentList::Instance().IsPlayingSpecPlaylist(CRecentList::PT_FAVOURITE))
     {
         return CPlayer::GetInstance().GetIndex();
     }
@@ -2588,7 +2569,8 @@ void UiElement::MyFavouriteList::OnDoubleClicked()
     if (item_selected >= 0 && item_selected < GetRowCount())
     {
         CMusicPlayerCmdHelper helper;
-        helper.OnPlayMyFavourite(item_selected);
+        SongInfo song_info{ CUiMyFavouriteItemMgr::Instance().GetSongInfo(item_selected) };
+        helper.OnPlayMyFavourite(song_info);
     }
 }
 
@@ -2642,7 +2624,8 @@ void UiElement::MyFavouriteList::OnHoverButtonClicked(int btn_index, int row)
         if (item_selected >= 0 && item_selected < GetRowCount())
         {
             CMusicPlayerCmdHelper helper;
-            helper.OnPlayMyFavourite(item_selected);
+            SongInfo song_info{ CUiMyFavouriteItemMgr::Instance().GetSongInfo(item_selected) };
+            helper.OnPlayMyFavourite(song_info);
         }
     }
     //点击了“添加到播放列表”按钮

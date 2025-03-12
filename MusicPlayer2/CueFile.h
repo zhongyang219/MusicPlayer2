@@ -9,6 +9,8 @@ public:
     CCueFile();
     ~CCueFile();
 
+    // 使用移动语义覆盖参数song_list，调用后此CCueFile对象不再可用
+    void MoveToSongList(vector<SongInfo>& song_list);
     std::vector<SongInfo>& GetAnalysisResult();
 
     //将所有cue音轨保存到cue文件
@@ -23,8 +25,6 @@ public:
 
 private:
     void DoAnalysis();
-    Time PhaseIndex(size_t pos);
-    std::string TimeToString(const Time& pos);
     static wstring GetCommand(const wstring& str_contents, const wstring& str, size_t pos = 0);
 
     //查找str_contents中的所有属性，并添加到property_map中

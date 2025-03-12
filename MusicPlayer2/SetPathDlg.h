@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "Common.h"
-#include "RecentFolderMgr.h"
 #include "ListCtrlEx.h"
 #include "TabDlg.h"
 #include "SearchEditCtrl.h"
+#include "ListCache.h"
 
 // CSetPathDlg 对话框
 // #define WM_PATH_SELECTED (WM_USER+107) 不再使用
@@ -32,17 +32,17 @@ protected:
     wstring m_searched_str;
     vector<size_t> m_search_result;     // 储存快速搜索结果的歌曲序号
 
-    CListCtrlEx m_path_list;            // 列表对象，数据加载自m_path_list_info，搜索状态下经过m_search_result筛选
-    vector<PathInfo> m_path_list_info;  // 更新时复制自recent_path，因为无法确认recent_path修改时总能通知此窗口故使用复制保证与m_path_list的同步
-    int m_list_selected{};              // 选中的列表数据索引（搜索状态下不是m_path_list_info的索引）
+    CListCache m_list_cache;            // 缓存此窗口使用的所有ListItem
+    CListCtrlEx m_path_list;            // 列表对象，数据加载自m_list_cache，搜索状态下经过m_search_result筛选
+    int m_list_selected{};              // 选中的列表数据索引（搜索状态下不是m_list_cache的索引）
 
     CEdit m_path_name;
     CSearchEditCtrl m_search_edit;
 
     // 判断选择是否有效
     bool SelectValid() const;
-    // 获取选择的路径
-    PathInfo GetSelPath() const;
+    // 获取选择的项目
+    const ListItem& GetSelPath() const;
     // 返回当前选中GetSelPath()是否能够播放
     bool SelectedCanPlay() const;
     // 判断并设置“播放选中”按钮状态
@@ -51,7 +51,7 @@ protected:
     void ShowPathList();
     // 计算列宽
     void CalculateColumeWidth(vector<int>& width);
-    void SetListRowData(int index, const PathInfo& path_info);
+    void SetListRowData(int index, const ListItem& list_item);
 
     virtual void OnTabEntered() override;
     virtual bool InitializeControls() override;

@@ -2,6 +2,30 @@
 #include "CueFile.h"
 #include "FilePathHelper.h"
 
+// 毫秒->帧 以及 帧->毫秒 的转换是有损的，此方法执行四舍五入转换
+// 另外此处能够保证 帧->毫秒->帧 的连续转换是无损的，这使得重新生成cue时不会因舍入误差导致时间变动 
+// 也就是ms数是不允许改动的，也不应使用别处得来的，否则偏差会有些大
+
+static Time CueTime2Time(const wstring& time_str)
+{
+    int m{}, s{}, f{};
+    if (swscanf_s(time_str.c_str(), L"%d:%d:%d", &m, &s, &f) != 3)
+        return 0;
+    int ms = std::lround((f % 75) * 1000.0 / 75.0);
+    ms += (m * 60 + s) * 1000;
+    return Time(ms);
+}
+
+static string Time2CueTime(Time time)
+{
+    int ms = time.toInt();
+    int ff = std::lround((ms % 1000) * 75.0 / 1000.0);  // 如果ms不是CueTime2Ms产生的，这行有可能得到75
+    ff += ms / 1000 * 75;                               // 也就是可能需要处理进位，故不能直接将ms处理为分秒
+    char buff[16]{};
+    sprintf_s(buff, "%.2d:%.2d:%.2d", ff / 75 / 60, ff / 75 % 60, ff % 75);
+    return string(buff);
+}
+
 
 CCueFile::CCueFile(const std::wstring& file_path)
     : m_file_path(file_path)
@@ -23,6 +47,11 @@ CCueFile::CCueFile()
 
 CCueFile::~CCueFile()
 {
+}
+
+void CCueFile::MoveToSongList(vector<SongInfo>& song_list)
+{
+    song_list = std::move(m_result);
 }
 
 std::vector<SongInfo>& CCueFile::GetAnalysisResult()
@@ -101,8 +130,8 @@ bool CCueFile::Save(std::wstring file_path)
             {
                 Time pre_track_end_pos = m_result[index - 1].end_pos;
                 if (pre_track_end_pos != song.start_pos)
-                    file_stream << "    INDEX 00 " << TimeToString(pre_track_end_pos) << "\r\n";
-                file_stream << "    INDEX 01 " << TimeToString(song.start_pos) << "\r\n";
+                    file_stream << "    INDEX 00 " << Time2CueTime(pre_track_end_pos) << "\r\n";
+                file_stream << "    INDEX 01 " << Time2CueTime(song.start_pos) << "\r\n";
             }
         }
         //写入曲目标题
@@ -233,10 +262,10 @@ void CCueFile::DoAnalysis()
             size_t index00_pos{}, index01_pos{};
             index00_pos = m_file_content_wcs.find(L"INDEX 00", index_track + 6);
             index01_pos = m_file_content_wcs.find(L"INDEX 01", index_track + 6);
-            if (index00_pos < next_track_index)
-                time_index00 = PhaseIndex(index00_pos);
-            if (index01_pos < next_track_index)
-                time_index01 = PhaseIndex(index01_pos);
+            if (index00_pos < next_track_index && index00_pos + 16 < m_file_content_wcs.size())
+                time_index00 = CueTime2Time(m_file_content_wcs.substr(index00_pos + 9, 8));
+            if (index01_pos < next_track_index && index01_pos + 16 < m_file_content_wcs.size())
+                time_index01 = CueTime2Time(m_file_content_wcs.substr(index01_pos + 9, 8));
 
             song_info.start_pos = time_index01;
 
@@ -273,35 +302,6 @@ void CCueFile::DoAnalysis()
     {
         song_info.total_tracks = total_tracks;
     }
-}
-
-Time CCueFile::PhaseIndex(size_t pos)
-{
-    if (pos == wstring::npos)
-        return Time();
-
-    size_t index1 = m_file_content_wcs.find(L":", pos);
-    size_t index2 = m_file_content_wcs.rfind(L" ", index1);
-    wstring tmp;
-    Time time;
-    //获取分钟
-    tmp = m_file_content_wcs.substr(index2 + 1, index1 - index2 - 1);
-    time.min = _wtoi(tmp.c_str());
-    //获取秒钟
-    tmp = m_file_content_wcs.substr(index1 + 1, 2);
-    time.sec = _wtoi(tmp.c_str());
-    //获取毫秒
-    tmp = m_file_content_wcs.substr(index1 + 4, 2);
-    time.msec = _wtoi(tmp.c_str()) * 10;
-
-    return time;
-}
-
-std::string CCueFile::TimeToString(const Time& pos)
-{
-    char buff[64];
-    sprintf_s(buff, "%.2d:%.2d:%.2d", pos.min, pos.sec, pos.msec / 10);
-    return std::string(buff);
 }
 
 wstring CCueFile::GetCommand(const wstring& str_contents, const wstring& str, size_t pos)

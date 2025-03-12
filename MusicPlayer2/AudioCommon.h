@@ -25,29 +25,6 @@ enum AudioType
     AU_OTHER
 };
 
-//排序方式
-enum SortMode
-{
-    SM_U_FILE = 0,
-    SM_D_FILE,
-    SM_U_PATH,
-    SM_D_PATH,
-    SM_U_TITLE,
-    SM_D_TITLE,
-    SM_U_ARTIST,
-    SM_D_ARTIST,
-    SM_U_ALBUM,
-    SM_D_ALBUM,
-    SM_U_TRACK,
-    SM_D_TRACK,
-    SM_U_LISTEN,            // 累计播放时间 升序
-    SM_D_LISTEN,            // 累计播放时间 降序
-    SM_U_TIME,              // 修改日期 升序
-    SM_D_TIME,              // 修改日期 降序
-
-    SM_UNSORT = 100,        // 未排序（进入播放列表模式时总是设置为此排序方式，且不进行持久化）
-};
-
 
 // ID3v1 tag structure
 struct TAG_ID3V1
@@ -108,12 +85,12 @@ public:
     //根据一个文件扩展名判断音频类型的描述
     static wstring GetAudioDescriptionByExtension(wstring extension);
 
-    // 查找path目录下的所有音频文件，并将文件路径保存到容器中，并限定最大文件数为max_file
+    // 查找path目录下的所有音频文件，并将文件路径保存到容器中，并限定最大文件数为max_file (识别osu!的Songs文件夹)
     static void GetAudioFiles(wstring path, std::vector<SongInfo>& files, size_t max_file = 20000, bool include_sub_dir = false);
-    // 查找path目录下的所有音频文件，并将文件路径保存到容器中，并限定最大文件数为max_file
+    // 查找path目录下的所有音频文件，并将文件路径保存到容器中，并限定最大文件数为max_file (识别osu!的Songs文件夹)
     static void GetAudioFiles(wstring path, std::vector<std::wstring>& files, size_t max_file = 20000, bool include_sub_dir = false);
 
-    //判断一个目录下是否包含音频文件, 不识别osu!的Songs文件夹
+    //判断一个目录下是否包含音频文件 (对osu!的Songs文件夹返回true)
     static bool IsPathContainsAudioFile(std::wstring path, bool include_sub_dir = false);
 
     //查找path目录下的所有歌词文件，并将文件名保存到files容器中
@@ -166,6 +143,5 @@ public:
     static vector<wstring> m_all_surpported_extensions;		//全部支持的文件格式扩展名
 
 protected:
-    // 寻找并修复音频路径不正确的cue track，参数是一个cue的文件解析结果
-    static void FixErrorCueAudioPath(vector<SongInfo>& files);
+    static void CheckCueAudioPath(vector<SongInfo>& files);
 };

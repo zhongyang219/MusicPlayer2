@@ -336,9 +336,6 @@
     <Filter Include="公共的类\MediaTransControls">
       <UniqueIdentifier>{19366437-de30-4f2b-ac9e-b7593280367d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="功能逻辑类\RecentFolderAndPlaylist">
-      <UniqueIdentifier>{dc707968-ea88-4d72-bba2-1ea31a6b632c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="派生的控件类\MenuEditCtrl">
       <UniqueIdentifier>{66efee77-7ef4-4f48-84b0-9824bd3864fa}</UniqueIdentifier>
     </Filter>
@@ -396,9 +393,6 @@
     <Filter Include="公共的类\ChinesePingyinRes">
       <UniqueIdentifier>{66fcd09f-bfb4-43ed-9b9f-69a6eb0a32af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="功能逻辑类\RecentlyPlayedMgr">
-      <UniqueIdentifier>{4dbe9b2f-faf2-46dd-8583-24b0eff0b7fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="功能逻辑类\UiMediaLibItemMgr">
       <UniqueIdentifier>{0699c691-a3ac-4f77-952c-e57b1344ba5f}</UniqueIdentifier>
     </Filter>
@@ -407,6 +401,9 @@
     </Filter>
     <Filter Include="派生的控件类\FontDialogEx">
       <UniqueIdentifier>{93d51c6b-2246-43a7-9251-d30cbcde6d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="功能逻辑类\RecentList">
+      <UniqueIdentifier>{dc707968-ea88-4d72-bba2-1ea31a6b632c}</UniqueIdentifier>
     </Filter>
     <Filter Include="对话框类\UiSearchBox">
       <UniqueIdentifier>{9ad9ec41-d87b-446a-b551-36879fbdb950}</UniqueIdentifier>
@@ -651,9 +648,6 @@
     <ClInclude Include="CMediaLibDlg.h">
       <Filter>对话框类\媒体库对话框</Filter>
     </ClInclude>
-    <ClInclude Include="PlaylistMgr.h">
-      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
-    </ClInclude>
     <ClInclude Include="RegFileRelate.h">
       <Filter>功能逻辑类\RegFileRealte</Filter>
     </ClInclude>
@@ -828,9 +822,6 @@
     <ClInclude Include="MenuEditCtrl.h">
       <Filter>派生的控件类\MenuEditCtrl</Filter>
     </ClInclude>
-    <ClInclude Include="RecentFolderAndPlaylist.h">
-      <Filter>功能逻辑类\RecentFolderAndPlaylist</Filter>
-    </ClInclude>
     <ClInclude Include="UserUi.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
@@ -903,17 +894,11 @@
     <ClInclude Include="IconMgr.h">
       <Filter>功能逻辑类\IconMgr</Filter>
     </ClInclude>
-    <ClInclude Include="MediaLibPlaylistMgr.h">
-      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
-    </ClInclude>
     <ClInclude Include="MoreRecentItemDlg.h">
       <Filter>对话框类\MoreRecentItemDlg</Filter>
     </ClInclude>
     <ClInclude Include="ChinesePingyinRes.h">
       <Filter>公共的类\ChinesePingyinRes</Filter>
-    </ClInclude>
-    <ClInclude Include="RecentFolderMgr.h">
-      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClInclude>
     <ClInclude Include="UiMediaLibItemMgr.h">
       <Filter>功能逻辑类\UiMediaLibItemMgr</Filter>
@@ -935,6 +920,15 @@
     </ClInclude>
     <ClInclude Include="FontDialogEx.h">
       <Filter>派生的控件类\FontDialogEx</Filter>
+    </ClInclude>
+    <ClInclude Include="CRecentList.h">
+      <Filter>功能逻辑类\RecentList</Filter>
+    </ClInclude>
+    <ClInclude Include="ListCache.h">
+      <Filter>功能逻辑类\RecentList</Filter>
+    </ClInclude>
+    <ClInclude Include="ListItem.h">
+      <Filter>功能逻辑类\RecentList</Filter>
     </ClInclude>
     <ClInclude Include="UiSearchBox.h">
       <Filter>对话框类\UiSearchBox</Filter>
@@ -1151,9 +1145,6 @@
     <ClCompile Include="CMediaLibDlg.cpp">
       <Filter>对话框类\媒体库对话框</Filter>
     </ClCompile>
-    <ClCompile Include="PlaylistMgr.cpp">
-      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
-    </ClCompile>
     <ClCompile Include="RegFileRelate.cpp">
       <Filter>功能逻辑类\RegFileRealte</Filter>
     </ClCompile>
@@ -1319,9 +1310,6 @@
     <ClCompile Include="MenuEditCtrl.cpp">
       <Filter>派生的控件类\MenuEditCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="RecentFolderAndPlaylist.cpp">
-      <Filter>功能逻辑类\RecentFolderAndPlaylist</Filter>
-    </ClCompile>
     <ClCompile Include="UserUi.cpp">
       <Filter>PlayerUI</Filter>
     </ClCompile>
@@ -1397,17 +1385,11 @@
     <ClCompile Include="IconMgr.cpp">
       <Filter>功能逻辑类\IconMgr</Filter>
     </ClCompile>
-    <ClCompile Include="MediaLibPlaylistMgr.cpp">
-      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
-    </ClCompile>
     <ClCompile Include="MoreRecentItemDlg.cpp">
       <Filter>对话框类\MoreRecentItemDlg</Filter>
     </ClCompile>
     <ClCompile Include="ChinesePingyinRes.cpp">
       <Filter>公共的类\ChinesePingyinRes</Filter>
-    </ClCompile>
-    <ClCompile Include="RecentFolderMgr.cpp">
-      <Filter>功能逻辑类\RecentlyPlayedMgr</Filter>
     </ClCompile>
     <ClCompile Include="UiMediaLibItemMgr.cpp">
       <Filter>功能逻辑类\UiMediaLibItemMgr</Filter>
@@ -1429,6 +1411,15 @@
     </ClCompile>
     <ClCompile Include="FontDialogEx.cpp">
       <Filter>派生的控件类\FontDialogEx</Filter>
+    </ClCompile>
+    <ClCompile Include="CRecentList.cpp">
+      <Filter>功能逻辑类\RecentList</Filter>
+    </ClCompile>
+    <ClCompile Include="ListCache.cpp">
+      <Filter>功能逻辑类\RecentList</Filter>
+    </ClCompile>
+    <ClCompile Include="ListItem.cpp">
+      <Filter>功能逻辑类\RecentList</Filter>
     </ClCompile>
     <ClCompile Include="UiSearchBox.cpp">
       <Filter>对话框类\UiSearchBox</Filter>

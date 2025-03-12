@@ -48,7 +48,7 @@ void CMediaClassifyDlg::RefreshData()
 bool CMediaClassifyDlg::SetLeftListSel(wstring item)
 {
     int list_size = static_cast<int>(m_list_data_left.size());
-    item = CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(m_type, item);  // 将空item转换为用于显示的<未知xxx>
+    item = ListItem(LT_MEDIA_LIB, item, m_type).GetDisplayName();   // 将空item转换为用于显示的<未知xxx>
     //遍历左侧列表，寻找匹配匹配的项目
     for (int i = 0; i < list_size; i++)
     {
@@ -655,38 +655,22 @@ void CMediaClassifyDlg::OnHdnItemclickSongList(NMHDR* pNMHDR, LRESULT* pResult)
             auto iter = media_list.find(m_classify_selected);
             if (iter != media_list.end())
             {
+                SortMode sort_mode = SM_UNSORT;
                 switch (phdr->iItem)
                 {
-                case CMediaClassifyDlg::COL_TITLE:
-                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByTitle : SongInfo::ByTitleDecending));
+                case CMediaClassifyDlg::COL_TITLE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+                case CMediaClassifyDlg::COL_ARTIST: sort_mode = ascending ? SM_U_ARTIST : SM_D_ARTIST; break;
+                case CMediaClassifyDlg::COL_ALBUM: sort_mode = ascending ? SM_U_ALBUM : SM_D_ALBUM; break;
+                case CMediaClassifyDlg::COL_TRACK: sort_mode = ascending ? SM_U_TRACK : SM_D_TRACK; break;
+                case CMediaClassifyDlg::COL_GENRE: sort_mode = ascending ? SM_U_GENRE : SM_D_GENRE; break;
+                case CMediaClassifyDlg::COL_BITRATE: sort_mode = ascending ? SM_U_BITRATE : SM_D_BITRATE; break;
+                case CMediaClassifyDlg::COL_PATH: sort_mode = ascending ? SM_U_PATH : SM_D_PATH; break;
+                default: break;
+                }
+                if (sort_mode != SM_UNSORT)
+                {
+                    std::sort(iter->second.begin(), iter->second.end(), SongInfo::GetSortFunc(sort_mode));
                     ShowSongList();
-                    break;
-                case CMediaClassifyDlg::COL_ARTIST:
-                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByArtist : SongInfo::ByArtistDecending));
-                    ShowSongList();
-                    break;
-                case CMediaClassifyDlg::COL_ALBUM:
-                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByAlbum : SongInfo::ByAlbumDecending));
-                    ShowSongList();
-                    break;
-                case CMediaClassifyDlg::COL_TRACK:
-                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByTrack : SongInfo::ByTrackDecending));
-                    ShowSongList();
-                    break;
-                case CMediaClassifyDlg::COL_GENRE:
-                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByGenre : SongInfo::ByGenreDecending));
-                    ShowSongList();
-                    break;
-                case CMediaClassifyDlg::COL_BITRATE:
-                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByBitrate : SongInfo::ByBitrateDecending));
-                    ShowSongList();
-                    break;
-                case CMediaClassifyDlg::COL_PATH:
-                    std::sort(iter->second.begin(), iter->second.end(), (ascending ? SongInfo::ByPath : SongInfo::ByPathDecending));
-                    ShowSongList();
-                    break;
-                default:
-                    break;
                 }
             }
         }

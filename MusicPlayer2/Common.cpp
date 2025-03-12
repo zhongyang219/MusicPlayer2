@@ -89,8 +89,25 @@ bool CCommon::GetFileLastModified(const wstring& file_path, unsigned __int64& mo
     return false;
 }
 
+bool CCommon::GetFileCreateTime(const wstring& file_path, unsigned __int64& create_time)
+{
+    // 使用GetFileAttributesEx，耗时大约为FindFirstFile的2/3
+    WIN32_FILE_ATTRIBUTE_DATA file_attributes;
+    if (GetFileAttributesEx(file_path.c_str(), GetFileExInfoStandard, &file_attributes))
+    {
+        ULARGE_INTEGER time{};
+        time.HighPart = file_attributes.ftCreationTime.dwHighDateTime;
+        time.LowPart = file_attributes.ftCreationTime.dwLowDateTime;
+        create_time = time.QuadPart;
+        return true;
+    }
+    return false;
+}
+
 time_t CCommon::FileTimeToTimeT(unsigned __int64 file_time)
 {
+    if (file_time == 0)
+        return 0;
     // 1601年到1970年之间的时间间隔，以100纳秒为单位
     const ULONGLONG epochDelta = 116444736000000000ULL;
 
@@ -1644,9 +1661,10 @@ const char* CCommon::GetFileContent(const wchar_t* file_path, size_t& length)
 bool CCommon::SaveDataToFile(const string& data, const wstring& file_path)
 {
     ofstream out_put{ file_path, std::ios::binary };
-    if (out_put.fail())
+    if (!out_put.is_open())
         return false;
-    out_put << data;
+    if (!data.empty())
+        out_put << data;
     out_put.close();
     return true;
 }

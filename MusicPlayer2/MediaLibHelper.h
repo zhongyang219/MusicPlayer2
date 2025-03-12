@@ -1,22 +1,13 @@
 ﻿#pragma once
 #include "SongInfo.h"
-#include "Common.h"
 
 #define STR_OTHER_CLASSIFY_TYPE L"eRk0Q6ov"
 
 //不区分大小写的字符串比较器
-class StringComparerNoCase
+struct StringComparerNoCase
 {
-public:
-    bool operator()(const std::wstring& a, const std::wstring& b) const
-    {
-        //std::wstring _a{ a }, _b{ b };
-        //CCommon::StringTransform(_a, false);
-        //CCommon::StringTransform(_b, false);
-        return CCommon::StringCompareInLocalLanguage(a, b, true) < 0;
-    }
+    bool operator()(const std::wstring& a, const std::wstring& b) const;
 };
-
 
 class CMediaClassifier
 {

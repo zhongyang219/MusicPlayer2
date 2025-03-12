@@ -33,9 +33,12 @@ public:
     wstring m_playlist_dir;     //播放列表目录
     wstring m_config_path;		//配置文件的路径
     wstring m_song_data_path;	//储存所有歌曲信息数据文件的路径
-    wstring m_recent_path_dat_path;	//"recent_path.dat"文件的路径
+    wstring m_recent_list_dat_path;                      // 存储 “最近播放列表”列表（std::list<ListItem>）的路径
+    // 以下三项不再使用，但路径留作旧版兼容，新程序不再创建这三个文件
+    wstring m_recent_path_dat_path;                      //"recent_path.dat"文件的路径
     wstring m_recent_playlist_data_path;
     wstring m_recent_medialib_playlist_path;
+
     wstring m_desktop_path;		//桌面的路径
     wstring m_module_path_reg;  //程序exe文件的路径
     //wstring m_temp_path;		//临时文件夹的路径

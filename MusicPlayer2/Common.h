@@ -61,7 +61,10 @@ public:
     // 判断文件是否存在，file为文件绝对路径，如果存在会更正文件名大小写到与实际文件一致
     static bool CheckAndFixFile(wstring& file);
 
+    // 读取文件的修改时间属性（FILETIME），返回文件是否存在
     static bool GetFileLastModified(const wstring& file_path, unsigned __int64& modified_time);
+    // 读取文件的创建时间属性（FILETIME），返回文件是否存在
+    static bool GetFileCreateTime(const wstring& file_path, unsigned __int64& create_time);
 
     //将FILETIME表示的时间转换为time_t（自1970年1月1日以来的秒数）
     static time_t FileTimeToTimeT(unsigned __int64 file_time);

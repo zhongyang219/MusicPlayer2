@@ -252,6 +252,7 @@
     <ClInclude Include="CListenTimeStatisticsDlg.h" />
     <ClInclude Include="CMMNotificationClient.h" />
     <ClInclude Include="CommonDialogMgr.h" />
+    <ClInclude Include="CRecentList.h" />
     <ClInclude Include="CUIDrawer.h" />
     <ClInclude Include="CMainDialogBase.h" />
     <ClInclude Include="ColorStaticEx.h" />
@@ -270,13 +271,14 @@
     <ClInclude Include="IPropertyTabDlg.h" />
     <ClInclude Include="LastFM.h" />
     <ClInclude Include="LastFMDataArchive.h" />
+    <ClInclude Include="ListCache.h" />
+    <ClInclude Include="ListItem.h" />
     <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="MediaLibItemPropertiesDlg.h" />
     <ClInclude Include="PlaylistPropertiesDlg.h" />
     <ClInclude Include="SimplePropertiesDlg.h" />
     <ClInclude Include="UiMediaLibItemMgr.h" />
-    <ClInclude Include="MediaLibPlaylistMgr.h" />
     <ClInclude Include="MediaLibStatisticsDlg.h" />
     <ClInclude Include="MediaTransControls.h" />
     <ClInclude Include="MediaTransControlsImpl.h" />
@@ -288,8 +290,6 @@
     <ClInclude Include="PropertyAlbumCoverDlg.h" />
     <ClInclude Include="PropertyDlg.h" />
     <ClInclude Include="PropertyDlgHelper.h" />
-    <ClInclude Include="RecentFolderAndPlaylist.h" />
-    <ClInclude Include="RecentFolderMgr.h" />
     <ClInclude Include="RenameDlg.h" />
     <ClInclude Include="ScintillaEditView.h" />
     <ClInclude Include="SelectItemDlg.h" />
@@ -341,7 +341,6 @@
     <ClInclude Include="PlayerProgressBar.h" />
     <ClInclude Include="PlayerToolBar.h" />
     <ClInclude Include="Playlist.h" />
-    <ClInclude Include="PlaylistMgr.h" />
     <ClInclude Include="PlaySettingsDlg.h" />
     <ClInclude Include="GaussBlur.h" />
     <ClInclude Include="IniHelper.h" />
@@ -426,6 +425,7 @@
     <ClCompile Include="CMMNotificationClient.cpp" />
     <ClCompile Include="CommonData.cpp" />
     <ClCompile Include="CommonDialogMgr.cpp" />
+    <ClCompile Include="CRecentList.cpp" />
     <ClCompile Include="CUIDrawer.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />
     <ClCompile Include="ColorStaticEx.cpp" />
@@ -443,13 +443,14 @@
     <ClCompile Include="IconMgr.cpp" />
     <ClCompile Include="LastFM.cpp" />
     <ClCompile Include="LastFMDataArchive.cpp" />
+    <ClCompile Include="ListCache.cpp" />
+    <ClCompile Include="ListItem.cpp" />
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="MediaLibItemPropertiesDlg.cpp" />
     <ClCompile Include="PlaylistPropertiesDlg.cpp" />
     <ClCompile Include="SimplePropertiesDlg.cpp" />
     <ClCompile Include="UiMediaLibItemMgr.cpp" />
-    <ClCompile Include="MediaLibPlaylistMgr.cpp" />
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
     <ClCompile Include="MediaTransControls.cpp" />
     <ClCompile Include="MediaTransControlsImpl.cpp" />
@@ -461,8 +462,6 @@
     <ClCompile Include="PropertyAlbumCoverDlg.cpp" />
     <ClCompile Include="PropertyDlg.cpp" />
     <ClCompile Include="PropertyDlgHelper.cpp" />
-    <ClCompile Include="RecentFolderAndPlaylist.cpp" />
-    <ClCompile Include="RecentFolderMgr.cpp" />
     <ClCompile Include="RenameDlg.cpp" />
     <ClCompile Include="ScintillaEditView.cpp" />
     <ClCompile Include="SelectItemDlg.cpp" />
@@ -516,7 +515,6 @@
     <ClCompile Include="PlayerProgressBar.cpp" />
     <ClCompile Include="PlayerToolBar.cpp" />
     <ClCompile Include="Playlist.cpp" />
-    <ClCompile Include="PlaylistMgr.cpp" />
     <ClCompile Include="PlaySettingsDlg.cpp" />
     <ClCompile Include="GaussBlur.cpp" />
     <ClCompile Include="IniHelper.cpp" />

@@ -43,143 +43,6 @@ void SongInfo::SetChannelInfoAcquired(bool val)
     CCommon::SetNumberBit(flags, 3, val);
 }
 
-
-bool SongInfo::ByFileName(const SongInfo& a, const SongInfo& b)
-{
-    return CCommon::StringCompareInLocalLanguage(a.GetFileName(), b.GetFileName()) < 0;
-}
-
-bool SongInfo::ByFileNameDecending(const SongInfo& a, const SongInfo& b)
-{
-    return CCommon::StringCompareInLocalLanguage(a.GetFileName(), b.GetFileName()) > 0;
-}
-
-bool SongInfo::ByPath(const SongInfo& a, const SongInfo& b)
-{
-    return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) < 0;
-}
-
-bool SongInfo::ByPathDecending(const SongInfo& a, const SongInfo& b)
-{
-    return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) > 0;
-}
-
-bool SongInfo::ByTitle(const SongInfo& a, const SongInfo& b)
-{
-    return CCommon::StringCompareInLocalLanguage(a.title, b.title) < 0;
-}
-
-bool SongInfo::ByTitleDecending(const SongInfo& a, const SongInfo& b)
-{
-    return CCommon::StringCompareInLocalLanguage(a.title, b.title) > 0;
-}
-
-bool SongInfo::ByArtist(const SongInfo& a, const SongInfo& b)
-{
-    int compare_album = CCommon::StringCompareInLocalLanguage(a.album, b.album);
-    int compare_artist = CCommon::StringCompareInLocalLanguage(a.artist, b.artist);
-    if (compare_artist != 0)
-        return compare_artist < 0;
-    else if (compare_album != 0)
-        return compare_album < 0;
-    else return ByTrack(a, b);
-}
-
-bool SongInfo::ByArtistDecending(const SongInfo& a, const SongInfo& b)
-{
-    return ByArtist(b, a);
-}
-
-bool SongInfo::ByAlbum(const SongInfo& a, const SongInfo& b)
-{
-    int compare_album = CCommon::StringCompareInLocalLanguage(a.album, b.album);
-    int compare_artist = CCommon::StringCompareInLocalLanguage(a.artist, b.artist);
-    if (compare_album != 0)
-        return compare_album < 0;
-    else if (a.track != b.track || a.disc_num != b.disc_num)        //唱片集相同的情况下比较音轨号
-        return ByTrack(a, b);
-    else                                //音轨号仍然相同，比较艺术家
-        return compare_artist < 0;
-}
-
-bool SongInfo::ByAlbumDecending(const SongInfo& a, const SongInfo& b)
-{
-    return ByAlbum(b, a);
-}
-
-bool SongInfo::ByTrack(const SongInfo& a, const SongInfo& b)
-{
-    if (a.disc_num != b.disc_num)
-        return a.disc_num < b.disc_num;
-    else
-        return a.track < b.track;
-}
-
-bool SongInfo::ByTrackDecending(const SongInfo& a, const SongInfo& b)
-{
-    return ByTrack(b, a);
-}
-
-bool SongInfo::ByGenre(const SongInfo& a, const SongInfo& b)
-{
-    return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) < 0;
-}
-
-bool SongInfo::ByGenreDecending(const SongInfo& a, const SongInfo& b)
-{
-    return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) > 0;
-}
-
-bool SongInfo::ByBitrate(const SongInfo& a, const SongInfo& b)
-{
-    return a.bitrate < b.bitrate;
-}
-
-bool SongInfo::ByBitrateDecending(const SongInfo& a, const SongInfo& b)
-{
-    return a.bitrate > b.bitrate;
-}
-
-bool SongInfo::ByYear(const SongInfo& a, const SongInfo& b)
-{
-    return a.year < b.year;
-}
-
-bool SongInfo::ByYearDecending(const SongInfo& a, const SongInfo& b)
-{
-    return a.year > b.year;
-}
-
-bool SongInfo::ByListenTime(const SongInfo& a, const SongInfo& b)
-{
-    return a.listen_time < b.listen_time;
-}
-
-bool SongInfo::ByListenTimeDecending(const SongInfo& a, const SongInfo& b)
-{
-    return a.listen_time > b.listen_time;
-}
-
-bool SongInfo::ByModifiedTime(const SongInfo& a, const SongInfo& b)
-{
-    return a.modified_time < b.modified_time;
-}
-
-bool SongInfo::ByModifiedTimeDecending(const SongInfo& a, const SongInfo& b)
-{
-    return a.modified_time > b.modified_time;
-}
-
-bool SongInfo::ByLastPlay(const SongInfo& a, const SongInfo& b)
-{
-    return a.last_played_time < b.last_played_time;
-}
-
-bool SongInfo::ByLastPlayDecending(const SongInfo& a, const SongInfo& b)
-{
-    return a.last_played_time > b.last_played_time;
-}
-
 void SongInfo::CopyAudioTag(const SongInfo& song_info)
 {
     title = song_info.title;
@@ -382,4 +245,187 @@ void SongInfo::Normalize()
         album.clear();
     if (theApp.m_str_table.LoadText(L"TXT_EMPTY_GENRE") == genre)
         genre.clear();
+}
+
+
+static bool ByFileName(const SongInfo& a, const SongInfo& b)
+{
+    return CCommon::StringCompareInLocalLanguage(a.GetFileName(), b.GetFileName()) < 0;
+}
+
+static bool ByFileNameDecending(const SongInfo& a, const SongInfo& b)
+{
+    return CCommon::StringCompareInLocalLanguage(a.GetFileName(), b.GetFileName()) > 0;
+}
+
+static bool ByPath(const SongInfo& a, const SongInfo& b)
+{
+    return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) < 0;
+}
+
+static bool ByPathDecending(const SongInfo& a, const SongInfo& b)
+{
+    return CCommon::StringCompareInLocalLanguage(a.file_path, b.file_path) > 0;
+}
+
+static bool ByTitle(const SongInfo& a, const SongInfo& b)
+{
+    return CCommon::StringCompareInLocalLanguage(a.title, b.title) < 0;
+}
+
+static bool ByTitleDecending(const SongInfo& a, const SongInfo& b)
+{
+    return CCommon::StringCompareInLocalLanguage(a.title, b.title) > 0;
+}
+
+static bool ByTrack(const SongInfo& a, const SongInfo& b)
+{
+    if (a.disc_num != b.disc_num)
+        return a.disc_num < b.disc_num;
+    else
+        return a.track < b.track;
+}
+
+static bool ByTrackDecending(const SongInfo& a, const SongInfo& b)
+{
+    return ByTrack(b, a);
+}
+
+static bool ByArtist(const SongInfo& a, const SongInfo& b)
+{
+    int compare_album = CCommon::StringCompareInLocalLanguage(a.album, b.album);
+    int compare_artist = CCommon::StringCompareInLocalLanguage(a.artist, b.artist);
+    if (compare_artist != 0)
+        return compare_artist < 0;
+    else if (compare_album != 0)
+        return compare_album < 0;
+    else return ByTrack(a, b);
+}
+
+static bool ByArtistDecending(const SongInfo& a, const SongInfo& b)
+{
+    return ByArtist(b, a);
+}
+
+static bool ByAlbum(const SongInfo& a, const SongInfo& b)
+{
+    int compare_album = CCommon::StringCompareInLocalLanguage(a.album, b.album);
+    int compare_artist = CCommon::StringCompareInLocalLanguage(a.artist, b.artist);
+    if (compare_album != 0)
+        return compare_album < 0;
+    else if (a.track != b.track || a.disc_num != b.disc_num)        //唱片集相同的情况下比较音轨号
+        return ByTrack(a, b);
+    else                                //音轨号仍然相同，比较艺术家
+        return compare_artist < 0;
+}
+
+static bool ByAlbumDecending(const SongInfo& a, const SongInfo& b)
+{
+    return ByAlbum(b, a);
+}
+
+static bool ByListenTime(const SongInfo& a, const SongInfo& b)
+{
+    return a.listen_time < b.listen_time;
+}
+
+static bool ByListenTimeDecending(const SongInfo& a, const SongInfo& b)
+{
+    return a.listen_time > b.listen_time;
+}
+
+static bool ByModifiedTime(const SongInfo& a, const SongInfo& b)
+{
+    return a.modified_time < b.modified_time;
+}
+
+static bool ByModifiedTimeDecending(const SongInfo& a, const SongInfo& b)
+{
+    return a.modified_time > b.modified_time;
+}
+
+static bool ByGenre(const SongInfo& a, const SongInfo& b)
+{
+    return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) < 0;
+}
+
+static bool ByGenreDecending(const SongInfo& a, const SongInfo& b)
+{
+    return CCommon::StringCompareInLocalLanguage(a.genre, b.genre) > 0;
+}
+
+static bool ByYear(const SongInfo& a, const SongInfo& b)
+{
+    return a.year < b.year;
+}
+
+static bool ByYearDecending(const SongInfo& a, const SongInfo& b)
+{
+    return a.year > b.year;
+}
+
+static bool ByBitrate(const SongInfo& a, const SongInfo& b)
+{
+    return a.bitrate < b.bitrate;
+}
+
+static bool ByBitrateDecending(const SongInfo& a, const SongInfo& b)
+{
+    return a.bitrate > b.bitrate;
+}
+
+std::function<bool(const SongInfo& a, const SongInfo& b)> SongInfo::GetSortFunc(SortMode sort_mode)
+{
+    switch (sort_mode)
+    {
+    case SM_U_FILE: return ByFileName;
+    case SM_D_FILE: return ByFileNameDecending;
+    case SM_U_PATH: return ByPath;
+    case SM_D_PATH: return ByPathDecending;
+    case SM_U_TITLE: return ByTitle;
+    case SM_D_TITLE: return ByTitleDecending;
+    case SM_U_ARTIST: return ByArtist;
+    case SM_D_ARTIST: return ByArtistDecending;
+    case SM_U_ALBUM: return ByAlbum;
+    case SM_D_ALBUM: return ByAlbumDecending;
+    case SM_U_TRACK: return ByTrack;
+    case SM_D_TRACK: return ByTrackDecending;
+    case SM_U_LISTEN: return ByListenTime;
+    case SM_D_LISTEN: return ByListenTimeDecending;
+    case SM_U_TIME: return ByModifiedTime;
+    case SM_D_TIME: return ByModifiedTimeDecending;
+    case SM_U_GENRE: return ByGenre;
+    case SM_D_GENRE: return ByGenreDecending;
+    case SM_U_YEAR: return ByYear;
+    case SM_D_YEAR: return ByYearDecending;
+    case SM_U_BITRATE: return ByBitrate;
+    case SM_D_BITRATE: return ByBitrateDecending;
+    default: return [](const SongInfo& a, const SongInfo& b) { return true; };
+    }
+}
+
+wstring SongInfo::GetSortModeDisplayName(SortMode sort_mode)
+{
+    std::wstring str_sort_mode;
+    switch (sort_mode)
+    {
+    case SM_U_FILE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_FILE"); break;
+    case SM_D_FILE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_FILE"); break;
+    case SM_U_PATH: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_PATH"); break;
+    case SM_D_PATH: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_PATH"); break;
+    case SM_U_TITLE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TITLE"); break;
+    case SM_D_TITLE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TITLE"); break;
+    case SM_U_ARTIST: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_ARTIST"); break;
+    case SM_D_ARTIST: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_ARTIST"); break;
+    case SM_U_ALBUM: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_ALBUM"); break;
+    case SM_D_ALBUM: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_ALBUM"); break;
+    case SM_U_TRACK: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TRACK"); break;
+    case SM_D_TRACK: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TRACK"); break;
+    case SM_U_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_LISTEN"); break;
+    case SM_D_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_LISTEN"); break;
+    case SM_U_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TIME"); break;
+    case SM_D_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TIME"); break;
+    case SM_UNSORT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_UNSORT"); break;
+    }
+    return str_sort_mode;
 }

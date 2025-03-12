@@ -1,10 +1,10 @@
 ﻿#include "stdafx.h"
 #include "UiMediaLibItemMgr.h"
 #include "MusicPlayer2.h"
-#include "MediaLibPlaylistMgr.h"
 #include "Playlist.h"
 #include "SongDataManager.h"
 #include "SongInfoHelper.h"
+#include "CRecentList.h"
 #include "Player.h"
 
 CUiMediaLibItemMgr CUiMediaLibItemMgr::m_instance;
@@ -69,7 +69,9 @@ std::wstring CUiMediaLibItemMgr::GetItemDisplayName(CMediaClassifier::Classifica
     if (!m_loading)
     {
         const std::wstring& name{ GetItemName(type, index) };
-        return CMediaLibPlaylistMgr::GetMediaLibItemDisplayName(type, name);
+        ListItem list_item{ LT_MEDIA_LIB, name };
+        list_item.medialib_type = type;
+        return list_item.GetDisplayName();
     }
     return std::wstring();
 }
@@ -183,8 +185,9 @@ void CUiMyFavouriteItemMgr::UpdateMyFavourite()
     m_loading = true;
     std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
 
+    ListItem list_item = CRecentList::Instance().GetSpecPlaylist(CRecentList::PT_FAVOURITE);
     CPlaylistFile playlist_file;
-    playlist_file.LoadFromFile(theApp.m_playlist_dir + FAVOURITE_PLAYLIST_NAME);
+    playlist_file.LoadFromFile(list_item.path);
     playlist_file.MoveToSongList(m_may_favourite_song_list);
     CSongDataManager::GetInstance().LoadSongsInfo(m_may_favourite_song_list);  // 从媒体库加载歌曲属性
 
@@ -280,48 +283,28 @@ void CUiAllTracksMgr::UpdateAllTracks()
     std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
 
     m_all_tracks_list.clear();
+    vector<SongInfo> tmp_song_list;
     //从song data中读取
     CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map) {
-        for (const auto& song_info : song_data_map)
-        {
-            UTrackInfo item;
-            item.song_key = song_info.first;
-            item.name = CSongInfoHelper::GetDisplayStr(song_info.second, theApp.m_media_lib_setting_data.display_format);
-            item.length = song_info.second.length();
-            item.is_favourite = CUiMyFavouriteItemMgr::Instance().Contains(song_info.second);
-            m_all_tracks_list.push_back(item);
-        }
+        tmp_song_list.reserve(song_data_map.size());
+        std::transform(song_data_map.begin(), song_data_map.end(), std::back_inserter(tmp_song_list), [](const auto& item) { return item.second; });
     });
 
-    //从CMediaLibPlaylistMgr中查找“所有曲目”，并获取排序方式
-    auto info = CMediaLibPlaylistMgr::Instance().FindItem(CMediaClassifier::CT_NONE, std::wstring());
+    //从CRecentList中查找“所有曲目”，并获取排序方式
+    ListItem list_item{ LT_MEDIA_LIB, L"" };
+    list_item.medialib_type = CMediaClassifier::CT_NONE;
+    CRecentList::Instance().LoadItem(list_item);
     //对所有曲目排序
-    auto sort_fun = [&](const UTrackInfo& a, const UTrackInfo& b) {
-        SongInfo song_a{ CSongDataManager::GetInstance().GetSongInfo(a.song_key) };
-        SongInfo song_b{ CSongDataManager::GetInstance().GetSongInfo(b.song_key) };
-        switch (info.sort_mode)
-        {
-        case SM_U_FILE: return SongInfo::ByFileName(song_a, song_b);
-        case SM_D_FILE: return SongInfo::ByFileNameDecending(song_a, song_b);
-        case SM_U_PATH: return SongInfo::ByPath(song_a, song_b);
-        case SM_D_PATH: return SongInfo::ByPathDecending(song_a, song_b);
-        case SM_U_TITLE: return SongInfo::ByTitle(song_a, song_b);
-        case SM_D_TITLE: return SongInfo::ByTitleDecending(song_a, song_b);
-        case SM_U_ARTIST: return SongInfo::ByArtist(song_a, song_b);
-        case SM_D_ARTIST: return SongInfo::ByArtistDecending(song_a, song_b);
-        case SM_U_ALBUM: return SongInfo::ByAlbum(song_a, song_b);
-        case SM_D_ALBUM: return SongInfo::ByAlbumDecending(song_a, song_b);
-        case SM_U_TRACK: return SongInfo::ByTrack(song_a, song_b);
-        case SM_D_TRACK: return SongInfo::ByTrackDecending(song_a, song_b);
-        case SM_U_LISTEN: return SongInfo::ByListenTime(song_a, song_b);
-        case SM_D_LISTEN: return SongInfo::ByListenTimeDecending(song_a, song_b);
-        case SM_U_TIME: return SongInfo::ByModifiedTime(song_a, song_b);
-        case SM_D_TIME: return SongInfo::ByModifiedTimeDecending(song_a, song_b);
-        default: return SongInfo::ByFileName(song_a, song_b);
-        }
-    };
-    std::stable_sort(m_all_tracks_list.begin(), m_all_tracks_list.end(), sort_fun);
-
+    auto sort_fun = SongInfo::GetSortFunc(list_item.GetDefaultSortMode());
+    std::stable_sort(tmp_song_list.begin(), tmp_song_list.end(), sort_fun);
+    std::transform(tmp_song_list.begin(), tmp_song_list.end(), std::back_inserter(m_all_tracks_list), [](const SongInfo& song_info) {
+        UTrackInfo item;
+        item.song_key = song_info;
+        item.name = CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format);
+        item.length = song_info.length();
+        item.is_favourite = CUiMyFavouriteItemMgr::Instance().Contains(song_info);
+        return item;
+        });
     m_loading = false;
     m_inited = true;
 }

@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include "CPlayerUIBase.h"
-#include "MediaLibHelper.h"
-#include <set>
+#include "ListCache.h"
 
 class CUiSearchBox;
 
@@ -436,6 +435,8 @@ namespace UiElement
             COL_COUNT,
             COL_MAX
         };
+        static CListCache m_list_cache;     // 为RecentPlayedList的绘制缓存最近播放的ListItem，Draw之前调用reload
+        virtual void Draw() override;
 
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
@@ -492,12 +493,13 @@ namespace UiElement
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
     private:
         int last_highlight_row{ -1 };
- };
+    };
 
     //当前播放列表指示
     class PlaylistIndicator : public Element
     {
     public:
+        static CListCache m_list_cache;     // 为PlaylistIndicator的绘制缓存当前播放的ListItem，Draw之前调用reload
         virtual void Draw() override;
         virtual void LButtonUp(CPoint point) override;
         virtual void LButtonDown(CPoint point) override;
@@ -563,10 +565,13 @@ namespace UiElement
         int last_hover_index{ -1 };
     };
 
-    //媒体库的文件夹
+    //媒体库的文件夹列表
     class MediaLibFolder : public ListElement
     {
     public:
+        static CListCache m_list_cache;
+        virtual void Draw() override;
+
         enum Column
         {
             COL_NAME,
@@ -598,10 +603,12 @@ namespace UiElement
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
     };
 
-    //媒体库的播放列表
+    //媒体库的播放列表列表
     class MediaLibPlaylist : public ListElement
     {
     public:
+        static CListCache m_list_cache;
+        virtual void Draw() override;
         enum Column
         {
             COL_NAME,

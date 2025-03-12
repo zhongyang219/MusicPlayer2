@@ -12,7 +12,6 @@
 #include "UpdateHelper.h"
 #include "MusicPlayerCmdHelper.h"
 #include "SongDataManager.h"
-#include "PlaylistMgr.h"
 #include "UiMediaLibItemMgr.h"
 
 #ifdef _DEBUG
@@ -97,16 +96,18 @@ BOOL CMusicPlayerApp::InitInstance()
 
     m_config_path = m_config_dir + L"config.ini";
     m_song_data_path = m_config_dir + L"song_data.dat";
+    m_recent_list_dat_path = m_config_dir + L"recent_list.dat";
+    // 以下三项不再使用，但路径留作旧版兼容，新程序不再创建这三个文件
     m_recent_path_dat_path = m_config_dir + L"recent_path.dat";
     m_recent_playlist_data_path = m_config_dir + L"playlist\\recent_playlist.dat";
     m_recent_medialib_playlist_path = m_config_dir + L"recent_medialib_item.dat";
+
     m_desktop_path = CCommon::GetDesktopPath();
     m_lastfm_path = m_config_dir + L"lastfm.dat";
     m_ui_data_path = m_config_dir + L"user_ui.dat";
     //m_temp_path = CCommon::GetTemplatePath() + L"MusicPlayer2\\";
     m_playlist_dir = m_config_dir + L"playlist\\";
     CCommon::CreateDir(m_playlist_dir);
-    CPlaylistMgr::Instance().Init();
 
     wstring cmd_line{ m_lpCmdLine };
     //当程序被Windows重新启动时，直接退出程序

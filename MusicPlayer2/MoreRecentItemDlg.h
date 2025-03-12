@@ -2,7 +2,7 @@
 #include "BaseDialog.h"
 #include "CListBoxEnhanced.h"
 #include "SearchEditCtrl.h"
-#include "RecentFolderAndPlaylist.h"
+#include "ListCache.h"
 
 // CMoreRecentItemDlg 对话框
 
@@ -13,7 +13,7 @@ class CMoreRecentItemDlg : public CBaseDialog
 public:
     CMoreRecentItemDlg(CWnd* pParent = nullptr);   // 标准构造函数
     virtual ~CMoreRecentItemDlg();
-    const CRecentFolderAndPlaylist::Item* GetSelectedItem() const;
+    ListItem GetSelectedItem() const;
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -23,16 +23,17 @@ public:
 protected:
     CListBoxEnhanced m_list_ctrl;
     CSearchEditCtrl m_search_edit;
-    bool m_searched{ false };           //是否处于搜索状态
-    std::vector<CRecentFolderAndPlaylist::Item> m_search_result; //搜索结果
+    wstring m_search_str;               // 搜索的字符串，非空时处于搜索状态
+    vector<size_t> m_search_result;     // 搜索结果(与m_list_ctrl保持同步)
     int m_selected_item{};
+
+    CListCache m_list_cache;
 
 protected:
     virtual CString GetDialogName() const override;
     virtual bool InitializeControls() override;
 
     void ShowList();
-    void QuickSearch(const wstring& key_word);
 
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
