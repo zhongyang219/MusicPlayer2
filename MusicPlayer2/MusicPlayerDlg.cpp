@@ -279,6 +279,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SPEED_UP, &CMusicPlayerDlg::OnSpeedUp)
     ON_COMMAND(ID_SLOW_DOWN, &CMusicPlayerDlg::OnSlowDown)
     ON_COMMAND(ID_ORIGINAL_SPEED, &CMusicPlayerDlg::OnOriginalSpeed)
+    ON_COMMAND(ID_PITCH_UP, &CMusicPlayerDlg::OnPitchUp)
+    ON_COMMAND(ID_PITCH_DOWN, &CMusicPlayerDlg::OnPitchDown)
+    ON_COMMAND(ID_ORIGINAL_PITCH, &CMusicPlayerDlg::OnOriginalPitch)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMusicPlayerDlg::OnSearchEditBtnClicked)
     ON_MESSAGE(WM_INIT_ADD_TO_MENU, &CMusicPlayerDlg::OnInitAddToMenu)
     ON_MESSAGE(WM_OPTION_SETTINGS, &CMusicPlayerDlg::OnMsgOptionSettings)
@@ -1692,6 +1695,9 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_SPEED_UP, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_SLOW_DOWN, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ORIGINAL_SPEED, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PITCH_UP, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PITCH_DOWN, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ORIGINAL_PITCH, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
 
     //AB重复
     pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (current_song_valid && CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
@@ -5726,6 +5732,26 @@ void CMusicPlayerDlg::OnOriginalSpeed()
     // TODO: 在此添加命令处理程序代码
     if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
         CPlayer::GetInstance().SetOrignalSpeed();
+}
+
+void CMusicPlayerDlg::OnPitchUp()
+{
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+        CPlayer::GetInstance().PitchUp();
+}
+
+
+void CMusicPlayerDlg::OnPitchDown()
+{
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+        CPlayer::GetInstance().PitchDown();
+}
+
+
+void CMusicPlayerDlg::OnOriginalPitch()
+{
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+        CPlayer::GetInstance().SetOrignalPitch();
 }
 
 

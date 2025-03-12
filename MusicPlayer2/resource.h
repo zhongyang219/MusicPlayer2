@@ -992,13 +992,16 @@
 #define ID_LIB_PLAYLIST_PROPERTIES      33475
 #define ID_LIB_FOLDER_PROPERTIES        33476
 #define ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES 33477
+#define ID_PITCH_DOWN                   33478
+#define ID_PITCH_UP                     33479
+#define ID_ORIGINAL_PITCH               33480
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        628
-#define _APS_NEXT_COMMAND_VALUE         33478
+#define _APS_NEXT_COMMAND_VALUE         33481
 #define _APS_NEXT_CONTROL_VALUE         1372
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

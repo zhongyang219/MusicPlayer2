@@ -36,6 +36,8 @@ enum PlayingState       //正在播放标志
 
 #define MAX_PLAY_SPEED 4.0f
 #define MIN_PLAY_SPEED 0.1f
+#define MAX_PLAY_PITCH 12
+#define MIN_PLAY_PITCH -12
 
 //MP3编码参数
 struct MP3EncodePara
@@ -105,6 +107,7 @@ public:
     virtual void Stop() = 0;
     virtual void SetVolume(int volume) = 0;
     virtual void SetSpeed(float speed) = 0;         //设置播放速度（1为原速）
+    virtual void SetPitch(int pitch) = 0;           //设置播放变调，半音为一个单位，[-12, 12]，0为原调
     virtual bool SongIsOver() = 0;                  //曲目是否播放完毕
 
     virtual int GetCurPosition() = 0;               //获取当前播放进度，单位为毫秒
