@@ -481,6 +481,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_play_setting_data.midi_use_inner_lyric);
     ini.WriteBool(L"general", L"minimize_to_notify_icon", theApp.m_general_setting_data.minimize_to_notify_icon);
     ini.WriteBool(L"general", L"global_mouse_wheel_volume_adjustment", theApp.m_general_setting_data.global_mouse_wheel_volume_adjustment);
+    ini.WriteInt(L"general", L"update_source", theApp.m_general_setting_data.update_source);
 
     ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
     ini.WriteBool(L"config", L"auto_play_when_start", theApp.m_play_setting_data.auto_play_when_start);
