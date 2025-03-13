@@ -1590,7 +1590,7 @@ int CCommon::IconSizeNormalize(int size)
 {
     //查找标准图标大小列表中和指定大小最接近的一个，然后将其返回
 
-    const vector<int> standard_size{ 16, 20, 24, 32, 48, 64, 128, 256, 512 };
+    const vector<int> standard_size{ 16, 20, 24, 28, 32, 48, 64, 128, 256, 512 };
     int min_diff = MAXINT;
     int index = 0;
     for (size_t i = 0; i < standard_size.size(); i++)
