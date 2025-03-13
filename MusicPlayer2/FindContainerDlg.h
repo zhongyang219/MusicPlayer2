@@ -2,6 +2,7 @@
 #include "afxdialogex.h"
 #include "CTabCtrlEx.h"
 #include "FindDlg.h"
+#include "FindListDlg.h"
 
 // CFindContainerDlg 对话框
 
@@ -24,6 +25,7 @@ public:
 private:
 	CTabCtrlEx m_tab_ctrl;
 	CFindDlg m_find_song_dlg;
+	CFindListDlg* m_find_list_dlg;
 	int m_tab_selected{};
 
 protected:

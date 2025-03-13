@@ -265,6 +265,7 @@
     <ClInclude Include="FileNameFormDlg.h" />
     <ClInclude Include="FilterHelper.h" />
     <ClInclude Include="FindContainerDlg.h" />
+    <ClInclude Include="FindListDlg.h" />
     <ClInclude Include="FlacEncodeCfgDlg.h" />
     <ClInclude Include="FolderPropertiesDlg.h" />
     <ClInclude Include="FontDialogEx.h" />
@@ -439,6 +440,7 @@
     <ClCompile Include="FileNameFormDlg.cpp" />
     <ClCompile Include="FilterHelper.cpp" />
     <ClCompile Include="FindContainerDlg.cpp" />
+    <ClCompile Include="FindListDlg.cpp" />
     <ClCompile Include="FlacEncodeCfgDlg.cpp" />
     <ClCompile Include="FolderPropertiesDlg.cpp" />
     <ClCompile Include="FontDialogEx.cpp" />

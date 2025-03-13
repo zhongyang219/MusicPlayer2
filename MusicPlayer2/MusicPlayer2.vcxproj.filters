@@ -939,6 +939,9 @@
     <ClInclude Include="FindContainerDlg.h">
       <Filter>对话框类\FindDlg</Filter>
     </ClInclude>
+    <ClInclude Include="FindListDlg.h">
+      <Filter>对话框类\FindDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1431,6 +1434,9 @@
       <Filter>对话框类\UiSearchBox</Filter>
     </ClCompile>
     <ClCompile Include="FindContainerDlg.cpp">
+      <Filter>对话框类\FindDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="FindListDlg.cpp">
       <Filter>对话框类\FindDlg</Filter>
     </ClCompile>
   </ItemGroup>

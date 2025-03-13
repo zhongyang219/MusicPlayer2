@@ -28,6 +28,11 @@ CFindDlg::~CFindDlg()
 {
 }
 
+void CFindDlg::OnTabEntered()
+{
+    SetPlaySelectedEnable(m_find_result_list.GetCurSel() > 0);
+}
+
 bool CFindDlg::InitializeControls()
 {
     wstring temp;

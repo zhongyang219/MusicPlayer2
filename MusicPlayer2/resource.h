@@ -256,8 +256,9 @@
 #define IDI_ICON2                       624
 #define IDI_TREE_EXPANDED               624
 #define IDD_UI_SEARCH_BOX_DIALOG        625
-#define IDD_FIND_PARENT_DIALOG          628
 #define IDD_FIND_CONTAINER_DIALOG       628
+#define IDD_DIALOG1                     630
+#define IDD_FIND_LIST_DIALOG            630
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -1002,7 +1003,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        630
+#define _APS_NEXT_RESOURCE_VALUE        633
 #define _APS_NEXT_COMMAND_VALUE         33481
 #define _APS_NEXT_CONTROL_VALUE         1372
 #define _APS_NEXT_SYMED_VALUE           101

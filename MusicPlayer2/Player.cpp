@@ -1054,7 +1054,7 @@ bool CPlayer::SetList(ListItem list_item, bool play, bool force)
         break;
     }
 
-    if (!IsPlaylistMode())
+    if (!IsPlaylistMode() && !play_song.path.empty())
         m_current_song_tmp = CSongDataManager::GetInstance().GetSongInfo(play_song);
     m_current_song_position_tmp = list_item.last_position;
     
