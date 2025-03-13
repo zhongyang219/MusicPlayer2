@@ -4,7 +4,7 @@
 
 #pragma once
 #include"PlayListCtrl.h"
-#include"FindDlg.h"
+#include "FindContainerDlg.h"
 #include"OptionsDlg.h"
 #include"PropertyDlg.h"
 #include"ColorConvert.h"
@@ -97,7 +97,7 @@ protected:
 #endif
 
     CHotkeyManager m_hot_key;
-    CFindDlg m_findDlg;		//查找对话框
+    CFindContainerDlg m_findDlg;		//查找对话框
     HACCEL m_hAccel{};
 
     wstring m_cmdLine;	//命令行参数

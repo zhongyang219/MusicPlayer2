@@ -936,6 +936,9 @@
     <ClInclude Include="bass_fx.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="FindContainerDlg.h">
+      <Filter>对话框类\FindDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1426,6 +1429,9 @@
     </ClCompile>
     <ClCompile Include="UiSearchBox.cpp">
       <Filter>对话框类\UiSearchBox</Filter>
+    </ClCompile>
+    <ClCompile Include="FindContainerDlg.cpp">
+      <Filter>对话框类\FindDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

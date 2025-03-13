@@ -2,12 +2,12 @@
 #include "AudioCommon.h"
 #include "ListCtrlEx.h"
 #include "Common.h"
-#include "BaseDialog.h"
+#include "TabDlg.h"
 
 
 // CFindDlg 对话框
 
-class CFindDlg : public CBaseDialog
+class CFindDlg : public CTabDlg
 {
     DECLARE_DYNAMIC(CFindDlg)
 
@@ -60,13 +60,14 @@ protected:
 
     CString m_selected_string;
 
-    virtual CString GetDialogName() const override;
     virtual bool InitializeControls() override;
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
     void ShowFindResult();
     void ShowFindInfo();
     bool _OnAddToNewPlaylist(std::wstring& playlist_path);       //执行添加到新建播放列表命令，成功返回true，playlist_path用于接收新播放列表的路径
     static UINT ViewOnlineThreadFunc(LPVOID lpParam);   //执行在线查看的线程函数
+    //向父窗口发送消息以更新“播放选中”按钮的状态
+    void SetPlaySelectedEnable(bool enable);
 
 public: 
     void ClearFindResult();

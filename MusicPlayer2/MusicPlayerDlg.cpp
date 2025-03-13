@@ -2202,7 +2202,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 
     //初始化查找对话框中的数据
-    m_findDlg.LoadConfig();
+    m_findDlg.LoadChildrenConfig();
 
     //获取Cortana歌词
     m_cortana_lyric.Init();
@@ -2971,7 +2971,7 @@ void CMusicPlayerDlg::OnDestroy()
     CPlayer::GetInstance().OnExit();
     SaveUiData();
     SaveConfig();
-    m_findDlg.SaveConfig();
+    m_findDlg.SaveChildrenConfig();
     theApp.SaveConfig();
     //解除全局热键
     m_hot_key.UnRegisterAllHotKey();
@@ -6065,7 +6065,7 @@ BOOL CMusicPlayerDlg::OnQueryEndSession()
     //退出时保存设置
     CPlayer::GetInstance().OnExit();
     SaveConfig();
-    m_findDlg.SaveConfig();
+    m_findDlg.SaveChildrenConfig();
     theApp.SaveConfig();
 
     return TRUE;

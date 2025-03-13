@@ -17,6 +17,8 @@ public:
     // 调整所有标签页大小兼执行设置图标
     void AdjustTabWindowSize();
 
+	void Clear();
+
 protected:
     void CalSubWindowSize();
 

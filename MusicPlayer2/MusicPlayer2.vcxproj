@@ -264,6 +264,7 @@
     <ClInclude Include="FfmpegCore.h" />
     <ClInclude Include="FileNameFormDlg.h" />
     <ClInclude Include="FilterHelper.h" />
+    <ClInclude Include="FindContainerDlg.h" />
     <ClInclude Include="FlacEncodeCfgDlg.h" />
     <ClInclude Include="FolderPropertiesDlg.h" />
     <ClInclude Include="FontDialogEx.h" />
@@ -437,6 +438,7 @@
     <ClCompile Include="FfmpegCore.cpp" />
     <ClCompile Include="FileNameFormDlg.cpp" />
     <ClCompile Include="FilterHelper.cpp" />
+    <ClCompile Include="FindContainerDlg.cpp" />
     <ClCompile Include="FlacEncodeCfgDlg.cpp" />
     <ClCompile Include="FolderPropertiesDlg.cpp" />
     <ClCompile Include="FontDialogEx.cpp" />
