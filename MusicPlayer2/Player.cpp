@@ -1054,7 +1054,10 @@ bool CPlayer::SetList(ListItem list_item, bool play, bool force)
         break;
     }
 
-
+    if (!IsPlaylistMode())
+        m_current_song_tmp = CSongDataManager::GetInstance().GetSongInfo(play_song);
+    m_current_song_position_tmp = list_item.last_position;
+    
     IniPlayList(play, {}, play_song);
     return true;
 }
