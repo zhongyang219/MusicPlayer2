@@ -158,6 +158,7 @@ BEGIN_MESSAGE_MAP(CFindListDlg, CTabDlg)
 	ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CFindListDlg::OnSearchEditBtnClicked)
 	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CFindListDlg::OnEnChangeSearchEdit)
 	ON_NOTIFY(NM_CLICK, IDC_SONG_LIST, &CFindListDlg::OnNMClickSongList)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -170,7 +171,7 @@ BOOL CFindListDlg::OnInitDialog()
 
     //初始化列表控件
     m_list_ctrl.SetExtendedStyle(m_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
-    m_list_ctrl.InsertColumn(COL_NAME, theApp.m_str_table.LoadText(L"TXT_TITLE").c_str(), LVCFMT_LEFT, theApp.DPI(320));
+    m_list_ctrl.InsertColumn(COL_NAME, theApp.m_str_table.LoadText(L"TXT_NAME").c_str(), LVCFMT_LEFT, theApp.DPI(320));
     m_list_ctrl.InsertColumn(COL_TRACK_NUM, theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK").c_str(), LVCFMT_LEFT, theApp.DPI(140));
     m_list_ctrl.SetCtrlAEnable(true);
 	m_list_ctrl.SetRowHeight(theApp.DPI(24), theApp.DPI(18));
@@ -252,4 +253,23 @@ void CFindListDlg::OnNMClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
 	SetPlaySelectedEnable(pNMItemActivate->iItem != -1);
 
 	*pResult = 0;
+}
+
+
+void CFindListDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CTabDlg::OnSize(nType, cx, cy);
+
+	if (m_list_ctrl.m_hWnd != NULL && nType != SIZE_MINIMIZED)
+	{
+		//调整列表中项目的宽度
+		CRect rect;
+		m_list_ctrl.GetWindowRect(rect);
+		int list_width{ rect.Width() - theApp.DPI(20) - 1 };        //列表控件宽度减去留给垂直滚动条的宽度余量
+		int width0, width1;
+		width1 = theApp.DPI(60);
+		width0 = list_width - width1;
+		m_list_ctrl.SetColumnWidth(COL_NAME, width0);
+		m_list_ctrl.SetColumnWidth(COL_TRACK_NUM, width1);
+	}
 }

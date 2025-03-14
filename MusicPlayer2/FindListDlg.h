@@ -63,4 +63,5 @@ protected:
 public:
 	afx_msg void OnEnChangeSearchEdit();
 	afx_msg void OnNMClickSongList(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
