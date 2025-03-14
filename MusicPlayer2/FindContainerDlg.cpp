@@ -71,12 +71,14 @@ BOOL CFindContainerDlg::OnInitDialog()
 
 	SetIcon(IconMgr::IconType::IT_Find, FALSE);
 	SetIcon(IconMgr::IconType::IT_Find, TRUE);
+	SetButtonIcon(IDOK, IconMgr::IconType::IT_Play);
 
 	//创建子对话框
 	m_find_song_dlg.Create(IDD_FIND_DIALOG);
 	//由于对话框关闭后CFindContainerDlg不会被析构（目的是为了在对话框关闭后保留“查找文件”中上次的查找结果）
 	//但是CFindListDlg不析构的话会有问题，因此这里使用指针，在OnDestroy中析构
-	m_find_list_dlg = new CFindListDlg();
+	if (m_find_list_dlg == nullptr)
+		m_find_list_dlg = new CFindListDlg();
 	m_find_list_dlg->Create(IDD_FIND_LIST_DIALOG);
 
 	//添加对话框
@@ -122,4 +124,5 @@ void CFindContainerDlg::OnDestroy()
 	m_tab_selected = m_tab_ctrl.GetCurSel();
 	m_tab_ctrl.Clear();
 	delete m_find_list_dlg;
+	m_find_list_dlg = nullptr;
 }

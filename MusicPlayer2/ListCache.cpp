@@ -69,6 +69,7 @@ vector<const ListItem*> CListCache::BuildSubList() const
     for (const ListItem& item : instance.m_list)
         if ((m_type == LT_PLAYLIST_NO_SPEC && item.type == LT_PLAYLIST && !CRecentList::IsSpecPlaylist(item)) ||
             (m_type == LT_RECENT && item.last_played_time > 0) ||
+            m_type == LT_ALL || 
             (m_type < LT_MAX && m_type == item.type))
             sub_list.push_back(&item);
 

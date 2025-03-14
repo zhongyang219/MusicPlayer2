@@ -25,7 +25,7 @@ public:
 private:
 	CTabCtrlEx m_tab_ctrl;
 	CFindDlg m_find_song_dlg;
-	CFindListDlg* m_find_list_dlg;
+	CFindListDlg* m_find_list_dlg{};
 	int m_tab_selected{};
 
 protected:

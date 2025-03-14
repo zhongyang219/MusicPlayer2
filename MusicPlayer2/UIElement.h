@@ -824,7 +824,7 @@ namespace UiElement
         };
 
         static std::shared_ptr<Node> CreateNode(std::wstring name, int song_num, std::shared_ptr<Node> parent);
-        std::wstring GetNodePath(Node* node);       //获取一个节点的路径
+        static std::wstring GetNodePath(Node* node);       //获取一个节点的路径
         std::wstring GetSelectedPath();             //获取选中节点的路径
 
         virtual IconMgr::IconType GetIcon(int row) { return IconMgr::IT_Folder; }

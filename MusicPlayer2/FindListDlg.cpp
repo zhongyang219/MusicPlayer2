@@ -27,19 +27,18 @@ void CFindListDlg::InitListData()
 	if (!m_initialized)
 	{
 		m_list_data.clear();
-		//添加文件夹
-		CListCache list_cache_folder(LT_FOLDER);
-		list_cache_folder.reload();
-		AddListCacheData(list_cache_folder);
-		//添加播放列表
-		CListCache list_cache_playlist(LT_PLAYLIST);
-		list_cache_playlist.reload();
-		AddListCacheData(list_cache_playlist);
+		//添加所有最近播放项目
+		CListCache list_cache(LT_ALL);
+		list_cache.reload();
+		AddListCacheData(list_cache);
 		//添加媒体库项目
 		AddMediaLibItem(CMediaClassifier::CT_ARTIST);
 		AddMediaLibItem(CMediaClassifier::CT_ALBUM);
 		AddMediaLibItem(CMediaClassifier::CT_GENRE);
+		AddMediaLibItem(CMediaClassifier::CT_YEAR);
+		AddMediaLibItem(CMediaClassifier::CT_TYPE);
 		//添加媒体库中的所有文件夹
+		AddAllFolders();
 
 		//设置到列表
 		ShowList();
@@ -75,15 +74,47 @@ void CFindListDlg::AddMediaLibItem(CMediaClassifier::ClassificationType type)
 	int item_count = CUiMediaLibItemMgr::Instance().GetItemCount(type);
 	for (int i{}; i < item_count; i++)
 	{
-		CListCtrlEx::RowData row_data;
-		row_data[COL_NAME] = CUiMediaLibItemMgr::Instance().GetItemDisplayName(type, i);
-		row_data[COL_TRACK_NUM] = std::to_wstring(CUiMediaLibItemMgr::Instance().GetItemSongCount(type, i));
-		m_list_data.push_back(std::move(row_data));
 		ListItem list_data;
 		list_data.type = LT_MEDIA_LIB;
 		list_data.medialib_type = type;
 		list_data.path = CUiMediaLibItemMgr::Instance().GetItemName(type, i);
-		m_all_list_items.push_back(list_data);
+		auto iter = std::find(m_all_list_items.begin(), m_all_list_items.end(), list_data);
+		//不添加重复的项目
+		if (iter == m_all_list_items.end())
+		{
+			m_all_list_items.push_back(list_data);
+			CListCtrlEx::RowData row_data;
+			row_data[COL_NAME] = CUiMediaLibItemMgr::Instance().GetItemDisplayName(type, i);
+			row_data[COL_TRACK_NUM] = std::to_wstring(CUiMediaLibItemMgr::Instance().GetItemSongCount(type, i));
+			m_list_data.push_back(std::move(row_data));
+		}
+	}
+}
+
+void CFindListDlg::AddAllFolders()
+{
+	const auto& folder_nodes = CUiFolderExploreMgr::Instance().GetRootNodes();
+	for (const auto& folder_node : folder_nodes)
+	{
+		//遍历每个顶级文件夹节点
+		folder_node->IterateNodeInOrder([&](UiElement::TreeElement::Node* node) -> bool {
+			std::wstring folder_path = UiElement::FolderExploreTree::GetNodePath(node);		//文件夹路径
+			std::wstring track_num = node->texts[UiElement::FolderExploreTree::COL_COUNT];	//曲目数
+			ListItem list_data;
+			list_data.type = LT_FOLDER;
+			list_data.path = folder_path + L'\\';	//文件夹路径末尾添加一个反斜杠，使得其格式和CListCache中的文件夹一致
+			auto iter = std::find(m_all_list_items.begin(), m_all_list_items.end(), list_data);
+			//不添加重复的项目
+			if (iter == m_all_list_items.end())
+			{
+				m_all_list_items.push_back(list_data);
+				CListCtrlEx::RowData row_data;
+				row_data[COL_NAME] = folder_path;
+				row_data[COL_TRACK_NUM] = track_num;
+				m_list_data.push_back(std::move(row_data));
+			}
+			return false;
+		}, false);
 	}
 }
 
@@ -176,7 +207,7 @@ BOOL CFindListDlg::OnInitDialog()
     m_list_ctrl.SetCtrlAEnable(true);
 	m_list_ctrl.SetRowHeight(theApp.DPI(24), theApp.DPI(18));
 
-    m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT").c_str(), TRUE);
+    m_search_edit.SetCueBanner(theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT_ALL_LIST").c_str(), TRUE);
 
 
 	return TRUE;  // return TRUE unless you set the focus to a control

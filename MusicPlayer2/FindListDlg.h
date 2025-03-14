@@ -44,6 +44,7 @@ private:
 
 	void AddListCacheData(const CListCache& list_cache);	//向m_all_list_items中添加一个CListCache中的所有项目
 	void AddMediaLibItem(CMediaClassifier::ClassificationType type);	//向m_all_list_items中添加媒体库中指定类型的所有项目
+	void AddAllFolders();	//向m_all_list_items中添加媒体库中所有文件夹
 
 	void ShowList();
 	void QuickSearch(const wstring& key_word);      //根据关键字执行快速查找，将结果保存在m_list_data_searched中
