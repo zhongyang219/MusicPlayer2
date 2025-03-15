@@ -458,3 +458,19 @@ void CBaseDialog::OnClose()
     if (m_is_modeless_dialog)
         DestroyWindow();
 }
+
+
+void CBaseDialog::OnOK()
+{
+    CDialog::OnOK();
+    if (m_is_modeless_dialog)
+        DestroyWindow();
+}
+
+
+void CBaseDialog::OnCancel()
+{
+    CDialog::OnCancel();
+    if (m_is_modeless_dialog)
+        DestroyWindow();
+}
