@@ -336,7 +336,7 @@ void CFindListDlg::OnSize(UINT nType, int cx, int cy)
 void CFindListDlg::OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	OnOK();
+	OnPlayItem();
 	*pResult = 0;
 }
 
@@ -354,7 +354,9 @@ void CFindListDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
 
 void CFindListDlg::OnPlayItem()
 {
-	OnOK();
+	//向父窗口发送IDOK命令
+	CWnd* pParent = GetParentWindow();
+	::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
 }
 
 

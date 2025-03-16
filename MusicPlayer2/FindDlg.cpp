@@ -478,8 +478,9 @@ void CFindDlg::OnSize(UINT nType, int cx, int cy)
 
 void CFindDlg::OnPlayItem()
 {
-    // TODO: 在此添加命令处理程序代码
-    OnOK();
+    //向父窗口发送IDOK命令
+    CWnd* pParent = GetParentWindow();
+    ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
 }
 
 
