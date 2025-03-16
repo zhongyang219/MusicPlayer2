@@ -29,7 +29,25 @@ private:
 	};
 
 	CSearchEditCtrl m_search_edit;
-	std::vector<ListItem> m_all_list_items;
+
+	//列表的来源
+	enum class ItemFrom
+	{
+		UNKNOWN,
+		RECENT_PLAYED,	//最近播放
+		MEDIALIB_ITEM,	//未播放过的媒体库项目
+		FOLDER_EXPLORE	//“文件夹浏览”中未播放过的文件夹
+	};
+	struct FindListItem
+	{
+		ListItem list_data;
+		ItemFrom item_from;
+		bool operator==(const ListItem& another_list_data) const
+		{
+			return list_data == another_list_data;
+		}
+	};
+	std::vector<FindListItem> m_all_list_items;
 	CListCtrlEx m_list_ctrl;
 	CListCtrlEx::ListData m_list_data;              // 列表数据
 	CListCtrlEx::ListData m_list_data_searched;     // 搜索后的列表数据
@@ -52,6 +70,8 @@ private:
 	//向父窗口发送消息以更新“播放选中”按钮的状态
 	void SetPlaySelectedEnable(bool enable);
 
+	FindListItem GetSelectedItem() const;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -65,4 +85,11 @@ public:
 	afx_msg void OnEnChangeSearchEdit();
 	afx_msg void OnNMClickSongList(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnPlayItem();
+	afx_msg void OnCopyText();
+	afx_msg void OnViewInMediaLib();
+	afx_msg void OnLibRecentPlayedItemProperties();
+	afx_msg void OnInitMenu(CMenu* pMenu);
 };

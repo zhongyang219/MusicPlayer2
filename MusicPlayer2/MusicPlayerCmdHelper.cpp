@@ -709,6 +709,29 @@ void CMusicPlayerCmdHelper::OnViewInMediaLib(eMediaLibTab tab, const std::wstrin
     }
 }
 
+void CMusicPlayerCmdHelper::OnViewInMediaLib(const ListItem& list_item)
+{
+    CMusicPlayerCmdHelper::eMediaLibTab tab{};
+    switch (list_item.type)
+    {
+    case LT_FOLDER: tab = CMusicPlayerCmdHelper::ML_FOLDER; break;
+    case LT_PLAYLIST: tab = CMusicPlayerCmdHelper::ML_PLAYLIST; break;
+    case LT_MEDIA_LIB:
+        switch (list_item.medialib_type)
+        {
+        case CMediaClassifier::CT_ARTIST: tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
+        case CMediaClassifier::CT_ALBUM: tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
+        case CMediaClassifier::CT_GENRE: tab = CMusicPlayerCmdHelper::ML_GENRE; break;
+        case CMediaClassifier::CT_YEAR: tab = CMusicPlayerCmdHelper::ML_YEAR; break;
+        case CMediaClassifier::CT_TYPE: tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
+        case CMediaClassifier::CT_BITRATE: tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
+        case CMediaClassifier::CT_RATING: tab = CMusicPlayerCmdHelper::ML_RATING; break;
+        case CMediaClassifier::CT_NONE: tab = CMusicPlayerCmdHelper::ML_ALL; break;
+        }
+    }
+    OnViewInMediaLib(tab, list_item.path);
+}
+
 void CMusicPlayerCmdHelper::OnViewArtist(const SongInfo& song_info)
 {
     vector<wstring> artist_list;

@@ -7,6 +7,9 @@
 #include "FindListDlg.h"
 #include "UiMediaLibItemMgr.h"
 #include "MusicPlayerCmdHelper.h"
+#include "FolderPropertiesDlg.h"
+#include "PlaylistPropertiesDlg.h"
+#include "MediaLibItemPropertiesDlg.h"
 
 // CFindListDlg 对话框
 
@@ -65,7 +68,10 @@ void CFindListDlg::AddListCacheData(const CListCache& list_cache)
 		row_data[COL_NAME] = list_data.GetDisplayName();
 		row_data[COL_TRACK_NUM] = std::to_wstring(list_data.total_num);
 		m_list_data.push_back(std::move(row_data));
-		m_all_list_items.push_back(list_data);
+		FindListItem list_item;
+		list_item.list_data = list_data;
+		list_item.item_from = ItemFrom::RECENT_PLAYED;
+		m_all_list_items.push_back(list_item);
 	}
 }
 
@@ -78,14 +84,18 @@ void CFindListDlg::AddMediaLibItem(CMediaClassifier::ClassificationType type)
 		list_data.type = LT_MEDIA_LIB;
 		list_data.medialib_type = type;
 		list_data.path = CUiMediaLibItemMgr::Instance().GetItemName(type, i);
+		list_data.total_num = CUiMediaLibItemMgr::Instance().GetItemSongCount(type, i);
 		auto iter = std::find(m_all_list_items.begin(), m_all_list_items.end(), list_data);
 		//不添加重复的项目
 		if (iter == m_all_list_items.end())
 		{
-			m_all_list_items.push_back(list_data);
+			FindListItem list_item;
+			list_item.list_data = list_data;
+			list_item.item_from = ItemFrom::MEDIALIB_ITEM;
+			m_all_list_items.push_back(list_item);
 			CListCtrlEx::RowData row_data;
 			row_data[COL_NAME] = CUiMediaLibItemMgr::Instance().GetItemDisplayName(type, i);
-			row_data[COL_TRACK_NUM] = std::to_wstring(CUiMediaLibItemMgr::Instance().GetItemSongCount(type, i));
+			row_data[COL_TRACK_NUM] = std::to_wstring(list_data.total_num);
 			m_list_data.push_back(std::move(row_data));
 		}
 	}
@@ -103,11 +113,15 @@ void CFindListDlg::AddAllFolders()
 			ListItem list_data;
 			list_data.type = LT_FOLDER;
 			list_data.path = folder_path + L'\\';	//文件夹路径末尾添加一个反斜杠，使得其格式和CListCache中的文件夹一致
+			list_data.total_num = _wtoi(track_num.c_str());
 			auto iter = std::find(m_all_list_items.begin(), m_all_list_items.end(), list_data);
 			//不添加重复的项目
 			if (iter == m_all_list_items.end())
 			{
-				m_all_list_items.push_back(list_data);
+				FindListItem list_item;
+				list_item.list_data = list_data;
+				list_item.item_from = ItemFrom::FOLDER_EXPLORE;
+				m_all_list_items.push_back(list_item);
 				CListCtrlEx::RowData row_data;
 				row_data[COL_NAME] = folder_path;
 				row_data[COL_TRACK_NUM] = track_num;
@@ -133,7 +147,7 @@ void CFindListDlg::ShowList()
 			int index = m_search_result[i];
 			if (index >= 0 && index < static_cast<int>(m_all_list_items.size()))
 			{
-				IconMgr::IconType icon = m_all_list_items[index].GetTypeIcon();
+				IconMgr::IconType icon = m_all_list_items[index].list_data.GetTypeIcon();
 				m_list_ctrl.SetItemIcon(i, theApp.m_icon_mgr.GetHICON(icon, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16));
 			}
 		}
@@ -142,7 +156,7 @@ void CFindListDlg::ShowList()
 	{
 		for (int i{}; i < static_cast<int>(m_all_list_items.size()); i++)
 		{
-			IconMgr::IconType icon = m_all_list_items[i].GetTypeIcon();
+			IconMgr::IconType icon = m_all_list_items[i].list_data.GetTypeIcon();
 			m_list_ctrl.SetItemIcon(i, theApp.m_icon_mgr.GetHICON(icon, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16));
 		}
 	}
@@ -177,6 +191,31 @@ void CFindListDlg::SetPlaySelectedEnable(bool enable)
 	::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
 }
 
+CFindListDlg::FindListItem CFindListDlg::GetSelectedItem() const
+{
+	FindListItem list_item;
+	int cur_sel = m_list_ctrl.GetCurSel();
+	if (m_searched)
+	{
+		if (cur_sel >= 0 && cur_sel < static_cast<int>(m_search_result.size()))
+		{
+			int index = m_search_result[cur_sel];
+			if (index >= 0 && index < static_cast<int>(m_all_list_items.size()))
+			{
+				list_item = m_all_list_items[index];
+			}
+		}
+	}
+	else
+	{
+		if (cur_sel >= 0 && cur_sel < static_cast<int>(m_all_list_items.size()))
+		{
+			list_item = m_all_list_items[cur_sel];
+		}
+	}
+	return list_item;
+}
+
 void CFindListDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CTabDlg::DoDataExchange(pDX);
@@ -190,6 +229,13 @@ BEGIN_MESSAGE_MAP(CFindListDlg, CTabDlg)
 	ON_EN_CHANGE(IDC_SEARCH_EDIT, &CFindListDlg::OnEnChangeSearchEdit)
 	ON_NOTIFY(NM_CLICK, IDC_SONG_LIST, &CFindListDlg::OnNMClickSongList)
 	ON_WM_SIZE()
+	ON_NOTIFY(NM_DBLCLK, IDC_SONG_LIST, &CFindListDlg::OnNMDblclkSongList)
+	ON_NOTIFY(NM_RCLICK, IDC_SONG_LIST, &CFindListDlg::OnNMRClickSongList)
+	ON_COMMAND(ID_PLAY_ITEM, &CFindListDlg::OnPlayItem)
+	ON_COMMAND(ID_COPY_TEXT, &CFindListDlg::OnCopyText)
+	ON_COMMAND(ID_VIEW_IN_MEDIA_LIB, &CFindListDlg::OnViewInMediaLib)
+	ON_COMMAND(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES, &CFindListDlg::OnLibRecentPlayedItemProperties)
+	ON_WM_INITMENU()
 END_MESSAGE_MAP()
 
 
@@ -218,30 +264,11 @@ BOOL CFindListDlg::OnInitDialog()
 void CFindListDlg::OnOK()
 {
 	//获取选中的项目
-	ListItem list_data;
-	int cur_sel = m_list_ctrl.GetCurSel();
-	if (m_searched)
-	{
-		if (cur_sel >= 0 && cur_sel < static_cast<int>(m_search_result.size()))
-		{
-			int index = m_search_result[cur_sel];
-			if (index >= 0 && index < static_cast<int>(m_all_list_items.size()))
-			{
-				list_data = m_all_list_items[index];
-			}
-		}
-	}
-	else
-	{
-		if (cur_sel >= 0 && cur_sel < static_cast<int>(m_all_list_items.size()))
-		{
-			list_data = m_all_list_items[cur_sel];
-		}
-	}
-	if (!list_data.empty())
+	FindListItem list_item = GetSelectedItem();
+	if (!list_item.list_data.empty())
 	{
 		CMusicPlayerCmdHelper helper;
-		helper.OnListItemSelected(list_data, true);
+		helper.OnListItemSelected(list_item.list_data, true);
 	}
 
 	CTabDlg::OnOK();
@@ -303,4 +330,85 @@ void CFindListDlg::OnSize(UINT nType, int cx, int cy)
 		m_list_ctrl.SetColumnWidth(COL_NAME, width0);
 		m_list_ctrl.SetColumnWidth(COL_TRACK_NUM, width1);
 	}
+}
+
+
+void CFindListDlg::OnNMDblclkSongList(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	OnOK();
+	*pResult = 0;
+}
+
+
+void CFindListDlg::OnNMRClickSongList(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+
+	//弹出右键菜单
+	CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::FindListMenu);
+	m_list_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
+	*pResult = 0;
+}
+
+
+void CFindListDlg::OnPlayItem()
+{
+	OnOK();
+}
+
+
+void CFindListDlg::OnCopyText()
+{
+	FindListItem list_item = GetSelectedItem();
+	if (list_item.list_data.empty())
+		return;
+	if (!CCommon::CopyStringToClipboard(list_item.list_data.GetDisplayName()))
+		AfxMessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), MB_ICONWARNING);
+}
+
+
+void CFindListDlg::OnViewInMediaLib()
+{
+	FindListItem list_item = GetSelectedItem();
+	if (list_item.list_data.empty())
+		return;
+	CMusicPlayerCmdHelper helper;
+	helper.OnViewInMediaLib(list_item.list_data);
+}
+
+
+void CFindListDlg::OnLibRecentPlayedItemProperties()
+{
+	FindListItem list_item = GetSelectedItem();
+	if (list_item.list_data.empty())
+		return;
+	if (list_item.list_data.type == LT_FOLDER)
+	{
+		CFolderPropertiesDlg dlg(list_item.list_data);
+		dlg.DoModal();
+	}
+	else if (list_item.list_data.type == LT_PLAYLIST)
+	{
+		CPlaylistPropertiesDlg dlg(list_item.list_data);
+		dlg.DoModal();
+	}
+	else if (list_item.list_data.type == LT_MEDIA_LIB)
+	{
+		CMediaLibItemPropertiesDlg dlg(list_item.list_data);
+		dlg.DoModal();
+	}
+}
+
+
+void CFindListDlg::OnInitMenu(CMenu* pMenu)
+{
+	CTabDlg::OnInitMenu(pMenu);
+
+	FindListItem list_item = GetSelectedItem();
+	bool select_valid = m_list_ctrl.GetCurSel() >= 0;
+	pMenu->EnableMenuItem(ID_PLAY_ITEM, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_COPY_TEXT, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_VIEW_IN_MEDIA_LIB, MF_BYCOMMAND | (select_valid && (list_item.item_from == ItemFrom::RECENT_PLAYED || list_item.item_from == ItemFrom::MEDIALIB_ITEM) ? MF_ENABLED : MF_GRAYED));
+	pMenu->EnableMenuItem(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES, MF_BYCOMMAND | (select_valid && list_item.item_from == ItemFrom::RECENT_PLAYED ? MF_ENABLED : MF_GRAYED));
 }

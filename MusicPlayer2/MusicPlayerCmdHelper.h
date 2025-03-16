@@ -74,6 +74,7 @@ public:
 
     //在媒体库中查看
     void OnViewInMediaLib(eMediaLibTab tab, const std::wstring name);
+    void OnViewInMediaLib(const ListItem& list_item);
 
     //查看艺术家
     void OnViewArtist(const SongInfo& song_info);

@@ -289,7 +289,7 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
         return L"LIB_LEFT";
     case MenuMgr::LibRightMenu: case MenuMgr::UiMyFavouriteMenu: case MenuMgr::LibPlaylistRightMenu:
         return L"LIB_RIGHT";
-    case MenuMgr::UiRecentPlayedMenu:
+    case MenuMgr::UiRecentPlayedMenu: case MenuMgr::FindListMenu:
         return L"UI_RECENT_PLAYED";
     case MenuMgr::LibPlaylistSortMenu:
         return L"LIB_PLAYLIST_SORT";
@@ -1020,6 +1020,15 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_COVER_DELETE), IconMgr::IconType::IT_Cancel);
         menu.AppendItem(EX_ID(ID_COVER_SAVE_AS), IconMgr::IconType::IT_Save_As);
         menu.AppendItem(EX_ID(ID_COMPRESS_SIZE));
+        break;
+    case MenuMgr::FindListMenu:
+        menu.CreateMenu(true, false);
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM), IconMgr::IconType::IT_Play);
+        menu.SetDefaultItem();
+        menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
+        menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_VIEW_IN_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
+        menu.AppendItem(EX_ID(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES), IconMgr::IconType::IT_Info);
         break;
     default:
         ASSERT(false);                  // 参数错误或缺少case或缺少break
