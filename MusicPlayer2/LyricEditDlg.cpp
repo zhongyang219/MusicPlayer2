@@ -27,38 +27,52 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
     if (m_lyric_type == CLyrics::LyricType::LY_KSC)
         return;
     int start, end;			//光标选中的起始的结束位置
-    int tag_index;		//要操作的时间标签的位置
     m_view->GetSel(start, end);
-    tag_index = m_lyric_string.rfind(L"\r\n", start - 1);	//从光标位置向前查找\r\n的位置
-    if (tag_index == string::npos || start == 0)
-        tag_index = 0;									//如果没有找到，则插入点的位置是最前面
+    size_t line_start;		    //当前行的起始位置
+    line_start = m_lyric_string.rfind(L"\r\n", start - 1);	//从光标位置向前查找\r\n的位置
+    if (line_start == string::npos || start == 0)
+        line_start = 0;									//如果没有找到，则插入点的位置是最前面
     else
-        tag_index += 2;
+        line_start += 2;
+    size_t line_end;           //当前行的结束位置
+    line_end = m_lyric_string.find(L"\r\n", end);
 
     Time time_tag{ CPlayer::GetInstance().GetCurrentPosition() };		//获取当前播放时间
     wchar_t time_tag_str[16];
     swprintf_s(time_tag_str, L"[%.2d:%.2d.%.2d]", time_tag.min, time_tag.sec, time_tag.msec / 10);
 
-    int index2;		//当前时间标签的结束位置
-    int tag_length;		//当前时间标签的长度
-    int tag_index2;		//光标所在处时间标签开始的位置
-    index2 = m_lyric_string.find(L']', tag_index);
-    tag_length = index2 - tag_index + 1;
+    //查找当前行时间标签的位置
+    size_t tag_start = m_lyric_string.find(L'[', line_start);   //查找时间标签的开始位置
+    if (tag_start > line_end)
+        tag_start = wstring::npos;
+    size_t tag_end = m_lyric_string.find(L']', line_start);     //查找时间标签的结束位置
+    if (tag_end < tag_start || tag_end > line_end)
+        tag_end = wstring::npos;
+
     switch (operation)
     {
     case TagOpreation::INSERT:			//插入时间标签（在光标所在行的最左边插入）
-        m_lyric_string.insert(tag_index, time_tag_str);
+    {
+        m_lyric_string.insert(line_start, time_tag_str);
         break;
+    }
     case TagOpreation::REPLACE:			//替换时间标签（替换光标所在行的左边的标签）
-        m_lyric_string.replace(tag_index, tag_length, time_tag_str, wcslen(time_tag_str));
+    {
+        //如果当前行没有时间标签，则插入时间标签
+        if (tag_start == wstring::npos || tag_end == wstring::npos) //如果当前行没有时间标签，则插入时间标签
+            m_lyric_string.insert(line_start, time_tag_str);
+        //替换时间标签
+        else
+            m_lyric_string.replace(tag_start, tag_end - tag_start + 1, time_tag_str, wcslen(time_tag_str));
         break;
+    }
     case TagOpreation::DELETE_:			//删除时间标签（删除光标所在处的标签）
-        tag_index2 = m_lyric_string.rfind(L'[', start);
-        if (tag_index2 < tag_index) tag_index2 = tag_index;
-        index2 = m_lyric_string.find(L']', tag_index2);
-        tag_length = index2 - tag_index2 + 1;
-        m_lyric_string.erase(tag_index2, tag_length);
+    {
+        if (tag_start == wstring::npos || tag_end == wstring::npos)
+            break;
+        m_lyric_string.erase(tag_start, tag_end - tag_start + 1);
         break;
+    }
     }
 
 
@@ -82,7 +96,7 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
     if (operation != TagOpreation::DELETE_)
         m_view->SetSel(next_index, next_index, m_lyric_string);
     else
-        m_view->SetSel(tag_index, tag_index, m_lyric_string);
+        m_view->SetSel(line_start, line_start, m_lyric_string);
     m_view->SetFocus();
     m_modified = true;
     UpdateStatusbarInfo();
