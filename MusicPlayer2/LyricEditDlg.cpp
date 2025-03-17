@@ -975,15 +975,18 @@ void CLyricEditDlg::OnLyricSwapTextAndTranslation()
 {
     // TODO: 在此添加命令处理程序代码
     CLyrics lyrics;
-    lyrics.LyricsFromRowString(m_lyric_string);
-    lyrics.SwapTextAndTranslation();
-    m_lyric_string = lyrics.GetLyricsString2(lyrics.IsTextAndTranslationInSameLine());
+    if (lyrics.IsTranslated())
     {
-        CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
-        m_view->SetTextW(m_lyric_string);
+        lyrics.LyricsFromRowString(m_lyric_string);
+        lyrics.SwapTextAndTranslation();
+        m_lyric_string = lyrics.GetLyricsString2(lyrics.IsTextAndTranslationInSameLine());
+        {
+            CScintillaEditView::KeepCurrentLine keep_cur_line(m_view);
+            m_view->SetTextW(m_lyric_string);
+        }
+        m_modified = true;
+        UpdateStatusbarInfo();
     }
-    m_modified = true;
-    UpdateStatusbarInfo();
 }
 
 
