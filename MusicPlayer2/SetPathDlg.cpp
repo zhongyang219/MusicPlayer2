@@ -93,7 +93,7 @@ const ListItem& CSetPathDlg::GetSelPath() const
 
 bool CSetPathDlg::SelectedCanPlay() const
 {
-    return SelectValid() && CRecentList::Instance().IsCurrentList(GetSelPath());
+    return SelectValid() && !CRecentList::Instance().IsCurrentList(GetSelPath());
 }
 
 void CSetPathDlg::SetButtonsEnable()
@@ -405,7 +405,7 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
 
     // TODO: 在此处添加消息处理程序代码
     bool select_valid{ SelectValid() };
-    pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_BROWSE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
