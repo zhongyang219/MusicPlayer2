@@ -77,31 +77,29 @@ void CFindListDlg::AddListCacheData(const CListCache& list_cache)
 
 void CFindListDlg::AddMediaLibItem(CMediaClassifier::ClassificationType type)
 {
-    //这里比较耗时，考虑在某个地方做一个缓存。
-    //并保证即使“媒体库设置”中开启了“其他”，也添加所有媒体库项目
-    CMediaClassifier classifier(type, false);
-    classifier.ClassifyMedia();
-    for (const auto& item : classifier.GetMeidaList())
-    {
-        ListItem list_data;
-        list_data.type = LT_MEDIA_LIB;
-        list_data.medialib_type = type;
-        list_data.path = item.first;
-        list_data.total_num = static_cast<int>(item.second.size());
-        auto iter = std::find(m_all_list_items.begin(), m_all_list_items.end(), list_data);
-        //不添加重复的项目
-        if (iter == m_all_list_items.end())
-        {
-            FindListItem list_item;
-            list_item.list_data = list_data;
-            list_item.item_from = ItemFrom::MEDIALIB_ITEM;
-            m_all_list_items.push_back(list_item);
-            CListCtrlEx::RowData row_data;
-            row_data[COL_NAME] = list_data.GetDisplayName();
-            row_data[COL_TRACK_NUM] = std::to_wstring(list_data.total_num);
-            m_list_data.push_back(std::move(row_data));
-        }
-    }
+    //这里考虑即使没有在媒体库设置中勾选“将只有一项的分类归到其他类中”，也应该添加所有项目
+	int item_count = CUiMediaLibItemMgr::Instance().GetItemCount(type);
+	for (int i{}; i < item_count; i++)
+	{
+		ListItem list_data;
+		list_data.type = LT_MEDIA_LIB;
+		list_data.medialib_type = type;
+		list_data.path = CUiMediaLibItemMgr::Instance().GetItemName(type, i);
+		list_data.total_num = CUiMediaLibItemMgr::Instance().GetItemSongCount(type, i);
+		auto iter = std::find(m_all_list_items.begin(), m_all_list_items.end(), list_data);
+		//不添加重复的项目
+		if (iter == m_all_list_items.end())
+		{
+			FindListItem list_item;
+			list_item.list_data = list_data;
+			list_item.item_from = ItemFrom::MEDIALIB_ITEM;
+			m_all_list_items.push_back(list_item);
+			CListCtrlEx::RowData row_data;
+			row_data[COL_NAME] = CUiMediaLibItemMgr::Instance().GetItemDisplayName(type, i);
+			row_data[COL_TRACK_NUM] = std::to_wstring(list_data.total_num);
+			m_list_data.push_back(std::move(row_data));
+		}
+	}
 }
 
 void CFindListDlg::AddAllFolders()
