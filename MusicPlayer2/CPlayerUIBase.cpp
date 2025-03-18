@@ -1587,6 +1587,11 @@ int CPlayerUIBase::DrawAreaHeight() const
     return info_height;
 }
 
+int CPlayerUIBase::TopRightButtonsWidth() const
+{
+    return m_top_right_buttons_width;
+}
+
 bool CPlayerUIBase::PointInControlArea(CPoint point) const
 {
     bool point_in_control = false;
@@ -2066,10 +2071,12 @@ void CPlayerUIBase::DrawTopRightIcons()
     rect_btn.top = EdgeMargin(false);
     rect_btn.bottom = rect_btn.top + icon_size;
     rect_btn.left = rect_btn.right - icon_size;
+    int icon_num{};
     //绘制“全屏”图标（全屏模式下总是显示“退出全屏”图标）
     if (theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar || m_ui_data.full_screen)
     {
         DrawUIButton(rect_btn, BTN_FULL_SCREEN_TITLEBAR);
+        icon_num++;
     }
     else
     {
@@ -2082,6 +2089,7 @@ void CPlayerUIBase::DrawTopRightIcons()
     {
         rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
         DrawUIButton(rect_btn, BTN_MINI_TITLEBAR);
+        icon_num++;
     }
     else
     {
@@ -2092,6 +2100,7 @@ void CPlayerUIBase::DrawTopRightIcons()
     {
         rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
         DrawUIButton(rect_btn, BTN_DARK_LIGHT_TITLE_BAR);
+        icon_num++;
     }
     else
     {
@@ -2103,6 +2112,7 @@ void CPlayerUIBase::DrawTopRightIcons()
     {
         rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
         DrawUIButton(rect_btn, BTN_SKIN_TITLEBAR);
+        icon_num++;
     }
     else
     {
@@ -2113,6 +2123,7 @@ void CPlayerUIBase::DrawTopRightIcons()
     {
         rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
         DrawUIButton(rect_btn, BTN_SETTING_TITLEBAR);
+        icon_num++;
     }
     else
     {
@@ -2123,11 +2134,13 @@ void CPlayerUIBase::DrawTopRightIcons()
     {
         rect_btn.MoveToX(rect_btn.left - icon_size - DPI(4));
         DrawUIButton(rect_btn, BTN_MENU_TITLEBAR);
+        icon_num++;
     }
     else
     {
         m_buttons[BTN_MENU_TITLEBAR].rect.SetRectEmpty();
     }
+    m_top_right_buttons_width = icon_num * (icon_size + DPI(4));
 }
 
 void CPlayerUIBase::DrawCurrentTime()

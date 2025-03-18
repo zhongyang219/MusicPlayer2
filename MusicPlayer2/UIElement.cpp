@@ -144,6 +144,16 @@ int UiElement::Element::GetHeight(CRect parent_rect) const
     return h;
 }
 
+bool UiElement::Element::IsWidthValid() const
+{
+    return width.IsValid();
+}
+
+bool UiElement::Element::IsHeightValid() const
+{
+    return height.IsValid();
+}
+
 CRect UiElement::Element::GetRect() const
 {
     return rect;
@@ -215,14 +225,14 @@ void UiElement::Element::CalculateRect()
         if (margin_bottom.IsValid())
             rect.bottom = rect_parent.bottom - margin_bottom.GetValue(rect_parent);
 
-        if (width.IsValid())
+        if (IsWidthValid())
         {
             if (!x.IsValid() && !margin_left.IsValid() && margin_right.IsValid())
                 rect.left = rect.right - width.GetValue(rect_parent);
             else
                 rect.right = rect.left + width.GetValue(rect_parent);
         }
-        if (height.IsValid())
+        if (IsHeightValid())
         {
             if (!y.IsValid() && !margin_top.IsValid() && margin_bottom.IsValid())
                 rect.top = rect.bottom - height.GetValue(rect_parent);
@@ -304,7 +314,7 @@ void UiElement::Layout::CalculateChildrenRect()
             }
             else
             {
-                if (child->width.IsValid() && child->proportion < 1)    // proportion设定时忽略width
+                if (child->IsWidthValid() && child->proportion < 1)    // proportion设定时忽略width
                 {
                     int width{ child->GetWidth(GetRect()) };
                     total_size += width;
@@ -400,7 +410,7 @@ void UiElement::Layout::CalculateChildrenRect()
         {
             auto& child{ childLst[i] };
             CRect child_rect{};
-            if (child->height.IsValid())
+            if (child->IsHeightValid())
             {
                 int child_height = child->GetHeight(GetRect());
                 int max_height = GetRect().Height() - child->margin_top.GetValue(GetRect()) - child->margin_bottom.GetValue(GetRect());
@@ -453,7 +463,7 @@ void UiElement::Layout::CalculateChildrenRect()
             }
             else
             {
-                if (child->height.IsValid() && child->proportion < 1)       // proportion设定时忽略height
+                if (child->IsHeightValid() && child->proportion < 1)       // proportion设定时忽略height
                 {
                     int height{ child->GetHeight(GetRect()) };
                     total_size += height;
@@ -549,7 +559,7 @@ void UiElement::Layout::CalculateChildrenRect()
         {
             auto& child{ childLst[i] };
             CRect child_rect{};
-            if (child->width.IsValid())
+            if (child->IsWidthValid())
             {
                 int child_width = child->GetWidth(GetRect());
                 int max_width = GetRect().Width() - child->margin_left.GetValue(GetRect()) - child->margin_right.GetValue(GetRect());
@@ -788,7 +798,7 @@ void UiElement::Button::FromString(const std::string& key_type)
 int UiElement::Button::GetMaxWidth(CRect parent_rect) const
 {
     //显示文本，并且没有指定宽度时时跟随文本宽度
-    if (show_text && !width.IsValid())
+    if (show_text && !IsWidthValid())
     {
         std::wstring text = ui->GetButtonText(key);
         //第一次执行到这里时，由于rect还没有从layout元素中计算出来，因此这里做一下判断，如果高度为0，则直接获取height的值
@@ -2841,9 +2851,16 @@ void UiElement::MiniSpectrum::Draw()
 int UiElement::PlaceHolder::GetWidth(CRect parent_rect) const
 {
     if (IsHide())
+    {
         return 0;
+    }
     else
-        return Element::GetWidth(parent_rect);
+    {
+        if (show_when_use_system_titlebar)
+            return ui->TopRightButtonsWidth();
+        else
+            return Element::GetWidth(parent_rect);
+    }
 }
 
 int UiElement::PlaceHolder::GetHeight(CRect parent_rect) const
@@ -2852,6 +2869,13 @@ int UiElement::PlaceHolder::GetHeight(CRect parent_rect) const
         return 0;
     else
         return Element::GetHeight(parent_rect);
+}
+
+bool UiElement::PlaceHolder::IsWidthValid() const
+{
+    if (show_when_use_system_titlebar)
+        return true;
+    return Element::IsWidthValid();
 }
 
 bool UiElement::PlaceHolder::IsHide() const
