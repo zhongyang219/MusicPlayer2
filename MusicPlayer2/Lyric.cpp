@@ -796,10 +796,12 @@ wstring CLyrics::GetLyricsString() const
     return lyric_string;
 }
 
-wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line) const
+wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line, LyricType lyric_type) const
 {
     std::wstringstream lyric_string;
-    if (m_lyric_type == LyricType::LY_LRC || m_lyric_type == LyricType::LY_LRC_NETEASE)
+    if (lyric_type == LyricType::LY_AUTO)
+        lyric_type = m_lyric_type;
+    if (lyric_type == LyricType::LY_LRC || lyric_type == LyricType::LY_LRC_NETEASE)
     {
         if (m_id_tag) lyric_string << L"[id:" << m_id << L"]\r\n";
         if (m_ti_tag) lyric_string << L"[ti:" << m_ti << L"]\r\n";
@@ -846,7 +848,7 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line) const
             lyric_string << line_str << L"\r\n";
         }
     }
-    else if (m_lyric_type == LyricType::LY_KSC)
+    else if (lyric_type == LyricType::LY_KSC)
     {
         for (const wstring& str : m_lyrics_str) // 不清楚规则故暂不修改非歌词行
         {
@@ -890,7 +892,7 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line) const
             lyric_string << L"');\r\n";
         }
     }
-    else if (m_lyric_type == LyricType::LY_VTT)
+    else if (lyric_type == LyricType::LY_VTT)
     {
         // 更不完整的实体引用转义
         auto escapeStr = [](wstring str) -> wstring

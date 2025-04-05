@@ -153,8 +153,22 @@ bool CLyricEditDlg::SaveLyric(wstring path, CodeType code_type)
             SetLyricPathEditText();
             path = m_lyric_path;
         }
+        std::wstring saved_lyric_contents;
+        //如果是将非lrc格式歌词保存为lrc格式
+        std::wstring saved_extension = CFilePathHelper(path).GetFileExtension();
+        if (m_lyric_type != CLyrics::LyricType::LY_LRC && m_lyric_type != CLyrics::LyricType::LY_LRC_NETEASE && saved_extension == L"lrc")
+        {
+            CLyrics lyrics;
+            lyrics.LyricsFromRowString(m_lyric_string, m_lyric_type);
+            saved_lyric_contents = lyrics.GetLyricsString2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line, CLyrics::LyricType::LY_LRC);
+        }
+        else
+        {
+            saved_lyric_contents = m_lyric_string;
+        }
+
         bool char_connot_convert;
-        string lyric_str = CCommon::UnicodeToStr(m_lyric_string, code_type, &char_connot_convert);
+        string lyric_str = CCommon::UnicodeToStr(saved_lyric_contents, code_type, &char_connot_convert);
         if (char_connot_convert)	//当文件中包含Unicode字符时，询问用户是否要选择一个Unicode编码格式再保存
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_UNICODE_WARNING");
