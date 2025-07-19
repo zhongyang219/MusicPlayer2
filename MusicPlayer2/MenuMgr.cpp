@@ -44,10 +44,13 @@ public:
             mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
         }
 #ifndef COMPILE_IN_WIN_XP
-        if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
+        if (!CWinVersionHelper::IsWine())
         {
-            mii.fMask |= MIIM_BITMAP;
-            mii.hbmpItem = hBmp;
+            if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
+            {
+                mii.fMask |= MIIM_BITMAP;
+                mii.hbmpItem = hBmp;
+            }
         }
 #endif
         m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
@@ -61,10 +64,13 @@ public:
         wstring menu_text = theApp.m_str_table.LoadMenuText(MenuMgr::GetMenuNameStr(m_menu_type), MenuMgr::GetMenuNameStr(sub_menu_type));
         mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
 #ifndef COMPILE_IN_WIN_XP
-        if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
+        if (!CWinVersionHelper::IsWine())
         {
-            mii.fMask |= MIIM_BITMAP;
-            mii.hbmpItem = hBmp;
+            if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
+            {
+                mii.fMask |= MIIM_BITMAP;
+                mii.hbmpItem = hBmp;
+            }
         }
 #endif
         m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);

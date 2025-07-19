@@ -554,7 +554,10 @@ wstring CMusicPlayerApp::GetSystemInfoString()
     std::wstringstream wss;
     wss << L"System Info:\r\n"
         << L"Windows Version: " << CWinVersionHelper::GetMajorVersion() << L'.' << CWinVersionHelper::GetMinorVersion()
-        << L" build " << CWinVersionHelper::GetBuildNumber() << L"\r\n"
+        << L" build " << CWinVersionHelper::GetBuildNumber();
+    if (CWinVersionHelper::IsWine())
+        wss << L" (Wine)";
+    wss << L"\r\n"
         << L"DPI: " << GetDPI() << L"\r\n";
 
     wss << L"System Language List:\r\n";
