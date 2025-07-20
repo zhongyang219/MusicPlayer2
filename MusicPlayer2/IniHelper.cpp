@@ -261,13 +261,12 @@ bool CIniHelper::Save()
 
 void CIniHelper::UnEscapeString(wstring& str)
 {
-    if (str.find(L'\\') == wstring::npos) // 仅含有‘\’时需要处理转义字符
-        return;
     bool escape{ false };
     wstring result;
     result.reserve(str.size());
-    for (const wchar_t ch : str)
+    for (size_t i = 0; i < str.size(); i++)
     {
+        wchar_t ch = str[i];
         if (escape)
         {
             switch (ch)
@@ -285,6 +284,8 @@ void CIniHelper::UnEscapeString(wstring& str)
         }
         else if (ch == L'\\')
             escape = true;
+        else if (i > 0 && ch == '\"' && str[i - 1] == '\"')     //两个连续的引号只保留一个引号
+            continue;
         else
             result += ch;
     }
