@@ -1015,7 +1015,10 @@ bool CPlayer::SetList(ListItem list_item, bool play, bool force)
     if (!force)
     {
         play_song = list_item.last_track;
-        m_current_position.fromInt(list_item.last_position);
+        if (theApp.m_play_setting_data.remember_last_position)
+            m_current_position.fromInt(list_item.last_position);
+        else
+            m_current_position.fromInt(0);
     }
 
     switch (list_item.type)
@@ -1057,7 +1060,9 @@ bool CPlayer::SetList(ListItem list_item, bool play, bool force)
 
     if (!IsPlaylistMode() && !play_song.path.empty())
         m_current_song_tmp = CSongDataManager::GetInstance().GetSongInfo(play_song);
-    m_current_song_position_tmp = list_item.last_position;
+    
+    if (theApp.m_play_setting_data.remember_last_position)
+        m_current_song_position_tmp = list_item.last_position;
     
     IniPlayList(play, {}, play_song);
     return true;

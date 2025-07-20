@@ -344,6 +344,8 @@
 #define IDC_LYRIC_PATH_EDIT             1029
 #define IDC_BITRATE_CHECK               1029
 #define IDC_SHOW_FPS_CHECK              1029
+#define IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK2 1029
+#define IDC_REMEMBER_LAST_POSITION_CHECK 1029
 #define IDC_ALL_CHECK                   1030
 #define IDC_FONT_SIZE_EDIT2             1030
 #define IDC_SLIDER1                     1031

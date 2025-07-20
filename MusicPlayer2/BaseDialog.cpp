@@ -260,7 +260,8 @@ void CBaseDialog::SetMinSize(int cx, int cy)
 void CBaseDialog::SetDlgControlText(int id, const wchar_t* key)
 {
     const wstring& temp = theApp.m_str_table.LoadText(key);
-    SetDlgItemTextW(id, temp.c_str());
+    if (!temp.empty() && temp != StrTable::error_str)
+        SetDlgItemTextW(id, temp.c_str());
 }
 
 void CBaseDialog::DoDataExchange(CDataExchange* pDX)

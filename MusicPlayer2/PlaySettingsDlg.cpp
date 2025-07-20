@@ -98,6 +98,7 @@ void CPlaySettingsDlg::GetDataFromUi()
     m_data.fade_effect = (IsDlgButtonChecked(IDC_SOUND_FADE_CHECK) != FALSE);
     m_data.continue_when_switch_playlist = (IsDlgButtonChecked(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK) != FALSE);
     m_data.use_media_trans_control = (IsDlgButtonChecked(IDC_USE_MEDIA_TRANS_CONTORL_CHECK) != FALSE);
+    m_data.remember_last_position = (IsDlgButtonChecked(IDC_REMEMBER_LAST_POSITION_CHECK) != FALSE);
 
     m_data.use_mci = (IsDlgButtonChecked(IDC_MCI_RADIO) != FALSE);
     m_data.use_ffmpeg = (IsDlgButtonChecked(IDC_FFMPEG_RADIO) != FALSE);
@@ -136,6 +137,9 @@ bool CPlaySettingsDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_USE_MEDIA_TRANS_CONTROL");
     SetDlgItemTextW(IDC_USE_MEDIA_TRANS_CONTORL_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_CORE");
+
+    SetDlgControlText(IDC_REMEMBER_LAST_POSITION_CHECK, L"TXT_OPT_REMEMBER_LAST_POSITION");
+
     SetDlgItemTextW(IDC_TXT_OPT_PLAY_CORE_STATIC, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_CORE_BASS");
     SetDlgItemTextW(IDC_BASS_RADIO, temp.c_str());
@@ -254,6 +258,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
     CheckDlgButton(IDC_SOUND_FADE_CHECK, m_data.fade_effect);
     CheckDlgButton(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, m_data.continue_when_switch_playlist);
     CheckDlgButton(IDC_USE_MEDIA_TRANS_CONTORL_CHECK, m_data.use_media_trans_control);
+    CheckDlgButton(IDC_REMEMBER_LAST_POSITION_CHECK, m_data.remember_last_position);
 
     bool enable_ffmpeg = false;
     if (CPlayer::GetInstance().IsFfmpegCore()) {

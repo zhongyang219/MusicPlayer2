@@ -727,7 +727,7 @@ BEGIN
     CONTROL         "Continue playing when switch playlist",IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,145,8
     CONTROL         "Use system media transport controls",IDC_USE_MEDIA_TRANS_CONTORL_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,52,294,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,52,141,8
     GROUPBOX        "Player Kernal",IDC_TXT_OPT_PLAY_CORE_STATIC,7,71,309,40
     CONTROL         "BASS",IDC_BASS_RADIO,"Button",BS_AUTORADIOBUTTON,14,84,141,8
     CONTROL         "MCI (Media Control Interface)",IDC_MCI_RADIO,"Button",BS_AUTORADIOBUTTON,163,84,145,8
@@ -755,6 +755,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,308,294,8
     LTEXT           "MIDI sound font path:",IDC_TXT_OPT_DATA_MIDI_SF2_PATH_STATIC,14,321,40,8
     CONTROL         "",IDC_SF2_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,60,320,248,12
+    CONTROL         "Remember last position",IDC_REMEMBER_LAST_POSITION_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,52,145,8
 END
 
 IDD_PROPERTY_DIALOG DIALOGEX 0, 0, 344, 148
@@ -2104,7 +2106,8 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
-    0, 0, 100, 0
+    0, 0, 100, 0,
+    50, 0, 50, 0
 END
 
 IDD_PROPERTY_DIALOG AFX_DIALOG_LAYOUT
