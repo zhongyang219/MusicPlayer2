@@ -99,6 +99,7 @@ void CListCache::BuildSubList(vector<const ListItem*>& sub_list) const
         case SubsetType::ST_PLAYLIST: add = (item.type == LT_PLAYLIST); break;
         case SubsetType::ST_PLAYLIST_NO_SPEC: add = (item.type == LT_PLAYLIST && !CRecentList::IsSpecPlaylist(item)); break;
         case SubsetType::ST_MEDIA_LIB: add = (item.type == LT_MEDIA_LIB); break;
+        case SubsetType::ST_ALL: add = true; break;
         default: break;
         }
         if (add)

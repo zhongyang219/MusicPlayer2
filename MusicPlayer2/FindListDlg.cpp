@@ -31,15 +31,15 @@ void CFindListDlg::InitListData()
     {
         m_list_data.clear();
         //添加所有最近播放项目
-        CListCache list_cache(LT_ALL);
+        CListCache list_cache(CListCache::SubsetType::ST_ALL);
         list_cache.reload();
         AddListCacheData(list_cache);
         //添加媒体库项目
-        AddMediaLibItem(CMediaClassifier::CT_ARTIST);
-        AddMediaLibItem(CMediaClassifier::CT_ALBUM);
-        AddMediaLibItem(CMediaClassifier::CT_GENRE);
-        AddMediaLibItem(CMediaClassifier::CT_YEAR);
-        AddMediaLibItem(CMediaClassifier::CT_TYPE);
+        AddMediaLibItem(ListItem::ClassificationType::CT_ARTIST);
+        AddMediaLibItem(ListItem::ClassificationType::CT_ALBUM);
+        AddMediaLibItem(ListItem::ClassificationType::CT_GENRE);
+        AddMediaLibItem(ListItem::ClassificationType::CT_YEAR);
+        AddMediaLibItem(ListItem::ClassificationType::CT_TYPE);
         //添加媒体库中的所有文件夹
         AddAllFolders();
 
@@ -75,7 +75,7 @@ void CFindListDlg::AddListCacheData(const CListCache& list_cache)
     }
 }
 
-void CFindListDlg::AddMediaLibItem(CMediaClassifier::ClassificationType type)
+void CFindListDlg::AddMediaLibItem(ListItem::ClassificationType type)
 {
     //这里考虑即使没有在媒体库设置中勾选“将只有一项的分类归到其他类中”，也应该添加所有项目
 	int item_count = CUiMediaLibItemMgr::Instance().GetItemCount(type);

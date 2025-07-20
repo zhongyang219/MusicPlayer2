@@ -61,7 +61,7 @@ private:
     virtual void OnTabEntered() override;
 
     void AddListCacheData(const CListCache& list_cache);	//向m_all_list_items中添加一个CListCache中的所有项目
-    void AddMediaLibItem(CMediaClassifier::ClassificationType type);	//向m_all_list_items中添加媒体库中指定类型的所有项目
+    void AddMediaLibItem(ListItem::ClassificationType type);	//向m_all_list_items中添加媒体库中指定类型的所有项目
     void AddAllFolders();	//向m_all_list_items中添加媒体库中所有文件夹
 
     void ShowList();

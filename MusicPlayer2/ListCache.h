@@ -14,6 +14,7 @@ public:
         ST_PLAYLIST,            // 播放列表
         ST_PLAYLIST_NO_SPEC,    // 除特殊播放列表外的播放列表
         ST_MEDIA_LIB,           // 媒体库
+        ST_ALL,
         ST_MAX,
     };
 
