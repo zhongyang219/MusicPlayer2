@@ -342,7 +342,7 @@ void CPlayer::IniPlaylistComplate()
                 {
                     m_index = i;
                     m_current_position.fromInt(m_current_song_position_tmp);
-                    m_thread_info.play = m_current_song_playing_tmp;
+                    m_thread_info.play |= m_current_song_playing_tmp;
                     tmp_find = true;
                     break;
                 }
