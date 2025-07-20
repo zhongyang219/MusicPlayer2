@@ -123,7 +123,7 @@ void CPropertyTabDlg::ShowInfo()
         SetDlgItemText(IDC_CHANNELS, CSongInfoHelper::GetChannelsString(m_all_song_info[m_index].channels).c_str());
 
         //显示歌词路径
-        if(m_all_song_info[m_index].IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()) && CPlayer::GetInstance().IsInnerLyric())
+        if(m_all_song_info[m_index] == CPlayer::GetInstance().GetCurrentSongInfo() && CPlayer::GetInstance().IsInnerLyric())
             m_lyric_file_edit.SetWindowText(theApp.m_str_table.LoadText(L"TXT_INNER_LYRIC").c_str());
         else if(!m_all_song_info[m_index].lyric_file.empty())
             m_lyric_file_edit.SetWindowText(m_all_song_info[m_index].lyric_file.c_str());

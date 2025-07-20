@@ -461,7 +461,7 @@ namespace UiElement
     class MediaLibItemList : public ListElement
     {
     public:
-        CMediaClassifier::ClassificationType type{};
+        ListItem::ClassificationType type{};
 
         enum Column
         {

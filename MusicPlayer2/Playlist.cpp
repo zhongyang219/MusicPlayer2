@@ -129,7 +129,7 @@ int CPlaylistFile::AddSongsToPlaylist(const vector<SongInfo>& songs, bool insert
     int added{};
     for (const auto& file : songs)
     {
-        if (CCommon::IsItemInVector(m_playlist, [&](const SongInfo& song) { return song.IsSameSong(file); }))
+        if (std::find(m_playlist.begin(), m_playlist.end(), file) != m_playlist.end())
             continue;
         m_playlist.push_back(file);
         ++added;
@@ -151,10 +151,7 @@ bool CPlaylistFile::IsSongInPlaylist(const SongInfo& song)
 
 int CPlaylistFile::GetSongIndexInPlaylist(const SongInfo& song)
 {
-    auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&song](const SongInfo& item)
-    {
-        return song.IsSameSong(item);
-    });
+    auto iter = std::find(m_playlist.begin(), m_playlist.end(), song);
     if (iter != m_playlist.end())
         return iter - m_playlist.begin();
     else
@@ -163,7 +160,7 @@ int CPlaylistFile::GetSongIndexInPlaylist(const SongInfo& song)
 
 void CPlaylistFile::RemoveSong(const SongInfo& song)
 {
-    std::erase_if(m_playlist, [&](const SongInfo& item) { return song.IsSameSong(item); });
+    std::erase(m_playlist, song);
 }
 
 bool CPlaylistFile::IsPlaylistFile(const wstring& file_path)

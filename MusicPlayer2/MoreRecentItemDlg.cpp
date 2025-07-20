@@ -17,7 +17,7 @@ IMPLEMENT_DYNAMIC(CMoreRecentItemDlg, CBaseDialog)
 
 CMoreRecentItemDlg::CMoreRecentItemDlg(CWnd* pParent /*=nullptr*/)
     : CBaseDialog(IDD_ADD_TO_PLAYLIST_DIALOG, pParent)
-    , m_list_cache(LT_RECENT)
+    , m_list_cache(CListCache::SubsetType::ST_RECENT)
 {
 
 }

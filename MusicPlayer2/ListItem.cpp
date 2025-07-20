@@ -7,7 +7,7 @@
 #include "SongInfoHelper.h"
 
 
-ListItem::ListItem(ListType _type, wstring _path, CMediaClassifier::ClassificationType _medialib_type)
+ListItem::ListItem(ListType _type, wstring _path, ListItem::ClassificationType _medialib_type)
     : type(_type), path(_path), medialib_type(_medialib_type)
 {
 }
@@ -23,7 +23,7 @@ SortMode ListItem::GetDefaultSortMode() const
     if (type == LT_MEDIA_LIB)
     {
         // 唱片集默认按音轨号排序
-        if (type == CMediaClassifier::CT_ALBUM)
+        if (medialib_type == ClassificationType::CT_ALBUM)
             return SM_U_TRACK;
         // 其他默认按路径排序
         else
@@ -42,14 +42,14 @@ wstring ListItem::GetTypeDisplayName() const
     case LT_MEDIA_LIB:
         switch (medialib_type)
         {
-        case CMediaClassifier::CT_ARTIST: return theApp.m_str_table.LoadText(L"TXT_ARTIST");
-        case CMediaClassifier::CT_ALBUM: return theApp.m_str_table.LoadText(L"TXT_ALBUM");
-        case CMediaClassifier::CT_GENRE: return theApp.m_str_table.LoadText(L"TXT_GENRE");
-        case CMediaClassifier::CT_YEAR: return theApp.m_str_table.LoadText(L"TXT_YEAR");
-        case CMediaClassifier::CT_TYPE: return theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
-        case CMediaClassifier::CT_BITRATE: return theApp.m_str_table.LoadText(L"TXT_BITRATE");
-        case CMediaClassifier::CT_RATING: return theApp.m_str_table.LoadText(L"TXT_RATING");
-        case CMediaClassifier::CT_NONE: return theApp.m_str_table.LoadText(L"TXT_MEDIA_LIB");
+        case ClassificationType::CT_ARTIST: return theApp.m_str_table.LoadText(L"TXT_ARTIST");
+        case ClassificationType::CT_ALBUM: return theApp.m_str_table.LoadText(L"TXT_ALBUM");
+        case ClassificationType::CT_GENRE: return theApp.m_str_table.LoadText(L"TXT_GENRE");
+        case ClassificationType::CT_YEAR: return theApp.m_str_table.LoadText(L"TXT_YEAR");
+        case ClassificationType::CT_TYPE: return theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
+        case ClassificationType::CT_BITRATE: return theApp.m_str_table.LoadText(L"TXT_BITRATE");
+        case ClassificationType::CT_RATING: return theApp.m_str_table.LoadText(L"TXT_RATING");
+        case ClassificationType::CT_NONE: return theApp.m_str_table.LoadText(L"TXT_MEDIA_LIB");
         }
     }
     ASSERT(FALSE);
@@ -69,14 +69,14 @@ IconMgr::IconType ListItem::GetTypeIcon() const
     case LT_MEDIA_LIB:
         switch (medialib_type)
         {
-        case CMediaClassifier::CT_ARTIST: return IconMgr::IconType::IT_Artist;
-        case CMediaClassifier::CT_ALBUM: return IconMgr::IconType::IT_Album;
-        case CMediaClassifier::CT_GENRE: return IconMgr::IconType::IT_Genre;
-        case CMediaClassifier::CT_YEAR: return IconMgr::IconType::IT_Year;
-        case CMediaClassifier::CT_TYPE: return IconMgr::IconType::IT_File_Relate;
-        case CMediaClassifier::CT_BITRATE: return IconMgr::IconType::IT_Bitrate;
-        case CMediaClassifier::CT_RATING: return IconMgr::IconType::IT_Star;
-        case CMediaClassifier::CT_NONE: return IconMgr::IconType::IT_Media_Lib;
+        case ClassificationType::CT_ARTIST: return IconMgr::IconType::IT_Artist;
+        case ClassificationType::CT_ALBUM: return IconMgr::IconType::IT_Album;
+        case ClassificationType::CT_GENRE: return IconMgr::IconType::IT_Genre;
+        case ClassificationType::CT_YEAR: return IconMgr::IconType::IT_Year;
+        case ClassificationType::CT_TYPE: return IconMgr::IconType::IT_File_Relate;
+        case ClassificationType::CT_BITRATE: return IconMgr::IconType::IT_Bitrate;
+        case ClassificationType::CT_RATING: return IconMgr::IconType::IT_Star;
+        case ClassificationType::CT_NONE: return IconMgr::IconType::IT_Media_Lib;
         }
     }
     ASSERT(FALSE);
@@ -105,7 +105,7 @@ wstring ListItem::GetDisplayName() const
             return theApp.m_str_table.LoadText(L"TXT_PLAYLIST_NAME_TEMP");
         return CFilePathHelper(path).GetFileNameWithoutExtension();
     case LT_MEDIA_LIB:
-        if (medialib_type == CMediaClassifier::CT_NONE)     // 所有曲目
+        if (medialib_type == ClassificationType::CT_NONE)   // 所有曲目
             return theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS");
         if (path == STR_OTHER_CLASSIFY_TYPE)                // 显示名称为<其他>时
             return theApp.m_str_table.LoadText(L"TXT_CLASSIFY_OTHER");
@@ -114,10 +114,10 @@ wstring ListItem::GetDisplayName() const
         // 项目名path为空表示项目<未知xxx>
         switch (medialib_type)
         {
-        case CMediaClassifier::CT_ARTIST: return theApp.m_str_table.LoadText(L"TXT_EMPTY_ARTIST");
-        case CMediaClassifier::CT_ALBUM: return theApp.m_str_table.LoadText(L"TXT_EMPTY_ALBUM");
-        case CMediaClassifier::CT_GENRE: return theApp.m_str_table.LoadText(L"TXT_EMPTY_GENRE");
-        case CMediaClassifier::CT_YEAR: return theApp.m_str_table.LoadText(L"TXT_EMPTY_YEAR");
+        case ClassificationType::CT_ARTIST: return theApp.m_str_table.LoadText(L"TXT_EMPTY_ARTIST");
+        case ClassificationType::CT_ALBUM: return theApp.m_str_table.LoadText(L"TXT_EMPTY_ALBUM");
+        case ClassificationType::CT_GENRE: return theApp.m_str_table.LoadText(L"TXT_EMPTY_GENRE");
+        case ClassificationType::CT_YEAR: return theApp.m_str_table.LoadText(L"TXT_EMPTY_YEAR");
         }
     }
     ASSERT(FALSE);

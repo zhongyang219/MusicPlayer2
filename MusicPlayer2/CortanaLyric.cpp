@@ -192,7 +192,7 @@ void CCortanaLyric::DrawInfo()
                     static SongInfo last_song_info;
                     const SongInfo& song_info = CPlayer::GetInstance().GetCurrentSongInfo();
                     //如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
-                    if (!song_info.IsSameSong(last_song_info))
+                    if (song_info != last_song_info)
                     {
                         DrawCortanaText((str_now_playing + CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format)).c_str(), true, CPlayerUIHelper::GetScrollTextPixel());
                         last_song_info = song_info;

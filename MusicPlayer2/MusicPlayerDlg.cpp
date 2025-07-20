@@ -44,8 +44,9 @@ const UINT WM_TASKBARCREATED{ ::RegisterWindowMessage(_T("TaskbarCreated")) };  
 
 CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     : m_cmdLine{ cmdLine }, CMainDialogBase(IDD_MUSICPLAYER2_DIALOG, pParent)
-    , m_current_cache(LT_CURRENT)
-    , m_recent_cache(LT_RECENT)
+    , m_current_cache(CListCache::SubsetType::ST_CURRENT)
+    , m_recent_cache(CListCache::SubsetType::ST_RECENT)
+    , m_playlist_cache(CListCache::SubsetType::ST_PLAYLIST_NO_SPEC)
 {
     m_hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_App, IconMgr::IconStyle::IS_Color, IconMgr::IconSize::IS_ALL);
     m_path_edit.SetTooltopText(theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST").c_str());
@@ -1840,15 +1841,11 @@ void CMusicPlayerDlg::IniPlaylistPopupMenu()
 {
     //向“添加到播放列表”菜单更新播放列表
     vector<MenuMgr::MenuItem> menu_list;
-    CListCache playlist_cache(LT_PLAYLIST);
-    playlist_cache.reload();
-    for (size_t i{}; i < playlist_cache.size(); ++i)
+    m_playlist_cache.reload();      // 仅在此次reload，以保持与菜单内容的一致性
+    for (size_t i{}; i < m_playlist_cache.size(); ++i)
     {
-        if (CRecentList::IsSpecPlaylist(playlist_cache.at(i)))
-            continue;
         UINT id = ID_ADD_TO_MY_FAVOURITE + 1 + menu_list.size();
-        wstring name = CFilePathHelper(playlist_cache.at(i).path).GetFileNameWithoutExtension();
-        menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IconType::IT_NO_ICON, name });
+        menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IconType::IT_NO_ICON, m_playlist_cache.at(i).GetDisplayName() });
         if (menu_list.size() >= ADD_TO_PLAYLIST_MAX_SIZE)
             break;
     }
@@ -2858,13 +2855,13 @@ void CMusicPlayerDlg::OnMediaLib()
     {
         switch (CPlayer::GetInstance().GetMediaLibPlaylistType())
         {
-        case CMediaClassifier::CT_ARTIST: cur_tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
-        case CMediaClassifier::CT_ALBUM: cur_tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
-        case CMediaClassifier::CT_GENRE: cur_tab = CMusicPlayerCmdHelper::ML_GENRE; break;
-        case CMediaClassifier::CT_YEAR: cur_tab = CMusicPlayerCmdHelper::ML_YEAR; break;
-        case CMediaClassifier::CT_TYPE: cur_tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
-        case CMediaClassifier::CT_BITRATE: cur_tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
-        case CMediaClassifier::CT_RATING: cur_tab = CMusicPlayerCmdHelper::ML_RATING; break;
+        case ListItem::ClassificationType::CT_ARTIST: cur_tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
+        case ListItem::ClassificationType::CT_ALBUM: cur_tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
+        case ListItem::ClassificationType::CT_GENRE: cur_tab = CMusicPlayerCmdHelper::ML_GENRE; break;
+        case ListItem::ClassificationType::CT_YEAR: cur_tab = CMusicPlayerCmdHelper::ML_YEAR; break;
+        case ListItem::ClassificationType::CT_TYPE: cur_tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
+        case ListItem::ClassificationType::CT_BITRATE: cur_tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
+        case ListItem::ClassificationType::CT_RATING: cur_tab = CMusicPlayerCmdHelper::ML_RATING; break;
         }
     }
 
@@ -6205,7 +6202,7 @@ void CMusicPlayerDlg::OnRename()
         SongInfo& song = cur_playlist[index];
         if (song.is_cue || COSUPlayerHelper::IsOsuFile(song.file_path))
             continue;
-        CPlayer::ReOpen reopen(song.IsSameSong(CPlayer::GetInstance().GetCurrentSongInfo()));
+        CPlayer::ReOpen reopen(song == CPlayer::GetInstance().GetCurrentSongInfo());
         if (!reopen.IsLockSuccess())
             continue;
         wstring new_name = CRenameDlg::FileNameFromTag(formular, song);

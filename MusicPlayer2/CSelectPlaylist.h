@@ -3,7 +3,7 @@
 #include "ListCtrlEx.h"
 #include "SearchEditCtrl.h"
 #include "HorizontalSplitter.h"
-#include "ListCache.h"
+#include "ListSearchCache.h"
 
 // CSelectPlaylist 对话框
 // #define WM_PLAYLIST_SELECTED (WM_USER+119) 不再使用     //WPARA: 传递对话框窗口的指针；LPARA：-2:表示要播放默认的播放列表，>=0，表示要播放列表中指定序号的曲目
@@ -26,14 +26,9 @@ public:
     // 完全重新载入标签页数据
     void RefreshTabData();
 
-    bool SetCurSel(const wstring& playlist_path);
+    bool SetCurSel(const ListItem& list_item);
 
 private:
-
-    bool m_searched{ false };                   // 是否处于搜索状态
-    wstring m_searcher_str;                     // 搜索字符串
-    vector<size_t> m_search_result;             // 储存快速搜索结果的歌曲序号(筛选m_playlist_ctrl_data放入m_playlist_ctrl)
-    CSearchEditCtrl m_search_edit;
 
     bool m_left_selected{ false };              // 最后一次选中的是左侧还是右侧
     int m_left_selected_item{ -1 };             // 左侧选中的播放列表项目的索引（搜索状态下不是m_playlist_ctrl_data的索引）
@@ -54,7 +49,8 @@ private:
         COL_MAX
     };
 
-    CListCache m_list_cache;                // 缓存ListItem
+    CListSearchCache m_list_search_cache;       // 缓存ListItem
+    CSearchEditCtrl m_search_edit;
     CListCtrlEx m_playlist_ctrl;
     CListCtrlEx m_song_list_ctrl;
     CListCtrlEx::ListData m_list_data;  //右侧列表数据
@@ -76,8 +72,6 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 private:
-    // 根据关键字执行快速查找（更新m_search_result）
-    void QuickSearch(const wstring& key_words);
     // 左侧列表选中时在右侧列表显示其内容并更新此列表曲目数/总时长
     void ShowSongList();
     // 左侧列表点击时更新选中状态（参数为m_playlist_ctrl索引）
@@ -86,18 +80,10 @@ private:
     void SongListClicked(int index);
     // 计算左侧列表列宽
     void CalculateColumeWidth(vector<int>& width);
-    // 更新m_playlist_ctrl_data并显示，搜索状态下搜索并显示
+    // 更新m_playlist_ctrl_data并显示
     void ShowPathList();
-    // 插入索引为index的的一行到m_playlist_ctrl
-    void SetListRowData(int index, const ListItem& list_item);
-    // 当前左侧列表选中有效
-    bool LeftSelectValid() const;
-    // 获取左侧列表当前选中项对应PlaylistInfo
-    const ListItem& GetSelectedPlaylist() const;
     // 向媒体库窗口发送消息更新按钮状态
     void SetButtonsEnable();
-    // 判断当前选中是否可播放
-    bool SelectedCanPlay() const;
 
 public:
 

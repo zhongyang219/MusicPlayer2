@@ -933,6 +933,9 @@
     <ClInclude Include="UiSearchBox.h">
       <Filter>对话框类\UiSearchBox</Filter>
     </ClInclude>
+    <ClInclude Include="ListSearchCache.h">
+      <Filter>功能逻辑类\RecentList</Filter>
+    </ClInclude>
     <ClInclude Include="bass_fx.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -1432,6 +1435,9 @@
     </ClCompile>
     <ClCompile Include="UiSearchBox.cpp">
       <Filter>对话框类\UiSearchBox</Filter>
+    </ClCompile>
+    <ClCompile Include="ListSearchCache.cpp">
+      <Filter>功能逻辑类\RecentList</Filter>
     </ClCompile>
     <ClCompile Include="FindContainerDlg.cpp">
       <Filter>对话框类\FindDlg</Filter>

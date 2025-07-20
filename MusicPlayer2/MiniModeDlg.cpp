@@ -303,7 +303,7 @@ void CMiniModeDlg::OnTimer(UINT_PTR nIDEvent)
         static SongInfo last_song_info;
         const SongInfo& song_info = CPlayer::GetInstance().GetCurrentSongInfo();
         //如果当前播放的歌曲发生变化，就更新鼠标提示信息
-        if (!song_info.IsSameSong(last_song_info))
+        if (song_info != last_song_info)
         {
             last_song_info = song_info;
             SetTitle();

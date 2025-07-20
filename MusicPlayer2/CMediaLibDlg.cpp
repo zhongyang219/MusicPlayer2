@@ -39,13 +39,13 @@ bool CMediaLibDlg::NavigateToItem(const wstring& item)
     CSetPathDlg* folder_dlg = dynamic_cast<CSetPathDlg*>(pCurTab);
     if (folder_dlg != nullptr)
     {
-        return folder_dlg->SetCurSel(item);
+        return folder_dlg->SetCurSel(ListItem{ LT_FOLDER, item });
     }
 
     CSelectPlaylistDlg* playlist_dlg = dynamic_cast<CSelectPlaylistDlg*>(pCurTab);
     if (playlist_dlg != nullptr)
     {
-        return playlist_dlg->SetCurSel(item);
+        return playlist_dlg->SetCurSel(ListItem{ LT_PLAYLIST, item });
     }
 
     return false;
@@ -114,13 +114,13 @@ BOOL CMediaLibDlg::OnInitDialog()
     // 创建子对话框，因为CMediaLibDlg不会及时析构为避免持续占用大量内存不再使用成员变量存储子窗口窗口类
     m_path_dlg = new CSetPathDlg();
     m_playlist_dlg = new CSelectPlaylistDlg();
-    m_artist_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_ARTIST);
-    m_album_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_ALBUM);
-    m_genre_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_GENRE);
-    m_year_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_YEAR);
-    m_type_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_TYPE);
-    m_bitrate_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_BITRATE);
-    m_rating_dlg = new CMediaClassifyDlg(CMediaClassifier::CT_RATING);
+    m_artist_dlg = new CMediaClassifyDlg(ListItem::ClassificationType::CT_ARTIST);
+    m_album_dlg = new CMediaClassifyDlg(ListItem::ClassificationType::CT_ALBUM);
+    m_genre_dlg = new CMediaClassifyDlg(ListItem::ClassificationType::CT_GENRE);
+    m_year_dlg = new CMediaClassifyDlg(ListItem::ClassificationType::CT_YEAR);
+    m_type_dlg = new CMediaClassifyDlg(ListItem::ClassificationType::CT_TYPE);
+    m_bitrate_dlg = new CMediaClassifyDlg(ListItem::ClassificationType::CT_BITRATE);
+    m_rating_dlg = new CMediaClassifyDlg(ListItem::ClassificationType::CT_RATING);
     m_all_media_dlg = new CAllMediaDlg(CAllMediaDlg::DT_ALL_MEDIA);
     m_recent_media_dlg = new CAllMediaDlg(CAllMediaDlg::DT_RECENT_MEDIA);
     m_folder_explore_dlg = new CFolderExploreDlg();

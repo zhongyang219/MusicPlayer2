@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include <map>
-#include "MediaLibHelper.h"
 #include "UIElement.h"
 
 class CUiMediaLibItemMgr
@@ -11,18 +9,18 @@ public:
 
     void Init();
 
-    int GetItemCount(CMediaClassifier::ClassificationType type) const;                              //获取指定类别下项目的数量
-    std::wstring GetItemDisplayName(CMediaClassifier::ClassificationType type, int index) const;    //获取指定类别下项目显示到界面中的名称
-    const std::wstring& GetItemName(CMediaClassifier::ClassificationType type, int index) const;    //获取指定项的原始名称，如果是<未知xxx>返回的是空
-    int GetItemSongCount(CMediaClassifier::ClassificationType type, int index) const;               //获取指定类别下项目的曲目数量
-    void SetCurrentName(CMediaClassifier::ClassificationType type, const std::wstring& name);       //设置指定类别下正在播放项目的名称，其中name为原始名称
-    int GetCurrentIndex(CMediaClassifier::ClassificationType type);                                 //获取指定类别下正在播放项目的序号
+    int GetItemCount(ListItem::ClassificationType type) const;                              //获取指定类别下项目的数量
+    std::wstring GetItemDisplayName(ListItem::ClassificationType type, int index) const;    //获取指定类别下项目显示到界面中的名称
+    const std::wstring& GetItemName(ListItem::ClassificationType type, int index) const;    //获取指定项的原始名称，如果是<未知xxx>返回的是空
+    int GetItemSongCount(ListItem::ClassificationType type, int index) const;               //获取指定类别下项目的曲目数量
+    void SetCurrentName(ListItem::ClassificationType type, const std::wstring& name);       //设置指定类别下正在播放项目的名称，其中name为原始名称
+    int GetCurrentIndex(ListItem::ClassificationType type);                                 //获取指定类别下正在播放项目的序号
     bool IsLoading() const { return m_loading; }
     bool IsInited() const { return m_inited; }
 
 private:
     CUiMediaLibItemMgr();
-    void GetClassifiedMeidaLibItemList(CMediaClassifier::ClassificationType type);
+    void GetClassifiedMeidaLibItemList(ListItem::ClassificationType type);
 
     static CUiMediaLibItemMgr m_instance;
     struct ItemInfo
@@ -31,13 +29,13 @@ private:
         int count{};
     };
 
-    const ItemInfo& GetItemInfo(CMediaClassifier::ClassificationType type, int index) const;
+    const ItemInfo& GetItemInfo(ListItem::ClassificationType type, int index) const;
 
-    std::map<CMediaClassifier::ClassificationType, std::vector<ItemInfo>> m_item_map;   //保存媒体库中所有分类的名称列表
+    std::map<ListItem::ClassificationType, std::vector<ItemInfo>> m_item_map;   //保存媒体库中所有分类的名称列表
     bool m_loading{};
     bool m_inited{};                        //如果已经初始化过，则为true
-    std::map<CMediaClassifier::ClassificationType, int> m_current_index_map;    //保存媒体库模式下每种模式正在播放的曲目
-    std::map<CMediaClassifier::ClassificationType, std::wstring> m_current_name_map;    //保存媒体库模式下每种模式正在播放的曲目
+    std::map<ListItem::ClassificationType, int> m_current_index_map;    //保存媒体库模式下每种模式正在播放的曲目
+    std::map<ListItem::ClassificationType, std::wstring> m_current_name_map;    //保存媒体库模式下每种模式正在播放的曲目
     mutable std::shared_mutex m_shared_mutex;
 };
 

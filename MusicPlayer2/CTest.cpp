@@ -169,7 +169,7 @@ void CTest::TestReg()
 
 void CTest::TestMediaLib()
 {
-    CMediaClassifier media_lib(CMediaClassifier::CT_TYPE);
+    CMediaClassifier media_lib(ListItem::ClassificationType::CT_TYPE);
     media_lib.ClassifyMedia();
     int a = 0;
 }

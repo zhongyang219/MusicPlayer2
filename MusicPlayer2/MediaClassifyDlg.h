@@ -13,7 +13,7 @@ class CMediaClassifyDlg : public CMediaLibTabDlg
     DECLARE_DYNAMIC(CMediaClassifyDlg)
 
 public:
-    CMediaClassifyDlg(CMediaClassifier::ClassificationType type, CWnd* pParent = nullptr);   // 标准构造函数
+    CMediaClassifyDlg(ListItem::ClassificationType type, CWnd* pParent = nullptr);   // 标准构造函数
     virtual ~CMediaClassifyDlg();
 
 // 对话框数据
@@ -42,7 +42,7 @@ protected:
     CListCtrlEx m_song_list_ctrl;
     CSearchEditCtrl m_search_edit;
 
-    CMediaClassifier::ClassificationType m_type;
+    ListItem::ClassificationType m_type;
     CMediaClassifier m_classifer;
     wstring m_classify_selected;                    // 左侧列表选中项的文本
     wstring m_default_str;                          // “艺术家”或“唱片集”为空的字符串
@@ -86,7 +86,7 @@ protected:
     virtual void AfterDeleteFromDisk(const std::vector<SongInfo>& files) override;
     virtual wstring GetSelectedString() const override;
     virtual wstring GetNewPlaylistName() const override;
-    virtual CMediaClassifier::ClassificationType GetClassificationType() const override;
+    virtual ListItem::ClassificationType GetClassificationType() const override;
     virtual std::wstring GetClassificationItemName() const override;
 
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

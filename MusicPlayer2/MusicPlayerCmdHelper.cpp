@@ -190,10 +190,7 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
             for (const auto& item : selected_item_path)
             {
                 auto& cur_playlist{ CPlayer::GetInstance().GetPlayList() };
-                auto iter = std::find_if(cur_playlist.begin(), cur_playlist.end(), [&](const SongInfo& song)
-                    {
-                        return item.IsSameSong(song);
-                    });
+                auto iter = std::find(cur_playlist.begin(), cur_playlist.end(), item);
                 if (iter != cur_playlist.end())
                     iter->is_favourite = true;
             }
@@ -210,9 +207,12 @@ bool CMusicPlayerCmdHelper::OnAddToPlaylistCommand(std::function<void(std::vecto
         else        //添加到选中的播放列表
         {
             int index = command - ID_ADD_TO_MY_FAVOURITE - 1;
-            CListCache list_cache(LT_PLAYLIST_NO_SPEC); // 应改为让theApp持有此CListCache，仅在菜单重建前reload
-            list_cache.reload();
-            ListItem list_item = list_cache.GetItem(index);
+            ListItem list_item{};
+
+            CMusicPlayerDlg* pPlayerDlg = CMusicPlayerDlg::GetInstance();
+            if (index >= 0 && index < static_cast<int>(pPlayerDlg->m_playlist_cache.size()))
+                list_item = pPlayerDlg->m_playlist_cache.at(index);
+
             if (CCommon::FileExist(list_item.path))
             {
                 AddToPlaylist(selected_item_path, list_item.path);
@@ -1115,9 +1115,7 @@ bool CMusicPlayerCmdHelper::OnRemoveFromPlaylist(const ListItem& list_item, cons
         std::vector<int> indexs;    // 这里问题很大，之后要重新设计
         for (const auto& song : songs)
         {
-            auto iter = std::find_if(CPlayer::GetInstance().GetPlayList().begin(), CPlayer::GetInstance().GetPlayList().end(), [&](const SongInfo& a) {
-                return a.IsSameSong(song);
-            });
+            auto iter = std::find(CPlayer::GetInstance().GetPlayList().begin(), CPlayer::GetInstance().GetPlayList().end(), song);
             if (iter != CPlayer::GetInstance().GetPlayList().end())
                 indexs.push_back(iter - CPlayer::GetInstance().GetPlayList().begin());
         }
@@ -1207,7 +1205,7 @@ void CMusicPlayerCmdHelper::OnPlayMyFavourite()
 
 void CMusicPlayerCmdHelper::OnPlayAllTrack(const SongInfo& song)
 {
-    ListItem list_item{ LT_MEDIA_LIB, L"", CMediaClassifier::CT_NONE };
+    ListItem list_item{ LT_MEDIA_LIB, L"", ListItem::ClassificationType::CT_NONE };
     list_item.SetPlayTrack(song);
     bool ok = CPlayer::GetInstance().SetList(list_item, true, true);
     if (!ok)
@@ -1281,9 +1279,7 @@ bool CMusicPlayerCmdHelper::OnAddRemoveFromFavourite(int track)
 bool CMusicPlayerCmdHelper::OnAddRemoveFromFavourite(const SongInfo& song)
 {
     auto& playlist{ CPlayer::GetInstance().GetPlayList() };
-    auto iter = std::find_if(playlist.begin(), playlist.end(), [&](const SongInfo& a) {
-        return a.IsSameSong(song);
-        });
+    auto iter = std::find(playlist.begin(), playlist.end(), song);
     if (iter != playlist.end() && CRecentList::Instance().IsPlayingSpecPlaylist(CRecentList::PT_FAVOURITE))
     {
         //如果当前播放列表就是“我喜欢”播放列表，则直接将歌曲从列表中移除

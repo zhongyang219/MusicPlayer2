@@ -265,15 +265,7 @@ const vector<int>& CAllMediaDlg::GetItemsSelected() const
 void CAllMediaDlg::AfterDeleteFromDisk(const std::vector<SongInfo>& songs)
 {
     //删除成功，则刷新列表
-    auto isRemoved_song = [&](const SongInfo& data)
-    {
-        for (const auto& item : songs)
-        {
-            if (item.IsSameSong(data))
-                return true;
-        }
-        return false;
-    };
+    auto isRemoved_song = [&](const SongInfo& data) { return std::find(songs.begin(), songs.end(), data) != songs.end(); };
     auto iter_removed_song = std::remove_if(m_list_songs.begin(), m_list_songs.end(), isRemoved_song);
     m_list_songs.erase(iter_removed_song, m_list_songs.end());
     auto iter_removed_song1 = std::remove_if(m_list_songs_searched.begin(), m_list_songs_searched.end(), isRemoved_song);
@@ -322,7 +314,7 @@ void CAllMediaDlg::OnOK()
         // 所有曲目单选时使用媒体库模式播放
         if (m_type == DT_ALL_MEDIA && songs.size() == 1)
         {
-            ListItem list_item{ LT_MEDIA_LIB, L"", CMediaClassifier::CT_NONE};
+            ListItem list_item{ LT_MEDIA_LIB, L"", ListItem::ClassificationType::CT_NONE};
             list_item.SetPlayTrack(songs.front());
             ok = CPlayer::GetInstance().SetList(list_item, true, true);
         }

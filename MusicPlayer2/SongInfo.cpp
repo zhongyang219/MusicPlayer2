@@ -224,17 +224,6 @@ Time SongInfo::length() const
     return Time(end_pos - start_pos);
 }
 
-bool SongInfo::IsSameSong(const SongInfo& song) const
-{   // 存在file_path和track相同但is_cue不同的情况(分立曲目被播放后又打开一个描述这些歌曲的cue)，此时应返回false
-    if (is_cue != song.is_cue)
-        return false;
-    if (file_path != song.file_path)
-        return false;
-    if (is_cue && track != song.track)
-        return false;
-    return true;
-}
-
 void SongInfo::Normalize()
 {
     if (theApp.m_str_table.LoadText(L"TXT_EMPTY_TITLE") == title)
@@ -428,4 +417,26 @@ wstring SongInfo::GetSortModeDisplayName(SortMode sort_mode)
     case SM_UNSORT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_UNSORT"); break;
     }
     return str_sort_mode;
+}
+
+bool SongInfo::operator==(const SongKey& other) const
+{
+    if (is_cue != (other.cue_track > 0))
+        return false;
+    if (file_path != other.path)
+        return false;
+    if (is_cue && track != other.cue_track)
+        return false;
+    return true;
+}
+
+bool SongInfo::operator==(const SongInfo& other) const
+{   // 存在file_path和track相同但is_cue不同的情况(分立曲目被播放后又打开一个描述这些歌曲的cue)，此时应返回false
+    if (is_cue != other.is_cue)
+        return false;
+    if (file_path != other.file_path)
+        return false;
+    if (is_cue && track != other.track)
+        return false;
+    return true;
 }

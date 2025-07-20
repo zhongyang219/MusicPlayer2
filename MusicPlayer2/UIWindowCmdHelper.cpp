@@ -10,6 +10,7 @@
 #include "FolderPropertiesDlg.h"
 #include "MediaLibItemPropertiesDlg.h"
 #include "CRecentList.h"
+#include "MediaLibHelper.h"
 
 CUIWindowCmdHelper::CUIWindowCmdHelper(UiElement::Element* sender)
     : m_context_menu_sender(sender)
@@ -157,13 +158,13 @@ void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* 
         CMusicPlayerCmdHelper::eMediaLibTab tab{};
         switch (medialib_item_list->type)
         {
-        case CMediaClassifier::CT_ARTIST: tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
-        case CMediaClassifier::CT_ALBUM: tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
-        case CMediaClassifier::CT_GENRE: tab = CMusicPlayerCmdHelper::ML_GENRE; break;
-        case CMediaClassifier::CT_YEAR: tab = CMusicPlayerCmdHelper::ML_YEAR; break;
-        case CMediaClassifier::CT_TYPE: tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
-        case CMediaClassifier::CT_BITRATE: tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
-        case CMediaClassifier::CT_RATING: tab = CMusicPlayerCmdHelper::ML_RATING; break;
+        case ListItem::ClassificationType::CT_ARTIST: tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
+        case ListItem::ClassificationType::CT_ALBUM: tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
+        case ListItem::ClassificationType::CT_GENRE: tab = CMusicPlayerCmdHelper::ML_GENRE; break;
+        case ListItem::ClassificationType::CT_YEAR: tab = CMusicPlayerCmdHelper::ML_YEAR; break;
+        case ListItem::ClassificationType::CT_TYPE: tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
+        case ListItem::ClassificationType::CT_BITRATE: tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
+        case ListItem::ClassificationType::CT_RATING: tab = CMusicPlayerCmdHelper::ML_RATING; break;
         }
         helper.OnViewInMediaLib(tab, item_name);
     }
@@ -211,14 +212,14 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
         case LT_MEDIA_LIB:
             switch (list_item.medialib_type)
             {
-            case CMediaClassifier::CT_ARTIST: tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
-            case CMediaClassifier::CT_ALBUM: tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
-            case CMediaClassifier::CT_GENRE: tab = CMusicPlayerCmdHelper::ML_GENRE; break;
-            case CMediaClassifier::CT_YEAR: tab = CMusicPlayerCmdHelper::ML_YEAR; break;
-            case CMediaClassifier::CT_TYPE: tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
-            case CMediaClassifier::CT_BITRATE: tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
-            case CMediaClassifier::CT_RATING: tab = CMusicPlayerCmdHelper::ML_RATING; break;
-            case CMediaClassifier::CT_NONE: tab = CMusicPlayerCmdHelper::ML_ALL; break;
+            case ListItem::ClassificationType::CT_ARTIST: tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
+            case ListItem::ClassificationType::CT_ALBUM: tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
+            case ListItem::ClassificationType::CT_GENRE: tab = CMusicPlayerCmdHelper::ML_GENRE; break;
+            case ListItem::ClassificationType::CT_YEAR: tab = CMusicPlayerCmdHelper::ML_YEAR; break;
+            case ListItem::ClassificationType::CT_TYPE: tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
+            case ListItem::ClassificationType::CT_BITRATE: tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
+            case ListItem::ClassificationType::CT_RATING: tab = CMusicPlayerCmdHelper::ML_RATING; break;
+            case ListItem::ClassificationType::CT_NONE: tab = CMusicPlayerCmdHelper::ML_ALL; break;
             }
         }
         helper.OnViewInMediaLib(tab, list_item.path);

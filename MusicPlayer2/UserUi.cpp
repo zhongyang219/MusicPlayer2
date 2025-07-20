@@ -810,19 +810,19 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             {
                 std::string str_type = CTinyXml2Helper::ElementAttribute(xml_node, "type");
                 if (str_type == "artist")
-                    mediaLibItemList->type = CMediaClassifier::CT_ARTIST;
+                    mediaLibItemList->type = ListItem::ClassificationType::CT_ARTIST;
                 else if (str_type == "album")
-                    mediaLibItemList->type = CMediaClassifier::CT_ALBUM;
+                    mediaLibItemList->type = ListItem::ClassificationType::CT_ALBUM;
                 else if (str_type == "genre")
-                    mediaLibItemList->type = CMediaClassifier::CT_GENRE;
+                    mediaLibItemList->type = ListItem::ClassificationType::CT_GENRE;
                 else if (str_type == "year")
-                    mediaLibItemList->type = CMediaClassifier::CT_YEAR;
+                    mediaLibItemList->type = ListItem::ClassificationType::CT_YEAR;
                 else if (str_type == "file_type")
-                    mediaLibItemList->type = CMediaClassifier::CT_TYPE;
+                    mediaLibItemList->type = ListItem::ClassificationType::CT_TYPE;
                 else if (str_type == "bitrate")
-                    mediaLibItemList->type = CMediaClassifier::CT_BITRATE;
+                    mediaLibItemList->type = ListItem::ClassificationType::CT_BITRATE;
                 else if (str_type == "rating")
-                    mediaLibItemList->type = CMediaClassifier::CT_RATING;
+                    mediaLibItemList->type = ListItem::ClassificationType::CT_RATING;
             }
         }
         //导航栏

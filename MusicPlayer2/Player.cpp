@@ -12,6 +12,7 @@
 #include <random>
 #include "IniHelper.h"
 #include "CRecentList.h"
+#include "MediaLibHelper.h"
 
 CPlayer CPlayer::m_instance;
 
@@ -157,7 +158,7 @@ void CPlayer::IniPlayList(bool play, MediaLibRefreshMode refresh_mode, SongKey s
     else if (m_playlist_mode == PM_MEDIA_LIB)
     {
         // 根据类型和名称获取音频文件列表
-        if (m_media_lib_playlist_type == CMediaClassifier::CT_NONE)
+        if (m_media_lib_playlist_type == ListItem::ClassificationType::CT_NONE)
         {
             //返回所有曲目
             CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map)
@@ -170,7 +171,7 @@ void CPlayer::IniPlayList(bool play, MediaLibRefreshMode refresh_mode, SongKey s
         }
         else
         {
-            CMediaClassifier classifier(m_media_lib_playlist_type, m_media_lib_playlist_name == STR_OTHER_CLASSIFY_TYPE);
+            CMediaClassifier classifier(m_media_lib_playlist_type, m_media_lib_playlist_name == ListItem::STR_OTHER_CLASSIFY_TYPE);
             classifier.ClassifyMedia();
             m_playlist = classifier.GetMeidaList()[m_media_lib_playlist_name];
         }
@@ -242,7 +243,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     {
         for (auto iter = play_list.begin(); iter != play_list.end(); ++iter)
         {
-            if (cur_song.IsSameSong(*iter))
+            if (cur_song == *iter)
             {
                 pInfo->play_index = iter - play_list.begin();
                 find_succeed = true;
@@ -337,7 +338,7 @@ void CPlayer::IniPlaylistComplate()
         {
             for (size_t i{}; i < m_playlist.size(); i++)
             {
-                if (m_current_song_tmp.IsSameSong(m_playlist[i]))
+                if (m_current_song_tmp == m_playlist[i])
                 {
                     m_index = i;
                     m_current_position.fromInt(m_current_song_position_tmp);
@@ -1574,8 +1575,7 @@ void CPlayer::ExploreLyric() const
 
 int CPlayer::IsSongInPlayList(const SongInfo& song)
 {
-    auto iter = std::find_if(m_playlist.begin(), m_playlist.end(),
-        [&](const SongInfo& songinfo) { return song.IsSameSong(songinfo); });
+    auto iter = std::find(m_playlist.begin(), m_playlist.end(), song);
     if (iter != m_playlist.end())
         return iter - m_playlist.begin();
     return -1;
@@ -1585,8 +1585,7 @@ bool CPlayer::IsSongsInPlayList(const vector<SongInfo>& songs_list)
 {
     for (const SongInfo& song : songs_list)
     {
-        auto iter = std::find_if(m_playlist.begin(), m_playlist.end(),
-            [&](const SongInfo& songinfo) { return song.IsSameSong(songinfo); });
+        auto iter = std::find(m_playlist.begin(), m_playlist.end(), song);
         if (iter == m_playlist.end())
             return false;
     }
@@ -1781,7 +1780,7 @@ int CPlayer::RemoveSameSongs()
     {
         for (int j = i + 1; j < GetSongNum(); j++)
         {
-            if (m_playlist[i].IsSameSong(m_playlist[j]))
+            if (m_playlist[i] == m_playlist[j])
             {
                 if (j == m_index)
                     m_index = i;
@@ -1952,10 +1951,7 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
     }
 
     //查找正在播放的曲目
-    auto iter_play = std::find_if(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& song)
-        {
-            return song.IsSameSong(current_file);
-        });
+    auto iter_play = std::find(m_playlist.begin(), m_playlist.end(), current_file);
     if (iter_play == m_playlist.end())
         m_index = 0;
     else
@@ -2213,7 +2209,7 @@ void CPlayer::SortPlaylist(bool is_init)
         //播放列表排序后，查找正在播放项目的序号
         for (int i{}; i < GetSongNum(); i++)
         {
-            if (current_song.IsSameSong(m_playlist[i]))
+            if (current_song == m_playlist[i])
             {
                 m_index = i;
                 break;
@@ -2544,7 +2540,7 @@ bool CPlayer::IsMediaLibMode() const
     return m_playlist_mode == PM_MEDIA_LIB;
 }
 
-CMediaClassifier::ClassificationType CPlayer::GetMediaLibPlaylistType() const
+ListItem::ClassificationType CPlayer::GetMediaLibPlaylistType() const
 {
     return m_media_lib_playlist_type;
 }

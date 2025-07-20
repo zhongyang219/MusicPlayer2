@@ -678,16 +678,8 @@ void CFindDlg::OnDeleteFromDisk()
     if (helper.DeleteSongsFromDisk(songs_selected))
     {
         //删除成功，则刷新列表
-        auto isRemoved = [&](const SongInfo& song)
-            {
-                for (const auto& item : songs_selected)
-                {
-                    if (item.IsSameSong(song))
-                        return true;
-                }
-                return false;
-            };
-        auto iter_removed = std::remove_if(m_find_result.begin(), m_find_result.end(), isRemoved);
+        auto iter_removed = std::remove_if(m_find_result.begin(), m_find_result.end(),
+            [&](const SongInfo& song) { return std::find(songs_selected.begin(), songs_selected.end(), song) != songs_selected.end(); });
         m_find_result.erase(iter_removed, m_find_result.end());
         ShowFindResult();
     }

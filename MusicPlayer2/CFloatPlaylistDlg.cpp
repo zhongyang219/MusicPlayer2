@@ -26,7 +26,7 @@ void CFloatPlaylistDlg::RefreshData()
     //刷新播放列表数据
     m_playlist_ctrl.ShowPlaylist(theApp.m_media_lib_setting_data.display_format);
 
-    CListCache list_cache(LT_CURRENT);
+    CListCache list_cache(CListCache::SubsetType::ST_CURRENT);
     list_cache.reload();
     const ListItem& cur_list = list_cache.at(0);
 
