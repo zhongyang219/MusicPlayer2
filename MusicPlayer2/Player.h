@@ -113,6 +113,7 @@ private:
     RepeatMode m_repeat_mode;       //循环模式（0：顺序播放，1：随机播放，2：列表循环，3：单曲循环）
     int m_volume{ 100 };            //音量（百分比）
     float m_speed{ 1 };             //播放速度
+    int m_pitch{ 0 };               //变调
 
     float m_fft[FFT_SAMPLE];                    //储存频谱分析的数据
     float m_spectral_data[SPECTRUM_COL]{};      //用于显示的每个频谱柱形的高度
@@ -354,6 +355,11 @@ public:
     void SetOrignalSpeed();
     void SetSpeed(float speed);
     float GetSpeed() const { return m_speed; }
+    void PitchUp();
+    void PitchDown();
+    void SetOrignalPitch();
+    void SetPitch(int pitch);
+    int GetPitch() const { return m_pitch; }
 
 private:
     // 获取CPlayer操作播放内核时产生的错误写入错误日志

@@ -227,25 +227,7 @@ void CMoreRecentItemDlg::OnViewInMediaLib()
     if (list_item.empty())
         return;
     CMusicPlayerCmdHelper helper;
-    CMusicPlayerCmdHelper::eMediaLibTab tab{};
-    switch (list_item.type)
-    {
-    case LT_FOLDER: tab = CMusicPlayerCmdHelper::ML_FOLDER; break;
-    case LT_PLAYLIST: tab = CMusicPlayerCmdHelper::ML_PLAYLIST; break;
-    case LT_MEDIA_LIB:
-        switch (list_item.medialib_type)
-        {
-        case ListItem::ClassificationType::CT_ARTIST: tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
-        case ListItem::ClassificationType::CT_ALBUM: tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
-        case ListItem::ClassificationType::CT_GENRE: tab = CMusicPlayerCmdHelper::ML_GENRE; break;
-        case ListItem::ClassificationType::CT_YEAR: tab = CMusicPlayerCmdHelper::ML_YEAR; break;
-        case ListItem::ClassificationType::CT_TYPE: tab = CMusicPlayerCmdHelper::ML_FILE_TYPE; break;
-        case ListItem::ClassificationType::CT_BITRATE: tab = CMusicPlayerCmdHelper::ML_BITRATE; break;
-        case ListItem::ClassificationType::CT_RATING: tab = CMusicPlayerCmdHelper::ML_RATING; break;
-        case ListItem::ClassificationType::CT_NONE: tab = CMusicPlayerCmdHelper::ML_ALL; break;
-        }
-    }
-    helper.OnViewInMediaLib(tab, list_item.path);
+    helper.OnViewInMediaLib(list_item);
 }
 
 

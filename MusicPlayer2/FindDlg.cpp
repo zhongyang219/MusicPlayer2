@@ -16,10 +16,10 @@
 
 // CFindDlg 对话框
 
-IMPLEMENT_DYNAMIC(CFindDlg, CBaseDialog)
+IMPLEMENT_DYNAMIC(CFindDlg, CTabDlg)
 
 CFindDlg::CFindDlg(CWnd* pParent /*=NULL*/)
-    : CBaseDialog(IDD_FIND_DIALOG, pParent)
+    : CTabDlg(IDD_FIND_DIALOG, pParent)
 {
 
 }
@@ -28,9 +28,9 @@ CFindDlg::~CFindDlg()
 {
 }
 
-CString CFindDlg::GetDialogName() const
+void CFindDlg::OnTabEntered()
 {
-    return _T("FindDlg");
+    SetPlaySelectedEnable(m_find_result_list.GetCurSel() > 0);
 }
 
 bool CFindDlg::InitializeControls()
@@ -63,25 +63,18 @@ bool CFindDlg::InitializeControls()
     SetDlgItemTextW(IDC_FIND_RESULT_STATIC, temp.c_str());
     temp = L"";
     SetDlgItemTextW(IDC_FIND_INFO_STATIC, temp.c_str());
-    // IDC_FIND_LIST
-    temp = theApp.m_str_table.LoadText(L"TXT_FIND_PLAY_SELECTED");
-    SetDlgItemTextW(IDOK, temp.c_str());
 
     RepositionTextBasedControls({
         { CtrlTextInfo::L1, IDC_TXT_FIND_KEY_WORD_INPUT_STATIC },
         { CtrlTextInfo::C0, IDC_FIND_EDIT },
         { CtrlTextInfo::R1, IDC_FIND_BUTTON, CtrlTextInfo::W32 }
         }, CtrlTextInfo::W128);
-    RepositionTextBasedControls({
-        { CtrlTextInfo::R1, IDOK, CtrlTextInfo::W32 },
-        { CtrlTextInfo::R2, IDCANCEL, CtrlTextInfo::W32 }
-        });
     return true;
 }
 
 void CFindDlg::DoDataExchange(CDataExchange* pDX)
 {
-    CBaseDialog::DoDataExchange(pDX);
+    CTabDlg::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_FIND_LIST, m_find_result_list);
     DDX_Control(pDX, IDC_FIND_FILE_CHECK, m_find_file_check);
     DDX_Control(pDX, IDC_FIND_TITLE_CHECK, m_find_title_check);
@@ -138,6 +131,12 @@ UINT CFindDlg::ViewOnlineThreadFunc(LPVOID lpParam)
     return 0;
 }
 
+void CFindDlg::SetPlaySelectedEnable(bool enable)
+{
+    CWnd* pParent = GetParentWindow();
+    ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
+}
+
 void CFindDlg::ClearFindResult()
 {
     m_find_result.clear();
@@ -181,7 +180,7 @@ void CFindDlg::GetSongsSelected(vector<SongInfo>& songs) const
         songs.push_back(m_find_result[index]);
 }
 
-BEGIN_MESSAGE_MAP(CFindDlg, CBaseDialog)
+BEGIN_MESSAGE_MAP(CFindDlg, CTabDlg)
     ON_EN_CHANGE(IDC_FIND_EDIT, &CFindDlg::OnEnChangeFindEdit)
     ON_NOTIFY(NM_CLICK, IDC_FIND_LIST, &CFindDlg::OnNMClickFindList)
     ON_BN_CLICKED(IDC_FIND_BUTTON, &CFindDlg::OnBnClickedFindButton)
@@ -215,7 +214,7 @@ END_MESSAGE_MAP()
 void CFindDlg::OnEnChangeFindEdit()
 {
     // TODO:  如果该控件是 RICHEDIT 控件，它将不
-    // 发送此通知，除非重写 CBaseDialog::OnInitDialog()
+    // 发送此通知，除非重写 CTabDlg::OnInitDialog()
     // 函数并调用 CRichEditCtrl().SetEventMask()，
     // 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
@@ -233,7 +232,7 @@ void CFindDlg::OnNMClickFindList(NMHDR* pNMHDR, LRESULT* pResult)
     //NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
     m_item_selected = pNMItemActivate->iItem;       //单击查找结果列表时保存选中的项目序号
     m_find_result_list.GetItemSelected(m_items_selected);
-    GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
+    SetPlaySelectedEnable(m_item_selected != -1);
     *pResult = 0;
 }
 
@@ -326,12 +325,10 @@ void CFindDlg::OnBnClickedFindButton()
 
 BOOL CFindDlg::OnInitDialog()
 {
-    CBaseDialog::OnInitDialog();
+    CTabDlg::OnInitDialog();
 
     // TODO:  在此添加额外的初始化
 
-    SetIcon(IconMgr::IconType::IT_Find, FALSE);
-    SetIcon(IconMgr::IconType::IT_Find, TRUE);
     SetButtonIcon(IDOK, IconMgr::IconType::IT_Play);
     SetButtonIcon(IDC_FIND_BUTTON, IconMgr::IconType::IT_Find);
 
@@ -374,7 +371,7 @@ BOOL CFindDlg::OnInitDialog()
     //设置列表控件的提示总是置顶，用于解决如果弹出此窗口的父窗口具有置顶属性时，提示信息在窗口下面的问题
     m_find_result_list.GetToolTips()->SetWindowPos(&CWnd::wndTopMost, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
-    GetDlgItem(IDOK)->EnableWindow(FALSE);  //禁用“播放选中曲目”按钮，除非选中了一个项目
+    SetPlaySelectedEnable(FALSE);  //禁用“播放选中曲目”按钮，除非选中了一个项目
 
     return FALSE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE
@@ -387,7 +384,7 @@ void CFindDlg::OnNMDblclkFindList(NMHDR* pNMHDR, LRESULT* pResult)
     // TODO: 在此添加控件通知处理程序代码
     m_item_selected = pNMItemActivate->iItem;
     m_find_result_list.GetItemSelected(m_items_selected);
-    GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
+    SetPlaySelectedEnable(m_item_selected != -1);
 
     //双击列表项目后关闭对话框并播放选中项目
     OnPlayItem();
@@ -408,7 +405,7 @@ BOOL CFindDlg::PreTranslateMessage(MSG* pMsg)
         return TRUE;
     }
 
-    return CBaseDialog::PreTranslateMessage(pMsg);
+    return CTabDlg::PreTranslateMessage(pMsg);
 }
 
 
@@ -457,7 +454,7 @@ void CFindDlg::OnBnClickedFindAllPlaylistRadio()
 
 void CFindDlg::OnSize(UINT nType, int cx, int cy)
 {
-    CBaseDialog::OnSize(nType, cx, cy);
+    CTabDlg::OnSize(nType, cx, cy);
 
     // TODO: 在此处添加消息处理程序代码
     if (m_find_result_list.m_hWnd != NULL && nType != SIZE_MINIMIZED)
@@ -481,8 +478,9 @@ void CFindDlg::OnSize(UINT nType, int cx, int cy)
 
 void CFindDlg::OnPlayItem()
 {
-    // TODO: 在此添加命令处理程序代码
-    OnOK();
+    //向父窗口发送IDOK命令
+    CWnd* pParent = GetParentWindow();
+    ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDOK, 0);
 }
 
 
@@ -506,7 +504,7 @@ void CFindDlg::OnNMRClickFindList(NMHDR* pNMHDR, LRESULT* pResult)
     // TODO: 在此添加控件通知处理程序代码
     m_item_selected = pNMItemActivate->iItem;
     m_find_result_list.GetItemSelected(m_items_selected);
-    GetDlgItem(IDOK)->EnableWindow(m_item_selected != -1);
+    SetPlaySelectedEnable(m_item_selected != -1);
 
     if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_find_result.size()))
     {
@@ -617,7 +615,7 @@ void CFindDlg::OnOK()
         }
     }
 
-    CBaseDialog::OnOK();
+    CTabDlg::OnOK();
 }
 
 
@@ -640,7 +638,7 @@ void CFindDlg::OnAddToNewPlaylistAndPlay()
 
 void CFindDlg::OnInitMenu(CMenu* pMenu)
 {
-    CBaseDialog::OnInitMenu(pMenu);
+    CTabDlg::OnInitMenu(pMenu);
 
     // TODO: 在此处添加消息处理程序代码
     vector<SongInfo> songs;
@@ -667,7 +665,7 @@ BOOL CFindDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     CMusicPlayerCmdHelper cmd_helper;
     cmd_helper.OnAddToPlaylistCommand(getSelectedItems, command);
 
-    return CBaseDialog::OnCommand(wParam, lParam);
+    return CTabDlg::OnCommand(wParam, lParam);
 }
 
 

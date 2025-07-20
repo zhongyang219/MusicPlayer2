@@ -157,6 +157,10 @@ void CMciCore::SetSpeed(float speed)
 {
 }
 
+void CMciCore::SetPitch(int pitch)
+{
+}
+
 bool CMciCore::SongIsOver()
 {
     return false;

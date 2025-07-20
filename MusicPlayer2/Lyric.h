@@ -124,7 +124,8 @@ public:
     wstring GetLyricsString() const;
     // 返回所有歌词的字符串，以保存的样式，包含全部标签（将歌词偏移保存到每个时间标签中）
     // lyric_and_traslation_in_same_line：歌词和翻译在同一行中，使用" / "分隔。如果为false，则歌词和翻译为两行具有相同时间标签的歌词
-    wstring GetLyricsString2(bool lyric_and_traslation_in_same_line = true) const;
+    // lyric_type：歌词保存的格式，如果为LyricType::LY_AUTO，则使用歌词原本的格式保存
+    wstring GetLyricsString2(bool lyric_and_traslation_in_same_line = true, LyricType lyric_type = LyricType::LY_AUTO) const;
 
     // 返回歌词修改标志
     bool IsModified() const { return m_modified; }

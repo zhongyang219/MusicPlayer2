@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "IconMgr.h"
 #include "MusicPlayer2.h"
+#include "WinVersionHelper.h"
 
 IconMgr::IconMgr() {}
 
@@ -68,7 +69,7 @@ int IconMgr::GetIconWidth(IconSize size)
     }
     if (size == IS_DPI_16_Full_Screen || size == IS_DPI_20_Full_Screen || size == IS_DPI_32_Full_Screen)
         width = static_cast<int>(width * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
-    if (width < 32)
+    if (width < 32 || !CWinVersionHelper::IsWindows10OrLater()) //Win10以下的系统中，如果图标图标中没有需要的尺寸，显示效果会有锯齿，因此这里总是使用标准尺寸
         width = CCommon::IconSizeNormalize(width);
     return width;
 }

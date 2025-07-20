@@ -51,6 +51,22 @@ bool CSetPathDlg::SetCurSel(const ListItem& list_item)
     return m_list_selected != -1;
 }
 
+const ListItem& CSetPathDlg::GetSelPath() const
+{
+    if (SelectValid())
+        if (m_searched)
+            return m_list_cache.at(m_search_result[m_list_selected]);
+        else
+            return m_list_cache.at(m_list_selected);
+    static ListItem empty{};
+    return empty;
+}
+
+bool CSetPathDlg::SelectedCanPlay() const
+{
+    return SelectValid() && !CRecentList::Instance().IsCurrentList(GetSelPath());
+}
+
 void CSetPathDlg::SetButtonsEnable()
 {
     bool enable = !m_list_search_cache.GetItem(m_list_selected).empty();
@@ -335,7 +351,7 @@ void CSetPathDlg::OnInitMenu(CMenu* pMenu)
     // TODO: 在此处添加消息处理程序代码
     ListItem list_item = m_list_search_cache.GetItem(m_list_selected);
     bool select_valid = !list_item.empty();
-    pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PLAY_PATH, MF_BYCOMMAND | (SelectedCanPlay() ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_DELETE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_BROWSE_PATH, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_CONTAIN_SUB_FOLDER, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));

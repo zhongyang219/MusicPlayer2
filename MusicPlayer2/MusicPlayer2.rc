@@ -126,558 +126,16 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\MusicPlayer2.ico"
-
-IDI_PLAY_IN_PLAYLIST_D  ICON                    "res\\play_in_playlist_d.ico"
-
-IDI_PREVIOUS            ICON                    "res\\上一曲.ico"
-
-IDI_PLAY_PAUSE          ICON                    "res\\播放_暂停.ico"
-
-IDI_NEXT1               ICON                    "res\\下一曲.ico"
-
-IDI_PLAY                ICON                    "res\\播放.ico"
-
-IDI_PAUSE               ICON                    "res\\暂停.ico"
-
-IDI_STOP                ICON                    "res\\停止.ico"
-
-IDI_ADD_TAG             ICON                    "res\\AddTag.ico"
-
-IDI_REPLACE_TAG         ICON                    "res\\ReplaceTag.ico"
-
-IDI_DELETE_TAG          ICON                    "res\\DeleteTag.ico"
-
-IDI_SAVE                ICON                    "res\\Save.ico"
-
-IDI_FIND                ICON                    "res\\Find.ico"
-
-IDI_REPLACE             ICON                    "res\\Replace.ico"
-
-IDI_FF                  ICON                    "res\\快进.ico"
-
-IDI_REW                 ICON                    "res\\快退.ico"
-
-IDI_DEFAULT_COVER       ICON                    "res\\default_cover_new.ico"
-
-IDI_SKIN                ICON                    "res\\skn.ico"
-
-IDI_EQ                  ICON                    "res\\eq.ico"
-
-IDI_SETTING             ICON                    "res\\setting.ico"
-
-IDI_LOOP_TRACK          ICON                    "res\\单曲循环.ico"
-
-IDI_LOOP_PLAYLIST       ICON                    "res\\列表循环.ico"
-
-IDI_PLAY_ORDER          ICON                    "res\\顺序播放.ico"
-
-IDI_PLAY_SHUFFLE        ICON                    "res\\随机播放.ico"
-
-IDI_SKIN_D              ICON                    "res\\skn_d.ico"
-
-IDI_EQ_D                ICON                    "res\\eq_d.ico"
-
-IDI_SETTING_D           ICON                    "res\\setting_d.ico"
-
-IDI_LOOP_TRACK_D        ICON                    "res\\单曲循环_d.ico"
-
-IDI_LOOP_PLAYLIST_D     ICON                    "res\\列表循环_d.ico"
-
-IDI_PLAY_ORDER_D        ICON                    "res\\顺序播放_d.ico"
-
-IDI_PLAY_SHUFFLE_D      ICON                    "res\\随机播放_d.ico"
-
-IDI_MINI                ICON                    "res\\mini.ico"
-
-IDI_MINI_D              ICON                    "res\\mini_d.ico"
-
-IDI_SONG_INFO           ICON                    "res\\曲目信息.ico"
-
-IDI_SONG_INFO_D         ICON                    "res\\曲目信息_d.ico"
-
-IDI_SELECT_FOLDER       ICON                    "res\\文件夹.ico"
-
-IDI_SELECT_FOLDER_D     ICON                    "res\\文件夹_d.ico"
-
-IDI_PLAYLIST            ICON                    "res\\播放列表.ico"
-
-IDI_PLAYLIST_D          ICON                    "res\\播放列表_d.ico"
-
-IDI_FIND_SONGS          ICON                    "res\\查找.ico"
-
-IDI_FIND_SONGS_D        ICON                    "res\\查找_d.ico"
-
-IDI_FULL_SCREEN         ICON                    "res\\全屏.ico"
-
-IDI_FULL_SCREEN_D       ICON                    "res\\全屏_d.ico"
-
-IDI_FULL_SCREEN1        ICON                    "res\\全屏1.ico"
-
-IDI_FULL_SCREEN1_D      ICON                    "res\\全屏1_d.ico"
-
-IDI_MENU                ICON                    "res\\menu.ico"
-
-IDI_MENU_D              ICON                    "res\\menu_d.ico"
-
-IDI_FILE_ICON           ICON                    "res\\file_icon.ico"
-
-IDI_MEDIA_LIB           ICON                    "res\\media_lib.ico"
-
-IDI_MEDIA_LIB_D         ICON                    "res\\media_lib_d.ico"
-
-IDI_FAVOURITE           ICON                    "res\\favourite.ico"
-
-IDI_FAVOURITE_D         ICON                    "res\\favourite_d.ico"
-
-IDI_HEART               ICON                    "res\\heart.ico"
-
-IDI_CLOSE_D             ICON                    "res\\close_d.ico"
-
-IDI_LOCK_D              ICON                    "res\\lock_d.ico"
-
-IDI_DOUBLE_LINE_D       ICON                    "res\\double_line_d.ico"
-
-IDI_EDIT_D              ICON                    "res\\edit_d.ico"
-
-IDI_ADD_D               ICON                    "res\\add_d.ico"
-
-IDI_ALBUM_D             ICON                    "res\\album_d.ico"
-
-IDI_ARTIST_D            ICON                    "res\\artist_d.ico"
-
-IDI_YEAR_D              ICON                    "res\\year_d.ico"
-
-IDI_FOLDER_EXPLORE_D    ICON                    "res\\folder_explore_d.ico"
-
-IDI_EXPLORE_FOLDER      ICON                    "res\\explorer_folder.ico"
-
-IDI_GENRE_D             ICON                    "res\\genre_d.ico"
-
-IDI_LYRIC_DELAY_D       ICON                    "res\\lyric_delay.ico"
-
-IDI_LYRIC_FORWARD_D     ICON                    "res\\lyric_forward.ico"
-
-IDI_RECENT_SONG_D       ICON                    "res\\recent_songs_d.ico"
-
-IDI_FILE_PLAYLIST       ICON                    "res\\file_playlist_icon.ico"
-
-IDI_STOP_NEW            ICON                    "res\\stop_white.ico"
-
-IDI_STOP_NEW_D          ICON                    "res\\stop_dark.ico"
-
-IDI_PREVIOUS_NEW        ICON                    "res\\previous_white.ico"
-
-IDI_PREVIOUS_NEW_D      ICON                    "res\\previous_dark.ico"
-
-IDI_PLAY_NEW            ICON                    "res\\play_white.ico"
-
-IDI_PLAY_NEW_D          ICON                    "res\\play_dark.ico"
-
-IDI_PAUSE_NEW           ICON                    "res\\pause_white.ico"
-
-IDI_PAUSE_NEW_D         ICON                    "res\\pause_dark.ico"
-
-IDI_NEXT_NEW            ICON                    "res\\next_white.ico"
-
-IDI_NEXT_NEW_D          ICON                    "res\\next_dark.ico"
-
-IDI_SAVE_NEW_D          ICON                    "res\\save_new.ico"
-
-IDI_MUSIC_D             ICON                    "res\\music_d.ico"
-
-IDI_FILE_RELATE_D       ICON                    "res\\file_relate_d.ico"
-
-IDI_ONLINE_D            ICON                    "res\\online_d.ico"
-
-IDI_PLAY_PAUSE_D        ICON                    "res\\play_pause_d.ico"
-
-IDI_CONVERT_D           ICON                    "res\\convert_d.ico"
-
-IDI_DOWNLOAD_D          ICON                    "res\\download_d.ico"
-
-IDI_DOWNLOAD1_D         ICON                    "res\\download1_d.ico"
-
-IDI_HELP_D              ICON                    "res\\help_d.ico"
-
-IDI_FF_NEW_D            ICON                    "res\\ff_new_d.ico"
-
-IDI_REW_NEW_D           ICON                    "res\\rew_new_d.ico"
-
-IDI_SAVE_AS_D           ICON                    "res\\save_as_d.ico"
-
-IDI_PLAYLIST_FLOAT_D    ICON                    "res\\playlist_float_d.ico"
-
-IDI_PLAYLIST_DOCK_D     ICON                    "res\\playlist_dock_d.ico"
-
-IDI_STATISTICS_D        ICON                    "res\\statistics_d.ico"
-
-IDI_PIN_D               ICON                    "res\\pin_d.ico"
-
-IDI_EXIT_D              ICON                    "res\\exit_d.ico"
-
-IDI_ALBUM_COVER_D       ICON                    "res\\album_cover_d.ico"
-
-IDI_DARK_MODE_D         ICON                    "res\\dark_mode.ico"
-
-IDI_LYRIC_D             ICON                    "res\\lyric_d.ico"
-
-IDI_APP_DARK            ICON                    "res\\MusicPlayer2_dark.ico"
-
-IDI_APP_LIGHT           ICON                    "res\\MusicPlayer2_light.ico"
-
-IDI_DEFAULT_COVER_NOT_PLAYED ICON                    "res\\default_cover_new_not_played.ico"
-
-IDI_PLAY_RANDOM         ICON                    "res\\随机播放1.ico"
-
-IDI_PLAY_RANDOM_D       ICON                    "res\\随机播放1_d.ico"
-
-IDI_OK_D                ICON                    "res\\ok.ico"
-
-IDI_RENAME_D            ICON                    "res\\rename_d.ico"
-
-IDI_PLAY_TRACK          ICON                    "res\\单曲播放.ico"
-
-IDI_PLAY_TRACK_D        ICON                    "res\\单曲播放_d.ico"
-
-IDI_APP_DEBUG           ICON                    "res\\MusicPlayer2_debug.ico"
-
-IDI_TAG                 ICON                    "res\\tag.ico"
-
-IDI_LOCATE_D            ICON                    "res\\locate_d.ico"
-
-IDI_STAR                ICON                    "res\\star.ico"
-
-IDI_CLOSE               ICON                    "res\\close.ico"
-
-IDI_MINIMIZE            ICON                    "res\\minimize.ico"
-
-IDI_MINIMIZE_D          ICON                    "res\\minimize_d.ico"
-
-IDI_MAXIMIZE            ICON                    "res\\maximize.ico"
-
-IDI_MAXIMIZE_D          ICON                    "res\\maximize_d.ico"
-
-IDI_RESTORE             ICON                    "res\\restore.ico"
-
-IDI_RESTORE_D           ICON                    "res\\restore_d.ico"
-
-IDI_VOLUME3_D           ICON                    "res\\volume3_d.ico"
-
-IDI_VOLUME2_D           ICON                    "res\\volume2_d.ico"
-
-IDI_VOLUME1_D           ICON                    "res\\volume1_d.ico"
-
-IDI_VOLUME3             ICON                    "res\\volume3.ico"
-
-IDI_VOLUME2             ICON                    "res\\volume2.ico"
-
-IDI_VOLUME1             ICON                    "res\\volume1.ico"
-
-IDI_VOLUME0             ICON                    "res\\volume0.ico"
-
-IDI_VOLUME0_D           ICON                    "res\\volume0_d.ico"
-
-IDI_EXPAND_D            ICON                    "res\\expand_d.ico"
-
-IDI_ADD                 ICON                    "res\\add.ico"
-
-IDI_SORT                ICON                    "res\\sort.ico"
-
-IDI_SORT_D              ICON                    "res\\sort_d.ico"
-
-IDI_DISPLAY_MODE        ICON                    "res\\display_mode.ico"
-
-IDI_DISPLAY_MODE_D      ICON                    "res\\display_mode_d.ico"
-
-IDI_LINK                ICON                    "res\\link.ico"
-
-IDI_LINK_D              ICON                    "res\\link_d.ico"
-
-IDI_UNLINK              ICON                    "res\\unlink.ico"
-
-IDI_UNLINK_D            ICON                    "res\\unlink_d.ico"
-
-IDI_INTERNAL_LYRIC_D    ICON                    "res\\internal_lyric_d.ico"
-
-IDI_SPEED_UP_D          ICON                    "res\\speed_up_d.ico"
-
-IDI_SLOW_DOWN_D         ICON                    "res\\slow_down_d.ico"
-
-IDI_SHORTCUT_D          ICON                    "res\\shortcut_d.ico"
-
-IDI_SWITCH              ICON                    "res\\switch.ico"
-
-IDI_SWITCH_D            ICON                    "res\\switch_d.ico"
-
-IDI_LYRIC               ICON                    "res\\lyric.ico"
-
-IDI_PLAYLIST_DOCK       ICON                    "res\\playlist_dock.ico"
-
-IDI_HELP                ICON                    "res\\help.ico"
-
-IDI_LIGHT_MODE          ICON                    "res\\light_mode.ico"
-
-IDI_PLAY_AS_NEXT        ICON                    "res\\play_as_next.ico"
-
-IDI_PLAY_IN_PLAYLIST    ICON                    "res\\play_in_playlist.ico"
-
-IDI_COPY                ICON                    "res\\copy.ico"
-
-IDI_PLAY_IN_FOLDER      ICON                    "res\\play_in_folder.ico"
-
-IDI_BITRATE             ICON                    "res\\bitrate.ico"
-
-IDI_REVERB              ICON                    "res\\reverb.ico"
-
-IDI_HOT_KEY             ICON                    "res\\hot_key.ico"
-
-IDI_MINI_RESTORE        ICON                    "res\\mini_restore.ico"
-
-IDI_MINI_RESTORE_D      ICON                    "res\\mini_restore_d.ico"
-
-IDI_LOCATE              ICON                    "res\\locate.ico"
-
-IDI_EXPAND              ICON                    "res\\expand.ico"
-
-IDI_FIX_D               ICON                    "res\\fix_d.ico"
-
-IDI_UP_D                ICON                    "res\\up_d.ico"
-
-IDI_ARTIST              ICON                    "res\\artist.ico"
-
-IDI_ALBUM               ICON                    "res\\album.ico"
-
-IDI_GENRE               ICON                    "res\\genre.ico"
-
-IDI_YEAR                ICON                    "res\\year.ico"
-
-IDI_FILE_RELATE         ICON                    "res\\file_relate.ico"
-
-IDI_BITRATE_D           ICON                    "res\\bitrate_d.ico"
-
-IDI_STAR_D              ICON                    "res\\star_d.ico"
-
-IDI_MORE_D              ICON                    "res\\more_d.ico"
-
-IDI_RECENT_SONG         ICON                    "res\\recent_songs.ico"
-
-IDI_ALBUM_COVER         ICON                    "res\\album_cover.ico"
-
-IDI_REVERB_D            ICON                    "res\\reverb_d.ico"
-
-IDI_NOW_PLAYING         ICON                    "res\\now_playing.ico"
-
-IDI_NOW_PLAYING_D       ICON                    "res\\now_playing_d.ico"
-
-IDI_KARAOKE             ICON                    "res\\karaoke.ico"
-
-IDI_KARAOKE_D           ICON                    "res\\karaoke_d.ico"
-
-IDI_REFRESH_D           ICON                    "res\\refresh_d.ico"
-
-IDI_REFRESH             ICON                    "res\\refresh.ico"
-
-IDI_NEW_FOLDER          ICON                    "res\\new_folder.ico"
-
-IDI_NEW_FOLDER_D        ICON                    "res\\new_folder_d.ico"
-
-IDI_BACKGROUND_D        ICON                    "res\\background_d.ico"
-
-IDI_FOLDER_EXPLORE      ICON                    "res\\folder_explore.ico"
-
-IDI_TREE_COLLAPSED_D    ICON                    "res\\tree_branch_collapsed_d.ico"
-
-IDI_TREE_EXPANDED_D     ICON                    "res\\tree_branch_expanded_d.ico"
-
-IDI_TREE_COLLAPSED      ICON                    "res\\tree_branch_collapsed.ico"
-
-IDI_TREE_EXPANDED       ICON                    "res\\tree_branch_expanded.ico"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Version
-//
-
-VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,7,7,1
- PRODUCTVERSION 2,7,7,1
- FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
- FILEFLAGS 0x1L
-#else
- FILEFLAGS 0x0L
-#endif
- FILEOS 0x40004L
- FILETYPE 0x1L
- FILESUBTYPE 0x0L
-BEGIN
-    BLOCK "StringFileInfo"
-    BEGIN
-        BLOCK "080404b0"
-        BEGIN
-            VALUE "CompanyName", "By ZhongYang"
-            VALUE "FileDescription", "MusicPlayer2"
-            VALUE "FileVersion", "2.7.7.1"
-            VALUE "InternalName", "MusicPlayer2.exe"
-            VALUE "LegalCopyright", "By ZhongYang. All rights reserved."
-            VALUE "OriginalFilename", "MusicPlayer2.exe"
-            VALUE "ProductName", "MusicPlayer2"
-            VALUE "ProductVersion", "2.7.7.1"
-        END
-    END
-    BLOCK "VarFileInfo"
-    BEGIN
-        VALUE "Translation", 0x804, 1200
-    END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
-IDB_CORTANA_BLACK       BITMAP                  "res\\Cortana_black.bmp"
-
-IDB_CORTANA_WHITE       BITMAP                  "res\\Cortana_white.bmp"
-
-IDR_LYRIC_EDIT_TOOLBAR  BITMAP                  "res\\toolbar1.bmp"
-
-IDB_DONATE              BITMAP                  "res\\donate.bmp"
-
-IDB_DONATE_WECHAT       BITMAP                  "res\\donate_wechat.bmp"
-
-IDB_NOTIFY_ICON_PREVIEW BITMAP                  "res\\notify_preview.bmp"
-
-IDB_NOTIFY_ICON_PREVIEW_LIGHT BITMAP                  "res\\notify_preview_light.bmp"
-
-IDB_DEFAULT_COVER       BITMAP                  "res\\default_cover.bmp"
-
-IDB_SYSTEM_TITLEBAR_PREVIEW BITMAP                  "res\\system_titlebar_preview.bmp"
-
-IDB_OWNER_DRAW_TITLEBAR_PREVIEW BITMAP                  "res\\owner_draw_titlebar_preview.bmp"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Toolbar
-//
-
-IDR_LYRIC_EDIT_TOOLBAR TOOLBAR 16, 15
-BEGIN
-    BUTTON      ID_LYRIC_INSERT_TAG
-    BUTTON      ID_LYRIC_REPLACE_TAG
-    BUTTON      ID_LYRIC_DELETE_TAG
-    BUTTON      ID_LYRIC_SAVE
-    SEPARATOR
-    BUTTON      ID_PLAY_PAUSE
-    BUTTON      ID_REW
-    BUTTON      ID_FF
-    BUTTON      ID_SEEK_TO_CUR_LINE
-    SEPARATOR
-    BUTTON      ID_LYRIC_FIND
-    BUTTON      ID_LYRIC_REPLACE
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Cursor
-//
-
-IDC_DRAG_CURSOR         CURSOR                  "res\\drag.cur"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// PNG
-//
-
-IDB_DEFAULT_ALBUM_COVER PNG                     "res\\黑色胶片.png"
-
-IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED PNG                     "res\\黑色胶片_not_played.png"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Accelerator
-//
-
-IDR_ACCELERATOR1 ACCELERATORS
-BEGIN
-    "R",            ID_AB_REPEAT,           VIRTKEY, CONTROL, NOINVERT
-    "W",            ID_ALBUM_COVER_INFO,    VIRTKEY, CONTROL, NOINVERT
-    "T",            ID_ALWAYS_ON_TOP,       VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "D",            ID_DARK_MODE,           VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_DELETE,      ID_DELETE_CURRENT_FROM_DISK, VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_DELETE,      ID_DELETE_FROM_DISK,    VIRTKEY, SHIFT, NOINVERT
-    "E",            ID_EDIT_LYRIC,          VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "E",            ID_EQUALIZER,           VIRTKEY, CONTROL, NOINVERT
-    "B",            ID_EXPLORE_PATH,        VIRTKEY, CONTROL, NOINVERT
-    VK_RIGHT,       ID_FF,                  VIRTKEY, NOINVERT
-    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
-    "D",            ID_FILE_OPEN_FOLDER,    VIRTKEY, CONTROL, NOINVERT
-    "F",            ID_FIND,                VIRTKEY, CONTROL, NOINVERT
-    "K",            ID_FLOAT_PLAYLIST,      VIRTKEY, CONTROL, NOINVERT
-    VK_F11,         ID_FULL_SCREEN,         VIRTKEY, NOINVERT
-    "G",            ID_LOCATE_TO_CURRENT,   VIRTKEY, CONTROL, NOINVERT
-    VK_NEXT,        ID_LYRIC_DELAY,         VIRTKEY, CONTROL, NOINVERT
-    VK_PRIOR,       ID_LYRIC_FORWARD,       VIRTKEY, CONTROL, NOINVERT
-    "T",            ID_MEDIA_LIB,           VIRTKEY, CONTROL, NOINVERT
-    "M",            ID_MINI_MODE,           VIRTKEY, CONTROL, NOINVERT
-    "H",            ID_MORE_RECENT_ITEMS,   VIRTKEY, CONTROL, NOINVERT
-    VK_DOWN,        ID_MOVE_PLAYLIST_ITEM_DOWN, VIRTKEY, CONTROL, NOINVERT
-    VK_UP,          ID_MOVE_PLAYLIST_ITEM_UP, VIRTKEY, CONTROL, NOINVERT
-    "N",            ID_NEXT,                VIRTKEY, NOINVERT
-    "N",            ID_NEXT_AB_REPEAT,      VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "I",            ID_OPTION_SETTINGS,     VIRTKEY, CONTROL, NOINVERT
-    VK_RETURN,      ID_ORIGINAL_SPEED,      VIRTKEY, CONTROL, NOINVERT
-    "P",            ID_PLAY_PAUSE,          VIRTKEY, NOINVERT
-    VK_SPACE,       ID_PLAY_PAUSE,          VIRTKEY, NOINVERT
-    "A",            ID_PLAYLIST_SELECT_ALL, VIRTKEY, CONTROL, NOINVERT
-    "V",            ID_PREVIOUS,            VIRTKEY, NOINVERT
-    "Q",            ID_RE_INI_BASS,         VIRTKEY, CONTROL, NOINVERT
-    VK_DELETE,      ID_REMOVE_CURRENT_FROM_PLAYLIST, VIRTKEY, CONTROL, NOINVERT
-    VK_DELETE,      ID_REMOVE_FROM_PLAYLIST, VIRTKEY, NOINVERT
-    "M",            ID_REPEAT_MODE,         VIRTKEY, NOINVERT
-    "C",            ID_RESET_AB_REPEAT,     VIRTKEY, SHIFT, CONTROL, NOINVERT
-    VK_LEFT,        ID_REW,                 VIRTKEY, NOINVERT
-    "S",            ID_SAVE_MODIFIED_LYRIC, VIRTKEY, CONTROL, NOINVERT
-    "A",            ID_SET_A_POINT,         VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "B",            ID_SET_B_POINT,         VIRTKEY, SHIFT, CONTROL, NOINVERT
-    "Y",            ID_SHOW_DESKTOP_LYRIC,  VIRTKEY, CONTROL, NOINVERT
-    "L",            ID_SHOW_PLAYLIST,       VIRTKEY, CONTROL, NOINVERT
-    VK_OEM_MINUS,   ID_SLOW_DOWN,           VIRTKEY, CONTROL, NOINVERT
-    "N",            ID_SONG_INFO,           VIRTKEY, CONTROL, NOINVERT
-    VK_OEM_PLUS,    ID_SPEED_UP,            VIRTKEY, CONTROL, NOINVERT
-    "S",            ID_STOP,                VIRTKEY, NOINVERT
-    "U",            ID_SWITCH_UI,           VIRTKEY, CONTROL, NOINVERT
-    "1",            ID_SWITCH_UI_1,         VIRTKEY, CONTROL, NOINVERT
-    "0",            ID_SWITCH_UI_10,        VIRTKEY, CONTROL, NOINVERT
-    "2",            ID_SWITCH_UI_2,         VIRTKEY, CONTROL, NOINVERT
-    "3",            ID_SWITCH_UI_3,         VIRTKEY, CONTROL, NOINVERT
-    "4",            ID_SWITCH_UI_4,         VIRTKEY, CONTROL, NOINVERT
-    "5",            ID_SWITCH_UI_5,         VIRTKEY, CONTROL, NOINVERT
-    "6",            ID_SWITCH_UI_6,         VIRTKEY, CONTROL, NOINVERT
-    "7",            ID_SWITCH_UI_7,         VIRTKEY, CONTROL, NOINVERT
-    "8",            ID_SWITCH_UI_8,         VIRTKEY, CONTROL, NOINVERT
-    "9",            ID_SWITCH_UI_9,         VIRTKEY, CONTROL, NOINVERT
-    VK_DOWN,        ID_VOLUME_DOWN,         VIRTKEY, NOINVERT
-    VK_UP,          ID_VOLUME_UP,           VIRTKEY, NOINVERT
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Dialog
 //
+
+IDD_FIND_LIST_DIALOG DIALOGEX 0, 0, 185, 110
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_SEARCH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,4,4,176,12
+    CONTROL         "",IDC_SONG_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,4,19,176,86
+END
 
 IDD_TEST_DIALOG DIALOGEX 0, 0, 429, 176
 STYLE DS_SETFONT | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
@@ -970,29 +428,26 @@ BEGIN
 END
 
 IDD_FIND_DIALOG DIALOGEX 0, 0, 290, 208
-STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "Find File"
 FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
-    LTEXT           "Enter the keyword to find:",IDC_TXT_FIND_KEY_WORD_INPUT_STATIC,7,7,19,12,SS_CENTERIMAGE
-    EDITTEXT        IDC_FIND_EDIT,33,7,195,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "Find",IDC_FIND_BUTTON,233,6,50,14
-    GROUPBOX        "Find Range",IDC_TXT_FIND_FIND_RANGE_STATIC,7,21,113,35
+    LTEXT           "Enter the keyword to find:",IDC_TXT_FIND_KEY_WORD_INPUT_STATIC,4,5,19,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_FIND_EDIT,33,5,199,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Find",IDC_FIND_BUTTON,235,4,50,14
+    GROUPBOX        "Find Range",IDC_TXT_FIND_FIND_RANGE_STATIC,4,21,116,35
     CONTROL         "Find the current playlist",IDC_FIND_CURRENT_PLAYLIST_RADIO,
                     "Button",BS_AUTORADIOBUTTON,14,32,99,10
     CONTROL         "Find entire media library",IDC_FIND_ALL_PLAYLIST_RADIO,
                     "Button",BS_AUTORADIOBUTTON,14,43,99,10
-    GROUPBOX        "Find options",IDC_TXT_FIND_OPT_STATIC,130,21,153,35
+    GROUPBOX        "Find options",IDC_TXT_FIND_OPT_STATIC,130,21,155,35
     CONTROL         "Find file name",IDC_FIND_FILE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,137,32,69,10
     CONTROL         "Find title",IDC_FIND_TITLE_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,206,32,70,10
     CONTROL         "Find artist",IDC_FIND_ARTIST_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,137,43,69,10
     CONTROL         "Find album",IDC_FIND_ALBUM_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,206,43,70,10
-    LTEXT           "Last find results:",IDC_FIND_RESULT_STATIC,7,59,113,8,SS_ENDELLIPSIS
-    RTEXT           "Find keyword <%1%>, <%2%> results.",IDC_FIND_INFO_STATIC,130,59,153,8,SS_ENDELLIPSIS
-    CONTROL         "",IDC_FIND_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,69,276,112
-    DEFPUSHBUTTON   "Play the selected track",IDOK,178,187,50,14
-    PUSHBUTTON      "Close",IDCANCEL,233,187,50,14
+    LTEXT           "Last find results:",IDC_FIND_RESULT_STATIC,4,59,116,8,SS_ENDELLIPSIS
+    RTEXT           "Find keyword <%1%>, <%2%> results.",IDC_FIND_INFO_STATIC,130,59,155,8,SS_ENDELLIPSIS
+    CONTROL         "",IDC_FIND_LIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,4,69,281,134
 END
 
 IDD_FORMAT_CONVERT_DIALOG DIALOGEX 0, 0, 297, 244
@@ -1707,6 +1162,17 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,150,70,50,14
 END
 
+IDD_FIND_CONTAINER_DIALOG DIALOGEX 0, 0, 311, 201
+STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Find"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,5,4,301,174
+    PUSHBUTTON      "Cancel",IDCANCEL,256,182,50,14
+    DEFPUSHBUTTON   "Play selected",IDOK,196,182,55,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1716,6 +1182,14 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO
 BEGIN
+    IDD_FIND_LIST_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 180
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 105
+    END
+
     IDD_TEST_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -1841,8 +1315,8 @@ BEGIN
 
     IDD_FIND_DIALOG, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 283
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 285
         VERTGUIDE, 14
         VERTGUIDE, 113
         VERTGUIDE, 120
@@ -1850,8 +1324,8 @@ BEGIN
         VERTGUIDE, 137
         VERTGUIDE, 206
         VERTGUIDE, 276
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 201
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 203
     END
 
     IDD_FORMAT_CONVERT_DIALOG, DIALOG
@@ -2183,6 +1657,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 84
     END
+
+    IDD_FIND_CONTAINER_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 306
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 196
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -2191,6 +1673,13 @@ END
 //
 // AFX_DIALOG_LAYOUT
 //
+
+IDD_FIND_LIST_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 100, 0,
+    0, 0, 100, 100
+END
 
 IDD_TEST_DIALOG AFX_DIALOG_LAYOUT
 BEGIN
@@ -2406,9 +1895,7 @@ BEGIN
     66, 0, 34, 0,
     0, 0, 32, 0,
     32, 0, 68, 0,
-    0, 0, 100, 100,
-    100, 100, 0, 0,
-    100, 100, 0, 0
+    0, 0, 100, 100
 END
 
 IDD_FORMAT_CONVERT_DIALOG AFX_DIALOG_LAYOUT
@@ -2916,11 +2403,28 @@ BEGIN
     0
 END
 
+IDD_FIND_CONTAINER_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 100, 100,
+    100, 100, 0, 0,
+    100, 100, 0, 0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog Info
 //
+
+IDD_FIND_LIST_DIALOG DLGINIT
+BEGIN
+    IDC_SEARCH_EDIT, 0x37c, 42, 0
+0x4d3c, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 0x4d5f, 0x646f, 
+0x3e65, 0x3c31, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
+0x4d5f, 0x646f, 0x3e65, 
+    0
+END
 
 IDD_TEST_DIALOG DLGINIT
 BEGIN
@@ -3053,6 +2557,559 @@ BEGIN
 0x3e65, 0x3c31, 0x4d2f, 0x4346, 0x6445, 0x7469, 0x7242, 0x776f, 0x6573, 
 0x4d5f, 0x646f, 0x3e65, 
     0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\MusicPlayer2.ico"
+
+IDI_PLAY_IN_PLAYLIST_D  ICON                    "res\\play_in_playlist_d.ico"
+
+IDI_PREVIOUS            ICON                    "res\\上一曲.ico"
+
+IDI_PLAY_PAUSE          ICON                    "res\\播放_暂停.ico"
+
+IDI_NEXT1               ICON                    "res\\下一曲.ico"
+
+IDI_PLAY                ICON                    "res\\播放.ico"
+
+IDI_PAUSE               ICON                    "res\\暂停.ico"
+
+IDI_STOP                ICON                    "res\\停止.ico"
+
+IDI_ADD_TAG             ICON                    "res\\AddTag.ico"
+
+IDI_REPLACE_TAG         ICON                    "res\\ReplaceTag.ico"
+
+IDI_DELETE_TAG          ICON                    "res\\DeleteTag.ico"
+
+IDI_SAVE                ICON                    "res\\Save.ico"
+
+IDI_FIND                ICON                    "res\\Find.ico"
+
+IDI_REPLACE             ICON                    "res\\Replace.ico"
+
+IDI_FF                  ICON                    "res\\快进.ico"
+
+IDI_REW                 ICON                    "res\\快退.ico"
+
+IDI_DEFAULT_COVER       ICON                    "res\\default_cover_new.ico"
+
+IDI_SKIN                ICON                    "res\\skn.ico"
+
+IDI_EQ                  ICON                    "res\\eq.ico"
+
+IDI_SETTING             ICON                    "res\\setting.ico"
+
+IDI_LOOP_TRACK          ICON                    "res\\单曲循环.ico"
+
+IDI_LOOP_PLAYLIST       ICON                    "res\\列表循环.ico"
+
+IDI_PLAY_ORDER          ICON                    "res\\顺序播放.ico"
+
+IDI_PLAY_SHUFFLE        ICON                    "res\\随机播放.ico"
+
+IDI_SKIN_D              ICON                    "res\\skn_d.ico"
+
+IDI_EQ_D                ICON                    "res\\eq_d.ico"
+
+IDI_SETTING_D           ICON                    "res\\setting_d.ico"
+
+IDI_LOOP_TRACK_D        ICON                    "res\\单曲循环_d.ico"
+
+IDI_LOOP_PLAYLIST_D     ICON                    "res\\列表循环_d.ico"
+
+IDI_PLAY_ORDER_D        ICON                    "res\\顺序播放_d.ico"
+
+IDI_PLAY_SHUFFLE_D      ICON                    "res\\随机播放_d.ico"
+
+IDI_MINI                ICON                    "res\\mini.ico"
+
+IDI_MINI_D              ICON                    "res\\mini_d.ico"
+
+IDI_SONG_INFO           ICON                    "res\\曲目信息.ico"
+
+IDI_SONG_INFO_D         ICON                    "res\\曲目信息_d.ico"
+
+IDI_SELECT_FOLDER       ICON                    "res\\文件夹.ico"
+
+IDI_SELECT_FOLDER_D     ICON                    "res\\文件夹_d.ico"
+
+IDI_PLAYLIST            ICON                    "res\\播放列表.ico"
+
+IDI_PLAYLIST_D          ICON                    "res\\播放列表_d.ico"
+
+IDI_FIND_SONGS          ICON                    "res\\查找.ico"
+
+IDI_FIND_SONGS_D        ICON                    "res\\查找_d.ico"
+
+IDI_FULL_SCREEN         ICON                    "res\\全屏.ico"
+
+IDI_FULL_SCREEN_D       ICON                    "res\\全屏_d.ico"
+
+IDI_FULL_SCREEN1        ICON                    "res\\全屏1.ico"
+
+IDI_FULL_SCREEN1_D      ICON                    "res\\全屏1_d.ico"
+
+IDI_MENU                ICON                    "res\\menu.ico"
+
+IDI_MENU_D              ICON                    "res\\menu_d.ico"
+
+IDI_FILE_ICON           ICON                    "res\\file_icon.ico"
+
+IDI_MEDIA_LIB           ICON                    "res\\media_lib.ico"
+
+IDI_MEDIA_LIB_D         ICON                    "res\\media_lib_d.ico"
+
+IDI_FAVOURITE           ICON                    "res\\favourite.ico"
+
+IDI_FAVOURITE_D         ICON                    "res\\favourite_d.ico"
+
+IDI_HEART               ICON                    "res\\heart.ico"
+
+IDI_CLOSE_D             ICON                    "res\\close_d.ico"
+
+IDI_LOCK_D              ICON                    "res\\lock_d.ico"
+
+IDI_DOUBLE_LINE_D       ICON                    "res\\double_line_d.ico"
+
+IDI_EDIT_D              ICON                    "res\\edit_d.ico"
+
+IDI_ADD_D               ICON                    "res\\add_d.ico"
+
+IDI_ALBUM_D             ICON                    "res\\album_d.ico"
+
+IDI_ARTIST_D            ICON                    "res\\artist_d.ico"
+
+IDI_YEAR_D              ICON                    "res\\year_d.ico"
+
+IDI_FOLDER_EXPLORE_D    ICON                    "res\\folder_explore_d.ico"
+
+IDI_EXPLORE_FOLDER      ICON                    "res\\explorer_folder.ico"
+
+IDI_GENRE_D             ICON                    "res\\genre_d.ico"
+
+IDI_LYRIC_DELAY_D       ICON                    "res\\lyric_delay.ico"
+
+IDI_LYRIC_FORWARD_D     ICON                    "res\\lyric_forward.ico"
+
+IDI_RECENT_SONG_D       ICON                    "res\\recent_songs_d.ico"
+
+IDI_FILE_PLAYLIST       ICON                    "res\\file_playlist_icon.ico"
+
+IDI_STOP_NEW            ICON                    "res\\stop_white.ico"
+
+IDI_STOP_NEW_D          ICON                    "res\\stop_dark.ico"
+
+IDI_PREVIOUS_NEW        ICON                    "res\\previous_white.ico"
+
+IDI_PREVIOUS_NEW_D      ICON                    "res\\previous_dark.ico"
+
+IDI_PLAY_NEW            ICON                    "res\\play_white.ico"
+
+IDI_PLAY_NEW_D          ICON                    "res\\play_dark.ico"
+
+IDI_PAUSE_NEW           ICON                    "res\\pause_white.ico"
+
+IDI_PAUSE_NEW_D         ICON                    "res\\pause_dark.ico"
+
+IDI_NEXT_NEW            ICON                    "res\\next_white.ico"
+
+IDI_NEXT_NEW_D          ICON                    "res\\next_dark.ico"
+
+IDI_SAVE_NEW_D          ICON                    "res\\save_new.ico"
+
+IDI_MUSIC_D             ICON                    "res\\music_d.ico"
+
+IDI_FILE_RELATE_D       ICON                    "res\\file_relate_d.ico"
+
+IDI_ONLINE_D            ICON                    "res\\online_d.ico"
+
+IDI_PLAY_PAUSE_D        ICON                    "res\\play_pause_d.ico"
+
+IDI_CONVERT_D           ICON                    "res\\convert_d.ico"
+
+IDI_DOWNLOAD_D          ICON                    "res\\download_d.ico"
+
+IDI_DOWNLOAD1_D         ICON                    "res\\download1_d.ico"
+
+IDI_HELP_D              ICON                    "res\\help_d.ico"
+
+IDI_FF_NEW_D            ICON                    "res\\ff_new_d.ico"
+
+IDI_REW_NEW_D           ICON                    "res\\rew_new_d.ico"
+
+IDI_SAVE_AS_D           ICON                    "res\\save_as_d.ico"
+
+IDI_PLAYLIST_FLOAT_D    ICON                    "res\\playlist_float_d.ico"
+
+IDI_PLAYLIST_DOCK_D     ICON                    "res\\playlist_dock_d.ico"
+
+IDI_STATISTICS_D        ICON                    "res\\statistics_d.ico"
+
+IDI_PIN_D               ICON                    "res\\pin_d.ico"
+
+IDI_EXIT_D              ICON                    "res\\exit_d.ico"
+
+IDI_ALBUM_COVER_D       ICON                    "res\\album_cover_d.ico"
+
+IDI_DARK_MODE_D         ICON                    "res\\dark_mode.ico"
+
+IDI_LYRIC_D             ICON                    "res\\lyric_d.ico"
+
+IDI_APP_DARK            ICON                    "res\\MusicPlayer2_dark.ico"
+
+IDI_APP_LIGHT           ICON                    "res\\MusicPlayer2_light.ico"
+
+IDI_DEFAULT_COVER_NOT_PLAYED ICON                    "res\\default_cover_new_not_played.ico"
+
+IDI_PLAY_RANDOM         ICON                    "res\\随机播放1.ico"
+
+IDI_PLAY_RANDOM_D       ICON                    "res\\随机播放1_d.ico"
+
+IDI_OK_D                ICON                    "res\\ok.ico"
+
+IDI_RENAME_D            ICON                    "res\\rename_d.ico"
+
+IDI_PLAY_TRACK          ICON                    "res\\单曲播放.ico"
+
+IDI_PLAY_TRACK_D        ICON                    "res\\单曲播放_d.ico"
+
+IDI_APP_DEBUG           ICON                    "res\\MusicPlayer2_debug.ico"
+
+IDI_TAG                 ICON                    "res\\tag.ico"
+
+IDI_LOCATE_D            ICON                    "res\\locate_d.ico"
+
+IDI_STAR                ICON                    "res\\star.ico"
+
+IDI_CLOSE               ICON                    "res\\close.ico"
+
+IDI_MINIMIZE            ICON                    "res\\minimize.ico"
+
+IDI_MINIMIZE_D          ICON                    "res\\minimize_d.ico"
+
+IDI_MAXIMIZE            ICON                    "res\\maximize.ico"
+
+IDI_MAXIMIZE_D          ICON                    "res\\maximize_d.ico"
+
+IDI_RESTORE             ICON                    "res\\restore.ico"
+
+IDI_RESTORE_D           ICON                    "res\\restore_d.ico"
+
+IDI_VOLUME3_D           ICON                    "res\\volume3_d.ico"
+
+IDI_VOLUME2_D           ICON                    "res\\volume2_d.ico"
+
+IDI_VOLUME1_D           ICON                    "res\\volume1_d.ico"
+
+IDI_VOLUME3             ICON                    "res\\volume3.ico"
+
+IDI_VOLUME2             ICON                    "res\\volume2.ico"
+
+IDI_VOLUME1             ICON                    "res\\volume1.ico"
+
+IDI_VOLUME0             ICON                    "res\\volume0.ico"
+
+IDI_VOLUME0_D           ICON                    "res\\volume0_d.ico"
+
+IDI_EXPAND_D            ICON                    "res\\expand_d.ico"
+
+IDI_ADD                 ICON                    "res\\add.ico"
+
+IDI_SORT                ICON                    "res\\sort.ico"
+
+IDI_SORT_D              ICON                    "res\\sort_d.ico"
+
+IDI_DISPLAY_MODE        ICON                    "res\\display_mode.ico"
+
+IDI_DISPLAY_MODE_D      ICON                    "res\\display_mode_d.ico"
+
+IDI_LINK                ICON                    "res\\link.ico"
+
+IDI_LINK_D              ICON                    "res\\link_d.ico"
+
+IDI_UNLINK              ICON                    "res\\unlink.ico"
+
+IDI_UNLINK_D            ICON                    "res\\unlink_d.ico"
+
+IDI_INTERNAL_LYRIC_D    ICON                    "res\\internal_lyric_d.ico"
+
+IDI_SPEED_UP_D          ICON                    "res\\speed_up_d.ico"
+
+IDI_SLOW_DOWN_D         ICON                    "res\\slow_down_d.ico"
+
+IDI_SHORTCUT_D          ICON                    "res\\shortcut_d.ico"
+
+IDI_SWITCH              ICON                    "res\\switch.ico"
+
+IDI_SWITCH_D            ICON                    "res\\switch_d.ico"
+
+IDI_LYRIC               ICON                    "res\\lyric.ico"
+
+IDI_PLAYLIST_DOCK       ICON                    "res\\playlist_dock.ico"
+
+IDI_HELP                ICON                    "res\\help.ico"
+
+IDI_LIGHT_MODE          ICON                    "res\\light_mode.ico"
+
+IDI_PLAY_AS_NEXT        ICON                    "res\\play_as_next.ico"
+
+IDI_PLAY_IN_PLAYLIST    ICON                    "res\\play_in_playlist.ico"
+
+IDI_COPY                ICON                    "res\\copy.ico"
+
+IDI_PLAY_IN_FOLDER      ICON                    "res\\play_in_folder.ico"
+
+IDI_BITRATE             ICON                    "res\\bitrate.ico"
+
+IDI_REVERB              ICON                    "res\\reverb.ico"
+
+IDI_HOT_KEY             ICON                    "res\\hot_key.ico"
+
+IDI_MINI_RESTORE        ICON                    "res\\mini_restore.ico"
+
+IDI_MINI_RESTORE_D      ICON                    "res\\mini_restore_d.ico"
+
+IDI_LOCATE              ICON                    "res\\locate.ico"
+
+IDI_EXPAND              ICON                    "res\\expand.ico"
+
+IDI_FIX_D               ICON                    "res\\fix_d.ico"
+
+IDI_UP_D                ICON                    "res\\up_d.ico"
+
+IDI_ARTIST              ICON                    "res\\artist.ico"
+
+IDI_ALBUM               ICON                    "res\\album.ico"
+
+IDI_GENRE               ICON                    "res\\genre.ico"
+
+IDI_YEAR                ICON                    "res\\year.ico"
+
+IDI_FILE_RELATE         ICON                    "res\\file_relate.ico"
+
+IDI_BITRATE_D           ICON                    "res\\bitrate_d.ico"
+
+IDI_STAR_D              ICON                    "res\\star_d.ico"
+
+IDI_MORE_D              ICON                    "res\\more_d.ico"
+
+IDI_RECENT_SONG         ICON                    "res\\recent_songs.ico"
+
+IDI_ALBUM_COVER         ICON                    "res\\album_cover.ico"
+
+IDI_REVERB_D            ICON                    "res\\reverb_d.ico"
+
+IDI_NOW_PLAYING         ICON                    "res\\now_playing.ico"
+
+IDI_NOW_PLAYING_D       ICON                    "res\\now_playing_d.ico"
+
+IDI_KARAOKE             ICON                    "res\\karaoke.ico"
+
+IDI_KARAOKE_D           ICON                    "res\\karaoke_d.ico"
+
+IDI_REFRESH_D           ICON                    "res\\refresh_d.ico"
+
+IDI_REFRESH             ICON                    "res\\refresh.ico"
+
+IDI_NEW_FOLDER          ICON                    "res\\new_folder.ico"
+
+IDI_NEW_FOLDER_D        ICON                    "res\\new_folder_d.ico"
+
+IDI_BACKGROUND_D        ICON                    "res\\background_d.ico"
+
+IDI_FOLDER_EXPLORE      ICON                    "res\\folder_explore.ico"
+
+IDI_TREE_COLLAPSED_D    ICON                    "res\\tree_branch_collapsed_d.ico"
+
+IDI_TREE_EXPANDED_D     ICON                    "res\\tree_branch_expanded_d.ico"
+
+IDI_TREE_COLLAPSED      ICON                    "res\\tree_branch_collapsed.ico"
+
+IDI_TREE_EXPANDED       ICON                    "res\\tree_branch_expanded.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,7,7,1
+ PRODUCTVERSION 2,7,7,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "CompanyName", "By ZhongYang"
+            VALUE "FileDescription", "MusicPlayer2"
+            VALUE "FileVersion", "2.7.7.1"
+            VALUE "InternalName", "MusicPlayer2.exe"
+            VALUE "LegalCopyright", "By ZhongYang. All rights reserved."
+            VALUE "OriginalFilename", "MusicPlayer2.exe"
+            VALUE "ProductName", "MusicPlayer2"
+            VALUE "ProductVersion", "2.7.7.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_CORTANA_BLACK       BITMAP                  "res\\Cortana_black.bmp"
+
+IDB_CORTANA_WHITE       BITMAP                  "res\\Cortana_white.bmp"
+
+IDR_LYRIC_EDIT_TOOLBAR  BITMAP                  "res\\toolbar1.bmp"
+
+IDB_DONATE              BITMAP                  "res\\donate.bmp"
+
+IDB_DONATE_WECHAT       BITMAP                  "res\\donate_wechat.bmp"
+
+IDB_NOTIFY_ICON_PREVIEW BITMAP                  "res\\notify_preview.bmp"
+
+IDB_NOTIFY_ICON_PREVIEW_LIGHT BITMAP                  "res\\notify_preview_light.bmp"
+
+IDB_DEFAULT_COVER       BITMAP                  "res\\default_cover.bmp"
+
+IDB_SYSTEM_TITLEBAR_PREVIEW BITMAP                  "res\\system_titlebar_preview.bmp"
+
+IDB_OWNER_DRAW_TITLEBAR_PREVIEW BITMAP                  "res\\owner_draw_titlebar_preview.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_LYRIC_EDIT_TOOLBAR TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_LYRIC_INSERT_TAG
+    BUTTON      ID_LYRIC_REPLACE_TAG
+    BUTTON      ID_LYRIC_DELETE_TAG
+    BUTTON      ID_LYRIC_SAVE
+    SEPARATOR
+    BUTTON      ID_PLAY_PAUSE
+    BUTTON      ID_REW
+    BUTTON      ID_FF
+    BUTTON      ID_SEEK_TO_CUR_LINE
+    SEPARATOR
+    BUTTON      ID_LYRIC_FIND
+    BUTTON      ID_LYRIC_REPLACE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_DRAG_CURSOR         CURSOR                  "res\\drag.cur"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_DEFAULT_ALBUM_COVER PNG                     "res\\黑色胶片.png"
+
+IDB_DEFAULT_ALBUM_COVER_NOT_PLAYED PNG                     "res\\黑色胶片_not_played.png"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_ACCELERATOR1 ACCELERATORS
+BEGIN
+    "R",            ID_AB_REPEAT,           VIRTKEY, CONTROL, NOINVERT
+    "W",            ID_ALBUM_COVER_INFO,    VIRTKEY, CONTROL, NOINVERT
+    "T",            ID_ALWAYS_ON_TOP,       VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "D",            ID_DARK_MODE,           VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_DELETE,      ID_DELETE_CURRENT_FROM_DISK, VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_DELETE,      ID_DELETE_FROM_DISK,    VIRTKEY, SHIFT, NOINVERT
+    "E",            ID_EDIT_LYRIC,          VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "E",            ID_EQUALIZER,           VIRTKEY, CONTROL, NOINVERT
+    "B",            ID_EXPLORE_PATH,        VIRTKEY, CONTROL, NOINVERT
+    VK_RIGHT,       ID_FF,                  VIRTKEY, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "D",            ID_FILE_OPEN_FOLDER,    VIRTKEY, CONTROL, NOINVERT
+    "F",            ID_FIND,                VIRTKEY, CONTROL, NOINVERT
+    "K",            ID_FLOAT_PLAYLIST,      VIRTKEY, CONTROL, NOINVERT
+    VK_F11,         ID_FULL_SCREEN,         VIRTKEY, NOINVERT
+    "G",            ID_LOCATE_TO_CURRENT,   VIRTKEY, CONTROL, NOINVERT
+    VK_NEXT,        ID_LYRIC_DELAY,         VIRTKEY, CONTROL, NOINVERT
+    VK_PRIOR,       ID_LYRIC_FORWARD,       VIRTKEY, CONTROL, NOINVERT
+    "T",            ID_MEDIA_LIB,           VIRTKEY, CONTROL, NOINVERT
+    "M",            ID_MINI_MODE,           VIRTKEY, CONTROL, NOINVERT
+    "H",            ID_MORE_RECENT_ITEMS,   VIRTKEY, CONTROL, NOINVERT
+    VK_DOWN,        ID_MOVE_PLAYLIST_ITEM_DOWN, VIRTKEY, CONTROL, NOINVERT
+    VK_UP,          ID_MOVE_PLAYLIST_ITEM_UP, VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_NEXT,                VIRTKEY, NOINVERT
+    "N",            ID_NEXT_AB_REPEAT,      VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "I",            ID_OPTION_SETTINGS,     VIRTKEY, CONTROL, NOINVERT
+    VK_RETURN,      ID_ORIGINAL_PITCH,      VIRTKEY, SHIFT, NOINVERT
+    VK_RETURN,      ID_ORIGINAL_SPEED,      VIRTKEY, CONTROL, NOINVERT
+    VK_OEM_MINUS,   ID_PITCH_DOWN,          VIRTKEY, SHIFT, NOINVERT
+    VK_OEM_PLUS,    ID_PITCH_UP,            VIRTKEY, SHIFT, NOINVERT
+    "P",            ID_PLAY_PAUSE,          VIRTKEY, NOINVERT
+    VK_SPACE,       ID_PLAY_PAUSE,          VIRTKEY, NOINVERT
+    "A",            ID_PLAYLIST_SELECT_ALL, VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_PREVIOUS,            VIRTKEY, NOINVERT
+    "Q",            ID_RE_INI_BASS,         VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_REMOVE_CURRENT_FROM_PLAYLIST, VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_REMOVE_FROM_PLAYLIST, VIRTKEY, NOINVERT
+    "M",            ID_REPEAT_MODE,         VIRTKEY, NOINVERT
+    "C",            ID_RESET_AB_REPEAT,     VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_LEFT,        ID_REW,                 VIRTKEY, NOINVERT
+    "S",            ID_SAVE_MODIFIED_LYRIC, VIRTKEY, CONTROL, NOINVERT
+    "A",            ID_SET_A_POINT,         VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "B",            ID_SET_B_POINT,         VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "Y",            ID_SHOW_DESKTOP_LYRIC,  VIRTKEY, CONTROL, NOINVERT
+    "L",            ID_SHOW_PLAYLIST,       VIRTKEY, CONTROL, NOINVERT
+    VK_OEM_MINUS,   ID_SLOW_DOWN,           VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_SONG_INFO,           VIRTKEY, CONTROL, NOINVERT
+    VK_OEM_PLUS,    ID_SPEED_UP,            VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_STOP,                VIRTKEY, NOINVERT
+    "U",            ID_SWITCH_UI,           VIRTKEY, CONTROL, NOINVERT
+    "1",            ID_SWITCH_UI_1,         VIRTKEY, CONTROL, NOINVERT
+    "0",            ID_SWITCH_UI_10,        VIRTKEY, CONTROL, NOINVERT
+    "2",            ID_SWITCH_UI_2,         VIRTKEY, CONTROL, NOINVERT
+    "3",            ID_SWITCH_UI_3,         VIRTKEY, CONTROL, NOINVERT
+    "4",            ID_SWITCH_UI_4,         VIRTKEY, CONTROL, NOINVERT
+    "5",            ID_SWITCH_UI_5,         VIRTKEY, CONTROL, NOINVERT
+    "6",            ID_SWITCH_UI_6,         VIRTKEY, CONTROL, NOINVERT
+    "7",            ID_SWITCH_UI_7,         VIRTKEY, CONTROL, NOINVERT
+    "8",            ID_SWITCH_UI_8,         VIRTKEY, CONTROL, NOINVERT
+    "9",            ID_SWITCH_UI_9,         VIRTKEY, CONTROL, NOINVERT
+    VK_DOWN,        ID_VOLUME_DOWN,         VIRTKEY, NOINVERT
+    VK_UP,          ID_VOLUME_UP,           VIRTKEY, NOINVERT
 END
 
 

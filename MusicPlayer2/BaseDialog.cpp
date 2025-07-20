@@ -59,6 +59,20 @@ void CBaseDialog::CloseAllWindow()
     }
 }
 
+void CBaseDialog::ShowModelessDialog(UINT id)
+{
+    m_is_modeless_dialog = true;
+    if (!IsWindow(m_hWnd))
+    {
+        Create(id);
+        ShowWindow(SW_SHOW);
+    }
+    else
+    {
+        ShowWindow(SW_SHOWNORMAL);
+    }
+}
+
 void CBaseDialog::LoadConfig()
 {
     ASSERT(!GetDialogName().IsEmpty());
@@ -261,6 +275,7 @@ BEGIN_MESSAGE_MAP(CBaseDialog, CDialog)
     ON_WM_SIZE()
     ON_WM_ERASEBKGND()
     ON_WM_CTLCOLOR()
+    ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -433,4 +448,29 @@ HBRUSH CBaseDialog::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
     }
 
     return CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+}
+
+
+void CBaseDialog::OnClose()
+{
+    CDialog::OnClose();
+
+    if (m_is_modeless_dialog)
+        DestroyWindow();
+}
+
+
+void CBaseDialog::OnOK()
+{
+    CDialog::OnOK();
+    if (m_is_modeless_dialog)
+        DestroyWindow();
+}
+
+
+void CBaseDialog::OnCancel()
+{
+    CDialog::OnCancel();
+    if (m_is_modeless_dialog)
+        DestroyWindow();
 }

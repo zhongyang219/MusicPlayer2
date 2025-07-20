@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "WinVersionHelper.h"
 
-WinVersion::WinVersion()
+CWinVersionHelper::WinVersion::WinVersion()
 {
 	DWORD dwMajorVer{}, dwMinorVer{}, dwBuildNumber{};
 	HMODULE hModNtdll{};
@@ -15,6 +15,14 @@ WinVersion::WinVersion()
 			pfRtlGetNtVersionNumbers(&dwMajorVer, &dwMinorVer, &dwBuildNumber);
 			dwBuildNumber &= 0x0ffff;
 		}
+
+		//判断是否在Wine环境中
+		FARPROC pProc = GetProcAddress(hModNtdll, "wine_get_version");
+		if (pProc != NULL)
+		{
+			m_is_wine = true;
+		}
+
 		::FreeLibrary(hModNtdll);
 		hModNtdll = NULL;
 	}
@@ -24,7 +32,7 @@ WinVersion::WinVersion()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-WinVersion CWinVersionHelper::m_version;
+CWinVersionHelper::WinVersion CWinVersionHelper::m_version;
 bool CWinVersionHelper::m_windows10_light_theme{ false };
 
 CWinVersionHelper::CWinVersionHelper()
@@ -116,6 +124,11 @@ bool CWinVersionHelper::IsWindows10Version1809OrLater()
 	else if (m_version.m_major_version == 10 && m_version.m_minor_version == 0 && m_version.m_build_number >= 17763)
 		return true;
 	else return false;
+}
+
+bool CWinVersionHelper::IsWine()
+{
+	return m_version.m_is_wine;
 }
 
 bool CWinVersionHelper::IsWindows10LightTheme()

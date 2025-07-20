@@ -44,10 +44,13 @@ public:
             mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
         }
 #ifndef COMPILE_IN_WIN_XP
-        if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
+        if (!CWinVersionHelper::IsWine())
         {
-            mii.fMask |= MIIM_BITMAP;
-            mii.hbmpItem = hBmp;
+            if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
+            {
+                mii.fMask |= MIIM_BITMAP;
+                mii.hbmpItem = hBmp;
+            }
         }
 #endif
         m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
@@ -61,10 +64,13 @@ public:
         wstring menu_text = theApp.m_str_table.LoadMenuText(MenuMgr::GetMenuNameStr(m_menu_type), MenuMgr::GetMenuNameStr(sub_menu_type));
         mii.dwTypeData = const_cast<LPWSTR>(menu_text.c_str());
 #ifndef COMPILE_IN_WIN_XP
-        if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
+        if (!CWinVersionHelper::IsWine())
         {
-            mii.fMask |= MIIM_BITMAP;
-            mii.hbmpItem = hBmp;
+            if (HBITMAP hBmp = m_pMenuMgr->GetMenuBitmapHandle(icon_type))
+            {
+                mii.fMask |= MIIM_BITMAP;
+                mii.hbmpItem = hBmp;
+            }
         }
 #endif
         m_menu.InsertMenuItemW(m_end_pos++, &mii, TRUE);
@@ -289,7 +295,7 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
         return L"LIB_LEFT";
     case MenuMgr::LibRightMenu: case MenuMgr::UiMyFavouriteMenu: case MenuMgr::LibPlaylistRightMenu:
         return L"LIB_RIGHT";
-    case MenuMgr::UiRecentPlayedMenu:
+    case MenuMgr::UiRecentPlayedMenu: case MenuMgr::FindListMenu:
         return L"UI_RECENT_PLAYED";
     case MenuMgr::LibPlaylistSortMenu:
         return L"LIB_PLAYLIST_SORT";
@@ -384,6 +390,10 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_SPEED_UP), IconMgr::IconType::IT_Speed_Up);
         menu.AppendItem(EX_ID(ID_SLOW_DOWN), IconMgr::IconType::IT_Slow_Down);
         menu.AppendItem(EX_ID(ID_ORIGINAL_SPEED));
+        menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_PITCH_UP));
+        menu.AppendItem(EX_ID(ID_PITCH_DOWN));
+        menu.AppendItem(EX_ID(ID_ORIGINAL_PITCH));
         menu.AppendSeparator();
         menu.AppendSubMenu(MainPlayCtrlRepeatModeMenu);
         menu.AppendSubMenu(MainPlayCtrlAbRepeatMenu);
@@ -1016,6 +1026,15 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_COVER_DELETE), IconMgr::IconType::IT_Cancel);
         menu.AppendItem(EX_ID(ID_COVER_SAVE_AS), IconMgr::IconType::IT_Save_As);
         menu.AppendItem(EX_ID(ID_COMPRESS_SIZE));
+        break;
+    case MenuMgr::FindListMenu:
+        menu.CreateMenu(true, false);
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM), IconMgr::IconType::IT_Play);
+        menu.SetDefaultItem();
+        menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
+        menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_VIEW_IN_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
+        menu.AppendItem(EX_ID(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES), IconMgr::IconType::IT_Info);
         break;
     default:
         ASSERT(false);                  // 参数错误或缺少case或缺少break

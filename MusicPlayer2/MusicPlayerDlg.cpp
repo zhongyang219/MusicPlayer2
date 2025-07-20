@@ -280,6 +280,9 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SPEED_UP, &CMusicPlayerDlg::OnSpeedUp)
     ON_COMMAND(ID_SLOW_DOWN, &CMusicPlayerDlg::OnSlowDown)
     ON_COMMAND(ID_ORIGINAL_SPEED, &CMusicPlayerDlg::OnOriginalSpeed)
+    ON_COMMAND(ID_PITCH_UP, &CMusicPlayerDlg::OnPitchUp)
+    ON_COMMAND(ID_PITCH_DOWN, &CMusicPlayerDlg::OnPitchDown)
+    ON_COMMAND(ID_ORIGINAL_PITCH, &CMusicPlayerDlg::OnOriginalPitch)
     ON_MESSAGE(WM_SEARCH_EDIT_BTN_CLICKED, &CMusicPlayerDlg::OnSearchEditBtnClicked)
     ON_MESSAGE(WM_INIT_ADD_TO_MENU, &CMusicPlayerDlg::OnInitAddToMenu)
     ON_MESSAGE(WM_OPTION_SETTINGS, &CMusicPlayerDlg::OnMsgOptionSettings)
@@ -479,6 +482,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_play_setting_data.midi_use_inner_lyric);
     ini.WriteBool(L"general", L"minimize_to_notify_icon", theApp.m_general_setting_data.minimize_to_notify_icon);
     ini.WriteBool(L"general", L"global_mouse_wheel_volume_adjustment", theApp.m_general_setting_data.global_mouse_wheel_volume_adjustment);
+    ini.WriteInt(L"general", L"update_source", theApp.m_general_setting_data.update_source);
 
     ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
     ini.WriteBool(L"config", L"auto_play_when_start", theApp.m_play_setting_data.auto_play_when_start);
@@ -643,7 +647,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.show_maximize_btn_in_titlebar = ini.GetBool(L"config", L"show_maximize_btn_in_titlebar", true);
     theApp.m_app_setting_data.show_minimode_btn_in_titlebar = ini.GetBool(L"config", L"show_minimode_btn_in_titlebar", true);
     theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar = ini.GetBool(L"config", L"show_fullscreen_btn_in_titlebar", true);
-    theApp.m_app_setting_data.show_skin_btn_in_titlebar = ini.GetBool(L"config", L"show_skin_btn_in_titlebar", true);
+    theApp.m_app_setting_data.show_skin_btn_in_titlebar = ini.GetBool(L"config", L"show_skin_btn_in_titlebar", false);
     theApp.m_app_setting_data.show_settings_btn_in_titlebar = ini.GetBool(L"config", L"show_settings_btn_in_titlebar", false);
     theApp.m_app_setting_data.show_dark_light_btn_in_titlebar = ini.GetBool(L"config", L"show_dark_light_btn_in_titlebar", false);
 
@@ -1398,6 +1402,7 @@ void CMusicPlayerDlg::ThemeColorChanged()
     {
         theApp.m_app_setting_data.theme_color.original_color = color;
         ApplyThemeColor();
+        TRACE("Theme color changed: %x\n", color);
     }
     m_ui_thread_para.ui_force_refresh = true;
 }
@@ -1693,6 +1698,9 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_SPEED_UP, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_SLOW_DOWN, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_ORIGINAL_SPEED, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PITCH_UP, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PITCH_DOWN, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ORIGINAL_PITCH, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
 
     //AB重复
     pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (current_song_valid && CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));
@@ -1984,7 +1992,7 @@ void CMusicPlayerDlg::LoadDefaultBackground()
         theApp.m_ui_data.default_background.Load((theApp.m_local_dir + DEFAULT_BACKGROUND_NAME).c_str());
     if (theApp.m_ui_data.default_background.IsNull())
         theApp.m_ui_data.default_background.LoadFromResource(AfxGetResourceHandle(), IDB_DEFAULT_COVER);
-}
+    }
 
 void CMusicPlayerDlg::SelectUi(int ui_selected)
 {
@@ -2191,7 +2199,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     CColorConvert::ConvertColor(theApp.m_app_setting_data.theme_color);
 
     //初始化查找对话框中的数据
-    m_findDlg.LoadConfig();
+    m_findDlg.LoadChildrenConfig();
 
     //获取Cortana歌词
     m_cortana_lyric.Init();
@@ -2592,6 +2600,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
     //响应1秒定时器
     else if (nIDEvent == TIMER_1_SEC)
     {
+        m_one_sec_timer_counter++;
         if (CPlayer::GetInstance().IsPlaying())
         {
             CPlayer::GetInstance().AddListenTime(1);
@@ -2613,15 +2622,23 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             }
         }
 
+        //响应主题颜色变化（两秒响应一次）
+        if (m_one_sec_timer_counter % 2 == 1 && m_theme_color_changed)
+        {
+            //响应主题颜色改变消息
+            ThemeColorChanged();
+
+            //如果设置了使用桌面背景为背景，则重新载入背景图片
+            if (theApp.m_app_setting_data.use_desktop_background)
+                LoadDefaultBackground();
+
+            //响应完成后重置标志
+            m_theme_color_changed = false;
+        }
+
         //每隔一秒保存一次统计的帧率
         theApp.m_fps = m_fps_cnt;
         m_fps_cnt = 0;
-    }
-
-    else if (nIDEvent == INGORE_COLOR_CHANGE_TIMER_ID)
-    {
-        KillTimer(INGORE_COLOR_CHANGE_TIMER_ID);
-        m_ignore_color_change = false;
     }
 
     else if (nIDEvent == CUserUi::SHOW_VOLUME_TIMER_ID)
@@ -2855,7 +2872,7 @@ void CMusicPlayerDlg::OnMediaLib()
 void CMusicPlayerDlg::OnFind()
 {
     // TODO: 在此添加命令处理程序代码
-    m_findDlg.DoModal();
+    m_findDlg.ShowModelessDialog(IDD_FIND_CONTAINER_DIALOG);
 }
 
 void CMusicPlayerDlg::OnExplorePath()
@@ -2951,7 +2968,7 @@ void CMusicPlayerDlg::OnDestroy()
     CPlayer::GetInstance().OnExit();
     SaveUiData();
     SaveConfig();
-    m_findDlg.SaveConfig();
+    m_findDlg.SaveChildrenConfig();
     theApp.SaveConfig();
     //解除全局热键
     m_hot_key.UnRegisterAllHotKey();
@@ -4822,21 +4839,12 @@ void CMusicPlayerDlg::OnColorizationColorChanged(DWORD dwColorizationColor, BOOL
     // 此功能要求 Windows Vista 或更高版本。
     // _WIN32_WINNT 符号必须 >= 0x0600。
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-
-    if (!m_ignore_color_change)
+    static DWORD last_color;
+    if (last_color != dwColorizationColor)
     {
-        //响应主题颜色改变消息
-        ThemeColorChanged();
-
-        //如果设置了使用桌面背景为背景，则重新载入背景图片
-        if (theApp.m_app_setting_data.use_desktop_background)
-            LoadDefaultBackground();
-
-        //响应此消息后设置定时器，两秒内不再响应此消息
-        m_ignore_color_change = true;
-        SetTimer(INGORE_COLOR_CHANGE_TIMER_ID, 2000, NULL);
+        last_color = dwColorizationColor;
+        m_theme_color_changed = true;
     }
-
 
     CMainDialogBase::OnColorizationColorChanged(dwColorizationColor, bOpacity);
 }
@@ -5725,6 +5733,26 @@ void CMusicPlayerDlg::OnOriginalSpeed()
         CPlayer::GetInstance().SetOrignalSpeed();
 }
 
+void CMusicPlayerDlg::OnPitchUp()
+{
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+        CPlayer::GetInstance().PitchUp();
+}
+
+
+void CMusicPlayerDlg::OnPitchDown()
+{
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+        CPlayer::GetInstance().PitchDown();
+}
+
+
+void CMusicPlayerDlg::OnOriginalPitch()
+{
+    if (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty())
+        CPlayer::GetInstance().SetOrignalPitch();
+}
+
 
 afx_msg LRESULT CMusicPlayerDlg::OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam)
 {
@@ -6034,7 +6062,7 @@ BOOL CMusicPlayerDlg::OnQueryEndSession()
     //退出时保存设置
     CPlayer::GetInstance().OnExit();
     SaveConfig();
-    m_findDlg.SaveConfig();
+    m_findDlg.SaveChildrenConfig();
     theApp.SaveConfig();
 
     return TRUE;

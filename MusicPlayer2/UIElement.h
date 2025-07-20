@@ -49,6 +49,8 @@ namespace UiElement
         virtual int GetMaxWidth(CRect parent_rect) const;
         virtual int GetWidth(CRect parent_rect) const;
         virtual int GetHeight(CRect parent_rect) const;
+        virtual bool IsWidthValid() const;
+        virtual bool IsHeightValid() const;
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         virtual void ClearRect();
@@ -727,6 +729,7 @@ namespace UiElement
     public:
         virtual int GetWidth(CRect parent_rect) const override;
         virtual int GetHeight(CRect parent_rect) const override;
+        virtual bool IsWidthValid() const override;
 
         bool show_when_use_system_titlebar{};   //仅当开启“使用系统标准标题栏”时才显示
 
@@ -824,7 +827,7 @@ namespace UiElement
         };
 
         static std::shared_ptr<Node> CreateNode(std::wstring name, int song_num, std::shared_ptr<Node> parent);
-        std::wstring GetNodePath(Node* node);       //获取一个节点的路径
+        static std::wstring GetNodePath(Node* node);       //获取一个节点的路径
         std::wstring GetSelectedPath();             //获取选中节点的路径
 
         virtual IconMgr::IconType GetIcon(int row) { return IconMgr::IT_Folder; }

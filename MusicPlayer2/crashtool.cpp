@@ -47,7 +47,99 @@ public:
         ::CloseHandle(hDumpFile);
     }
 
-    void ShowCrashInfo()
+    //根据地址获取模块路径
+    std::wstring GetModulePath(DWORD64 address)
+    {
+        // 获取模块信息
+        HMODULE hModule = NULL;
+        if (GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)address, &hModule))
+        {
+            TCHAR moduleName[MAX_PATH];
+            if (GetModuleFileName(hModule, moduleName, MAX_PATH))
+            {
+                return moduleName;
+            }
+        }
+        return L"Unknown Module";
+    }
+
+    //获取崩溃堆栈信息
+    std::wstring GetStackTrace(EXCEPTION_POINTERS* pExceptionInfo)
+    {
+        std::wstringstream stream;
+
+        // 初始化符号处理
+        if (!SymInitialize(GetCurrentProcess(), NULL, TRUE))
+        {
+            stream << L"Failed to initialize symbol handler.\r\n";
+            return stream.str();
+        }
+
+        // RAII 确保 SymCleanup 被调用
+        struct SymCleanupHelper {
+            ~SymCleanupHelper() { SymCleanup(GetCurrentProcess()); }
+        } cleanupHelper;
+
+        STACKFRAME64 stackFrame = {};
+        CONTEXT context = *pExceptionInfo->ContextRecord;
+
+        // 初始化堆栈帧
+#if defined _M_IX86
+        DWORD machineType = IMAGE_FILE_MACHINE_I386;
+        stackFrame.AddrPC.Offset = context.Eip;    // x86 使用 EIP
+        stackFrame.AddrFrame.Offset = context.Ebp; // x86 使用 EBP
+        stackFrame.AddrStack.Offset = context.Esp; // x86 使用 ESP
+        //#elif defined _M_ARM64EC
+        //        DWORD machineType = IMAGE_FILE_MACHINE_ARM64;
+        //        stackFrame.AddrPC.Offset = context.Pc;     // ARM64 使用 PC
+        //        stackFrame.AddrFrame.Offset = context.Fp;  // ARM64 使用 FP
+        //        stackFrame.AddrStack.Offset = context.Sp;  // ARM64 使用 SP
+#else
+        DWORD machineType = IMAGE_FILE_MACHINE_AMD64;
+        stackFrame.AddrPC.Offset = context.Rip;    // x64 使用 RIP
+        stackFrame.AddrFrame.Offset = context.Rbp; // x64 使用 RBP
+        stackFrame.AddrStack.Offset = context.Rsp; // x64 使用 RSP
+#endif
+        stackFrame.AddrPC.Mode = AddrModeFlat;
+        stackFrame.AddrFrame.Mode = AddrModeFlat;
+        stackFrame.AddrStack.Mode = AddrModeFlat;
+
+        // 遍历堆栈帧
+        while (StackWalk64(machineType, GetCurrentProcess(), GetCurrentThread(), &stackFrame, &context, NULL, SymFunctionTableAccess64, SymGetModuleBase64, NULL)) {
+            if (stackFrame.AddrPC.Offset == 0) break;
+
+            // 获取符号信息
+            BYTE symbolBuffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
+            PSYMBOL_INFO pSymbol = (PSYMBOL_INFO)symbolBuffer;
+            pSymbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+            pSymbol->MaxNameLen = MAX_SYM_NAME;
+
+            stream << L"--------------------------------------\r\n";
+
+            DWORD64 displacement = 0;
+            if (SymFromAddr(GetCurrentProcess(), stackFrame.AddrPC.Offset, &displacement, pSymbol)) {
+                stream << L"Function: " << CCommon::ASCIIToUnicode(pSymbol->Name) << L" (Displacement: " << displacement << L")\r\n";
+            }
+            else {
+                stream << L"Unknown Function at address: " << (void*)stackFrame.AddrPC.Offset << L"\r\n";
+            }
+
+            std::wstring modulePath = GetModulePath(stackFrame.AddrPC.Offset);
+            if (!modulePath.empty())
+                stream << L"Module Path: " << modulePath << L"\r\n";
+
+            // 获取源代码行信息
+            IMAGEHLP_LINE64 line = {};
+            line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+            DWORD lineDisplacement = 0;
+            if (SymGetLineFromAddr64(GetCurrentProcess(), stackFrame.AddrPC.Offset, &lineDisplacement, &line)) {
+                stream << L"File: " << CCommon::ASCIIToUnicode(line.FileName) << L" (Line: " << line.LineNumber << L")\r\n";
+            }
+        }
+        return stream.str();
+    }
+
+    void ShowCrashInfo(EXCEPTION_POINTERS* pEP)
     {
         // 写入错误日志
         wstring log_info = theApp.m_str_table.LoadTextFormat(L"LOG_CRASH_ERROR", { m_dumpFile });
@@ -58,7 +150,17 @@ public:
         CMessageDlg dlg(L"CrashDlg");
         dlg.SetWindowTitle(theApp.m_str_table.LoadText(L"TITLE_CRASH_REPORT"));
         dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_CRASH_REPORT_ERROR_MESSAGE"));
-        wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_CRASH_REPORT_CRASH_INFO", { m_dumpFile, theApp.GetSystemInfoString() });
+        wstring additional_info;
+        //在崩溃信息中调用堆栈
+        std::wstring stack_trace = GetStackTrace(pEP);
+        if (!stack_trace.empty())
+        {
+            additional_info += L"Stack trace:\r\n";
+            additional_info += stack_trace;
+            additional_info += L"\r\n";
+        }
+        additional_info += theApp.GetSystemInfoString();
+        wstring info = theApp.m_str_table.LoadTextFormat(L"TXT_CRASH_REPORT_CRASH_INFO", { m_dumpFile, additional_info });
         dlg.SetMessageText(info);
 
         //设置图标(此功能已从CMessageDlg移除)
@@ -107,7 +209,7 @@ namespace CRASHREPORT
         ::SetErrorMode(0); //使用默认的
         CCrashReport cr;
         cr.CreateMiniDump(pEP);
-        cr.ShowCrashInfo();
+        cr.ShowCrashInfo(pEP);
         return EXCEPTION_CONTINUE_SEARCH;
     }
 

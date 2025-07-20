@@ -3,7 +3,6 @@
 
   <ui>
     <verticalLayout margin="4">
-      <placeHolder show_when_use_system_titlebar="true" height="28"/>
       <horizontalLayout height="90">
         <rectangle width="118" no_corner_radius="true">
           <albumCover margin="2">
@@ -11,10 +10,15 @@
           </albumCover>
         </rectangle>
         <verticalLayout margin-left="4">
-          <trackInfo/>
-          <horizontalLayout>
-            <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
-            <text type="title" style="scroll"/>
+          <horizontalLayout height="36">
+            <verticalLayout>
+              <trackInfo/>
+              <horizontalLayout>
+                <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
+                <text type="title" style="scroll"/>
+              </horizontalLayout>
+            </verticalLayout>
+            <placeHolder show_when_use_system_titlebar="true" height="28"/>
           </horizontalLayout>
           <horizontalLayout>
             <text width="54" type="userDefine" text="%(TXT_ARTIST):"/>
@@ -54,7 +58,6 @@
 
   <ui type="small">
     <verticalLayout margin="4">
-      <placeHolder show_when_use_system_titlebar="true" height="28"/>
       <verticalLayout>
         <horizontalLayout height="90">
           <rectangle width="118" no_corner_radius="true">
@@ -63,10 +66,15 @@
             </albumCover>
           </rectangle>
           <verticalLayout margin-left="4">
-            <trackInfo/>
-            <horizontalLayout>
-              <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
-              <text type="title" style="scroll"/>
+            <horizontalLayout height="36">
+              <verticalLayout>
+                <trackInfo/>
+                <horizontalLayout>
+                  <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
+                  <text type="title" style="scroll"/>
+                </horizontalLayout>
+              </verticalLayout>
+              <placeHolder show_when_use_system_titlebar="true" height="28"/>
             </horizontalLayout>
             <horizontalLayout>
               <text width="54" type="userDefine" text="%(TXT_ARTIST):"/>

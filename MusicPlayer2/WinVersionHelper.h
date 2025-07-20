@@ -1,15 +1,5 @@
 ﻿#pragma once
 
-struct WinVersion
-{
-public:
-	WinVersion();
-
-	int m_major_version;
-	int m_minor_version;
-	int m_build_number;
-};
-
 class CWinVersionHelper
 {
 public:
@@ -26,6 +16,7 @@ public:
 	static bool IsWindows81OrLater();
 	static bool IsWindows10OrLater();
 	static bool IsWindows10Version1809OrLater();
+	static bool IsWine();						//判断是否在Wine环境下
 
 	static int GetMajorVersion() { return m_version.m_major_version; }
 	static int GetMinorVersion() { return m_version.m_minor_version; }
@@ -37,6 +28,17 @@ public:
 private:
 	CWinVersionHelper();
 	static LONG GetDWORDRegKeyData(HKEY hKey, const wstring& strValueName, DWORD& dwValueData);
+
+	struct WinVersion
+	{
+	public:
+		WinVersion();
+
+		int m_major_version;
+		int m_minor_version;
+		int m_build_number;
+		bool m_is_wine{};
+	};
 
 	static WinVersion m_version;
     static bool m_windows10_light_theme;

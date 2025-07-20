@@ -84,6 +84,8 @@ public:
         PropertyAdvMenu,                    // 属性对话框->高级标签信息标签页->列表控件
         PropertyCoverMenu,                  // 属性对话框->专辑封面标签页
 
+        FindListMenu,                       // 查找-查找列表右键菜单
+
         MenuMax // 菜单数量
     };
     // 目前只支持更新为关联到命令的普通菜单项(默认构造表示分隔符)

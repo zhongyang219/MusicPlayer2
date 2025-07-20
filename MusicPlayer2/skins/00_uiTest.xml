@@ -59,8 +59,10 @@
 
   <ui type="narrow">
     <verticalLayout>
-      <placeHolder show_when_use_system_titlebar="true" height="28"/>
-      <trackInfo height="24" margin="4"/>
+      <horizontalLayout margin="4" height="24">
+        <trackInfo/>
+        <placeHolder show_when_use_system_titlebar="true"/>
+      </horizontalLayout>
       <stackElement show_indicator="true" margin-bottom="14">
         <albumCover square="true" margin="20">
           <verticalLayout>
@@ -96,8 +98,10 @@
   </ui>
   <ui type="small">
     <verticalLayout>
-      <placeHolder show_when_use_system_titlebar="true" height="28"/>
-      <trackInfo height="20" margin-left="4" margin-right="4" margin-top="4"/>
+      <horizontalLayout height="20" margin-left="4" margin-right="4" margin-top="4">
+        <trackInfo/>
+        <placeHolder show_when_use_system_titlebar="true"/>
+      </horizontalLayout>
       <horizontalLayout margin="4">
         <albumCover square="true" margin="4" width="100"/>
         <verticalLayout margin="4">

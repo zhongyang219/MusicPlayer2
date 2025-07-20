@@ -63,9 +63,11 @@
 
   <ui type="narrow">
     <verticalLayout>
-      <placeHolder show_when_use_system_titlebar="true" height="20"/>
       <verticalLayout margin="12">
-        <trackInfo height="20"/>
+        <horizontalLayout height="20">
+          <trackInfo height="20"/>
+          <placeHolder show_when_use_system_titlebar="true"/>
+        </horizontalLayout>
         <text type="format" style="scroll" height="20"/>
         <stackElement click_to_switch="false" show_indicator="true" margin-bottom="4">
           <verticalLayout margin-bottom="4">
@@ -99,8 +101,10 @@
 
   <ui type="small">
     <verticalLayout margin="4">
-      <placeHolder show_when_use_system_titlebar="true" height="28"/>
-      <trackInfo height="20" hide-height="180" />
+      <horizontalLayout height="20">
+        <trackInfo height="20" />
+        <placeHolder show_when_use_system_titlebar="true" height="20"/>
+      </horizontalLayout>
       <horizontalLayout margin="4">
         <rectangle max-height="80">
           <horizontalLayout margin="6">

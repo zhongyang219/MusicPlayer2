@@ -101,6 +101,13 @@ void CTabCtrlEx::AdjustTabWindowSize()
     ImageList.Detach();
 }
 
+void CTabCtrlEx::Clear()
+{
+    DeleteAllItems();
+    m_tab_list.clear();
+    m_icon_list.clear();
+}
+
 void CTabCtrlEx::CalSubWindowSize()
 {
     GetClientRect(m_tab_rect);

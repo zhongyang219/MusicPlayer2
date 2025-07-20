@@ -182,9 +182,11 @@ void CTreeCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
         else
         {
             pNMCD->clrText = CColorConvert::m_gray_color.dark3;
-            pNMCD->clrTextBk = GetBkColor();
+            //pNMCD->clrTextBk = GetBkColor();
+            pNMCD->clrTextBk = GetSysColor(COLOR_WINDOW);
         }
     }
+        break;
     default:
         break;
     }

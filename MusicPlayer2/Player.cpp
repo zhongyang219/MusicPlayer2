@@ -523,6 +523,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         SetVolume();
         if (std::fabs(m_speed - 1) > 0.01)
             SetSpeed(m_speed);
+        SetPitch(m_pitch);
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
         //SetFXHandle();
         if (m_equ_enable)
@@ -1054,7 +1055,10 @@ bool CPlayer::SetList(ListItem list_item, bool play, bool force)
         break;
     }
 
-
+    if (!IsPlaylistMode() && !play_song.path.empty())
+        m_current_song_tmp = CSongDataManager::GetInstance().GetSongInfo(play_song);
+    m_current_song_position_tmp = list_item.last_position;
+    
     IniPlayList(play, {}, play_song);
     return true;
 }
@@ -1329,7 +1333,10 @@ void CPlayer::SpeedUp()
 {
     if (m_speed < MAX_PLAY_SPEED)
     {
-        m_speed *= 1.0594631f;     //加速一次频率变为原来的(2的1/12次方=1.0594631)倍，即使单调提高一个半音，减速时同理
+        if (m_speed == MIN_PLAY_SPEED)
+            m_speed = 0.25f;
+        else
+            m_speed += 0.25f;
         if (m_speed > MAX_PLAY_SPEED)
             m_speed = MAX_PLAY_SPEED;
         if (std::fabs(m_speed - 1) < 0.01)
@@ -1343,7 +1350,7 @@ void CPlayer::SlowDown()
 {
     if (m_speed > MIN_PLAY_SPEED)
     {
-        m_speed /= 1.0594631f;
+        m_speed -= 0.25f;
         if (m_speed < MIN_PLAY_SPEED)
             m_speed = MIN_PLAY_SPEED;
         if (std::fabs(m_speed - 1) < 0.01)
@@ -1366,6 +1373,39 @@ void CPlayer::SetOrignalSpeed()
     m_speed = 1;
     m_pCore->SetSpeed(m_speed);
     m_controls.UpdateSpeed(m_speed);
+}
+
+void CPlayer::PitchUp()
+{
+    if (m_pitch < MAX_PLAY_PITCH)
+    {
+        m_pitch += 1;
+        m_pCore->SetPitch(m_pitch);
+    }
+}
+
+void CPlayer::PitchDown()
+{
+    if (m_pitch > MIN_PLAY_PITCH)
+    {
+        m_pitch -= 1;
+        m_pCore->SetPitch(m_pitch);
+    }
+}
+
+void CPlayer::SetPitch(int pitch)
+{
+    if (pitch > MIN_PLAY_PITCH && pitch < MAX_PLAY_PITCH)
+    {
+        m_pitch = pitch;
+        m_pCore->SetPitch(m_pitch);
+    }
+}
+
+void CPlayer::SetOrignalPitch()
+{
+    m_pitch = 0;
+    m_pCore->SetPitch(m_pitch);
 }
 
 bool CPlayer::GetPlayerCoreError(const wchar_t* function_name)
@@ -1427,6 +1467,7 @@ void CPlayer::SaveConfig() const
     ini.WriteString(L"config", L"album_cover_path", theApp.m_app_setting_data.album_cover_path);
     // ini.WriteInt(L"config", L"playlist_mode", m_playlist_mode);
     ini.WriteDouble(L"config", L"speed", m_speed);
+    ini.WriteInt(L"config", L"pitch", m_pitch);
 
     //保存均衡器设定
     ini.WriteBool(L"equalizer", L"equalizer_enable", m_equ_enable);
@@ -1478,7 +1519,9 @@ void CPlayer::LoadConfig()
     m_speed = static_cast<float>(ini.GetDouble(L"config", L"speed", 1));
     if (m_speed < MIN_PLAY_SPEED || m_speed > MAX_PLAY_SPEED)
         m_speed = 1;
-
+    m_pitch = static_cast<int>(ini.GetInt(L"config", L"pitch", 0));
+    if (m_pitch < MIN_PLAY_PITCH || m_pitch > MAX_PLAY_PITCH)
+        m_pitch = 0;
     //读取均衡器设定
     m_equ_enable = ini.GetBool(L"equalizer", L"equalizer_enable", false);
     m_equ_style = ini.GetInt(L"equalizer", L"equalizer_style", 0);	//读取均衡器预设

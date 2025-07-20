@@ -22,6 +22,7 @@ wstring FilterHelper::GetAudioFileFilter()
 wstring FilterHelper::GetLyricFileFilter()
 {
     wstring filter = theApp.m_str_table.LoadText(L"TXT_FILTER_LYRIC_FILE") + BulidExtFilter(CLyrics::m_surpported_lyric);
+    filter += theApp.m_str_table.LoadText(L"TXT_FILTER_LRC_FILE") + L"|*.lrc|";
     filter += theApp.m_str_table.LoadText(L"TXT_FILTER_TXT_FILE") + L"|*.txt|";
     filter += theApp.m_str_table.LoadText(L"TXT_FILTER_ALL_FILES") + L"|*.*||";
     return filter;

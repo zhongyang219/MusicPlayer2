@@ -936,6 +936,15 @@
     <ClInclude Include="ListSearchCache.h">
       <Filter>功能逻辑类\RecentList</Filter>
     </ClInclude>
+    <ClInclude Include="bass_fx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FindContainerDlg.h">
+      <Filter>对话框类\FindDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="FindListDlg.h">
+      <Filter>对话框类\FindDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1429,6 +1438,12 @@
     </ClCompile>
     <ClCompile Include="ListSearchCache.cpp">
       <Filter>功能逻辑类\RecentList</Filter>
+    </ClCompile>
+    <ClCompile Include="FindContainerDlg.cpp">
+      <Filter>对话框类\FindDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="FindListDlg.cpp">
+      <Filter>对话框类\FindDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

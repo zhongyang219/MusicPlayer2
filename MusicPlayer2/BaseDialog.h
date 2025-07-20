@@ -18,6 +18,9 @@ public:
     static const std::map<CString, HWND>& AllUniqueHandels();   //获取所有窗口的句柄
     static void CloseAllWindow();
 
+    //将对话框以非模态对话框的模式显示
+    void ShowModelessDialog(UINT id);
+
 private:
     void LoadConfig();
     void SaveConfig() const;
@@ -32,6 +35,8 @@ private:
     CDC* m_pDC = nullptr;                               // InitializeControls期间有效，用于测量文本长度
 
     static std::map<CString, HWND> m_unique_hwnd;        //针对每一个派生类的唯一的窗口句柄
+
+    bool m_is_modeless_dialog{};                        //是否为非模态对话框（仅当调用了ShowModelessDialog时会变为true）
 
 public:
     void SetIcon(IconMgr::IconType type, BOOL bBigIcon);
@@ -90,4 +95,7 @@ public:
     virtual INT_PTR DoModal();
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+    afx_msg void OnClose();
+    virtual void OnOK();
+    virtual void OnCancel();
 };

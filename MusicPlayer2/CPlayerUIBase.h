@@ -127,6 +127,7 @@ public:
     int EdgeMargin(bool x = true) const;
     int WidthThreshold() const;
     int DrawAreaHeight() const;     //窄界面模式下显示播放列表时绘图区的高度
+    int TopRightButtonsWidth() const;
 
     virtual bool PointInControlArea(CPoint point) const;        //判断一个点的位置是否在控件区域
     bool PointInTitlebarArea(CPoint point) const;
@@ -374,6 +375,7 @@ private:
 
     static bool m_show_ui_tip_info;
     wstring m_ui_tip_info;
+    int m_top_right_buttons_width{};
 };
 
 //用于在UI中设置字体。
