@@ -42,11 +42,11 @@ UINT CCoverDownloadDlg::CoverDownloadThreadFunc(LPVOID lpParam)
 {
     CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     CCoverDownloadDlg* pThis = (CCoverDownloadDlg*)lpParam;
-    CInternetCommon::ItemInfo match_item = pThis->m_down_list[pThis->m_item_selected];
+    CLyricDownloadCommon::ItemInfo match_item = pThis->m_down_list[pThis->m_item_selected];
     wstring song_id = match_item.id;
     if (song_id.empty())
         return 0;
-    wstring cover_url = CCoverDownloadCommon::GetAlbumCoverURL(song_id);
+    wstring cover_url = theApp.GetLyricDownload()->GetAlbumCoverURL(song_id);
     if (cover_url.empty())
     {
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_NETWORK_COVER_DOWNLOAD_FAILED");
@@ -290,9 +290,7 @@ void CCoverDownloadDlg::OnBnClickedSearchButton()
     SetDlgItemText(IDC_STATIC_INFO, theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_INFO_SEARCHING").c_str());    // 这里使用的是歌词下载对话框的字符串
     GetDlgItem(IDC_SEARCH_BUTTON)->EnableWindow(FALSE);		//点击“搜索”后禁用该按钮
     wstring keyword = CInternetCommon::URLEncode(m_artist + L' ' + m_title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
-    CString url;
-    url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=%d&type=1&offset=0", keyword.c_str(), 30);
-    //int rtn = CLyricDownloadCommon::HttpPost(buff, m_search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
+    CString url = theApp.GetLyricDownload()->GetSearchUrl(keyword, 30).c_str();
     m_search_url = url;
     theApp.m_cover_download_dialog_exit = false;
     m_pSearchThread = AfxBeginThread(SongSearchThreadFunc, this);
@@ -320,7 +318,7 @@ afx_msg LRESULT CCoverDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
     default: break;
     }
 
-    CInternetCommon::DisposeSearchResult(m_down_list, m_search_result);		//处理返回的结果
+    theApp.GetLyricDownload()->DisposeSearchResult(m_down_list, m_search_result);		//处理返回的结果
     ShowDownloadList();			//将搜索的结果显示在列表控件中
 
     //计算搜索结果中最佳匹配项目
@@ -340,7 +338,7 @@ afx_msg LRESULT CCoverDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
         }
     }
     if (!id_releated)
-        best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
+        best_matched = CLyricDownloadCommon::SelectMatchedItem(m_down_list, m_title, m_artist, m_album, m_file_name, true);
     wstring info;
     m_unassciate_lnk.ShowWindow(SW_HIDE);
     if (m_down_list.empty())

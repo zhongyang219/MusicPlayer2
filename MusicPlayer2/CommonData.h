@@ -222,6 +222,13 @@ struct LyricSettingData
 
     bool show_desktop_lyric{ false };			//显示桌面歌词
     DesktopLyricSettingData desktop_lyric_data;
+
+    //歌词下载服务
+    enum LyricDownloadService
+    {
+        LDS_NETEASE,    //网易云音乐
+    };
+    LyricDownloadService lyric_download_service{};
 };
 
 struct ApperanceSettingData

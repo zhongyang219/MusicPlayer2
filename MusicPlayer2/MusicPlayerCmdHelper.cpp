@@ -33,7 +33,7 @@ void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
     if (song.song_id == 0)		//如果没有获取过ID，则获取一次ID
     {
         wstring song_id;
-        song_id = CInternetCommon::SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
+        song_id = theApp.GetLyricDownload()->SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
         song.SetSongId(song_id);
         CSongDataManager::GetInstance().SetSongID(song, song.song_id);  // 与媒体库同步
     }
@@ -41,7 +41,7 @@ void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
     if (song.song_id == 0)
         return;
     //获取网易云音乐中该歌曲的在线接听网址
-    wstring song_url{ L"http://music.163.com/#/song?id=" + song.GetSongId() };
+    wstring song_url{ theApp.GetLyricDownload()->GetOnlineUrl(song.GetSongId()) };
 
     //打开超链接
     ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);

@@ -281,6 +281,7 @@
     <ClInclude Include="LyricRelateDlg.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="MediaLibItemPropertiesDlg.h" />
+    <ClInclude Include="NeteaseLyricDownload.h" />
     <ClInclude Include="PlaylistPropertiesDlg.h" />
     <ClInclude Include="SimplePropertiesDlg.h" />
     <ClInclude Include="UiMediaLibItemMgr.h" />
@@ -325,7 +326,6 @@
     <ClInclude Include="CNotifyIcon.h" />
     <ClInclude Include="CommonData.h" />
     <ClInclude Include="COSUPlayerHelper.h" />
-    <ClInclude Include="CoverDownloadCommon.h" />
     <ClInclude Include="CoverDownloadDlg.h" />
     <ClInclude Include="CPlayerUIBase.h" />
     <ClInclude Include="CPlayerUIHelper.h" />
@@ -456,6 +456,7 @@
     <ClCompile Include="LyricRelateDlg.cpp" />
     <ClCompile Include="md5.cpp" />
     <ClCompile Include="MediaLibItemPropertiesDlg.cpp" />
+    <ClCompile Include="NeteaseLyricDownload.cpp" />
     <ClCompile Include="PlaylistPropertiesDlg.cpp" />
     <ClCompile Include="SimplePropertiesDlg.cpp" />
     <ClCompile Include="UiMediaLibItemMgr.cpp" />
@@ -504,7 +505,6 @@
     <ClCompile Include="CMediaLibDlg.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
     <ClCompile Include="COSUPlayerHelper.cpp" />
-    <ClCompile Include="CoverDownloadCommon.cpp" />
     <ClCompile Include="CoverDownloadDlg.cpp" />
     <ClCompile Include="CPlayerUIBase.cpp" />
     <ClCompile Include="CPlayerUIHelper.cpp" />

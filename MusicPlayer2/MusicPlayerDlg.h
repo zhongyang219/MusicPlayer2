@@ -15,7 +15,6 @@
 #include "SoundEffectDlg.h"
 #include "CortanaLyric.h"
 #include "FilePathHelper.h"
-#include "CoverDownloadCommon.h"
 #include "CoverDownloadDlg.h"
 #include "FormatConvertDlg.h"
 #include "CNotifyIcon.h"

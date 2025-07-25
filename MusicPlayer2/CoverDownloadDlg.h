@@ -1,8 +1,8 @@
 ﻿#pragma once
-#include "CoverDownloadCommon.h"
 #include "ListCtrlEx.h"
 #include "SongInfo.h"
 #include "BaseDialog.h"
+#include "LyricDownloadCommon.h"
 
 // CCoverDownloadDlg 对话框
 
@@ -41,7 +41,7 @@ protected:
 
     bool m_save_to_song_folder;     // 是否将下载到的封面存储到歌曲目录
 
-    vector<CInternetCommon::ItemInfo> m_down_list;  //搜索结果的列表
+    vector<CLyricDownloadCommon::ItemInfo> m_down_list;  //搜索结果的列表
     int m_item_selected{ -1 };      //搜索结果列表中选中的项目
 
     wstring m_search_url;

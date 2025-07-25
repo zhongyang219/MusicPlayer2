@@ -16,6 +16,7 @@
 #include "MenuMgr.h"
 #include "IconMgr.h"
 #include "ChinesePingyinRes.h"
+class CLyricDownloadCommon;
 
 // CMusicPlayerApp:
 // 有关此类的实现，请参阅 MusicPlayer2.cpp
@@ -137,6 +138,10 @@ public:
     //更新UI中的媒体库项目
     void UpdateUiMeidaLibItems();
 
+    void InitLyricDownload();
+
+    CLyricDownloadCommon* GetLyricDownload() const;
+
 private:
     void LoadSongData();
 
@@ -160,6 +165,8 @@ private:
     HMODULE m_hScintillaModule{};
 
     CWinThread* m_media_lib_update_thread{};
+
+    std::unique_ptr<CLyricDownloadCommon> m_lyric_download;
 
     // 重写
 public:

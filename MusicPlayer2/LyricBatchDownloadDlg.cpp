@@ -340,8 +340,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 
         //搜索歌曲
         wstring keyword_url = CInternetCommon::URLEncode(keyword);      //将搜索关键字转换成URL编码
-        CString url;
-        url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=20&type=1&offset=0", keyword_url.c_str());
+        CString url = theApp.GetLyricDownload()->GetSearchUrl(keyword_url).c_str();
         int rtn = CInternetCommon::HttpPost(wstring(url), search_result);       //向网易云音乐的歌曲搜索API发送http的POST请求
         if (theApp.m_batch_download_dialog_exit)        //由于CLyricDownloadCommon::HttpPost函数执行的时间比较长，所有在这里执行判断是否退出线程的处理
             return 0;
@@ -353,8 +352,8 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 
         //处理返回结果
         SongInfo song_info_ori{ CSongDataManager::GetInstance().GetSongInfo3(pInfo->playlist->at(i)) };
-        vector<CInternetCommon::ItemInfo> down_list;
-        CInternetCommon::DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
+        vector<CLyricDownloadCommon::ItemInfo> down_list;
+        theApp.GetLyricDownload()->DisposeSearchResult(down_list, search_result);		//处理返回的查找结果，并将结果保存在down_list容器里
         if (down_list.empty())
         {
             pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_CANNOT_FIND_THIS_SONG").c_str());
@@ -370,7 +369,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         if (theApp.m_str_table.LoadText(L"TXT_EMPTY_TITLE") == title) title.clear();
         if (theApp.m_str_table.LoadText(L"TXT_EMPTY_ARTIST") == artist) artist.clear();
         if (theApp.m_str_table.LoadText(L"TXT_EMPTY_ALBUM") == album) album.clear();
-        int best_matched = CInternetCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).GetFileName(), true);
+        int best_matched = CLyricDownloadCommon::SelectMatchedItem(down_list, title, artist, album, pInfo->playlist->at(i).GetFileName(), true);
         if (best_matched < 0)
         {
             song_info_ori.SetNoOnlineLyric(true);
@@ -380,7 +379,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         }
 
         //下载歌词
-        CLyricDownloadCommon::DownloadLyric(down_list[best_matched].id, lyric_str, pInfo->download_translate);
+        theApp.GetLyricDownload()->DownloadLyric(down_list[best_matched].id, lyric_str, pInfo->download_translate);
         if (lyric_str.empty())
         {
             pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_DOWNLOAD_FAILED").c_str());

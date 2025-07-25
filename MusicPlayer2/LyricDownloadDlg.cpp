@@ -317,9 +317,7 @@ void CLyricDownloadDlg::OnBnClickedSearchButton2()
     SetDlgItemText(IDC_STATIC_INFO, theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_INFO_SEARCHING").c_str());
 	GetDlgItem(IDC_SEARCH_BUTTON2)->EnableWindow(FALSE);		//点击“搜索”后禁用该按钮
 	wstring keyword = CInternetCommon::URLEncode(m_song.artist + L' ' + m_song.title);	//搜索关键字为“艺术家 标题”，并将其转换成URL编码
-	CString url;
-	url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=%d&type=1&offset=0", keyword.c_str(), m_search_max_item);
-	//int rtn = CLyricDownloadCommon::HttpPost(buff, m_search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
+	CString url = theApp.GetLyricDownload()->GetSearchUrl(keyword, m_search_max_item).c_str();
 	m_search_thread_info.url = url;
 	m_search_thread_info.hwnd = GetSafeHwnd();
 	theApp.m_lyric_download_dialog_exit = false;
@@ -453,7 +451,7 @@ UINT CLyricDownloadDlg::LyricDownloadThreadFunc(LPVOID lpParam)
     wstring song_id = pInfo->song_id;
     bool download_translate = pInfo->download_translate;
     wstring result;
-    bool rtn = CLyricDownloadCommon::DownloadLyric(song_id, result, download_translate);  //下载歌词
+    bool rtn = theApp.GetLyricDownload()->DownloadLyric(song_id, result, download_translate);  //下载歌词
     if (theApp.m_lyric_download_dialog_exit) return 0;
     pInfo->success = rtn;
 	pInfo->result = result;
@@ -492,7 +490,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	out_put << CCommon::UnicodeToStr(m_search_result, CodeType::UTF8);
 #endif // DEBUG
 
-	CInternetCommon::DisposeSearchResult(m_down_list, m_search_result);		//处理返回的结果
+	theApp.GetLyricDownload()->DisposeSearchResult(m_down_list, m_search_result);		//处理返回的结果
 	ShowDownloadList();			//将搜索的结果显示在列表控件中
 
 	//计算搜索结果中最佳匹配项目
@@ -512,7 +510,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 		}
 	}
 	if(!id_releated)
-		best_matched = CInternetCommon::SelectMatchedItem(m_down_list, m_song.title, m_song.artist, m_song.album, m_lyric_name, true);
+		best_matched = CLyricDownloadCommon::SelectMatchedItem(m_down_list, m_song.title, m_song.artist, m_song.album, m_lyric_name, true);
     wstring info;
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
     SongInfo song_info_ori{ CSongDataManager::GetInstance().GetSongInfo3(m_song) };
@@ -753,7 +751,8 @@ void CLyricDownloadDlg::OnLdViewOnline()
 	if (IsItemSelectedValid())
 	{
 		//获取网易云音乐中该歌曲的在线接听网址
-		wstring song_url{ L"http://music.163.com/#/song?id=" + m_down_list[m_item_selected].id };
+
+		wstring song_url{ theApp.GetLyricDownload()->GetOnlineUrl(m_down_list[m_item_selected].id) };
 		//打开超链接
 		ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);
 	}
@@ -798,12 +797,12 @@ void CLyricDownloadDlg::OnLdPreview()
 	// TODO: 在此添加命令处理程序代码
 
 	//下载歌词
-	const CInternetCommon::ItemInfo& item{ m_down_list[m_item_selected] };
+	const CLyricDownloadCommon::ItemInfo& item{ m_down_list[m_item_selected] };
 	bool success{ false };
 	wstring result;
 	{
 		CWaitCursor wait_cursor;
-		success = CLyricDownloadCommon::DownloadLyric(item.id, result, m_download_translate);		//下载歌词
+		success = theApp.GetLyricDownload()->DownloadLyric(item.id, result, m_download_translate);		//下载歌词
 	}
 
 	//如果不成功弹出消息对话框

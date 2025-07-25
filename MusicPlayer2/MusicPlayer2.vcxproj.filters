@@ -107,9 +107,6 @@
     <Filter Include="公共的类\InternetCommon">
       <UniqueIdentifier>{d2d845e7-6891-46c2-b483-b744f3faee29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="公共的类\CoverDownloadCommon">
-      <UniqueIdentifier>{e61ac844-0f12-4e27-9649-8e123d91e720}</UniqueIdentifier>
-    </Filter>
     <Filter Include="公共的类\BASS">
       <UniqueIdentifier>{19a9ecf9-4893-450b-a085-7cb1a6a7dd4c}</UniqueIdentifier>
     </Filter>
@@ -524,9 +521,6 @@
     </ClInclude>
     <ClInclude Include="InternetCommon.h">
       <Filter>公共的类\InternetCommon</Filter>
-    </ClInclude>
-    <ClInclude Include="CoverDownloadCommon.h">
-      <Filter>公共的类\CoverDownloadCommon</Filter>
     </ClInclude>
     <ClInclude Include="CoverDownloadDlg.h">
       <Filter>对话框类\专辑封面下载对话框</Filter>
@@ -945,6 +939,9 @@
     <ClInclude Include="FindListDlg.h">
       <Filter>对话框类\FindDlg</Filter>
     </ClInclude>
+    <ClInclude Include="NeteaseLyricDownload.h">
+      <Filter>公共的类\LyricDownloadCommon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1039,9 +1036,6 @@
     </ClCompile>
     <ClCompile Include="InternetCommon.cpp">
       <Filter>公共的类\InternetCommon</Filter>
-    </ClCompile>
-    <ClCompile Include="CoverDownloadCommon.cpp">
-      <Filter>公共的类\CoverDownloadCommon</Filter>
     </ClCompile>
     <ClCompile Include="CoverDownloadDlg.cpp">
       <Filter>对话框类\专辑封面下载对话框</Filter>
@@ -1444,6 +1438,9 @@
     </ClCompile>
     <ClCompile Include="FindListDlg.cpp">
       <Filter>对话框类\FindDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="NeteaseLyricDownload.cpp">
+      <Filter>公共的类\LyricDownloadCommon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

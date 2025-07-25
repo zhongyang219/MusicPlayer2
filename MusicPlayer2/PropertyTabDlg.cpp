@@ -697,7 +697,7 @@ void CPropertyTabDlg::OnBnClickedGetTagOnlineButton()
 
 afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPARAM lParam)
 {
-    CInternetCommon::ItemInfo* pItem = (CInternetCommon::ItemInfo*)wParam;
+    CLyricDownloadCommon::ItemInfo* pItem = (CLyricDownloadCommon::ItemInfo*)wParam;
     if (pItem != nullptr)
     {
         SongInfo song;
