@@ -398,7 +398,6 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"cortana_show_spectrum", theApp.m_lyric_setting_data.cortana_show_spectrum);
     ini.WriteInt(L"config", L"cortana_lyric_align", static_cast<int>(theApp.m_lyric_setting_data.cortana_lyric_align));
     ini.WriteBool(L"config", L"show_default_album_icon_in_search_box", theApp.m_lyric_setting_data.show_default_album_icon_in_search_box);
-    ini.WriteInt(L"config", L"lyric_download_service", theApp.m_lyric_setting_data.lyric_download_service);
 
     ini.WriteBool(L"desktop_lyric", L"show_desktop_lyric", theApp.m_lyric_setting_data.show_desktop_lyric);
     ini.WriteString(L"desktop_lyric", L"font_name", theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.name);
@@ -484,6 +483,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"general", L"minimize_to_notify_icon", theApp.m_general_setting_data.minimize_to_notify_icon);
     ini.WriteBool(L"general", L"global_mouse_wheel_volume_adjustment", theApp.m_general_setting_data.global_mouse_wheel_volume_adjustment);
     ini.WriteInt(L"general", L"update_source", theApp.m_general_setting_data.update_source);
+    ini.WriteInt(L"general", L"lyric_download_service", theApp.m_general_setting_data.lyric_download_service);
 
     ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
     ini.WriteBool(L"config", L"auto_play_when_start", theApp.m_play_setting_data.auto_play_when_start);
@@ -601,7 +601,6 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_lyric_setting_data.cortana_show_spectrum = ini.GetBool(L"config", L"cortana_show_spectrum", false);
     theApp.m_lyric_setting_data.cortana_lyric_align = static_cast<Alignment>(ini.GetInt(L"config", L"cortana_lyric_align", static_cast<int>(Alignment::AUTO)));
     theApp.m_lyric_setting_data.show_default_album_icon_in_search_box = ini.GetBool(L"config", L"show_default_album_icon_in_search_box", false);
-    theApp.m_lyric_setting_data.lyric_download_service = static_cast<LyricSettingData::LyricDownloadService>(ini.GetInt(L"config", L"lyric_download_service", 0));
 
     theApp.m_lyric_setting_data.show_desktop_lyric = ini.GetBool(L"desktop_lyric", L"show_desktop_lyric", false);
     theApp.m_lyric_setting_data.desktop_lyric_data.lyric_font.name = ini.GetString(L"desktop_lyric", L"font_name", theApp.m_str_table.GetDefaultFontName().c_str());
@@ -691,6 +690,7 @@ void CMusicPlayerDlg::LoadConfig()
 
     bool is_zh_cn = theApp.m_str_table.IsSimplifiedChinese();       //当前语言是否为简体中文
     theApp.m_general_setting_data.update_source = ini.GetInt(L"general", L"update_source", is_zh_cn ? 1 : 0);   //如果当前语言为简体，则默认更新源为Gitee，否则为GitHub
+    theApp.m_general_setting_data.lyric_download_service = static_cast<GeneralSettingData::LyricDownloadService>(ini.GetInt(L"general", L"lyric_download_service", 0));
 
     theApp.m_play_setting_data.stop_when_error = ini.GetBool(L"config", L"stop_when_error", true);
     theApp.m_play_setting_data.auto_play_when_start = ini.GetBool(L"config", L"auto_play_when_start", false);
@@ -1216,6 +1216,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     || (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI && (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode != optionDlg.m_tab4_dlg.m_data.ffmpeg_core_enable_WASAPI_exclusive_mode)) };
     bool SMTC_enable_changed{ theApp.m_play_setting_data.use_media_trans_control != optionDlg.m_tab4_dlg.m_data.use_media_trans_control };
     bool playlist_btn_changed{ theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist != optionDlg.m_media_lib_dlg.m_data.playlist_btn_for_float_playlist };
+    bool lyric_download_service_changed{ theApp.m_general_setting_data.lyric_download_service != optionDlg.m_tab3_dlg.m_data.lyric_download_service };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1361,6 +1362,11 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
             m_pFloatPlaylistDlg->GetListCtrl().SetRowHeight(row_height);
         if (m_miniModeDlg.GetSafeHwnd() != NULL)
             m_miniModeDlg.GetPlaylistCtrl().SetRowHeight(row_height);
+    }
+
+    if (lyric_download_service_changed)
+    {
+        theApp.InitLyricDownload();
     }
 
     //根据当前选择的深色/浅色模式，将当前“背景不透明度”设置更新到对应的深色/浅色“背景不透明度”设置中
@@ -2055,6 +2061,8 @@ BOOL CMusicPlayerDlg::OnInitDialog()
     //载入设置
     LoadConfig();
     LoadUiData();
+
+    theApp.InitLyricDownload();
 
     // 载入&初始化最近播放列表列表
     CRecentList::Instance().LoadData();
@@ -4285,14 +4293,14 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
     if (download_cover || download_lyric)
     {
         DownloadResult result{};
-        if (song_info_ori.song_id == 0)      //如果没有获取过ID，则获取一次ID
+        if (song_info_ori.GetSongId().empty())      //如果没有获取过ID，则获取一次ID
         {
             //搜索歌曲并获取最佳匹配的项目
             match_item = theApp.GetLyricDownload()->SearchSongAndGetMatched(song_info_ori.title, song_info_ori.artist, song_info_ori.album, song_info_ori.GetFileName(), false, &result);
             song_info_ori.SetSongId(match_item.id);
-            CSongDataManager::GetInstance().SetSongID(song_info_ori, song_info_ori.song_id);  // 与媒体库同步
+            CSongDataManager::GetInstance().SetSongID(song_info_ori, match_item.id);  // 与媒体库同步
         }
-        if (song_info_ori.song_id == 0)
+        if (song_info_ori.GetSongId().empty())
         {
             if (result == DR_DOWNLOAD_ERROR)     //如果搜索歌曲失败，则标记为没有在线歌词和专辑封面
             {
@@ -4390,7 +4398,10 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         out_put << _lyric_str;
         out_put.close();
         //处理歌词翻译
-        CLyrics lyrics{ lyric_path.GetFilePath(), CLyrics::LyricType::LY_LRC_NETEASE };     // 打开网易云半json的原始歌词
+        auto lyric_type = CLyrics::LyricType::LY_LRC;
+        if (theApp.m_general_setting_data.lyric_download_service == GeneralSettingData::LDS_NETEASE)
+            lyric_type = CLyrics::LyricType::LY_LRC_NETEASE;
+        CLyrics lyrics{ lyric_path.GetFilePath(), lyric_type };     // 打开网易云半json的原始歌词
         lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);                                                                // 保存为lrc格式
 
         CPlayer::GetInstance().IniLyrics(lyric_path.GetFilePath());

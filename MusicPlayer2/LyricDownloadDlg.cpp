@@ -69,7 +69,7 @@ bool CLyricDownloadDlg::SaveLyric(const wchar_t * path, CodeType code_type)
 void CLyricDownloadDlg::SetID(wstring id)
 {
     m_song.SetSongId(id);
-    CSongDataManager::GetInstance().SetSongID(m_song, m_song.song_id);
+    CSongDataManager::GetInstance().SetSongID(m_song, id);
 }
 
 void CLyricDownloadDlg::SaveConfig() const
@@ -112,7 +112,10 @@ CString CLyricDownloadDlg::GetDialogName() const
 bool CLyricDownloadDlg::InitializeControls()
 {
     wstring temp;
-    temp = theApp.m_str_table.LoadText(L"TITLE_LYRIC_DL");
+	if (theApp.m_general_setting_data.lyric_download_service == GeneralSettingData::LDS_QQMUSIC)
+		temp = theApp.m_str_table.LoadText(L"TITLE_LYRIC_DL_QQMUSIC");
+	else
+		temp = theApp.m_str_table.LoadText(L"TITLE_LYRIC_DL");
     SetWindowTextW(temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_TITLE");
     SetDlgItemTextW(IDC_TXT_LYRIC_DL_TITLE_STATIC, temp.c_str());
@@ -433,11 +436,11 @@ UINT CLyricDownloadDlg::LyricSearchThreadFunc(LPVOID lpParam)
 	SearchThreadInfo* pInfo = (SearchThreadInfo*)lpParam;
     wstring url = pInfo->url;
     wstring result;
-    bool rtn = CInternetCommon::HttpPost(url, result);        //向网易云音乐的歌曲搜索API发送http的POST请求
+    int rtn = theApp.GetLyricDownload()->RequestSearch(url, result);        //发送歌曲搜索的网络请求
     if (theApp.m_lyric_download_dialog_exit) return 0;
     // 此处（以及大部分网络相关）有线程安全问题，HttpPost可能卡30s网络超时，要解决此问题CInternetSession的封装应当提供退出flag参数
     // 此时如果歌词下载窗口关闭则pInfo会是野指针（比如关闭再打开此对话框会使得上面的检查无效）
-   pInfo->rtn = rtn;
+    pInfo->rtn = rtn;
 	pInfo->result = result;
 	::PostMessage(pInfo->hwnd, WM_SEARCH_COMPLATE, 0, 0);		//搜索完成后发送一个搜索完成的消息
 
@@ -496,8 +499,10 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 	//计算搜索结果中最佳匹配项目
 	int best_matched;
 	bool id_releated{ false };
-    CSongDataManager::GetInstance().GetSongID(m_song, m_song.song_id);  // 从媒体库读取id
-    if (m_song.song_id != 0)   //如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
+	std::wstring song_id;
+    CSongDataManager::GetInstance().GetSongID(m_song, song_id);  // 从媒体库读取id
+	m_song.SetSongId(song_id);
+    if (!song_id.empty())   //如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
 	{
 		for (size_t i{}; i<m_down_list.size(); i++)
 		{
@@ -608,7 +613,10 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 			return 0;
 		if (m_download_translate)
 		{
-			CLyrics lyrics{ saved_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
+			auto lyric_type = CLyrics::LyricType::LY_LRC;
+			if (theApp.m_general_setting_data.lyric_download_service == GeneralSettingData::LDS_NETEASE)
+				lyric_type = CLyrics::LyricType::LY_LRC_NETEASE;
+			CLyrics lyrics{ saved_path, lyric_type };		//打开保存过的歌词
 			lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
 		}
 
@@ -649,7 +657,10 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 
 			if (m_download_translate)
 			{
-				CLyrics lyrics{ saved_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
+				auto lyric_type = CLyrics::LyricType::LY_LRC;
+				if (theApp.m_general_setting_data.lyric_download_service == GeneralSettingData::LDS_NETEASE)
+					lyric_type = CLyrics::LyricType::LY_LRC_NETEASE;
+				CLyrics lyrics{ saved_path, lyric_type };		//打开保存过的歌词
 				lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
 			}
 

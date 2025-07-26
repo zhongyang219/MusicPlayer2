@@ -189,6 +189,9 @@ public:
     //将一个只有ASCII码组成的字符串转换成Unicode
     static wstring ASCIIToUnicode(const string& ascii);
 
+    //将一个只有ASCII码组成的字符串转换成std::string
+    static string UnicodeToAscii(const wstring& wstr);
+
     //判断一个字符串是否UTF8编码
     static bool IsUTF8Bytes(const char* data);
 
@@ -530,6 +533,8 @@ inline bool CCommon::StringTransform(T& str, bool upper)
 template<class T>
 inline bool CCommon::StringCompareNoCase(const T& str1, const T& str2)
 {
+    if (str1.size() != str2.size())
+        return false;
     T _str1{ str1 }, _str2{ str2 };
     StringTransform(_str1, false);
     StringTransform(_str2, false);

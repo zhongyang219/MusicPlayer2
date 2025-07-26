@@ -17,9 +17,9 @@ public:
     CString GetDataVersion() const;
 
     // 设置歌曲ID
-    bool SetSongID(const SongKey& key, const unsigned __int64 id);
+    bool SetSongID(const SongKey& key, const std::wstring& id);
     // 获取歌曲ID
-    bool GetSongID(const SongKey& key, unsigned __int64& id) const;
+    bool GetSongID(const SongKey& key, std::wstring& id) const;
 
     // CAudioCommon::GetCueTracks用来将获取的信息存入媒体库（专用，其他位置多半不合适）
     void SaveCueSongInfo(const vector<SongInfo>& songs_info);

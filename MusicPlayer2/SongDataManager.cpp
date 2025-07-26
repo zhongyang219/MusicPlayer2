@@ -32,7 +32,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.751"));			//写入数据版本
+    ar << CString(_T("2.780"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (const auto& song_data : m_song_data)
     {
@@ -49,7 +49,8 @@ void CSongDataManager::SaveSongData(std::wstring path)
             << song_data.second.genre_idx
             << song_data.second.track
             << song_data.second.tag_type
-            << CString(song_data.second.GetSongId().c_str())
+            << CString(std::to_wstring(song_data.second.song_id_netease).c_str())
+            << CString(CCommon::ASCIIToUnicode(song_data.second.song_id_qq_music).c_str())
             << song_data.second.listen_time
             << song_data.second.info_acquired
             << song_data.second.is_cue
@@ -167,8 +168,14 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> tag_type;
                 song_info.tag_type = tag_type;
             }
+
             ar >> temp;
-            song_info.SetSongId(temp.GetString());
+            song_info.song_id_netease = _ttoi64(temp.GetString());
+            if (m_data_version >= _T("2.780"))
+            {
+                ar >> temp;
+                CCommon::StringCopy(song_info.song_id_qq_music, _countof(song_info.song_id_qq_music), CCommon::UnicodeToAscii(temp.GetString()));
+            }
 
             if (m_data_version >= _T("2.64"))		//版本号大于等于2.64
             {
@@ -263,28 +270,28 @@ CString CSongDataManager::GetDataVersion() const
     return m_data_version;
 }
 
-bool CSongDataManager::SetSongID(const SongKey& key, const unsigned __int64 id)
+bool CSongDataManager::SetSongID(const SongKey& key, const std::wstring& id)
 {
     std::unique_lock<std::shared_mutex> writeLock(m_shared_mutex);
     ASSERT(!key.path.empty());
     auto iter = m_song_data.find(key);
     if (iter == m_song_data.end())
         return false;   // 为避免问题，仅能为媒体库已存在的条目设置id
-    iter->second.song_id = id;
+    iter->second.SetSongId(id);
 
     m_song_data_modified = true;
     return true;
 }
 
-bool CSongDataManager::GetSongID(const SongKey& key, unsigned __int64& id) const
+bool CSongDataManager::GetSongID(const SongKey& key, std::wstring& id) const
 {
     std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     ASSERT(!key.path.empty());
-    id = 0;
+    id = std::wstring();
     auto iter = m_song_data.find(key);
     if (iter == m_song_data.end())
         return false;
-    id = iter->second.song_id;
+    id = iter->second.GetSongId();
     return true;
 }
 

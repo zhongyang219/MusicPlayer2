@@ -31,7 +31,10 @@ CString CLyricBatchDownloadDlg::GetDialogName() const
 bool CLyricBatchDownloadDlg::InitializeControls()
 {
     wstring temp;
-    temp = theApp.m_str_table.LoadText(L"TITLE_LYRIC_BDL");
+    if (theApp.m_general_setting_data.lyric_download_service == GeneralSettingData::LDS_QQMUSIC)
+        temp = theApp.m_str_table.LoadText(L"TITLE_LYRIC_BDL_QQMUSIC");
+    else
+        temp = theApp.m_str_table.LoadText(L"TITLE_LYRIC_BDL");
     SetWindowTextW(temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_DL_OPT");
     SetDlgItemTextW(IDC_TXT_LYRIC_BDL_DL_OPT_STATIC, temp.c_str());
@@ -341,7 +344,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         //搜索歌曲
         wstring keyword_url = CInternetCommon::URLEncode(keyword);      //将搜索关键字转换成URL编码
         CString url = theApp.GetLyricDownload()->GetSearchUrl(keyword_url).c_str();
-        int rtn = CInternetCommon::HttpPost(wstring(url), search_result);       //向网易云音乐的歌曲搜索API发送http的POST请求
+        int rtn = theApp.GetLyricDownload()->RequestSearch(wstring(url), search_result);       //发送歌曲搜索的网络请求
         if (theApp.m_batch_download_dialog_exit)        //由于CLyricDownloadCommon::HttpPost函数执行的时间比较长，所有在这里执行判断是否退出线程的处理
             return 0;
         if (rtn != 0)
@@ -415,7 +418,10 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
 
         if (pInfo->download_translate)
         {
-            CLyrics lyrics{ lyric_path, CLyrics::LyricType::LY_LRC_NETEASE };		//打开保存过的歌词
+            auto lyric_type = CLyrics::LyricType::LY_LRC;
+            if (theApp.m_general_setting_data.lyric_download_service == GeneralSettingData::LDS_NETEASE)
+                lyric_type = CLyrics::LyricType::LY_LRC_NETEASE;
+            CLyrics lyrics{ lyric_path, lyric_type };		//打开保存过的歌词
             lyrics.SaveLyric2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
         }
 

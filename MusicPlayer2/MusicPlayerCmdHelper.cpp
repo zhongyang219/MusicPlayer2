@@ -29,16 +29,18 @@ CMusicPlayerCmdHelper::~CMusicPlayerCmdHelper()
 void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
 {
     //查找歌曲并获取最佳匹配项的歌曲ID
-    CSongDataManager::GetInstance().GetSongID(song, song.song_id);  // 从媒体库读取id
-    if (song.song_id == 0)		//如果没有获取过ID，则获取一次ID
+    std::wstring song_id;
+    CSongDataManager::GetInstance().GetSongID(song, song_id);  // 从媒体库读取id
+    song.SetSongId(song_id);
+    if (song_id.empty())		//如果没有获取过ID，则获取一次ID
     {
         wstring song_id;
         song_id = theApp.GetLyricDownload()->SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
         song.SetSongId(song_id);
-        CSongDataManager::GetInstance().SetSongID(song, song.song_id);  // 与媒体库同步
+        CSongDataManager::GetInstance().SetSongID(song, song_id);  // 与媒体库同步
     }
 
-    if (song.song_id == 0)
+    if (song_id.empty())
         return;
     //获取网易云音乐中该歌曲的在线接听网址
     wstring song_url{ theApp.GetLyricDownload()->GetOnlineUrl(song.GetSongId()) };

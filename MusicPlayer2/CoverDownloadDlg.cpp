@@ -29,7 +29,7 @@ UINT CCoverDownloadDlg::SongSearchThreadFunc(LPVOID lpParam)
     CCoverDownloadDlg* pThis = (CCoverDownloadDlg*)lpParam;
     wstring search_result;
     wstring m_search_url = pThis->m_search_url;
-    bool m_search_rtn = CInternetCommon::HttpPost(m_search_url, search_result);     //向网易云音乐的歌曲搜索API发送http的POST请求
+    bool m_search_rtn = theApp.GetLyricDownload()->RequestSearch(m_search_url, search_result);     //发送歌曲搜索请求
     if (theApp.m_cover_download_dialog_exit)
         return 0;
     pThis->m_search_rtn = m_search_rtn;
@@ -122,7 +122,10 @@ bool CCoverDownloadDlg::InitializeControls()
 {
     SetIcon(IconMgr::IconType::IT_Album_Cover, FALSE);
     wstring temp;
-    temp = theApp.m_str_table.LoadText(L"TITLE_COVER_DL");
+    if (theApp.m_general_setting_data.lyric_download_service == GeneralSettingData::LDS_QQMUSIC)
+        temp = theApp.m_str_table.LoadText(L"TITLE_COVER_DL_QQMUSIC");
+    else
+        temp = theApp.m_str_table.LoadText(L"TITLE_COVER_DL");
     SetWindowTextW(temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_LYRIC_DL_TITLE");
     SetDlgItemTextW(IDC_TXT_COVER_DL_TITLE_STATIC, temp.c_str());
@@ -324,8 +327,10 @@ afx_msg LRESULT CCoverDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
     //计算搜索结果中最佳匹配项目
     int best_matched;
     bool id_releated{ false };
-    CSongDataManager::GetInstance().GetSongID(m_song, m_song.song_id);  // 从媒体库读取id
-    if (m_song.song_id != 0)        // 如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
+    std::wstring song_id;
+    CSongDataManager::GetInstance().GetSongID(m_song, song_id);  // 从媒体库读取id
+    m_song.SetSongId(song_id);
+    if (!song_id.empty())        // 如果当前歌曲已经有关联的ID，则根据该ID在搜索结果列表中查找对应的项目
     {
         for (size_t i{}; i < m_down_list.size(); i++)
         {

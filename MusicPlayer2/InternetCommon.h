@@ -31,12 +31,27 @@ public:
 	static wstring URLEncode(const wstring& wstr);
 
 	static bool GetURL(const wstring& str_url, wstring& result, bool custom_ua = false, bool allow_other_codes = false);
+
+    //向指定url发送http get请求
+    static int HttpGet(const wstring& str_url, wstring& result, const wstring& headers, bool custom_ua = false);
+    
     //向指定的url发送http post请求，结果保存在result中
     static int HttpPost(const wstring& str_url, wstring& result);
     //向指定的url发送http post请求，结果保存在result中
-    static int HttpPost(const wstring& str_url, wstring& result, const string& body, wstring& headers, bool custom_ua = false);
+    static int HttpPost(const wstring& str_url, wstring& result, const wstring& body, const wstring& headers, bool custom_ua = false);
+
     //向指定的url发送http post请求，结果保存在result中
-    static int HttpPost(const wstring& str_url, wstring& result, const wstring& body, wstring& headers, bool custom_ua = false);
+    /**
+     * @brief   发送一个HTTP请求
+     * @param   post 如果为true，则为HTTO POST请求，否则为HTTP GET请求
+     * @param   str_url 请求的URL
+     * @param   result 接收请求的结果
+     * @param   body 请求体
+     * @param   headers 请求头
+     * @param   custom_ua 是否使用自定义用户代理
+     * @return 
+     */
+    static int SendHttpRequest(bool post, const wstring& str_url, wstring& result, const string& body, const wstring& headers, bool custom_ua = false);
 
 	static void DeleteStrSlash(wstring& str);		//如果字符串中的“\"”，删除字符串中的反斜杠
 

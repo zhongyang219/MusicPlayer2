@@ -347,7 +347,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,204,204,47,14
 END
 
-IDD_DATA_SETTINGS_DIALOG DIALOGEX 0, 0, 316, 269
+IDD_DATA_SETTINGS_DIALOG DIALOGEX 0, 0, 316, 295
 STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
@@ -370,7 +370,7 @@ BEGIN
     CONTROL         "Minimize to notification area",IDC_MINIMIZE_TO_NOTIFY_RADIO,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP,157,74,146,8
     CONTROL         "Exit the program",IDC_EXIT_PROGRAM_RADIO,"Button",BS_AUTORADIOBUTTON,157,86,146,8
-    GROUPBOX        "Automatic Download Settings",IDC_TXT_OPT_DATA_DL_SETTING_STATIC,7,103,302,121
+    GROUPBOX        "Automatic Download Settings",IDC_TXT_OPT_DATA_DL_SETTING_STATIC,7,103,302,144
     CONTROL         "Automatically download when lyric is not exist",IDC_LYRIC_AUTO_DOWNLOAD_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,114,289,8
     LTEXT           "Automatically Download Lyrics Save Location:",IDC_TXT_OPT_DATA_AUTO_DL_LYRIC_SAVE_SEL_STATIC,14,125,289,8
@@ -392,9 +392,13 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON,150,200,153,8
     CONTROL         "Download automatically only when the song information is complete",IDC_DOWNLOAD_WHEN_TAG_FULL_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,211,289,8
-    GROUPBOX        "Operation Settings",IDC_TXT_OPERATION_SETTINGS_STATIC,7,229,302,29
+    GROUPBOX        "Operation Settings",IDC_TXT_OPERATION_SETTINGS_STATIC,7,251,302,29
     CONTROL         "Global mouse wheel volume adjustment",IDC_GLOBAL_MOUSE_WHEEL_VOLUME_ADJUSTMENT_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,242,289,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,264,289,10
+    LTEXT           "Lyrics and album cover download service:",IDC_TXT_OPT_LYRICS_AND_COVER_DL_SERVICE_STATIC,14,222,289,8
+    CONTROL         "NetEase cloud music",IDC_NETEASE_CLOUD_MUSIC_RADIO,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,21,233,119,8
+    CONTROL         "QQ music",IDC_QQ_MUSIC_RADIO,"Button",BS_AUTORADIOBUTTON,150,233,153,8
 END
 
 IDD_EQUALIZER_DIALOG DIALOGEX 0, 0, 299, 107
@@ -1296,7 +1300,7 @@ BEGIN
         VERTGUIDE, 157
         VERTGUIDE, 303
         TOPMARGIN, 4
-        BOTTOMMARGIN, 262
+        BOTTOMMARGIN, 288
     END
 
     IDD_EQUALIZER_DIALOG, DIALOG
@@ -1873,7 +1877,10 @@ BEGIN
     44, 0, 56, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
-    0, 0, 0, 0
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 44, 0,
+    44, 0, 56, 0
 END
 
 IDD_EQUALIZER_DIALOG AFX_DIALOG_LAYOUT

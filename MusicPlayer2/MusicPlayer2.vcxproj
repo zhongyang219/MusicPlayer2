@@ -254,6 +254,7 @@
     <ClInclude Include="CListenTimeStatisticsDlg.h" />
     <ClInclude Include="CMMNotificationClient.h" />
     <ClInclude Include="CommonDialogMgr.h" />
+    <ClInclude Include="CQQMusicLyricDownload.h" />
     <ClInclude Include="CRecentList.h" />
     <ClInclude Include="CUIDrawer.h" />
     <ClInclude Include="CMainDialogBase.h" />
@@ -430,6 +431,7 @@
     <ClCompile Include="CMMNotificationClient.cpp" />
     <ClCompile Include="CommonData.cpp" />
     <ClCompile Include="CommonDialogMgr.cpp" />
+    <ClCompile Include="CQQMusicLyricDownload.cpp" />
     <ClCompile Include="CRecentList.cpp" />
     <ClCompile Include="CUIDrawer.cpp" />
     <ClCompile Include="CMainDialogBase.cpp" />

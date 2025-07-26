@@ -86,21 +86,26 @@ bool CInternetCommon::GetURL(const wstring & str_url, wstring & result, bool cus
 	return sucessed;
 }
 
+int CInternetCommon::HttpGet(const wstring& str_url, wstring& result, const wstring& headers, bool custom_ua)
+{
+	return SendHttpRequest(false, str_url, result, std::string(), headers, custom_ua);
+}
+
 int CInternetCommon::HttpPost(const wstring& str_url, wstring& result) {
     string body;
     wstring headers;
-    return HttpPost(str_url, result, body, headers);
+    return SendHttpRequest(true, str_url, result, body, headers);
 }
 
-int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, const wstring& body, wstring& headers, bool custom_ua) {
+int CInternetCommon::HttpPost(const wstring& str_url, wstring& result, const wstring& body, const wstring& headers, bool custom_ua) {
     const auto& tmp = CCommon::UnicodeToStr(body, CodeType::UTF8_NO_BOM);
-    return HttpPost(str_url, result, tmp, headers, custom_ua);
+    return SendHttpRequest(true, str_url, result, tmp, headers, custom_ua);
 }
 
-int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, const string& body, wstring& headers, bool custom_ua)
+int CInternetCommon::SendHttpRequest(bool post, const wstring & str_url, wstring & result, const string& body, const wstring& headers, bool custom_ua)
 {
-    wstring log_info;
-    log_info = L"http post: " + str_url;
+    wstring log_info = post ? L"http post: " : L"http get: ";
+    log_info += str_url;
     theApp.WriteLog(log_info, NonCategorizedSettingData::LT_NORMAL);
 
 	CInternetSession session;
@@ -125,7 +130,7 @@ int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, const s
 		pConnection = session.GetHttpConnection(strServer,
 			dwServiceType == AFX_INET_SERVICE_HTTP ? NORMAL_CONNECT : SECURE_CONNECT,
 			nPort);
-		pFile = pConnection->OpenRequest(_T("POST"), strObject,
+		pFile = pConnection->OpenRequest(post ? _T("POST") : _T("GET"), strObject,
 			NULL, 1, NULL, NULL,
 			(dwServiceType == AFX_INET_SERVICE_HTTP ? NORMAL_REQUEST : SECURE_REQUEST));
         
@@ -158,7 +163,8 @@ int CInternetCommon::HttpPost(const wstring & str_url, wstring & result, const s
 		//DWORD dwError = GetLastError();
 		//PRINT_LOG("dwError = %d", dwError, 0);
 
-        wstring log_info = L"http post " + str_url + L"error. Error code: ";
+		wstring log_info = post ? L"http post: " : L"http get: ";
+        log_info += (str_url + L"error. Error code: ");
         log_info += std::to_wstring(dwErrorCode);
         theApp.WriteLog(log_info, NonCategorizedSettingData::LT_ERROR);
 

@@ -14,6 +14,7 @@
 #include "SongDataManager.h"
 #include "UiMediaLibItemMgr.h"
 #include "NeteaseLyricDownload.h"
+#include "CQQMusicLyricDownload.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -220,7 +221,6 @@ BOOL CMusicPlayerApp::InitInstance()
     // 获取互斥量后StrTable应尽早初始化以免某些LoadText后以静态变量保存字符串引用的地方加载到空字符串<error>
     m_str_table.Init(m_local_dir + L"language\\", m_general_setting_data.language_);
 
-    InitLyricDownload();
     LoadSongData();
     LoadLastFMData();
 
@@ -855,7 +855,11 @@ void CMusicPlayerApp::UpdateUiMeidaLibItems()
 
 void CMusicPlayerApp::InitLyricDownload()
 {
-    if (m_lyric_setting_data.lyric_download_service == LyricSettingData::LDS_NETEASE)
+    if (m_general_setting_data.lyric_download_service == GeneralSettingData::LDS_QQMUSIC)
+    {
+        m_lyric_download = std::make_unique<CQQMusicLyricDownload>();
+    }
+    else
     {
         m_lyric_download = std::make_unique<CNeteaseLyricDownload>();
     }

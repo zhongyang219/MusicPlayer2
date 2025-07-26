@@ -175,9 +175,14 @@ bool CCommon::StringCsvNormalize(CString& str)
 void CCommon::StringCopy(char* dest, int size, string source)
 {
     int source_size = source.size();
-    for (int i{}; i < size && i < source_size; i++)
+    int i{};
+    for (; i < size && i < source_size; i++)
     {
         dest[i] = source[i];
+    }
+    if (i < size)
+    {
+        dest[i] = '\0';
     }
 }
 
@@ -643,9 +648,21 @@ string CCommon::UnicodeToStr(const wstring& wstr, CodeType code_type, bool* char
 wstring CCommon::ASCIIToUnicode(const string& ascii)
 {
     wstring result;
-    for (const char& ch : ascii)
+    result.resize(ascii.size());
+    for (size_t i = 0; i < ascii.size(); i++)
     {
-        result.push_back(ch);
+        result[i] = ascii[i];
+    }
+    return result;
+}
+
+string CCommon::UnicodeToAscii(const wstring& wstr)
+{
+    string result;
+    result.resize(wstr.size());
+    for (size_t i = 0; i < wstr.size(); i++)
+    {
+        result[i] = static_cast<char>(wstr[i]);
     }
     return result;
 }

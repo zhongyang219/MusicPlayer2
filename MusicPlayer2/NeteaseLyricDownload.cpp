@@ -127,3 +127,14 @@ std::wstring CNeteaseLyricDownload::GetOnlineUrl(const wstring& song_id)
 	std::wstring song_url{ L"http://music.163.com/#/song?id=" + song_id };
 	return song_url;
 }
+
+int CNeteaseLyricDownload::RequestSearch(const std::wstring& url, std::wstring& result)
+{
+	return CInternetCommon::HttpPost(url, result);
+}
+
+bool CNeteaseLyricDownload::DownloadLyric(const wstring& song_id, wstring& result, bool download_translate)
+{
+	wstring lyric_url = GetLyricDownloadUrl(song_id, download_translate);
+	return CInternetCommon::GetURL(lyric_url, result);
+}

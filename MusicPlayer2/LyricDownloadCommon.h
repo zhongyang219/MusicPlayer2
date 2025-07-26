@@ -49,6 +49,14 @@ public:
 	};
 
 	/**
+	 * @brief   发送歌曲搜索请求
+	 * @param   url 请求的URL
+	 * @param   result 返回的结果
+	 * @return  CInternetCommon::HttpResult
+	 */
+	virtual int RequestSearch(const std::wstring& url, std::wstring& result) = 0;
+
+	/**
 	 * @brief   从搜索结果search_result中提取出歌曲的信息，并保存在down_list容器里
 	 * @param[out]   down_list 储存搜索解析的搜索结果
 	 * @param   search_result 搜索结果的原始字符串
@@ -57,7 +65,7 @@ public:
 	virtual void DisposeSearchResult(vector<ItemInfo>& down_list, const wstring& search_result, int result_count = 30) = 0;
 
 	//根据歌曲的id下载歌词，结果保存中result中，download_translate参数指定是否下载带翻译的歌词
-	bool DownloadLyric(const wstring& song_id, wstring& result, bool download_translate = true);
+	virtual bool DownloadLyric(const wstring& song_id, wstring& result, bool download_translate = true) = 0;
 
 	static bool DisposeLryic(wstring& lyric_str);	//对从网易云音乐下载的歌词进行处理，转换成正确的歌词文本
 	static void AddLyricTag(wstring& lyric_str, const wstring& song_id, const wstring& title = _T(""), const wstring& artist = _T(""), const wstring& album = _T(""));		//在歌词前面加上标签信息

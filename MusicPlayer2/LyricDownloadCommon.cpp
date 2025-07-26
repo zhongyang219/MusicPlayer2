@@ -13,13 +13,6 @@ CLyricDownloadCommon::~CLyricDownloadCommon()
 }
 
 
-bool CLyricDownloadCommon::DownloadLyric(const wstring & song_id, wstring & result, bool download_translate)
-{
-	wstring lyric_url = GetLyricDownloadUrl(song_id, download_translate);
-	return CInternetCommon::GetURL(lyric_url, result);
-}
-
-
 bool CLyricDownloadCommon::DisposeLryic(wstring & lyric_str)
 {
 	size_t index1 = lyric_str.find('[');	//查找第1个左中括号，即为歌词开始的位置
@@ -201,7 +194,7 @@ CLyricDownloadCommon::ItemInfo CLyricDownloadCommon::SearchSongAndGetMatched(con
 	//搜索歌曲
 	wstring keyword_url = CInternetCommon::URLEncode(keyword);		//将搜索关键字转换成URL编码
 	CString url = GetSearchUrl(keyword_url).c_str();
-	int rtn = CInternetCommon::HttpPost(wstring(url), search_result);		//向网易云音乐的歌曲搜索API发送http的POST请求
+	int rtn = RequestSearch(wstring(url), search_result);		//发送歌曲搜索的网络请求
 	if (rtn != 0)
 	{
 		if (message)

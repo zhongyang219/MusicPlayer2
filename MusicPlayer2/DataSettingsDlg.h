@@ -50,4 +50,6 @@ public:
     afx_msg void OnBnClickedGithubRadio();
     afx_msg void OnBnClickedGiteeRadio();
     afx_msg void OnBnClickedOpenConfigPathButton();
+    afx_msg void OnBnClickedNeteaseCloudMusicRadio();
+    afx_msg void OnBnClickedQqMusicRadio();
 };
