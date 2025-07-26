@@ -834,7 +834,10 @@ void CLyricDownloadDlg::OnLdPreview()
 	CLyricDownloadCommon::AddLyricTag(result, item.id, item.title, item.artist, item.album);
 
 	CLyrics lyrics;
-	lyrics.LyricsFromRowString(result, CLyrics::LyricType::LY_LRC_NETEASE);
+	auto lyric_type = CLyrics::LyricType::LY_LRC;
+	if (theApp.m_general_setting_data.lyric_download_service == GeneralSettingData::LDS_NETEASE)
+		lyric_type = CLyrics::LyricType::LY_LRC_NETEASE;
+	lyrics.LyricsFromRowString(result, lyric_type);
 	result = lyrics.GetLyricsString2(theApp.m_general_setting_data.download_lyric_text_and_translation_in_same_line);
 
     // 显示预览窗口

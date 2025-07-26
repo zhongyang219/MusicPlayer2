@@ -281,10 +281,13 @@ void CLyrics::DisposeLrcNetease()
         // 有重复时间标签的（第一个内容空白，歌词在第二个里），此处将其内容合并。
         index = m_lyrics_str[i].rfind(L"]", index) + 1;                     // 避免截取到歌词开头的数字，同时也避开非时间标签的[id:xxx],[ti:xxx]等
         if (index == wstring::npos || index == 0) continue;
-        if (!m_lyrics_str[i].compare(0,index,m_lyrics_str[i + 1],0,index))
+        if (i < m_lyrics_str.size() - 1)
         {
-            m_lyrics_str[i] += m_lyrics_str[i + 1].substr(index);
-            m_lyrics_str.erase(m_lyrics_str.begin() + i + 1);
+            if (!m_lyrics_str[i].compare(0, index, m_lyrics_str[i + 1], 0, index))
+            {
+                m_lyrics_str[i] += m_lyrics_str[i + 1].substr(index);
+                m_lyrics_str.erase(m_lyrics_str.begin() + i + 1);
+            }
         }
     }
     DisposeLrc();
