@@ -14,7 +14,7 @@
 #include "SongDataManager.h"
 #include "UiMediaLibItemMgr.h"
 #include "NeteaseLyricDownload.h"
-#include "CQQMusicLyricDownload.h"
+#include "QQMusicLyricDownload.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CQQMusicLyricDownload.h"
+#include "QQMusicLyricDownload.h"
 #include "nlohmann/json.hpp"
 
 std::wstring CQQMusicLyricDownload::GetSearchUrl(const std::wstring& key_words, int result_count)
