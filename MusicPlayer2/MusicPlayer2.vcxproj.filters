@@ -942,7 +942,7 @@
     <ClInclude Include="NeteaseLyricDownload.h">
       <Filter>公共的类\LyricDownloadCommon</Filter>
     </ClInclude>
-    <ClInclude Include="CQQMusicLyricDownload.h">
+    <ClInclude Include="QQMusicLyricDownload.h">
       <Filter>公共的类\LyricDownloadCommon</Filter>
     </ClInclude>
     <ClInclude Include="SongInfo.h">
@@ -1445,7 +1445,7 @@
     <ClCompile Include="NeteaseLyricDownload.cpp">
       <Filter>公共的类\LyricDownloadCommon</Filter>
     </ClCompile>
-    <ClCompile Include="CQQMusicLyricDownload.cpp">
+    <ClCompile Include="QQMusicLyricDownload.cpp">
       <Filter>公共的类\LyricDownloadCommon</Filter>
     </ClCompile>
     <ClCompile Include="SongInfo.cpp">

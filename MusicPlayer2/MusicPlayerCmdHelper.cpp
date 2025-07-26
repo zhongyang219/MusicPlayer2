@@ -34,7 +34,6 @@ void CMusicPlayerCmdHelper::VeiwOnline(SongInfo& song)
     song.SetSongId(song_id);
     if (song_id.empty())		//如果没有获取过ID，则获取一次ID
     {
-        wstring song_id;
         song_id = theApp.GetLyricDownload()->SearchSongAndGetMatched(song.title, song.artist, song.album, song.GetFileName()).id;
         song.SetSongId(song_id);
         CSongDataManager::GetInstance().SetSongID(song, song_id);  // 与媒体库同步
