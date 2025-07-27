@@ -9,13 +9,6 @@ std::wstring CQQMusicLyricDownload::GetSearchUrl(const std::wstring& key_words, 
     return url.GetString();
 }
 
-std::wstring CQQMusicLyricDownload::GetLyricDownloadUrl(const wstring& song_id, bool download_translate)
-{
-    CString url;
-    url.Format(L"https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?songmid=%s&format=json&nobase64=1", song_id.c_str());
-    return url.GetString();
-}
-
 std::wstring CQQMusicLyricDownload::GetAlbumCoverURL(const wstring& song_id)
 {
     if (song_id.empty())
@@ -97,7 +90,35 @@ int CQQMusicLyricDownload::RequestSearch(const std::wstring& url, std::wstring& 
 
 bool CQQMusicLyricDownload::DownloadLyric(const wstring& song_id, wstring& result, bool download_translate)
 {
-    wstring lyric_url = GetLyricDownloadUrl(song_id, download_translate);
-    int rtn = CInternetCommon::HttpGet(lyric_url, result, L"Referer: https://y.qq.com/\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+    CString lyric_url;
+    lyric_url.Format(L"https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?songmid=%s&format=json&nobase64=1", song_id.c_str());
+    int rtn = CInternetCommon::HttpGet(lyric_url.GetString(), result, L"Referer: https://y.qq.com/\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
     return rtn == CInternetCommon::SUCCESS;
+}
+
+bool CQQMusicLyricDownload::DisposeLryic(wstring& lyric_str, bool download_translate)
+{
+    try
+    {
+        nlohmann::json res_json = nlohmann::json::parse(lyric_str);
+        lyric_str = CCommon::StrToUnicode(res_json.at("lyric").get<std::string>(), CodeType::UTF8);
+        if (lyric_str.empty())
+            return false;
+
+        if (download_translate)
+        {
+            std::wstring trans = CCommon::StrToUnicode(res_json.at("trans").get<std::string>(), CodeType::UTF8);
+            if (!trans.empty())
+            {
+                lyric_str += L"\r\n";
+                lyric_str += trans;
+            }
+        }
+    }
+    catch (std::exception e)
+    {
+        TRACE(e.what());
+        return false;
+    }
+    return true;
 }

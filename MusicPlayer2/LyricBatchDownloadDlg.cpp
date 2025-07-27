@@ -390,7 +390,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         }
 
         //处理歌词文本
-        if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
+        if (!theApp.GetLyricDownload()->DisposeLryic(lyric_str, pInfo->download_translate))
         {
             pInfo->list_ctrl->SetItemText(i, 4, theApp.m_str_table.LoadText(L"TXT_LYRIC_BDL_STATUS_SONG_NO_LYRIC").c_str());
             continue;

@@ -584,7 +584,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
         MessageBox(info.c_str(), NULL, MB_ICONWARNING);
 		return 0;
 	}
-	if (!CLyricDownloadCommon::DisposeLryic(m_lyric_str))
+	if (!theApp.GetLyricDownload()->DisposeLryic(m_lyric_str, m_download_translate))
 	{
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_NETWORK_SONG_NO_LYRIC");
         MessageBox(info.c_str(), NULL, MB_ICONWARNING);
@@ -823,7 +823,7 @@ void CLyricDownloadDlg::OnLdPreview()
         MessageBox(info.c_str(), NULL, MB_ICONWARNING);
 		return;
 	}
-	if (!CLyricDownloadCommon::DisposeLryic(result))
+	if (!theApp.GetLyricDownload()->DisposeLryic(result, m_download_translate))
 	{
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_NETWORK_SONG_NO_LYRIC");
         MessageBox(info.c_str(), NULL, MB_ICONWARNING);

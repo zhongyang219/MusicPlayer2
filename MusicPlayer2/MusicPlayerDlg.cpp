@@ -4367,7 +4367,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             CSongDataManager::GetInstance().AddItem(song_info_ori);
             return 0;
         }
-        if (!CLyricDownloadCommon::DisposeLryic(lyric_str))
+        if (!theApp.GetLyricDownload()->DisposeLryic(lyric_str, true))
         {
             song_info_ori.SetNoOnlineLyric(true);
             CSongDataManager::GetInstance().AddItem(song_info_ori);

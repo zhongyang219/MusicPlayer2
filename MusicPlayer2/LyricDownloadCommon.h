@@ -17,14 +17,6 @@ public:
 	virtual std::wstring GetSearchUrl(const std::wstring& key_words, int result_count = 20) = 0;
 
 	/**
-	 * @brief   获取歌词下载的url
-	 * @param   song_id 歌曲id
-	 * @param   download_translate 是否下载歌词
-	 * @return  url
-	 */
-	virtual std::wstring GetLyricDownloadUrl(const wstring& song_id, bool download_translate) = 0;
-
-	/**
 	 * @brief   根据一首歌曲的ID，获取专辑封面的链接
 	 * @param   song_id 歌曲id
 	 * @return  专辑封面url
@@ -64,10 +56,23 @@ public:
 	 */
 	virtual void DisposeSearchResult(vector<ItemInfo>& down_list, const wstring& search_result, int result_count = 30) = 0;
 
-	//根据歌曲的id下载歌词，结果保存中result中，download_translate参数指定是否下载带翻译的歌词
+	/**
+	 * @brief   根据歌曲的id下载歌词
+	 * @param   song_id 歌曲id
+	 * @param[out]   result 保存下载结果
+	 * @param   download_translate 是否下载带翻译的歌词
+	 * @return  是否成功
+	 */
 	virtual bool DownloadLyric(const wstring& song_id, wstring& result, bool download_translate = true) = 0;
 
-	static bool DisposeLryic(wstring& lyric_str);	//对从网易云音乐下载的歌词进行处理，转换成正确的歌词文本
+	/**
+	 * @brief   对下载的歌词进行处理，转换成正确的歌词文本
+	 * @param[in][out]   lyric_str 要处理的歌词
+	 * @param[in]   download_translate 是否包含翻译
+	 * @return 
+	 */
+	virtual bool DisposeLryic(wstring& lyric_str, bool download_translate) = 0;
+
 	static void AddLyricTag(wstring& lyric_str, const wstring& song_id, const wstring& title = _T(""), const wstring& artist = _T(""), const wstring& album = _T(""));		//在歌词前面加上标签信息
 
 	//根据参数提供的歌曲标题、艺术家、唱片集和文件名，在down_list容器中查找最匹配的一项，并返回索引的值
