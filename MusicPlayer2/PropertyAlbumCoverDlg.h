@@ -2,6 +2,7 @@
 #include "TabDlg.h"
 #include "ListCtrlEx.h"
 #include "IPropertyTabDlg.h"
+#include "SongInfo.h"
 
 
 // CPropertyAlbumCoverDlg 对话框
@@ -11,8 +12,8 @@ class CPropertyAlbumCoverDlg : public CTabDlg, public IPropertyTabDlg
     DECLARE_DYNAMIC(CPropertyAlbumCoverDlg)
 
 public:
-    CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, int& index, bool show_out_album_cover = false, bool read_only = false, CWnd* pParent = nullptr);   // 标准构造函数
-    CPropertyAlbumCoverDlg(vector<SongInfo>& all_song_info, CWnd* pParent = nullptr);   //批量编辑
+    CPropertyAlbumCoverDlg(const vector<SongInfo>& all_song_info, int& index, bool show_out_album_cover = false, bool read_only = false, CWnd* pParent = nullptr);   // 标准构造函数
+    CPropertyAlbumCoverDlg(const vector<SongInfo>& all_song_info, CWnd* pParent = nullptr);   //批量编辑
     virtual ~CPropertyAlbumCoverDlg();
 
     virtual void PagePrevious() override;
@@ -42,7 +43,7 @@ protected:
     CListCtrlEx m_list_ctrl;
 
     int& m_index;       //当前显示项目的曲目序号
-    vector<SongInfo>& m_all_song_info;
+    const vector<SongInfo>& m_all_song_info;
     bool m_read_only{};
     bool m_show_out_album_cover{};
     const bool m_batch_edit;

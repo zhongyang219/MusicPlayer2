@@ -66,6 +66,10 @@ protected:
     void ShowDownloadList();        //将搜索结果显示出来
 
     DECLARE_MESSAGE_MAP()
+
+private:
+    bool IsItemSelectedValid() const;
+
 public:
     virtual BOOL OnInitDialog();
     afx_msg void OnBnClickedSearchButton();
@@ -87,4 +91,14 @@ public:
     afx_msg void OnNMClickUnassociateLink(NMHDR *pNMHDR, LRESULT *pResult);
     afx_msg void OnBnClickedSaveToSongFolder2();
     afx_msg void OnBnClickedSaveToAlbumFolder2();
+    afx_msg void OnLdCoverDownload();
+    afx_msg void OnLdCoverSaveas();
+    afx_msg void OnLdCopyTitle();
+    afx_msg void OnLdCopyArtist();
+    afx_msg void OnLdCopyAlbum();
+    afx_msg void OnLdCopyId();
+    afx_msg void OnLdViewOnline();
+    afx_msg void OnLdPreview();
+    afx_msg void OnLdRelate();
+
 };

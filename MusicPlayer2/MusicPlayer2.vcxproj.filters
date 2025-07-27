@@ -408,6 +408,9 @@
     <Filter Include="公共的类\SongInfo">
       <UniqueIdentifier>{81195b54-0f29-4f11-892c-51008046ee7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\CoverPreviewDlg">
+      <UniqueIdentifier>{1f8e535c-5b50-47ed-8542-8eb5022dda75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -948,6 +951,9 @@
     <ClInclude Include="SongInfo.h">
       <Filter>公共的类\SongInfo</Filter>
     </ClInclude>
+    <ClInclude Include="CoverPreviewDlg.h">
+      <Filter>对话框类\CoverPreviewDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1450,6 +1456,9 @@
     </ClCompile>
     <ClCompile Include="SongInfo.cpp">
       <Filter>公共的类\SongInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="CoverPreviewDlg.cpp">
+      <Filter>对话框类\CoverPreviewDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

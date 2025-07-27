@@ -259,6 +259,8 @@
 #define IDD_FIND_CONTAINER_DIALOG       628
 #define IDD_DIALOG1                     630
 #define IDD_FIND_LIST_DIALOG            630
+#define IDD_DIALOG2                     633
+#define IDD_COVER_PREVIEW_DIALOG        633
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -1008,7 +1010,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        633
+#define _APS_NEXT_RESOURCE_VALUE        635
 #define _APS_NEXT_COMMAND_VALUE         33481
 #define _APS_NEXT_CONTROL_VALUE         1373
 #define _APS_NEXT_SYMED_VALUE           101

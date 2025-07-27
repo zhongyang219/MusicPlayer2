@@ -7,6 +7,8 @@
 #include "CoverDownloadDlg.h"
 #include "SongDataManager.h"
 #include "IniHelper.h"
+#include "FilterHelper.h"
+#include "CoverPreviewDlg.h"
 
 
 // CCoverDownloadDlg 对话框
@@ -193,6 +195,11 @@ void CCoverDownloadDlg::ShowDownloadList()
     }
 }
 
+bool CCoverDownloadDlg::IsItemSelectedValid() const
+{
+    return (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_down_list.size()));
+}
+
 
 BEGIN_MESSAGE_MAP(CCoverDownloadDlg, CBaseDialog)
     ON_BN_CLICKED(IDC_SEARCH_BUTTON, &CCoverDownloadDlg::OnBnClickedSearchButton)
@@ -208,6 +215,15 @@ BEGIN_MESSAGE_MAP(CCoverDownloadDlg, CBaseDialog)
     ON_WM_DESTROY()
     ON_BN_CLICKED(IDC_SAVE_TO_SONG_FOLDER2, &CCoverDownloadDlg::OnBnClickedSaveToSongFolder2)
     ON_BN_CLICKED(IDC_SAVE_TO_ALBUM_FOLDER2, &CCoverDownloadDlg::OnBnClickedSaveToAlbumFolder2)
+    ON_COMMAND(ID_LD_LYRIC_DOWNLOAD, &CCoverDownloadDlg::OnLdCoverDownload)
+    ON_COMMAND(ID_LD_LYRIC_SAVEAS, &CCoverDownloadDlg::OnLdCoverSaveas)
+    ON_COMMAND(ID_LD_COPY_TITLE, &CCoverDownloadDlg::OnLdCopyTitle)
+    ON_COMMAND(ID_LD_COPY_ARTIST, &CCoverDownloadDlg::OnLdCopyArtist)
+    ON_COMMAND(ID_LD_COPY_ALBUM, &CCoverDownloadDlg::OnLdCopyAlbum)
+    ON_COMMAND(ID_LD_COPY_ID, &CCoverDownloadDlg::OnLdCopyId)
+    ON_COMMAND(ID_LD_VIEW_ONLINE, &CCoverDownloadDlg::OnLdViewOnline)
+    ON_COMMAND(ID_LD_PREVIEW, &CCoverDownloadDlg::OnLdPreview)
+    ON_COMMAND(ID_LD_RELATE, &CCoverDownloadDlg::OnLdRelate)
 END_MESSAGE_MAP()
 
 
@@ -404,6 +420,14 @@ void CCoverDownloadDlg::OnNMRClickCoverDownList(NMHDR* pNMHDR, LRESULT* pResult)
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
     m_item_selected = pNMItemActivate->iItem;
+
+    if (IsItemSelectedValid())
+    {
+        //弹出右键菜单
+        CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::LdListMenu);
+        m_down_list_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
+    }
+
     *pResult = 0;
 }
 
@@ -508,4 +532,129 @@ void CCoverDownloadDlg::OnBnClickedSaveToAlbumFolder2()
 {
     // TODO: 在此添加控件通知处理程序代码
     m_save_to_song_folder = false;
+}
+
+void CCoverDownloadDlg::OnLdCoverDownload()
+{
+    OnBnClickedDownloadSelected();
+}
+
+void CCoverDownloadDlg::OnLdCoverSaveas()
+{
+    if (!IsItemSelectedValid())
+        return;
+
+    //获取选中项的歌曲id
+    wstring song_id = m_down_list[m_item_selected].id;
+    if (song_id.empty())
+        return;
+
+    wstring cover_url = theApp.GetLyricDownload()->GetAlbumCoverURL(song_id);
+    wstring cover_ext = CFilePathHelper(cover_url).GetFileExtension();
+
+    //构造保存文件对话框
+    std::wstring filter = FilterHelper::GetImageFileFilter();
+    CFileDialog fileDlg(FALSE, cover_ext.c_str(), m_down_list[m_item_selected].album.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, filter.c_str(), this);
+
+    //显示保存文件对话框
+    if (IDOK == fileDlg.DoModal())
+    {
+        wstring file_path = fileDlg.GetPathName().GetString();
+
+        //下载专辑封面
+        CWaitCursor wait_cursor;
+        if (!cover_ext.empty())
+        {
+            CFilePathHelper path_helper(file_path);
+            file_path = path_helper.ReplaceFileExtension(cover_ext.c_str());
+        }
+        HRESULT hr = URLDownloadToFile(0, cover_url.c_str(), file_path.c_str(), 0, NULL);
+        if (hr == S_OK)
+            MessageBox(theApp.m_str_table.LoadText(L"MSG_NETWORK_DOWNLOAD_COMPLETE").c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+        else
+            MessageBox(theApp.m_str_table.LoadText(L"MSG_NETWORK_COVER_DOWNLOAD_FAILED").c_str(), NULL, MB_ICONWARNING | MB_OK);
+    }
+}
+
+void CCoverDownloadDlg::OnLdCopyTitle()
+{
+    if (IsItemSelectedValid())
+    {
+        if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].title))
+            MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
+    }
+}
+
+void CCoverDownloadDlg::OnLdCopyArtist()
+{
+    if (IsItemSelectedValid())
+    {
+        if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].artist))
+            MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
+    }
+}
+
+void CCoverDownloadDlg::OnLdCopyAlbum()
+{
+    if (IsItemSelectedValid())
+    {
+        if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].album))
+            MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
+    }
+}
+
+void CCoverDownloadDlg::OnLdCopyId()
+{
+    if (IsItemSelectedValid())
+    {
+        if (!CCommon::CopyStringToClipboard(m_down_list[m_item_selected].id))
+            MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
+    }
+}
+
+void CCoverDownloadDlg::OnLdViewOnline()
+{
+    if (IsItemSelectedValid())
+    {
+        //获取该歌曲的在线接听网址
+        wstring song_url{ theApp.GetLyricDownload()->GetOnlineUrl(m_down_list[m_item_selected].id) };
+        //打开超链接
+        ShellExecute(NULL, _T("open"), song_url.c_str(), NULL, NULL, SW_SHOW);
+    }
+}
+
+void CCoverDownloadDlg::OnLdPreview()
+{
+    if (IsItemSelectedValid())
+    {
+        //获取专辑封面临时路径
+        wstring song_id = m_down_list[m_item_selected].id;
+        if (song_id.empty())
+            return;
+        wstring cover_url = theApp.GetLyricDownload()->GetAlbumCoverURL(song_id);
+        wstring cover_ext = CFilePathHelper(cover_url).GetFileExtension();
+        CCommon::FileNameNormalize(song_id);
+        wstring file_path = CCommon::GetTemplatePath() + song_id + L'.' + cover_ext;
+        if (!CCommon::FileExist(file_path))
+        {
+            //下载专辑封面到临时目录
+            HRESULT hr = URLDownloadToFile(0, cover_url.c_str(), file_path.c_str(), 0, NULL);
+            if (hr != S_OK)
+            {
+                MessageBox(theApp.m_str_table.LoadText(L"MSG_NETWORK_COVER_DOWNLOAD_FAILED").c_str(), NULL, MB_ICONWARNING | MB_OK);
+                return;
+            }
+        }
+
+        CCoverPreviewDlg dlg(file_path);
+        dlg.DoModal();
+    }
+}
+
+void CCoverDownloadDlg::OnLdRelate()
+{
+    if (m_item_selected >= 0 && m_item_selected < static_cast<int>(m_down_list.size()))
+    {
+        SetID(m_down_list[m_item_selected].id);     // 将选中项目的歌曲ID关联到歌曲
+    }
 }
