@@ -12,6 +12,20 @@ bool UIData::ShowUiMenuBar() const
     return show_menu_bar && !theApp.m_app_setting_data.show_window_frame && !full_screen;
 }
 
+wstring LyricSettingData::AbsoluteLyricPath() const
+{
+    //将相对路径转换为基于程序位置的绝对路径
+    wstring absolute_path = CCommon::RelativePathToAbsolutePath(lyric_path, theApp.m_module_dir);
+    return absolute_path;
+}
+
+wstring ApperanceSettingData::AbsoluteAlbumCoverPath() const
+{
+    //将相对路径转换为基于程序位置的绝对路径
+    wstring absolute_path = CCommon::RelativePathToAbsolutePath(album_cover_path, theApp.m_module_dir);
+    return absolute_path;
+}
+
 int ApperanceSettingData::TitleDisplayItem() const
 {
     int value{};

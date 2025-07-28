@@ -104,10 +104,10 @@ void CCoverDownloadDlg::SetID(wstring id)
 
 wstring CCoverDownloadDlg::GetSavedDir()
 {
-    if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path))
+    if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_app_setting_data.AbsoluteAlbumCoverPath()))
         return CFilePathHelper(m_song.file_path).GetDir();
     else
-        return theApp.m_app_setting_data.album_cover_path;
+        return theApp.m_app_setting_data.AbsoluteAlbumCoverPath();
 }
 
 SongInfo CCoverDownloadDlg::GetSongInfo() const
@@ -289,7 +289,7 @@ BOOL CCoverDownloadDlg::OnInitDialog()
         ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER2))->SetCheck(TRUE);
 
     //判断封面文件夹是否存在
-    bool lyric_path_exist = CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path);
+    bool lyric_path_exist = CCommon::FolderExist(theApp.m_app_setting_data.AbsoluteAlbumCoverPath());
     if (!lyric_path_exist)		//如果封面文件夹不存在，则禁用“保存到封面文件夹”单选按钮，并强制选中“保存到歌曲所在目录”
     {
         ((CButton*)GetDlgItem(IDC_SAVE_TO_ALBUM_FOLDER2))->EnableWindow(FALSE);

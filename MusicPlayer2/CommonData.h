@@ -187,6 +187,7 @@ struct LyricSettingData
     bool lyric_fuzzy_match{ true };				//歌词模糊匹配
     // bool save_lyric_in_offset{};				//是否将歌词保存在offset标签中，还是保存在每个时间标签中
     wstring lyric_path;							//歌词文件夹的路径
+    wstring AbsoluteLyricPath() const;          //获取歌词文件夹的绝对路径
     bool use_inner_lyric_first{};				//优先使用内嵌歌词
     bool show_translate{ true };		        //歌词是否显示翻译
     bool donot_show_blank_lines{};              //单行和双行显示模式下不显示空白行
@@ -242,6 +243,7 @@ struct ApperanceSettingData
     bool use_out_image{ true };					//使用外部图片作为专辑封面
     bool use_inner_image_first{ true };			//优先使用内嵌专辑封面
     wstring album_cover_path;                         // 专辑封面存储路径
+    wstring AbsoluteAlbumCoverPath() const;     //获取专辑封面储存绝对路径
     vector<wstring> default_album_name;			//默认的专辑封面文件名
 
     bool background_gauss_blur{ true };			//背景高斯模糊

@@ -165,7 +165,7 @@ BOOL CLyricBatchDownloadDlg::OnInitDialog()
     else
         ((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->SetCheck(TRUE);
     //判断歌词文件夹是否存在
-    bool lyric_path_exist = CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path);
+    bool lyric_path_exist = CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath());
     if (!lyric_path_exist)		//如果歌词文件不存在，则禁用“保存到歌词文件夹”单选按钮，并强制选中“保存到歌曲所在目录”
     {
         ((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER))->EnableWindow(FALSE);
@@ -310,7 +310,7 @@ UINT CLyricBatchDownloadDlg::ThreadFunc(LPVOID lpParam)
         if (pInfo->save_to_song_folder)
             lyric_path = dir + file_name;
         else
-            lyric_path = theApp.m_lyric_setting_data.lyric_path + file_name;
+            lyric_path = theApp.m_lyric_setting_data.AbsoluteLyricPath() + file_name;
         size_t index = lyric_path.rfind(L'.');                  //查找文件名最后一个点
         lyric_path = lyric_path.substr(0, index + 1) + L"lrc";  //将文件名的扩展名改为lrc
 

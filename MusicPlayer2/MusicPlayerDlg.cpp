@@ -4334,11 +4334,11 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             album_name = song_info_ori.GetFileName();
         }
         // 判断是否保存到封面文件夹
-        bool saved_to_album_cover_folder{ !theApp.m_general_setting_data.save_album_to_song_folder && CCommon::FolderExist(theApp.m_app_setting_data.album_cover_path) };
+        bool saved_to_album_cover_folder{ !theApp.m_general_setting_data.save_album_to_song_folder && CCommon::FolderExist(theApp.m_app_setting_data.AbsoluteAlbumCoverPath()) };
 
         CFilePathHelper cover_file_path;
         if (saved_to_album_cover_folder)
-            cover_file_path.SetFilePath(theApp.m_app_setting_data.album_cover_path + album_name);
+            cover_file_path.SetFilePath(theApp.m_app_setting_data.AbsoluteAlbumCoverPath() + album_name);
         else
             cover_file_path.SetFilePath(song_info_ori_path.GetDir() + album_name);
 
@@ -4384,9 +4384,9 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
             file_name = song_info_ori.artist + L" - " + song_info_ori.title + L".lrc";
             CCommon::FileNameNormalize(file_name);
         }
-        if (!theApp.m_general_setting_data.save_lyric_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
+        if (!theApp.m_general_setting_data.save_lyric_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()))
         {
-            lyric_path.SetFilePath(theApp.m_lyric_setting_data.lyric_path + file_name);
+            lyric_path.SetFilePath(theApp.m_lyric_setting_data.AbsoluteLyricPath() + file_name);
         }
         else
         {

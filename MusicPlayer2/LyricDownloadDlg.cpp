@@ -93,10 +93,10 @@ void CLyricDownloadDlg::LoadConfig()
 
 wstring CLyricDownloadDlg::GetSavedDir()
 {
-    if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
+    if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()))
         return CFilePathHelper(m_song.file_path).GetDir();
     else
-        return theApp.m_lyric_setting_data.lyric_path;
+        return theApp.m_lyric_setting_data.AbsoluteLyricPath();
 }
 
 wstring CLyricDownloadDlg::GetSavedPath()
@@ -298,7 +298,7 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->SetCheck(TRUE);
 
 	//判断歌词文件夹是否存在
-	bool lyric_path_exist = CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path);
+	bool lyric_path_exist = CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath());
 	if (!lyric_path_exist)		//如果歌词文件不存在，则禁用“保存到歌词文件夹”单选按钮，并强制选中“保存到歌曲所在目录”
 	{
 		((CButton*)GetDlgItem(IDC_SAVE_TO_LYRIC_FOLDER1))->EnableWindow(FALSE);
@@ -596,7 +596,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnDownloadComplate(WPARAM wParam, LPARAM lPar
 	//保存歌词
 	if (wParam == 0)		//wParam为0时不弹出“另存为对话框”
 	{
-        if (!m_save_to_song_folder && !CCommon::FolderExist(theApp.m_lyric_setting_data.lyric_path))
+        if (!m_save_to_song_folder && !CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()))
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_LYRIC_FOLDER_NOT_EXIST");
             MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
