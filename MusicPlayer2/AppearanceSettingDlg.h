@@ -145,4 +145,5 @@ public:
     afx_msg void OnBnClickedAlwaysShowStatusbarCheck();
     afx_msg void OnBnClickedUseSystemTitlebarRadio();
     afx_msg void OnBnClickedUseOwnerDrawTitlebarRadio();
+    afx_msg void OnEnChangeAlbumCoverPathEdit();
 };

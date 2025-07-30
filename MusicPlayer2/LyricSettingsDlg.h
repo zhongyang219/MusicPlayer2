@@ -145,4 +145,5 @@ public:
     afx_msg void OnBnClickedShowLyricTranslateCheck();
     afx_msg void OnBnClickedLyricHideBlankLineCheck();
     afx_msg void OnBnClickedShowSongInfoIfLyricNotExistCheck();
+    afx_msg void OnEnChangeLyricPathEdit();
 };

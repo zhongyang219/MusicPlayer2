@@ -16,6 +16,8 @@ wstring LyricSettingData::AbsoluteLyricPath() const
 {
     //将相对路径转换为基于程序位置的绝对路径
     wstring absolute_path = CCommon::RelativePathToAbsolutePath(lyric_path, theApp.m_module_dir);
+    if (!absolute_path.empty() && absolute_path.back() != L'\\' && absolute_path.back() != L'/')
+        absolute_path.push_back(L'\\');
     return absolute_path;
 }
 
@@ -23,6 +25,8 @@ wstring ApperanceSettingData::AbsoluteAlbumCoverPath() const
 {
     //将相对路径转换为基于程序位置的绝对路径
     wstring absolute_path = CCommon::RelativePathToAbsolutePath(album_cover_path, theApp.m_module_dir);
+    if (!absolute_path.empty() && absolute_path.back() != L'\\' && absolute_path.back() != L'/')
+        absolute_path.push_back(L'\\');
     return absolute_path;
 }
 

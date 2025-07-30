@@ -351,6 +351,7 @@ BEGIN_MESSAGE_MAP(CAppearanceSettingDlg, CTabDlg)
     ON_BN_CLICKED(IDC_ALWAYS_SHOW_STATUSBAR_CHECK, &CAppearanceSettingDlg::OnBnClickedAlwaysShowStatusbarCheck)
     ON_BN_CLICKED(IDC_USE_SYSTEM_TITLEBAR_RADIO, &CAppearanceSettingDlg::OnBnClickedUseSystemTitlebarRadio)
     ON_BN_CLICKED(IDC_USE_OWNER_DRAW_TITLEBAR_RADIO, &CAppearanceSettingDlg::OnBnClickedUseOwnerDrawTitlebarRadio)
+    ON_EN_CHANGE(IDC_ALBUM_COVER_PATH_EDIT, &CAppearanceSettingDlg::OnEnChangeAlbumCoverPathEdit)
 END_MESSAGE_MAP()
 
 
@@ -877,4 +878,14 @@ void CAppearanceSettingDlg::OnBnClickedUseOwnerDrawTitlebarRadio()
 {
     m_data.show_window_frame = false;
     SetControlEnable();
+}
+
+void CAppearanceSettingDlg::OnEnChangeAlbumCoverPathEdit()
+{
+    if (m_album_cover_path_edit.GetModify())
+    {
+        CString str;
+        m_album_cover_path_edit.GetWindowText(str);
+        m_data.album_cover_path = str.GetString();
+    }
 }

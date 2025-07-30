@@ -215,6 +215,7 @@ BEGIN_MESSAGE_MAP(CLyricSettingsDlg, CTabDlg)
     ON_BN_CLICKED(IDC_SHOW_LYRIC_TRANSLATE_CHECK, &CLyricSettingsDlg::OnBnClickedShowLyricTranslateCheck)
     ON_BN_CLICKED(IDC_LYRIC_HIDE_BLANK_LINE_CHECK, &CLyricSettingsDlg::OnBnClickedLyricHideBlankLineCheck)
     ON_BN_CLICKED(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK, &CLyricSettingsDlg::OnBnClickedShowSongInfoIfLyricNotExistCheck)
+    ON_EN_CHANGE(IDC_LYRIC_PATH_EDIT, &CLyricSettingsDlg::OnEnChangeLyricPathEdit)
 END_MESSAGE_MAP()
 
 
@@ -912,4 +913,14 @@ void CLyricSettingsDlg::OnBnClickedLyricHideBlankLineCheck()
 void CLyricSettingsDlg::OnBnClickedShowSongInfoIfLyricNotExistCheck()
 {
     m_data.show_song_info_if_lyric_not_exist = (IsDlgButtonChecked(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK) != 0);
+}
+
+void CLyricSettingsDlg::OnEnChangeLyricPathEdit()
+{
+    if (m_lyric_dir_edit.GetModify())
+    {
+        CString str;
+        m_lyric_dir_edit.GetWindowText(str);
+        m_data.lyric_path = str.GetString();
+    }
 }

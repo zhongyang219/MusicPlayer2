@@ -304,6 +304,7 @@ void CBrowseEdit::SetPopupDlgTitle(const wstring& popup_dlg_title)
 BEGIN_MESSAGE_MAP(CBrowseEdit, CMFCEditBrowseCtrl)
     ON_WM_NCLBUTTONDOWN()
     ON_MESSAGE(WM_TABLET_QUERYSYSTEMGESTURESTATUS, &CBrowseEdit::OnTabletQuerysystemgesturestatus)
+    ON_WM_CTLCOLOR_REFLECT()
 END_MESSAGE_MAP()
 
 
@@ -320,4 +321,27 @@ void CBrowseEdit::OnNcLButtonDown(UINT nHitTest, CPoint point)
 afx_msg LRESULT CBrowseEdit::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam)
 {
     return 0;
+}
+
+HBRUSH CBrowseEdit::CtlColor(CDC* pDC, UINT nCtlColor)
+{
+    bool not_exist = false;
+    CString path;
+    GetWindowText(path);
+    path = CCommon::RelativePathToAbsolutePath(path.GetString(), theApp.m_module_dir).c_str();
+    if (m_Mode == BrowseMode_Folder)
+    {
+        not_exist = !CCommon::FolderExist(path.GetString());
+    }
+    else if (m_Mode == BrowseMode_File)
+    {
+        not_exist = !CCommon::FileExist(path.GetString());
+    }
+
+    if (not_exist)
+        pDC->SetTextColor(RGB(135, 135, 135));        //如果文件不存在，则显示为灰色
+
+    // TODO:  如果不应调用父级的处理程序，则返回非 null 画笔
+    static HBRUSH hBackBrush{ CreateSolidBrush(GetSysColor(COLOR_WINDOW)) };
+    return hBackBrush;
 }

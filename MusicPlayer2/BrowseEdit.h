@@ -43,4 +43,6 @@ public:
     afx_msg void OnNcLButtonDown(UINT nHitTest, CPoint point);
 protected:
     afx_msg LRESULT OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg HBRUSH CtlColor(CDC* /*pDC*/, UINT /*nCtlColor*/);
 };
