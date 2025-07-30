@@ -341,7 +341,5 @@ HBRUSH CBrowseEdit::CtlColor(CDC* pDC, UINT nCtlColor)
     if (not_exist)
         pDC->SetTextColor(RGB(135, 135, 135));        //如果文件不存在，则显示为灰色
 
-    // TODO:  如果不应调用父级的处理程序，则返回非 null 画笔
-    static HBRUSH hBackBrush{ CreateSolidBrush(GetSysColor(COLOR_WINDOW)) };
-    return hBackBrush;
+    return NULL;
 }
