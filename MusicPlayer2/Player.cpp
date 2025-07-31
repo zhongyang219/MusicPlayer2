@@ -182,19 +182,8 @@ void CPlayer::IniPlayList(bool play, MediaLibRefreshMode refresh_mode, SongKey s
             m_path.append(1, L'\\');
         CAudioCommon::GetAudioFiles(m_path, m_playlist, MAX_SONG_NUM, m_contain_sub_folder);
     }
-    // 把ListItem的SongKey传递到这里是不能正常转换为play_index的，在cue下不能正常工作
-    // 临时这样用，等到CPlayer大改时这部分会重做
-    if (!song_key.path.empty())
-    {
-        auto iter = std::find_if(m_playlist.begin(), m_playlist.end(), [&](const SongInfo& item) { return song_key == item; });
-        if (iter != m_playlist.end())
-            m_thread_info.play_index = iter - m_playlist.begin();
-        else
-            m_thread_info.play_index = 0;
-    }
-    else
-        m_thread_info.play_index = m_index;
 
+    m_thread_info.play_song = song_key;
     m_thread_info.refresh_mode = refresh_mode;
     m_thread_info.play = play;
     m_thread_info.playlist_mode = m_playlist_mode;
@@ -223,8 +212,12 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
     // 播放列表模式下且play_index有效时重新查找play_index指向曲目，文件夹模式下play_index本就描述初始化完成的播放列表故无须改动
     SongInfo cur_song;
     vector<SongInfo>& play_list = GetInstance().m_playlist;
-    if (pInfo->playlist_mode && pInfo->play_index >= 0 && pInfo->play_index < static_cast<int>(play_list.size()))
-        cur_song = play_list[pInfo->play_index];
+    if (pInfo->playlist_mode && !pInfo->play_song.path.empty())
+    {
+        auto iter = std::find(play_list.begin(), play_list.end(), pInfo->play_song);
+        if (iter != play_list.end())
+            cur_song = *iter;
+    }
 
     bool exit_flag{};
     int update_cnt{};
@@ -245,7 +238,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         {
             if (cur_song == *iter)
             {
-                pInfo->play_index = iter - play_list.begin();
+                pInfo->play_song = *iter;
                 find_succeed = true;
                 break;
             }
@@ -261,7 +254,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             if (!iter->is_cue) continue;
             if (cur_song.track == iter->track && cur_song.cue_file_path == iter->cue_file_path)
             {
-                pInfo->play_index = iter - play_list.begin();
+                pInfo->play_song = *iter;
                 find_succeed = true;
                 break;
             }
@@ -280,7 +273,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
             if (find_str == iter->cue_file_path || find_str == iter->file_path)
             {
                 track = iter->track;
-                pInfo->play_index = iter - play_list.begin();
+                pInfo->play_song = *iter;
                 find_succeed = true;
                 if (track <= 1)     // cue不存在比1小的音轨号所以不必继续搜索
                     break;
@@ -294,13 +287,6 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate()
 {
-    m_index = m_thread_info.play_index;
-
-    if (m_index < 0 || m_index >= GetSongNum())
-    {
-        m_index = 0;                    // 确保当前歌曲序号不会超过歌曲总数
-        m_current_position.fromInt(0);  // m_index失效时同时清除进度（这样略有不足，理论上只要m_index指向的歌曲改变就应当清除进度，不过这需要PathInfo和PlaylistInfo改track为SongInfo(SongKey)）
-    }
     //统计列表总时长
     m_total_time = 0;
     for (const auto& song : m_playlist)
@@ -350,6 +336,19 @@ void CPlayer::IniPlaylistComplate()
             m_current_song_tmp = SongInfo();
             m_current_song_position_tmp = 0;
             m_current_song_playing_tmp = false;
+        }
+        else
+        {
+            m_index = 0;
+            auto iter = std::find(m_playlist.begin(), m_playlist.end(), m_thread_info.play_song);
+            if (iter != m_playlist.end())
+                m_index = iter - m_playlist.begin();
+
+            if (m_index < 0 || m_index >= GetSongNum())
+            {
+                m_index = 0;                    // 确保当前歌曲序号不会超过歌曲总数
+                m_current_position.fromInt(0);  // m_index失效时同时清除进度（这样略有不足，理论上只要m_index指向的歌曲改变就应当清除进度，不过这需要PathInfo和PlaylistInfo改track为SongInfo(SongKey)）
+            }
         }
         MusicControl(Command::OPEN);
         MusicControl(Command::SEEK);
@@ -1057,12 +1056,6 @@ bool CPlayer::SetList(ListItem list_item, bool play, bool force)
         ASSERT(FALSE);
         break;
     }
-
-    if (!IsPlaylistMode() && !play_song.path.empty())
-        m_current_song_tmp = CSongDataManager::GetInstance().GetSongInfo(play_song);
-    
-    if (theApp.m_play_setting_data.remember_last_position)
-        m_current_song_position_tmp = list_item.last_position;
     
     IniPlayList(play, {}, play_song);
     return true;
