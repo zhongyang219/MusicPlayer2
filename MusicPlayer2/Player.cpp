@@ -337,7 +337,7 @@ void CPlayer::IniPlaylistComplate()
             m_current_song_position_tmp = 0;
             m_current_song_playing_tmp = false;
         }
-        else
+        if (!tmp_find)
         {
             m_index = 0;
             auto iter = std::find(m_playlist.begin(), m_playlist.end(), m_thread_info.play_song);
