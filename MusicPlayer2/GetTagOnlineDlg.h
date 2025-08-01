@@ -19,5 +19,7 @@ private:
 
 public:
     virtual BOOL OnInitDialog();
+    DECLARE_MESSAGE_MAP()
+    afx_msg void OnInitMenu(CMenu* pMenu);
 };
 

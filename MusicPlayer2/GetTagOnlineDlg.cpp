@@ -55,3 +55,13 @@ BOOL CGetTagOnlineDlg::OnInitDialog()
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
+BEGIN_MESSAGE_MAP(CGetTagOnlineDlg, CCoverDownloadDlg)
+    ON_WM_INITMENU()
+END_MESSAGE_MAP()
+
+void CGetTagOnlineDlg::OnInitMenu(CMenu* pMenu)
+{
+    CCoverDownloadDlg::OnInitMenu(pMenu);
+    pMenu->EnableMenuItem(ID_LD_PREVIEW, MF_BYCOMMAND | MF_GRAYED);
+    pMenu->EnableMenuItem(ID_LD_LYRIC_SAVEAS, MF_BYCOMMAND | MF_GRAYED);
+}

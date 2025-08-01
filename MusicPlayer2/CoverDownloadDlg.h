@@ -67,7 +67,7 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 
-private:
+protected:
     bool IsItemSelectedValid() const;
 
 public:

@@ -192,6 +192,7 @@ void CCoverDownloadDlg::ShowDownloadList()
         m_down_list_ctrl.SetItemText(i, 1, m_down_list[i].title.c_str());
         m_down_list_ctrl.SetItemText(i, 2, m_down_list[i].artist.c_str());
         m_down_list_ctrl.SetItemText(i, 3, m_down_list[i].album.c_str());
+        m_down_list_ctrl.SetItemText(i, 4, Time(m_down_list[i].duration).toString().c_str());
     }
 }
 
@@ -269,17 +270,19 @@ BOOL CCoverDownloadDlg::OnInitDialog()
     //初始化搜索结果列表控件
     CRect rect;
     m_down_list_ctrl.GetWindowRect(rect);
-    int width0, width1, width2, width3;
+    int width0, width1, width2, width3, width4;
     width0 = rect.Width() / 10;
     width1 = rect.Width() * 3 / 10;
     width2 = rect.Width() * 2 / 10;
-    width3 = rect.Width() - theApp.DPI(20) - 1 - width0 - width1 - width2;
+    width4 = rect.Width() / 10;
+    width3 = rect.Width() - theApp.DPI(20) - 1 - width0 - width1 - width2 - width4;
 
     m_down_list_ctrl.SetExtendedStyle(m_down_list_ctrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP);
     m_down_list_ctrl.InsertColumn(0, theApp.m_str_table.LoadText(L"TXT_SERIAL_NUMBER").c_str(), LVCFMT_LEFT, width0);
     m_down_list_ctrl.InsertColumn(1, theApp.m_str_table.LoadText(L"TXT_TITLE").c_str(), LVCFMT_LEFT, width1);
     m_down_list_ctrl.InsertColumn(2, theApp.m_str_table.LoadText(L"TXT_ARTIST").c_str(), LVCFMT_LEFT, width2);
     m_down_list_ctrl.InsertColumn(3, theApp.m_str_table.LoadText(L"TXT_ALBUM").c_str(), LVCFMT_LEFT, width3);
+    m_down_list_ctrl.InsertColumn(4, theApp.m_str_table.LoadText(L"TXT_LENGTH").c_str(), LVCFMT_LEFT, width4);
 
     m_unassciate_lnk.ShowWindow(SW_HIDE);
 
