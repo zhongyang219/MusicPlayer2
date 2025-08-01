@@ -343,12 +343,8 @@ void CPlayer::IniPlaylistComplate()
             auto iter = std::find(m_playlist.begin(), m_playlist.end(), m_thread_info.play_song);
             if (iter != m_playlist.end())
                 m_index = iter - m_playlist.begin();
-
-            if (m_index < 0 || m_index >= GetSongNum())
-            {
-                m_index = 0;                    // 确保当前歌曲序号不会超过歌曲总数
+            else
                 m_current_position.fromInt(0);  // m_index失效时同时清除进度（这样略有不足，理论上只要m_index指向的歌曲改变就应当清除进度，不过这需要PathInfo和PlaylistInfo改track为SongInfo(SongKey)）
-            }
         }
         MusicControl(Command::OPEN);
         MusicControl(Command::SEEK);
