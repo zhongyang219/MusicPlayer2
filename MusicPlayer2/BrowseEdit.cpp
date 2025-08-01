@@ -325,21 +325,32 @@ afx_msg LRESULT CBrowseEdit::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPA
 
 HBRUSH CBrowseEdit::CtlColor(CDC* pDC, UINT nCtlColor)
 {
-    bool not_exist = false;
-    CString path;
-    GetWindowText(path);
-    path = CCommon::RelativePathToAbsolutePath(path.GetString(), theApp.m_module_dir).c_str();
-    if (m_Mode == BrowseMode_Folder)
+    DWORD style = GetStyle();
+    bool is_read_only = ((style & ES_READONLY) != 0);
+    if (!is_read_only)
     {
-        not_exist = !CCommon::FolderExist(path.GetString());
-    }
-    else if (m_Mode == BrowseMode_File)
-    {
-        not_exist = !CCommon::FileExist(path.GetString());
-    }
+        bool not_exist = false;
+        CString path;
+        GetWindowText(path);
+        if (!path.IsEmpty())
+        {
+            path = CCommon::RelativePathToAbsolutePath(path.GetString(), theApp.m_module_dir).c_str();
+            if (m_Mode == BrowseMode_Folder)
+            {
+                not_exist = !CCommon::FolderExist(path.GetString());
+            }
+            else if (m_Mode == BrowseMode_File)
+            {
+                not_exist = !CCommon::FileExist(path.GetString());
+            }
 
-    if (not_exist)
-        pDC->SetTextColor(RGB(135, 135, 135));        //如果文件不存在，则显示为灰色
+            if (not_exist)
+                pDC->SetTextColor(RGB(135, 135, 135));        //如果文件不存在，则显示为灰色
+
+            static HBRUSH hBackBrush{ CreateSolidBrush(GetSysColor(COLOR_WINDOW)) };
+            return hBackBrush;
+        }
+    }
 
     return NULL;
 }
