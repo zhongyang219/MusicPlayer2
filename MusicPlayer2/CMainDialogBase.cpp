@@ -40,10 +40,12 @@ void CMainDialogBase::SetFullScreen(bool full_screen)
 		struWndpl.showCmd = SW_SHOWNORMAL;
 		struWndpl.rcNormalPosition = monitor - offset;
 		SetWindowPlacement(&struWndpl);//该函数设置指定窗口的显示状态和显示大小位置等，是我们该程序最为重要的函数
+		SetThreadExecutionState(ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED);//禁用屏保
 	}
 	else
 	{
 		SetWindowPlacement(&m_struOldWndpl);
+		SetThreadExecutionState(ES_CONTINUOUS);//开启屏保
 	}
 }
 
