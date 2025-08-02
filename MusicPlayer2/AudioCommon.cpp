@@ -486,7 +486,7 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
             continue;
 
         SongInfo& last_song = item.rbegin()->second;
-        Time file_length{};
+        CPlayTime file_length{};
         std::swap(last_song.end_pos, file_length);
         // IPlayerCore::GetAudioInfo只能用于每个FILE的最后一个音轨（会把音频时长直接写入end_pos）（这是预定行为，一个cue可以含有多个FILE）
         int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;

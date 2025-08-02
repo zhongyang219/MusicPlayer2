@@ -2,7 +2,7 @@
 #include "IPlayerCore.h"
 #include "bass.h"
 #include "BASSMidiLibrary.h"
-#include "Time.h"
+#include "PlayTime.h"
 #include "BASSEncodeLibrary.h"
 #include "BASSWmaLibrary.h"
 #include "BassMixLibrary.h"
@@ -73,7 +73,7 @@ public:
     virtual bool IsVolumeFadingOut() override;
 
     static int GetBASSCurrentPosition(HSTREAM hStream);
-    static Time GetBASSSongLength(HSTREAM hStream);
+    static CPlayTime GetBASSSongLength(HSTREAM hStream);
     static void SetCurrentPosition(HSTREAM hStream, int position);
 
     static void GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO);

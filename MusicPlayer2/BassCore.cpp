@@ -924,7 +924,7 @@ int CBassCore::GetBASSCurrentPosition(HSTREAM hStream)
     return static_cast<int>(pos_sec * 1000);
 }
 
-Time CBassCore::GetBASSSongLength(HSTREAM hStream)
+CPlayTime CBassCore::GetBASSSongLength(HSTREAM hStream)
 {
     QWORD lenght_bytes;
     lenght_bytes = BASS_ChannelGetLength(hStream, BASS_POS_BYTE);
@@ -932,7 +932,7 @@ Time CBassCore::GetBASSSongLength(HSTREAM hStream)
     length_sec = BASS_ChannelBytes2Seconds(hStream, lenght_bytes);
     int song_length_int = static_cast<int>(length_sec * 1000);
     if (song_length_int <= -1000) song_length_int = 0;
-    return Time(song_length_int);		//将长度转换成Time结构
+    return CPlayTime(song_length_int);		//将长度转换成Time结构
 }
 
 void CBassCore::SetCurrentPosition(HSTREAM hStream, int position)

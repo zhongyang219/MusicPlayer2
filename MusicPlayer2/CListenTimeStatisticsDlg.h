@@ -32,8 +32,8 @@ protected:
     {
         wstring name;
         wstring path;
-        Time total_time;
-        Time length;
+        CPlayTime total_time;
+        CPlayTime length;
         double times;
     };
 

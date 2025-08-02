@@ -172,7 +172,7 @@ void CCortanaLyric::DrawInfo()
             {
                 const bool karaoke{ theApp.m_lyric_setting_data.lyric_karaoke_disp };
                 const bool ignore_blank{ theApp.m_lyric_setting_data.donot_show_blank_lines };
-			    Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+			    CPlayTime time{ CPlayer::GetInstance().GetCurrentPosition() };
                 int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricProgress(time, ignore_blank, karaoke, [this](const wstring& str) { return m_draw.GetTextExtent(str.c_str()).cx; }) };
                 CLyrics::Lyric lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, ignore_blank, karaoke) };
                 bool no_lyric{ false };
@@ -241,7 +241,7 @@ void CCortanaLyric::DrawInfo()
             else if (!CPlayer::GetInstance().m_Lyrics.IsEmpty())		//有歌词时显示歌词
             {
                 static const wstring& empty_lyric = theApp.m_str_table.LoadText(L"UI_LYRIC_EMPTY_LINE");
-                Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+                CPlayTime time{ CPlayer::GetInstance().GetCurrentPosition() };
                 str_disp = CPlayer::GetInstance().m_Lyrics.GetLyric(time, false, false, false).text;
                 if (str_disp.empty())
                     str_disp = empty_lyric;

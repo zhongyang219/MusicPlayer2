@@ -22,7 +22,7 @@ class LastFMTrack {
         /// The album artist - if this differs from the track artist.
         wstring albumArtist;
         /// The length of the track in seconds.
-        Time duration;
+        CPlayTime duration;
         void Clear();
         void SaveDataTo(CArchive &archive);
         void ReadDataFrom(CArchive &archive);

@@ -453,7 +453,7 @@ void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
                 {
                     bool length_is_zero = (song.length().isZero() && CFilePathHelper(song.file_path).GetFileExtension() != L"cue");
                     bool path_invalid = (!CCommon::IsPath(song.file_path) || song.file_path.back() == L'/' || song.file_path.back() == L'\\');
-                    bool time_error = (song.length() == Time(25197, 8, 489));   // 这是个旧错误，我媒体库里有大量来自osu!的0时长的RIFF WAV被记录为这个时长
+                    bool time_error = (song.length() == CPlayTime(25197, 8, 489));   // 这是个旧错误，我媒体库里有大量来自osu!的0时长的RIFF WAV被记录为这个时长
                     return length_is_zero || path_invalid || time_error;
                 });
         }

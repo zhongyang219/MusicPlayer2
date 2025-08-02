@@ -2576,8 +2576,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             //处理AB重复
             if (CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT)
             {
-                Time a_position = CPlayer::GetInstance().GetARepeatPosition();
-                Time b_position = CPlayer::GetInstance().GetBRepeatPosition();
+                CPlayTime a_position = CPlayer::GetInstance().GetARepeatPosition();
+                CPlayTime b_position = CPlayer::GetInstance().GetBRepeatPosition();
                 if (a_position > CPlayer::GetInstance().GetSongLength() || b_position > CPlayer::GetInstance().GetSongLength())
                 {
                     CPlayer::GetInstance().ResetABRepeat();
@@ -2585,7 +2585,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 }
                 else
                 {
-                    Time current_play_time{ CPlayer::GetInstance().GetCurrentPosition() };
+                    CPlayTime current_play_time{ CPlayer::GetInstance().GetCurrentPosition() };
                     if (current_play_time < CPlayer::GetInstance().GetARepeatPosition() || current_play_time > CPlayer::GetInstance().GetBRepeatPosition())
                     {
                         CPlayer::GetInstance().SeekTo(CPlayer::GetInstance().GetARepeatPosition().toInt());
@@ -3949,7 +3949,7 @@ void CMusicPlayerDlg::OnCopyCurrentLyric()
     }
     else
     {
-        const CLyrics::Lyric& lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(Time(CPlayer::GetInstance().GetCurrentPosition()), false, theApp.m_lyric_setting_data.donot_show_blank_lines, false) };
+        const CLyrics::Lyric& lyric{ CPlayer::GetInstance().m_Lyrics.GetLyric(CPlayTime(CPlayer::GetInstance().GetCurrentPosition()), false, theApp.m_lyric_setting_data.donot_show_blank_lines, false) };
         lyric_str = lyric.text;
         if (theApp.m_lyric_setting_data.show_translate && !lyric.translate.empty())
         {

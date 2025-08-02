@@ -301,7 +301,7 @@ void CSelectPlaylistDlg::ShowPathList()
         m_playlist_ctrl.SetItemText(i, 1, list_item.GetDisplayName().c_str());
         m_playlist_ctrl.SetItemText(i, 2, list_item.GetLastTrackDisplayName().c_str());
         m_playlist_ctrl.SetItemText(i, 3, std::to_wstring(list_item.total_num).c_str());
-        m_playlist_ctrl.SetItemText(i, 4, Time(list_item.total_time).toString3().c_str());
+        m_playlist_ctrl.SetItemText(i, 4, CPlayTime(list_item.total_time).toString3().c_str());
     }
     m_playlist_ctrl.SetHightItem(m_list_search_cache.playing_index());
 }

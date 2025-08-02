@@ -50,9 +50,9 @@ void CPlaylistPropertiesDlg::InitData()
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NAME"), m_playlist_info.GetDisplayName());
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_PATH"), m_playlist_info.path);
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TRACK"), m_playlist_info.GetLastTrackDisplayName());
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_LAST_PLAYED_POSITION"), Time(m_playlist_info.last_position).toString());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_LAST_PLAYED_POSITION"), CPlayTime(m_playlist_info.last_position).toString());
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_NUM_OF_TRACK"), std::to_wstring(m_playlist_info.total_num));
-    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH"), Time(m_playlist_info.total_time).toString3());
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_TOTAL_LENGTH"), CPlayTime(m_playlist_info.total_time).toString3());
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LAST_PLAYED_TIME"), m_playlist_info.last_played_time == 0 ? L"-" : CTime(m_playlist_info.last_played_time).Format(_T("%F %T")).GetString());
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_PROPERTIES_CREATE_TIME"), m_playlist_info.create_time == 0 ? L"-" : CTime(m_playlist_info.create_time).Format(_T("%F %T")).GetString());
 }

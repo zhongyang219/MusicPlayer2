@@ -37,7 +37,7 @@ void CLyricEditDlg::OpreateTag(TagOpreation operation)
     size_t line_end;           //当前行的结束位置
     line_end = m_lyric_string.find(L"\r\n", end);
 
-    Time time_tag{ CPlayer::GetInstance().GetCurrentPosition() };		//获取当前播放时间
+    CPlayTime time_tag{ CPlayer::GetInstance().GetCurrentPosition() };		//获取当前播放时间
     wchar_t time_tag_str[16];
     swprintf_s(time_tag_str, L"[%.2d:%.2d.%.2d]", time_tag.min, time_tag.sec, time_tag.msec / 10);
 
@@ -1063,7 +1063,7 @@ void CLyricEditDlg::OnSeekToCurLine()
 {
     // TODO: 在此添加命令处理程序代码
     std::wstring cur_line = m_view->GetCurrentLineTextW();
-    Time t;
+    CPlayTime t;
     int pos_start{}, pos_end{};
     wchar_t bracket_left{ L'[' };
     wchar_t bracket_right{ L']' };

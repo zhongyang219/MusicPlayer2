@@ -99,7 +99,7 @@ CListenTimeStatisticsDlg::ListItem CListenTimeStatisticsDlg::SongInfoToListItem(
     }
 
     list_item.path = song.file_path;
-    list_item.total_time = Time(song.listen_time * 1000);
+    list_item.total_time = CPlayTime(song.listen_time * 1000);
     list_item.length = song.length();
     list_item.times = static_cast<double>(song.listen_time) / song.length().toInt() * 1000;
     return list_item;

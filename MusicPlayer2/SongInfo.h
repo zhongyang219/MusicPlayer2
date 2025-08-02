@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Time.h"
+#include "PlayTime.h"
 
 enum eTagType
 {
@@ -61,8 +61,8 @@ struct SongInfo
     int track{};                        // 音轨序号
     int listen_time{};                  // 歌曲累计听的时间（单位为秒）<仅在媒体库内使用>
     int freq{};                         // 采样频率
-    Time start_pos{};                   // 音频的起始位置
-    Time end_pos{};                     // 音频的结束位置
+    CPlayTime start_pos{};                   // 音频的起始位置
+    CPlayTime end_pos{};                     // 音频的结束位置
     unsigned short year{};              // 年份
     short bitrate{};                    // 比特率
     WORD flags{};                       // 保存一些标志<仅在媒体库内使用>
@@ -123,7 +123,7 @@ struct SongInfo
     void SetSongId(const wstring& id);
 
     bool IsEmpty() const;
-    Time length() const;
+    CPlayTime length() const;
     // 清除歌曲信息中的<>内的默认字符串
     void Normalize();
 

@@ -77,7 +77,7 @@ public:
     {
         SongKey song_key;
         std::wstring name;
-        Time length;
+        CPlayTime length;
         bool is_favourite{};
     };
 

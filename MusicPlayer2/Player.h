@@ -95,8 +95,8 @@ private:
 
     wstring m_current_file_type;
 
-    Time m_song_length;                 //正在播放的文件的长度
-    Time m_current_position;            //当前播放到的位置
+    CPlayTime m_song_length;                 //正在播放的文件的长度
+    CPlayTime m_current_position;            //当前播放到的位置
 
     int m_total_time;                   //播放列表中所有曲目的时间（毫秒）
 
@@ -166,8 +166,8 @@ private:
 
     PlaylistMode m_playlist_mode{ PM_FOLDER };          //当前的播放列表模式
 
-    Time m_a_repeat{};                      //AB循环中A点的时间
-    Time m_b_repeat{};                      //AB循环中B点的时间
+    CPlayTime m_a_repeat{};                      //AB循环中A点的时间
+    CPlayTime m_b_repeat{};                      //AB循环中B点的时间
     ABRepeatMode m_ab_repeat_mode{};
 
     bool m_file_opend{ false };             //如果打开了一个文件，则为true
@@ -218,8 +218,8 @@ public:
     void EnableReverb(bool enable);
     bool GetReverbEnable() const { return m_reverb_enable; }
 
-    Time GetARepeatPosition() const { return m_a_repeat; }
-    Time GetBRepeatPosition() const { return m_b_repeat; }
+    CPlayTime GetARepeatPosition() const { return m_a_repeat; }
+    CPlayTime GetBRepeatPosition() const { return m_b_repeat; }
     ABRepeatMode GetABRepeatMode() const { return m_ab_repeat_mode; }
 
     //设置当前播放位置为重复A点

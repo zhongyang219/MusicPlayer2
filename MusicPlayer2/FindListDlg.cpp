@@ -10,6 +10,7 @@
 #include "FolderPropertiesDlg.h"
 #include "PlaylistPropertiesDlg.h"
 #include "MediaLibItemPropertiesDlg.h"
+#include "UIElement/FolderExploreTree.h"
 
 // CFindListDlg 对话框
 

@@ -80,7 +80,7 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
         const bool ignore_blank{ theApp.m_lyric_setting_data.donot_show_blank_lines };
 
         auto& now_lyrics{ CPlayer::GetInstance().m_Lyrics };
-        Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+        CPlayTime time{ CPlayer::GetInstance().GetCurrentPosition() };
         CLyrics::Lyric lyric{ now_lyrics.GetLyric(time, false, ignore_blank, karaoke) };
         bool is_lyric_empty{ lyric.text.empty() };
         int progress{ now_lyrics.GetLyricProgress(time, ignore_blank, karaoke,

@@ -83,7 +83,7 @@ void CSetPathDlg::ShowPathList()
         m_path_list.SetItemText(i, 3, list_item.contain_sub_folder ? yes_str.c_str() : L"");
         m_path_list.SetItemText(i, 4, list_item.GetLastTrackDisplayName().c_str());
         m_path_list.SetItemText(i, 5, std::to_wstring(list_item.total_num).c_str());
-        m_path_list.SetItemText(i, 6, Time(list_item.total_time).toString3().c_str());
+        m_path_list.SetItemText(i, 6, CPlayTime(list_item.total_time).toString3().c_str());
     }
     m_path_list.SetHightItem(m_list_search_cache.playing_index());
 }

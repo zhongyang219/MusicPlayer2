@@ -70,7 +70,7 @@ bool CLyrics::FileIsLyric(const wstring& file_name)
     return false;
 }
 
-bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& pos_start, int& pos_end, wchar_t bracket_left, wchar_t bracket_right)
+bool CLyrics::ParseLyricTimeTag(const wstring& lyric_text, CPlayTime& time, int& pos_start, int& pos_end, wchar_t bracket_left, wchar_t bracket_right)
 {
     int index = pos_end - 1;
     bool time_acquired{ false };
@@ -186,7 +186,7 @@ void CLyrics::DisposeLrc()
             }
         }
 
-        Time t{};
+        CPlayTime t{};
         int pos_start{}, pos_end{};
         wchar_t bracket_left{ L'[' }, bracket_right{ L']' };
         if (ParseLyricTimeTag(str, t, pos_start, pos_end, L'<', L'>'))
@@ -221,7 +221,7 @@ void CLyrics::DisposeLrc()
                     m_translate = true; // 由于前面的StringNormalize操作，不可能出现“ / "后面为空的情况，无须重新判断翻译是否为空
                 }
                 index = index2 = 0;
-                Time time_w, time_w_;
+                CPlayTime time_w, time_w_;
                 if (ParseLyricTimeTag(text_str, time_w_, index, index2, bracket_left, bracket_right))    // 歌词文本内含有时间标签说明是扩展lrc
                 {
                     lyric.text = text_str.substr(0, index);
@@ -302,7 +302,7 @@ void CLyrics::DisposeKsc()
     {
         int index, index2;
         Lyric lyric;
-        Time time;
+        CPlayTime time;
         index = m_lyrics_str[i].find(L"//");        // 移除注释
         wstring str = m_lyrics_str[i].substr(0, index);
         CCommon::StringNormalize(str);
@@ -568,7 +568,7 @@ CLyrics::LyricType CLyrics::GetLyricType() const
     return m_lyric_type;
 }
 
-int CLyrics::GetLyricIndex(Time time) const
+int CLyrics::GetLyricIndex(CPlayTime time) const
 {
     if (m_lyrics.empty() || time.toInt() < m_lyrics[0].time_start)
         return -1;
@@ -651,7 +651,7 @@ int CLyrics::GetBlankTimeBeforeLyric(int index) const
     return m_lyrics[index].time_start - m_lyrics[index_blank - 1].time_start - m_lyrics[index_blank - 1].time_span;
 }
 
-CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool ignore_blank, bool blank2mark) const
+CLyrics::Lyric CLyrics::GetLyric(CPlayTime time, bool is_next, bool ignore_blank, bool blank2mark) const
 {
     int now_index{ GetLyricIndex(time) };
     if (!ignore_blank)                                          // 不忽略空行，返回原始歌词
@@ -667,7 +667,7 @@ CLyrics::Lyric CLyrics::GetLyric(Time time, bool is_next, bool ignore_blank, boo
     return lyric;
 }
 
-int CLyrics::GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std::function<int(const wstring&)> measure) const
+int CLyrics::GetLyricProgress(CPlayTime time, bool ignore_blank, bool blank2mark, std::function<int(const wstring&)> measure) const
 {
     if (m_lyrics.empty()) return 0;
     const static wstring mark = theApp.m_str_table.LoadText(L"UI_LYRIC_MUSIC_SYMBOL");
@@ -813,7 +813,7 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line, LyricT
         if (m_by_tag) lyric_string << L"[by:" << m_by << L"]\r\n";
         for (const auto& a_lyric : m_lyrics)
         {
-            Time a_time{ a_lyric.time_start };
+            CPlayTime a_time{ a_lyric.time_start };
             wstring line_str{ a_time.toLyricTimeTag()};
             size_t split_num{ min(a_lyric.split.size(), a_lyric.word_time.size()) };    // 避免原始歌词不标准可能导致的索引越界
             if (split_num > 0)  // 以扩展lrc形式存储逐字信息，舍弃行时长time_span
@@ -844,7 +844,7 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line, LyricT
                 else
                 {
                     line_str += L"\r\n";
-                    line_str += Time(a_lyric.time_start).toLyricTimeTag();
+                    line_str += CPlayTime(a_lyric.time_start).toLyricTimeTag();
                     line_str += a_lyric.translate;
                 }
             }
@@ -862,7 +862,7 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line, LyricT
         for (const auto& a_lyric : m_lyrics)    // 重新构建歌词行
         {
             lyric_string << L"karaoke.add('";
-            Time a_time{ a_lyric.time_start };
+            CPlayTime a_time{ a_lyric.time_start };
             swprintf_s(time_buff, L"%.2d:%.2d.%.3d", a_time.min, a_time.sec, a_time.msec);
             lyric_string << time_buff;
             lyric_string << L"', '";
@@ -912,7 +912,7 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line, LyricT
         for (const auto& a_lyric : m_lyrics)
         {
             lyric_string << L"\r\n" << ++index << L"\r\n";
-            lyric_string << Time(a_lyric.time_start).toVttTimeTag() << L" --> " << Time(a_lyric.time_start + a_lyric.time_span).toVttTimeTag() << L"\r\n";
+            lyric_string << CPlayTime(a_lyric.time_start).toVttTimeTag() << L" --> " << CPlayTime(a_lyric.time_start + a_lyric.time_span).toVttTimeTag() << L"\r\n";
             if (a_lyric.split.empty())
                 lyric_string << escapeStr(a_lyric.text) << L"\r\n";
             else
@@ -927,7 +927,7 @@ wstring CLyrics::GetLyricsString2(bool lyric_and_traslation_in_same_line, LyricT
                     pos_start = a_lyric.split[i];
                     start_time += a_lyric.word_time[i];
                     if (start_time < end_time)             // 不添加不合法的时间标签(卡掉最后一个与end_time相同的时间标签)
-                        lyric_string << L'<' << Time(start_time).toVttTimeTag() << L'>';
+                        lyric_string << L'<' << CPlayTime(start_time).toVttTimeTag() << L'>';
                 }
                 lyric_string << L"\r\n";
             }

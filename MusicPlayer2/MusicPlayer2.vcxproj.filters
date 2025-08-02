@@ -435,7 +435,7 @@
     <ClInclude Include="bass.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Time.h">
+    <ClInclude Include="PlayTime.h">
       <Filter>公共的类</Filter>
     </ClInclude>
     <ClInclude Include="FindDlg.h">

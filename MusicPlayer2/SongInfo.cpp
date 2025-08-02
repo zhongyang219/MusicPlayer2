@@ -237,9 +237,9 @@ bool SongInfo::IsEmpty() const
     return file_path.empty() && title.empty() && artist.empty() && album.empty() && comment.empty() && genre.empty() && year == 0 && length().isZero();
 }
 
-Time SongInfo::length() const
+CPlayTime SongInfo::length() const
 {
-    return Time(end_pos - start_pos);
+    return CPlayTime(end_pos - start_pos);
 }
 
 void SongInfo::Normalize()

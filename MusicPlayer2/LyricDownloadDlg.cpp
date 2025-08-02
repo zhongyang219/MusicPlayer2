@@ -38,7 +38,7 @@ void CLyricDownloadDlg::ShowDownloadList()
 		m_down_list_ctrl.SetItemText(i, 1, m_down_list[i].title.c_str());
 		m_down_list_ctrl.SetItemText(i, 2, m_down_list[i].artist.c_str());
 		m_down_list_ctrl.SetItemText(i, 3, m_down_list[i].album.c_str());
-		m_down_list_ctrl.SetItemText(i, 4, Time(m_down_list[i].duration).toString().c_str());
+		m_down_list_ctrl.SetItemText(i, 4, CPlayTime(m_down_list[i].duration).toString().c_str());
 	}
 }
 

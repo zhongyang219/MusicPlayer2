@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Time.h"
+#include "PlayTime.h"
 #include "EditEx.h"
 #include "BaseDialog.h"
 #include "ScintillaEditView.h"

@@ -569,7 +569,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
             m_pCore->Stop();
         }
         m_playing = PS_STOPED;
-        m_current_position = Time();
+        m_current_position = CPlayTime();
         memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
         m_controls.UpdateControls(PlaybackStatus::Stopped);
         MediaTransControlsLoadThumbnailDefaultImage();
@@ -615,7 +615,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
     case Command::SEEK:		//定位到m_current_position的位置
         if (m_current_position > m_song_length)
         {
-            m_current_position = Time();
+            m_current_position = CPlayTime();
         }
         SeekTo(m_current_position.toInt());
         break;
@@ -2316,7 +2316,7 @@ bool CPlayer::SetBRepeatPoint()
 {
     if (m_ab_repeat_mode != AM_NONE)
     {
-        Time time_span = m_current_position - m_a_repeat;
+        CPlayTime time_span = m_current_position - m_a_repeat;
         if (time_span > 200 && time_span < m_song_length)		//B点位置必须至少超过A点200毫秒
         {
             m_b_repeat = m_current_position;

@@ -306,7 +306,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
     {
         __int64 song_pos;
         song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * CPlayer::GetInstance().GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
-        Time song_pos_time;
+        CPlayTime song_pos_time;
         song_pos_time.fromInt(static_cast<int>(song_pos));
         static int last_sec{};
         if (last_sec != song_pos_time.sec)      //只有鼠标指向位置对应的秒数变化了才更新鼠标提示
@@ -1262,7 +1262,7 @@ void CPlayerUIBase::DrawToolBarWithoutBackground(CRect rect, bool draw_translate
 void CPlayerUIBase::DrawBeatIndicator(CRect rect)
 {
     int progress;
-    Time time{ CPlayer::GetInstance().GetCurrentPosition() };
+    CPlayTime time{ CPlayer::GetInstance().GetCurrentPosition() };
     if (CPlayer::GetInstance().IsMidi())
     {
         ////progress = (CPlayer::GetInstance().GetMidiInfo().midi_position % 16 + 1) *1000 / 16;
@@ -1947,8 +1947,8 @@ void CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
         if (play_time_both_side)
         {
             CRect rc_time_left{ rect }, rc_time_right{ rect };
-            std::wstring str_cur_time = Time(CPlayer::GetInstance().GetCurrentPosition()).toString(false);
-            std::wstring str_song_length = Time(CPlayer::GetInstance().GetSongLength()).toString(false);
+            std::wstring str_cur_time = CPlayTime(CPlayer::GetInstance().GetCurrentPosition()).toString(false);
+            std::wstring str_song_length = CPlayTime(CPlayer::GetInstance().GetSongLength()).toString(false);
             int left_width = m_draw.GetTextExtent(str_cur_time.c_str()).cx;
             int right_width = m_draw.GetTextExtent(str_song_length.c_str()).cx;
             rc_time_left.right = rc_time_left.left + left_width;

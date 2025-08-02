@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include"Time.h"
+#include "PlayTime.h"
 #include "Common.h"
 
 class CLyrics
@@ -67,10 +67,10 @@ public:
     /**
      * @brief   解析歌词的时间标签
      * @param[in]   const wstring & lyric_text 一行歌词文本
-     * @param[out]  Time & time 得到的时间标签
+     * @param[out]  CPlayTime & time 得到的时间标签
      * @return  bool 是否成功
      */
-    static bool ParseLyricTimeTag(const wstring& lyric_text, Time& time, int& pos_start, int& pos_end, wchar_t bracket_left, wchar_t bracket_right);
+    static bool ParseLyricTimeTag(const wstring& lyric_text, CPlayTime& time, int& pos_start, int& pos_end, wchar_t bracket_left, wchar_t bracket_right);
 
 private:
     // 删除歌词中时间标签超过100分钟的歌词（使用时必须确保歌词已经按时间标签排序），对新下载的歌词使用
@@ -97,7 +97,7 @@ public:
 
     // 根据时间返回该时间对应的原始歌词序号，多行歌词使用
     // 返回index直接与下标对应，-1为在第一行歌词之前，超过最后一行歌词后保持为m_lyrics.size() - 1
-    int GetLyricIndex(Time time) const;
+    int GetLyricIndex(CPlayTime time) const;
     // 根据索引返回一句歌词，索引越界返回空歌词，多行歌词使用
     Lyric GetLyric(int index) const;
 private:
@@ -108,11 +108,11 @@ private:
 public:
     // 提供给单双行歌词使用，ignore_blank为true时忽略空行，若同时blank2mark为true则将空行替换为进度符号，非原始文本
     // is_next为true时为下一句歌词，否则为当前歌词
-    Lyric GetLyric(Time time, bool is_next, bool ignore_blank, bool blank2mark) const;
+    Lyric GetLyric(CPlayTime time, bool is_next, bool ignore_blank, bool blank2mark) const;
     // 根据时间返回该时间所对应的歌词的进度（0~1000）（用于使歌词以卡拉OK样式显示/长歌词滚动也需要正确的歌词进度）
     // ignore_blank为true时忽略空行，若同时blank2mark为true则将空行替换为进度符号
     // 注意进度为1000时表示当前歌词“已结束”，不要进行高亮并应根据需要进行高亮取消操作，由于逐字歌词引入此状态可能维持一段时间
-    int GetLyricProgress(Time time, bool ignore_blank, bool blank2mark, std::function<int(const wstring&)> measure) const;
+    int GetLyricProgress(CPlayTime time, bool ignore_blank, bool blank2mark, std::function<int(const wstring&)> measure) const;
 
     // 获得歌词文本的编码类型
     CodeType GetCodeType() const;

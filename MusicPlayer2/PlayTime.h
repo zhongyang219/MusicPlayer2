@@ -1,5 +1,6 @@
 ﻿#pragma once
-class Time
+#include <string>
+class CPlayTime
 {
 public:
     unsigned int negative : 1;
@@ -7,20 +8,20 @@ public:
     unsigned int sec:6;
     unsigned int msec:10;
 
-    Time()
+    CPlayTime()
         :negative{}, min{}, sec{}, msec{}
     {}
 
-    Time(int _min, int _sec, int _msec)
+    CPlayTime(int _min, int _sec, int _msec)
         : negative{}, min{ static_cast<unsigned int>(_min) }, sec{ static_cast<unsigned int>(_sec) }, msec{ static_cast<unsigned int>(_msec) }
     {}
 
-    Time(int time)
+    CPlayTime(int time)
     {
         fromInt(time);
     }
 
-    ~Time()
+    ~CPlayTime()
     {}
 
     //将int类型的时间（毫秒数）转换成Time结构
@@ -44,7 +45,7 @@ public:
         return negative ? -t : t;
     }
 
-    bool operator>(const Time& time) const
+    bool operator>(const CPlayTime& time) const
     {
         if (negative != time.negative)
             return (negative < time.negative);
@@ -57,22 +58,22 @@ public:
         else return false;
     }
 
-    bool operator<(const Time& time) const
+    bool operator<(const CPlayTime& time) const
     {
         return time > *this;
     }
 
-    bool operator==(const Time& time) const
+    bool operator==(const CPlayTime& time) const
     {
         return (negative == time.negative && min == time.min && sec == time.sec && msec == time.msec);
     }
     
-    bool operator!=(const Time& time) const
+    bool operator!=(const CPlayTime& time) const
     {
         return !(*this == time);
     }
 
-    bool operator>=(const Time& time) const
+    bool operator>=(const CPlayTime& time) const
     {
         if (negative != time.negative)
             return (negative < time.negative);
@@ -86,7 +87,7 @@ public:
     }
 
     //减法运算符，用于计算两个Time对象的时间差，返回int类型，单位为毫秒
-    int operator-(const Time& time) const
+    int operator-(const CPlayTime& time) const
     {
         if (negative == time.negative) {
             int t = (min - time.min) * 60000 + (sec - time.sec) * 1000 + (msec - time.msec);
@@ -98,7 +99,7 @@ public:
     }
 
     //加法赋值运算符，用于在当前时间上加上一个int类型的毫秒数
-    Time operator+=(int time)
+    CPlayTime operator+=(int time)
     {
         int added = this->toInt();
         added += time;
@@ -106,63 +107,63 @@ public:
         return *this;
     }
 
-    Time operator-=(int time)
+    CPlayTime operator-=(int time)
     {
         return operator+=(-time);
     }
 
     //加法运算符，用于在当前时间上加上一个int类型的毫秒数，返回Time对象
-    Time operator+(int time) const
+    CPlayTime operator+(int time) const
     {
         int added = this->toInt();
         added += time;
-        return Time{ added };
+        return CPlayTime{ added };
     }
 
     //将时间转换成字符串（格式：分:秒）
-    wstring toString(bool no_zero = true) const
+    std::wstring toString(bool no_zero = true) const
     {
         wchar_t buff[16]{};
-        if (no_zero && *this == Time{ 0,0,0 })
+        if (no_zero && *this == CPlayTime{ 0,0,0 })
             wcscpy_s(buff, L"-:--");
         else
             swprintf_s(buff, L"%d:%.2d", min, sec);
-        return wstring(buff);
+        return std::wstring(buff);
     }
 
     //将时间转换成字符串（格式：分:秒.毫秒）
-    wstring toString2(bool no_zero = true) const
+    std::wstring toString2(bool no_zero = true) const
     {
         wchar_t buff[16]{};
-        if (no_zero && *this == Time{ 0,0,0 })
+        if (no_zero && *this == CPlayTime{ 0,0,0 })
             wcscpy_s(buff, L"-:--");
         else
             swprintf_s(buff, L"%d:%.2d.%.3d", min, sec, msec);
-        return wstring(buff);
+        return std::wstring(buff);
     }
 
     //将时间转换成字符串（格式：时:分:秒）
-    wstring toString3(bool no_zero = true) const
+    std::wstring toString3(bool no_zero = true) const
     {
         int hour, min1;
         hour = min / 60;
         min1 = min % 60;
         wchar_t buff[16]{};
-        if (no_zero && *this == Time{ 0,0,0 })
+        if (no_zero && *this == CPlayTime{ 0,0,0 })
             wcscpy_s(buff, L"-:--:--");
         else
             swprintf_s(buff, L"%d:%.2d:%.2d", hour, min1, sec);
-        return wstring(buff);
+        return std::wstring(buff);
     }
 
-    wstring toLyricTimeTag() const
+    std::wstring toLyricTimeTag() const
     {
         wchar_t buff[16]{};
         swprintf_s(buff, L"[%.2d:%.2d.%.2d]", min, sec, msec / 10);
-        return wstring(buff);
+        return std::wstring(buff);
     }
 
-    wstring toVttTimeTag() const
+    std::wstring toVttTimeTag() const
     {
         int hour, min1;
         hour = min / 60;
@@ -171,7 +172,7 @@ public:
             return L"99:99:99.999";
         wchar_t buff[16]{};
         swprintf_s(buff, L"%.2d:%.2d:%.2d.%.3d", hour, min1, sec, msec);
-        return wstring(buff);
+        return std::wstring(buff);
     }
 
     //判断时间是否为0

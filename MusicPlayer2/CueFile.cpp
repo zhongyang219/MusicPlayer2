@@ -6,17 +6,17 @@
 // 另外此处能够保证 帧->毫秒->帧 的连续转换是无损的，这使得重新生成cue时不会因舍入误差导致时间变动 
 // 也就是ms数是不允许改动的，也不应使用别处得来的，否则偏差会有些大
 
-static Time CueTime2Time(const wstring& time_str)
+static CPlayTime CueTime2Time(const wstring& time_str)
 {
     int m{}, s{}, f{};
     if (swscanf_s(time_str.c_str(), L"%d:%d:%d", &m, &s, &f) != 3)
         return 0;
     int ms = std::lround((f % 75) * 1000.0 / 75.0);
     ms += (m * 60 + s) * 1000;
-    return Time(ms);
+    return CPlayTime(ms);
 }
 
-static string Time2CueTime(Time time)
+static string Time2CueTime(CPlayTime time)
 {
     int ms = time.toInt();
     int ff = std::lround((ms % 1000) * 75.0 / 1000.0);  // 如果ms不是CueTime2Ms产生的，这行有可能得到75
@@ -128,7 +128,7 @@ bool CCueFile::Save(std::wstring file_path)
         {
             if (index > 0)
             {
-                Time pre_track_end_pos = m_result[index - 1].end_pos;
+                CPlayTime pre_track_end_pos = m_result[index - 1].end_pos;
                 if (pre_track_end_pos != song.start_pos)
                     file_stream << "    INDEX 00 " << Time2CueTime(pre_track_end_pos) << "\r\n";
                 file_stream << "    INDEX 01 " << Time2CueTime(song.start_pos) << "\r\n";
@@ -258,7 +258,7 @@ void CCueFile::DoAnalysis()
             }
 
             // 查找曲目位置
-            Time time_index00{}, time_index01{};
+            CPlayTime time_index00{}, time_index01{};
             size_t index00_pos{}, index01_pos{};
             index00_pos = m_file_content_wcs.find(L"INDEX 00", index_track + 6);
             index01_pos = m_file_content_wcs.find(L"INDEX 01", index_track + 6);
@@ -277,7 +277,7 @@ void CCueFile::DoAnalysis()
                 else
                     m_result.back().end_pos = time_index01;
                 //if(!m_result.back().end_pos.isZero())
-                //    m_result.back().lengh = Time(m_result.back().end_pos - m_result.back().start_pos);
+                //    m_result.back().lengh = CPlayTime(m_result.back().end_pos - m_result.back().start_pos);
             }
 
             CCommon::StringNormalize(song_info.title);
