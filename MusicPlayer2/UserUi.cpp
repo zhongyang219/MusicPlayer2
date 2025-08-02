@@ -508,7 +508,7 @@ int CUserUi::GetUiIndex()
 
 std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node)
 {
-    CElementFactory factory;
+    UiElement::CElementFactory factory;
     //获取节点名称
     std::string item_name = CTinyXml2Helper::ElementName(xml_node);
     //根据节点名称创建ui元素

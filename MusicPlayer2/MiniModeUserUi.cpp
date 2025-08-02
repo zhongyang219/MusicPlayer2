@@ -1,6 +1,11 @@
 ﻿#include "stdafx.h"
 #include "MiniModeUserUi.h"
 #include "MiniModeDlg.h"
+#include "UIElement/ElementFactory.h"
+#include "UIElement/Button.h"
+#include "UIElement/StackElement.h"
+#include "UIElement/ListElement.h"
+#include "UIElement/SearchBox.h"
 
 CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
     : CUserUi(pMainWnd, xml_path)
@@ -28,7 +33,7 @@ void CMiniModeUserUi::InitUiPlaylist()
         //如果使用UI播放列表，则向UI中添加一个播放列表元素
         if (pMinimodeDlg->IsUseUiPlaylist())
         {
-            CElementFactory factory;
+            UiElement::CElementFactory factory;
             //新的UI
             std::shared_ptr<UiElement::Element> ui_new = factory.CreateElement("element", this);
             //创建一个垂直布局

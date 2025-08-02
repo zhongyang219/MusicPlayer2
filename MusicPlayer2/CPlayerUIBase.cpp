@@ -3,9 +3,14 @@
 #include "MusicPlayerDlg.h"
 #include "MiniModeUserUi.h"
 #include "SongInfoHelper.h"
-#include "UIElement.h"
+#include "UIElement/UIElement.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UIWindowCmdHelper.h"
+#include "UIElement/ListElement.h"
+#include "UIElement/TreeElement.h"
+#include "UIElement/PlaylistIndicator.h"
+#include "UIElement/NavigationBar.h"
+#include "UIElement/SearchBox.h"
 
 bool CPlayerUIBase::m_show_ui_tip_info = false;
 

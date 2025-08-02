@@ -76,18 +76,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -286,6 +290,37 @@
     <ClInclude Include="NeteaseLyricDownload.h" />
     <ClInclude Include="PlaylistPropertiesDlg.h" />
     <ClInclude Include="SimplePropertiesDlg.h" />
+    <ClInclude Include="UIElement\AlbumCover.h" />
+    <ClInclude Include="UIElement\AllTracksList.h" />
+    <ClInclude Include="UIElement\BeatIndicator.h" />
+    <ClInclude Include="UIElement\Button.h" />
+    <ClInclude Include="UIElement\ClassicalControlBar.h" />
+    <ClInclude Include="UIElement\ElementFactory.h" />
+    <ClInclude Include="UIElement\FolderExploreTree.h" />
+    <ClInclude Include="UIElement\Layout.h" />
+    <ClInclude Include="UIElement\ListElement.h" />
+    <ClInclude Include="UIElement\LyricsElement.h" />
+    <ClInclude Include="UIElement\MediaLibFolder.h" />
+    <ClInclude Include="UIElement\MediaLibItemList.h" />
+    <ClInclude Include="UIElement\MediaLibPlaylist.h" />
+    <ClInclude Include="UIElement\MiniSpectrum.h" />
+    <ClInclude Include="UIElement\MyFavouriteList.h" />
+    <ClInclude Include="UIElement\NavigationBar.h" />
+    <ClInclude Include="UIElement\PlaceHolder.h" />
+    <ClInclude Include="UIElement\PlaylistElement.h" />
+    <ClInclude Include="UIElement\PlaylistIndicator.h" />
+    <ClInclude Include="UIElement\ProgressBar.h" />
+    <ClInclude Include="UIElement\RecentPlayedList.h" />
+    <ClInclude Include="UIElement\Rectangle.h" />
+    <ClInclude Include="UIElement\SearchBox.h" />
+    <ClInclude Include="UIElement\Spectrum.h" />
+    <ClInclude Include="UIElement\StackElement.h" />
+    <ClInclude Include="UIElement\Text.h" />
+    <ClInclude Include="UIElement\Toolbar.h" />
+    <ClInclude Include="UIElement\TrackInfo.h" />
+    <ClInclude Include="UIElement\TreeElement.h" />
+    <ClInclude Include="UIElement\UIElement.h" />
+    <ClInclude Include="UIElement\Volume.h" />
     <ClInclude Include="UiMediaLibItemMgr.h" />
     <ClInclude Include="MediaLibStatisticsDlg.h" />
     <ClInclude Include="MediaTransControls.h" />
@@ -312,7 +347,6 @@
     <ClInclude Include="TagLibHelper.h" />
     <ClInclude Include="TinyXml2Helper.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
-    <ClInclude Include="UIElement.h" />
     <ClInclude Include="UiSearchBox.h" />
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="UIWindowCmdHelper.h" />
@@ -463,6 +497,37 @@
     <ClCompile Include="NeteaseLyricDownload.cpp" />
     <ClCompile Include="PlaylistPropertiesDlg.cpp" />
     <ClCompile Include="SimplePropertiesDlg.cpp" />
+    <ClCompile Include="UIElement\AlbumCover.cpp" />
+    <ClCompile Include="UIElement\AllTracksList.cpp" />
+    <ClCompile Include="UIElement\BeatIndicator.cpp" />
+    <ClCompile Include="UIElement\Button.cpp" />
+    <ClCompile Include="UIElement\ClassicalControlBar.cpp" />
+    <ClCompile Include="UIElement\ElementFactory.cpp" />
+    <ClCompile Include="UIElement\FolderExploreTree.cpp" />
+    <ClCompile Include="UIElement\Layout.cpp" />
+    <ClCompile Include="UIElement\ListElement.cpp" />
+    <ClCompile Include="UIElement\LyricsElement.cpp" />
+    <ClCompile Include="UIElement\MediaLibFolder.cpp" />
+    <ClCompile Include="UIElement\MediaLibItemList.cpp" />
+    <ClCompile Include="UIElement\MediaLibPlaylist.cpp" />
+    <ClCompile Include="UIElement\MiniSpectrum.cpp" />
+    <ClCompile Include="UIElement\MyFavouriteList.cpp" />
+    <ClCompile Include="UIElement\NavigationBar.cpp" />
+    <ClCompile Include="UIElement\PlaceHolder.cpp" />
+    <ClCompile Include="UIElement\PlaylistElement.cpp" />
+    <ClCompile Include="UIElement\PlaylistIndicator.cpp" />
+    <ClCompile Include="UIElement\ProgressBar.cpp" />
+    <ClCompile Include="UIElement\RecentPlayedList.cpp" />
+    <ClCompile Include="UIElement\Rectangle.cpp" />
+    <ClCompile Include="UIElement\SearchBox.cpp" />
+    <ClCompile Include="UIElement\Spectrum.cpp" />
+    <ClCompile Include="UIElement\StackElement.cpp" />
+    <ClCompile Include="UIElement\Text.cpp" />
+    <ClCompile Include="UIElement\Toolbar.cpp" />
+    <ClCompile Include="UIElement\TrackInfo.cpp" />
+    <ClCompile Include="UIElement\TreeElement.cpp" />
+    <ClCompile Include="UIElement\UIElement.cpp" />
+    <ClCompile Include="UIElement\Volume.cpp" />
     <ClCompile Include="UiMediaLibItemMgr.cpp" />
     <ClCompile Include="MediaLibStatisticsDlg.cpp" />
     <ClCompile Include="MediaTransControls.cpp" />
@@ -495,7 +560,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UIElement.cpp" />
     <ClCompile Include="UiSearchBox.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="UIWindowCmdHelper.cpp" />

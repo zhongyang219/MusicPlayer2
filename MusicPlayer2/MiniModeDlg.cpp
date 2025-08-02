@@ -8,6 +8,7 @@
 #include "MiniModeUserUi.h"
 #include "SongInfoHelper.h"
 #include "WinVersionHelper.h"
+#include "UIElement/PlaylistElement.h"
 
 // CMiniModeDlg 对话框
 

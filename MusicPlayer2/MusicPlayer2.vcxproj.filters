@@ -411,6 +411,9 @@
     <Filter Include="对话框类\CoverPreviewDlg">
       <UniqueIdentifier>{1f8e535c-5b50-47ed-8542-8eb5022dda75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UIElement">
+      <UniqueIdentifier>{1380514c-9641-4730-bd05-85329005068b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -822,9 +825,6 @@
     <ClInclude Include="UserUi.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement.h">
-      <Filter>PlayerUI</Filter>
-    </ClInclude>
     <ClInclude Include="tinyxml2\tinyxml2.h">
       <Filter>公共的类\tinyxml2</Filter>
     </ClInclude>
@@ -953,6 +953,99 @@
     </ClInclude>
     <ClInclude Include="CoverPreviewDlg.h">
       <Filter>对话框类\CoverPreviewDlg</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\AlbumCover.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\BeatIndicator.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\Button.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\Layout.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\ListElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\LyricsElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\PlaylistElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\ProgressBar.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\Rectangle.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\Spectrum.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\Text.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\Toolbar.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\TrackInfo.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\UIElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\Volume.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\RecentPlayedList.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\MediaLibItemList.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\PlaylistIndicator.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\ClassicalControlBar.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\NavigationBar.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\MediaLibFolder.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\MediaLibPlaylist.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\MyFavouriteList.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\AllTracksList.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\MiniSpectrum.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\PlaceHolder.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\TreeElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\FolderExploreTree.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\SearchBox.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\StackElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\ElementFactory.h">
+      <Filter>UIElement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1331,9 +1424,6 @@
     <ClCompile Include="UserUi.cpp">
       <Filter>PlayerUI</Filter>
     </ClCompile>
-    <ClCompile Include="UIElement.cpp">
-      <Filter>PlayerUI</Filter>
-    </ClCompile>
     <ClCompile Include="tinyxml2\tinyxml2.cpp">
       <Filter>公共的类\tinyxml2</Filter>
     </ClCompile>
@@ -1459,6 +1549,99 @@
     </ClCompile>
     <ClCompile Include="CoverPreviewDlg.cpp">
       <Filter>对话框类\CoverPreviewDlg</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\AlbumCover.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\BeatIndicator.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\Button.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\Layout.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\ListElement.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\LyricsElement.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\PlaylistElement.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\ProgressBar.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\Rectangle.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\Spectrum.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\Text.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\Toolbar.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\TrackInfo.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\UIElement.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\Volume.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\RecentPlayedList.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\MediaLibItemList.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\PlaylistIndicator.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\ClassicalControlBar.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\NavigationBar.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\MediaLibFolder.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\MediaLibPlaylist.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\MyFavouriteList.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\AllTracksList.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\MiniSpectrum.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\PlaceHolder.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\TreeElement.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\FolderExploreTree.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\SearchBox.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\StackElement.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\ElementFactory.cpp">
+      <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

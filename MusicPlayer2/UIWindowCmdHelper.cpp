@@ -11,6 +11,14 @@
 #include "MediaLibItemPropertiesDlg.h"
 #include "CRecentList.h"
 #include "MediaLibHelper.h"
+#include "UIElement/MediaLibItemList.h"
+#include "UIElement/RecentPlayedList.h"
+#include "UIElement/MediaLibFolder.h"
+#include "UIElement/MediaLibPlaylist.h"
+#include "UIElement/MyFavouriteList.h"
+#include "UIElement/AllTracksList.h"
+#include "UIElement/FolderExploreTree.h"
+#include "UIElement/PlaylistElement.h"
 
 CUIWindowCmdHelper::CUIWindowCmdHelper(UiElement::Element* sender)
     : m_context_menu_sender(sender)

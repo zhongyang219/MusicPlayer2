@@ -7,6 +7,7 @@
 #include "CRecentList.h"
 #include "MediaLibHelper.h"
 #include "Player.h"
+#include "UIElement/FolderExploreTree.h"
 
 CUiMediaLibItemMgr CUiMediaLibItemMgr::m_instance;
 

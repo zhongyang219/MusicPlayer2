@@ -1,5 +1,18 @@
 ﻿#pragma once
-#include "UIElement.h"
+#include "SongInfo.h"
+
+namespace UiElement
+{
+    class Element;
+    class MediaLibItemList;
+    class RecentPlayedList;
+    class MediaLibFolder;
+    class MediaLibPlaylist;
+    class MyFavouriteList;
+    class AllTracksList;
+    class FolderExploreTree;
+    class Playlist;
+}
 
 class CUIWindowCmdHelper
 {

@@ -31,6 +31,7 @@
 #include "MoreRecentItemDlg.h"
 #include "UiMediaLibItemMgr.h"
 #include "CRecentList.h"
+#include "UIElement/PlaylistElement.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
