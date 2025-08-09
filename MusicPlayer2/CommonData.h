@@ -280,7 +280,6 @@ struct ApperanceSettingData
     int TitleDisplayItem() const;
 
     //如果为true时，当系统为Windows10/11时，如果使用的是自绘标题栏，则去掉标题栏顶部的白边
-    //（目前还存在一些问题，当窗口得到或失去焦点时，窗口会闪烁）
     bool remove_titlebar_top_frame{ false };
 };
 
