@@ -553,4 +553,6 @@ public:
     afx_msg void OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpncsp);
 protected:
     afx_msg LRESULT OnClearUiSerchBox(WPARAM wParam, LPARAM lParam);
+public:
+    afx_msg BOOL OnNcActivate(BOOL bActive);
 };
