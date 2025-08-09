@@ -34,14 +34,30 @@ void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
 		auto& song_multi_version{ GetSongsMultiVersion(song) };
 		if (!song_multi_version.empty())
 		{
+			bool has_prefered = false;
 			for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
 			{
 				SongInfo selected_song = CSongDataManager::GetInstance().GetSongInfo(song_multi_version[i]);
 				if (selected_song.is_prefered)
 				{
 					song = selected_song;
+					has_prefered = true;
 				}
 			}
+			//如果还没有选择过一个版本，则默认选择比特率最高的项
+			int prefered_index = 0;
+			int max_bitrate = 0;
+			for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
+			{
+				SongInfo selected_song = CSongDataManager::GetInstance().GetSongInfo(song_multi_version[i]);
+				if (selected_song.bitrate > max_bitrate)
+				{
+					max_bitrate = selected_song.bitrate;
+					prefered_index = i;
+				}
+			}
+			if (prefered_index > 0)
+				song = CSongDataManager::GetInstance().GetSongInfo(song_multi_version[prefered_index]);
 		}
 	}
 }
@@ -98,9 +114,16 @@ bool CSongMultiVersion::IsEmpty() const
 std::wstring CSongMultiVersion::MakeKey(const SongInfo& song_info)
 {
 	//仅当标题、艺术家、唱片集都不为空时，将标题、艺术家、唱片集相同的曲目作为同一首曲目的不同版本
+	std::wstringstream wss;
 	if (!song_info.title.empty() && !song_info.artist.empty() && !song_info.album.empty())
 	{
-		return song_info.title + L'|' + song_info.artist + L'|' + song_info.album;
+		wss << song_info.title << L'|';
+		std::vector<std::wstring> artist_list;
+		song_info.GetArtistList(artist_list);
+		for (const auto& artist : artist_list)
+			wss << artist << L';';
+		wss << L'|' << song_info.album;
+		return wss.str();
 	}
 	else
 	{
