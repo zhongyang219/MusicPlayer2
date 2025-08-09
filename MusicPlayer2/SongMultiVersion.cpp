@@ -134,6 +134,11 @@ std::wstring CSongMultiVersion::MakeKey(const SongInfo& song_info)
 	}
 }
 
+void CSongMultiVersion::Clear()
+{
+	m_duplicate_songs.clear();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 CSongMultiVersion CSongMultiVersionManager::m_playlist_multi_version_songs;
 

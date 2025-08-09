@@ -533,6 +533,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"media_lib", L"float_playlist_follow_main_wnd", theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd);
     ini.WriteBool(L"config", L"playlist_btn_for_float_playlist", theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist);
     ini.WriteInt(L"media_lib", L"playlist_item_height", theApp.m_media_lib_setting_data.playlist_item_height);
+    ini.WriteBool(L"media_lib", L"merge_song_different_versions", theApp.m_media_lib_setting_data.merge_song_different_versions);
     ini.WriteInt(L"media_lib", L"recent_played_range", static_cast<int>(theApp.m_media_lib_setting_data.recent_played_range));
     ini.WriteInt(L"media_lib", L"display_item", theApp.m_media_lib_setting_data.display_item);
     ini.WriteBool(L"media_lib", L"write_id3_v2_3", theApp.m_media_lib_setting_data.write_id3_v2_3);
@@ -761,6 +762,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist = ini.GetBool(L"config", L"playlist_btn_for_float_playlist", false);
     theApp.m_media_lib_setting_data.playlist_item_height = ini.GetInt(L"media_lib", L"playlist_item_height", 24);
     CCommon::SetNumRange(theApp.m_media_lib_setting_data.playlist_item_height, MIN_PLAYLIST_ITEM_HEIGHT, MAX_PLAYLIST_ITEM_HEIGHT);
+    theApp.m_media_lib_setting_data.merge_song_different_versions = ini.GetBool(L"media_lib", L"merge_song_different_versions", true);
     theApp.m_media_lib_setting_data.recent_played_range = static_cast<RecentPlayedRange>(ini.GetInt(L"media_lib", L"recent_played_range", 0));
     theApp.m_media_lib_setting_data.display_item = ini.GetInt(L"media_lib", L"display_item", (MLDI_ARTIST | MLDI_ALBUM | MLDI_YEAR | MLDI_GENRE | MLDI_ALL | MLDI_RECENT | MLDI_FOLDER_EXPLORE));
     theApp.m_media_lib_setting_data.write_id3_v2_3 = ini.GetBool(L"media_lib", L"write_id3_v2_3", true);

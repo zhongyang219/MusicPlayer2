@@ -116,6 +116,8 @@ bool CMediaLibSettingDlg::InitializeControls()
     // IDC_PLAYLIST_DISPLAY_MODE_OMBO
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_PLAYLIST_ITEM_HEIGHT");
     SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_PLAYLIST_ITEM_HEIGHT_STATIC, temp.c_str());
+    // IDC_MERGE_SONG_DIFFERENT_VERSION_CHECK
+    SetDlgControlText(IDC_MERGE_SONG_DIFFERENT_VERSION_CHECK, L"TXT_OPT_MERGE_SONG_DIFFERENT_VERSION");
     // IDC_PLAYLIST_ITEM_HEIGHT_EDIT
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_MEDIA_LIB_RECENT_PLAY");
     SetDlgItemTextW(IDC_TXT_OPT_MEDIA_LIB_RECENT_PLAY_STATIC, temp.c_str());
@@ -251,6 +253,7 @@ void CMediaLibSettingDlg::GetDataFromUi()
     m_data.show_playlist_tooltip = (IsDlgButtonChecked(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK) != 0);
     m_data.display_format = static_cast<DisplayFormat>(m_playlist_display_mode_combo.GetCurSel());
     m_data.playlist_item_height = m_playlist_item_height_edit.GetValue();
+    m_data.merge_song_different_versions = (IsDlgButtonChecked(IDC_MERGE_SONG_DIFFERENT_VERSION_CHECK) != FALSE);
     m_data.recent_played_range = static_cast<RecentPlayedRange>(m_recent_played_range_combo.GetCurSel());
 
     int cur_index = m_id3v2_type_combo.GetCurSel();
@@ -338,6 +341,7 @@ BOOL CMediaLibSettingDlg::OnInitDialog()
     CheckDlgButton(IDC_FLOAT_PLAYLIST_BY_DEFAULT_CHECK, m_data.playlist_btn_for_float_playlist);
     CheckDlgButton(IDC_FLOAT_PLAYLIST_FOLLOW_MAIN_WND_CHECK, m_data.float_playlist_follow_main_wnd);
     CheckDlgButton(IDC_SHOW_PLAYLIST_TOOLTIP_CHECK, m_data.show_playlist_tooltip);
+    CheckDlgButton(IDC_MERGE_SONG_DIFFERENT_VERSION_CHECK, m_data.merge_song_different_versions);
 
     CheckDlgButton(IDC_ARTIST_CHECK, m_data.display_item & MLDI_ARTIST);
     CheckDlgButton(IDC_ALBUM_CHECK, m_data.display_item & MLDI_ALBUM);

@@ -289,7 +289,8 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 void CPlayer::IniPlaylistComplate()
 {
     //文件夹模式或媒体库模式下，合并同一首歌曲的不同版本
-    if (m_playlist_mode != PM_PLAYLIST)
+    CSongMultiVersionManager::PlaylistMultiVersionSongs().Clear();
+    if (theApp.m_media_lib_setting_data.merge_song_different_versions && m_playlist_mode != PM_PLAYLIST)
         CSongMultiVersionManager::PlaylistMultiVersionSongs().MergeSongsMultiVersion(m_playlist);
 
     //统计列表总时长

@@ -37,6 +37,9 @@ public:
      */
     bool IsEmpty() const;
 
+    //清除曲目的多个版本
+    void Clear();
+
 protected:
     std::wstring MakeKey(const SongInfo& song_info);
 

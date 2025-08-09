@@ -383,6 +383,7 @@ struct MediaLibSettingData
     bool float_playlist_follow_main_wnd{};  //浮动播放列表跟随主窗口
     bool playlist_btn_for_float_playlist{ false };      // 指定主界面中进度条右侧的“显示/隐藏播放列表”按钮的功能是否为显示浮动播放列表
     int playlist_item_height{ 24 };
+    bool merge_song_different_versions{ true };     //文件夹模式和媒体库模式下，合并同一首曲目的不同版本
     RecentPlayedRange recent_played_range{};	//最近播放曲目列表的显示范围
     int display_item{};                 //媒体库显示的项目
     bool write_id3_v2_3{ false };       //写入的ID3V2版本是否为2.3，否则为2.4
