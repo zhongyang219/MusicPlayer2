@@ -96,7 +96,7 @@ std::wstring UiElement::FolderExploreTree::GetEmptyString()
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
 }
 
-int UiElement::FolderExploreTree::GetHoverButtonCount()
+int UiElement::FolderExploreTree::GetHoverButtonCount(int row)
 {
     return BTN_MAX;
 }

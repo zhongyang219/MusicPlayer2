@@ -285,6 +285,7 @@ protected:
     void DrawControlBarBtn(CRect rect, BtnKey btn_type);
     // 绘制一个UI按钮，以text文本作为图标
     void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked = false);
+    void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool checked = false);
 
     virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str);      //为一个按钮添加鼠标提示
     virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);

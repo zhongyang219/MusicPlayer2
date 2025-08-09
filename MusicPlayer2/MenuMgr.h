@@ -83,8 +83,8 @@ public:
         OptDlrcModDefStyleMenu,             // 选项设置->歌词设置->预设方案按钮菜单->子菜单"修改预设方案"
         PropertyAdvMenu,                    // 属性对话框->高级标签信息标签页->列表控件
         PropertyCoverMenu,                  // 属性对话框->专辑封面标签页
-
         FindListMenu,                       // 查找-查找列表右键菜单
+        SongMultiVersionMenu,               // 播放列表"多个版本"菜单
 
         MenuMax // 菜单数量
     };

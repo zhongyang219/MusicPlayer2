@@ -52,14 +52,16 @@ namespace UiElement
         virtual CWnd* GetCmdRecivedWnd() { return nullptr; }        //获取右键菜单命令的接收窗口，如果返回空指针，则在CUIWindowCmdHelper中响应
         virtual void OnDoubleClicked() {};
         virtual void OnClicked() {};
-        virtual int GetHoverButtonCount() { return 0; }     //获取鼠标指向一行时要显示的按钮数量
+        virtual int GetHoverButtonCount(int row) { return 0; }     //获取鼠标指向一行时要显示的按钮数量
         virtual int GetHoverButtonColumn() { return 0; }    //获取鼠标指向时要显示的按钮所在列
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) { return IconMgr::IT_NO_ICON; } //获取鼠标指向一行时按钮的图标
+        virtual void DrawHoverButton(int index, int row);
         virtual std::wstring GetHoverButtonTooltip(int index, int row) { return std::wstring(); }     //获取鼠标指向一行时按钮的鼠标提示
         virtual void OnHoverButtonClicked(int btn_index, int row) {}    //响应鼠标指向时按钮点击
         IPlayerUI::UIButton& GetHoverButtonState(int btn_index);        //获取储存鼠标指向时按钮信息的结构体
         virtual int GetUnHoverIconCount(int row) { return 0; }          //获取鼠标未指向的行要显示的图标数量（列为GetHoverButtonColumn返回的列）
         virtual IconMgr::IconType GetUnHoverIcon(int index, int row) { return IconMgr::IT_NO_ICON; }   //获取鼠标未指向的行要显示的图标
+        virtual void DrawUnHoverButton(CRect rc_button, int index, int row);
 
         virtual bool IsMultipleSelectionEnable() { return false; }      //是否允许多选
         virtual void OnRowCountChanged();       //当列表行数发生变化时响应此函数

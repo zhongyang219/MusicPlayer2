@@ -414,6 +414,9 @@
     <Filter Include="UIElement">
       <UniqueIdentifier>{1380514c-9641-4730-bd05-85329005068b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\SongMultiVersion">
+      <UniqueIdentifier>{f88b196c-9355-460c-ab10-076c68866d8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1047,6 +1050,9 @@
     <ClInclude Include="UIElement\ElementFactory.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="SongMultiVersion.h">
+      <Filter>功能逻辑类\SongMultiVersion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1642,6 +1648,9 @@
     </ClCompile>
     <ClCompile Include="UIElement\ElementFactory.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="SongMultiVersion.cpp">
+      <Filter>功能逻辑类\SongMultiVersion</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

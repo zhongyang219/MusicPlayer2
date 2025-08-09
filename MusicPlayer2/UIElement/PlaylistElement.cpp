@@ -4,6 +4,7 @@
 #include "SongInfoHelper.h"
 #include "MusicPlayerDlg.h"
 #include "MusicPlayerCmdHelper.h"
+#include "SongMultiVersion.h"
 
 std::wstring UiElement::Playlist::GetItemText(int row, int col)
 {
@@ -132,9 +133,12 @@ void UiElement::Playlist::OnClicked()
     }
 }
 
-int UiElement::Playlist::GetHoverButtonCount()
+int UiElement::Playlist::GetHoverButtonCount(int row)
 {
-    return BTN_MAX;
+    if (HasMultiVersion(row))
+        return 4;
+    else
+        return 3;
 }
 
 int UiElement::Playlist::GetHoverButtonColumn()
@@ -144,29 +148,50 @@ int UiElement::Playlist::GetHoverButtonColumn()
 
 IconMgr::IconType UiElement::Playlist::GetHoverButtonIcon(int index, int row)
 {
-    switch (index)
+    if (index == PlayBtnIndex(row, true))
     {
-    case BTN_PLAY: return IconMgr::IT_Play;
-    case BTN_ADD: return IconMgr::IT_Add;
-    case BTN_FAVOURITE:
+        return IconMgr::IT_Play;
+    }
+    else if (index == AddBtnIndex(row, true))
+    {
+        return IconMgr::IT_Add;
+    }
+    else if (index == FavouriteBtnIndex(row, true))
     {
         if (CPlayer::GetInstance().IsFavourite(row))
             return IconMgr::IT_Favorite_Off;
         else
             return IconMgr::IT_Favorite_On;
     }
-    }
     return IconMgr::IT_NO_ICON;
 }
 
 std::wstring UiElement::Playlist::GetHoverButtonTooltip(int index, int row)
 {
-    switch (index)
+    if (index == PlayBtnIndex(row, true))
     {
-    case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
-    case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
-    case BTN_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
     }
+    else if (index == AddBtnIndex(row, true))
+    {
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    }
+    else if (index == FavouriteBtnIndex(row, true))
+    {
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
+    }
+    else if (index == SongVersionBtnIndex(row, true))
+    {
+        int version_num{};
+        if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+        {
+            const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+            const auto& multi_versions = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song_info);
+            version_num = multi_versions.size();
+        }
+        return theApp.m_str_table.LoadTextFormat(L"UI_TIP_BTN_SONG_MULTI_VERSION", { version_num });
+    }
+
     return std::wstring();
 }
 
@@ -174,37 +199,51 @@ void UiElement::Playlist::OnHoverButtonClicked(int btn_index, int row)
 {
     CMusicPlayerCmdHelper helper;
     //点击了“播放”按钮
-    if (btn_index == BTN_PLAY)
+    if (btn_index == PlayBtnIndex(row, true))
     {
         helper.OnPlayTrack(row);
     }
     //点击了“添加到播放列表”按钮
-    else if (btn_index == BTN_ADD)
+    else if (btn_index == AddBtnIndex(row, true))
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
         ShowContextMenu(menu, nullptr);
     }
     //点击了“添加到我喜欢的音乐”按钮
-    else if (btn_index == BTN_FAVOURITE)
+    else if (btn_index == FavouriteBtnIndex(row, true))
     {
         helper.OnAddRemoveFromFavourite(row);
+    }
+    //点击了“多个版本”按钮
+    else if (btn_index == SongVersionBtnIndex(row, true))
+    {
+        if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+        {
+            const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+            helper.InitSongMultiVersionMenu(song_info);
+            CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::SongMultiVersionMenu);
+            ShowContextMenu(menu, nullptr);
+        }
     }
 }
 
 int UiElement::Playlist::GetUnHoverIconCount(int row)
 {
     //鼠标未指向的列，如果曲目在“我喜欢的音乐”中，则显示红心图标
+    int icon_count{};
     if (CPlayer::GetInstance().IsFavourite(row))
-        return 1;
-    else
-        return 0;
+        icon_count++;
+    if (HasMultiVersion(row))
+        icon_count++;
+    return icon_count;
 }
 
 IconMgr::IconType UiElement::Playlist::GetUnHoverIcon(int index, int row)
 {
-    if (index == 0)
+    if (index == FavouriteBtnIndex(row, false))
     {
-        return IconMgr::IT_Favorite_Off;
+        if (CPlayer::GetInstance().IsFavourite(row))
+            return IconMgr::IT_Favorite_Off;
     }
     return IconMgr::IT_NO_ICON;
 }
@@ -229,10 +268,115 @@ bool UiElement::Playlist::IsItemMatchKeyWord(int row, const std::wstring& key_wo
     return false;
 }
 
+bool UiElement::Playlist::HasMultiVersion(int row) const
+{
+    if (CSongMultiVersionManager::PlaylistMultiVersionSongs().IsEmpty())
+        return false;
+
+    if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+    {
+        const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+        const auto& multi_versions = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song_info);
+        //判断是否有曲目的多个版本
+        if (!multi_versions.empty())
+            return true;
+    }
+    return false;
+}
+
+int UiElement::Playlist::PlayBtnIndex(int row, bool hover) const
+{
+    if (hover)
+    {
+        return 0;
+    }
+    return -1;
+}
+
+int UiElement::Playlist::AddBtnIndex(int row, bool hover) const
+{
+    if (hover)
+    {
+        return 1;
+    }
+    return -1;
+}
+
+int UiElement::Playlist::FavouriteBtnIndex(int row, bool hover) const
+{
+    if (hover)
+    {
+        return 2;
+    }
+    else
+    {
+        if (CPlayer::GetInstance().IsFavourite(row))
+            return 0;
+    }
+    return -1;
+}
+
+int UiElement::Playlist::SongVersionBtnIndex(int row, bool hover) const
+{
+    if (HasMultiVersion(row))
+    {
+        if (hover)
+        {
+            return 3;
+        }
+        else
+        {
+            if (CPlayer::GetInstance().IsFavourite(row))
+                return 1;
+            else
+                return 0;
+        }
+    }
+    return -1;
+}
+
 int UiElement::Playlist::GetRowCount()
 {
     int song_num{ CPlayer::GetInstance().GetSongNum() };
     if (song_num == 1 && CPlayer::GetInstance().GetPlayList()[0].IsEmpty())     //不显示播放列表为空时的占位符
         song_num = 0;
     return song_num;
+}
+
+void UiElement::Playlist::DrawHoverButton(int index, int row)
+{
+    if (index == SongVersionBtnIndex(row, true))
+    {
+        CRect rc_button = GetHoverButtonState(index).rect;
+        if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+        {
+            const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+            const auto& multi_versions = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song_info);
+            std::wstring btn_str = std::to_wstring(multi_versions.size());
+            ui->DrawTextButton(rc_button, GetHoverButtonState(index), btn_str.c_str(), true);
+        }
+    }
+    else
+    {
+        UiElement::ListElement::DrawHoverButton(index, row);
+    }
+}
+
+void UiElement::Playlist::DrawUnHoverButton(CRect rc_button, int index, int row)
+{
+    if (index == SongVersionBtnIndex(row, false))
+    {
+        if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+        {
+            const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+            const auto& multi_versions = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song_info);
+            std::wstring btn_str = std::to_wstring(multi_versions.size());
+            CPlayerUIBase::UIButton btn;
+            ui->DrawTextButton(rc_button, btn, btn_str.c_str(), true);
+        }
+    }
+    else
+    {
+        UiElement::ListElement::DrawUnHoverButton(rc_button, index, row);
+    }
 }

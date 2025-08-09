@@ -23,14 +23,15 @@ void UiElement::ListElement::LButtonUp(CPoint point)
 {
     mouse_pressed = false;
     scrollbar_handle_pressed = false;
+    int row{ GetListIndexByPoint(point) };        //点击的行
     //设置按钮的按下状态
-    for (int i{}; i < GetHoverButtonCount(); i++)
+    for (int i{}; i < GetHoverButtonCount(row); i++)
     {
         auto& btn{ GetHoverButtonState(i) };
         if (btn.pressed)
         {
             if (btn.rect.PtInRect(point))
-                OnHoverButtonClicked(i, GetListIndexByPoint(point));
+                OnHoverButtonClicked(i, row);
             btn.pressed = false;
         }
     }
@@ -58,14 +59,14 @@ void UiElement::ListElement::LButtonDown(CPoint point)
         //点击了列表区域
         else
         {
+            int clicked_index{ GetListIndexByPoint(point) };        //点击的行
             //设置按钮的按下状态
-            for (int i{}; i < GetHoverButtonCount(); i++)
+            for (int i{}; i < GetHoverButtonCount(clicked_index); i++)
             {
                 auto& btn{ GetHoverButtonState(i) };
                 btn.pressed = btn.rect.PtInRect(point);
             }
 
-            int clicked_index{ GetListIndexByPoint(point) };        //点击的行
             //允许多选时
             if (IsMultipleSelectionEnable())
             {
@@ -149,9 +150,9 @@ void UiElement::ListElement::MouseMove(CPoint point)
 
     //如果显示了按钮
     bool mouse_in_btn{ false };
-    if (GetHoverButtonCount() > 0)
+    if (GetHoverButtonCount(row) > 0)
     {
-        for (int i{}; i < GetHoverButtonCount(); i++)
+        for (int i{}; i < GetHoverButtonCount(row); i++)
         {
             auto& btn{ GetHoverButtonState(i) };
             if (btn.rect.PtInRect(point) && rect.PtInRect(point))
@@ -436,9 +437,20 @@ void UiElement::ListElement::SelectReversed()
     }
 }
 
+void UiElement::ListElement::DrawHoverButton(int index, int row)
+{
+    CRect rc_button = GetHoverButtonState(index).rect;
+    ui->DrawUIButton(rc_button, GetHoverButtonState(index), GetHoverButtonIcon(index, row));
+}
+
 IPlayerUI::UIButton& UiElement::ListElement::GetHoverButtonState(int btn_index)
 {
     return hover_buttons[btn_index];
+}
+
+void UiElement::ListElement::DrawUnHoverButton(CRect rc_button, int index, int row)
+{
+    ui->DrawUiIcon(rc_button, GetUnHoverIcon(index, row));
 }
 
 void UiElement::ListElement::OnRowCountChanged()

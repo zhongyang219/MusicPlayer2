@@ -107,7 +107,7 @@ std::wstring UiElement::AllTracksList::GetEmptyString()
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
 }
 
-int UiElement::AllTracksList::GetHoverButtonCount()
+int UiElement::AllTracksList::GetHoverButtonCount(int row)
 {
     return BTN_MAX;
 }

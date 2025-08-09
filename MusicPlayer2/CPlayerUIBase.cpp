@@ -1374,6 +1374,11 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
 void CPlayerUIBase::DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked)
 {
     auto& btn = m_buttons[btn_type];
+    DrawTextButton(rect, btn, text, checked);
+}
+
+void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool checked)
+{
     if (btn.enable)
     {
         if (btn.pressed)
@@ -2829,15 +2834,15 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
 
                     CRect rect_text{ rect_cell };
                     //绘制鼠标指向时的按钮
-                    if (list_element->GetHoverButtonCount() > 0 && list_element->GetHoverButtonColumn() == j && rect_cell.PtInRect(list_element->mouse_pos))
+                    if (list_element->GetHoverButtonCount(i) > 0 && list_element->GetHoverButtonColumn() == j && rect_cell.PtInRect(list_element->mouse_pos))
                     {
                         const int btn_size{ DPI(24) };
-                        int buttons_width = btn_size * list_element->GetHoverButtonCount() + DPI(4);    //按钮区域的宽度
+                        int buttons_width = btn_size * list_element->GetHoverButtonCount(i) + DPI(4);    //按钮区域的宽度
                         if (rect_cell.Width() > buttons_width + DPI(40))    //如果单元格宽度太小则不绘制按钮（至少给文本留出40像素）
                         {
                             rect_text.right -= buttons_width;
 
-                            for (int k{}; k < list_element->GetHoverButtonCount(); k++)
+                            for (int k{}; k < list_element->GetHoverButtonCount(i); k++)
                             {
                                 //计算按钮矩形区域
                                 CRect rect_btn{ rect_cell };
@@ -2848,7 +2853,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                                 //保存按钮矩形区域
                                 list_element->GetHoverButtonState(k).rect = rect_btn;
                                 //开始绘制按钮
-                                DrawUIButton(rect_btn, list_element->GetHoverButtonState(k), list_element->GetHoverButtonIcon(k, i));
+                                list_element->DrawHoverButton(k, i);
                             }
                         }
                     }
@@ -2869,7 +2874,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                                 rect_icon.top = rect_cell.top + (rect_cell.Height() - btn_size) / 2;
                                 rect_icon.bottom = rect_icon.top + btn_size;
                                 //绘制图标
-                                DrawUiIcon(rect_icon, list_element->GetUnHoverIcon(k, i));
+                                list_element->DrawUnHoverButton(rect_icon, k, i);
                             }
                         }
                     }

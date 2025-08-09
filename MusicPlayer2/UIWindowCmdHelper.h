@@ -31,6 +31,7 @@ private:
     void OnAllTracksListCommand(UiElement::AllTracksList* all_tracks_list, DWORD command);
     void OnMedialibFolderExploreCommand(UiElement::FolderExploreTree* folder_explore, DWORD command);
     void OnAddToPlaystCommand(UiElement::Playlist* playlist, DWORD command);
+    void OnSetSongMultiVersionCommand(UiElement::Playlist* playlist, DWORD command);
     void OnFolderOrPlaylistSortCommand(DWORD command);
 
     void SetRecentPlayedListMenuState(CMenu* pMenu);
@@ -42,6 +43,7 @@ private:
     void SetAddToPlaylistMenuState(CMenu* pMenu);
     void SetFolderSortMenuState(CMenu* pMenu);
     void SetPlaylistSortMenuState(CMenu* pMenu);
+    void SetSongMultiVersionMenuState(CMenu* pMenu);
 
 private:
     UiElement::Element* m_context_menu_sender{};

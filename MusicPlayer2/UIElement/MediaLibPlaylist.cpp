@@ -69,7 +69,7 @@ void UiElement::MediaLibPlaylist::OnDoubleClicked()
     }
 }
 
-int UiElement::MediaLibPlaylist::GetHoverButtonCount()
+int UiElement::MediaLibPlaylist::GetHoverButtonCount(int row)
 {
     return 1;
 }

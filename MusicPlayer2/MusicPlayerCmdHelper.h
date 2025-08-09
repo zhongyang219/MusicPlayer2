@@ -123,6 +123,9 @@ public:
     bool OnAddRemoveFromFavourite(const SongInfo& song);
     bool OnAddToFavourite();
 
+    void InitSongMultiVersionMenu(const SongInfo& song);
+    void OnSetSongMultiVersion(SongInfo& song, int version_index);
+
 protected:
     void AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path);
 

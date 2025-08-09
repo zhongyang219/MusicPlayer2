@@ -1036,6 +1036,10 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_VIEW_IN_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
         menu.AppendItem(EX_ID(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES), IconMgr::IconType::IT_Info);
         break;
+    case SongMultiVersionMenu:
+        menu.CreateMenu(true, false);
+        menu.SetUpdatePos();
+        break;
     default:
         ASSERT(false);                  // 参数错误或缺少case或缺少break
         menu.CreateMenu(true, true);    // 创建一个空的弹出菜单占位

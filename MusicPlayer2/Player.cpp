@@ -13,6 +13,7 @@
 #include "IniHelper.h"
 #include "CRecentList.h"
 #include "MediaLibHelper.h"
+#include "SongMultiVersion.h"
 
 CPlayer CPlayer::m_instance;
 
@@ -287,6 +288,10 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate()
 {
+    //文件夹模式或媒体库模式下，合并同一首歌曲的不同版本
+    if (m_playlist_mode != PM_PLAYLIST)
+        CSongMultiVersionManager::PlaylistMultiVersionSongs().MergeSongsMultiVersion(m_playlist);
+
     //统计列表总时长
     m_total_time = 0;
     for (const auto& song : m_playlist)

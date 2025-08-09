@@ -108,7 +108,7 @@ std::wstring UiElement::MyFavouriteList::GetEmptyString()
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
 }
 
-int UiElement::MyFavouriteList::GetHoverButtonCount()
+int UiElement::MyFavouriteList::GetHoverButtonCount(int row)
 {
     return BTN_MAX;
 }

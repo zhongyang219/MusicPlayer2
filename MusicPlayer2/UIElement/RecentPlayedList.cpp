@@ -81,7 +81,7 @@ CMenu* UiElement::RecentPlayedList::GetContextMenu(bool item_selected)
     return nullptr;
 }
 
-int UiElement::RecentPlayedList::GetHoverButtonCount()
+int UiElement::RecentPlayedList::GetHoverButtonCount(int row)
 {
     return 1;
 }

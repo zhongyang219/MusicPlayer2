@@ -24,7 +24,7 @@ namespace UiElement
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual void OnDoubleClicked() override;
-        virtual int GetHoverButtonCount() override;
+        virtual int GetHoverButtonCount(int row) override;
         virtual int GetHoverButtonColumn() override;
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
         virtual std::wstring GetHoverButtonTooltip(int index, int row) override;

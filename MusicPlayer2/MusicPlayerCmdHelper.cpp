@@ -16,6 +16,7 @@
 #include "UiMediaLibItemMgr.h"
 #include "SongInfoHelper.h"
 #include "CRecentList.h"
+#include "SongMultiVersion.h"
 
 CMusicPlayerCmdHelper::CMusicPlayerCmdHelper(CWnd* pOwner)
     : m_pOwner(pOwner)
@@ -1353,6 +1354,65 @@ bool CMusicPlayerCmdHelper::OnAddToFavourite()
     }
 
     return false;
+}
+
+void CMusicPlayerCmdHelper::InitSongMultiVersionMenu(const SongInfo& song)
+{
+    vector<MenuMgr::MenuItem> menu_list;
+    const auto& songs_multi_version{ CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song) };
+    if (!songs_multi_version.empty())
+    {
+        for (const auto& song_key : songs_multi_version)
+        {
+            UINT id = ID_SONGS_MULTI_VERSION_ITEM_START + menu_list.size();
+            if (id <= ID_SONGS_MULTI_VERSION_ITEM_MAX)
+            {
+                SongInfo multi_version_song = CSongDataManager::GetInstance().GetSongInfo(song_key);
+                std::wstringstream wss;
+                wss << multi_version_song.file_path;
+                if (multi_version_song.is_cue)
+                {
+                    wss << L',' << multi_version_song.track;
+                }
+                wss << L'\t' << multi_version_song.bitrate << L"kbps";
+                menu_list.emplace_back(MenuMgr::MenuItem{ id, IconMgr::IT_NO_ICON, wss.str() });
+            }
+        }
+    }
+    else
+    {
+        std::wstring str = theApp.m_str_table.LoadText(L"TXT_NO_MULTI_VERSION");
+        menu_list.emplace_back(MenuMgr::MenuItem{ ID_SONGS_MULTI_VERSION_ITEM_START, IconMgr::IT_NO_ICON, str });
+    }
+    theApp.m_menu_mgr.UpdateMenu(MenuMgr::SongMultiVersionMenu, menu_list);
+    if (songs_multi_version.empty())
+        theApp.m_menu_mgr.GetMenu(MenuMgr::SongMultiVersionMenu)->EnableMenuItem(ID_SONGS_MULTI_VERSION_ITEM_START, MF_BYCOMMAND | MF_GRAYED);
+
+}
+
+void CMusicPlayerCmdHelper::OnSetSongMultiVersion(SongInfo& song, int version_index)
+{
+    if (CSongMultiVersionManager::PlaylistMultiVersionSongs().IsEmpty())
+        return;
+
+    const auto& multi_versions{ CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song) };
+    if (version_index >= 0 && version_index < static_cast<int>(multi_versions.size()))
+    {
+        if (song != multi_versions[version_index])
+        {
+            bool need_reopen{ song == CPlayer::GetInstance().GetCurrentSongInfo() };
+            CPlayer::ReOpen reopen(need_reopen);
+            if (reopen.IsLockSuccess())
+            {
+                CSongMultiVersionManager::PlaylistMultiVersionSongs().SelectSongsMultiVersion(version_index, song);
+            }
+            else
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+            }
+        }
+    }
 }
 
 void CMusicPlayerCmdHelper::AddToPlaylist(const std::vector<SongInfo>& songs, const std::wstring& playlist_path)

@@ -32,7 +32,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
     // 构造CArchive对象
     CArchive ar(&file, CArchive::store);
     // 写数据
-    ar << CString(_T("2.780"));			//写入数据版本
+    ar << CString(_T("2.781"));			//写入数据版本
     ar << static_cast<int>(m_song_data.size());		//写入映射容器的大小
     for (const auto& song_data : m_song_data)
     {
@@ -71,6 +71,7 @@ void CSongDataManager::SaveSongData(std::wstring path)
             << song_data.second.total_tracks
             << song_data.second.disc_num
             << song_data.second.total_discs
+            << song_data.second.is_prefered
             ;
     }
     // 关闭CArchive对象
@@ -245,6 +246,10 @@ void CSongDataManager::LoadSongData(std::wstring path)
                 ar >> song_info.total_tracks;
                 ar >> song_info.disc_num;
                 ar >> song_info.total_discs;
+            }
+            if (m_data_version >= _T("2.781"))
+            {
+                ar >> song_info.is_prefered;
             }
             m_song_data[song_info] = song_info;     // 将读取到的一首歌曲信息添加到映射容器中
         }

@@ -19,6 +19,7 @@
 #include "UIElement/AllTracksList.h"
 #include "UIElement/FolderExploreTree.h"
 #include "UIElement/PlaylistElement.h"
+#include "SongMultiVersion.h"
 
 CUIWindowCmdHelper::CUIWindowCmdHelper(UiElement::Element* sender)
     : m_context_menu_sender(sender)
@@ -67,6 +68,7 @@ void CUIWindowCmdHelper::OnUiCommand(DWORD command)
     if (playlist != nullptr)
     {
         OnAddToPlaystCommand(playlist, command);
+        OnSetSongMultiVersionCommand(playlist, command);
     }
     OnFolderOrPlaylistSortCommand(command);
 }
@@ -108,6 +110,10 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistSortMenu))
     {
         SetPlaylistSortMenuState(pMenu);
+    }
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::SongMultiVersionMenu))
+    {
+        SetSongMultiVersionMenuState(pMenu);
     }
     else
     {
@@ -640,6 +646,17 @@ void CUIWindowCmdHelper::OnAddToPlaystCommand(UiElement::Playlist* playlist, DWO
     }
 }
 
+void CUIWindowCmdHelper::OnSetSongMultiVersionCommand(UiElement::Playlist* playlist, DWORD command)
+{
+    int item_selected{ playlist->GetItemSelected() };
+    if (item_selected < 0 || item_selected >= CPlayer::GetInstance().GetSongNum())
+        return;
+    SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[item_selected];
+    int version_index = command - ID_SONGS_MULTI_VERSION_ITEM_START;
+    CMusicPlayerCmdHelper helper;
+    helper.OnSetSongMultiVersion(song_info, version_index);
+}
+
 void CUIWindowCmdHelper::OnFolderOrPlaylistSortCommand(DWORD command)
 {
     //文件夹-最近播放
@@ -869,5 +886,20 @@ void CUIWindowCmdHelper::SetPlaylistSortMenuState(CMenu* pMenu)
     case CRecentList::listSortMode::SM_RECENT_PLAYED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, MF_BYCOMMAND | MF_CHECKED); break;
     case CRecentList::listSortMode::SM_RECENT_CREATED: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_RECENT_CREATED, MF_BYCOMMAND | MF_CHECKED); break;
     case CRecentList::listSortMode::SM_PATH: pMenu->CheckMenuRadioItem(ID_LIB_PLAYLIST_SORT_RECENT_PLAYED, ID_LIB_PLAYLIST_SORT_NAME, ID_LIB_PLAYLIST_SORT_NAME, MF_BYCOMMAND | MF_CHECKED); break;
+    }
+}
+
+void CUIWindowCmdHelper::SetSongMultiVersionMenuState(CMenu* pMenu)
+{
+    UiElement::Playlist* playlist{ dynamic_cast<UiElement::Playlist*>(m_context_menu_sender) };
+    if (playlist != nullptr && !CSongMultiVersionManager::PlaylistMultiVersionSongs().IsEmpty())
+    {
+        int item_selected{ playlist->GetItemSelected() };
+        if (item_selected >= 0 && item_selected < CPlayer::GetInstance().GetSongNum())
+        {
+            SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[item_selected];
+            int version_index = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongMultiVersionIndex(song_info);
+            pMenu->CheckMenuRadioItem(0, pMenu->GetMenuItemCount() - 1, version_index, MF_BYPOSITION);
+        }
     }
 }

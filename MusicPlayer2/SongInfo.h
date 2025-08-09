@@ -77,6 +77,7 @@ struct SongInfo
     BYTE total_tracks{};                // 曲目总数
     BYTE disc_num{};                    // CD序号
     BYTE total_discs{};                 // CD总数
+    bool is_prefered{};                 // 有同一首曲目的多个版本时，是否为选择的版本 <仅在媒体库内使用>
 
     // 如果为true，则不在线下载歌词<flags bit0>
     bool NoOnlineLyric() const;

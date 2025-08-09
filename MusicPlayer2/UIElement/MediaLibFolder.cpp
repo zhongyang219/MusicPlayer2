@@ -69,7 +69,7 @@ void UiElement::MediaLibFolder::OnDoubleClicked()
     }
 }
 
-int UiElement::MediaLibFolder::GetHoverButtonCount()
+int UiElement::MediaLibFolder::GetHoverButtonCount(int row)
 {
     return BTN_MAX;
 }
