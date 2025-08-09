@@ -342,6 +342,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_MORE_RECENT_ITEMS, &CMusicPlayerDlg::OnMoreRecentItems)
     ON_WM_NCCALCSIZE()
     ON_MESSAGE(WM_CLEAR_UI_SERCH_BOX, &CMusicPlayerDlg::OnClearUiSerchBox)
+    ON_WM_NCACTIVATE()
 END_MESSAGE_MAP()
 
 
@@ -6686,4 +6687,15 @@ afx_msg LRESULT CMusicPlayerDlg::OnClearUiSerchBox(WPARAM wParam, LPARAM lParam)
     }
 
     return 0;
+}
+
+BOOL CMusicPlayerDlg::OnNcActivate(BOOL bActive)
+{
+    if (theApp.m_app_setting_data.remove_titlebar_top_frame && CWinVersionHelper::IsWindows10OrLater() && !theApp.m_app_setting_data.show_window_frame && !IsZoomed() && !theApp.m_ui_data.full_screen) 
+    {
+        // 阻止默认窗口过程绘制非客户区边框
+        return CMainDialogBase::DefWindowProc(WM_NCACTIVATE, (WPARAM)bActive, (LPARAM)-1);
+    }
+
+    return CMainDialogBase::OnNcActivate(bActive);
 }
