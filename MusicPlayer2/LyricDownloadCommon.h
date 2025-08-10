@@ -38,6 +38,7 @@ public:
 		wstring artist;		//歌曲的艺术家
 		wstring album;		//歌曲的唱片集
 		int duration{};     //时长
+		int track{};		//曲目序号
 	};
 
 	/**

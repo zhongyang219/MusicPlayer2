@@ -70,6 +70,9 @@ void CQQMusicLyricDownload::DisposeSearchResult(vector<ItemInfo>& down_list, con
                 item.artist += CCommon::StrToUnicode(artist.at("name").get<std::string>(), CodeType::UTF8);;
                 item.artist += L';';
             }
+            int track = res.at("cdIdx").get<int>();
+            if (track >= 0)
+                item.track = track;
             if (!item.artist.empty())
                 item.artist.pop_back();
             down_list.push_back(item);

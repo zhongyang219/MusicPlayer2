@@ -704,6 +704,8 @@ afx_msg LRESULT CPropertyTabDlg::OnPorpertyOnlineInfoAcquired(WPARAM wParam, LPA
         song.title = pItem->title;
         song.artist = pItem->artist;
         song.album = pItem->album;
+        if (pItem->track > 0)
+            song.track = pItem->track;
         if (m_comment_edit.GetWindowTextLength() <= 0)
         {
             CString comment{ _T("id:") };
