@@ -1,6 +1,7 @@
 #pragma once
 #include "SongInfo.h"
 
+//用于管理当前播放列表中同一首歌曲的不同版本
 class CSongMultiVersion
 {
 public:
@@ -29,7 +30,7 @@ public:
      * @param   song 正在播放队列中的曲目
      * @return 
      */
-    const std::vector<SongKey>& GetSongsMultiVersion(const SongInfo& song);
+    const std::vector<SongInfo>& GetSongsMultiVersion(const SongInfo& song);
 
     /**
      * @brief   是否为空（正在播放队列中没有曲目有多个版本）
@@ -43,8 +44,14 @@ public:
 protected:
     std::wstring MakeKey(const SongInfo& song_info);
 
+    //从SongDataMap中查询是否为选中的曲目
+    bool IsSongPrefered(const SongInfo& song_info);
+
+    //将是否选中标志写入到SongDataMap
+    void SetSongPrefered(const SongInfo& song_info, bool is_prefered);
+
 private:
-    std::map<std::wstring, std::vector<SongKey>> m_duplicate_songs;    //保存同一曲目的不同版本（key 为 SongInfo 中的 "title|artist|album"）
+    std::map<std::wstring, std::vector<SongInfo>> m_duplicate_songs;    //保存同一曲目的不同版本（key 为 SongInfo 中的 "title|artist|album"）
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////

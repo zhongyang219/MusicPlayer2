@@ -1362,12 +1362,11 @@ void CMusicPlayerCmdHelper::InitSongMultiVersionMenu(const SongInfo& song)
     const auto& songs_multi_version{ CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song) };
     if (!songs_multi_version.empty())
     {
-        for (const auto& song_key : songs_multi_version)
+        for (const auto& multi_version_song : songs_multi_version)
         {
             UINT id = ID_SONGS_MULTI_VERSION_ITEM_START + menu_list.size();
             if (id <= ID_SONGS_MULTI_VERSION_ITEM_MAX)
             {
-                SongInfo multi_version_song = CSongDataManager::GetInstance().GetSongInfo(song_key);
                 std::wstringstream wss;
                 wss << multi_version_song.file_path;
                 if (multi_version_song.is_cue)

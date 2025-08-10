@@ -37,8 +37,8 @@ void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
 			bool has_prefered = false;
 			for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
 			{
-				SongInfo selected_song = CSongDataManager::GetInstance().GetSongInfo(song_multi_version[i]);
-				if (selected_song.is_prefered)
+				const SongInfo& selected_song = song_multi_version[i];
+				if (IsSongPrefered(selected_song))
 				{
 					song = selected_song;
 					has_prefered = true;
@@ -49,7 +49,7 @@ void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
 			int max_bitrate = 0;
 			for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
 			{
-				SongInfo selected_song = CSongDataManager::GetInstance().GetSongInfo(song_multi_version[i]);
+				const SongInfo& selected_song = song_multi_version[i];
 				if (selected_song.bitrate > max_bitrate)
 				{
 					max_bitrate = selected_song.bitrate;
@@ -57,7 +57,7 @@ void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
 				}
 			}
 			if (prefered_index > 0)
-				song = CSongDataManager::GetInstance().GetSongInfo(song_multi_version[prefered_index]);
+				song = song_multi_version[prefered_index];
 		}
 	}
 }
@@ -67,12 +67,27 @@ void CSongMultiVersion::SelectSongsMultiVersion(int index, SongInfo& cur_song)
 	auto iter = m_duplicate_songs.find(MakeKey(cur_song));
 	if (iter != m_duplicate_songs.end())
 	{
+		//获取之前选择的版本序号
+		int selected_index = -1;
 		for (int i = 0; i < static_cast<int>(iter->second.size()); i++)
 		{
-			SongInfo selected_song = CSongDataManager::GetInstance().GetSongInfo(iter->second[i]);
-			selected_song.is_prefered = (i == index);
-			CSongDataManager::GetInstance().AddItem(selected_song);
-			if (i == index)
+			if (IsSongPrefered(iter->second[i]))
+			{
+				selected_index = i;
+				break;
+			}
+		}
+		//将当前曲目保存到之前选中的版本
+		if (selected_index >= 0)
+			iter->second[selected_index] = cur_song;
+
+		//设置新的选中版本
+		for (int i = 0; i < static_cast<int>(iter->second.size()); i++)
+		{
+			bool is_prefered = (i == index);
+			const SongInfo& selected_song = iter->second[i];
+			SetSongPrefered(selected_song, is_prefered);
+			if (is_prefered)
 				cur_song = selected_song;
 		}
 	}
@@ -85,17 +100,16 @@ int CSongMultiVersion::GetSongMultiVersionIndex(const SongInfo& cur_song)
 	{
 		for (int i = 0; i < static_cast<int>(iter->second.size()); i++)
 		{
-			SongInfo selected_song = CSongDataManager::GetInstance().GetSongInfo(iter->second[i]);
-			if (selected_song.is_prefered)
+			if (IsSongPrefered(iter->second[i]))
 				return i;
 		}
 	}
 	return 0;
 }
 
-const std::vector<SongKey>& CSongMultiVersion::GetSongsMultiVersion(const SongInfo& song)
+const std::vector<SongInfo>& CSongMultiVersion::GetSongsMultiVersion(const SongInfo& song)
 {
-	const static std::vector<SongKey> empty_vec;
+	const static std::vector<SongInfo> empty_vec;
 	if (m_duplicate_songs.empty())
 		return empty_vec;
 	auto iter = m_duplicate_songs.find(MakeKey(song));
@@ -113,9 +127,9 @@ bool CSongMultiVersion::IsEmpty() const
 
 std::wstring CSongMultiVersion::MakeKey(const SongInfo& song_info)
 {
-	//仅当标题、艺术家、唱片集都不为空时，将标题、艺术家、唱片集相同的曲目作为同一首曲目的不同版本
+	//仅当标题、艺术家都不为空时，将标题、艺术家、唱片集相同的曲目作为同一首曲目的不同版本
 	std::wstringstream wss;
-	if (!song_info.title.empty() && !song_info.artist.empty() && !song_info.album.empty())
+	if (!song_info.title.empty() && !song_info.artist.empty())
 	{
 		wss << song_info.title << L'|';
 		std::vector<std::wstring> artist_list;
@@ -132,6 +146,19 @@ std::wstring CSongMultiVersion::MakeKey(const SongInfo& song_info)
 		else
 			return song_info.file_path;
 	}
+}
+
+bool CSongMultiVersion::IsSongPrefered(const SongInfo& song_info)
+{
+	SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(song_info);
+	return song.is_prefered;
+}
+
+void CSongMultiVersion::SetSongPrefered(const SongInfo& song_info, bool is_prefered)
+{
+	SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(song_info);
+	song.is_prefered = is_prefered;
+	CSongDataManager::GetInstance().AddItem(song);
 }
 
 void CSongMultiVersion::Clear()

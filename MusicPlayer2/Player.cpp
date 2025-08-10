@@ -288,6 +288,14 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate()
 {
+    //检查列表中的曲目是否在“我喜欢”播放列表中
+    CPlaylistFile favourite_playlist;
+    favourite_playlist.LoadFromFile(CRecentList::Instance().GetSpecPlaylist(CRecentList::PT_FAVOURITE).path);
+    for (auto& item : m_playlist)
+    {
+        item.is_favourite = favourite_playlist.IsSongInPlaylist(item);
+    }
+
     //文件夹模式或媒体库模式下，合并同一首歌曲的不同版本
     CSongMultiVersionManager::PlaylistMultiVersionSongs().Clear();
     if (theApp.m_media_lib_setting_data.merge_song_different_versions && m_playlist_mode != PM_PLAYLIST)
@@ -298,14 +306,6 @@ void CPlayer::IniPlaylistComplate()
     for (const auto& song : m_playlist)
     {
         m_total_time += song.length().toInt();
-    }
-
-    //检查列表中的曲目是否在“我喜欢”播放列表中
-    CPlaylistFile favourite_playlist;
-    favourite_playlist.LoadFromFile(CRecentList::Instance().GetSpecPlaylist(CRecentList::PT_FAVOURITE).path);
-    for (auto& item : m_playlist)
-    {
-        item.is_favourite = favourite_playlist.IsSongInPlaylist(item);
     }
 
     ASSERT(m_playing == 0);
