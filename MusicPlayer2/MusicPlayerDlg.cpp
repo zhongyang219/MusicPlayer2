@@ -496,6 +496,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"fade_time", theApp.m_play_setting_data.fade_time);
     ini.WriteBool(L"config", L"use_media_trans_control", theApp.m_play_setting_data.use_media_trans_control);
     ini.WriteBool(L"config", L"remember_last_position", theApp.m_play_setting_data.remember_last_position);
+    ini.WriteBool(L"config", L"replay_gain", theApp.m_play_setting_data.replay_gain);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
     ini.WriteBool(L"config", L"use_mci", theApp.m_play_setting_data.use_mci);
     ini.WriteBool(L"config", L"use_ffmpeg", theApp.m_play_setting_data.use_ffmpeg);
@@ -710,6 +711,7 @@ void CMusicPlayerDlg::LoadConfig()
     else
         theApp.m_play_setting_data.use_media_trans_control = false;
     theApp.m_play_setting_data.remember_last_position = ini.GetBool(L"config", L"remember_last_position", true);
+    theApp.m_play_setting_data.replay_gain = ini.GetBool(L"config", L"replay_gain", false);
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
     theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
     theApp.m_play_setting_data.use_ffmpeg = ini.GetBool(L"config", L"use_ffmpeg", false);

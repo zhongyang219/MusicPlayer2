@@ -322,6 +322,7 @@ struct PlaySettingData
     int fade_time{ 500 };                      //淡入淡出时间（毫秒）
     bool use_media_trans_control{};             //使用系统MediaTransportControls
     bool remember_last_position{ true };        //是否记住上次播放位置
+    bool replay_gain{ false };                  //响度均衡
 
     bool use_mci{ false };              //是否使用MCI内核
     /// 是否使用ffmpeg内核
