@@ -8,24 +8,25 @@
       <stackElement margin-left="4" margin-right="4" margin-bottom="8" show_indicator="true" indicator_offset="-8">
         <!--第1页-->
         <horizontalLayout>
-          <verticalLayout>
-            <albumCover square="true" height="70%" margin="8"/>
+          <verticalLayout margin-bottom="12">
+            <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
             <text type="artist" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
-            <placeHolder/>
-            <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-bottom="4" min-height="24" max-height="80"/>
+            <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-8" min-height="24" max-height="80"/>
           </verticalLayout>
           <lyrics margin="4" margin-left="8" margin-bottom="16"/>
         </horizontalLayout>
         <!--第2页-->
         <horizontalLayout>
+          <!--左侧部分-->
           <verticalLayout margin-bottom="12">
             <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
             <text type="artist" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
-            <lyrics hide-height="200" height="15%" margin-top="4"/>
-            <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-8" margin-bottom="-12" min-height="24" max-height="80"/>
+            <lyrics hide-height="200" height="18%" margin-top="4"/>
+            <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-8" min-height="24" max-height="80"/>
           </verticalLayout>
+          <!--右侧部分-->
           <verticalLayout margin="4" margin-left="8" margin-bottom="16">
             <playlistIndicator height="30" margin-bottom="4"/>
             <searchBox height="26" margin-bottom="4"/>
@@ -34,8 +35,9 @@
         </horizontalLayout>
         <!--第3页-->
         <horizontalLayout>
-          <verticalLayout margin="8" margin-bottom="12">
-            <rectangle height="80">
+          <!--左侧部分-->
+          <verticalLayout margin-bottom="12">
+            <rectangle height="80" margin="8">
               <horizontalLayout margin="4">
                 <albumCover square="true" width="64" margin-left="4"/>
                 <verticalLayout margin-left="16">
@@ -44,9 +46,10 @@
                 </verticalLayout>
               </horizontalLayout>
             </rectangle>
-            <lyrics margin-top="14" hide-height="120"/>
+            <lyrics margin-top="4" margin-left="8" margin-right="8" hide-height="120"/>
             <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" min-height="24" max-height="80"/>
           </verticalLayout>
+          <!--右侧部分-->
           <verticalLayout margin="4" margin-left="8" margin-bottom="16">
             <playlistIndicator height="30" margin-bottom="4"/>
             <searchBox height="26" margin-bottom="4"/>
@@ -54,9 +57,11 @@
           </verticalLayout>
         </horizontalLayout>
       </stackElement>
+      <!--工具栏-->
       <rectangle height="24" margin="4" margin-bottom="0">
         <toolbar show_translate_btn="true"/>
       </rectangle>
+      <!--控制条-->
       <classicalControlBar margin="4"/>
     </verticalLayout>
   </ui>
@@ -70,12 +75,14 @@
         </horizontalLayout>
         <text type="format" style="scroll" height="20"/>
         <stackElement click_to_switch="false" show_indicator="true" margin-bottom="4">
+          <!--第1页-->
           <verticalLayout margin-bottom="4">
             <albumCover square="true" margin="8"/>
             <text type="title" alignment="center" style="scroll" height="26" font_size="10" />
             <text type="artist" alignment="center" style="scroll" height="20" font_size="9" margin-top="0" />
             <lyrics hide-height="200" height="18%" margin-top="4"/>
           </verticalLayout>
+          <!--第2页-->
           <verticalLayout margin="8">
             <rectangle height="80">
               <horizontalLayout margin="4">
@@ -88,6 +95,7 @@
             </rectangle>
             <lyrics margin-top="14" hide-height="120"/>
           </verticalLayout>
+          <!--第1页-->
           <playlist margin="8"/>
         </stackElement>
         <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-6" margin-bottom="-12" min-height="24" max-height="80"/>
