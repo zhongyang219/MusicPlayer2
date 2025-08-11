@@ -60,6 +60,8 @@ public:
 
     static void GetAnyFilePropertyMap(const wstring& file_path, std::map<wstring, wstring>& property_map);
 
+    static float GetReplayGain(const wchar_t* file_path);
+
     //读取歌词
     static wstring GetMpegLyric(const wstring& file_path);
     static wstring GetM4aLyric(const wstring& file_path);

@@ -62,6 +62,7 @@ public:
     };
 
     virtual void ApplyEqualizer(int channel, int gain) override;
+    void ApplyReplayGain(float gain);
     virtual void SetReverb(int mix, int time) override;
     virtual void ClearReverb() override;
     virtual void GetFFTData(float fft_data[FFT_SAMPLE]) override;
@@ -107,6 +108,7 @@ private:
 
     int m_equ_handle[EQU_CH_NUM]{};		//均衡器通道的句柄
     int m_reverb_handle{};		//混响的句柄
+    int m_replaygain_handle{};  // 响度均衡的句柄
     const float FREQ_TABLE[EQU_CH_NUM]{ 80, 125, 250, 500, 1000, 1500, 2000, 4000, 8000, 1600 };		//每个均衡器通道的中心频率
 
     int m_volume{60};

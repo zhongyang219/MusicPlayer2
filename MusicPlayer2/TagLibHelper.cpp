@@ -1091,6 +1091,21 @@ void CTagLibHelper::GetAnyFilePropertyMap(const std::wstring& file_path, std::ma
     getAnyFilePropertyMap(file, property_map);
 }
 
+float CTagLibHelper::GetReplayGain(const wchar_t* file_path) {
+    FileRef f(file_path);
+    if (f.tag()) {
+        TagLib::PropertyMap tags = f.file()->properties();
+        if (tags.contains("REPLAYGAIN_TRACK_GAIN")) {
+            std::string gainStr = tags["REPLAYGAIN_TRACK_GAIN"].front().to8Bit();
+            return std::stof(gainStr) + 18 - 10; // 提取数值（如 "-6.2 dB" → -6.2f）
+            // rsgain的目标标准化响度是-18 LUFS，表达的是再增加gain dB的响度就到达-18 LUFS了
+            // 但是由于平时下载的音乐的响度计算平均后为-10 LUFS
+            // 这里要计算的是再增加多少dB的响度就到达-10 LUFS
+        }
+    }
+    return 0.0f; // 默认无增益
+}
+
 std::wstring CTagLibHelper::GetMpegLyric(const std::wstring& file_path)
 {
     MPEG::File file(file_path.c_str());
