@@ -540,9 +540,12 @@ void CFindDlg::OnPlayItemInFolderMode()
             MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
         }
         else
-            OnCancel();
+        {
+            //向父窗口发送IDCANCEL命令
+            CWnd* pParent = GetParentWindow();
+            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
+        }
     }
-
 }
 
 
@@ -631,7 +634,11 @@ void CFindDlg::OnAddToNewPlaylistAndPlay()
             MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
         }
         else
-            OnCancel();
+        {
+            //向父窗口发送IDCANCEL命令
+            CWnd* pParent = GetParentWindow();
+            ::SendMessage(pParent->GetSafeHwnd(), WM_COMMAND, IDCANCEL, 0);
+        }
     }
 }
 
