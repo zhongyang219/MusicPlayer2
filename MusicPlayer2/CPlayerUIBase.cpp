@@ -1014,7 +1014,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
     int available_width = rect.right - rc_tmp.right;
     if (available_width >= DPI(50) && !tag_str.empty())
     {
-        int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
+        int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(8);
         rc_tmp.MoveToX(rc_tmp.right);
         rc_tmp.right = rc_tmp.left + width;
         DrawPlayTag(rc_tmp, tag_str.c_str());
@@ -1032,7 +1032,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
         available_width = rect.right - rc_tmp.right;
         if (available_width >= DPI(50))
         {
-            int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
+            int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(8);
             rc_tmp.MoveToX(rc_tmp.right + DPI(2));
             rc_tmp.right = rc_tmp.left + width;
             DrawPlayTag(rc_tmp, tag_str.c_str());
@@ -1050,7 +1050,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
         available_width = rect.right - rc_tmp.right;
         if (available_width >= DPI(50))
         {
-            int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(4);
+            int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(8);
             rc_tmp.MoveToX(rc_tmp.right + DPI(2));
             rc_tmp.right = rc_tmp.left + width;
             DrawPlayTag(rc_tmp, tag_str.c_str());
@@ -1076,10 +1076,11 @@ void CPlayerUIBase::DrawControlBarBtn(CRect rect, BtnKey btn_type)
 void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
 {
     DrawAreaGuard guard(&m_draw, rect);
-    CRect rc_border = rect;
-    rc_border.top += DPI(2);
-    rc_border.bottom -= DPI(1);
-    m_draw.DrawRectOutLine(rc_border, m_colors.color_text, DPI(1), false);
+    //CRect rc_border = rect;
+    //rc_border.top += DPI(2);
+    //rc_border.bottom -= DPI(1);
+    //m_draw.DrawRectOutLine(rc_border, m_colors.color_text, DPI(1), false);
+    DrawRectangle(rect);
     m_draw.DrawWindowText(rect, str_text, m_colors.color_text, Alignment::CENTER);
 }
 
