@@ -246,6 +246,8 @@ void CBassCore::SetFXHandle()
     }
     //设置混响的句柄
     m_reverb_handle = BASS_ChannelSetFX(m_musicStream, BASS_FX_DX8_REVERB, 1);
+    //设置响度均衡的句柄
+    m_replaygain_handle = BASS_ChannelSetFX(m_musicStream, BASS_FX_BFX_VOLUME, 1);  // 这里优先级待定
 }
 
 void CBassCore::RemoveFXHandle()
@@ -266,6 +268,9 @@ void CBassCore::RemoveFXHandle()
         BASS_ChannelRemoveFX(m_musicStream, m_reverb_handle);
         m_reverb_handle = 0;
     }
+    //移除响度均衡的句柄
+    BASS_ChannelRemoveFX(m_musicStream, m_replaygain_handle);
+    m_replaygain_handle = 0;
 }
 
 void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag)
@@ -359,6 +364,7 @@ void CBassCore::Open(const wchar_t * file_path)
     }
     SetFXHandle();
     m_musicStream = BASS_FX_TempoCreate(m_musicStream, BASS_FX_FREESOURCE);
+    ApplyReplayGain(CAudioTag::GetAudioReplayGain(file_path));  // 在这里就需要用响度均衡了
 }
 
 void CBassCore::Close()
@@ -851,6 +857,14 @@ void CBassCore::ApplyEqualizer(int channel, int gain)
     parameq.fGain = static_cast<float>(gain);
     BASS_FXSetParameters(m_equ_handle[channel], &parameq);
 
+}
+
+void CBassCore::ApplyReplayGain(float gain) {
+    BASS_BFX_VOLUME vol_params;
+    vol_params.lChannel = -1;  // 所有声道
+    vol_params.fVolume = pow(10.0f, gain / 20.0f);  // dB转线性系数
+    // 此公式来源于声压比与dB的转换公式 gaindB = 20 * log_{10}(V_1 / V_0)
+    BASS_FXSetParameters(m_replaygain_handle, &vol_params);
 }
 
 void CBassCore::SetReverb(int mix, int time)

@@ -298,6 +298,10 @@ wstring CAudioTag::GetAudioLyric()
     return wstring();
 }
 
+float CAudioTag::GetAudioReplayGain(const wchar_t* file_path) {
+    return CTagLibHelper::GetReplayGain(file_path);
+}
+
 bool CAudioTag::WriteAudioLyric(const wstring& lyric_contents)
 {
     switch (m_type)
