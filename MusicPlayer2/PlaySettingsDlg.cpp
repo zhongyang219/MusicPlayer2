@@ -101,6 +101,7 @@ void CPlaySettingsDlg::GetDataFromUi()
     m_data.remember_last_position = (IsDlgButtonChecked(IDC_REMEMBER_LAST_POSITION_CHECK) != FALSE);
     m_data.disable_screen_sleep_when_fullscreen_play = (IsDlgButtonChecked(IDC_DISABLE_SCREEN_SLEEP_CHECK) != FALSE);
     m_data.open_single_file_in_folder_mode = (IsDlgButtonChecked(IDC_PLAY_IN_FOLDER_MODE_RADIO) != FALSE);
+    m_data.replay_gain = (IsDlgButtonChecked(IDC_REPLAY_GAIN_CHECK) != FALSE);
 
     m_data.use_mci = (IsDlgButtonChecked(IDC_MCI_RADIO) != FALSE);
     m_data.use_ffmpeg = (IsDlgButtonChecked(IDC_FFMPEG_RADIO) != FALSE);
@@ -138,6 +139,8 @@ bool CPlaySettingsDlg::InitializeControls()
     SetDlgItemTextW(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_USE_MEDIA_TRANS_CONTROL");
     SetDlgItemTextW(IDC_USE_MEDIA_TRANS_CONTORL_CHECK, temp.c_str());
+    temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_REPLAY_GAIN");
+    SetDlgItemTextW(IDC_REPLAY_GAIN_CHECK, temp.c_str());
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_CORE");
 
     SetDlgControlText(IDC_REMEMBER_LAST_POSITION_CHECK, L"TXT_OPT_REMEMBER_LAST_POSITION");
@@ -238,6 +241,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
 
     m_toolTip.Create(this);
     m_toolTip.SetMaxTipWidth(theApp.DPI(300));
+    m_toolTip.AddTool(GetDlgItem(IDC_REPLAY_GAIN_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_REPLAY_GAIN").c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_MCI_RADIO), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_CORE_MCI").c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_FFMPEG_RADIO), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_CORE_FFMPEG").c_str());
     m_toolTip.AddTool(GetDlgItem(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK), theApp.m_str_table.LoadText(L"TIP_OPT_PLAY_CONTINUE_WHEN_SWITCH_PLAYLIST").c_str());
@@ -270,6 +274,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
         CheckDlgButton(IDC_PLAY_IN_FOLDER_MODE_RADIO, true);
     else
         CheckDlgButton(IDC_PLAY_IN_DEFAULT_PLAYLIST_RADIO, true);
+    CheckDlgButton(IDC_REPLAY_GAIN_CHECK, m_data.replay_gain);
 
     bool enable_ffmpeg = false;
     if (CPlayer::GetInstance().IsFfmpegCore()) {

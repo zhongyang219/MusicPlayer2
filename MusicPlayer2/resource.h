@@ -817,6 +817,7 @@
 #define IDC_DISABLE_SCREEN_SLEEP_CHECK  1381
 #define IDC_NO_LONGER_ASK_CHECK         1382
 #define IDC_CLOSE_MAIN_WINDOW_INQUERY_INFO_STATIC 1383
+#define IDC_REPLAY_GAIN_CHECK           1376
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779

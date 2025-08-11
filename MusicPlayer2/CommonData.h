@@ -324,6 +324,7 @@ struct PlaySettingData
     bool remember_last_position{ true };        //是否记住上次播放位置
     bool disable_screen_sleep_when_fullscreen_play{ false };    //全屏播放时禁用屏幕休眠
     bool open_single_file_in_folder_mode{ false };  //打开单个音频文件时是否在文件夹模式中播放（否则在[默认]播放列表中播放）
+    bool replay_gain{ false };                  //响度均衡
 
     bool use_mci{ false };              //是否使用MCI内核
     /// 是否使用ffmpeg内核

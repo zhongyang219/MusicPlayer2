@@ -374,7 +374,8 @@ void CBassCore::Open(const wchar_t * file_path)
     SetFXHandle();
     if (m_bass_fx_lib.IsSucceed()) {
         m_musicStream = m_bass_fx_lib.BASS_FX_TempoCreate(m_musicStream, BASS_FX_FREESOURCE);
-        ApplyReplayGain(CAudioTag::GetAudioReplayGain(file_path));  // 在这里就需要用响度均衡了
+        if (theApp.m_play_setting_data.replay_gain)
+            ApplyReplayGain(CAudioTag::GetAudioReplayGain(file_path));  // 在这里就需要用响度均衡了
     } else
         BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_FREQ, &m_freq);
 }
