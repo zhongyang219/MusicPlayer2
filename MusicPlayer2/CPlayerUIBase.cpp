@@ -32,7 +32,7 @@ void CPlayerUIBase::Init(CDC* pDC)
     //m_draw.Create(m_pDC, m_pMainWnd);
     m_draw.Create(m_pDC, &theApp.m_font_set.dlg.GetFont()); // m_draw的字体直接从m_font_set取得，CWnd->GetFont在不保留多语言窗口资源后不再准确
 
-    m_tool_tip.Create(m_pMainWnd, TTS_ALWAYSTIP);
+    m_tool_tip.Create(m_pMainWnd, TTS_ALWAYSTIP | TTS_NOPREFIX);
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
     //为CToolTipCtrl设置鼠标穿透
     SetWindowLong(m_tool_tip.GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(m_tool_tip.GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_TRANSPARENT);
