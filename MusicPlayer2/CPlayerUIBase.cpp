@@ -1449,7 +1449,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
         COLORREF front_color{ m_colors.color_text };
         if (is_close_btn && (btn.hover || btn.pressed))
             front_color = RGB(255, 255, 255);
-        m_draw.DrawWindowText(rect, text, front_color, Alignment::CENTER);
+        m_draw.DrawWindowText(rect, text, front_color, Alignment::CENTER, true);
     }
     else
     {
