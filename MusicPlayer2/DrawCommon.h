@@ -105,6 +105,7 @@ public:
     //绘制一个图像（使用GDI+）
     void DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
     void DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
+    //绘制一个图像，并剪裁为圆角矩形（使用GDI+）
     void DrawRoundImage(const CImage& image, int radius, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
 
     void DrawIcon(HICON hIcon, CPoint start_point, CSize size);

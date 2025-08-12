@@ -385,13 +385,16 @@ void CDrawCommon::DrawRoundImage(const CImage& image, int radius, CPoint start_p
         return;
     m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
     DrawAreaGuard guard(this, CRect(start_point, size), false, !no_clip_area);
+    CRect rect_ori(start_point, size);  //保存变换前的矩形区域
+
     ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode);
     Gdiplus::Bitmap bm(image, NULL);
 
     // 创建圆角矩形路径
     CRect rect(start_point, size);
     Gdiplus::GraphicsPath round_rect_path;
-    CGdiPlusTool::CreateRoundRectPath(round_rect_path, rect, radius);
+    //创建的矩形路径为变换前矩形和变换后矩形的交集，避免当“专辑封面契合度”选项设置为“填充”时，矩形的角在专辑封面区域的外面
+    CGdiPlusTool::CreateRoundRectPath(round_rect_path, rect & rect_ori, radius);
 
     // 创建纹理画刷
     Gdiplus::TextureBrush brush(&bm, Gdiplus::WrapModeTile);
