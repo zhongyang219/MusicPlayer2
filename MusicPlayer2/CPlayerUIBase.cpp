@@ -743,14 +743,28 @@ void CPlayerUIBase::ClearBtnRect()
 
 CPlayerUIBase::UiSize CPlayerUIBase::GetUiSize() const
 {
-    bool ui_big = (!m_ui_data.narrow_mode && !m_ui_data.show_playlist) || m_draw_rect.Width() > DPI(600);
-    if (IsDrawNarrowMode())
-        return UiSize::SMALL;
-    else if (ui_big)
-        return UiSize::BIG;
-    else
-        return UiSize::NARROW;
+    // 绘图高度
+    int draw_height = m_draw_rect.Height();
+    if (IsDrawTitleBar())
+        draw_height -= m_layout.titlabar_height;
 
+    // 如果是显示播放列表且处于窄模式，返回 SMALL
+    if (draw_height <= m_layout.height_threshold || (m_ui_data.show_playlist && m_ui_data.narrow_mode))
+    {
+        return UiSize::SMALL;
+    }
+
+    // 检查是否应该使用大尺寸UI
+    const bool is_wide_layout = !m_ui_data.narrow_mode && !m_ui_data.show_playlist;
+    const bool is_large_width = m_draw_rect.Width() > m_layout.width_threshold;
+
+    if (is_wide_layout || is_large_width)
+    {
+        return UiSize::BIG;
+    }
+
+    // 其他情况返回 NARROW
+    return UiSize::NARROW;
 }
 
 IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
@@ -1759,14 +1773,6 @@ bool CPlayerUIBase::IsDrawLargeIcon() const
 bool CPlayerUIBase::IsMiniMode() const
 {
     return dynamic_cast<const CMiniModeUserUi*>(this) != nullptr;
-}
-
-bool CPlayerUIBase::IsDrawNarrowMode() const
-{
-    if (!m_ui_data.show_playlist)
-        return false;
-    else
-        return m_ui_data.narrow_mode;
 }
 
 void CPlayerUIBase::DrawVolumnAdjBtn()

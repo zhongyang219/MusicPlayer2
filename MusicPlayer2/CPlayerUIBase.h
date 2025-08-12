@@ -43,6 +43,7 @@ struct SLayoutData
     const int margin = theApp.DPI(4);                           //边缘的余量
     const int width_threshold = theApp.DPI(600);                //界面从普通界面模式切换到窄界面模式时界面宽度的阈值
     const int info_height = theApp.DPI(216);                    //窄界面模式时显示信息区域的高度
+    const int height_threshold = theApp.DPI(260);               //界面布局从big或narrow变为small时的高度
     const int path_edit_height = theApp.DPI(24);                //当前路径Edit控件的高度
     const int search_edit_height = theApp.DPI(26);              //歌曲搜索框Edit控件区域的高度
     const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };   //频谱分析区域的大小
@@ -301,7 +302,6 @@ protected:
     static CRect DrawAreaToClient(CRect rect, CRect draw_area);
     static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 
-    bool IsDrawNarrowMode() const;            //是否使用窄界面模式绘图
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
     virtual bool IsDrawStatusBar() const;       //是否需要绘制状态栏
     virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
