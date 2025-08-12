@@ -379,6 +379,37 @@ void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize si
     m_pGraphics->DrawImage(pImage, INT(start_point.x), INT(start_point.y), INT(size.cx), INT(size.cy));
 }
 
+void CDrawCommon::DrawRoundImage(const CImage& image, int radius, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
+{
+    if (m_pDC->GetSafeHdc() == NULL)
+        return;
+    m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+    DrawAreaGuard guard(this, CRect(start_point, size), false, !no_clip_area);
+    ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode);
+    Gdiplus::Bitmap bm(image, NULL);
+
+    // 创建圆角矩形路径
+    CRect rect(start_point, size);
+    Gdiplus::GraphicsPath round_rect_path;
+    CGdiPlusTool::CreateRoundRectPath(round_rect_path, rect, radius);
+
+    // 创建纹理画刷
+    Gdiplus::TextureBrush brush(&bm, Gdiplus::WrapModeTile);
+
+    // 调整画刷变换，使图片适应矩形区域
+    brush.TranslateTransform(rect.left, rect.top);
+    brush.ScaleTransform(
+        (Gdiplus::REAL)rect.Width() / bm.GetWidth(),
+        (Gdiplus::REAL)rect.Height() / bm.GetHeight());
+
+    m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
+    
+    // 填充路径（自动应用抗锯齿）
+    m_pGraphics->FillPath(&brush, &round_rect_path);
+
+    m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
+}
+
 void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
 {
     if (m_pDC->GetSafeHdc() == NULL)
@@ -542,12 +573,9 @@ void CDrawCommon::DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int ra
     int max_radius{ (std::min)(rect.Width, rect.Height) / 2 };
     if (radius > max_radius)
         radius = max_radius;
-    CRect rc{ CGdiPlusTool::GdiplusRectToCRect(rect) };
-    rc.right--;
-    rc.bottom--;
     //生成圆角矩形路径
     Gdiplus::GraphicsPath round_rect_path;
-    CGdiPlusTool::CreateRoundRectPath(round_rect_path, rc, radius);
+    CGdiPlusTool::CreateRoundRectPath(round_rect_path, CGdiPlusTool::GdiplusRectToCRect(rect), radius);
 
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
     Gdiplus::SolidBrush brush(color);

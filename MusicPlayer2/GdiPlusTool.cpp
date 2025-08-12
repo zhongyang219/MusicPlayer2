@@ -37,7 +37,7 @@ int CGdiPlusTool::ToGDIPluseFontStyle(const FontStyle& style)
 
 void CGdiPlusTool::CreateRoundRectPath(Gdiplus::GraphicsPath& path, CRect rect, int r)
 {
-    int L{ rect.left }, T{ rect.top }, R{ rect.right }, B{ rect.bottom }, d{ 2 * r };
+    int L{ rect.left }, T{ rect.top }, R{ rect.right - 1 }, B{ rect.bottom - 1 }, d{ 2 * r };
     path.AddArc(L, T, d, d, 180, 90);         // 左上角圆弧
     path.AddLine(L + r, T, R - r, T);         // 上边
 

@@ -2483,9 +2483,16 @@ void CPlayerUIBase::DrawAlbumCover(CRect rect)
     if (theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
     {
         if (theApp.m_app_setting_data.draw_album_high_quality)
-            m_draw.DrawImage(CPlayer::GetInstance().GetAlbumCover(), rect.TopLeft(), rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+        {
+            if (theApp.m_app_setting_data.button_round_corners)
+                m_draw.DrawRoundImage(CPlayer::GetInstance().GetAlbumCover(), CalculateRoundRectRadius(rect), rect.TopLeft(), rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+            else
+                m_draw.DrawImage(CPlayer::GetInstance().GetAlbumCover(), rect.TopLeft(), rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+        }
         else
+        {
             m_draw.DrawBitmap(CPlayer::GetInstance().GetAlbumCover(), rect.TopLeft(), rect.Size(), theApp.m_app_setting_data.album_cover_fit);
+        }
     }
     else
     {
