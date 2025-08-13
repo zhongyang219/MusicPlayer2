@@ -383,12 +383,17 @@ void CDrawCommon::DrawRoundImage(const CImage& image, int radius, CPoint start_p
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return;
-    m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
+    //m_pGraphics->SetInterpolationMode(Gdiplus::InterpolationMode::InterpolationModeHighQuality);
     DrawAreaGuard guard(this, CRect(start_point, size), false, !no_clip_area);
     CRect rect_ori(start_point, size);  //保存变换前的矩形区域
 
     ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode);
-    Gdiplus::Bitmap bm(image, NULL);
+
+    //先将图像转换为目标大小，避免使用纹理画刷缩放时质量下降
+    CImage image_dest;
+    ImageResize(image, image_dest, size);
+
+    Gdiplus::Bitmap bm(image_dest, NULL);
 
     // 创建圆角矩形路径
     CRect rect(start_point, size);
@@ -401,9 +406,9 @@ void CDrawCommon::DrawRoundImage(const CImage& image, int radius, CPoint start_p
 
     // 调整画刷变换，使图片适应矩形区域
     brush.TranslateTransform(rect.left, rect.top);
-    brush.ScaleTransform(
-        (Gdiplus::REAL)rect.Width() / bm.GetWidth(),
-        (Gdiplus::REAL)rect.Height() / bm.GetHeight());
+    //brush.ScaleTransform(
+    //    (Gdiplus::REAL)rect.Width() / bm.GetWidth(),
+    //    (Gdiplus::REAL)rect.Height() / bm.GetHeight());
 
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
     
