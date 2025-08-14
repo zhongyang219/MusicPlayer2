@@ -1034,6 +1034,23 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
         DrawPlayTag(rc_tmp, tag_str.c_str());
     }
 
+    //绘制播放速度、播放变调
+    DrawPlayEffectTag(rect, rc_tmp);
+
+    //绘制文件名
+    rc_tmp.MoveToX(rc_tmp.right + (tag_str.empty() ? 0 : DPI(4)));
+    rc_tmp.right = rect.right;
+    if (rc_tmp.Width() >= DPI(4))
+    {
+        static CDrawCommon::ScrollInfo scroll_info1;
+        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetDisplayName().c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info1, reset);
+    }
+}
+
+void CPlayerUIBase::DrawPlayEffectTag(CRect parent_rect, CRect& previous_item_rect)
+{
+    wstring tag_str;
+    int available_width = parent_rect.right - previous_item_rect.right;
     //绘制播放速度
     if (std::fabs(CPlayer::GetInstance().GetSpeed() - 1) > 1e-3)
     {
@@ -1043,13 +1060,13 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
         if (!tag_str.empty() && tag_str.back() == L'0')
             tag_str.pop_back();
         tag_str.push_back(L'X');
-        available_width = rect.right - rc_tmp.right;
+        available_width = parent_rect.right - previous_item_rect.right;
         if (available_width >= DPI(50))
         {
             int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(8);
-            rc_tmp.MoveToX(rc_tmp.right + DPI(2));
-            rc_tmp.right = rc_tmp.left + width;
-            DrawPlayTag(rc_tmp, tag_str.c_str());
+            previous_item_rect.MoveToX(previous_item_rect.right + DPI(2));
+            previous_item_rect.right = previous_item_rect.left + width;
+            DrawPlayTag(previous_item_rect, tag_str.c_str());
         }
     }
 
@@ -1061,24 +1078,16 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
         wchar_t sign = pitch > 0 ? L'+' : L'-';
         swprintf_s(buff, L"K%c%d", sign, std::abs(pitch));
         tag_str = buff;
-        available_width = rect.right - rc_tmp.right;
+        available_width = parent_rect.right - previous_item_rect.right;
         if (available_width >= DPI(50))
         {
             int width = m_draw.GetTextExtent(tag_str.c_str()).cx + DPI(8);
-            rc_tmp.MoveToX(rc_tmp.right + DPI(2));
-            rc_tmp.right = rc_tmp.left + width;
-            DrawPlayTag(rc_tmp, tag_str.c_str());
+            previous_item_rect.MoveToX(previous_item_rect.right + DPI(2));
+            previous_item_rect.right = previous_item_rect.left + width;
+            DrawPlayTag(previous_item_rect, tag_str.c_str());
         }
     }
 
-    //绘制文件名
-    rc_tmp.MoveToX(rc_tmp.right + (tag_str.empty() ? 0 : DPI(4)));
-    rc_tmp.right = rect.right;
-    if (rc_tmp.Width() >= DPI(4))
-    {
-        static CDrawCommon::ScrollInfo scroll_info1;
-        m_draw.DrawScrollText(rc_tmp, CPlayer::GetInstance().GetDisplayName().c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info1, reset);
-    }
 }
 
 void CPlayerUIBase::DrawControlBarBtn(CRect rect, BtnKey btn_type)
@@ -2286,8 +2295,12 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
             str_info = CPlayer::GetInstance().GetPlayingState();
         int text_width = m_draw.GetTextExtent(str_info.c_str()).cx;
         CRect rect_play{ rect };
-        rect_play.right = rect_play.left + text_width + DPI(8);
+        rect_play.right = rect_play.left + text_width + DPI(4);
         m_draw.DrawWindowText(rect_play, str_info.c_str(), m_colors.color_text);
+
+        //绘制播放速度、播放变调
+        DrawPlayEffectTag(rect, rect_play);
+        rect_play.right += DPI(8);
 
         //显示下一个播放曲目
         if (theApp.m_app_setting_data.show_next_track)
