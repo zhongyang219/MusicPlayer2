@@ -533,7 +533,7 @@ void CBassCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, in
     BASS_StreamFree(hStream);
 }
 
-bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc)
+bool CBassCore::EncodeAudio(const std::wstring& src_file_path, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc, int start_pos, int end_pos)
 {
     wstring out_file_path_temp = CCommon::GetTemplatePath() + CONVERTING_TEMP_FILE_NAME;     //转换时的临时文件名
 
@@ -541,7 +541,7 @@ bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, E
     const int BUFF_SIZE{ 20000 };
     // char buff[BUFF_SIZE];
     std::unique_ptr<char[]> buff(new char[BUFF_SIZE]);
-    HSTREAM hStream = BASS_StreamCreateFile(FALSE, song_info.file_path.c_str(), 0, 0, BASS_STREAM_DECODE/* | BASS_SAMPLE_FLOAT*/);
+    HSTREAM hStream = BASS_StreamCreateFile(FALSE, src_file_path.c_str(), 0, 0, BASS_STREAM_DECODE/* | BASS_SAMPLE_FLOAT*/);
     if (hStream == 0)
     {
         proc(CONVERT_ERROR_FILE_CANNOT_OPEN);
@@ -591,10 +591,10 @@ bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, E
         length = length * dest_freq / channel_info.freq;
     if (length == 0) length = 1;	//防止length作为除数时为0
 
-    //如果转换的音频是cue音轨，则先定位到曲目开始处
-    if (song_info.is_cue)
+    //如果设置了截取位置，则先定位到曲目开始处
+    if (end_pos > start_pos)
     {
-        CBassCore::SetCurrentPosition(hStreamOld != 0 ? hStreamOld : hStream, song_info.start_pos.toInt());
+        CBassCore::SetCurrentPosition(hStreamOld != 0 ? hStreamOld : hStream, start_pos);
     }
 
     HENCODE hEncode;
@@ -684,7 +684,7 @@ bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, E
         //如果出现了错误，则写入错误日志
         if (error != 0)
         {
-            wstring log_str = theApp.m_str_table.LoadTextFormat(L"LOG_BASS_FORMAT_CONVERT_ERROR", { song_info.file_path, L"WMA", error });
+            wstring log_str = theApp.m_str_table.LoadTextFormat(L"LOG_BASS_FORMAT_CONVERT_ERROR", { src_file_path, L"WMA", error });
             theApp.WriteLog(log_str);
             switch (error)
             {
@@ -729,18 +729,20 @@ bool CBassCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, E
         //获取转换百分比
         int percent;
         static int last_percent{ -1 };
-        if (!song_info.is_cue)
+        //设置截取位置
+        if (end_pos > start_pos)
         {
-            QWORD position = BASS_ChannelGetPosition(hStream, 0);
-            percent = static_cast<int>(position * 100 / length);
-        }
-        else
-        {
-            int cue_position = CBassCore::GetBASSCurrentPosition(hStreamOld != 0 ? hStreamOld : hStream) - song_info.start_pos.toInt();
-            int cue_length = song_info.length().toInt();
+            int cue_position = CBassCore::GetBASSCurrentPosition(hStreamOld != 0 ? hStreamOld : hStream) - start_pos;
+            int cue_length = end_pos - start_pos;
             percent = static_cast<int>(cue_position * 100 / cue_length);
             if (percent == 100)
                 break;
+
+        }
+        else
+        {
+            QWORD position = BASS_ChannelGetPosition(hStream, 0);
+            percent = static_cast<int>(position * 100 / length);
         }
         if (percent < 0 || percent>100)
         {

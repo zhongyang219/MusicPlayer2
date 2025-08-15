@@ -516,10 +516,18 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
     static CFormatConvertDlg* _pthis{};
     _pthis = pthis;
     //执行转换格式
-    if (!CPlayer::GetInstance().GetPlayerCore()->EncodeAudio(song_info, out_file_path, pthis->m_encode_format, para, freq, [](int progress)
+    int start_pos = 0;
+    int end_pos = 0;
+    //如果是cue，需要设置截取的位置
+    if (song_info.is_cue)
+    {
+        start_pos = song_info.start_pos.toInt();
+        end_pos = song_info.end_pos.toInt();
+    }
+    if (!CPlayer::GetInstance().GetPlayerCore()->EncodeAudio(song_info.file_path, out_file_path, pthis->m_encode_format, para, freq, [](int progress)
         {
             ::PostMessage(_pthis->GetSafeHwnd(), WM_CONVERT_PROGRESS, _file_index, progress);
-        }))
+        }, start_pos, end_pos))
         return false;
 
     //转换完成后向目标文件写入标签信息和专辑封面

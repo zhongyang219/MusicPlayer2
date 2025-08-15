@@ -319,7 +319,7 @@ std::wstring CMciCore::GetErrorInfo()
     return buff;
 }
 
-bool CMciCore::EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc)
+bool CMciCore::EncodeAudio(const std::wstring& src_file_path, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc, int start_pos, int end_pos)
 {
     return false;
 }

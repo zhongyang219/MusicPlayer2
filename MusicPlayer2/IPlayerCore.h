@@ -127,7 +127,7 @@ public:
 
     /**
      * @brief   在转换格式时对音频进行编码
-     * @param   SongInfo song_info 要转换的音频文件信息
+     * @param   const std::wstring& src_file_path 要转换的音频文件路径
      * @param   const wstring & dest_file_path 输出的文件路径
      * @param   EncodeFormat encode_type 转换的编码格式
      * @param   int dest_freq 转换的采样频率。如果为0，则不转换采样频率
@@ -136,9 +136,11 @@ public:
                 如果encode_type为ET_WMA，则encode_para为一个指向WmaEncodePara对象的指针；
                 如果encode_type为ET_OGG，则encode_para为一个指向OggEncodePara对象的指针；
      * @param   EncodeAudioProc proc 通知转换进度的回调函数
+     * @param   int start_pos 截取的起始位置（毫秒）（仅当end_pos > start_pos时有效）
+     * @param   int end_pos 截取的结束位置（毫秒）（仅当end_pos > start_pos时有效）
      * @return  bool 转换成功返回true，否则返回false
      */
-    virtual bool EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc) = 0;
+    virtual bool EncodeAudio(const std::wstring& src_file_path, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc, int start_pos = 0, int end_pos = 0) = 0;
     virtual bool InitEncoder() = 0;         //对编码器执行一些初始化工作，成功返回true，失败返回false
     virtual void UnInitEncoder() = 0;       //对编码器执行一些清理工作
     virtual bool IsFreqConvertAvailable() = 0;  //转换采样频率是否可用

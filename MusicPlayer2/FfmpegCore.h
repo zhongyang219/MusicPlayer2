@@ -130,7 +130,7 @@ public:
     void EnableExclusiveMode(bool enable);
     void SetMaxWaitTime(int max_wait_time = 3000);
 
-    virtual bool EncodeAudio(SongInfo song_info, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc) override;
+    virtual bool EncodeAudio(const std::wstring& src_file_path, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc, int start_pos = 0, int end_pos = 0) override;
     virtual bool InitEncoder() override;
     virtual void UnInitEncoder() override;
     virtual bool IsFreqConvertAvailable() override;
