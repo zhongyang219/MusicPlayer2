@@ -36,6 +36,7 @@ namespace UiElement
     class MiniSpectrum;
     class FolderExploreTree;
     class SearchBox;
+    class ElementSwitcher;
 }
 
 struct SLayoutData
@@ -92,6 +93,7 @@ public:
     friend class UiElement::MiniSpectrum;
     friend class UiElement::FolderExploreTree;
     friend class UiElement::SearchBox;
+    friend class UiElement::ElementSwitcher;
 
     friend class UiFontGuard;
 
@@ -247,6 +249,7 @@ protected:
     void DrawSongInfo(CRect rect, int font_size = 9, bool reset = false);
     void DrawPlayEffectTag(CRect parent_rect, CRect& previous_item_rect);   //绘制播放效果的标签。parent_rect播放效果标签所在父元素的区域；前一个元素的区域，绘制后会更新此矩形区域
     void DrawRectangle(const CRect& rect, bool no_corner_radius = false, bool theme_color = true, ColorMode color_mode = RCM_AUTO);       //绘制矩形。如果no_corner_radius为true，则总是绘制直角矩形，忽略“使用圆角风格按钮”的设置；theme_color：是否使用主题彦颜色
+    void DrawRectangle(CRect rect, COLORREF color);
     void DrawToolBar(CRect rect, bool draw_translate_button);
     void DrawToolBarWithoutBackground(CRect rect, bool draw_translate_button);
     void DrawBeatIndicator(CRect rect);
@@ -319,7 +322,15 @@ protected:
 
     virtual bool IsDrawLargeIcon() const;        //是否绘制大图标
 
+    //切换堆叠元素（查找当前界面中第一个堆叠元素，并执行一次切换）
     virtual void SwitchStackElement() {}
+
+    /**
+     * @brief   切换堆叠元素
+     * @param   id 堆叠元素的id（如果为空时查找第一个堆叠元素）
+     * @param   index 要切换到堆叠元素的索引（如果为负数时默认切换到下一个索引）
+     */
+    virtual void SwitchStackElement(std::string id, int index) {}
 
     bool IsMiniMode() const;
 

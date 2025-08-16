@@ -1,30 +1,7 @@
 ﻿#pragma once
 #include "CPlayerUIBase.h"
 #include "TinyXml2Helper.h"
-#include "UIElement/UIElement.h"
-#include "UIElement/Text.h"
-#include "UIElement/PlaylistElement.h"
-#include "UIElement/ListElement.h"
-#include "UIElement/StackElement.h"
 #include "UIElement/ElementFactory.h"
-#include "UIElement/Button.h"
-#include "UIElement/Rectangle.h"
-#include "UIElement/AlbumCover.h"
-#include "UIElement/Spectrum.h"
-#include "UIElement/Toolbar.h"
-#include "UIElement/ProgressBar.h"
-#include "UIElement/Volume.h"
-#include "UIElement/ClassicalControlBar.h"
-#include "UIElement/LyricsElement.h"
-#include "UIElement/MediaLibItemList.h"
-#include "UIElement/NavigationBar.h"
-#include "UIElement/PlaylistIndicator.h"
-#include "UIElement/TrackInfo.h"
-#include "UIElement/PlaceHolder.h"
-#include "UIElement/SearchBox.h"
-#include "UIElement/RecentPlayedList.h"
-#include "UIElement/MediaLibPlaylist.h"
-#include "UIElement/MediaLibFolder.h"
 
 class CUserUi :
     public CPlayerUIBase
@@ -108,6 +85,7 @@ protected:
 
 protected:
     virtual void SwitchStackElement() override;
+    virtual void SwitchStackElement(std::string id, int index) override;
 };
 
 template<class T>

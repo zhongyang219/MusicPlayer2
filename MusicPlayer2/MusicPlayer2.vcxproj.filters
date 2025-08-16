@@ -1056,6 +1056,9 @@
     <ClInclude Include="BassCore.h">
       <Filter>功能逻辑类\PlayerCore\BASS</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\ElementSwitcher.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1654,6 +1657,9 @@
     </ClCompile>
     <ClCompile Include="BassCore.cpp">
       <Filter>功能逻辑类\PlayerCore\BASS</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\ElementSwitcher.cpp">
+      <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -261,14 +261,13 @@ bool CUserUi::LButtonUp(CPoint point)
         }
 
         //遍历所有元素
-        IterateAllElements([point](UiElement::Element* element) ->bool
+        IterateAllElements([point](UiElement::Element* element) ->bool {
+            if (element != nullptr)
             {
-                if (element != nullptr)
-                {
-                    element->LButtonUp(point);
-                }
-                return false;
-            });
+                element->LButtonUp(point);
+            }
+            return false;
+        }, true);
     }
     return false;
 }
@@ -484,11 +483,20 @@ void CUserUi::UiSizeChanged()
 bool CUserUi::SetCursor()
 {
     bool cursor_changed = false;
-    //如果鼠标指向搜索框，则更改鼠标指针
-    IterateAllElements<UiElement::SearchBox>([&](UiElement::SearchBox* search_box) ->bool {
-        if (search_box->hover)
+    IterateAllElements([&](UiElement::Element* element) ->bool {
+        //如果鼠标指向搜索框，则更改鼠标指针
+        UiElement::SearchBox* search_box = dynamic_cast<UiElement::SearchBox*>(element);
+        if (search_box != nullptr && search_box->hover)
         {
             ::SetCursor(::LoadCursor(NULL, IDC_IBEAM));
+            cursor_changed = true;
+            return true;
+        }
+        //如果鼠标指向专辑封面样式的界面切换器，则更改鼠标指针为手形样式
+        UiElement::ElementSwitcher* element_swithcer = dynamic_cast<UiElement::ElementSwitcher*>(element);
+        if (element_swithcer != nullptr && element_swithcer->hover && element_swithcer->style == UiElement::ElementSwitcher::Style::AlbumCover)
+        {
+            ::SetCursor(::LoadCursor(NULL, IDC_HAND));
             cursor_changed = true;
             return true;
         }
@@ -520,6 +528,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             current_build_ui_element = element.get();
 
         element->name = item_name;
+        element->id = CTinyXml2Helper::ElementAttribute(xml_node, "id");
         //设置元素的基类属性
         std::string str_x = CTinyXml2Helper::ElementAttribute(xml_node, "x");
         std::string str_y = CTinyXml2Helper::ElementAttribute(xml_node, "y");
@@ -877,6 +886,24 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_when_use_system_titlebar", place_holder->show_when_use_system_titlebar);
             }
         }
+        //界面切换器
+        else if (item_name == "elementSwitcher")
+        {
+            UiElement::ElementSwitcher* element_switcher = dynamic_cast<UiElement::ElementSwitcher*>(element.get());
+            if (element_switcher != nullptr)
+            {
+                std::string style = CTinyXml2Helper::ElementAttribute(xml_node, "style");
+                if (style == "empty")
+                    element_switcher->style = UiElement::ElementSwitcher::Style::Empty;
+                else if (style == "album_cover")
+                    element_switcher->style = UiElement::ElementSwitcher::Style::AlbumCover;
+                else if (style == "drop_down_icon")
+                    element_switcher->style = UiElement::ElementSwitcher::Style::DropDownIcon;
+                
+                element_switcher->stack_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "stack_element_id");
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "stack_element_index", element_switcher->stack_element_index);
+            }
+        }
 
         //递归调用此函数创建子节点
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)
@@ -909,6 +936,39 @@ void CUserUi::SwitchStackElement()
         UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(stack_elements.front().get());
         if (stack_element != nullptr)
             stack_element->SwitchDisplay();
+    }
+}
+
+void CUserUi::SwitchStackElement(std::string id, int index)
+{
+    m_draw_data.lyric_rect.SetRectEmpty();
+    auto& stack_elements{ GetStackElements() };
+    if (!stack_elements.empty())
+    {
+        UiElement::StackElement* stack_element = nullptr;
+        //查找堆叠元素
+        if (!id.empty())
+        {
+            for (auto& cur_ele : stack_elements)
+            {
+                if (cur_ele->id == id)
+                {
+                    stack_element = dynamic_cast<UiElement::StackElement*>(cur_ele.get());
+                    break;
+                }
+            }
+        }
+        else
+        {
+            stack_element = dynamic_cast<UiElement::StackElement*>(stack_elements.front().get());
+        }
+        if (stack_element != nullptr)
+        {
+            if (index >= 0)
+                stack_element->SetCurrentElement(index);
+            else
+                stack_element->SwitchDisplay();
+        }
     }
 }
 

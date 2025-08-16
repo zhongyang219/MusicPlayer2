@@ -41,6 +41,7 @@ namespace UiElement
         Element* pParent{};     //父元素
         std::vector<std::shared_ptr<Element>> childLst; //子元素列表
         std::string name;
+        std::string id;
 
         virtual void Draw();   //绘制此元素
         virtual bool IsEnable(CRect parent_rect) const;
@@ -78,7 +79,7 @@ namespace UiElement
         //查找一个关联的节点
         //返回值：查找结果
         template<class T>
-        T* FindRelatedElement();
+        T* FindRelatedElement(std::string id = std::string());
 
     protected:
         CRect rect;     //用于保存计算得到的元素的矩形区域
@@ -95,10 +96,31 @@ namespace UiElement
     }
 
     template<class T>
-    inline T* Element::FindRelatedElement()
+    inline T* Element::FindRelatedElement(std::string id)
     {
-        UiElement::Element* parent = pParent;
         T* rtn_element = nullptr;
+
+        //首先根据id查找
+        if (!id.empty())
+        {
+            UiElement::Element* root = RootElement();
+            if (root != nullptr)
+            {
+                root->IterateAllElements([&](UiElement::Element* ele)->bool {
+                    T* _element = dynamic_cast<T*>(ele);
+                    if (_element != nullptr && ele->id == id)
+                    {
+                        rtn_element = _element;
+                        return true;
+                    }
+                    return false;
+                });
+                if (rtn_element != nullptr)
+                    return rtn_element;
+            }
+        }
+
+        UiElement::Element* parent = pParent;
         while (parent != nullptr)
         {
             //依次查找所有父节点下面的指定类型节点

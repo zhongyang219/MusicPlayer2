@@ -20,6 +20,11 @@
       </xs:restriction>
     </xs:simpleType>
     <xs:attributeGroup name="sharedattr"><!--定义属性组 sharedattr-->
+        <xs:attribute name="id">
+          <xs:annotation>
+            <xs:documentation> 元素的id。 </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="x" type="number_or_percent">
             <xs:annotation>
                 <xs:documentation>
@@ -160,6 +165,7 @@
           <xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
           <xs:element name="medialibFolderExplore" type="medialibFolderExploreType"></xs:element>
           <xs:element name="searchBox" type="searchBoxType"></xs:element>
+          <xs:element name="elementSwitcher" type="elementSwitcherType"></xs:element>
         </xs:choice>
       </xs:sequence>
     </xs:group>
@@ -1046,5 +1052,46 @@
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="elementSwitcherType">
+    <xs:annotation>
+      <xs:documentation>用于切换stackElement的切换器。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+	<xs:attribute name="style" default="empty">
+		<xs:annotation>
+			<xs:documentation>切换器的样式。</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="empty">
+					<xs:annotation>
+						<xs:documentation>空白</xs:documentation>
+					</xs:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="album_cover">
+					<xs:annotation>
+						<xs:documentation>专辑封面</xs:documentation>
+					</xs:annotation>
+				</xs:enumeration>
+				<xs:enumeration value="drop_down_icon">
+					<xs:annotation>
+						<xs:documentation>下拉图标</xs:documentation>
+					</xs:annotation>
+				</xs:enumeration>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+	<xs:attribute name="stack_element_id" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>要切换的stackElement的id。</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="stack_element_index" type="xs:int" default="0">
+		<xs:annotation>
+			<xs:documentation>要切换的stackElement的索引。</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

@@ -1156,6 +1156,20 @@ void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius, bool
     }
 }
 
+void CPlayerUIBase::DrawRectangle(CRect rect, COLORREF color)
+{
+    BYTE alpha;
+    if (IsDrawBackgroundAlpha())
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    else
+        alpha = 255;
+    if (!theApp.m_app_setting_data.button_round_corners)
+        m_draw.FillAlphaRect(rect, color, alpha, true);
+    else
+        m_draw.DrawRoundRect(rect, color, CalculateRoundRectRadius(rect), alpha);
+
+}
+
 void CPlayerUIBase::DrawToolBar(CRect rect, bool draw_translate_button)
 {
     DrawRectangle(rect);
@@ -3312,15 +3326,7 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
         if (tab_element->hover_index == index)
         {
             DrawAreaGuard guard(&m_draw, rect);
-            BYTE alpha;
-            if (IsDrawBackgroundAlpha())
-                alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-            else
-                alpha = 255;
-            if (!theApp.m_app_setting_data.button_round_corners)
-                m_draw.FillAlphaRect(item_rect, m_colors.color_button_hover, alpha, true);
-            else
-                m_draw.DrawRoundRect(item_rect, m_colors.color_button_hover, CalculateRoundRectRadius(item_rect), alpha);
+            DrawRectangle(item_rect, m_colors.color_button_hover);
         }
 
         //绘制图标

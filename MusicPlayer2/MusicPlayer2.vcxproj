@@ -301,6 +301,7 @@
     <ClInclude Include="UIElement\Button.h" />
     <ClInclude Include="UIElement\ClassicalControlBar.h" />
     <ClInclude Include="UIElement\ElementFactory.h" />
+    <ClInclude Include="UIElement\ElementSwitcher.h" />
     <ClInclude Include="UIElement\FolderExploreTree.h" />
     <ClInclude Include="UIElement\Layout.h" />
     <ClInclude Include="UIElement\ListElement.h" />
@@ -509,6 +510,7 @@
     <ClCompile Include="UIElement\Button.cpp" />
     <ClCompile Include="UIElement\ClassicalControlBar.cpp" />
     <ClCompile Include="UIElement\ElementFactory.cpp" />
+    <ClCompile Include="UIElement\ElementSwitcher.cpp" />
     <ClCompile Include="UIElement\FolderExploreTree.cpp" />
     <ClCompile Include="UIElement\Layout.cpp" />
     <ClCompile Include="UIElement\ListElement.cpp" />

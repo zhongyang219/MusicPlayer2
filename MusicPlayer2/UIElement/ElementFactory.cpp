@@ -1,32 +1,5 @@
 #include "stdafx.h"
 #include "ElementFactory.h"
-#include "Layout.h"
-#include "StackElement.h"
-#include "Rectangle.h"
-#include "Button.h"
-#include "Text.h"
-#include "AlbumCover.h"
-#include "Spectrum.h"
-#include "TrackInfo.h"
-#include "Toolbar.h"
-#include "ProgressBar.h"
-#include "LyricsElement.h"
-#include "Volume.h"
-#include "BeatIndicator.h"
-#include "PlaylistElement.h"
-#include "PlaylistIndicator.h"
-#include "ClassicalControlBar.h"
-#include "RecentPlayedList.h"
-#include "MediaLibItemList.h"
-#include "NavigationBar.h"
-#include "MediaLibFolder.h"
-#include "MediaLibPlaylist.h"
-#include "MyFavouriteList.h"
-#include "AllTracksList.h"
-#include "MiniSpectrum.h"
-#include "PlaceHolder.h"
-#include "FolderExploreTree.h"
-#include "SearchBox.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -97,6 +70,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::FolderExploreTree>();
     else if (name == "searchBox")
         element = std::make_shared<UiElement::SearchBox>();
+    else if (name == "elementSwitcher")
+        element = std::make_shared<UiElement::ElementSwitcher>();
     else if (name == "ui" || name == "root" || name == "element")
         element = std::make_shared<UiElement::Element>();
 
