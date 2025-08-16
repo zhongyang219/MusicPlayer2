@@ -2,7 +2,6 @@
 #include "MciCore.h"
 #include "AudioCommon.h"
 #include "MusicPlayer2.h"
-#include "AudioTag.h"
 #include "FilePathHelper.h"
 
 
@@ -211,43 +210,15 @@ void CMciCore::SetCurPosition(int position)
     }
 }
 
-void CMciCore::GetAudioInfo(SongInfo & song_info, int flag)
+void CMciCore::GetAudioInfo(const wchar_t* file_path, AudioInfo* audio_info, AudioTag* audio_tag)
 {
-    if (m_success)
-    {
-        if (flag&AF_LENGTH)
-            song_info.end_pos.fromInt(GetMciSongLength(song_info.file_path));
-        if (flag&AF_BITRATE)
-            song_info.bitrate = GetMciBitrate(song_info.file_path);
-        if (flag&AF_TAG_INFO)
-        {
-            CAudioTag audio_tag(song_info);
-            audio_tag.GetAudioTag();
-            audio_tag.GetAudioRating();
-        }
-    }
-
-}
-
-void CMciCore::GetAudioInfo(const wchar_t * file_path, SongInfo & song_info, int flag)
-{
-    if (m_success && ((flag&AF_LENGTH) || (flag&AF_BITRATE)))
+    if (m_success && audio_info != nullptr)
     {
         m_error_code = mciSendStringW((L"open \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
-        if (flag&AF_LENGTH)
-        {
-            wchar_t buff[16];
-            m_error_code = mciSendStringW((L"status \"" + wstring(file_path) + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
-            song_info.end_pos.fromInt(_wtoi(buff));
-        }
-        if (flag&AF_BITRATE)
-            song_info.bitrate = GetMciBitrate(file_path);
-        if (flag&AF_TAG_INFO)
-        {
-            CAudioTag audio_tag(song_info);
-            audio_tag.GetAudioTag();
-            audio_tag.GetAudioRating();
-        }
+        wchar_t buff[16];
+        m_error_code = mciSendStringW((L"status \"" + wstring(file_path) + L"\" length").c_str(), buff, 15, 0);		//获取当前歌曲的长度，并储存在buff数组里
+        audio_info->length = _wtoi(buff);
+        audio_info->bitrate = GetMciBitrate(file_path);
 
         m_error_code = mciSendStringW((L"close \"" + wstring(file_path) + L"\"").c_str(), NULL, 0, 0);
     }

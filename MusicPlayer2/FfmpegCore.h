@@ -94,8 +94,7 @@ public:
     virtual int GetCurPosition() override;
     virtual int GetSongLength() override;
     virtual void SetCurPosition(int position) override;
-    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) override;
-    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) override;
+    virtual void GetAudioInfo(const wchar_t* file_path, AudioInfo* audio_info, AudioTag* audio_tag) override;
     virtual bool IsMidi() override;
     virtual bool IsMidiConnotPlay() override;
     virtual MidiInfo GetMidiInfo() override;

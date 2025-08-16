@@ -239,69 +239,37 @@ void CFfmpegCore::SetCurPosition(int position) {
     }
 }
 
-void CFfmpegCore::GetAudioInfo(SongInfo& song_info, int flag) {
-    if (!handle || !IsSucceed()) return;
-    if (flag & AF_LENGTH) song_info.end_pos.fromInt(GetSongLength());
-    if (flag & AF_CHANNEL_INFO) {
-        song_info.freq = ffmpeg_core_get_freq(handle);
-        song_info.bits = ffmpeg_core_get_bits(handle);
-        song_info.channels = ffmpeg_core_get_channels(handle);
-    }
-    if (flag & AF_BITRATE) {
-        song_info.bitrate = static_cast<short>(ffmpeg_core_get_bitrate(handle) / 1000);
-    }
-    if (flag & AF_TAG_INFO) {
-        CAudioTag audio_tag(song_info);
-        audio_tag.GetAudioRating();
-        if (!audio_tag.GetAudioTag())       //如果taglib获取信息失败，则使用ffmpeg获取标签信息
-        {
-            song_info.title = GetTitle();
-            song_info.artist = GetArtist();
-            song_info.album = GetAlbum();
-            song_info.comment = GetComment();
-            song_info.genre = GetGenre();
-            song_info.year = GetYear();
-            song_info.track = GetTrackNum();
-        }
-    }
-}
-
-void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag) {
+void CFfmpegCore::GetAudioInfo(const wchar_t* file_path, AudioInfo* audio_info, AudioTag* audio_tag) {
     if (!IsSucceed()) return;
     MusicInfoHandle* h = nullptr;
     int re = ffmpeg_core_info_open(file_path, &h);
     if (re || !h) return;
-    if (flag & AF_LENGTH) {
+
+    if (audio_info != nullptr)
+    {
         int64_t length = ffmpeg_core_info_get_song_length(h);
         if (length != INT64_MIN)
-            song_info.end_pos.fromInt(static_cast<int>(length / 1000));
+            audio_info->length = static_cast<int>(length / 1000);
         else
-            song_info.end_pos.fromInt(0);
+            audio_info->length = 0;
+
+        audio_info->freq = ffmpeg_core_info_get_freq(h);
+        audio_info->bits = ffmpeg_core_info_get_bits(h);
+        audio_info->channels = ffmpeg_core_info_get_channels(h);
+        audio_info->bitrate = static_cast<short>(ffmpeg_core_info_get_bitrate(h) / 1000);
     }
-    if (flag & AF_CHANNEL_INFO) {
-        song_info.freq = ffmpeg_core_info_get_freq(h);
-        song_info.bits = ffmpeg_core_info_get_bits(h);
-        song_info.channels = ffmpeg_core_info_get_channels(h);
+
+    if (audio_tag != nullptr)
+    {
+        audio_tag->title = GetTitle(h);
+        audio_tag->artist = GetArtist(h);
+        audio_tag->album = GetAlbum(h);
+        audio_tag->comment = GetComment(h);
+        audio_tag->genre = GetGenre(h);
+        audio_tag->year = GetYear(h);
+        audio_tag->track = GetTrackNum(h);
     }
-    if (flag & AF_BITRATE) {
-        song_info.bitrate = static_cast<short>(ffmpeg_core_info_get_bitrate(h) / 1000);
-    }
-    if (flag & AF_TAG_INFO) {
-        if (song_info.file_path.empty())
-            song_info.file_path = file_path;
-        CAudioTag audio_tag(song_info);
-        audio_tag.GetAudioRating();
-        if (!audio_tag.GetAudioTag())       //如果taglib获取信息失败，则使用ffmpeg获取标签信息
-        {
-            song_info.title = GetTitle(h);
-            song_info.artist = GetArtist(h);
-            song_info.album = GetAlbum(h);
-            song_info.comment = GetComment(h);
-            song_info.genre = GetGenre(h);
-            song_info.year = GetYear(h);
-            song_info.track = GetTrackNum(h);
-        }
-    }
+
     free_music_info_handle(h);
 }
 

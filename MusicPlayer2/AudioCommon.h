@@ -1,6 +1,7 @@
 ﻿//此类用于定义音频信息相关的全局函数
 #pragma once
 #include "SongInfo.h"
+#include "IPlayerCore.h"
 
 //音频文件类型
 enum AudioType
@@ -137,6 +138,10 @@ public:
     //description：格式的描述
     //file_name: 插件的文件名
     static SupportedFormat CreateSupportedFormat(const std::vector<std::wstring>& exts, const wchar_t* description, const wchar_t* file_name = L"");
+
+protected:
+    static void AudioInfoToSongInfo(const IPlayerCore::AudioInfo& audio_info, SongInfo& song_info);
+    static void AudioTagInfoToSongInfo(const IPlayerCore::AudioTag& audio_tag, SongInfo& song_info);
 
 public:
     static vector<SupportedFormat> m_surpported_format;		//支持的文件格式

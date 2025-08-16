@@ -417,6 +417,9 @@
     <Filter Include="功能逻辑类\SongMultiVersion">
       <UniqueIdentifier>{f88b196c-9355-460c-ab10-076c68866d8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\PlayerCore\BASS">
+      <UniqueIdentifier>{a0161ac4-f695-4502-b91a-24a4ce9ebf38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -658,9 +661,6 @@
       <Filter>对话框类\FileRelateDlg</Filter>
     </ClInclude>
     <ClInclude Include="IPlayerCore.h">
-      <Filter>功能逻辑类\PlayerCore</Filter>
-    </ClInclude>
-    <ClInclude Include="BassCore.h">
       <Filter>功能逻辑类\PlayerCore</Filter>
     </ClInclude>
     <ClInclude Include="InputDlg.h">
@@ -1053,6 +1053,9 @@
     <ClInclude Include="SongMultiVersion.h">
       <Filter>功能逻辑类\SongMultiVersion</Filter>
     </ClInclude>
+    <ClInclude Include="BassCore.h">
+      <Filter>功能逻辑类\PlayerCore\BASS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1267,9 +1270,6 @@
     </ClCompile>
     <ClCompile Include="FileRelateDlg.cpp">
       <Filter>对话框类\FileRelateDlg</Filter>
-    </ClCompile>
-    <ClCompile Include="BassCore.cpp">
-      <Filter>功能逻辑类\PlayerCore</Filter>
     </ClCompile>
     <ClCompile Include="InputDlg.cpp">
       <Filter>对话框类\InputDlg</Filter>
@@ -1651,6 +1651,9 @@
     </ClCompile>
     <ClCompile Include="SongMultiVersion.cpp">
       <Filter>功能逻辑类\SongMultiVersion</Filter>
+    </ClCompile>
+    <ClCompile Include="BassCore.cpp">
+      <Filter>功能逻辑类\PlayerCore\BASS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

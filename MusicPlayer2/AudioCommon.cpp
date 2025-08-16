@@ -489,8 +489,9 @@ void CAudioCommon::GetCueTracks(vector<SongInfo>& files, int& update_cnt, bool& 
         CPlayTime file_length{};
         std::swap(last_song.end_pos, file_length);
         // IPlayerCore::GetAudioInfo只能用于每个FILE的最后一个音轨（会把音频时长直接写入end_pos）（这是预定行为，一个cue可以含有多个FILE）
-        int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;
-        CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(audio_path.c_str(), last_song, flag);
+        IPlayerCore::AudioInfo audio_info;
+        CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(audio_path.c_str(), &audio_info, nullptr);
+        AudioInfoToSongInfo(audio_info, last_song);
         std::swap(last_song.end_pos, file_length);
 
         for (auto& [track, song] : item)     // 这个遍历也包括last_song自身
@@ -549,12 +550,26 @@ void CAudioCommon::GetAudioInfo(vector<SongInfo>& files, int& update_cnt, bool& 
             continue;
         song_info.modified_time = modified_time;
 
-        int flag = AF_LENGTH | AF_BITRATE | AF_CHANNEL_INFO;
+        //获取标签信息
+        CAudioTag audio_tag(song_info);
+        bool get_tag_succeed = true;        //是否成功获取到标签信息
         if (COSUPlayerHelper::IsOsuFile(song_info.file_path))
+        {
             COSUPlayerHelper::GetOSUAudioTitleArtist(song_info);
+        }
         else
-            flag |= AF_TAG_INFO;    // 原来在这里获取“分级rating”，更改到AF_TAG_INFO中（条件一致）
-        CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(song_info.file_path.c_str(), song_info, flag);
+        {
+            get_tag_succeed = audio_tag.GetAudioTag();
+        }
+        audio_tag.GetAudioRating();
+
+        //从调用播放内核获取音频信息
+        IPlayerCore::AudioInfo audio_info;
+        IPlayerCore::AudioTag audio_tag_info;
+        CPlayer::GetInstance().GetPlayerCore()->GetAudioInfo(song_info.file_path.c_str(), &audio_info, get_tag_succeed ? nullptr : &audio_tag_info);    //如果没有成功获取到标签信息，则调用播放内核获取
+        AudioInfoToSongInfo(audio_info, song_info);
+        if (!get_tag_succeed)
+            AudioTagInfoToSongInfo(audio_tag_info, song_info);
 
         if (ignore_short && song_info.length().toInt() < file_too_short_ms)
             too_short_remove.insert(song_info.file_path);
@@ -834,4 +849,24 @@ SupportedFormat CAudioCommon::CreateSupportedFormat(const std::vector<std::wstri
     format.CreateExtensionsList();
     return format;
 
+}
+
+void CAudioCommon::AudioInfoToSongInfo(const IPlayerCore::AudioInfo& audio_info, SongInfo& song_info)
+{
+    song_info.end_pos.fromInt(audio_info.length);
+    song_info.bitrate = audio_info.bitrate;
+    song_info.freq = audio_info.freq;
+    song_info.bits = audio_info.bits;
+    song_info.channels = audio_info.channels;
+}
+
+void CAudioCommon::AudioTagInfoToSongInfo(const IPlayerCore::AudioTag& audio_tag, SongInfo& song_info)
+{
+    song_info.title = audio_tag.title;
+    song_info.artist = audio_tag.artist;
+    song_info.album = audio_tag.album;
+    song_info.comment = audio_tag.comment;
+    song_info.genre = audio_tag.genre;
+    song_info.year = audio_tag.year;
+    song_info.track = audio_tag.track;
 }

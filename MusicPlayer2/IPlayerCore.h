@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "SongInfo.h"
 
 struct MidiInfo
 {
@@ -8,16 +7,6 @@ struct MidiInfo
     int speed;		//速度，bpm
     int tempo;		//每个四分音符的微秒数
     float ppqn;
-};
-
-enum AudioInfoFlag
-{
-    AF_LENGTH = 1,
-    AF_BITRATE = 2,
-    AF_TAG_INFO = 4,
-    AF_CHANNEL_INFO = 8,
-
-    AF_ALL = AF_LENGTH | AF_BITRATE | AF_TAG_INFO | AF_CHANNEL_INFO
 };
 
 enum PlayerCoreType
@@ -90,6 +79,26 @@ enum class EncodeFormat { WAV, MP3, WMA, OGG, FLAC };
 class IPlayerCore
 {
 public:
+    struct AudioInfo
+    {
+        int length{};
+        int bitrate{};
+        int freq{};
+        int bits{};
+        int channels{};
+    };
+
+    struct AudioTag
+    {
+        std::wstring title;
+        std::wstring artist;
+        std::wstring album;
+        std::wstring comment;
+        std::wstring genre;
+        unsigned short year{};
+        int track{};
+    };
+
     virtual ~IPlayerCore() {}
 
     virtual void InitCore() = 0;
@@ -113,11 +122,14 @@ public:
     virtual int GetCurPosition() = 0;               //获取当前播放进度，单位为毫秒
     virtual int GetSongLength() = 0;                //获取歌曲长度，单位为毫秒
     virtual void SetCurPosition(int position) = 0;  //设置播放进度，单位为毫秒
-    // 获取打开的音频的长度、比特率和标签信息，flag用于指定获取哪些信息
-    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO | AF_CHANNEL_INFO) = 0;
-    // 获取file_path属性写入song_info，flag用于指定获取哪些信息（需要支持并发且不影响当前播放）
-    // AF_LENGTH读取文件时长直接写入end_pos，AF_BITRATE读取比特率，AF_TAG_INFO读取标签/分级，AF_CHANNEL_INFO读取采样率/位深度/通道数
-    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO | AF_CHANNEL_INFO) = 0;
+
+    /**
+     * @brief   获取一个音频文件的音频信息和标签信息（需要支持并发且不影响当前播放）
+     * @param[in]   file_path 文件路径
+     * @param[out]   audio_info 保存音频信息
+     * @param[out]   audio_tag 保存标签信息（主程序会优先通过Taglib获取标签信息，在Taglib无法获取到标签信息的情况下，才会使用这里的值）
+     */
+    virtual void GetAudioInfo(const wchar_t* file_path, AudioInfo* audio_info, AudioTag* audio_tag) = 0;
 
     /**
      * @brief   音频编码的回调函数

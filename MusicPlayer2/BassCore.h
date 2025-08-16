@@ -38,8 +38,7 @@ public:
     virtual int GetCurPosition() override;
     virtual int GetSongLength() override;
     virtual void SetCurPosition(int position) override;
-    virtual void GetAudioInfo(SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) override;
-    virtual void GetAudioInfo(const wchar_t* file_path, SongInfo& song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO) override;
+    virtual void GetAudioInfo(const wchar_t* file_path, AudioInfo* audio_info, AudioTag* audio_tag) override;
 
     virtual bool EncodeAudio(const std::wstring& src_file_path, const wstring& dest_file_path, EncodeFormat encode_format, void* encode_para, int dest_freq, EncodeAudioProc proc, int start_pos = 0, int end_pos = 0) override;
     virtual bool InitEncoder() override;
@@ -75,8 +74,6 @@ public:
     static int GetBASSCurrentPosition(HSTREAM hStream);
     static CPlayTime GetBASSSongLength(HSTREAM hStream);
     static void SetCurrentPosition(HSTREAM hStream, int position);
-
-    static void GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag = AF_LENGTH | AF_BITRATE | AF_TAG_INFO);
 
     wstring GetEncoderDir() { return m_encode_dir; }
 
