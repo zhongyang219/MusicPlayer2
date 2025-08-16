@@ -2283,5 +2283,11 @@
     <Image Include="res\tree_branch_expanded_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\drop_down.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\drop_down_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

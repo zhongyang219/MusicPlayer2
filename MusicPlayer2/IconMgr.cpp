@@ -270,6 +270,8 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
         return { IDI_NEW_FOLDER_D, IDI_NEW_FOLDER, NULL, NULL };
     case IconMgr::IconType::IT_Background:
         return { IDI_BACKGROUND_D, NULL, NULL, NULL };
+    case IconMgr::IconType::IT_DropDown:
+        return { IDI_DROP_DOWN_D, IDI_DROP_DOWN, NULL, NULL };
     case IconMgr::IconType::IT_Le_Tag_Insert:
         return { NULL, NULL, NULL, IDI_ADD_TAG };
     case IconMgr::IconType::IT_Le_Tag_Replace:

@@ -12,7 +12,7 @@ void UiElement::ElementSwitcher::Draw()
     case Style::DropDownIcon:
         if (hover)
             ui->DrawRectangle(rect, ui->m_colors.color_button_hover);
-        ui->DrawUiIcon(rect, IconMgr::IT_Triangle_Down);
+        ui->DrawUiIcon(rect, IconMgr::IT_DropDown);
         break;
     }
 

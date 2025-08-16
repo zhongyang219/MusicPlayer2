@@ -82,7 +82,7 @@ void CMenuEditCtrl::OnDrawBrowseButton(CDC* pDC, CRect rect, BOOL bIsButtonPress
     CPoint icon_top_left;
     icon_top_left.x = rc_draw.left + (rc_draw.Width() - icon_size.cx) / 2;
     icon_top_left.y = rc_draw.top + (rc_draw.Height() - icon_size.cy) / 2;
-    HICON hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_Triangle_Down, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
+    HICON hIcon = theApp.m_icon_mgr.GetHICON(IconMgr::IconType::IT_DropDown, IconMgr::IconStyle::IS_OutlinedDark, IconMgr::IconSize::IS_DPI_16);
     drawer.DrawIcon(hIcon, icon_top_left, icon_size);
 }
 

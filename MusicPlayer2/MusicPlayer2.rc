@@ -2973,6 +2973,10 @@ IDI_TREE_COLLAPSED      ICON                    "res\\tree_branch_collapsed.ico"
 
 IDI_TREE_EXPANDED       ICON                    "res\\tree_branch_expanded.ico"
 
+IDI_DROP_DOWN           ICON                    "res\\drop_down.ico"
+
+IDI_DROP_DOWN_D         ICON                    "res\\drop_down_d.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -152,8 +152,8 @@
         <elementSwitcher x="4" y="4" width="32" height="32" style="drop_down_icon" stack_element_id="main_stack_element" stack_element_index="0"/>
         <verticalLayout>
           <horizontalLayout>
-            <verticalLayout margin="42">
-              <albumCover square="true"/>
+            <verticalLayout>
+              <albumCover square="true" margin="56"/>
             </verticalLayout>
             <verticalLayout margin="4">
               <text type="title" style="scroll" margin-top="8%" height="28" font_size="12"/>
@@ -173,10 +173,12 @@
             <verticalLayout margin="6">
               <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
               <horizontalLayout height="68">
-                <verticalLayout margin="4">
-                  <text type="title" style="scroll" height="24" font_size="10"/>
-                  <text type="artist" style="scroll" height="24"/>
-                </verticalLayout>
+                <element>
+                  <verticalLayout margin="4">
+                    <text type="title" style="scroll" height="24" font_size="10"/>
+                    <text type="artist" style="scroll" height="24"/>
+                  </verticalLayout>
+                </element>
                 <horizontalLayout height="60" width="36%">
                   <button key="repeatMode" width="28" height="28" margin="2"/>
                   <button key="previous" width="40" height="40" bigIcon="true" margin="2"/>

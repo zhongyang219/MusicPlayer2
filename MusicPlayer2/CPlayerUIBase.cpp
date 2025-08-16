@@ -3044,7 +3044,7 @@ void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::Playlist
     rect_drop_down.left = rect_name.right + DPI(2);
     rect_drop_down.right = menu_btn_rect.left - DPI(6);
     CRect rect_drop_down_btn = CDrawCommon::CalculateCenterIconRect(rect_drop_down, icon_size);
-    DrawUIButton(rect_drop_down_btn, playlist_indicator->btn_drop_down, IconMgr::IconType::IT_Triangle_Down);
+    DrawUIButton(rect_drop_down_btn, playlist_indicator->btn_drop_down, IconMgr::IconType::IT_DropDown);
 }
 
 void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)

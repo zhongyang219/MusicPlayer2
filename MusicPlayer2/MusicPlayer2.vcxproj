@@ -700,6 +700,8 @@
     <Image Include="res\double_line_d.ico" />
     <Image Include="res\download1_d.ico" />
     <Image Include="res\download_d.ico" />
+    <Image Include="res\drop_down.ico" />
+    <Image Include="res\drop_down_d.ico" />
     <Image Include="res\edit_d.ico" />
     <Image Include="res\eq.ico" />
     <Image Include="res\eq_d.ico" />
