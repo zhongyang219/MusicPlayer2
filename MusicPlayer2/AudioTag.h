@@ -54,6 +54,9 @@ public:
     //根据一个文件扩展名判断此格式是否支持分级
     static bool IsFileRatingSupport(const wstring& ext);
 
+    // 获取响度均衡的增益（dB）
+    static float GetAudioReplayGain(const wchar_t* file_path);
+
 protected:
     //获取cue文件的路径
     static std::wstring GetCuePath(SongInfo& song_info);
