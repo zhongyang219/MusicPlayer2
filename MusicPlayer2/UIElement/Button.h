@@ -14,6 +14,14 @@ namespace UiElement
         void FromString(const std::string& key_type);
         virtual int GetMaxWidth(CRect parent_rect) const override;
         virtual void ClearRect() override;
+        virtual void LButtonUp(CPoint point) override;
+        virtual void LButtonDown(CPoint point) override;
+        virtual void MouseMove(CPoint point) override;
+        virtual bool RButtunUp(CPoint point) override;
+        virtual void MouseLeave() override;
+
+    private:
+        CPlayerUIBase::UIButton m_btn;
     };
 }
 

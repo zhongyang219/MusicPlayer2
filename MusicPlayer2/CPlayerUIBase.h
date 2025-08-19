@@ -285,6 +285,7 @@ protected:
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
     // 绘制一个UI按钮 (使用GetBtnIconType取得的图标)
     void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
+    void DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& btn, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
     void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9, bool checked = false);
     // 绘制一个工具条按钮（将rect四面缩小 DPI(2) 后调用DrawUIButton）
     void DrawControlBarBtn(CRect rect, BtnKey btn_type);
@@ -298,8 +299,12 @@ protected:
     virtual void UpdateMouseToolTipPosition(int btn, CRect rect);
 
     virtual void UpdateToolTipPosition() override;
-
     virtual void AddToolTips();         //为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
+
+    //响应一个按钮点击
+    bool ButtonClicked(BtnKey btn_type);
+    //响应一个按钮右键点击
+    bool ButtonRClicked(BtnKey btn_type);
 
     //当绘图区域的原点不是窗口的原点的时候需要使用这两个函数在绘图区域坐标和窗口坐标中转换
     //现在这两个函数已弃用

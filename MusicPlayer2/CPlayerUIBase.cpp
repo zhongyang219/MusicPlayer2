@@ -237,50 +237,20 @@ void CPlayerUIBase::RButtonUp(CPoint point)
     if (m_buttons[BTN_VOLUME].rect.PtInRect(point) == FALSE)
         m_show_volume_adj = false;
 
-    CPoint point1;      //定义一个用于确定光标位置的位置
-    GetCursorPos(&point1);  //获取当前光标的位置，以便使得菜单可以跟随光标，该位置以屏幕左上角点为原点，point则以客户区左上角为原点
-    if (m_buttons[BTN_REPETEMODE].rect.PtInRect(point))     //如果在“循环模式”的矩形区域内点击鼠标右键，则弹出“循环模式”的子菜单
-    {
-        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlayCtrlRepeatModeMenu);
-        ASSERT(pMenu != nullptr);
-        if (pMenu != NULL)
-            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-        return;
-    }
-
-    if (m_buttons[BTN_SHOW_PLAYLIST].rect.PtInRect(point))
-    {
-        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaPlaylistBtnMenu);
-        ASSERT(pMenu != nullptr);
-        if (pMenu != NULL)
-            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-        return;
-    }
-
-    if (m_buttons[BTN_AB_REPEAT].rect.PtInRect(point))
-    {
-        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlayCtrlAbRepeatMenu);
-        ASSERT(pMenu != nullptr);
-        if (pMenu != nullptr)
-            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-        return;
-    }
-
-    if (m_buttons[BTN_SKIN].rect.PtInRect(point))
-    {
-        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainViewSwitchUiMenu);
-        ASSERT(pMenu != nullptr);
-        if (pMenu != nullptr)
-            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-        return;
-    }
-
     for (auto& btn : m_buttons)
     {
-        //按钮上点击右键不弹出菜单
+        if (btn.second.rect.PtInRect(point))
+        {
+            ButtonRClicked(btn.first);
+        }
+
+        //其他按钮上点击右键不弹出菜单
         if (btn.first != BTN_COVER && btn.second.rect.PtInRect(point) != FALSE)
             return;
     }
+
+    CPoint point1;
+    GetCursorPos(&point1);
 
     if (m_draw_data.lyric_rect.PtInRect(point))    //如果在歌词区域点击了鼠标右键
     {
@@ -355,145 +325,9 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
 
         if (pressed && btn.second.rect.PtInRect(point) && btn.second.enable)
         {
+            ButtonClicked(btn.first);
             switch (btn.first)
             {
-            case BTN_APP_CLOSE:
-                theApp.m_pMainWnd->SendMessage(WM_CLOSE);
-                return true;
-
-            case BTN_MAXIMIZE:
-                m_buttons[BTN_MAXIMIZE].hover = false;
-                if (theApp.m_pMainWnd->IsZoomed())
-                    theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
-                else
-                    theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
-                return true;
-
-            case BTN_MINIMIZE:
-                m_buttons[BTN_MINIMIZE].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_MINIMIZE);
-                return true;
-
-            case BTN_REPETEMODE:
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_REPEAT_MODE);
-                return true;
-
-            case BTN_VOLUME:
-                break;
-
-            case BTN_TRANSLATE:
-                theApp.m_lyric_setting_data.show_translate = !theApp.m_lyric_setting_data.show_translate;
-                return true;
-
-            case BTN_SKIN:
-            case BTN_SKIN_TITLEBAR:
-            {
-                m_buttons[BTN_SKIN].hover = false;
-                m_buttons[BTN_SKIN_TITLEBAR].hover = false;
-                //theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
-                CPoint point1;
-                GetCursorPos(&point1);
-                CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainViewSwitchUiMenu);
-                ASSERT(pMenu != nullptr);
-                if (pMenu != nullptr)
-                    pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-                return true;
-            }
-
-            case BTN_EQ:
-                m_buttons[BTN_EQ].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
-                return true;
-
-            case BTN_SETTING: case BTN_SETTING_TITLEBAR:
-                m_buttons[BTN_SETTING].hover = false;
-                m_buttons[BTN_SETTING_TITLEBAR].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
-                return true;
-
-            case BTN_MINI: case BTN_MINI_TITLEBAR:
-                m_buttons[BTN_MINI].hover = false;
-                m_buttons[BTN_MINI_TITLEBAR].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
-                return true;
-
-            case BTN_INFO:
-                m_buttons[BTN_INFO].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SONG_INFO);
-                return true;
-
-            case BTN_LRYIC:
-                theApp.m_lyric_setting_data.show_desktop_lyric = !theApp.m_lyric_setting_data.show_desktop_lyric;
-                return true;
-
-            case BTN_AB_REPEAT:
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_AB_REPEAT);
-                return true;
-
-            case BTN_STOP:
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_STOP);
-                return true;
-
-            case BTN_PREVIOUS:
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PREVIOUS);
-                return true;
-            case BTN_PLAY_PAUSE:
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_PAUSE);
-                return true;
-
-            case BTN_NEXT:
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_NEXT);
-                return true;
-
-            case BTN_SHOW_PLAYLIST:
-                m_buttons[BTN_SHOW_PLAYLIST].hover = false;
-                if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
-                    theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FLOAT_PLAYLIST);
-                else
-                    theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAYLIST);
-                return true;
-
-            case BTN_MEDIA_LIB:
-                m_buttons[BTN_MEDIA_LIB].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MEDIA_LIB);
-                return true;
-
-            case BTN_FAVOURITE:
-                m_buttons[BTN_FAVOURITE].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_ADD_REMOVE_FROM_FAVOURITE);
-                return true;
-
-            case BTN_DARK_LIGHT:
-                m_buttons[BTN_DARK_LIGHT].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
-                return true;
-
-            case BTN_DARK_LIGHT_TITLE_BAR:
-                m_buttons[BTN_DARK_LIGHT_TITLE_BAR].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
-                return true;
-
-            case BTN_LOCATE_TO_CURRENT:
-                m_buttons[BTN_LOCATE_TO_CURRENT].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCATE_TO_CURRENT);
-                return true;
-
-            case BTN_VOLUME_UP:
-                if (m_show_volume_adj)
-                {
-                    CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, theApp.m_nc_setting_data.volum_step);
-                    return true;
-                }
-                break;
-
-            case BTN_VOLUME_DOWN:
-                if (m_show_volume_adj)
-                {
-                    CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, -theApp.m_nc_setting_data.volum_step);
-                    return true;
-                }
-                break;
-
             case BTN_PROGRESS:
             {
                 int ckick_pos = point.x - m_buttons[BTN_PROGRESS].rect.left;
@@ -503,108 +337,9 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
                     CPlayer::GetInstance().SeekTo(progress);
                     CPlayer::GetInstance().GetPlayStatusMutex().unlock();
                 }
-            }
-            return true;
-
-            case BTN_FIND:
-                m_buttons[BTN_FIND].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FIND);
-                return true;
-
-            case BTN_FULL_SCREEN_TITLEBAR:
-                m_buttons[BTN_FULL_SCREEN_TITLEBAR].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
-                return true;
-
-            case BTN_FULL_SCREEN:
-                m_buttons[BTN_FULL_SCREEN].hover = false;
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
-                return true;
-
-            case BTN_MENU_TITLEBAR:
-            {
-                CPoint point(m_buttons[BTN_MENU_TITLEBAR].rect.left, m_buttons[BTN_MENU_TITLEBAR].rect.bottom);
-                theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
                 return true;
             }
-
-            case BTN_MENU:
-            {
-                CPoint point(m_buttons[BTN_MENU].rect.left, m_buttons[BTN_MENU].rect.bottom);
-                theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
-                return true;
-            }
-
-            case BTN_ADD_TO_PLAYLIST:
-            {
-                CPoint point1;
-                GetCursorPos(&point1);
-                CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
-                ASSERT(add_to_menu != nullptr);
-                if (add_to_menu != nullptr)
-                {
-                    add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-                }
-                return true;
-            }
-
-            case BTN_SWITCH_DISPLAY:
-                SwitchStackElement();
-                return true;
-
-            case BTN_OPEN_FOLDER:
-                theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FILE_OPEN_FOLDER);
-                return true;
-
-            case BTN_NEW_PLAYLIST:
-            {
-                CMusicPlayerCmdHelper helper;
-                helper.OnNewPlaylist();
-                return true;
-            }
-            case BTN_PLAY_MY_FAVOURITE:
-            {
-                CMusicPlayerCmdHelper helper;
-                helper.OnPlayMyFavourite();
-                return true;
-            }
-            case BTN_MEDIALIB_FOLDER_SORT:
-            {
-                CRect btn_rect(m_buttons[BTN_MEDIALIB_FOLDER_SORT].rect);
-                CPoint point(btn_rect.left, btn_rect.bottom);
-                ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
-                CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibFolderSortMenu);
-                ASSERT(add_to_menu != nullptr);
-                if (add_to_menu != nullptr)
-                {
-                    CUIWindowCmdHelper helper(nullptr);
-                    helper.SetMenuState(add_to_menu);
-                    UINT command = add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD | TPM_NONOTIFY, point.x, point.y, theApp.m_pMainWnd);
-                    helper.OnUiCommand(command);
-                }
-                return true;
-            }
-            case BTN_MEDIALIB_PLAYLIST_SORT:
-            {
-                CRect btn_rect(m_buttons[BTN_MEDIALIB_PLAYLIST_SORT].rect);
-                CPoint point(btn_rect.left, btn_rect.bottom);
-                ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
-                CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistSortMenu);
-                ASSERT(add_to_menu != nullptr);
-                if (add_to_menu != nullptr)
-                {
-                    CUIWindowCmdHelper helper(nullptr);
-                    helper.SetMenuState(add_to_menu);
-                    UINT command = add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD | TPM_NONOTIFY, point.x, point.y, theApp.m_pMainWnd);
-                    helper.OnUiCommand(command);
-                }
-                return true;
-            }
-            case BTN_KARAOKE:
-                theApp.m_lyric_setting_data.lyric_karaoke_disp = !theApp.m_lyric_setting_data.lyric_karaoke_disp;
-                return true;
-
-                //菜单
+            //菜单
             case MENU_FILE:
                 showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainFileMenu));
                 return true;
@@ -626,11 +361,300 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
             case MENU_HELP:
                 showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainHelpMenu));
                 return true;
-            default:
-                break;
             }
         }
     }
+    return false;
+}
+
+bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
+{
+    switch (btn_type)
+    {
+    case BTN_APP_CLOSE:
+        theApp.m_pMainWnd->SendMessage(WM_CLOSE);
+        return true;
+
+    case BTN_MAXIMIZE:
+        m_buttons[BTN_MAXIMIZE].hover = false;
+        if (theApp.m_pMainWnd->IsZoomed())
+            theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_RESTORE);
+        else
+            theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE);
+        return true;
+
+    case BTN_MINIMIZE:
+        m_buttons[BTN_MINIMIZE].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_SYSCOMMAND, SC_MINIMIZE);
+        return true;
+
+    case BTN_REPETEMODE:
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_REPEAT_MODE);
+        return true;
+
+    case BTN_VOLUME:
+        break;
+
+    case BTN_TRANSLATE:
+        theApp.m_lyric_setting_data.show_translate = !theApp.m_lyric_setting_data.show_translate;
+        return true;
+
+    case BTN_SKIN:
+    case BTN_SKIN_TITLEBAR:
+    {
+        m_buttons[BTN_SKIN].hover = false;
+        m_buttons[BTN_SKIN_TITLEBAR].hover = false;
+        //theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
+        CPoint point1;
+        GetCursorPos(&point1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainViewSwitchUiMenu);
+        ASSERT(pMenu != nullptr);
+        if (pMenu != nullptr)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return true;
+    }
+
+    case BTN_EQ:
+        m_buttons[BTN_EQ].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
+        return true;
+
+    case BTN_SETTING: case BTN_SETTING_TITLEBAR:
+        m_buttons[BTN_SETTING].hover = false;
+        m_buttons[BTN_SETTING_TITLEBAR].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
+        return true;
+
+    case BTN_MINI: case BTN_MINI_TITLEBAR:
+        m_buttons[BTN_MINI].hover = false;
+        m_buttons[BTN_MINI_TITLEBAR].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
+        return true;
+
+    case BTN_INFO:
+        m_buttons[BTN_INFO].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SONG_INFO);
+        return true;
+
+    case BTN_LRYIC:
+        theApp.m_lyric_setting_data.show_desktop_lyric = !theApp.m_lyric_setting_data.show_desktop_lyric;
+        return true;
+
+    case BTN_AB_REPEAT:
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_AB_REPEAT);
+        return true;
+
+    case BTN_STOP:
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_STOP);
+        return true;
+
+    case BTN_PREVIOUS:
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PREVIOUS);
+        return true;
+    case BTN_PLAY_PAUSE:
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY_PAUSE);
+        return true;
+
+    case BTN_NEXT:
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_NEXT);
+        return true;
+
+    case BTN_SHOW_PLAYLIST:
+        m_buttons[BTN_SHOW_PLAYLIST].hover = false;
+        if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
+            theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FLOAT_PLAYLIST);
+        else
+            theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAYLIST);
+        return true;
+
+    case BTN_MEDIA_LIB:
+        m_buttons[BTN_MEDIA_LIB].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MEDIA_LIB);
+        return true;
+
+    case BTN_FAVOURITE:
+        m_buttons[BTN_FAVOURITE].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_ADD_REMOVE_FROM_FAVOURITE);
+        return true;
+
+    case BTN_DARK_LIGHT:
+        m_buttons[BTN_DARK_LIGHT].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
+        return true;
+
+    case BTN_DARK_LIGHT_TITLE_BAR:
+        m_buttons[BTN_DARK_LIGHT_TITLE_BAR].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
+        return true;
+
+    case BTN_LOCATE_TO_CURRENT:
+        m_buttons[BTN_LOCATE_TO_CURRENT].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCATE_TO_CURRENT);
+        return true;
+
+    case BTN_VOLUME_UP:
+        if (m_show_volume_adj)
+        {
+            CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, theApp.m_nc_setting_data.volum_step);
+            return true;
+        }
+        break;
+
+    case BTN_VOLUME_DOWN:
+        if (m_show_volume_adj)
+        {
+            CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, -theApp.m_nc_setting_data.volum_step);
+            return true;
+        }
+        break;
+
+    return true;
+
+    case BTN_FIND:
+        m_buttons[BTN_FIND].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FIND);
+        return true;
+
+    case BTN_FULL_SCREEN_TITLEBAR:
+        m_buttons[BTN_FULL_SCREEN_TITLEBAR].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
+        return true;
+
+    case BTN_FULL_SCREEN:
+        m_buttons[BTN_FULL_SCREEN].hover = false;
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
+        return true;
+
+    case BTN_MENU_TITLEBAR:
+    {
+        CPoint point(m_buttons[BTN_MENU_TITLEBAR].rect.left, m_buttons[BTN_MENU_TITLEBAR].rect.bottom);
+        theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
+        return true;
+    }
+
+    case BTN_MENU:
+    {
+        CPoint point(m_buttons[BTN_MENU].rect.left, m_buttons[BTN_MENU].rect.bottom);
+        theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
+        return true;
+    }
+
+    case BTN_ADD_TO_PLAYLIST:
+    {
+        CPoint point1;
+        GetCursorPos(&point1);
+        CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
+        ASSERT(add_to_menu != nullptr);
+        if (add_to_menu != nullptr)
+        {
+            add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        }
+        return true;
+    }
+
+    case BTN_SWITCH_DISPLAY:
+        SwitchStackElement();
+        return true;
+
+    case BTN_OPEN_FOLDER:
+        theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FILE_OPEN_FOLDER);
+        return true;
+
+    case BTN_NEW_PLAYLIST:
+    {
+        CMusicPlayerCmdHelper helper;
+        helper.OnNewPlaylist();
+        return true;
+    }
+    case BTN_PLAY_MY_FAVOURITE:
+    {
+        CMusicPlayerCmdHelper helper;
+        helper.OnPlayMyFavourite();
+        return true;
+    }
+    case BTN_MEDIALIB_FOLDER_SORT:
+    {
+        CRect btn_rect(m_buttons[BTN_MEDIALIB_FOLDER_SORT].rect);
+        CPoint point(btn_rect.left, btn_rect.bottom);
+        ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
+        CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibFolderSortMenu);
+        ASSERT(add_to_menu != nullptr);
+        if (add_to_menu != nullptr)
+        {
+            CUIWindowCmdHelper helper(nullptr);
+            helper.SetMenuState(add_to_menu);
+            UINT command = add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD | TPM_NONOTIFY, point.x, point.y, theApp.m_pMainWnd);
+            helper.OnUiCommand(command);
+        }
+        return true;
+    }
+    case BTN_MEDIALIB_PLAYLIST_SORT:
+    {
+        CRect btn_rect(m_buttons[BTN_MEDIALIB_PLAYLIST_SORT].rect);
+        CPoint point(btn_rect.left, btn_rect.bottom);
+        ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
+        CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistSortMenu);
+        ASSERT(add_to_menu != nullptr);
+        if (add_to_menu != nullptr)
+        {
+            CUIWindowCmdHelper helper(nullptr);
+            helper.SetMenuState(add_to_menu);
+            UINT command = add_to_menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD | TPM_NONOTIFY, point.x, point.y, theApp.m_pMainWnd);
+            helper.OnUiCommand(command);
+        }
+        return true;
+    }
+    case BTN_KARAOKE:
+        theApp.m_lyric_setting_data.lyric_karaoke_disp = !theApp.m_lyric_setting_data.lyric_karaoke_disp;
+        return true;
+
+    default:
+        break;
+    }
+    return false;
+}
+
+bool CPlayerUIBase::ButtonRClicked(BtnKey btn_type)
+{
+    CPoint point1;
+    GetCursorPos(&point1);
+
+    if (btn_type == BTN_REPETEMODE)
+    {
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlayCtrlRepeatModeMenu);
+        ASSERT(pMenu != nullptr);
+        if (pMenu != NULL)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return true;
+    }
+
+    if (btn_type == BTN_SHOW_PLAYLIST)
+    {
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaPlaylistBtnMenu);
+        ASSERT(pMenu != nullptr);
+        if (pMenu != NULL)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return true;
+    }
+
+    if (btn_type == BTN_AB_REPEAT)
+    {
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainPlayCtrlAbRepeatMenu);
+        ASSERT(pMenu != nullptr);
+        if (pMenu != nullptr)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return true;
+    }
+
+    if (btn_type == BTN_SKIN)
+    {
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MainViewSwitchUiMenu);
+        ASSERT(pMenu != nullptr);
+        if (pMenu != nullptr)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return true;
+    }
+
     return false;
 }
 
@@ -1334,6 +1358,16 @@ CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
 void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon, bool show_text, int font_size, bool checked)
 {
     auto& btn = m_buttons[key_type];
+    std::wstring text;
+    if (show_text)
+    {
+        text = GetButtonText(key_type);
+    }
+    DrawUIButton(rect, btn, GetBtnIconType(key_type), big_icon, text, font_size, checked);
+}
+
+void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& btn, bool big_icon, bool show_text, int font_size, bool checked)
+{
     std::wstring text;
     if (show_text)
     {

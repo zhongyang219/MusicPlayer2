@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Button.h"
+#include "Player.h"
 
 void UiElement::Button::Draw()
 {
@@ -7,19 +8,42 @@ void UiElement::Button::Draw()
     switch (key)
     {
     case CPlayerUIBase::BTN_TRANSLATE:
-        ui->DrawTranslateButton(rect);
+    {
+        static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_TRANSLATE");
+        m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
+        ui->DrawTextButton(rect, CPlayerUIBase::BTN_TRANSLATE, btn_str.c_str(), theApp.m_lyric_setting_data.show_translate);
+    }
         break;
     case CPlayerUIBase::BTN_LRYIC:
-        ui->DrawDesktopLyricButton(rect);
+    {
+        static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_DESKTOP_LYRIC");
+        ui->DrawTextButton(rect, m_btn, btn_str.c_str(), theApp.m_lyric_setting_data.show_desktop_lyric);
+    }
         break;
     case CPlayerUIBase::BTN_AB_REPEAT:
-        ui->DrawABRepeatButton(rect);
+    {
+        CString info;
+        CPlayer::ABRepeatMode ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
+        if (ab_repeat_mode == CPlayer::AM_A_SELECTED)
+            info = _T("A-");
+        else
+            info = _T("A-B");
+        CFont* pOldFont = ui->m_draw.GetFont();
+        ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
+        m_btn.enable = (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
+        ui->DrawTextButton(rect, m_btn, info, ab_repeat_mode != CPlayer::AM_NONE);
+        ui->m_draw.SetFont(pOldFont);
+    }
         break;
     case CPlayerUIBase::BTN_KARAOKE:
-        ui->DrawKaraokeButton(rect);
+    {
+        m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
+        //如果是卡拉OK样式显示歌词，则按钮显示为选中状态
+        ui->DrawUIButton(rect, CPlayerUIBase::BTN_KARAOKE, m_btn, false, false, 9, theApp.m_lyric_setting_data.lyric_karaoke_disp);
+    }
         break;
     default:
-        ui->DrawUIButton(rect, key, big_icon, show_text, font_size);
+        ui->DrawUIButton(rect, key, m_btn, big_icon, show_text, font_size);
         break;
     }
     Element::Draw();
@@ -121,4 +145,45 @@ void UiElement::Button::ClearRect()
 {
     Element::ClearRect();
     ui->m_buttons[key].rect = CRect();
+}
+
+void UiElement::Button::LButtonUp(CPoint point)
+{
+    bool pressed = m_btn.pressed;
+    m_btn.pressed = false;
+
+    if (pressed && m_btn.rect.PtInRect(point) && m_btn.enable)
+    {
+        ui->ButtonClicked(key);
+    }
+}
+
+void UiElement::Button::LButtonDown(CPoint point)
+{
+    if (m_btn.enable && m_btn.rect.PtInRect(point))
+    {
+        m_btn.pressed = true;
+    }
+}
+
+void UiElement::Button::MouseMove(CPoint point)
+{
+    if (m_btn.enable)
+        m_btn.hover = (m_btn.rect.PtInRect(point));
+}
+
+bool UiElement::Button::RButtunUp(CPoint point)
+{
+    if (m_btn.enable && m_btn.rect.PtInRect(point))
+    {
+        ui->ButtonRClicked(key);
+    }
+
+    return false;
+}
+
+void UiElement::Button::MouseLeave()
+{
+    m_btn.hover = false;
+    m_btn.pressed = false;
 }
