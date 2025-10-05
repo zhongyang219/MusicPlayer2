@@ -1,82 +1,68 @@
 #include "stdafx.h"
 #include "NeteaseLyricDownload.h"
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
 
 std::wstring CNeteaseLyricDownload::GetSearchUrl(const std::wstring& key_words, int result_count)
 {
 	CString url;
 	url.Format(L"http://music.163.com/api/search/get/?s=%s&limit=%d&type=1&offset=0", key_words.c_str(), result_count);
-    return url.GetString();
+	return url.GetString();
 }
 
 void CNeteaseLyricDownload::DisposeSearchResult(vector<ItemInfo>& down_list, const wstring& search_result, int result_count)
 {
 	down_list.clear();
-	ItemInfo item;
-	int index1{}, index2{}, index3{}, index4{};
-	for (int i{}; i < result_count; i++)
+
+	try
 	{
-		//获取歌曲的ID
-		if (i == 0)
-		{
-			index1 = search_result.find(L"\"songs\":[{\"id\":", index1 + 1);
-			if (index1 == string::npos) break;
-			index2 = search_result.find(L',', index1);
-			item.id = search_result.substr(index1 + 15, index2 - index1 - 15);
-		}
-		else
-		{
-			index1 = search_result.find(L",{\"id\":", index1 + 1);
-			if (index1 == string::npos) break;
-			index2 = search_result.find(L',', index1 + 1);
-			item.id = search_result.substr(index1 + 7, index2 - index1 - 7);
-		}
+		json data = json::parse(search_result);
 
-		//获取歌曲标题
-		index2 = search_result.find(L"name", index1);
-		if (index2 == string::npos) continue;
-		index3 = search_result.find(L"\",\"", index2);
-		wstring title = search_result.substr(index2 + 7, index3 - index2 - 7);
-		if (search_result.substr(index3 + 3, 6) == L"picUrl")	//如果找到的“name”后面的字符串是“picUrl”，说明这项name的值不是
-		{														//另一首歌的标题，而是上一首歌的艺术家，上一首歌有多个艺术家
-			if (!down_list.empty())
+		if (data.contains("result") && data["result"].contains("songs") && data["result"]["songs"].is_array())
+		{
+			auto& songs = data["result"]["songs"];
+
+			for (const auto& song_item : songs)
 			{
-				down_list.back().artist += L'/';
-				down_list.back().artist += title;
+				ItemInfo item;
+
+				item.id = std::to_wstring(song_item.value("id", 0LL));
+				item.title = CCommon::StrToUnicode(song_item.value("name", ""), CodeType::UTF8);
+				item.duration = song_item.value("duration", 0);
+
+				if (song_item.contains("album") && song_item["album"].is_object())
+				{
+					item.album = CCommon::StrToUnicode(song_item["album"].value("name", ""), CodeType::UTF8);
+				}
+
+				if (song_item.contains("artists") && song_item["artists"].is_array())
+				{
+					std::wstring artists_str;
+					for (const auto& artist_item : song_item["artists"])
+					{
+						if (artist_item.is_object() && artist_item.contains("name"))
+						{
+							if (!artists_str.empty())
+							{
+								artists_str += L'/';
+							}
+							artists_str += CCommon::StrToUnicode(artist_item.value("name", ""), CodeType::UTF8);
+						}
+					}
+					item.artist = artists_str;
+				}
+
+				CInternetCommon::DeleteStrSlash(item.title);
+				CInternetCommon::DeleteStrSlash(item.artist);
+				CInternetCommon::DeleteStrSlash(item.album);
+				down_list.push_back(item);
 			}
-			continue;
 		}
-		else
-		{
-			item.title = title;
-		}
-
-		//获取歌曲的艺术家
-		index2 = search_result.find(L"artists", index1);
-		if (index2 == string::npos) continue;
-		index3 = search_result.find(L"name", index2);
-		index4 = search_result.find(L"\",\"", index3);
-		item.artist = search_result.substr(index3 + 7, index4 - index3 - 7);
-
-		//获取歌曲的唱片集
-		index2 = search_result.find(L"\"album\"", index1);
-		if (index2 == string::npos) continue;
-		index3 = search_result.find(L"name", index2);
-		index4 = search_result.find(L"\",\"", index3);
-		item.album = search_result.substr(index3 + 7, index4 - index3 - 7);
-
-		//获取时长
-		index2 = search_result.find(L"\"duration\"", index1);
-		if (index2 != string::npos)
-		{
-			index3 = search_result.find(L',', index2);
-			wstring str_duration = search_result.substr(index2 + 11, index3 - index2 - 11);
-			item.duration = _wtoi(str_duration.c_str());
-		}
-
-		CInternetCommon::DeleteStrSlash(item.title);
-		CInternetCommon::DeleteStrSlash(item.artist);
-		CInternetCommon::DeleteStrSlash(item.album);
-		down_list.push_back(item);
+	}
+	catch (const std::exception& e)
+	{
+		TRACE(L"NeteaseLyricDownload JSON parse error: %hs\n", e.what());
 	}
 }
 
