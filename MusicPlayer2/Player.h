@@ -122,6 +122,7 @@ private:
 
     int m_equalizer_gain[EQU_CH_NUM]{};         //用于保存设置好的每个通道的增益
     bool m_equ_enable{ false };                 //指示是否允许均衡器
+    bool m_replay_gain_enable{ false };         //指示是否开启响度均衡
 
     int m_equ_style{};
     int m_reverb_mix{};             //混响强度（0~100）
@@ -189,6 +190,9 @@ private:
 
     //应用一个均衡器通道的增益
     void ApplyEqualizer(int channel, int gain);
+
+    // 应用响度均衡
+    void ApplyReplayGain(float gain);
 
 public:
     void SaveCurrentPlaylist();

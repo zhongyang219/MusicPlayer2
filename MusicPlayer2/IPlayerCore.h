@@ -165,6 +165,7 @@ public:
     virtual PlayingState GetPlayingState() = 0;
 
     virtual void ApplyEqualizer(int channel, int gain) = 0; //设置均衡器（channel为均衡器通道，取值为0~9，gain为增益，取值为-15~15）
+    virtual void ApplyReplayGain(float gain) = 0;           //设置响度均衡（gain为增益，取值一般在0附近）
     virtual void SetReverb(int mix, int time) = 0;		//设置混响（mix为混响强度，取值为0~100，time为混响时间，取值为1~300，单位为10ms）
     virtual void ClearReverb() = 0;			//关闭混响
     virtual void GetFFTData(float fft_data[FFT_SAMPLE]) = 0;       //获取频谱分析数据

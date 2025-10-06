@@ -102,6 +102,7 @@ public:
     virtual bool MidiNoLyric() override;
     virtual PlayingState GetPlayingState() override;
     virtual void ApplyEqualizer(int channel, int gain) override;
+    virtual void ApplyReplayGain(float gain) override;
     virtual void SetReverb(int mix, int time) override;
     virtual void ClearReverb() override;
     virtual void GetFFTData(float fft_data[FFT_SAMPLE]) override;
