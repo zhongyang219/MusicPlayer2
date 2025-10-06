@@ -544,6 +544,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
         if (m_enable_lastfm) {
             UpdateLastFMCurrentTrack(GetCurrentSongInfo());
         }
+        m_replay_gain_enable = theApp.m_play_setting_data.replay_gain;
+        if (m_replay_gain_enable) {
+            ApplyReplayGain(cur_song.replay_gain);  // 在这里就需要用响度均衡了
+        }
     }
     break;
     case Command::PLAY:
@@ -2330,6 +2334,12 @@ void CPlayer::EnableEqualizer(bool enable)
     else
         ClearAllEqulizer();
     m_equ_enable = enable;
+}
+
+void CPlayer::ApplyReplayGain(float gain)
+{
+    m_pCore->ApplyReplayGain(gain);
+    GetPlayerCoreError(L"ApplyReplayGain");
 }
 
 void CPlayer::EnableReverb(bool enable)

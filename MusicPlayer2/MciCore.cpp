@@ -268,6 +268,10 @@ void CMciCore::ApplyEqualizer(int channel, int gain)
 {
 }
 
+void CMciCore::ApplyReplayGain(float gain)
+{
+}
+
 void CMciCore::SetReverb(int mix, int time)
 {
 }
