@@ -344,6 +344,9 @@ void CFfmpegCore::ApplyEqualizer(int channel, int gain) {
     }
 }
 
+void CFfmpegCore::ApplyReplayGain(float gain) {
+}
+
 void CFfmpegCore::SetReverb(int mix, int time) {
 }
 

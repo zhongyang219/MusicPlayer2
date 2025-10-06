@@ -380,6 +380,16 @@ static void OtherPropertyToSongInfo(SongInfo& song_info, const std::map<std::wst
         song_info.total_discs = static_cast<BYTE>(CCommon::StringToInt(disc_number.substr(index + 1)));
     }
     song_info.disc_num = static_cast<BYTE>(CCommon::StringToInt(disc_number));
+
+    //获取响度均衡的增益标签
+    std::wstring gainStr = GetMapValue(L"REPLAYGAIN_TRACK_GAIN", property_map);
+    if (gainStr.length() > 0)
+        song_info.replay_gain = std::stof(gainStr) + 18 - 10; // 提取数值（如 "-6.2 dB" → -6.2f）
+        // rsgain的目标标准化响度是-18 LUFS，表达的是再增加gain dB的响度就到达-18 LUFS了
+        // 但是由于平时下载的音乐的响度计算平均后为-10 LUFS
+        // 这里要计算的是再增加多少dB的响度就到达-10 LUFS
+    else
+        song_info.replay_gain = 0.0f; // 默认无增益
 }
 
 template<class T>
@@ -501,6 +511,16 @@ static void getM4aPropertyMap(MP4::File& file, std::map<std::wstring, std::wstri
 {
     auto tag = file.tag();
     GetTagPropertyMap(tag, property_map);
+    if (tag && tag->contains("----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN")) {
+        std::wstring key = L"REPLAYGAIN_TRACK_GAIN";
+        StringList values = tag->item("----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN").toStringList();
+        std::wstring value_gainStr = TagStringToWstring(values.toString(L";"), true);
+        auto iter = property_map.find(key);
+        if (iter == property_map.end())
+            property_map[key] = value_gainStr;
+        else if (iter->second.empty())
+            iter->second = value_gainStr;
+    }
 }
 
 static void getMpegPropertyMap(MPEG::File& file, std::map<std::wstring, std::wstring>& property_map)
@@ -1091,57 +1111,6 @@ void CTagLibHelper::GetAnyFilePropertyMap(const std::wstring& file_path, std::ma
     getAnyFilePropertyMap(file, property_map);
 }
 
-float CTagLibHelper::GetReplayGain(const wchar_t* file_path) {
-    FileRef f(file_path);
-    if (f.tag()) {
-        std::string gainStr;
-        TagLib::PropertyMap tags = f.file()->properties();
-
-#ifdef _DEBUG
-        // 输出标题
-        TRACE(_T("==== 标准属性 ====\n"));
-        // 遍历所有标签
-        for (const auto& [key, values] : tags) {
-            CString strKey = CString(key.toCWString());  // TagLib::String → MFC CString
-            CString strLine = strKey + _T(" = ");
-            // 拼接多个值（如多个艺术家）
-            for (const auto& v : values) {
-                strLine += CString(v.toCWString()) + _T(" | ");
-            }
-            TRACE(_T("%s\n"), strLine);
-        }
-#endif // _DEBUG
-
-        if (tags.contains("REPLAYGAIN_TRACK_GAIN")) {
-            gainStr = tags["REPLAYGAIN_TRACK_GAIN"].front().to8Bit();
-        }
-
-        // 如果是MP4文件，额外输出私有原子
-        if (TagLib::MP4::File* mp4File = dynamic_cast<TagLib::MP4::File*>(f.file())) {
-            TagLib::MP4::Tag* mp4Tag = mp4File->tag();
-
-#ifdef _DEBUG
-            TRACE(_T("==== MP4私有原子 ====\n"));
-            for (const auto& [key, item] : mp4Tag->itemMap()) {
-                CString strKey = CString(key.toCWString());
-                CString strValue = CString(item.toStringList().toString().toCWString());
-                TRACE(_T("%s = %s\n"), strKey, strValue);
-            }
-#endif // _DEBUG
-
-            if (mp4Tag && mp4Tag->contains("----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN")) {
-                TagLib::String gain = mp4Tag->item("----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN").toStringList().toString();
-                gainStr = gain.to8Bit();
-            }
-        }
-        if (gainStr.length() > 0)
-            return std::stof(gainStr) + 18 - 10; // 提取数值（如 "-6.2 dB" → -6.2f）
-        // rsgain的目标标准化响度是-18 LUFS，表达的是再增加gain dB的响度就到达-18 LUFS了
-        // 但是由于平时下载的音乐的响度计算平均后为-10 LUFS
-        // 这里要计算的是再增加多少dB的响度就到达-10 LUFS
-    }
-    return 0.0f; // 默认无增益
-}
 
 std::wstring CTagLibHelper::GetMpegLyric(const std::wstring& file_path)
 {

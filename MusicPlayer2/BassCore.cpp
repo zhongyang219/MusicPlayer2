@@ -364,8 +364,6 @@ void CBassCore::Open(const wchar_t * file_path)
     }
     SetFXHandle();
     m_musicStream = BASS_FX_TempoCreate(m_musicStream, BASS_FX_FREESOURCE);
-    if (theApp.m_play_setting_data.replay_gain)
-        ApplyReplayGain(CAudioTag::GetAudioReplayGain(file_path));  // 在这里就需要用响度均衡了
 }
 
 void CBassCore::Close()

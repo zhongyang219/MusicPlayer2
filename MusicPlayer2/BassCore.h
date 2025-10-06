@@ -60,7 +60,7 @@ public:
     };
 
     virtual void ApplyEqualizer(int channel, int gain) override;
-    void ApplyReplayGain(float gain);
+    virtual void ApplyReplayGain(float gain) override;
     virtual void SetReverb(int mix, int time) override;
     virtual void ClearReverb() override;
     virtual void GetFFTData(float fft_data[FFT_SAMPLE]) override;

@@ -58,6 +58,7 @@ void SongInfo::CopyAudioTag(const SongInfo& song_info)
     disc_num = song_info.disc_num;
     total_discs = song_info.total_discs;
     tag_type = song_info.tag_type;
+    replay_gain = song_info.replay_gain;
 }
 
 bool SongInfo::IsTitleEmpty() const
