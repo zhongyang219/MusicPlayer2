@@ -180,6 +180,7 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_SORT_BY_TRACK, &CMusicPlayerDlg::OnSortByTrack)
     ON_COMMAND(ID_SORT_BY_LISTEN_TIME, &CMusicPlayerDlg::OnSortByListenTime)
     ON_COMMAND(ID_SORT_BY_MODIFIED_TIME, &CMusicPlayerDlg::OnSortByModifiedTime)
+    ON_COMMAND(ID_SORT_BY_RANDOM, &CMusicPlayerDlg::OnSortByRandom)
     ON_COMMAND(ID_DELETE_FROM_DISK, &CMusicPlayerDlg::OnDeleteFromDisk)
     ON_REGISTERED_MESSAGE(WM_TASKBARCREATED, &CMusicPlayerDlg::OnTaskbarcreated)
     ON_COMMAND(ID_DISP_FILE_NAME, &CMusicPlayerDlg::OnDispFileName)
@@ -1599,7 +1600,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     // 设置播放列表菜单中排序方式的图标
     const CBitmap* bitmap_sort_up = theApp.m_menu_mgr.GetMenuBitmap(IconMgr::IconType::IT_Triangle_Up);
     const CBitmap* bitmap_sort_down = theApp.m_menu_mgr.GetMenuBitmap(IconMgr::IconType::IT_Triangle_Down);
-    std::array<const CBitmap*, 8> pSortBitmap{};
+    const CBitmap* bitmap_sort_random = theApp.m_menu_mgr.GetMenuBitmap(IconMgr::IconType::IT_Play_Random);
+    std::array<const CBitmap*, 9> pSortBitmap{};
     switch (CPlayer::GetInstance().m_sort_mode)
     {
     case SM_U_FILE: pSortBitmap[0] = bitmap_sort_up; break;
@@ -1618,6 +1620,7 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     case SM_D_LISTEN: pSortBitmap[6] = bitmap_sort_down; break;
     case SM_U_TIME: pSortBitmap[7] = bitmap_sort_up; break;
     case SM_D_TIME: pSortBitmap[7] = bitmap_sort_down; break;
+    case SM_RANDOM: pSortBitmap[8] = bitmap_sort_random; break;
     default: break;
     }
     pMenu->SetMenuItemBitmaps(ID_SORT_BY_FILE, MF_BYCOMMAND, pSortBitmap[0], NULL);
@@ -1628,7 +1631,10 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     pMenu->SetMenuItemBitmaps(ID_SORT_BY_TRACK, MF_BYCOMMAND, pSortBitmap[5], NULL);
     pMenu->SetMenuItemBitmaps(ID_SORT_BY_LISTEN_TIME, MF_BYCOMMAND, pSortBitmap[6], NULL);
     pMenu->SetMenuItemBitmaps(ID_SORT_BY_MODIFIED_TIME, MF_BYCOMMAND, pSortBitmap[7], NULL);
-
+    pMenu->SetMenuItemBitmaps(ID_SORT_BY_RANDOM, MF_BYCOMMAND, pSortBitmap[8], NULL);
+    
+    // 仅为播放列表模式开启随机排序
+    pMenu->EnableMenuItem(ID_SORT_BY_RANDOM, MF_BYCOMMAND | (CPlayer::GetInstance().IsPlaylistMode() ? MF_ENABLED : MF_GRAYED));
 
     //设置播放列表菜单中“播放列表显示样式”的单选标记
     switch (theApp.m_media_lib_setting_data.display_format)
@@ -3564,6 +3570,11 @@ void CMusicPlayerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
         helper.OnAddToFavourite();
     }
         break;
+    case HK_SORT_PLAYLIST_BY_RANDOM:
+    {
+        OnSortByRandom();
+    }
+        break;
     }
 
     CMainDialogBase::OnHotKey(nHotKeyId, nKey1, nKey2);
@@ -3657,6 +3668,20 @@ void CMusicPlayerDlg::OnSortByModifiedTime()
     ShowPlayList();
 }
 
+void CMusicPlayerDlg::OnSortByRandom()
+{
+    // TODO: 在此添加命令处理程序代码
+
+    // 仅为播放列表模式生效
+    if (CPlayer::GetInstance().IsPlaylistMode())
+    {
+        auto& sort_mode = CPlayer::GetInstance().m_sort_mode;
+        sort_mode = SM_RANDOM;
+        CPlayer::GetInstance().SortPlaylist();
+        ShowPlayList();
+    }
+
+}
 
 void CMusicPlayerDlg::OnDeleteFromDisk()
 {

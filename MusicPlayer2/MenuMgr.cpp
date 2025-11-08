@@ -455,6 +455,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_SORT_BY_TRACK));
         menu.AppendItem(EX_ID(ID_SORT_BY_LISTEN_TIME));
         menu.AppendItem(EX_ID(ID_SORT_BY_MODIFIED_TIME));
+        menu.AppendItem(EX_ID(ID_SORT_BY_RANDOM));
         break;
     case MenuMgr::MainPlaylistDispModeMenu:
         menu.CreateMenu(true, true);

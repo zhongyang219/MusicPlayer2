@@ -130,6 +130,7 @@ BOOL CHotKeySettingDlg::OnInitDialog()
     m_key_list.InsertItem(9, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_PLAYER_SHOW_HIDE").c_str());
     m_key_list.InsertItem(10, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_DESKTOP_LYRIC_SHOW_HIDE").c_str());
     m_key_list.InsertItem(11, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_ADD_TO_MY_FAVOURITE").c_str());
+    m_key_list.InsertItem(12, theApp.m_str_table.LoadText(L"TXT_OPT_HOT_KEY_SORT_PLAYLIST_BY_RANDOM").c_str());
 
     ShowKeyList();
 

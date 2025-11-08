@@ -2201,7 +2201,15 @@ void CPlayer::SortPlaylist(bool is_init)
     SongInfo current_song = GetCurrentSongInfo();
     ASSERT(m_sort_mode != SM_UNSORT);
     auto sort_fun = SongInfo::GetSortFunc(m_sort_mode == SM_UNSORT ? SM_U_FILE : m_sort_mode);
-    std::stable_sort(m_playlist.begin(), m_playlist.end(), sort_fun);
+
+    if (m_sort_mode != SM_RANDOM){
+        std::stable_sort(m_playlist.begin(), m_playlist.end(), sort_fun);
+    }
+    else {
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(m_playlist.begin(), m_playlist.end(), g);
+    }
 
     if (!is_init)   // 由初始化完成方法调用时不重新查找index
     {
