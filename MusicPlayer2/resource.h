@@ -429,7 +429,6 @@
 #define IDC_SAVE_TO_SONG_FOLDER1        1080
 #define IDC_SAVE_TO_ALBUM_FOLDER3       1080
 #define IDC_SAVE_TO_LYRIC_FOLDER1       1081
-#define IDC_NETEASE_CLOUD_MUSIC_RADIO   1081
 #define IDC_SELECTED_SAVE_AS            1082
 #define IDC_SAVE_TO_FILE_BUTTON         1082
 #define IDC_BROWSE_BUTTON               1082
@@ -439,7 +438,6 @@
 #define IDC_LOCAL_SEARCH_BUTTON         1082
 #define IDC_GET_TAG_FROM_FILE_NAME_BUTTON 1082
 #define IDC_REFRESH_MEDIA_LIB_BUTTON    1082
-#define IDC_QQ_MUSIC_RADIO              1082
 #define IDC_TAB1                        1083
 #define IDC_REVERB_MIX_SLIDER           1084
 #define IDC_REVERB_TIME_SLIDER          1085
@@ -767,8 +765,9 @@
 #define IDC_UI_SEARCH_BOX_EDIT          1371
 #define IDC_TXT_OPT_LYRICS_AND_COVER_DL_SERVICE_STATIC 1372
 #define IDC_MERGE_SONG_DIFFERENT_VERSION_CHECK 1373
-#define IDC_CHECK2                      1375
 #define IDC_REMOVE_TITLE_BAR_TOP_FRAME_CHECK 1375
+#define IDC_NETEASE_CLOUD_MUSIC_RADIO   1376
+#define IDC_QQ_MUSIC_RADIO              1377
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -1020,7 +1019,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        637
 #define _APS_NEXT_COMMAND_VALUE         33512
-#define _APS_NEXT_CONTROL_VALUE         1376
+#define _APS_NEXT_CONTROL_VALUE         1378
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
