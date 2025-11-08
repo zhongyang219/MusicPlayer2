@@ -219,11 +219,27 @@ bool CFfmpegCore::SongIsOver() {
         if (playing_state == PS_PLAYING)
         {
             static int last_position = 0;
+            static int position_no_changed_count = 0;       //播放进度没有变化计数
             int position = GetCurPosition();
-            if (position > 0 && position == last_position)
+
+            //判断是否播放到了曲目的末尾
+            int length = GetSongLength();
+            bool is_at_end = false;
+            if (length > 0 && position > 0 && static_cast<double>(position) / static_cast<double>(length) > 0.98)
+                is_at_end = true;
+
+            //如果播放到了曲目的末尾且播放进度没有变化，则将计数器加1
+            if (position == last_position && is_at_end)
+                position_no_changed_count++;
+            else
+                position_no_changed_count = 0;
+
+            //播放进度没有变化超过一定时间，则认为播放结束。防止因为系统卡顿等原因导致播放进度没有变化被误认为播放结束
+            if (position_no_changed_count > 30)
             {
                 return true;
             }
+
             last_position = position;
         }
         return false;
