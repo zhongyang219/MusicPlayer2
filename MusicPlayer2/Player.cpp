@@ -1156,10 +1156,9 @@ bool CPlayer::OpenSongsInDefaultPlaylist(const vector<SongInfo>& songs, bool pla
     playlist.LoadFromFile(m_playlist_path);
     playlist.AddSongsToPlaylist(songs, theApp.m_media_lib_setting_data.insert_begin_of_playlist);
     playlist.SaveToFile(m_playlist_path);
-    // 设置播放songs的第一个文件
-    m_index = playlist.GetSongIndexInPlaylist(songs.front());
 
-    IniPlayList(play);
+    // 设置播放songs的第一个文件
+    IniPlayList(play, MR_MIN_REQUIRED, songs.front());
     return true;
 }
 
