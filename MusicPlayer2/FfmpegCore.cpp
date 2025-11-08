@@ -210,8 +210,25 @@ void CFfmpegCore::SetPitch(int pitch)
 
 bool CFfmpegCore::SongIsOver() {
     if (IsSucceed() && handle) {
-        return ffmpeg_core_song_is_over(handle);
-    } else return false;
+        bool song_is_over = ffmpeg_core_song_is_over(handle);
+        if (song_is_over)
+            return true;
+
+        auto playing_state = GetPlayingState();
+        //如果正在播放但是播放进度没有变化，则认为已播放结束
+        if (playing_state == PS_PLAYING)
+        {
+            static int last_position = 0;
+            int position = GetCurPosition();
+            if (position > 0 && position == last_position)
+            {
+                return true;
+            }
+            last_position = position;
+        }
+        return false;
+    }
+    else return false;
 }
 
 int CFfmpegCore::GetCurPosition() {
