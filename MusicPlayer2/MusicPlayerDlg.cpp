@@ -6656,8 +6656,45 @@ void CMusicPlayerDlg::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS* lpnc
     {
         if (bCalcValidRects)
         {
+            //根据不同系统和不同DPI判断使用自绘标题栏时顶部白边的大小
+            int top_margin = theApp.DPI(6);
+            //Windows10
+            if (CWinVersionHelper::IsWindows10())
+            {
+                switch (theApp.GetDPI())
+                {
+                case 96: top_margin = 6; break;     //100%
+                case 120: top_margin = 7; break;    //125%
+                case 144: top_margin = 9; break;    //150%
+                case 168: top_margin = 10; break;   //175%
+                case 192: top_margin = 10; break;   //200%
+                case 216: top_margin = 11; break;   //225%
+                case 240: top_margin = 14; break;   //250%
+                case 288: top_margin = 16; break;   //300%
+                case 336: top_margin = 17; break;   //350%
+                case 384: top_margin = 21; break;   //400%
+                }
+            }
+            //Windows11
+            else
+            {
+                switch (theApp.GetDPI())
+                {
+                case 96: top_margin = 6; break;     //100%
+                case 120: top_margin = 7; break;    //125%
+                case 144: top_margin = 8; break;    //150%
+                case 168: top_margin = 9; break;   //175%
+                case 192: top_margin = 10; break;   //200%
+                case 216: top_margin = 11; break;   //225%
+                case 240: top_margin = 12; break;   //250%
+                case 288: top_margin = 14; break;   //300%
+                case 336: top_margin = 16; break;   //350%
+                case 384: top_margin = 21; break;   //400%
+                }
+            }
+
             //这里去掉使用了自绘标题栏时顶部的白边
-            lpncsp->rgrc[0].top -= theApp.DPI(6);
+            lpncsp->rgrc[0].top -= top_margin;
         }
     }
     CMainDialogBase::OnNcCalcSize(bCalcValidRects, lpncsp);
