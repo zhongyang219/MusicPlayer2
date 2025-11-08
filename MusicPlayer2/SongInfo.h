@@ -36,7 +36,7 @@ enum SortMode
     SM_D_YEAR,              // 年份 降序
     SM_U_BITRATE,           // 比特率 升序
     SM_D_BITRATE,           // 比特率 降序
-
+    SM_RANDOM,              // 随机排序
     SM_UNSORT = 100,        // 未排序（进入播放列表模式时总是设置为此排序方式，且不进行持久化）
 };
 

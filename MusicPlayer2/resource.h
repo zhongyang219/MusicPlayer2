@@ -804,6 +804,7 @@
 #define ID_SORT_BY_TRACK                32855
 #define ID_SORT_BY_LISTEN_TIME          32856
 #define ID_SORT_BY_MODIFIED_TIME        32857
+#define ID_SORT_BY_RANDOM               32858
 #define ID_DELETE_FROM_DISK             32861
 #define ID_DISP_FILE_NAME               32862
 #define ID_DISP_TITLE                   32863

@@ -92,6 +92,9 @@ void CHotkeyManager::LoadFromIni(const CIniHelper & ini)
 
 	hot_key.FromString(ini.GetString(L"hot_key", L"add_to_my_favourite", L""));
 	SetHotKey(HK_ADD_TO_MY_FAVOURITE, hot_key);
+
+	hot_key.FromString(ini.GetString(L"hot_key", L"sort_playlist_by_random", L""));
+	SetHotKey(HK_SORT_PLAYLIST_BY_RANDOM, hot_key);
 }
 
 void CHotkeyManager::SaveToTni(CIniHelper & ini)
@@ -132,4 +135,7 @@ void CHotkeyManager::SaveToTni(CIniHelper & ini)
 
 	str = GetHotKey(HK_ADD_TO_MY_FAVOURITE).ToString();
 	ini.WriteString(L"hot_key", L"add_to_my_favourite", str);
+
+	str = GetHotKey(HK_SORT_PLAYLIST_BY_RANDOM).ToString();
+	ini.WriteString(L"hot_key", L"sort_playlist_by_random", str);
 }
