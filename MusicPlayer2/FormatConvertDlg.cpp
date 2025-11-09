@@ -380,15 +380,18 @@ BOOL CFormatConvertDlg::OnInitDialog()
     //		CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_pTaskbar));	//创建ITaskbarList3的实例
     //#endif
 
+    EnableControls();
+
     return TRUE;  // return TRUE unless you set the focus to a control
                   // 异常: OCX 属性页应返回 FALSE
 }
 
 
-void CFormatConvertDlg::EnableControls(bool enable)
+void CFormatConvertDlg::EnableControls()
 {
+    bool enable = !m_thread_runing;
     GetDlgItem(IDC_OUT_FORMAT_COMBO)->EnableWindow(enable);
-    GetDlgItem(IDC_START_CONVERT_BUTTON)->EnableWindow(enable);
+    GetDlgItem(IDC_START_CONVERT_BUTTON)->EnableWindow(enable && !m_file_list.empty());
     GetDlgItem(IDC_ENCODER_CONFIG_BUTTON)->EnableWindow(enable);
     GetDlgItem(IDC_COPY_TAG_CHECK)->EnableWindow(enable);
     GetDlgItem(IDC_TARGET_FILE_EXIST_COMBO)->EnableWindow(enable);
@@ -613,10 +616,9 @@ void CFormatConvertDlg::OnCbnSelchangeOutFormatCombo()
 
 void CFormatConvertDlg::OnBnClickedStartConvertButton()
 {
-    // TODO: 在此添加控件通知处理程序代码
-    m_progress_bar.ShowWindow(SW_SHOW);
-    m_progress_bar.SetProgress(0);
-    SetProgressInfo(0);
+    if (m_file_list.empty())
+        return;
+
     if (!m_encoder_succeed)
     {
         CBassCore* bass_core = dynamic_cast<CBassCore*>(CPlayer::GetInstance().GetPlayerCore());
@@ -647,11 +649,15 @@ void CFormatConvertDlg::OnBnClickedStartConvertButton()
         m_file_list_ctrl.SetItemText(i, 2, _T(""));
     }
 
-    EnableControls(false);
+    m_progress_bar.ShowWindow(SW_SHOW);
+    m_progress_bar.SetProgress(0);
+    SetProgressInfo(0);
+
+    m_thread_runing = true;
+    EnableControls();
     theApp.m_format_convert_dialog_exit = false;
     //创建格式转换的工作线程
     m_pThread = AfxBeginThread(ThreadFunc, this);
-    m_thread_runing = true;
     if (theApp.IsTaskbarInteractionEnabled())
         theApp.GetITaskbarList3()->SetProgressState(this->GetSafeHwnd(), TBPF_INDETERMINATE);
 }
@@ -716,8 +722,8 @@ afx_msg LRESULT CFormatConvertDlg::OnConvertProgress(WPARAM wParam, LPARAM lPara
 
 afx_msg LRESULT CFormatConvertDlg::OnConvertComplete(WPARAM wParam, LPARAM lParam)
 {
-    EnableControls(true);
     m_thread_runing = false;
+    EnableControls();
     m_progress_bar.SetProgress(100);
     SetProgressInfo(100);
 
@@ -893,6 +899,7 @@ void CFormatConvertDlg::OnAddFile()
         }
         // 刷新显示
         ShowFileList();
+        EnableControls();
     }
 }
 
@@ -908,6 +915,7 @@ void CFormatConvertDlg::OnDeleteSelect()
     {
         m_file_list.erase(m_file_list.begin() + select);	//删除选中项
         ShowFileList();
+        EnableControls();
     }
 }
 

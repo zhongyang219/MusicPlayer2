@@ -79,7 +79,7 @@ protected:
     void LoadEncoderConfig();
     void SaveEncoderConfig() const;
 
-    void EnableControls(bool enable);
+    void EnableControls();
     void SetEncodeConfigBtnState();
     void ShowFileList();
     bool InitEncoder();
