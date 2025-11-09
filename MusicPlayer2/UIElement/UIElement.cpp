@@ -203,11 +203,7 @@ void UiElement::Element::IterateElements(UiElement::Element* parent_element, std
                 if (stack_element != nullptr)
                 {
                     func(stack_element);
-                    int cur_index = stack_element->GetCurIndex();
-                    if (cur_index >= 0 && cur_index < static_cast<int>(stack_element->childLst.size()))
-                    {
-                        IterateElements(stack_element->childLst[cur_index].get(), func, visible_only);
-                    }
+                    IterateElements(stack_element->CurrentElement().get(), func, visible_only);
                 }
                 else
                 {

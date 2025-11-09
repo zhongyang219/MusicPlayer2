@@ -101,50 +101,6 @@ void CMiniModeUserUi::PreDrawInfo()
     m_draw_rect = CRect(CPoint(0, 0), window_size);
 }
 
-bool CMiniModeUserUi::LButtonUp(CPoint point)
-{
-    for (auto& btn : m_buttons)
-    {
-        if (btn.second.rect.PtInRect(point))
-        {
-            switch (btn.first)
-            {
-            case BTN_MINI:
-                btn.second.hover = false;
-                btn.second.pressed = false;
-                m_pMainWnd->SendMessage(WM_COMMAND, IDOK);
-                return true;
-            case BTN_CLOSE:
-                if (theApp.m_general_setting_data.minimize_to_notify_icon)
-                    m_pMainWnd->ShowWindow(HIDE_WINDOW);
-                else
-                    m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
-                return true;
-            case BTN_SHOW_PLAYLIST:
-                btn.second.hover = false;
-                btn.second.pressed = false;
-                m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
-                return true;
-            case BTN_SKIN:
-            {
-                btn.second.hover = false;
-                btn.second.pressed = false;
-                CPoint point1;
-                GetCursorPos(&point1);
-                CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniModeSwitchUiMenu);
-                ASSERT(pMenu != nullptr);
-                if (pMenu != nullptr)
-                    pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);
-                return true;
-            }
-            }
-
-        }
-    }
-
-    return CUserUi::LButtonUp(point);
-}
-
 bool CMiniModeUserUi::PointInControlArea(CPoint point) const
 {
     if (!__super::PointInControlArea(point))
@@ -196,6 +152,36 @@ const std::vector<std::shared_ptr<UiElement::Element>>& CMiniModeUserUi::GetStac
         return m_stack_elements.begin()->second;
     static std::vector<std::shared_ptr<UiElement::Element>> vec_empty;
     return vec_empty;
+}
+
+bool CMiniModeUserUi::ButtonClicked(BtnKey btn_type)
+{
+    switch (btn_type)
+    {
+    case BTN_MINI:
+        m_pMainWnd->SendMessage(WM_COMMAND, IDOK);
+        return true;
+    case BTN_CLOSE:
+        if (theApp.m_general_setting_data.minimize_to_notify_icon)
+            m_pMainWnd->ShowWindow(HIDE_WINDOW);
+        else
+            m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
+        return true;
+    case BTN_SHOW_PLAYLIST:
+        m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
+        return true;
+    case BTN_SKIN:
+    {
+        CPoint point1;
+        GetCursorPos(&point1);
+        CMenu* pMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniModeSwitchUiMenu);
+        ASSERT(pMenu != nullptr);
+        if (pMenu != nullptr)
+            pMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, m_pMainWnd);
+        return true;
+    }
+    }
+    return CUserUi::ButtonClicked(btn_type);
 }
 
 bool CMiniModeUserUi::IsShowUiPlaylist() const

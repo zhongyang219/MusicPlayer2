@@ -17,9 +17,9 @@ namespace UiElement
         bool mouse_hover{};
         IPlayerUI::UIButton indicator{};        //Ö¸Ê¾Æ÷
         int GetCurIndex() const;
+        std::shared_ptr<Element> CurrentElement();
 
     protected:
-        std::shared_ptr<Element> CurrentElement();
         std::shared_ptr<Element> GetElement(int index);
 
         int cur_index{};
