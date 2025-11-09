@@ -55,3 +55,16 @@ void CSpectralDataHelper::SpectralDataMap(float fft_data[FFT_SAMPLE], float spec
         spectral_data[i] *= scale;
     }
 }
+
+float CSpectralDataHelper::CalculateCompressedSpectralData(const float spectral_data[SPECTRUM_COL], int index, int col_num)
+{
+    float spetral_data = 0;
+    int COL_MIN{ SPECTRUM_COL / col_num * index };
+    int COL_MAX{ SPECTRUM_COL / col_num * (index + 1) };
+    for (int i = COL_MIN; i < COL_MAX; i++)
+    {
+        spetral_data += spectral_data[i];
+    }
+    spetral_data /= (SPECTRUM_COL / col_num);
+    return spetral_data;
+}

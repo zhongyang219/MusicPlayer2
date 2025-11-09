@@ -3428,12 +3428,50 @@ void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
     COLORREF icon_color{ theApp.m_app_setting_data.dark_mode ? RGB(255, 255, 255) : RGB(110, 110, 110) };
     CSize size_icon = IconMgr::GetIconSize(IsDrawLargeIcon() ? IconMgr::IS_DPI_16_Full_Screen : IconMgr::IS_DPI_16);
     CPoint pos_icon{ rect.left + (rect.Width() - size_icon.cx) / 2 , rect.top + (rect.Height() - size_icon.cy) / 2 };
-    CRect draw_icon_rect(pos_icon, size_icon);
-    draw_icon_rect.bottom -= DPI(2);
     const int spectrum_unit_width = DPI(4);     //柱形+间隙的宽度
     int col_width = DPI(2);                     //柱形的宽度
     int gap_width = spectrum_unit_width - col_width; //间隙的宽度
-    m_draw.DrawSpectrum(CRect(pos_icon, size_icon), col_width, gap_width, 4, icon_color, false, false, Alignment::CENTER, false, 180);
+
+    const int COLS = 4;
+    CRect rc_spectrum_top = CRect(pos_icon, size_icon);
+
+    CRect rects[COLS];
+    rects[0] = rc_spectrum_top;
+    rects[0].right = rects[0].left + col_width;
+
+    //频谱的实际宽度
+    int width_actrual{ col_width * COLS + gap_width * (COLS - 1) };
+
+    for (int i{ 1 }; i < COLS; i++)
+    {
+        rects[i] = rects[0];
+        rects[i].left += (i * (col_width + gap_width));
+        rects[i].right += (i * (col_width + gap_width));
+    }
+
+    float spetral_data = 0;
+    int col_index = 0;
+    //仅取中间一段频谱
+    int COL_MIN = SPECTRUM_COL / 4;
+    int COL_MAX = SPECTRUM_COL * 3 / 4;
+    for (int i{ COL_MIN }; i < COL_MAX; i++)
+    {
+        spetral_data += CPlayer::GetInstance().GetSpectralData()[i];
+        if ((i + 1 - COL_MIN) % ((COL_MAX - COL_MIN) / COLS) == 0)
+        {
+            CRect rect_tmp{ rects[col_index] };
+            int spetral_height = static_cast<int>(spetral_data * rects[0].Height() * 0.06 / COLS);  //调整这里常数的值可以调整频谱的整体高度
+            if (spetral_height <= 0 || CPlayer::GetInstance().IsError())
+                spetral_height = 1;
+            rect_tmp.top = rect_tmp.bottom - spetral_height;
+            if (rect_tmp.top < rects[0].top)
+                rect_tmp.top = rects[0].top;
+            m_draw.FillRect(rect_tmp, icon_color, true);
+
+            col_index++;
+            spetral_data = 0;
+        }
+    }
 }
 
 void CPlayerUIBase::DrawSearchBox(CRect rect, UiElement::SearchBox* search_box)
