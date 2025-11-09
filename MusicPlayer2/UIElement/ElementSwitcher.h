@@ -17,13 +17,17 @@ namespace UiElement
         };
 
         virtual void LButtonUp(CPoint point) override;
+        virtual void LButtonDown(CPoint point) override;
         virtual void MouseMove(CPoint point) override;
         virtual void MouseLeave() override;
+
+        bool hover() const;
 
         Style style{};
         std::string stack_element_id;
         int stack_element_index{ -1 };
-        bool hover{};       //如果鼠标指向，则为true
+    protected:
+        CPlayerUIBase::UIButton btn;
     };
 }
 

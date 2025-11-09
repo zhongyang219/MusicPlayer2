@@ -494,7 +494,7 @@ bool CUserUi::SetCursor()
         }
         //如果鼠标指向专辑封面样式的界面切换器，则更改鼠标指针为手形样式
         UiElement::ElementSwitcher* element_swithcer = dynamic_cast<UiElement::ElementSwitcher*>(element);
-        if (element_swithcer != nullptr && element_swithcer->hover && element_swithcer->style == UiElement::ElementSwitcher::Style::AlbumCover)
+        if (element_swithcer != nullptr && element_swithcer->hover() && element_swithcer->style == UiElement::ElementSwitcher::Style::AlbumCover)
         {
             ::SetCursor(::LoadCursor(NULL, IDC_HAND));
             cursor_changed = true;
