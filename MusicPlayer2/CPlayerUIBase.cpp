@@ -2787,6 +2787,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                         m_draw.FillAlphaRect(rect_item, back_color, background_alpha, true);
                 }
 
+                bool draw_mini_spectrum = false;    //是否在正在播放行绘制迷你频谱
                 //绘制正在播放指示
                 if (i == list_element->GetHighlightRow())
                 {
@@ -2799,6 +2800,16 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                         m_draw.DrawRoundRect(rect_cur_indicator, m_colors.color_text_heighlight, DPI(2));
                     else
                         m_draw.FillRect(rect_cur_indicator, m_colors.color_text_heighlight, true);
+
+                    //播放列表中正在播放行绘制迷你频谱
+                    if (dynamic_cast<UiElement::Playlist*>(list_element) != nullptr && CPlayer::GetInstance().GetPlayingState2() == PS_PLAYING)
+                    {
+                        draw_mini_spectrum = true;
+                        CRect rect_mini_spectrum{ rect_cur_indicator };
+                        rect_mini_spectrum.MoveToX(rect_mini_spectrum.right + DPI(4));
+                        rect_mini_spectrum.right = rect_mini_spectrum.left + DPI(24);
+                        DrawMiniSpectrum(rect_mini_spectrum);
+                    }
                 }
 
                 int col_x = rect_item.left + DPI(4);
@@ -2921,6 +2932,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                     }
 
                     //绘制文本
+                    if (!draw_mini_spectrum || j > 0)//如果第1列绘制了迷你频谱，则不再绘制文本
                     {
                         DrawAreaGuard guard(&m_draw, rect & rect_text);
                         if (!list_element->IsMultipleSelected() && i == list_element->GetItemSelected() && j == list_element->GetColumnScrollTextWhenSelected())
