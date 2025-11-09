@@ -151,23 +151,29 @@
         <!--固定在左上角的界面切换器，点击后返回主界面-->
         <elementSwitcher x="4" y="4" width="32" height="32" style="drop_down_icon" stack_element_id="main_stack_element" stack_element_index="0"/>
         <verticalLayout>
-          <horizontalLayout>
-            <verticalLayout>
-              <albumCover square="true" margin="56"/>
-            </verticalLayout>
-            <verticalLayout margin-top="4" margin-bottom="4" margin-right="16">
-              <text type="title" style="scroll" margin-top="8%" height="28" font_size="12"/>
-              <text type="artist" style="scroll" height="24" font_size="10"/>
-              <text type="album" style="scroll" height="24" font_size="10"/>
-              <lyrics margin-top="8"/>
-              <horizontalLayout height="28">
-                <placeHolder/>
-                <button key="desktopLyric" width="24" height="24" margin="2"/>
-                <button key="lyricTranslate" width="24" height="24" margin="2"/>
-                <button key="karaoke" width="24" height="24" margin="2"/>
-              </horizontalLayout>
-            </verticalLayout>
-          </horizontalLayout>
+          <element>
+            <horizontalLayout>
+              <verticalLayout>
+                <albumCover square="true" margin="56"/>
+              </verticalLayout>
+              <verticalLayout margin-top="4" margin-bottom="4" margin-right="16">
+                <text type="title" style="scroll" margin-top="8%" height="28" font_size="12"/>
+                <text type="artist" style="scroll" height="24" font_size="10"/>
+                <text type="album" style="scroll" height="24" font_size="10"/>
+                <lyrics margin-top="8"/>
+                <horizontalLayout height="28">
+                  <placeHolder/>
+                  <button key="desktopLyric" width="24" height="24" margin="2"/>
+                  <button key="lyricTranslate" width="24" height="24" margin="2"/>
+                  <button key="karaoke" width="24" height="24" margin="2"/>
+                </horizontalLayout>
+              </verticalLayout>
+            </horizontalLayout>
+            <!--底部频谱分析 （使用horizontalLayout包裹确保水平剧中，margin-bottom设为0确保与父元素下对齐）-->
+            <horizontalLayout height="32" margin-bottom="0" >
+              <spectrum draw_reflex="false" width="280" alignment="center"/>
+            </horizontalLayout>
+          </element>
           <!--播放控制栏-->
           <rectangle height="100" no_corner_radius="true">
             <verticalLayout margin="6">
