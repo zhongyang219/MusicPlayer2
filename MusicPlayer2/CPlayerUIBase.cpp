@@ -2802,7 +2802,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                         m_draw.FillRect(rect_cur_indicator, m_colors.color_text_heighlight, true);
 
                     //播放列表中正在播放行绘制迷你频谱
-                    if (dynamic_cast<UiElement::Playlist*>(list_element) != nullptr && CPlayer::GetInstance().GetPlayingState2() == PS_PLAYING)
+                    if (dynamic_cast<UiElement::Playlist*>(list_element) != nullptr && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED)
                     {
                         draw_mini_spectrum = true;
                         CRect rect_mini_spectrum{ rect_cur_indicator };
