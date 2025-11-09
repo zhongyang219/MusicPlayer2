@@ -275,6 +275,11 @@ BOOL CMiniModeDlg::OnInitDialog()
     m_show_playlist = false;
     m_first_start = true;
 
+    //进入迷你模式时执行一次MouseLeave函数，以清除按钮的状态
+    CPlayerUIBase* cur_ui{ GetCurUi() };
+    if (cur_ui != nullptr)
+        cur_ui->MouseLeave();
+
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE
 }
