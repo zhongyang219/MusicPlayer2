@@ -85,7 +85,7 @@ void UiElement::NavigationBar::FindStackElement()
 {
     if (!find_stack_element)
     {
-        stack_element = FindRelatedElement<StackElement>();
+        stack_element = FindRelatedElement<StackElement>(stack_element_id);
         find_stack_element = true;  //找过一次没找到就不找了
     }
 }

@@ -25,6 +25,7 @@ namespace UiElement
         CUiSearchBox* search_box_ctrl{};    //搜索框控件
         CRect icon_rect;    //图标的区域
         CPlayerUIBase::UIButton clear_btn;      //清除按钮
+        std::string list_element_id;        //关联的ListElement的id
 
     private:
         void FindListElement();         //查找ListElement

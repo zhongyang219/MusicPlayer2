@@ -860,6 +860,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_space", tab_emelent->item_space);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", tab_emelent->item_height);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", tab_emelent->font_size);
+                tab_emelent->stack_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "stack_element_id");
             }
         }
         else if (item_name == "playlistIndicator")
@@ -884,6 +885,14 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             if (place_holder != nullptr)
             {
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_when_use_system_titlebar", place_holder->show_when_use_system_titlebar);
+            }
+        }
+        else if (item_name == "searchBox")
+        {
+            UiElement::SearchBox* search_box = dynamic_cast<UiElement::SearchBox*>(element.get());
+            if (search_box != nullptr)
+            {
+                search_box->list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "list_element_id");
             }
         }
         //界面切换器

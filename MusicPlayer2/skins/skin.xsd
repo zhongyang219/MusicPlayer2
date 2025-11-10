@@ -997,6 +997,11 @@
           <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="stack_element_id" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>要切换的stackElement的id。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
   <xs:complexType name="mediaLibFolderType">
@@ -1051,7 +1056,12 @@
       <xs:documentation>搜索框。</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
-    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+	  <xs:attribute name="list_element_id" type="xs:string">
+	    <xs:annotation>
+		    <xs:documentation>关联的listElement的id。</xs:documentation>
+	    </xs:annotation>
+	  </xs:attribute>
+	<xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="elementSwitcherType">
     <xs:annotation>
