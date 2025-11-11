@@ -926,7 +926,7 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
     }
 }
 
-std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type)
+std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type) const
 {
     switch (key_type)
     {

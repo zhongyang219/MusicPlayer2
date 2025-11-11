@@ -43,7 +43,13 @@ void UiElement::Button::Draw()
     }
         break;
     default:
-        ui->DrawUIButton(rect, key, m_btn, big_icon, show_text, font_size);
+    {
+        std::wstring text;
+        if (show_text)
+            text = GetDisplayText();
+        ui->DrawUIButton(rect, m_btn, ui->GetBtnIconType(key), big_icon, text, font_size, false);
+
+    }
         break;
     }
     //这里将按钮的矩形区域保存到CPlayerUIBase::m_buttons中，因为按钮的鼠标提示还依赖CPlayerUIBase::m_buttons
@@ -126,7 +132,7 @@ int UiElement::Button::GetMaxWidth(CRect parent_rect) const
     //显示文本，并且没有指定宽度时时跟随文本宽度
     if (show_text && !IsWidthValid())
     {
-        std::wstring text = ui->GetButtonText(key);
+        std::wstring text = GetDisplayText();
         //第一次执行到这里时，由于rect还没有从layout元素中计算出来，因此这里做一下判断，如果高度为0，则直接获取height的值
         int btn_height = rect.Height();
         if (btn_height == 0)
@@ -200,4 +206,12 @@ bool UiElement::Button::MouseLeave()
     m_btn.hover = false;
     m_btn.pressed = false;
     return true;
+}
+
+std::wstring UiElement::Button::GetDisplayText() const
+{
+    if (!this->text.empty())
+        return this->text;
+    else
+        return ui->GetButtonText(key);
 }

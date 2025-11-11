@@ -238,7 +238,7 @@ public:
     IconMgr::IconType GetBtnIconType(BtnKey key);
 
     //获取按钮的文本
-    std::wstring GetButtonText(BtnKey key_type);
+    std::wstring GetButtonText(BtnKey key_type) const;
 
 protected:
     struct DrawData

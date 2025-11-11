@@ -509,6 +509,11 @@
           <xs:documentation>字体大小，use_default_font为true时有效，仅支持8~16。默认大小为9。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="text" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>按钮的文本。如果不指定则显示文本由按钮类型决定</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="textType">
