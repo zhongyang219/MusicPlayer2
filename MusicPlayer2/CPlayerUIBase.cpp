@@ -3734,4 +3734,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_KARAOKE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_KARAOKE").c_str());
     //搜索框清除按钮
     AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::SEARCHBOX_CLEAR_BTN), theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str());
+    //歌词卡拉OK样式显示
+    AddMouseToolTip(BTN_SHOW_PLAY_QUEUE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_QUEUE").c_str());
 }
