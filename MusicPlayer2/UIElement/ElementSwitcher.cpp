@@ -18,35 +18,40 @@ void UiElement::ElementSwitcher::Draw()
     Element::Draw();
 }
 
-void UiElement::ElementSwitcher::LButtonUp(CPoint point)
+bool UiElement::ElementSwitcher::LButtonUp(CPoint point)
 {
     btn.pressed = false;
     if (rect.PtInRect(point))
     {
         ui->SwitchStackElement(stack_element_id, stack_element_index);
     }
+    return true;
 }
 
-void UiElement::ElementSwitcher::LButtonDown(CPoint point)
+bool UiElement::ElementSwitcher::LButtonDown(CPoint point)
 {
     if (rect.PtInRect(point))
     {
         btn.pressed = true;
     }
+    return true;
 }
 
-void UiElement::ElementSwitcher::MouseMove(CPoint point)
+bool UiElement::ElementSwitcher::MouseMove(CPoint point)
 {
     btn.hover = rect.PtInRect(point);
+    return true;
 }
 
-void UiElement::ElementSwitcher::MouseLeave()
+bool UiElement::ElementSwitcher::MouseLeave()
 {
     btn.hover = false;
     btn.pressed = false;
+    return true;
 }
 
 bool UiElement::ElementSwitcher::hover() const
 {
     return btn.hover;
+    return true;
 }

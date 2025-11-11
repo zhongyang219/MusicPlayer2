@@ -115,6 +115,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_MEDIALIB_PLAYLIST_SORT;
     else if (key_type == "karaoke")
         key = CPlayerUIBase::BTN_KARAOKE;
+    else if (key_type == "showPlayQueue")
+        key = CPlayerUIBase::BTN_SHOW_PLAY_QUEUE;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }
@@ -151,7 +153,7 @@ void UiElement::Button::ClearRect()
     ui->m_buttons[key].rect = CRect();
 }
 
-void UiElement::Button::LButtonUp(CPoint point)
+bool UiElement::Button::LButtonUp(CPoint point)
 {
     bool pressed = m_btn.pressed;
     m_btn.pressed = false;
@@ -160,17 +162,19 @@ void UiElement::Button::LButtonUp(CPoint point)
     {
         ui->ButtonClicked(key);
     }
+    return true;
 }
 
-void UiElement::Button::LButtonDown(CPoint point)
+bool UiElement::Button::LButtonDown(CPoint point)
 {
     if (m_btn.enable && m_btn.rect.PtInRect(point))
     {
         m_btn.pressed = true;
     }
+    return true;
 }
 
-void UiElement::Button::MouseMove(CPoint point)
+bool UiElement::Button::MouseMove(CPoint point)
 {
     if (m_btn.enable)
     {
@@ -178,6 +182,7 @@ void UiElement::Button::MouseMove(CPoint point)
         if (!m_btn.hover)
             m_btn.pressed = false;
     }
+    return true;
 }
 
 bool UiElement::Button::RButtunUp(CPoint point)
@@ -187,11 +192,12 @@ bool UiElement::Button::RButtunUp(CPoint point)
         ui->ButtonRClicked(key);
     }
 
-    return false;
+    return true;
 }
 
-void UiElement::Button::MouseLeave()
+bool UiElement::Button::MouseLeave()
 {
     m_btn.hover = false;
     m_btn.pressed = false;
+    return true;
 }

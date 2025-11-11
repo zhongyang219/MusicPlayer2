@@ -139,7 +139,7 @@
                 <volume show_text="true" width="64" height="28" margin="2"/>
                 <button key="addToPlaylist" width="28" height="28" margin="2"/>
                 <button key="mediaLib" width="28" height="28" margin="2"/>
-                <button key="showPlaylist" width="28" height="28" margin="2"/>
+                <button key="showPlayQueue" width="28" height="28" margin="2"/>
               </horizontalLayout>
             </horizontalLayout>
           </verticalLayout>
@@ -335,7 +335,7 @@
             <volume show_text="false" width="28" height="28" margin="2"/>
             <button key="repeatMode" width="28" height="28" margin="2"/>
             <button key="favorite" width="28" height="28" margin="2"/>
-            <button key="showPlaylist" width="28" height="28" margin="2"/>
+            <button key="showPlayQueue" width="28" height="28" margin="2"/>
           </horizontalLayout>
         </verticalLayout>
       </rectangle>

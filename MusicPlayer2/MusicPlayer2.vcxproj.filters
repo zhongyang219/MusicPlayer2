@@ -420,6 +420,9 @@
     <Filter Include="功能逻辑类\PlayerCore\BASS">
       <UniqueIdentifier>{a0161ac4-f695-4502-b91a-24a4ce9ebf38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PlayerUI\UIPanel">
+      <UniqueIdentifier>{c140813d-f87e-4468-9e37-5e7c1dbd14cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1059,6 +1062,15 @@
     <ClInclude Include="UIElement\ElementSwitcher.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIPanel\PlayerUIPanel.h">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\PlayQueuePanel.h">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="IMouseEvent.h">
+      <Filter>PlayerUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1660,6 +1672,12 @@
     </ClCompile>
     <ClCompile Include="UIElement\ElementSwitcher.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\PlayQueuePanel.cpp">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\PlayerUIPanel.cpp">
+      <Filter>PlayerUI\UIPanel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2289,5 +2307,10 @@
     <Image Include="res\drop_down_d.ico">
       <Filter>资源文件</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\ui_panel\play_queue_panel.xml">
+      <Filter>资源文件</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

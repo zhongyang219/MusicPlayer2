@@ -38,7 +38,7 @@ void UiElement::SearchBox::Draw()
     Element::Draw();
 }
 
-void UiElement::SearchBox::MouseMove(CPoint point)
+bool UiElement::SearchBox::MouseMove(CPoint point)
 {
     hover = false;
     clear_btn.hover = false;
@@ -57,15 +57,17 @@ void UiElement::SearchBox::MouseMove(CPoint point)
     {
         hover = true;
     }
+    return true;
 }
 
-void UiElement::SearchBox::MouseLeave()
+bool UiElement::SearchBox::MouseLeave()
 {
     hover = false;
     clear_btn.hover = false;
+    return true;
 }
 
-void UiElement::SearchBox::LButtonUp(CPoint point)
+bool UiElement::SearchBox::LButtonUp(CPoint point)
 {
     clear_btn.pressed = false;
     //点击清除按钮时清除搜索结果
@@ -79,14 +81,16 @@ void UiElement::SearchBox::LButtonUp(CPoint point)
         bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
         search_box_ctrl->Show(this, big_font);
     }
+    return true;
 }
 
-void UiElement::SearchBox::LButtonDown(CPoint point)
+bool UiElement::SearchBox::LButtonDown(CPoint point)
 {
     if (icon_rect.PtInRect(point))
     {
         clear_btn.pressed = true;
     }
+    return true;
 }
 
 void UiElement::SearchBox::FindListElement()

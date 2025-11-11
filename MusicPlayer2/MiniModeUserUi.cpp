@@ -145,15 +145,6 @@ bool CMiniModeUserUi::PointInControlArea(CPoint point) const
     }
 }
 
-const std::vector<std::shared_ptr<UiElement::Element>>& CMiniModeUserUi::GetStackElements() const
-{
-    //由于迷你模式只会有一个UI，因此这里直接返回m_stack_elements中的第一个
-    if (!m_stack_elements.empty())
-        return m_stack_elements.begin()->second;
-    static std::vector<std::shared_ptr<UiElement::Element>> vec_empty;
-    return vec_empty;
-}
-
 bool CMiniModeUserUi::ButtonClicked(BtnKey btn_type)
 {
     switch (btn_type)
@@ -181,7 +172,7 @@ bool CMiniModeUserUi::ButtonClicked(BtnKey btn_type)
         return true;
     }
     }
-    return CUserUi::ButtonClicked(btn_type);
+    return CPlayerUIBase::ButtonClicked(btn_type);
 }
 
 bool CMiniModeUserUi::IsShowUiPlaylist() const

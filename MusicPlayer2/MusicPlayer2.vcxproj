@@ -263,6 +263,7 @@
     <ClInclude Include="CMMNotificationClient.h" />
     <ClInclude Include="CommonDialogMgr.h" />
     <ClInclude Include="CoverPreviewDlg.h" />
+    <ClInclude Include="IMouseEvent.h" />
     <ClInclude Include="SongMultiVersion.h" />
     <ClInclude Include="QQMusicLyricDownload.h" />
     <ClInclude Include="CRecentList.h" />
@@ -353,6 +354,8 @@
     <ClInclude Include="TagLibHelper.h" />
     <ClInclude Include="TinyXml2Helper.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
+    <ClInclude Include="UIPanel\PlayerUIPanel.h" />
+    <ClInclude Include="UIPanel\PlayQueuePanel.h" />
     <ClInclude Include="UiSearchBox.h" />
     <ClInclude Include="UIWindow.h" />
     <ClInclude Include="UIWindowCmdHelper.h" />
@@ -568,6 +571,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UIPanel\PlayerUIPanel.cpp" />
+    <ClCompile Include="UIPanel\PlayQueuePanel.cpp" />
     <ClCompile Include="UiSearchBox.cpp" />
     <ClCompile Include="UIWindow.cpp" />
     <ClCompile Include="UIWindowCmdHelper.cpp" />
@@ -868,6 +873,9 @@
     <Image Include="res\顺序播放_d.ico" />
     <Image Include="res\黑色胶片.png" />
     <Image Include="res\黑色胶片_not_played.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="res\ui_panel\play_queue_panel.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

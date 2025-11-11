@@ -46,7 +46,7 @@
         <horizontalLayout>
           <navigationBar width="100" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="10"
                       item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album,genre,year,file_type,bitrate,rating"/>
-          <stackElement margin="8">
+          <stackElement margin="8" scroll_to_switch="true">
             <verticalLayout>
               <albumCover square="true" margin="28" margin-bottom="12"/>
               <text type="title" style="scroll" height="36" font_size="12" margin-left="16" margin-right="16" alignment="center"/>

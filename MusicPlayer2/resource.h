@@ -264,6 +264,8 @@
 #define IDI_DROP_DOWN                   635
 #define IDI_ICON3                       636
 #define IDI_DROP_DOWN_D                 636
+#define IDR_TEXT1                       637
+#define IDR_PLAY_QUEUE_PANEL            637
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -1017,7 +1019,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        637
+#define _APS_NEXT_RESOURCE_VALUE        638
 #define _APS_NEXT_COMMAND_VALUE         33512
 #define _APS_NEXT_CONTROL_VALUE         1378
 #define _APS_NEXT_SYMED_VALUE           101

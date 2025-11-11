@@ -4,6 +4,7 @@
 #include "CPlayerUIHelper.h"
 #include "CUIDrawer.h"
 #include "IconMgr.h"
+#include "IMouseEvent.h"
 
 #define WM_MAIN_MENU_POPEDUP (WM_USER+117)      //显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
 
@@ -58,7 +59,7 @@ namespace PlayerUiConstVal
     const int BTN_MAX_NUM = 1000;
 }
 
-class CPlayerUIBase : public IPlayerUI
+class CPlayerUIBase : public IPlayerUI, public IMouseEvent
 {
 public:
     CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd);
@@ -102,13 +103,15 @@ public:
     virtual void DrawInfo(bool reset = false) override final;
     virtual void ClearInfo() override;
 
+    // IMouseEvent
     virtual bool LButtonDown(CPoint point) override;
-    virtual void RButtonUp(CPoint point) override;
-    virtual void MouseMove(CPoint point) override;
+    virtual bool RButtonUp(CPoint point) override;
+    virtual bool MouseMove(CPoint point) override;
     virtual bool LButtonUp(CPoint point) override;
-    virtual void RButtonDown(CPoint point) override;
+    virtual bool RButtonDown(CPoint point) override;
     virtual bool MouseWheel(int delta, CPoint point) override;
     virtual bool DoubleClick(CPoint point) override;
+    virtual bool MouseLeave() override;
 
     virtual CRect GetThumbnailClipArea() override;
     void UpdateRepeatModeToolTip();
@@ -122,7 +125,6 @@ public:
     void UpdateToolTipPositionLater();
 
     virtual bool SetCursor() override;
-    virtual void MouseLeave() override;
 
     void ClearBtnRect();
 
@@ -154,6 +156,10 @@ public:
     static CString GetCmdShortcutKeyForTooltips(UINT id);      //获取用于显示在鼠标提示中的键盘快捷键
 
     CRect GetVolumeRect() const;    //获取音量图标的矩形区域
+    CRect GetDrawRect() const;
+
+    CUIDrawer& GetDrawer() { return m_draw; }
+    const UIColors& GetUIColors() const { return m_colors; }
 
 protected:
     // 将字符串形如“%(KEY_STR)”格式的字符替换成当前<language>.ini中对应id的字符串
@@ -206,6 +212,7 @@ public:
         BTN_MEDIALIB_FOLDER_SORT, //媒体库“文件夹”排序方式
         BTN_MEDIALIB_PLAYLIST_SORT, //媒体库“播放列表”排序方式
         BTN_KARAOKE,            //歌词卡拉OK模式显示
+        BTN_SHOW_PLAY_QUEUE,    //显示正确播放队列
 
         //菜单栏
         MENU_FILE,
@@ -311,17 +318,22 @@ protected:
     static CRect DrawAreaToClient(CRect rect, CRect draw_area);
     static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
 
+public:
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
     virtual bool IsDrawStatusBar() const;       //是否需要绘制状态栏
     virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
     virtual bool IsDrawMenuBar() const;         //是否需要绘制菜单栏
 
+protected:
     static wstring GetDisplayFormatString();       //获取显示格式的字符串
     CString GetVolumeTooltipString();       //获取音量鼠标提示字符串
 
+public:
     int DPI(int pixel) const;
     int DPI(double pixel) const;
     double DPIDouble(double pixel);
+
+protected:
     double GetScrollTextPixel(bool slower = false);       //计算滚动文本一次滚动的像素值，如果slower为true，则滚动得稍微慢一点
     int CalculateRoundRectRadius(const CRect& rect);        //计算绘制圆角矩形的半径
 

@@ -9,7 +9,7 @@ void UiElement::NavigationBar::Draw()
     Element::Draw();
 }
 
-void UiElement::NavigationBar::LButtonUp(CPoint point)
+bool UiElement::NavigationBar::LButtonUp(CPoint point)
 {
     FindStackElement();
     if (stack_element != nullptr)
@@ -30,9 +30,10 @@ void UiElement::NavigationBar::LButtonUp(CPoint point)
             stack_element->SetCurrentElement(selected_index);
         }
     }
+    return true;
 }
 
-void UiElement::NavigationBar::MouseMove(CPoint point)
+bool UiElement::NavigationBar::MouseMove(CPoint point)
 {
     int _hover_index{ -1 };
     if (rect.PtInRect(point))
@@ -59,6 +60,7 @@ void UiElement::NavigationBar::MouseMove(CPoint point)
             ui->UpdateMouseToolTipPosition(TooltipIndex::TAB_ELEMENT, item_rects[hover_index]);
         }
     }
+    return true;
 }
 
 bool UiElement::NavigationBar::RButtunUp(CPoint point)
@@ -67,9 +69,10 @@ bool UiElement::NavigationBar::RButtunUp(CPoint point)
     return rect.PtInRect(point);
 }
 
-void UiElement::NavigationBar::MouseLeave()
+bool UiElement::NavigationBar::MouseLeave()
 {
     hover_index = -1;
+    return true;
 }
 
 int UiElement::NavigationBar::SelectedIndex()

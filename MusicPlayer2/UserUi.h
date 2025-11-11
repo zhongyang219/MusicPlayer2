@@ -2,6 +2,7 @@
 #include "CPlayerUIBase.h"
 #include "TinyXml2Helper.h"
 #include "UIElement/ElementFactory.h"
+#include "UIPanel/PlayerUIPanel.h"
 
 class CUserUi :
     public CPlayerUIBase
@@ -34,7 +35,7 @@ public:
 
     //查找一个UiElement中指定类型的元素
     template<class T>
-    T* FindElement();
+    T* FindElement(const std::string& id = std::string());
 
     //遍历所有指定类型的元素
     //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点
@@ -48,14 +49,15 @@ public:
     virtual wstring GetUIName() override;
     virtual bool LButtonUp(CPoint point) override;
     virtual bool LButtonDown(CPoint point) override;
-    virtual void MouseMove(CPoint point) override;
-    virtual void MouseLeave() override;
-    virtual void RButtonUp(CPoint point) override;
-    virtual void RButtonDown(CPoint point) override;
+    virtual bool MouseMove(CPoint point) override;
+    virtual bool MouseLeave() override;
+    virtual bool RButtonUp(CPoint point) override;
+    virtual bool RButtonDown(CPoint point) override;
     virtual bool MouseWheel(int delta, CPoint point) override;
     virtual bool DoubleClick(CPoint point) override;
     virtual void UiSizeChanged() override;
     virtual bool SetCursor() override;
+    virtual bool ButtonClicked(BtnKey btn_type) override;
 
 protected:
     int m_index{ INT_MAX };
@@ -65,8 +67,8 @@ protected:
     std::shared_ptr<UiElement::Element> m_root_ui_narrow;
     std::shared_ptr<UiElement::Element> m_root_ui_small;
     std::wstring m_ui_name;
-    std::map<UiElement::Element*, std::vector<std::shared_ptr<UiElement::Element>>>  m_stack_elements;      //保存所有的stackElement。key是其所在的ui节点，value是该ui节点下所有stackElement
     bool m_last_mouse_in_draw_area{};
+    CPanelManager m_panel_mgr{ this };
 
 public:
     virtual int GetUiIndex() override;
@@ -74,14 +76,21 @@ public:
     //确保每个界面的序号唯一
     static void UniqueUiIndex(std::vector<std::shared_ptr<CUserUi>>& ui_list);
 
+    /**
+     * 从一个xml节点创建UiElement::Element元素及其所有子元素的对象
+     * @param xml_node xml节点
+     * @param ui UI对象
+     * @return 创建的Element对象
+     */
+    static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node, CPlayerUIBase* ui);
+
 protected:
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;
 
     static std::shared_ptr<CUserUi> FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except);
     static int GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list);
-    std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node);      //从一个xml节点创建UiElement::Element元素及其所有子元素的对象
 
-    virtual const std::vector<std::shared_ptr<UiElement::Element>>& GetStackElements() const;
+    std::shared_ptr<UiElement::Element> GetMouseEventResponseElement();
 
 protected:
     virtual void SwitchStackElement() override;
@@ -106,15 +115,18 @@ inline void CUserUi::ClearSearchResult()
 }
 
 template<class T>
-inline T* CUserUi::FindElement()
+inline T* CUserUi::FindElement(const std::string& id)
 {
     T* element_found{};
     IterateAllElements([&](UiElement::Element* element) ->bool {
         T* ele = dynamic_cast<T*>(element);
         if (ele != nullptr)
         {
-            element_found = ele;
-            return true;
+            if (id.empty() || id == element->id)
+            {
+                element_found = ele;
+                return true;
+            }
         }
         return false;
     });

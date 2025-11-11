@@ -15,10 +15,10 @@ namespace UiElement
         ListElement* GetListElement() { return list_element; }
 
         virtual void Draw() override;
-        virtual void MouseMove(CPoint point) override;
-        virtual void MouseLeave() override;
-        virtual void LButtonUp(CPoint point) override;
-        virtual void LButtonDown(CPoint point) override;
+        virtual bool MouseMove(CPoint point) override;
+        virtual bool MouseLeave() override;
+        virtual bool LButtonUp(CPoint point) override;
+        virtual bool LButtonDown(CPoint point) override;
 
         bool hover{};       //如果鼠标指向搜索框，则为true
         std::wstring key_word;  //搜索框中的文本

@@ -486,6 +486,11 @@
                 <xs:documentation>歌词卡拉OK效果显示。</xs:documentation>
               </xs:annotation>
             </xs:enumeration>
+            <xs:enumeration value="showPlayQueue">
+              <xs:annotation>
+                <xs:documentation>显示正确播放曲目队列。</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>

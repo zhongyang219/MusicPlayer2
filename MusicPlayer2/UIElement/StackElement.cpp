@@ -82,6 +82,60 @@ std::shared_ptr<UiElement::Element> UiElement::StackElement::CurrentElement()
     }
 }
 
+bool UiElement::StackElement::LButtonUp(CPoint point)
+{
+    bool pressed = indicator.pressed;
+    indicator.pressed = false;
+
+    if ((pressed && indicator.rect.PtInRect(point) && indicator.enable)
+        || (click_to_switch && GetRect().PtInRect(point)))
+    {
+        ui->m_draw_data.lyric_rect.SetRectEmpty();
+        SwitchDisplay();
+        return true;
+    }
+    return false;
+}
+
+bool UiElement::StackElement::LButtonDown(CPoint point)
+{
+    if (indicator.enable && indicator.rect.PtInRect(point) != FALSE)
+    {
+        indicator.pressed = true;
+        return true;
+    }
+    return false;
+}
+
+bool UiElement::StackElement::MouseMove(CPoint point)
+{
+    if (indicator.enable)
+        indicator.hover = (indicator.rect.PtInRect(point) != FALSE);
+    bool hover{ GetRect().PtInRect(point) != FALSE };
+    if (!mouse_hover && hover)
+        ui->UpdateToolTipPositionLater();
+    mouse_hover = hover;
+    return true;
+}
+
+bool UiElement::StackElement::MouseLeave()
+{
+    //清除StackElement中的mouse_hover状态
+    mouse_hover = false;
+    return true;
+}
+
+bool UiElement::StackElement::MouseWheel(int delta, CPoint point)
+{
+    //如果鼠标指向指示器，或者指定了scroll_to_switch属性时鼠标指向stackElement区域，通过鼠标滚轮切换显示
+    if ((show_indicator && indicator.rect.PtInRect(point)) || (scroll_to_switch && GetRect().PtInRect(point)))
+    {
+        SwitchDisplay(delta > 0);
+        return true;
+    }
+    return false;
+}
+
 std::shared_ptr<UiElement::Element> UiElement::StackElement::GetElement(int index)
 {
     if (childLst.empty())

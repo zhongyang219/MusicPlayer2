@@ -3188,7 +3188,8 @@ BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
     bool from_desktop_lyric{ pt.x == INT16_MAX && pt.y == INT16_MAX };  // 从桌面歌词/迷你模式窗口转发
     ScreenToClient(&pt);
 
-    if (m_pUI->MouseWheel(zDelta, pt))
+    IMouseEvent* pMouseEvent = dynamic_cast<IMouseEvent*>(m_pUI);
+    if (pMouseEvent->MouseWheel(zDelta, pt))
         return TRUE;
 
     //获取音量图标的矩形区域

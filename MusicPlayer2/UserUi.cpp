@@ -25,7 +25,6 @@ CUserUi::~CUserUi()
 
 void CUserUi::LoadFromContents(const std::string& xml_contents)
 {
-    m_stack_elements.clear();
     tinyxml2::XMLDocument xml_doc;
     xml_doc.Parse(xml_contents.c_str());
     tinyxml2::XMLElement* root = xml_doc.RootElement();
@@ -34,22 +33,21 @@ void CUserUi::LoadFromContents(const std::string& xml_contents)
     std::string ui_index = CTinyXml2Helper::ElementAttribute(root, "index");
     if (!ui_index.empty())
         m_index = atoi(ui_index.c_str());
-    CTinyXml2Helper::IterateChildNode(root, [&](tinyxml2::XMLElement* xml_child)
+    CTinyXml2Helper::IterateChildNode(root, [&](tinyxml2::XMLElement* xml_child) {
+        std::string item_name = CTinyXml2Helper::ElementName(xml_child);
+        if (item_name == "ui")
         {
-            std::string item_name = CTinyXml2Helper::ElementName(xml_child);
-            if (item_name == "ui")
-            {
-                std::string str_type = CTinyXml2Helper::ElementAttribute(xml_child, "type");
-                if (str_type == "big")
-                    m_root_ui_big = BuildUiElementFromXmlNode(xml_child);
-                else if (str_type == "narrow")
-                    m_root_ui_narrow = BuildUiElementFromXmlNode(xml_child);
-                else if (str_type == "small")
-                    m_root_ui_small = BuildUiElementFromXmlNode(xml_child);
-                else
-                    m_root_default = BuildUiElementFromXmlNode(xml_child);
-            }
-        });
+            std::string str_type = CTinyXml2Helper::ElementAttribute(xml_child, "type");
+            if (str_type == "big")
+                m_root_ui_big = BuildUiElementFromXmlNode(xml_child, this);
+            else if (str_type == "narrow")
+                m_root_ui_narrow = BuildUiElementFromXmlNode(xml_child, this);
+            else if (str_type == "small")
+                m_root_ui_small = BuildUiElementFromXmlNode(xml_child, this);
+            else
+                m_root_default = BuildUiElementFromXmlNode(xml_child, this);
+        }
+    });
 }
 
 void CUserUi::SetIndex(int index)
@@ -195,6 +193,9 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
     {
         DrawCurrentTime();
     }
+
+    m_panel_mgr.DrawPanel();
+
     m_draw_data.thumbnail_rect = draw_rect;
 }
 
@@ -241,27 +242,17 @@ bool CUserUi::LButtonUp(CPoint point)
 {
     if (!CPlayerUIBase::LButtonUp(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
-        const auto& stack_elements{ GetStackElements() };
-        for (const auto& element : stack_elements)
+        //显示了面板的情况下，点击面板以外的地方关闭面板
+        auto* panel = m_panel_mgr.GetVisiblePanel();
+        if (panel != nullptr && !panel->GetPanelRect().PtInRect(point))
         {
-            UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
-            if (stack_element != nullptr)
-            {
-                bool pressed = stack_element->indicator.pressed;
-                stack_element->indicator.pressed = false;
-
-                if ((pressed && stack_element->indicator.rect.PtInRect(point) && stack_element->indicator.enable)
-                    || (stack_element->click_to_switch && stack_element->GetRect().PtInRect(point)))
-                {
-                    m_draw_data.lyric_rect.SetRectEmpty();
-                    stack_element->SwitchDisplay();
-                    return true;
-                }
-            }
+            m_panel_mgr.HideAllPanel();
+            return true;
         }
 
+        auto root_element = GetMouseEventResponseElement();
         //遍历所有元素
-        IterateAllElements([point](UiElement::Element* element) ->bool {
+        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
             if (element != nullptr)
             {
                 element->LButtonUp(point);
@@ -276,57 +267,33 @@ bool CUserUi::LButtonDown(CPoint point)
 {
     if (!CPlayerUIBase::LButtonDown(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
-        //遍历StackElement
-        auto& stack_elements{ GetStackElements() };
-        for (auto& element : stack_elements)
-        {
-            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
-            if (stack_element != nullptr && stack_element->indicator.enable && stack_element->indicator.rect.PtInRect(point) != FALSE)
-                stack_element->indicator.pressed = true;
-        }
-
+        auto root_element = GetMouseEventResponseElement();
         //遍历所有元素
-        IterateAllElements([point](UiElement::Element* element) ->bool
+        root_element->IterateAllElements([point](UiElement::Element* element) ->bool {
+            if (element != nullptr)
             {
-                if (element != nullptr)
-                {
-                    element->LButtonDown(point);
-                }
-                return false;
-            });
+                element->LButtonDown(point);
+            }
+            return false;
+        });
     }
     return false;
 }
 
-void CUserUi::MouseMove(CPoint point)
+bool CUserUi::MouseMove(CPoint point)
 {
     bool mouse_in_draw_area{ !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point) };
     if (mouse_in_draw_area)
     {
-        auto& stack_elements{ GetStackElements() };
-        for (auto& element : stack_elements)
-        {
-            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
-            if (stack_element != nullptr)
-            {
-                if (stack_element->indicator.enable)
-                    stack_element->indicator.hover = (stack_element->indicator.rect.PtInRect(point) != FALSE);
-                bool hover{ stack_element->GetRect().PtInRect(point) != FALSE };
-                if (!stack_element->mouse_hover && hover)
-                    UpdateToolTipPositionLater();
-                stack_element->mouse_hover = hover;
-            }
-        }
-
+        auto root_element = GetMouseEventResponseElement();
         //遍历所有元素
-        IterateAllElements([point](UiElement::Element* element) ->bool
+        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+            if (element != nullptr)
             {
-                if (element != nullptr)
-                {
-                    element->MouseMove(point);
-                }
-                return false;
-            });
+                element->MouseMove(point);
+            }
+            return false;
+        });
     }
 
     //鼠标离开绘图区域后发送MouseLeave消息
@@ -340,86 +307,36 @@ void CUserUi::MouseMove(CPoint point)
     }
 
     m_last_mouse_in_draw_area = mouse_in_draw_area;
-    CPlayerUIBase::MouseMove(point);
+    return CPlayerUIBase::MouseMove(point);
 }
 
-void CUserUi::MouseLeave()
+bool CUserUi::MouseLeave()
 {
-    auto& stack_elements{ GetStackElements() };
-    for (auto& element : stack_elements)
-    {
-        UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element.get()) };
-        if (stack_element != nullptr)
+    //遍历所有元素
+    auto root_element = GetMouseEventResponseElement();
+    root_element->IterateAllElements([](UiElement::Element* element) ->bool {
+        if (element != nullptr)
         {
-            //清除StackElement中的mouse_hover状态
-            stack_element->mouse_hover = false;
+            element->MouseLeave();
         }
-    }
+        return false;
+    });
 
-    //遍历所有元素
-    IterateAllElements([](UiElement::Element* element) ->bool
-        {
-            if (element != nullptr)
-            {
-                element->MouseLeave();
-            }
-            return false;
-        });
-
-    CPlayerUIBase::MouseLeave();
+    return CPlayerUIBase::MouseLeave();
 }
 
 
-void CUserUi::RButtonUp(CPoint point)
+bool CUserUi::RButtonUp(CPoint point)
 {
     //遍历所有元素
     bool rtn = false;
     if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
-        IterateAllElements([&](UiElement::Element* element) ->bool
-            {
-                if (element != nullptr)
-                {
-                    if (element->RButtunUp(point))
-                    {
-                        rtn = true;
-                        return true;
-                    }
-                }
-                return false;
-            });
-    }
-    if (!rtn)
-        CPlayerUIBase::RButtonUp(point);
-}
-
-
-void CUserUi::RButtonDown(CPoint point)
-{
-    //遍历所有元素
-    if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
-    {
-        IterateAllElements([point](UiElement::Element* element) ->bool
-            {
-                if (element != nullptr)
-                {
-                    element->RButtonDown(point);
-                }
-                return false;
-            });
-    }
-    CPlayerUIBase::RButtonDown(point);
-}
-
-bool CUserUi::MouseWheel(int delta, CPoint point)
-{
-    //遍历所有元素
-    bool rtn = false;
-    IterateAllElements([&](UiElement::Element* element) ->bool
-        {
+        auto root_element = GetMouseEventResponseElement();
+        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
             if (element != nullptr)
             {
-                if (element->MouseWheel(delta, point))
+                if (element->RButtunUp(point))
                 {
                     rtn = true;
                     return true;
@@ -427,25 +344,61 @@ bool CUserUi::MouseWheel(int delta, CPoint point)
             }
             return false;
         });
+    }
+    if (!rtn)
+        rtn = CPlayerUIBase::RButtonUp(point);
+    return rtn;
+}
+
+
+bool CUserUi::RButtonDown(CPoint point)
+{
+    //遍历所有元素
+    if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
+    {
+        auto root_element = GetMouseEventResponseElement();
+        root_element->IterateAllElements([point](UiElement::Element* element) ->bool {
+            if (element != nullptr)
+            {
+                element->RButtonDown(point);
+            }
+            return false;
+        });
+    }
+    return CPlayerUIBase::RButtonDown(point);
+}
+
+bool CUserUi::MouseWheel(int delta, CPoint point)
+{
+    //遍历所有元素
+    auto root_element = GetMouseEventResponseElement();
+    bool rtn = false;
+    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+        if (element != nullptr)
+        {
+            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
+            //非stackElement元素
+            if (stack_element == nullptr && element->MouseWheel(delta, point))
+            {
+                rtn = true;
+                return true;
+            }
+        }
+        return false;
+    });
 
     if (!rtn)
     {
         //遍历stackElement元素
-        IterateAllElements([&](UiElement::Element* element) ->bool
+        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
+            if (stack_element != nullptr && stack_element->MouseWheel(delta, point))
             {
-                UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
-                if (stack_element != nullptr)
-                {
-                    //如果鼠标指向指示器，或者指定了scroll_to_switch属性时鼠标指向stackElement区域，通过鼠标滚轮切换显示
-                    if ((stack_element->show_indicator && stack_element->indicator.rect.PtInRect(point)) || (stack_element->scroll_to_switch && stack_element->GetRect().PtInRect(point)))
-                    {
-                        stack_element->SwitchDisplay(delta > 0);
-                        rtn = true;
-                        return true;
-                    }
-                }
-                return false;
-            });
+                rtn = true;
+                return true;
+            }
+            return false;
+        });
     }
 
     if (rtn)
@@ -457,18 +410,18 @@ bool CUserUi::DoubleClick(CPoint point)
 {
     //遍历所有元素
     bool rtn = false;
-    IterateAllElements([&](UiElement::Element* element) ->bool
+    auto root_element = GetMouseEventResponseElement();
+    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+        if (element != nullptr)
         {
-            if (element != nullptr)
+            if (element->DoubleClick(point))
             {
-                if (element->DoubleClick(point))
-                {
-                    rtn = true;
-                    return true;
-                }
+                rtn = true;
+                return true;
             }
-            return false;
-        });
+        }
+        return false;
+    });
 
     if (rtn)
         return true;
@@ -509,24 +462,30 @@ bool CUserUi::SetCursor()
     return CPlayerUIBase::SetCursor();
 }
 
+bool CUserUi::ButtonClicked(BtnKey btn_type)
+{
+    if (btn_type == BTN_SHOW_PLAY_QUEUE)
+    {
+        m_panel_mgr.ShowHidePanel(ePanelType::PlayQueue);
+        return true;
+    }
+    return CPlayerUIBase::ButtonClicked(btn_type);
+}
+
 int CUserUi::GetUiIndex()
 {
     return m_index;
 }
 
-std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node)
+std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node, CPlayerUIBase* ui)
 {
     UiElement::CElementFactory factory;
     //获取节点名称
     std::string item_name = CTinyXml2Helper::ElementName(xml_node);
     //根据节点名称创建ui元素
-    std::shared_ptr<UiElement::Element> element = factory.CreateElement(item_name, this);
+    std::shared_ptr<UiElement::Element> element = factory.CreateElement(item_name, ui);
     if (element != nullptr)
     {
-        static UiElement::Element* current_build_ui_element{};      //正在创建ui元素
-        if (item_name == "ui")
-            current_build_ui_element = element.get();
-
         element->name = item_name;
         element->id = CTinyXml2Helper::ElementAttribute(xml_node, "id");
         //设置元素的基类属性
@@ -779,7 +738,6 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         //堆叠元素
         else if (item_name == "stackElement")
         {
-            m_stack_elements[current_build_ui_element].push_back(element);
             UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(element.get());
             if (stack_element != nullptr)
             {
@@ -917,7 +875,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
         //递归调用此函数创建子节点
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)
             {
-                std::shared_ptr<UiElement::Element> ui_child = BuildUiElementFromXmlNode(xml_child);
+                std::shared_ptr<UiElement::Element> ui_child = BuildUiElementFromXmlNode(xml_child, ui);
                 if (ui_child != nullptr)
                 {
                     element->AddChild(ui_child);
@@ -927,57 +885,24 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
     return element;
 }
 
-const std::vector<std::shared_ptr<UiElement::Element>>& CUserUi::GetStackElements() const
-{
-    auto iter = m_stack_elements.find(GetCurrentTypeUi().get());
-    if (iter != m_stack_elements.end())
-        return iter->second;
-    static std::vector<std::shared_ptr<UiElement::Element>> vec_empty;
-    return vec_empty;
-}
-
 void CUserUi::SwitchStackElement()
 {
     m_draw_data.lyric_rect.SetRectEmpty();
-    auto& stack_elements{ GetStackElements() };
-    if (!stack_elements.empty())
-    {
-        UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(stack_elements.front().get());
-        if (stack_element != nullptr)
-            stack_element->SwitchDisplay();
-    }
+    UiElement::StackElement* stack_element = FindElement<UiElement::StackElement>();
+    if (stack_element != nullptr)
+        stack_element->SwitchDisplay();
 }
 
 void CUserUi::SwitchStackElement(std::string id, int index)
 {
     m_draw_data.lyric_rect.SetRectEmpty();
-    auto& stack_elements{ GetStackElements() };
-    if (!stack_elements.empty())
+    UiElement::StackElement* stack_element = FindElement<UiElement::StackElement>(id);
+    if (stack_element != nullptr)
     {
-        UiElement::StackElement* stack_element = nullptr;
-        //查找堆叠元素
-        if (!id.empty())
-        {
-            for (auto& cur_ele : stack_elements)
-            {
-                if (cur_ele->id == id)
-                {
-                    stack_element = dynamic_cast<UiElement::StackElement*>(cur_ele.get());
-                    break;
-                }
-            }
-        }
+        if (index >= 0)
+            stack_element->SetCurrentElement(index);
         else
-        {
-            stack_element = dynamic_cast<UiElement::StackElement*>(stack_elements.front().get());
-        }
-        if (stack_element != nullptr)
-        {
-            if (index >= 0)
-                stack_element->SetCurrentElement(index);
-            else
-                stack_element->SwitchDisplay();
-        }
+            stack_element->SwitchDisplay();
     }
 }
 
@@ -1022,4 +947,12 @@ int CUserUi::GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list)
             index_max = ui->GetUiIndex();
     }
     return index_max;
+}
+
+std::shared_ptr<UiElement::Element> CUserUi::GetMouseEventResponseElement()
+{
+    auto* panel = m_panel_mgr.GetVisiblePanel();
+    if (panel != nullptr)
+        return panel->GetRootElement();
+    return GetCurrentTypeUi();
 }

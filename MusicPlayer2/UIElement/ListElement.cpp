@@ -19,7 +19,7 @@ void UiElement::ListElement::Draw()
     Element::Draw();
 }
 
-void UiElement::ListElement::LButtonUp(CPoint point)
+bool UiElement::ListElement::LButtonUp(CPoint point)
 {
     mouse_pressed = false;
     scrollbar_handle_pressed = false;
@@ -35,9 +35,10 @@ void UiElement::ListElement::LButtonUp(CPoint point)
             btn.pressed = false;
         }
     }
+    return true;
 }
 
-void UiElement::ListElement::LButtonDown(CPoint point)
+bool UiElement::ListElement::LButtonDown(CPoint point)
 {
     //点击了控件区域
     if (rect.PtInRect(point))
@@ -119,12 +120,13 @@ void UiElement::ListElement::LButtonDown(CPoint point)
         mouse_pressed = false;
         //item_selected = -1;
     }
+    return true;
 }
 
-void UiElement::ListElement::MouseMove(CPoint point)
+bool UiElement::ListElement::MouseMove(CPoint point)
 {
     if (rect.IsRectEmpty())
-        return;
+        return false;
 
     mouse_pos = point;
     hover = rect.PtInRect(point);
@@ -196,6 +198,7 @@ void UiElement::ListElement::MouseMove(CPoint point)
             }
         }
     }
+    return true;
 }
 
 bool UiElement::ListElement::RButtunUp(CPoint point)
@@ -233,7 +236,7 @@ void UiElement::ListElement::ShowContextMenu(CMenu* menu, CWnd* cmd_reciver)
 }
 
 
-void UiElement::ListElement::RButtonDown(CPoint point)
+bool UiElement::ListElement::RButtonDown(CPoint point)
 {
     mouse_pressed = false;
     if (rect.PtInRect(point))
@@ -253,6 +256,7 @@ void UiElement::ListElement::RButtonDown(CPoint point)
     {
         items_selected.clear();
     }
+    return true;
 }
 
 bool UiElement::ListElement::MouseWheel(int delta, CPoint point)
@@ -271,12 +275,13 @@ bool UiElement::ListElement::MouseWheel(int delta, CPoint point)
     return false;
 }
 
-void UiElement::ListElement::MouseLeave()
+bool UiElement::ListElement::MouseLeave()
 {
     hover = false;
     mouse_pressed = false;
     scrollbar_hover = false;
     scrollbar_handle_pressed = false;
+    return true;
 }
 
 bool UiElement::ListElement::DoubleClick(CPoint point)

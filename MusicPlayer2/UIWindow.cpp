@@ -14,6 +14,11 @@ IPlayerUI* CUIWindow::GetCurUi() const
     return m_pUI;
 }
 
+IMouseEvent* CUIWindow::GetMouseEvent() const
+{
+    return dynamic_cast<IMouseEvent*>(m_pUI);
+}
+
 void CUIWindow::PreSubclassWindow()
 {
     // TODO: 在此添加专用代码和/或调用基类
@@ -71,7 +76,7 @@ void CUIWindow::OnLButtonUp(UINT nFlags, CPoint point)
     else
     {
         if (pMainWindow != nullptr)
-            m_pUI->LButtonUp(point);
+            GetMouseEvent()->LButtonUp(point);
 
         CStatic::OnLButtonUp(nFlags, point);
     }
@@ -91,7 +96,7 @@ void CUIWindow::OnLButtonDown(UINT nFlags, CPoint point)
             pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MOVE | HTCAPTION);
     }
 
-    m_pUI->LButtonDown(point);
+    GetMouseEvent()->LButtonDown(point);
 
     CStatic::OnLButtonDown(nFlags, point);
 }
@@ -172,7 +177,7 @@ void CUIWindow::OnMouseMove(UINT nFlags, CPoint point)
         pMainWindow->SendMessage(WM_SYSCOMMAND, SC_MOVE | HTCAPTION);
     }
 
-    m_pUI->MouseMove(point);
+    GetMouseEvent()->MouseMove(point);
 
     CStatic::OnMouseMove(nFlags, point);
 }
@@ -197,7 +202,7 @@ void CUIWindow::OnRButtonUp(UINT nFlags, CPoint point)
     }
     else
     {
-        m_pUI->RButtonUp(point);
+        GetMouseEvent()->RButtonUp(point);
     }
 
     CStatic::OnRButtonUp(nFlags, point);
@@ -233,7 +238,7 @@ void CUIWindow::OnSize(UINT nType, int cx, int cy)
 void CUIWindow::OnMouseLeave()
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    m_pUI->MouseLeave();
+    GetMouseEvent()->MouseLeave();
 
     CStatic::OnMouseLeave();
 }
@@ -248,7 +253,7 @@ afx_msg LRESULT CUIWindow::OnTabletQuerysystemgesturestatus(WPARAM wParam, LPARA
 void CUIWindow::OnRButtonDown(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
-    m_pUI->RButtonDown(point);
+    GetMouseEvent()->RButtonDown(point);
 
     CStatic::OnRButtonDown(nFlags, point);
 }

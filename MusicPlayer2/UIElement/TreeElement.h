@@ -31,9 +31,9 @@ namespace UiElement
         bool IsCollapsed(int row);          //该行是否折叠
 
         // 通过 Element 继承
-        virtual void LButtonUp(CPoint point) override;
-        virtual void MouseMove(CPoint point) override;
-        virtual void MouseLeave() override;
+        virtual bool LButtonUp(CPoint point) override;
+        virtual bool MouseMove(CPoint point) override;
+        virtual bool MouseLeave() override;
         virtual bool DoubleClick(CPoint point) override;
 
         // 通过 ListElement 继承

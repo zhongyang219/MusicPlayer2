@@ -9,10 +9,10 @@ namespace UiElement
     {
     public:
         virtual void Draw() override;
-        virtual void LButtonUp(CPoint point) override;
-        virtual void MouseMove(CPoint point) override;
+        virtual bool LButtonUp(CPoint point) override;
+        virtual bool MouseMove(CPoint point) override;
         virtual bool RButtunUp(CPoint point) override;
-        virtual void MouseLeave() override;
+        virtual bool MouseLeave() override;
 
         enum IconType
         {

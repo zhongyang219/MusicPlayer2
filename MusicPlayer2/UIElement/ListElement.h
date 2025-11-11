@@ -9,15 +9,15 @@ namespace UiElement
         friend class CPlayerUIBase;
 
         virtual void Draw() override;
-        virtual void LButtonUp(CPoint point) override;
-        virtual void LButtonDown(CPoint point) override;
-        virtual void MouseMove(CPoint point) override;
+        virtual bool LButtonUp(CPoint point) override;
+        virtual bool LButtonDown(CPoint point) override;
+        virtual bool MouseMove(CPoint point) override;
         virtual bool RButtunUp(CPoint point) override;
-        void ShowContextMenu(CMenu* menu, CWnd* cmd_reciver);
-        virtual void RButtonDown(CPoint point) override;
+        virtual bool RButtonDown(CPoint point) override;
         virtual bool MouseWheel(int delta, CPoint point) override;
-        virtual void MouseLeave() override;
+        virtual bool MouseLeave() override;
         virtual bool DoubleClick(CPoint point) override;
+        void ShowContextMenu(CMenu* menu, CWnd* cmd_reciver);
         virtual void ClearRect() override;
 
         void EnsureItemVisible(int index);  //确保指定项在播放列表中可见

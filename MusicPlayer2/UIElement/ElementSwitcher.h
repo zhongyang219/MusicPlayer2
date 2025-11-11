@@ -16,10 +16,10 @@ namespace UiElement
             DropDownIcon,       //显示下拉按钮
         };
 
-        virtual void LButtonUp(CPoint point) override;
-        virtual void LButtonDown(CPoint point) override;
-        virtual void MouseMove(CPoint point) override;
-        virtual void MouseLeave() override;
+        virtual bool LButtonUp(CPoint point) override;
+        virtual bool LButtonDown(CPoint point) override;
+        virtual bool MouseMove(CPoint point) override;
+        virtual bool MouseLeave() override;
 
         bool hover() const;
 

@@ -117,7 +117,7 @@ bool UiElement::TreeElement::IsCollapsed(int row)
     return false;
 }
 
-void UiElement::TreeElement::LButtonUp(CPoint point)
+bool UiElement::TreeElement::LButtonUp(CPoint point)
 {
     //获取点击的行
     int row = GetListIndexByPoint(point);
@@ -136,10 +136,10 @@ void UiElement::TreeElement::LButtonUp(CPoint point)
         }
     }
 
-    ListElement::LButtonUp(point);
+    return ListElement::LButtonUp(point);
 }
 
-void UiElement::TreeElement::MouseMove(CPoint point)
+bool UiElement::TreeElement::MouseMove(CPoint point)
 {
     //获取鼠标指向的行
     int row = GetListIndexByPoint(point);
@@ -158,13 +158,13 @@ void UiElement::TreeElement::MouseMove(CPoint point)
         }
     }
 
-    ListElement::MouseMove(point);
+    return ListElement::MouseMove(point);
 }
 
-void UiElement::TreeElement::MouseLeave()
+bool UiElement::TreeElement::MouseLeave()
 {
     collaps_indicator_hover_row = -1;
-    ListElement::MouseLeave();
+    return ListElement::MouseLeave();
 }
 
 bool UiElement::TreeElement::DoubleClick(CPoint point)

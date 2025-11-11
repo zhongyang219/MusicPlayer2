@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "CPlayerUIBase.h"
 #include "ListCache.h"
+#include "IMouseEvent.h"
 
 //定义界面元素
 namespace UiElement
@@ -62,14 +63,14 @@ namespace UiElement
 
         //鼠标消息虚函数。
         //即使鼠标的位置不在当前元素的矩形区域内，函数仍然会响应，因此在重写这些虚函数时需要先使用rect.PtInRect(point)判断鼠标位置是否在矩形区域内。
-        virtual void LButtonUp(CPoint point) {}
-        virtual void LButtonDown(CPoint point) {}
-        virtual void MouseMove(CPoint point) {}
+        virtual bool LButtonUp(CPoint point) { return false; }
+        virtual bool LButtonDown(CPoint point) { return false; }
+        virtual bool MouseMove(CPoint point) { return false; }
         virtual bool RButtunUp(CPoint point) { return false; }
-        virtual void RButtonDown(CPoint point) {}
+        virtual bool RButtonDown(CPoint point) { return false; }
         virtual bool MouseWheel(int delta, CPoint point) { return false; }
         virtual bool DoubleClick(CPoint point) { return false; }
-        virtual void MouseLeave() {}
+        virtual bool MouseLeave() { return false; }
 
     protected:
         CRect ParentRect() const;

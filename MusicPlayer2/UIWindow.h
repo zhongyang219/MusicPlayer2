@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "IPlayerUI.h"
+#include "IMouseEvent.h"
 
 class CUIWindow :
     public CStatic
@@ -17,6 +18,7 @@ protected:
     bool m_bTitlebarLButtonDown{};
     CPoint m_ptLButtonDown{};
     IPlayerUI* GetCurUi() const;
+    IMouseEvent* GetMouseEvent() const;
 
     virtual void PreSubclassWindow();
     virtual BOOL PreTranslateMessage(MSG* pMsg);

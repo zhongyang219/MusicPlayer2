@@ -12,7 +12,7 @@ void UiElement::PlaylistIndicator::Draw()
     Element::Draw();
 }
 
-void UiElement::PlaylistIndicator::LButtonUp(CPoint point)
+bool UiElement::PlaylistIndicator::LButtonUp(CPoint point)
 {
     if (btn_drop_down.rect.PtInRect(point))
     {
@@ -30,15 +30,17 @@ void UiElement::PlaylistIndicator::LButtonUp(CPoint point)
     }
     btn_drop_down.pressed = false;
     btn_menu.pressed = false;
+    return true;
 }
 
-void UiElement::PlaylistIndicator::LButtonDown(CPoint point)
+bool UiElement::PlaylistIndicator::LButtonDown(CPoint point)
 {
     btn_drop_down.pressed = (btn_drop_down.rect.PtInRect(point) != FALSE);
     btn_menu.pressed = (btn_menu.rect.PtInRect(point) != FALSE);
+    return true;
 }
 
-void UiElement::PlaylistIndicator::MouseMove(CPoint point)
+bool UiElement::PlaylistIndicator::MouseMove(CPoint point)
 {
     btn_drop_down.hover = (btn_drop_down.rect.PtInRect(point) != FALSE);
     btn_menu.hover = (btn_menu.rect.PtInRect(point) != FALSE);
@@ -47,14 +49,16 @@ void UiElement::PlaylistIndicator::MouseMove(CPoint point)
         ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_DROP_DOWN_BTN, btn_drop_down.rect);
     if (btn_menu.hover)
         ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_MENU_BTN, btn_menu.rect);
+    return true;
 }
 
-void UiElement::PlaylistIndicator::MouseLeave()
+bool UiElement::PlaylistIndicator::MouseLeave()
 {
     btn_drop_down.pressed = false;
     btn_drop_down.hover = false;
     btn_menu.pressed = false;
     btn_menu.hover = false;
+    return true;
 }
 
 void UiElement::PlaylistIndicator::ClearRect()

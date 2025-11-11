@@ -229,10 +229,10 @@ bool CPlayerUIBase::LButtonDown(CPoint point)
     return false;
 }
 
-void CPlayerUIBase::RButtonUp(CPoint point)
+bool CPlayerUIBase::RButtonUp(CPoint point)
 {
     if (!m_draw_rect.PtInRect(point))
-        return;
+        return false;
 
     if (m_buttons[BTN_VOLUME].rect.PtInRect(point) == FALSE)
         m_show_volume_adj = false;
@@ -246,7 +246,7 @@ void CPlayerUIBase::RButtonUp(CPoint point)
 
         //其他按钮上点击右键不弹出菜单
         if (btn.first != BTN_COVER && btn.second.rect.PtInRect(point) != FALSE)
-            return;
+            return true;
     }
 
     CPoint point1;
@@ -255,13 +255,14 @@ void CPlayerUIBase::RButtonUp(CPoint point)
     if (m_draw_data.lyric_rect.PtInRect(point))    //如果在歌词区域点击了鼠标右键
     {
         theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaLrcMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-        return;
+        return true;
     }
     // 其他区域显示主界面区域右键菜单
     theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+    return true;
 }
 
-void CPlayerUIBase::MouseMove(CPoint point)
+bool CPlayerUIBase::MouseMove(CPoint point)
 {
     for (auto& btn : m_buttons)
     {
@@ -295,6 +296,7 @@ void CPlayerUIBase::MouseMove(CPoint point)
     tme.dwFlags = TME_LEAVE | TME_HOVER;
     tme.dwHoverTime = 1;
     _TrackMouseEvent(&tme);
+    return true;
 }
 
 bool CPlayerUIBase::LButtonUp(CPoint point)
@@ -659,8 +661,9 @@ bool CPlayerUIBase::ButtonRClicked(BtnKey btn_type)
 }
 
 
-void CPlayerUIBase::RButtonDown(CPoint point)
+bool CPlayerUIBase::RButtonDown(CPoint point)
 {
+    return false;
 }
 
 bool CPlayerUIBase::MouseWheel(int delta, CPoint point)
@@ -748,13 +751,14 @@ bool CPlayerUIBase::SetCursor()
     return false;
 }
 
-void CPlayerUIBase::MouseLeave()
+bool CPlayerUIBase::MouseLeave()
 {
     for (auto& btn : m_buttons)
     {
         btn.second.hover = false;
         btn.second.pressed = false;
     }
+    return true;
 }
 
 void CPlayerUIBase::ClearBtnRect()
@@ -914,6 +918,8 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Sort_Mode;
     case BTN_KARAOKE:
         return IconMgr::IconType::IT_Karaoke;
+    case BTN_SHOW_PLAY_QUEUE:
+        return IconMgr::IconType::IT_Playlist;
     default:
         ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;
@@ -2519,6 +2525,11 @@ CRect CPlayerUIBase::GetVolumeRect() const
     if (iter != m_buttons.end())
         return iter->second.rect;
     return CRect();
+}
+
+CRect CPlayerUIBase::GetDrawRect() const
+{
+    return m_draw_rect;
 }
 
 void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
