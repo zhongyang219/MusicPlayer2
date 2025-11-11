@@ -31,6 +31,16 @@ void CPlayerUIPanel::LoadUIData(const std::string& xml_contents)
 		doc.RootElement();
 		m_root_element = CUserUi::BuildUiElementFromXmlNode(doc.RootElement(), m_ui);
 	}
+	//³õÊ¼»¯ËÑË÷¿ò
+	if (m_root_element != nullptr)
+	{
+		m_root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+			UiElement::SearchBox* search_box{ dynamic_cast<UiElement::SearchBox*>(element) };
+			if (search_box != nullptr)
+				search_box->InitSearchBoxControl(theApp.m_pMainWnd);
+			return false;
+		});
+	}
 }
 
 void CPlayerUIPanel::Draw()
