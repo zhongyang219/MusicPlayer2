@@ -343,7 +343,7 @@ bool CUserUi::RButtonUp(CPoint point)
                 }
             }
             return false;
-        });
+        }, true);
     }
     if (!rtn)
         rtn = CPlayerUIBase::RButtonUp(point);
