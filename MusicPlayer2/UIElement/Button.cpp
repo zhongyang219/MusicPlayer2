@@ -167,8 +167,9 @@ bool UiElement::Button::LButtonUp(CPoint point)
     if (pressed && m_btn.rect.PtInRect(point) && m_btn.enable)
     {
         ui->ButtonClicked(key);
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool UiElement::Button::LButtonDown(CPoint point)
@@ -176,8 +177,9 @@ bool UiElement::Button::LButtonDown(CPoint point)
     if (m_btn.enable && m_btn.rect.PtInRect(point))
     {
         m_btn.pressed = true;
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool UiElement::Button::MouseMove(CPoint point)
@@ -187,18 +189,19 @@ bool UiElement::Button::MouseMove(CPoint point)
         m_btn.hover = (m_btn.rect.PtInRect(point));
         if (!m_btn.hover)
             m_btn.pressed = false;
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool UiElement::Button::RButtunUp(CPoint point)
 {
     if (m_btn.enable && m_btn.rect.PtInRect(point))
     {
-        ui->ButtonRClicked(key);
+        return ui->ButtonRClicked(key);
     }
 
-    return true;
+    return false;
 }
 
 bool UiElement::Button::MouseLeave()
