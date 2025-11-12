@@ -57,6 +57,10 @@ void CPlayerUIPanel::Draw()
 			SLayoutData layoutData;
 			draw_rect.top += layoutData.titlabar_height;
 		}
+		if (m_ui->IsDrawStatusBar())
+		{
+			draw_rect.bottom -= m_ui->DPI(20);
+		}
 
 		BYTE alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
 		m_ui->GetDrawer().FillAlphaRect(draw_rect, m_ui->GetUIColors().color_back, alpha);
@@ -81,8 +85,15 @@ void CPlayerUIPanel::Draw()
 		}
 
 		//绘制面板背景
-		alpha = 255 - (255 - alpha) / 2;
-		m_ui->GetDrawer().FillAlphaRect(back_rect, m_ui->GetUIColors().color_back, alpha);
+		if (m_ui->IsDrawBackgroundAlpha())
+		{
+			alpha = 255 - (255 - alpha) / 2;
+			m_ui->GetDrawer().FillAlphaRect(back_rect, m_ui->GetUIColors().color_back, alpha);
+		}
+		else
+		{
+			m_ui->GetDrawer().FillRect(back_rect, m_ui->GetUIColors().color_back);
+		}
 
 		//绘制面板
 		m_root_element->Draw();
