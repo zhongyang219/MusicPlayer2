@@ -51,11 +51,15 @@ void CPlayerUIPanel::Draw()
 	if (m_visible)
 	{
 		//绘制一层半透明的黑色背景
+		SLayoutData layoutData;
 		CRect draw_rect = m_ui->GetDrawRect();
 		if (m_ui->IsDrawTitleBar())
 		{
-			SLayoutData layoutData;
 			draw_rect.top += layoutData.titlabar_height;
+		}
+		if (m_ui->IsDrawMenuBar())
+		{
+			draw_rect.top += layoutData.menubar_height;
 		}
 		if (m_ui->IsDrawStatusBar())
 		{
