@@ -37,7 +37,10 @@ void CPlayerUIPanel::LoadUIData(const std::string& xml_contents)
 		m_root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
 			UiElement::SearchBox* search_box{ dynamic_cast<UiElement::SearchBox*>(element) };
 			if (search_box != nullptr)
+			{
 				search_box->InitSearchBoxControl(theApp.m_pMainWnd);
+				theApp.m_pMainWnd->SetFocus();
+			}
 			return false;
 		});
 	}
