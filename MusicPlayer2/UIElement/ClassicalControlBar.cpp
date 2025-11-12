@@ -9,12 +9,28 @@ UiElement::ClassicalControlBar::ClassicalControlBar()
 
 void UiElement::ClassicalControlBar::Draw()
 {
+    progress_bar.SetUi(ui);
     if (rect.Width() < ui->m_progress_on_top_threshold)
         max_height.FromString("56");
     else
         max_height.FromString("36");
     CalculateRect();
 
-    ui->DrawControlBar(rect, show_switch_display_btn);
+    progress_bar.btn.rect = ui->DrawClassicalControlBar(rect, show_switch_display_btn);
     Element::Draw();
+}
+
+bool UiElement::ClassicalControlBar::LButtonUp(CPoint point)
+{
+    return progress_bar.LButtonUp(point);
+}
+
+bool UiElement::ClassicalControlBar::MouseMove(CPoint point)
+{
+    return progress_bar.MouseMove(point);
+}
+
+bool UiElement::ClassicalControlBar::SetCursor()
+{
+    return progress_bar.SetCursor();
 }

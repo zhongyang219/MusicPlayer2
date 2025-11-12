@@ -190,7 +190,6 @@ public:
         BTN_NEXT,               //下一曲
         BTN_SHOW_PLAYLIST,      //显示/隐藏播放列表
         BTN_MEDIA_LIB,          //媒体库
-        BTN_PROGRESS,           //进度条
         BTN_COVER,              //专辑封面
         BTN_FULL_SCREEN_TITLEBAR, //标题栏上的全屏显示按钮
         BTN_FULL_SCREEN,        //全屏显示按钮
@@ -261,9 +260,9 @@ protected:
     void DrawToolBarWithoutBackground(CRect rect, bool draw_translate_button);
     void DrawBeatIndicator(CRect rect);
     void DrawVolumnAdjBtn();
-    void DrawControlBar(CRect rect, bool draw_switch_display_btn = false);
-    void DrawProgressBar(CRect rect, bool play_time_both_side = false);               //绘制进度条（包含时间）。play_time_both_side如果为true，则播放时间显示的进度条的两侧，否则显示在进度条的右侧
-    void DrawProgess(CRect rect);                   //绘制进度条
+    CRect DrawClassicalControlBar(CRect rect, bool draw_switch_display_btn = false);    //绘制经典控制栏（返回进度条部分的矩形区域）
+    CRect DrawProgressBar(CRect rect, bool play_time_both_side = false);               //绘制进度条（包含时间）。play_time_both_side如果为true，则播放时间显示的进度条的两侧，否则显示在进度条的右侧（返回进度条部分的矩形区域）
+    CRect DrawProgess(CRect rect);                   //绘制进度条（返回进度条部分的矩形区域）
     void DrawTranslateButton(CRect rect);
     void DrawDesktopLyricButton(CRect rect);
     void DrawKaraokeButton(CRect rect);

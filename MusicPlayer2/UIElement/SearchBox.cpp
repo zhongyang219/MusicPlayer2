@@ -93,6 +93,16 @@ bool UiElement::SearchBox::LButtonDown(CPoint point)
     return true;
 }
 
+bool UiElement::SearchBox::SetCursor()
+{
+    if (hover)
+    {
+        ::SetCursor(::LoadCursor(NULL, IDC_IBEAM));
+        return true;
+    }
+    return false;
+}
+
 void UiElement::SearchBox::FindListElement()
 {
     if (!find_list_element)

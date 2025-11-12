@@ -20,6 +20,8 @@ namespace UiElement
         virtual bool LButtonUp(CPoint point) override;
         virtual bool LButtonDown(CPoint point) override;
 
+        virtual bool SetCursor() override;
+
         bool hover{};       //如果鼠标指向搜索框，则为true
         std::wstring key_word;  //搜索框中的文本
         CUiSearchBox* search_box_ctrl{};    //搜索框控件

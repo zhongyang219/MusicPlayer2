@@ -50,6 +50,16 @@ bool UiElement::ElementSwitcher::MouseLeave()
     return true;
 }
 
+bool UiElement::ElementSwitcher::SetCursor()
+{
+    if (hover() && style == UiElement::ElementSwitcher::Style::AlbumCover)
+    {
+        ::SetCursor(::LoadCursor(NULL, IDC_HAND));
+        return true;
+    }
+    return false;
+}
+
 bool UiElement::ElementSwitcher::hover() const
 {
     return btn.hover;

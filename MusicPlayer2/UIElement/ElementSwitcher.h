@@ -20,6 +20,7 @@ namespace UiElement
         virtual bool LButtonDown(CPoint point) override;
         virtual bool MouseMove(CPoint point) override;
         virtual bool MouseLeave() override;
+        virtual bool SetCursor() override;
 
         bool hover() const;
 

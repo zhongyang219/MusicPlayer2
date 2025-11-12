@@ -301,10 +301,6 @@ bool CUserUi::MouseMove(CPoint point)
             }
             return false;
         });
-
-        //显示了面板时，不再向上传递MouseMove
-        if (m_panel_mgr.GetVisiblePanel() != nullptr)
-            return true;
     }
 
     //鼠标离开绘图区域后发送MouseLeave消息
@@ -448,23 +444,11 @@ bool CUserUi::SetCursor()
 {
     bool cursor_changed = false;
     IterateAllElements([&](UiElement::Element* element) ->bool {
-        //如果鼠标指向搜索框，则更改鼠标指针
-        UiElement::SearchBox* search_box = dynamic_cast<UiElement::SearchBox*>(element);
-        if (search_box != nullptr && search_box->hover)
+        if (element->SetCursor())
         {
-            ::SetCursor(::LoadCursor(NULL, IDC_IBEAM));
             cursor_changed = true;
             return true;
         }
-        //如果鼠标指向专辑封面样式的界面切换器，则更改鼠标指针为手形样式
-        UiElement::ElementSwitcher* element_swithcer = dynamic_cast<UiElement::ElementSwitcher*>(element);
-        if (element_swithcer != nullptr && element_swithcer->hover() && element_swithcer->style == UiElement::ElementSwitcher::Style::AlbumCover)
-        {
-            ::SetCursor(::LoadCursor(NULL, IDC_HAND));
-            cursor_changed = true;
-            return true;
-        }
-        return false;
     }, true);
 
     if (cursor_changed)

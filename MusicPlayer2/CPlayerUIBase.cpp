@@ -270,26 +270,6 @@ bool CPlayerUIBase::MouseMove(CPoint point)
             btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
     }
 
-    m_buttons[BTN_PROGRESS].hover = m_buttons[BTN_PROGRESS].hover && !(m_show_volume_adj && (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point)));
-
-    //鼠标指向进度条时显示定位到几分几秒
-    if (m_buttons[BTN_PROGRESS].hover)
-    {
-        __int64 song_pos;
-        song_pos = static_cast<__int64>(point.x - m_buttons[BTN_PROGRESS].rect.left) * CPlayer::GetInstance().GetSongLength() / m_buttons[BTN_PROGRESS].rect.Width();
-        CPlayTime song_pos_time;
-        song_pos_time.fromInt(static_cast<int>(song_pos));
-        static int last_sec{};
-        if (last_sec != song_pos_time.sec)      //只有鼠标指向位置对应的秒数变化了才更新鼠标提示
-        {
-            wstring min = std::to_wstring(song_pos_time.min);
-            wstring sec = std::to_wstring(song_pos_time.sec);
-            wstring str = theApp.m_str_table.LoadTextFormat(L"UI_TIP_SEEK_TO_MINUTE_SECOND", { min, sec.size() <= 1 ? L'0' + sec : sec });
-            UpdateMouseToolTip(BTN_PROGRESS, str.c_str());
-            last_sec = song_pos_time.sec;
-        }
-    }
-
     TRACKMOUSEEVENT tme;
     tme.cbSize = sizeof(tme);
     tme.hwndTrack = m_pMainWnd->GetSafeHwnd();
@@ -330,17 +310,6 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
             ButtonClicked(btn.first);
             switch (btn.first)
             {
-            case BTN_PROGRESS:
-            {
-                int ckick_pos = point.x - m_buttons[BTN_PROGRESS].rect.left;
-                double progress = static_cast<double>(ckick_pos) / m_buttons[BTN_PROGRESS].rect.Width();
-                if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock_for(std::chrono::milliseconds(1000)))
-                {
-                    CPlayer::GetInstance().SeekTo(progress);
-                    CPlayer::GetInstance().GetPlayStatusMutex().unlock();
-                }
-                return true;
-            }
             //菜单
             case MENU_FILE:
                 showMenu(btn.second.rect, theApp.m_menu_mgr.GetMenu(MenuMgr::MainFileMenu));
@@ -743,11 +712,6 @@ void CPlayerUIBase::UpdateTitlebarBtnToolTip()
 
 bool CPlayerUIBase::SetCursor()
 {
-    if (m_buttons[BTN_PROGRESS].hover)
-    {
-        ::SetCursor(::LoadCursor(NULL, IDC_HAND));
-        return true;
-    }
     return false;
 }
 
@@ -1934,17 +1898,18 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
     }
 }
 
-void CPlayerUIBase::DrawControlBar(CRect rect, bool draw_switch_display_btn)
+CRect CPlayerUIBase::DrawClassicalControlBar(CRect rect, bool draw_switch_display_btn)
 {
     bool progress_on_top = rect.Width() < m_progress_on_top_threshold;
     const int progress_height = DPI(4);
     CRect progress_rect;
+    CRect progress_valid_ret;
     if (progress_on_top)
     {
         progress_rect = rect;
         int progressbar_height = rect.Height() / 3;
         progress_rect.bottom = progress_rect.top + progressbar_height;
-        DrawProgressBar(progress_rect);
+        progress_valid_ret = DrawProgressBar(progress_rect);
         rect.top = progress_rect.bottom;
     }
 
@@ -1995,11 +1960,12 @@ void CPlayerUIBase::DrawControlBar(CRect rect, bool draw_switch_display_btn)
         progress_rect = rect;
         progress_rect.left = progressbar_left;
         progress_rect.right = rc_btn.left - Margin();
-        DrawProgressBar(progress_rect);
+        progress_valid_ret = DrawProgressBar(progress_rect);
     }
+    return progress_valid_ret;
 }
 
-void CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
+CRect CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
 {
     //绘制播放时间
     bool draw_progress_time{ rect.Width() > DPI(110) };
@@ -2036,10 +2002,10 @@ void CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
     }
 
     //绘制进度条
-    DrawProgess(progress_rect);
+    return DrawProgess(progress_rect);
 }
 
-void CPlayerUIBase::DrawProgess(CRect rect)
+CRect CPlayerUIBase::DrawProgess(CRect rect)
 {
     //进度条的高度
     int progress_height = min(DPI(4), rect.Height());
@@ -2050,9 +2016,6 @@ void CPlayerUIBase::DrawProgess(CRect rect)
         m_draw.FillAlphaRect(rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
     else
         m_draw.FillRect(rect, m_colors.color_spectrum_back);
-
-    m_buttons[BTN_PROGRESS].rect = rect;
-    m_buttons[BTN_PROGRESS].rect.InflateRect(0, DPI(3));
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
     if (progress > 1)
@@ -2106,6 +2069,11 @@ void CPlayerUIBase::DrawProgess(CRect rect)
         //恢复字体
         m_draw.SetFont(pOldFont);
     }
+
+    //进度条能响应鼠标消息的区域（上下各增加3像素）
+    CRect progress_rect = rect;
+    progress_rect.InflateRect(0, DPI(3));
+    return progress_rect;
 }
 
 void CPlayerUIBase::DrawTranslateButton(CRect rect)
@@ -3635,7 +3603,7 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_NEXT, tip_str.c_str());
     // 进度条
     tip_str = theApp.m_str_table.LoadTextFormat(L"UI_TIP_SEEK_TO_MINUTE_SECOND", { L"0", L"00" });
-    AddMouseToolTip(BTN_PROGRESS, tip_str.c_str());
+    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::PROGRESS_BAR), tip_str.c_str());
     // 显示/隐藏播放列表
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
     if (!is_mini_mode)

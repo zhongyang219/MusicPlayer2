@@ -73,6 +73,9 @@ namespace UiElement
         virtual bool MouseLeave() { return false; }
 
         virtual void CalculateRect();           //计算此元素在界面中的矩形区域
+
+        virtual bool SetCursor() { return false; }
+
     protected:
         CRect ParentRect() const;
         static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func, bool visible_only = false);
@@ -94,6 +97,7 @@ namespace UiElement
         const int PLAYLIST_DROP_DOWN_BTN = 902;
         const int PLAYLIST_MENU_BTN = 903;
         const int SEARCHBOX_CLEAR_BTN = 904;
+        const int PROGRESS_BAR = 905;
     }
 
     template<class T>
