@@ -134,6 +134,13 @@ bool CMiniModeUserUi::PointInControlArea(CPoint point) const
                 rtn = true;
                 return true;
             }
+
+            UiElement::ProgressBar* progress_bar = dynamic_cast<UiElement::ProgressBar*>(ele);
+            if (progress_bar != nullptr && progress_bar->btn.rect.PtInRect(point))
+            {
+                rtn = true;
+                return true;
+            }
             return false;
         });
 
