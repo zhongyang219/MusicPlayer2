@@ -313,11 +313,6 @@ protected:
     //响应一个按钮右键点击
     virtual bool ButtonRClicked(BtnKey btn_type);
 
-    //当绘图区域的原点不是窗口的原点的时候需要使用这两个函数在绘图区域坐标和窗口坐标中转换
-    //现在这两个函数已弃用
-    static CRect DrawAreaToClient(CRect rect, CRect draw_area);
-    static CRect ClientAreaToDraw(CRect rect, CRect draw_area);
-
 public:
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
     virtual bool IsDrawStatusBar() const;       //是否需要绘制状态栏

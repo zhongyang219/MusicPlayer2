@@ -689,7 +689,7 @@ CRect CPlayerUIBase::GetThumbnailClipArea()
             menu_bar_height += theApp.DPI(1);
     }
 
-    CRect thumbnail_rect = DrawAreaToClient(m_draw_data.thumbnail_rect, m_draw_rect);
+    CRect thumbnail_rect = m_draw_data.thumbnail_rect;
     thumbnail_rect.MoveToY(thumbnail_rect.top + menu_bar_height);
     return thumbnail_rect;
 }
@@ -1349,18 +1349,6 @@ void CPlayerUIBase::DrawBeatIndicator(CRect rect)
     m_draw.DrawWindowText(rect, _T("<<<<"), m_colors.color_text, m_colors.color_text_2, progress);
 }
 
-CRect CPlayerUIBase::DrawAreaToClient(CRect rect, CRect draw_area)
-{
-    //rect.MoveToXY(rect.left + draw_area.left, rect.top + draw_area.top);
-    return rect;
-}
-
-CRect CPlayerUIBase::ClientAreaToDraw(CRect rect, CRect draw_area)
-{
-    //rect.MoveToXY(rect.left - draw_area.left, rect.top - draw_area.top);
-    return rect;
-}
-
 void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon, bool show_text, int font_size, bool checked)
 {
     auto& btn = m_buttons[key_type];
@@ -1384,7 +1372,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& b
 
 void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon, const std::wstring& text, int font_size, bool checked)
 {
-    btn.rect = DrawAreaToClient(rect, m_draw_rect);
+    btn.rect = rect;
 
     CRect rc_tmp = rect;
     if (btn.pressed && btn.enable)
@@ -1518,7 +1506,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
     {
         m_draw.DrawWindowText(rect, text, GRAY(200), Alignment::CENTER);
     }
-    btn.rect = DrawAreaToClient(rect, m_draw_rect);
+    btn.rect = rect;
 }
 
 void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
@@ -2063,7 +2051,7 @@ void CPlayerUIBase::DrawProgess(CRect rect)
     else
         m_draw.FillRect(rect, m_colors.color_spectrum_back);
 
-    m_buttons[BTN_PROGRESS].rect = DrawAreaToClient(rect, m_draw_rect);
+    m_buttons[BTN_PROGRESS].rect = rect;
     m_buttons[BTN_PROGRESS].rect.InflateRect(0, DPI(3));
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
@@ -2707,7 +2695,7 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
     //设置音量调整按钮的位置
     CRect rc_tmp = rect;
     rc_tmp.bottom = rc_tmp.top + DPI(24);
-    m_buttons[BTN_VOLUME].rect = DrawAreaToClient(rc_tmp, m_draw_rect);
+    m_buttons[BTN_VOLUME].rect = rc_tmp;
     m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));
     m_buttons[BTN_VOLUME_DOWN].rect = m_buttons[BTN_VOLUME].rect;
     m_buttons[BTN_VOLUME_DOWN].rect.bottom += DPI(4);
@@ -3734,6 +3722,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_KARAOKE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_KARAOKE").c_str());
     //搜索框清除按钮
     AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::SEARCHBOX_CLEAR_BTN), theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str());
-    //歌词卡拉OK样式显示
+    //显示播放队列
     AddMouseToolTip(BTN_SHOW_PLAY_QUEUE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_QUEUE").c_str());
 }

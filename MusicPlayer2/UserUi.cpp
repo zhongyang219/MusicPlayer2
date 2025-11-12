@@ -265,19 +265,26 @@ bool CUserUi::LButtonUp(CPoint point)
 
 bool CUserUi::LButtonDown(CPoint point)
 {
-    if (!CPlayerUIBase::LButtonDown(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
+    bool rtn = false;
+    if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         auto root_element = GetMouseEventResponseElement();
         //遍历所有元素
-        root_element->IterateAllElements([point](UiElement::Element* element) ->bool {
+        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
             if (element != nullptr)
             {
-                element->LButtonDown(point);
+                if (element->LButtonDown(point))
+                {
+                    rtn = true;
+                    return true;
+                }
             }
             return false;
-        });
+        }, true);
     }
-    return false;
+    if (!rtn)
+        rtn = CPlayerUIBase::LButtonDown(point);
+    return rtn;
 }
 
 bool CUserUi::MouseMove(CPoint point)
@@ -294,6 +301,10 @@ bool CUserUi::MouseMove(CPoint point)
             }
             return false;
         });
+
+        //显示了面板时，不再向上传递MouseMove
+        if (m_panel_mgr.GetVisiblePanel() != nullptr)
+            return true;
     }
 
     //鼠标离开绘图区域后发送MouseLeave消息
