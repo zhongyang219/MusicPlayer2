@@ -187,8 +187,15 @@ bool UiElement::Button::MouseMove(CPoint point)
     if (m_btn.enable)
     {
         m_btn.hover = (m_btn.rect.PtInRect(point));
-        if (!m_btn.hover)
+        if (m_btn.hover)
+        {
+            ui->UpdateMouseToolTipPosition(key, m_btn.rect);
+        }
+        else
+        {
+            ui->UpdateMouseToolTipPosition(key, CRect());
             m_btn.pressed = false;
+        }
         return true;
     }
     return false;

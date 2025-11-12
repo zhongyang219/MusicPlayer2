@@ -53,9 +53,12 @@ bool UiElement::ProgressBar::MouseMove(CPoint point)
             ui->UpdateMouseToolTipPosition(UiElement::TooltipIndex::PROGRESS_BAR, btn.rect);
             last_sec = song_pos_time.sec;
         }
-        return true;
     }
-    return false;
+    else
+    {
+        ui->UpdateMouseToolTipPosition(UiElement::TooltipIndex::PROGRESS_BAR, CRect());
+    }
+    return true;
 }
 
 bool UiElement::ProgressBar::SetCursor()

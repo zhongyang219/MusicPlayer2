@@ -22,15 +22,18 @@ void UiElement::ClassicalControlBar::Draw()
 
 bool UiElement::ClassicalControlBar::LButtonUp(CPoint point)
 {
+    progress_bar.SetUi(ui);
     return progress_bar.LButtonUp(point);
 }
 
 bool UiElement::ClassicalControlBar::MouseMove(CPoint point)
 {
+    progress_bar.SetUi(ui);
     return progress_bar.MouseMove(point);
 }
 
 bool UiElement::ClassicalControlBar::SetCursor()
 {
+    progress_bar.SetUi(ui);
     return progress_bar.SetCursor();
 }

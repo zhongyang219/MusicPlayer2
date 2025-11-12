@@ -443,12 +443,14 @@ void CUserUi::UiSizeChanged()
 bool CUserUi::SetCursor()
 {
     bool cursor_changed = false;
-    IterateAllElements([&](UiElement::Element* element) ->bool {
+    auto root_element = GetMouseEventResponseElement();
+    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
         if (element->SetCursor())
         {
             cursor_changed = true;
             return true;
         }
+        return false;
     }, true);
 
     if (cursor_changed)

@@ -57,7 +57,7 @@ bool UiElement::NavigationBar::MouseMove(CPoint point)
             last_hover_index = hover_index;
             std::wstring str_tip = labels[hover_index];
             ui->UpdateMouseToolTip(TooltipIndex::TAB_ELEMENT, str_tip.c_str());
-            ui->UpdateMouseToolTipPosition(TooltipIndex::TAB_ELEMENT, item_rects[hover_index]);
+            ui->UpdateMouseToolTipPosition(TooltipIndex::TAB_ELEMENT, item_rects[hover_index] & rect);
         }
     }
     return true;
