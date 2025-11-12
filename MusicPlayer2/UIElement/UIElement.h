@@ -72,9 +72,9 @@ namespace UiElement
         virtual bool DoubleClick(CPoint point) { return false; }
         virtual bool MouseLeave() { return false; }
 
+        virtual void CalculateRect();           //计算此元素在界面中的矩形区域
     protected:
         CRect ParentRect() const;
-        virtual void CalculateRect();           //计算此元素在界面中的矩形区域
         static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func, bool visible_only = false);
 
         //查找一个关联的节点

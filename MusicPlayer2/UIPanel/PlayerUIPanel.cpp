@@ -62,13 +62,29 @@ void CPlayerUIPanel::Draw()
 		m_ui->GetDrawer().FillAlphaRect(draw_rect, m_ui->GetUIColors().color_back, alpha);
 
 		CRect rect_panel = GetPanelRect();
-		rect_panel &= draw_rect;
+		CRect back_rect;
+		//如果未通过代码获取面板的矩形区域，则根据ui计算面板区域
+		if (rect_panel.IsRectEmpty())
+		{
+			rect_panel = draw_rect;
+			if (!m_root_element->childLst.empty())
+			{
+				m_root_element->childLst[0]->CalculateRect();
+				back_rect = m_root_element->childLst[0]->GetRect();
+			}
+		}
+		else
+		{
+			rect_panel &= draw_rect;
+			m_root_element->SetRect(rect_panel);
+			back_rect = rect_panel;
+		}
+
 		//绘制面板背景
 		alpha = 255 - (255 - alpha) / 2;
-		m_ui->GetDrawer().FillAlphaRect(rect_panel, m_ui->GetUIColors().color_back, alpha);
+		m_ui->GetDrawer().FillAlphaRect(back_rect, m_ui->GetUIColors().color_back, alpha);
 
 		//绘制面板
-		m_root_element->SetRect(rect_panel);
 		m_root_element->Draw();
 	}
 }

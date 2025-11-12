@@ -20,7 +20,8 @@ public:
 	//绘制面板
 	virtual void Draw();
 
-	virtual CRect GetPanelRect() = 0;
+	//获取面板的矩形区域，如果为空，则默认为整个界面区域
+	virtual CRect GetPanelRect() { return CRect(); }
 
 	void SetVisible(bool visible);
 	bool IsVisible() const;
