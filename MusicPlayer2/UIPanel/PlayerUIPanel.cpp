@@ -89,6 +89,18 @@ std::shared_ptr<UiElement::Element> CPlayerUIPanel::GetRootElement() const
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 根据面板类型创建面板对象
+std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlayerUIBase* ui)
+{
+	switch (panel_type)
+	{
+	case ePanelType::PlayQueue:
+		return std::make_unique<CPlayQueuePanel>(ui);
+	}
+	return nullptr;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void CPanelManager::DrawPanel()
 {
@@ -110,7 +122,7 @@ CPlayerUIPanel* CPanelManager::GetPanel(ePanelType panel_type)
 	}
 	else
 	{
-		auto result = m_panels.emplace(panel_type, std::make_unique<CPlayQueuePanel>(m_ui));
+		auto result = m_panels.emplace(panel_type, CreatePanel(panel_type, m_ui));
 		return result.first->second.get();
 	}
 }
