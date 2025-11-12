@@ -13,7 +13,5 @@ bool UiElement::Volume::MouseMove(CPoint point)
     bool hover = (rect.PtInRect(point));
     if (hover)
         ui->UpdateMouseToolTipPosition(CPlayerUIBase::BTN_VOLUME, rect);
-    else
-        ui->UpdateMouseToolTipPosition(CPlayerUIBase::BTN_VOLUME, CRect());
     return true;
 }

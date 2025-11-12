@@ -122,6 +122,7 @@
               <button key="equalizer" height="28" margin="2" show_text="true"/>
               <button key="darkLightMode" height="28" margin="2" show_text="true"/>
               <button key="skin" height="28" margin="2" show_text="true"/>
+              <button key="settings" height="28" width="28" margin="2"/>
               <placeHolder/>
             </horizontalLayout>
             <!--<horizontalLayout height="28">

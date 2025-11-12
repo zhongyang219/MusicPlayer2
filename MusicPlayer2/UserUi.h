@@ -92,6 +92,9 @@ protected:
 
     std::shared_ptr<UiElement::Element> GetMouseEventResponseElement();
 
+    void ShowHidePanel(ePanelType panel_type);
+    void HideButtonTooltip();
+
 protected:
     virtual void SwitchStackElement() override;
     virtual void SwitchStackElement(std::string id, int index) override;

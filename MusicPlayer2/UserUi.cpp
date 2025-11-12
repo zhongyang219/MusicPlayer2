@@ -300,7 +300,7 @@ bool CUserUi::MouseMove(CPoint point)
                 element->MouseMove(point);
             }
             return false;
-        });
+        }, true);
     }
 
     //鼠标离开绘图区域后发送MouseLeave消息
@@ -463,7 +463,7 @@ bool CUserUi::ButtonClicked(BtnKey btn_type)
 {
     if (btn_type == BTN_SHOW_PLAY_QUEUE)
     {
-        m_panel_mgr.ShowHidePanel(ePanelType::PlayQueue);
+        ShowHidePanel(ePanelType::PlayQueue);
         return true;
     }
     return CPlayerUIBase::ButtonClicked(btn_type);
@@ -955,4 +955,28 @@ std::shared_ptr<UiElement::Element> CUserUi::GetMouseEventResponseElement()
     if (panel != nullptr)
         return panel->GetRootElement();
     return GetCurrentTypeUi();
+}
+
+void CUserUi::ShowHidePanel(ePanelType panel_type)
+{
+    m_panel_mgr.ShowHidePanel(panel_type);
+    //显示面板后隐藏界面中按钮的鼠标提示
+    if (m_panel_mgr.GetVisiblePanel() != nullptr)
+        HideButtonTooltip();
+}
+
+void CUserUi::HideButtonTooltip()
+{
+    IterateAllElements([&](UiElement::Element* element) ->bool {
+        UiElement::Button* button = dynamic_cast<UiElement::Button*>(element);
+        if (button != nullptr)
+            UpdateMouseToolTipPosition(button->key, CRect());
+        UiElement::ProgressBar* progress_bar = dynamic_cast<UiElement::ProgressBar*>(element);
+        if (progress_bar != nullptr)
+            UpdateMouseToolTipPosition(UiElement::TooltipIndex::PROGRESS_BAR, CRect());
+        UiElement::Volume* volume = dynamic_cast<UiElement::Volume*>(element);
+        if (volume !=nullptr)
+            UpdateMouseToolTipPosition(CPlayerUIBase::BTN_VOLUME, CRect());
+        return false;
+    }, true);
 }
