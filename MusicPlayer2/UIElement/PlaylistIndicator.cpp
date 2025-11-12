@@ -14,30 +14,38 @@ void UiElement::PlaylistIndicator::Draw()
 
 bool UiElement::PlaylistIndicator::LButtonUp(CPoint point)
 {
-    if (btn_drop_down.rect.PtInRect(point))
+    if (rect.PtInRect(point))
     {
-        btn_drop_down.hover = false;
-        CRect btn_rect = rect_name;
-        AfxGetMainWnd()->ClientToScreen(&btn_rect);
-        theApp.m_menu_mgr.GetMenu(MenuMgr::RecentFolderPlaylistMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
+        if (btn_drop_down.rect.PtInRect(point))
+        {
+            btn_drop_down.hover = false;
+            CRect btn_rect = rect_name;
+            AfxGetMainWnd()->ClientToScreen(&btn_rect);
+            theApp.m_menu_mgr.GetMenu(MenuMgr::RecentFolderPlaylistMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
+        }
+        else if (btn_menu.rect.PtInRect(point))
+        {
+            btn_menu.hover = false;
+            CRect btn_rect = btn_menu.rect;
+            AfxGetMainWnd()->ClientToScreen(&btn_rect);
+            theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
+        }
+        btn_drop_down.pressed = false;
+        btn_menu.pressed = false;
+        return true;
     }
-    else if (btn_menu.rect.PtInRect(point))
-    {
-        btn_menu.hover = false;
-        CRect btn_rect = btn_menu.rect;
-        AfxGetMainWnd()->ClientToScreen(&btn_rect);
-        theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
-    }
-    btn_drop_down.pressed = false;
-    btn_menu.pressed = false;
-    return true;
+    return false;
 }
 
 bool UiElement::PlaylistIndicator::LButtonDown(CPoint point)
 {
-    btn_drop_down.pressed = (btn_drop_down.rect.PtInRect(point) != FALSE);
-    btn_menu.pressed = (btn_menu.rect.PtInRect(point) != FALSE);
-    return true;
+    if (rect.PtInRect(point))
+    {
+        btn_drop_down.pressed = (btn_drop_down.rect.PtInRect(point) != FALSE);
+        btn_menu.pressed = (btn_menu.rect.PtInRect(point) != FALSE);
+        return true;
+    }
+    return false;
 }
 
 bool UiElement::PlaylistIndicator::MouseMove(CPoint point)

@@ -21,21 +21,25 @@ void UiElement::ListElement::Draw()
 
 bool UiElement::ListElement::LButtonUp(CPoint point)
 {
-    mouse_pressed = false;
-    scrollbar_handle_pressed = false;
-    int row{ GetListIndexByPoint(point) };        //点击的行
-    //设置按钮的按下状态
-    for (int i{}; i < GetHoverButtonCount(row); i++)
+    if (rect.PtInRect(point))
     {
-        auto& btn{ GetHoverButtonState(i) };
-        if (btn.pressed)
+        mouse_pressed = false;
+        scrollbar_handle_pressed = false;
+        int row{ GetListIndexByPoint(point) };        //点击的行
+        //设置按钮的按下状态
+        for (int i{}; i < GetHoverButtonCount(row); i++)
         {
-            if (btn.rect.PtInRect(point))
-                OnHoverButtonClicked(i, row);
-            btn.pressed = false;
+            auto& btn{ GetHoverButtonState(i) };
+            if (btn.pressed)
+            {
+                if (btn.rect.PtInRect(point))
+                    OnHoverButtonClicked(i, row);
+                btn.pressed = false;
+            }
         }
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool UiElement::ListElement::LButtonDown(CPoint point)
@@ -113,14 +117,15 @@ bool UiElement::ListElement::LButtonDown(CPoint point)
         }
         mouse_pressed_offset = playlist_offset;
         mouse_pressed_pos = point;
+        return true;
     }
     //点击了控件外
     else
     {
         mouse_pressed = false;
         //item_selected = -1;
+        return false;
     }
-    return true;
 }
 
 bool UiElement::ListElement::MouseMove(CPoint point)
@@ -251,12 +256,13 @@ bool UiElement::ListElement::RButtonDown(CPoint point)
             }
             selected_item_scroll_info.Reset();
         }
+        return true;
     }
     else
     {
         items_selected.clear();
+        return false;
     }
-    return true;
 }
 
 bool UiElement::ListElement::MouseWheel(int delta, CPoint point)

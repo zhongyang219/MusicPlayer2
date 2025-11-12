@@ -11,26 +11,30 @@ void UiElement::NavigationBar::Draw()
 
 bool UiElement::NavigationBar::LButtonUp(CPoint point)
 {
-    FindStackElement();
-    if (stack_element != nullptr)
+    if (rect.PtInRect(point))
     {
-        //查找点击的标签
-        int _selected_index = -1;
-        for (size_t i{}; i < item_rects.size(); i++)
+        FindStackElement();
+        if (stack_element != nullptr)
         {
-            if (item_rects[i].PtInRect(point))
+            //查找点击的标签
+            int _selected_index = -1;
+            for (size_t i{}; i < item_rects.size(); i++)
             {
-                _selected_index = i;
-                break;
+                if (item_rects[i].PtInRect(point))
+                {
+                    _selected_index = i;
+                    break;
+                }
+            }
+            if (_selected_index >= 0)
+            {
+                selected_index = _selected_index;
+                stack_element->SetCurrentElement(selected_index);
             }
         }
-        if (_selected_index >= 0)
-        {
-            selected_index = _selected_index;
-            stack_element->SetCurrentElement(selected_index);
-        }
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool UiElement::NavigationBar::MouseMove(CPoint point)

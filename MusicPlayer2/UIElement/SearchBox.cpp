@@ -70,27 +70,35 @@ bool UiElement::SearchBox::MouseLeave()
 bool UiElement::SearchBox::LButtonUp(CPoint point)
 {
     clear_btn.pressed = false;
-    //点击清除按钮时清除搜索结果
-    if (icon_rect.PtInRect(point))
+    if (rect.PtInRect(point))
     {
-        search_box_ctrl->Clear();
+        //点击清除按钮时清除搜索结果
+        if (icon_rect.PtInRect(point))
+        {
+            search_box_ctrl->Clear();
+        }
+        //点击搜索框区域时显示搜索框控件
+        else if (search_box_ctrl != nullptr && rect.PtInRect(point))
+        {
+            bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
+            search_box_ctrl->Show(this, big_font);
+        }
+        return true;
     }
-    //点击搜索框区域时显示搜索框控件
-    else if (search_box_ctrl != nullptr && rect.PtInRect(point))
-    {
-        bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
-        search_box_ctrl->Show(this, big_font);
-    }
-    return true;
+    return false;
 }
 
 bool UiElement::SearchBox::LButtonDown(CPoint point)
 {
-    if (icon_rect.PtInRect(point))
+    if (rect.PtInRect(point))
     {
-        clear_btn.pressed = true;
+        if (icon_rect.PtInRect(point))
+        {
+            clear_btn.pressed = true;
+        }
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool UiElement::SearchBox::SetCursor()
