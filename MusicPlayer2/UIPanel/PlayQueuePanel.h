@@ -6,6 +6,6 @@ public:
 	CPlayQueuePanel(CPlayerUIBase* ui);
 
 private:
-	virtual CRect GetPanelRect() override;
+	virtual CRect CalculatePanelRect() override;
 };
 

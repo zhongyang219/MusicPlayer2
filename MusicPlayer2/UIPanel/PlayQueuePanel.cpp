@@ -5,8 +5,7 @@ CPlayQueuePanel::CPlayQueuePanel(CPlayerUIBase* ui)
 	: CPlayerUIPanel(ui, ePanelType::PlayQueue)
 {
 }
-
-CRect CPlayQueuePanel::GetPanelRect()
+CRect CPlayQueuePanel::CalculatePanelRect()
 {
 	CRect draw_rect = m_ui->GetDrawRect();
 	int max_width = draw_rect.Width() - m_ui->DPI(48);

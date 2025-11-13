@@ -20,18 +20,22 @@ public:
 	//绘制面板
 	virtual void Draw();
 
-	//获取面板的矩形区域，如果为空，则默认为整个界面区域
-	virtual CRect GetPanelRect() { return CRect(); }
-
 	void SetVisible(bool visible);
 	bool IsVisible() const;
 
+	CRect GetPanelRect() { return m_panel_rect; }
+
 	std::shared_ptr<UiElement::Element> GetRootElement() const;
+
+protected:
+	//计算面板的矩形区域，如果为空，则默认为整个界面区域
+	virtual CRect CalculatePanelRect() { return CRect(); }
 
 protected:
 	std::shared_ptr<UiElement::Element> m_root_element;
 	CPlayerUIBase* m_ui;
 	bool m_visible{ false };
+	CRect m_panel_rect;
 };
 
 
