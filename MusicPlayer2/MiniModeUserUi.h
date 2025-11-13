@@ -24,6 +24,7 @@ private:
     virtual bool PointInControlArea(CPoint point) const override;
 
     virtual bool ButtonClicked(BtnKey btn_type) override;
+    virtual bool ButtonRClicked(BtnKey btn_type) override;
 
     bool IsShowUiPlaylist() const;
 

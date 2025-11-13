@@ -182,6 +182,13 @@ bool CMiniModeUserUi::ButtonClicked(BtnKey btn_type)
     return CPlayerUIBase::ButtonClicked(btn_type);
 }
 
+bool CMiniModeUserUi::ButtonRClicked(BtnKey btn_type)
+{
+    if (btn_type == BTN_SHOW_PLAYLIST)
+        return false;
+    return CPlayerUIBase::ButtonRClicked(btn_type);
+}
+
 bool CMiniModeUserUi::IsShowUiPlaylist() const
 {
     CMiniModeDlg* pMinimodeDlg = dynamic_cast<CMiniModeDlg*>(m_pMainWnd);
