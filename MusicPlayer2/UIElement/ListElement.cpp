@@ -21,10 +21,10 @@ void UiElement::ListElement::Draw()
 
 bool UiElement::ListElement::LButtonUp(CPoint point)
 {
+    mouse_pressed = false;
+    scrollbar_handle_pressed = false;
     if (rect.PtInRect(point))
     {
-        mouse_pressed = false;
-        scrollbar_handle_pressed = false;
         int row{ GetListIndexByPoint(point) };        //点击的行
         //设置按钮的按下状态
         for (int i{}; i < GetHoverButtonCount(row); i++)
