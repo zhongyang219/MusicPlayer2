@@ -246,6 +246,7 @@ bool CUserUi::LButtonUp(CPoint point)
         auto* panel = m_panel_mgr.GetVisiblePanel();
         if (panel != nullptr && !panel->GetPanelRect().PtInRect(point))
         {
+            OnPanelHide();
             m_panel_mgr.HideAllPanel();
             return true;
         }
@@ -468,6 +469,7 @@ bool CUserUi::ButtonClicked(BtnKey btn_type)
     }
     else if (btn_type == BTN_CLOSE_PANEL)
     {
+        OnPanelHide();
         m_panel_mgr.HideAllPanel();
         return true;
     }
@@ -998,4 +1000,17 @@ void CUserUi::OnPanelShow()
         element->MouseLeave();
         return false;
     }, true);
+}
+
+void CUserUi::OnPanelHide()
+{
+    auto* panel = m_panel_mgr.GetVisiblePanel();
+    if (panel != nullptr)
+    {
+        panel->GetRootElement()->IterateAllElements([&](UiElement::Element* element) ->bool {
+            //调用MouseLeave，以清除鼠标指向状态
+            element->MouseLeave();
+            return false;
+        });
+    }
 }

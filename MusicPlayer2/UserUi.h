@@ -96,6 +96,7 @@ protected:
     std::shared_ptr<UiElement::Element> GetMouseEventResponseElement();
 
     void OnPanelShow(); //显示了面板后调用
+    void OnPanelHide(); //关闭面板前调用
 
 protected:
     virtual void SwitchStackElement() override;
