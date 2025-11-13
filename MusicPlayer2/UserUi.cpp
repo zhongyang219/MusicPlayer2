@@ -970,7 +970,7 @@ void CUserUi::ShowHidePanel(ePanelType panel_type)
     m_panel_mgr.ShowHidePanel(panel_type);
     //显示面板后隐藏界面中按钮的鼠标提示
     if (m_panel_mgr.GetVisiblePanel() != nullptr)
-        HideButtonTooltip();
+        OnPanelShow();
 }
 
 void CUserUi::ShowHidePanel(const std::wstring panel_file_name)
@@ -978,12 +978,13 @@ void CUserUi::ShowHidePanel(const std::wstring panel_file_name)
     m_panel_mgr.ShowHidePanel(panel_file_name);
     //显示面板后隐藏界面中按钮的鼠标提示
     if (m_panel_mgr.GetVisiblePanel() != nullptr)
-        HideButtonTooltip();
+        OnPanelShow();
 }
 
-void CUserUi::HideButtonTooltip()
+void CUserUi::OnPanelShow()
 {
     IterateAllElements([&](UiElement::Element* element) ->bool {
+        //隐藏按钮、进度条、音量的鼠标提示
         UiElement::Button* button = dynamic_cast<UiElement::Button*>(element);
         if (button != nullptr)
             UpdateMouseToolTipPosition(button->key, CRect());
@@ -993,6 +994,8 @@ void CUserUi::HideButtonTooltip()
         UiElement::Volume* volume = dynamic_cast<UiElement::Volume*>(element);
         if (volume !=nullptr)
             UpdateMouseToolTipPosition(CPlayerUIBase::BTN_VOLUME, CRect());
+        //调用MouseLeave，以清除鼠标指向状态
+        element->MouseLeave();
         return false;
     }, true);
 }
