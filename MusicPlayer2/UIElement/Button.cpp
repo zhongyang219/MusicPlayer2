@@ -126,6 +126,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_SHOW_PLAY_QUEUE;
     else if (key_type == "closePanel")
         key = CPlayerUIBase::BTN_CLOSE_PANEL;
+    else if (key_type == "showPanel")
+        key = CPlayerUIBase::BTN_SHOW_PANEL;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }
@@ -284,8 +286,8 @@ bool UiElement::Button::LButtonUp(CPoint point)
 
     if (pressed && m_btn.rect.PtInRect(point) && m_btn.enable)
     {
-        //打开面板
-        if (!panel_file_name.empty())
+        //显示面板
+        if (key == CPlayerUIBase::BTN_SHOW_PANEL && !panel_file_name.empty())
         {
             CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
             if (user_ui != nullptr)
@@ -317,10 +319,19 @@ bool UiElement::Button::MouseMove(CPoint point)
     if (m_btn.enable)
     {
         m_btn.hover = (m_btn.rect.PtInRect(point));
+        //鼠标进入按钮区域时
+        if (!last_hover && m_btn.hover)
+        {
+            //指定了按钮文本且不显示文本时，显示鼠标提示
+            if (!text.empty() && !show_text)
+                ui->UpdateMouseToolTip(key, text.c_str());
+        }
+
         if (m_btn.hover)
         {
             ui->UpdateMouseToolTipPosition(key, m_btn.rect);
         }
+        last_hover = m_btn.hover;
         return true;
     }
     return false;

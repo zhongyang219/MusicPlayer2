@@ -2,6 +2,7 @@
   <ui width="320" margin-right="0">
     <verticalLayout margin="8">
       <text type="userDefine" text="%(TXT_FOLDER_EXPLORE)" height="56" font_size="12"/>
+      <searchBox height="26" margin-bottom="4"/>
       <medialibFolderExplore item_height="32"/>
       <horizontalLayout height="32" margin-top="8">
         <placeHolder/>

@@ -886,6 +886,8 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Playlist;
     case BTN_CLOSE_PANEL:
         return IconMgr::IconType::IT_Close;
+    case BTN_SHOW_PANEL:
+        return IconMgr::IconType::IT_Playlist;
     default:
         ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;
@@ -3695,4 +3697,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::SEARCHBOX_CLEAR_BTN), theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str());
     //显示播放队列
     AddMouseToolTip(BTN_SHOW_PLAY_QUEUE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_QUEUE").c_str());
+    //显示面板
+    AddMouseToolTip(BTN_SHOW_PANEL, L"");
 }

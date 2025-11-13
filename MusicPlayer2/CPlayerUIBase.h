@@ -213,6 +213,7 @@ public:
         BTN_KARAOKE,            //歌词卡拉OK模式显示
         BTN_SHOW_PLAY_QUEUE,    //显示正确播放队列
         BTN_CLOSE_PANEL,        //关闭面板
+        BTN_SHOW_PANEL,         //显示面板
 
         //菜单栏
         MENU_FILE,

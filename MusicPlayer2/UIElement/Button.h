@@ -32,6 +32,7 @@ namespace UiElement
 
     private:
         CPlayerUIBase::UIButton m_btn;
+        bool last_hover = false;
     };
 }
 

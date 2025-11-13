@@ -123,7 +123,8 @@
               <button key="darkLightMode" height="28" margin="2" show_text="true"/>
               <button key="skin" height="28" margin="2" show_text="true"/>
               <button key="settings" height="28" width="28" margin="2"/>
-              <button key="openFolder" icon="folderExplore" text="%(TXT_FOLDER_EXPLORE)" height="28" width="28" margin="2" panel_file_name="folder_explore_panel.xml"/>
+              <button key="showPanel" icon="folderExplore" text="%(TXT_FOLDER_EXPLORE)" height="28" width="28" margin="2" panel_file_name="folder_explore_panel.xml"/>
+              <button key="showPanel" icon="folder" text="%(TXT_FOLDER)" height="28" width="28" margin="2" panel_file_name="folder_explore_panel.xml"/>
               <placeHolder/>
             </horizontalLayout>
             <!--<horizontalLayout height="28">
