@@ -36,9 +36,12 @@ void UiElement::StackElement::Draw()
         {
             childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
                 if (element != nullptr)
+                {
                     element->ClearRect();
+                    element->MouseLeave();
+                }
                 return false;
-                });
+            });
         }
     }
 

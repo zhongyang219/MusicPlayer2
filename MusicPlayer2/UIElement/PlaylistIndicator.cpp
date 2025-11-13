@@ -14,6 +14,7 @@ void UiElement::PlaylistIndicator::Draw()
 
 bool UiElement::PlaylistIndicator::LButtonUp(CPoint point)
 {
+    bool rtn = false;
     if (rect.PtInRect(point))
     {
         if (btn_drop_down.rect.PtInRect(point))
@@ -30,11 +31,11 @@ bool UiElement::PlaylistIndicator::LButtonUp(CPoint point)
             AfxGetMainWnd()->ClientToScreen(&btn_rect);
             theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistToolBarMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
         }
-        btn_drop_down.pressed = false;
-        btn_menu.pressed = false;
-        return true;
+        rtn = true;
     }
-    return false;
+    btn_drop_down.pressed = false;
+    btn_menu.pressed = false;
+    return rtn;
 }
 
 bool UiElement::PlaylistIndicator::LButtonDown(CPoint point)

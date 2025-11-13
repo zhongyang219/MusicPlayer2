@@ -20,9 +20,9 @@ void UiElement::ElementSwitcher::Draw()
 
 bool UiElement::ElementSwitcher::LButtonUp(CPoint point)
 {
+    btn.pressed = false;
     if (rect.PtInRect(point))
     {
-        btn.pressed = false;
         if (rect.PtInRect(point))
         {
             ui->SwitchStackElement(stack_element_id, stack_element_index);

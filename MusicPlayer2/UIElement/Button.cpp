@@ -191,10 +191,6 @@ bool UiElement::Button::MouseMove(CPoint point)
         {
             ui->UpdateMouseToolTipPosition(key, m_btn.rect);
         }
-        else
-        {
-            m_btn.pressed = false;
-        }
         return true;
     }
     return false;
