@@ -12,6 +12,15 @@ CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, ePanelType panel_type)
 		LoadUIData(xml);
 }
 
+CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, const std::wstring file_name)
+	: m_ui(ui)
+{
+	std::wstring file_path = theApp.m_local_dir + L"skins\\panels\\" + file_name;
+	std::string xml;
+	if (CCommon::GetFileContent(file_path.c_str(), xml))
+		LoadUIData(xml);
+}
+
 UINT CPlayerUIPanel::GetPanelResId(ePanelType panel_type)
 {
 	switch (panel_type)
@@ -134,8 +143,9 @@ std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlayerUIBase
 
 void CPanelManager::DrawPanel()
 {
-	for (const auto& panel : m_panels)
-		panel.second->Draw();
+	CPlayerUIPanel* cur_panel = GetVisiblePanel();
+	if (cur_panel != nullptr)
+		cur_panel->Draw();
 }
 
 CPanelManager::CPanelManager(CPlayerUIBase* ui)
@@ -157,9 +167,28 @@ CPlayerUIPanel* CPanelManager::GetPanel(ePanelType panel_type)
 	}
 }
 
+CPlayerUIPanel* CPanelManager::GetPanel(const std::wstring& file_name)
+{
+	auto iter = m_panels_in_files.find(file_name);
+	if (iter != m_panels_in_files.end())
+	{
+		return iter->second.get();
+	}
+	else
+	{
+		auto result = m_panels_in_files.emplace(file_name, std::make_unique<CPlayerUIPanel>(m_ui, file_name));
+		return result.first->second.get();
+	}
+}
+
 CPlayerUIPanel* CPanelManager::GetVisiblePanel()
 {
 	for (const auto& panel : m_panels)
+	{
+		if (panel.second->IsVisible())
+			return panel.second.get();
+	}
+	for (const auto& panel : m_panels_in_files)
 	{
 		if (panel.second->IsVisible())
 			return panel.second.get();
@@ -170,21 +199,29 @@ CPlayerUIPanel* CPanelManager::GetVisiblePanel()
 
 void CPanelManager::ShowHidePanel(ePanelType panel_type)
 {
-	//先隐藏其他面板
-	for (const auto& panel : m_panels)
-	{
-		if (panel.first != panel_type)
-			panel.second->SetVisible(false);
-	}
-
 	CPlayerUIPanel* panel = GetPanel(panel_type);
 	bool visible = panel->IsVisible();
+	//先隐藏其他面板
+	HideAllPanel();
+	panel->SetVisible(!visible);
+}
+
+void CPanelManager::ShowHidePanel(const std::wstring& file_name)
+{
+	CPlayerUIPanel* panel = GetPanel(file_name);
+	bool visible = panel->IsVisible();
+	//先隐藏其他面板
+	HideAllPanel();
 	panel->SetVisible(!visible);
 }
 
 void CPanelManager::HideAllPanel()
 {
 	for (const auto& panel : m_panels)
+	{
+		panel.second->SetVisible(false);
+	}
+	for (const auto& panel : m_panels_in_files)
 	{
 		panel.second->SetVisible(false);
 	}

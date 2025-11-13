@@ -212,6 +212,7 @@ public:
         BTN_MEDIALIB_PLAYLIST_SORT, //媒体库“播放列表”排序方式
         BTN_KARAOKE,            //歌词卡拉OK模式显示
         BTN_SHOW_PLAY_QUEUE,    //显示正确播放队列
+        BTN_CLOSE_PANEL,        //关闭面板
 
         //菜单栏
         MENU_FILE,

@@ -884,6 +884,8 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Karaoke;
     case BTN_SHOW_PLAY_QUEUE:
         return IconMgr::IconType::IT_Playlist;
+    case BTN_CLOSE_PANEL:
+        return IconMgr::IconType::IT_Close;
     default:
         ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;
@@ -928,6 +930,7 @@ std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type) const
     case BTN_NEW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_NEW_PLAYLIST");
     case BTN_PLAY_MY_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
     case BTN_MEDIALIB_FOLDER_SORT: case BTN_MEDIALIB_PLAYLIST_SORT: return theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_SORT");
+    case BTN_CLOSE_PANEL: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE");
     }
 
     return std::wstring();

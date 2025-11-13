@@ -84,6 +84,9 @@ public:
      */
     static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node, CPlayerUIBase* ui);
 
+    void ShowHidePanel(ePanelType panel_type);
+    void ShowHidePanel(const std::wstring panel_file_name);
+
 protected:
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;
 
@@ -92,7 +95,6 @@ protected:
 
     std::shared_ptr<UiElement::Element> GetMouseEventResponseElement();
 
-    void ShowHidePanel(ePanelType panel_type);
     void HideButtonTooltip();
 
 protected:

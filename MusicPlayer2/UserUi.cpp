@@ -466,6 +466,11 @@ bool CUserUi::ButtonClicked(BtnKey btn_type)
         ShowHidePanel(ePanelType::PlayQueue);
         return true;
     }
+    else if (btn_type == BTN_CLOSE_PANEL)
+    {
+        m_panel_mgr.HideAllPanel();
+        return true;
+    }
     return CPlayerUIBase::ButtonClicked(btn_type);
 }
 
@@ -569,6 +574,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
                 button->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
                 ReplaceUiStringRes(button->text);
+                button->panel_file_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_file_name"), CodeType::UTF8_NO_BOM);
             }
         }
         else if (item_name == "rectangle")
@@ -960,6 +966,14 @@ std::shared_ptr<UiElement::Element> CUserUi::GetMouseEventResponseElement()
 void CUserUi::ShowHidePanel(ePanelType panel_type)
 {
     m_panel_mgr.ShowHidePanel(panel_type);
+    //显示面板后隐藏界面中按钮的鼠标提示
+    if (m_panel_mgr.GetVisiblePanel() != nullptr)
+        HideButtonTooltip();
+}
+
+void CUserUi::ShowHidePanel(const std::wstring panel_file_name)
+{
+    m_panel_mgr.ShowHidePanel(panel_file_name);
     //显示面板后隐藏界面中按钮的鼠标提示
     if (m_panel_mgr.GetVisiblePanel() != nullptr)
         HideButtonTooltip();

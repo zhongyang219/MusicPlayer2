@@ -491,6 +491,11 @@
                 <xs:documentation>显示正确播放曲目队列。</xs:documentation>
               </xs:annotation>
             </xs:enumeration>
+            <xs:enumeration value="closePanel">
+              <xs:annotation>
+                <xs:documentation>关闭面板。</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
@@ -512,6 +517,11 @@
       <xs:attribute name="text" type="xs:string">
         <xs:annotation>
           <xs:documentation>按钮的文本。如果不指定则显示文本由按钮类型决定</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="panel_file_name" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>面板xml文件的文件名，如果提供了此属性，则点击按钮后将打开一个面板。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>

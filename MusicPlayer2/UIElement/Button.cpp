@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Button.h"
 #include "Player.h"
+#include "UserUI.h"
 
 void UiElement::Button::Draw()
 {
@@ -123,6 +124,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_KARAOKE;
     else if (key_type == "showPlayQueue")
         key = CPlayerUIBase::BTN_SHOW_PLAY_QUEUE;
+    else if (key_type == "closePanel")
+        key = CPlayerUIBase::BTN_CLOSE_PANEL;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }
@@ -166,7 +169,19 @@ bool UiElement::Button::LButtonUp(CPoint point)
 
     if (pressed && m_btn.rect.PtInRect(point) && m_btn.enable)
     {
-        ui->ButtonClicked(key);
+        //´ò¿ªÃæ°å
+        if (!panel_file_name.empty())
+        {
+            CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
+            if (user_ui != nullptr)
+            {
+                user_ui->ShowHidePanel(panel_file_name);
+            }
+        }
+        else
+        {
+            ui->ButtonClicked(key);
+        }
         return true;
     }
     return false;
