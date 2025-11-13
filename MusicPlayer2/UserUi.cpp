@@ -574,6 +574,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
                 button->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
                 ReplaceUiStringRes(button->text);
+                std::string str_icon = CTinyXml2Helper::ElementAttribute(xml_node, "icon");
+                button->IconTypeFromString(str_icon);
                 button->panel_file_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_file_name"), CodeType::UTF8_NO_BOM);
             }
         }

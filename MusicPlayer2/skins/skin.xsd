@@ -519,6 +519,572 @@
           <xs:documentation>按钮的文本。如果不指定则显示文本由按钮类型决定</xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="icon">
+        <xs:annotation>
+          <xs:documentation>
+            按钮图标，如果未指定则由按钮的类型决定。
+          </xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="app">
+              <xs:annotation>
+                <xs:documentation>应用图标</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="appMonochrome">
+              <xs:annotation>
+                <xs:documentation>应用图标(单色)</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="stop">
+              <xs:annotation>
+                <xs:documentation>停止</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="play">
+              <xs:annotation>
+                <xs:documentation>播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="pause">
+              <xs:annotation>
+                <xs:documentation>暂停</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playPause">
+              <xs:annotation>
+                <xs:documentation>播放/暂停</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="previous">
+              <xs:annotation>
+                <xs:documentation>上一曲</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="next">
+              <xs:annotation>
+                <xs:documentation>下一曲</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="favoriteOn">
+              <xs:annotation>
+                <xs:documentation>添加到我喜欢的音乐（空心♥）</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="favoriteOff">
+              <xs:annotation>
+                <xs:documentation>从我喜欢的音乐移除（实心♥）</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="mediaLib">
+              <xs:annotation>
+                <xs:documentation>媒体库</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playlist">
+              <xs:annotation>
+                <xs:documentation>播放列表</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="menu">
+              <xs:annotation>
+                <xs:documentation>菜单</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="fullScreenOn">
+              <xs:annotation>
+                <xs:documentation>进入全屏</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="fullScreenOff">
+              <xs:annotation>
+                <xs:documentation>退出全屏</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="minimize">
+              <xs:annotation>
+                <xs:documentation>最小化</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="maxmizeOn">
+              <xs:annotation>
+                <xs:documentation>进入最大化</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="maxmizeOff">
+              <xs:annotation>
+                <xs:documentation>退出最大化</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="close">
+              <xs:annotation>
+                <xs:documentation>关闭</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playOrder">
+              <xs:annotation>
+                <xs:documentation>顺序播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="loopPlaylist">
+              <xs:annotation>
+                <xs:documentation>列表循环</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="loopTrack">
+              <xs:annotation>
+                <xs:documentation>单曲循环</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playShuffle">
+              <xs:annotation>
+                <xs:documentation>无序播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playRandom">
+              <xs:annotation>
+                <xs:documentation>随机播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playTrack">
+              <xs:annotation>
+                <xs:documentation>单曲播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="setting">
+              <xs:annotation>
+                <xs:documentation>设置</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="equalizer">
+              <xs:annotation>
+                <xs:documentation>均衡器</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="skin">
+              <xs:annotation>
+                <xs:documentation>切换界面（皮肤）</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="miniOn">
+              <xs:annotation>
+                <xs:documentation>进入迷你模式</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="miniOff">
+              <xs:annotation>
+                <xs:documentation>退出迷你模式</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="info">
+              <xs:annotation>
+                <xs:documentation>曲目信息</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="find">
+              <xs:annotation>
+                <xs:documentation>查找歌曲</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="darkModeOn">
+              <xs:annotation>
+                <xs:documentation>进入深色模式（月亮）</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="darkModeOff">
+              <xs:annotation>
+                <xs:documentation>退出深色模式（太阳）</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="volume0">
+              <xs:annotation>
+                <xs:documentation>音量: 静音</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="volume1">
+              <xs:annotation>
+                <xs:documentation>音量: )</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="volume2">
+              <xs:annotation>
+                <xs:documentation>音量: ))</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="volume3">
+              <xs:annotation>
+                <xs:documentation>音量: )))</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="switchDisplay">
+              <xs:annotation>
+                <xs:documentation>切换显示（xml界面堆栈元素）</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="folder">
+              <xs:annotation>
+                <xs:documentation>文件夹</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="music">
+              <xs:annotation>
+                <xs:documentation>音符/打开文件</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="link">
+              <xs:annotation>
+                <xs:documentation>曲别针/链接</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="exit">
+              <xs:annotation>
+                <xs:documentation>退出</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="rewind">
+              <xs:annotation>
+                <xs:documentation>快退</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="fastForward">
+              <xs:annotation>
+                <xs:documentation>快进</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="speedUp">
+              <xs:annotation>
+                <xs:documentation>加速播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="slowDown">
+              <xs:annotation>
+                <xs:documentation>减速播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="add">
+              <xs:annotation>
+                <xs:documentation>添加</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="save">
+              <xs:annotation>
+                <xs:documentation>保存</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="saveAs">
+              <xs:annotation>
+                <xs:documentation>另存为</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="sortMode">
+              <xs:annotation>
+                <xs:documentation>排序模式</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playlistDisplayMode">
+              <xs:annotation>
+                <xs:documentation>播放列表显示方式</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="locate">
+              <xs:annotation>
+                <xs:documentation>定位</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="lyric">
+              <xs:annotation>
+                <xs:documentation>歌词</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="copy">
+              <xs:annotation>
+                <xs:documentation>复制</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="edit">
+              <xs:annotation>
+                <xs:documentation>编辑</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="unlink">
+              <xs:annotation>
+                <xs:documentation>取消关联</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="folderExplore">
+              <xs:annotation>
+                <xs:documentation>文件夹浏览/搜索</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="internalLyric">
+              <xs:annotation>
+                <xs:documentation>内嵌歌词</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="download">
+              <xs:annotation>
+                <xs:documentation>下载</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="downloadBatch">
+              <xs:annotation>
+                <xs:documentation>批量下载</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playlistDock">
+              <xs:annotation>
+                <xs:documentation>停靠播放列表/视图</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playlistFloat">
+              <xs:annotation>
+                <xs:documentation>浮动播放列表</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="pin">
+              <xs:annotation>
+                <xs:documentation>图钉/置顶</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="convert">
+              <xs:annotation>
+                <xs:documentation>格式转换</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="online">
+              <xs:annotation>
+                <xs:documentation>在线查看</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="shortcut">
+              <xs:annotation>
+                <xs:documentation>快捷方式</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="albumCover">
+              <xs:annotation>
+                <xs:documentation>专辑封面</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="statistics">
+              <xs:annotation>
+                <xs:documentation>统计</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="fileRelate">
+              <xs:annotation>
+                <xs:documentation>文件关联</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="help">
+              <xs:annotation>
+                <xs:documentation>帮助</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="fix">
+              <xs:annotation>
+                <xs:documentation>扳手/修复</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="star">
+              <xs:annotation>
+                <xs:documentation>星星/分级</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="artist">
+              <xs:annotation>
+                <xs:documentation>艺术家</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="album">
+              <xs:annotation>
+                <xs:documentation>专辑</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="genre">
+              <xs:annotation>
+                <xs:documentation>流派</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="year">
+              <xs:annotation>
+                <xs:documentation>年份</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="bitrate">
+              <xs:annotation>
+                <xs:documentation>比特率</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="history">
+              <xs:annotation>
+                <xs:documentation>最近播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="keyBoard">
+              <xs:annotation>
+                <xs:documentation>快捷键</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="reverb">
+              <xs:annotation>
+                <xs:documentation>混响</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="doubleLine">
+              <xs:annotation>
+                <xs:documentation>双行</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="lock">
+              <xs:annotation>
+                <xs:documentation>锁/桌面歌词锁定</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playAsNext">
+              <xs:annotation>
+                <xs:documentation>下一首播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="rename">
+              <xs:annotation>
+                <xs:documentation>重命名</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playInPlaylist">
+              <xs:annotation>
+                <xs:documentation>添加到新播放列表并播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="playInFolder">
+              <xs:annotation>
+                <xs:documentation>在文件夹模式中播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="tag">
+              <xs:annotation>
+                <xs:documentation>标签</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="more">
+              <xs:annotation>
+                <xs:documentation>更多</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="nowPlaying">
+              <xs:annotation>
+                <xs:documentation>正在播放</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="karaoke">
+              <xs:annotation>
+                <xs:documentation>歌词卡拉OK效果</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="refresh">
+              <xs:annotation>
+                <xs:documentation>刷新</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="newFolder">
+              <xs:annotation>
+                <xs:documentation>添加新文件夹</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="background">
+              <xs:annotation>
+                <xs:documentation>背景穿透</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="dropDown">
+              <xs:annotation>
+                <xs:documentation>下拉箭头</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="leTagInsert">
+              <xs:annotation>
+                <xs:documentation>Le 插入时间标签</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="leTagReplace">
+              <xs:annotation>
+                <xs:documentation>Le 替换时间标签</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="leTagDelete">
+              <xs:annotation>
+                <xs:documentation>Le 删除时间标签</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="leSave">
+              <xs:annotation>
+                <xs:documentation>Le 保存</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="leFind">
+              <xs:annotation>
+                <xs:documentation>Le 文本查找</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="leReplace">
+              <xs:annotation>
+                <xs:documentation>Le 文本替换</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="triangleLeft">
+              <xs:annotation>
+                <xs:documentation>向左三角形</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="triangleUp">
+              <xs:annotation>
+                <xs:documentation>向上三角形</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="triangleRight">
+              <xs:annotation>
+                <xs:documentation>向右三角形</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="triangleDown">
+              <xs:annotation>
+                <xs:documentation>向下三角形</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="ok">
+              <xs:annotation>
+                <xs:documentation>圆/确认</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="cancel">
+              <xs:annotation>
+                <xs:documentation>叉/取消</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="treeCollapsed">
+              <xs:annotation>
+                <xs:documentation>折叠的树节点</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="treeExpanded">
+              <xs:annotation>
+                <xs:documentation>展开的树节点</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="defaultCoverPlaying">
+              <xs:annotation>
+                <xs:documentation>默认封面（播放中）</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="defaultCoverStopped">
+              <xs:annotation>
+                <xs:documentation>默认封面（已停止）</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
       <xs:attribute name="panel_file_name" type="xs:string">
         <xs:annotation>
           <xs:documentation>面板xml文件的文件名，如果提供了此属性，则点击按钮后将打开一个面板。</xs:documentation>
