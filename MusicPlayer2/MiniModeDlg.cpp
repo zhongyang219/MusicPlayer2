@@ -511,14 +511,27 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
         CPlayerUIBase* cur_ui{ GetCurUi() };
         if (cur_ui != nullptr)
         {
-            if (!cur_ui->RButtonUp(point))
+            //遍历所有元素
+            bool rtn = false;
+            CUserUi* ui = dynamic_cast<CUserUi*>(GetCurUi());
+            if (ui != nullptr)
             {
-                CRect rect_ui(CPoint(0, 0), CSize(m_ui_width, m_ui_height));
-                if (rect_ui.PtInRect(point))
-                {
-                    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniAreaMenu);
-                    pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
-                }
+                ui->IterateAllElements([&](UiElement::Element* element) ->bool {
+                    if (element != nullptr)
+                    {
+                        if (element->RButtunUp(point))
+                        {
+                            rtn = true;
+                            return true;
+                        }
+                    }
+                    return false;
+                    }, true);
+            }
+            if (!rtn)
+            {
+                CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniAreaMenu);
+                pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
             }
         }
     }
