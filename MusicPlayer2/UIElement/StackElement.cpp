@@ -95,17 +95,42 @@ bool UiElement::StackElement::LButtonUp(CPoint point)
     {
         ui->m_draw_data.lyric_rect.SetRectEmpty();
         SwitchDisplay();
+        mouse_pressed = false;
         return true;
     }
+    
+    //设置了sweep_to_switch时
+    if (sweep_to_switch && rect.PtInRect(point))
+    {
+        if (mouse_pressed)
+        {
+            //如果鼠标在按下情况下移动超过100像素，则根据鼠标移动方向切换显示
+            if (point.x - mouse_pressed_point.x > ui->DPI(100))
+            {
+                SwitchDisplay(true);
+            }
+            else if (point.x - mouse_pressed_point.x < -ui->DPI(100))
+            {
+                SwitchDisplay(false);
+            }
+        }
+    }
+    mouse_pressed = false;
+
     return false;
 }
 
 bool UiElement::StackElement::LButtonDown(CPoint point)
 {
+    mouse_pressed_point = point;
     if (indicator.enable && indicator.rect.PtInRect(point) != FALSE)
     {
         indicator.pressed = true;
         return true;
+    }
+    if (rect.PtInRect(point))
+    {
+        mouse_pressed = true;
     }
     return false;
 }
@@ -117,6 +142,7 @@ bool UiElement::StackElement::MouseMove(CPoint point)
     bool hover{ GetRect().PtInRect(point) != FALSE };
     if (!mouse_hover && hover)
         ui->UpdateToolTipPositionLater();
+
     mouse_hover = hover;
     return true;
 }

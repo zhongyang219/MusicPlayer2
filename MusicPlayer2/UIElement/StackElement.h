@@ -12,6 +12,7 @@ namespace UiElement
         bool click_to_switch{};     //鼠标点击时切换
         bool hover_to_switch{};     //鼠标指向时切换
         bool scroll_to_switch{};	//鼠标滚轮切换
+        bool sweep_to_switch{};	    //鼠标左右拖动切换
         bool show_indicator{};
         int indicator_offset{};
         bool mouse_hover{};
@@ -30,6 +31,8 @@ namespace UiElement
         std::shared_ptr<Element> GetElement(int index);
 
         int cur_index{};
+        CPoint mouse_pressed_point{};   //鼠标按下时的位置
+        bool mouse_pressed{};
     };
 }
 

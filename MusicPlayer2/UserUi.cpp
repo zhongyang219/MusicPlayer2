@@ -770,6 +770,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "click_to_switch", stack_element->click_to_switch);
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "hover_to_switch", stack_element->hover_to_switch);
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "scroll_to_switch", stack_element->scroll_to_switch);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "sweep_to_switch", stack_element->sweep_to_switch);
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_indicator", stack_element->show_indicator);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "indicator_offset", stack_element->indicator_offset);
             }
