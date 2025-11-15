@@ -786,6 +786,11 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 std::string str_size_change_value = CTinyXml2Helper::ElementAttribute(xml_node, "size_change_value");
                 if (!str_size_change_value.empty())
                     stack_element->size_change_value = stack_element->GetUI()->DPI(atoi(str_size_change_value.c_str()));
+                std::string str_related_stack_elements = CTinyXml2Helper::ElementAttribute(xml_node, "related_stack_elements");
+                std::vector<std::string> vec_related_stack_elements;
+                CCommon::StringSplit(str_related_stack_elements, ',', vec_related_stack_elements);
+                for (const auto& str : vec_related_stack_elements)
+                    stack_element->related_stack_elements.insert(str);
             }
         }
         //播放控制栏

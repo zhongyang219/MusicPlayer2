@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "StackElement.h"
+#include "../UserUi.h"
 
 void UiElement::StackElement::SetCurrentElement(int index)
 {
@@ -7,6 +8,7 @@ void UiElement::StackElement::SetCurrentElement(int index)
         cur_index = index;
     else
         index = 0;
+    IndexChanged();
 }
 
 void UiElement::StackElement::SwitchDisplay(bool previous)
@@ -23,6 +25,7 @@ void UiElement::StackElement::SwitchDisplay(bool previous)
         if (cur_index >= static_cast<int>(childLst.size()))
             cur_index = 0;
     }
+    IndexChanged();
 }
 
 void UiElement::StackElement::Draw()
@@ -197,4 +200,26 @@ bool UiElement::StackElement::CheckSizeChangeSwitchCondition()
         }
     }
     return false;
+}
+
+void UiElement::StackElement::IndexChanged()
+{
+    //查找关联的stackElement
+    CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
+    if (user_ui != nullptr)
+    {
+        user_ui->IterateAllElementsInAllUi([&](Element* element) ->bool {
+            StackElement* stack_element = dynamic_cast<StackElement*>(element);
+            if (stack_element != nullptr && stack_element != this)
+            {
+                if (related_stack_elements.count(element->id) > 0)
+                {
+                    //设置关联stackElement的索引
+                    if (cur_index >= 0 && cur_index < static_cast<int>(stack_element->childLst.size()))
+                        stack_element->cur_index = cur_index;
+                }
+            }
+            return false;
+        });
+    }
 }

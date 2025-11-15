@@ -30,6 +30,7 @@ namespace UiElement
         bool size_change_to_switch{};   //当元素尺寸变化时切换
         SizeChangeSwitchCondition size_change_condition{};    //元素尺寸变化切换的条件，仅当size_change_to_switch为true时有效
         int size_change_value{};        //满足尺寸变化切换条件的值，仅当size_change_to_switch为true时有效
+        std::set<std::string> related_stack_elements;
 
         CPlayerUIBase* GetUI() const { return ui; }
 
@@ -46,6 +47,7 @@ namespace UiElement
     protected:
         std::shared_ptr<Element> GetElement(int index);
         bool CheckSizeChangeSwitchCondition();      //判断是否满足尺寸变化切换条件
+        void IndexChanged();
 
     protected:
         int cur_index{};

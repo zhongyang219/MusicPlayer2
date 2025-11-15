@@ -324,6 +324,11 @@
           <xs:documentation>尺寸变化切换条件的值。仅当size_change_to_switch为true且设置了size_change_condition属性时有效。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="related_stack_elements" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>关联和的stackElement的id，如果有多个使用半角逗号分隔。如果设置了此属性，则当stackElement切换显示时，与之关联的stackElement也会同步切换显示。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="rectangleType">
@@ -375,7 +380,7 @@
       <xs:attribute name="key" use="required">
         <xs:annotation>
           <xs:documentation>
-            按钮的类型。不支持在一个界面中放置两个以上相同的按钮，否则会导致只有其中一个按钮有效。
+            按钮的类型。
           </xs:documentation>
         </xs:annotation>
         <xs:simpleType>
@@ -1635,6 +1640,11 @@
       <xs:attribute name="stack_element_id" type="xs:string">
         <xs:annotation>
           <xs:documentation>要切换的stackElement的id。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="related_navigation_bars" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>关联的navigationBar的id，如果有多个使用半角逗号分隔。如果设置了此属性，则当navigationBar的index切换时，与之关联的navigationBar也会同步切换。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
