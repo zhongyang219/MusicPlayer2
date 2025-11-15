@@ -266,46 +266,62 @@ bool CUserUi::LButtonUp(CPoint point)
 
 bool CUserUi::LButtonDown(CPoint point)
 {
-    bool rtn = false;
-    if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
+    if (!CPlayerUIBase::LButtonDown(point))
     {
-        auto root_element = GetMouseEventResponseElement();
-        //遍历所有元素
-        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-            if (element != nullptr)
-            {
-                if (element->LButtonDown(point))
+        bool rtn = false;
+        if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
+        {
+            auto root_element = GetMouseEventResponseElement();
+            //遍历所有元素
+            root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+                if (element != nullptr)
                 {
-                    rtn = true;
-                    return true;
+                    if (element->LButtonDown(point))
+                    {
+                        rtn = true;
+                        return true;
+                    }
                 }
-            }
-            return false;
-        }, true);
+                return false;
+            }, true);
+        }
+        return rtn;
     }
-    if (!rtn)
-        rtn = CPlayerUIBase::LButtonDown(point);
-    return rtn;
+    return true;
 }
 
 bool CUserUi::MouseMove(CPoint point)
 {
-    bool mouse_in_draw_area{ !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point) };
-    if (mouse_in_draw_area)
+    bool mouse_leave = false;
+    if (!CPlayerUIBase::MouseMove(point))
     {
-        auto root_element = GetMouseEventResponseElement();
-        //遍历所有元素
-        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-            if (element != nullptr)
-            {
-                element->MouseMove(point);
-            }
-            return false;
-        }, true);
-    }
+        bool mouse_in_draw_area{ !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point) };
+        if (mouse_in_draw_area)
+        {
+            auto root_element = GetMouseEventResponseElement();
+            //遍历所有元素
+            root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+                if (element != nullptr)
+                {
+                    element->MouseMove(point);
+                }
+                return false;
+                }, true);
+        }
 
-    //鼠标离开绘图区域后发送MouseLeave消息
-    if (m_last_mouse_in_draw_area && !mouse_in_draw_area)
+        //鼠标离开绘图区域后发送MouseLeave消息
+        if (m_last_mouse_in_draw_area && !mouse_in_draw_area)
+        {
+            mouse_leave = true;
+        }
+
+        m_last_mouse_in_draw_area = mouse_in_draw_area;
+    }
+    else
+    {
+        mouse_leave = true;
+    }
+    if (mouse_leave)
     {
         IterateAllElements([point](UiElement::Element* element) ->bool {
             if (element != nullptr)
@@ -313,9 +329,7 @@ bool CUserUi::MouseMove(CPoint point)
             return false;
         });
     }
-
-    m_last_mouse_in_draw_area = mouse_in_draw_area;
-    return CPlayerUIBase::MouseMove(point);
+    return true;
 }
 
 bool CUserUi::MouseLeave()

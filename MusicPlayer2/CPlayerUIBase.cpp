@@ -264,10 +264,14 @@ bool CPlayerUIBase::RButtonUp(CPoint point)
 
 bool CPlayerUIBase::MouseMove(CPoint point)
 {
+    bool rtn = false;
     for (auto& btn : m_buttons)
     {
         if (btn.second.enable)
+        {
             btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
+            rtn |= btn.second.hover;
+        }
     }
 
     TRACKMOUSEEVENT tme;
@@ -276,7 +280,7 @@ bool CPlayerUIBase::MouseMove(CPoint point)
     tme.dwFlags = TME_LEAVE | TME_HOVER;
     tme.dwHoverTime = 1;
     _TrackMouseEvent(&tme);
-    return true;
+    return rtn;
 }
 
 bool CPlayerUIBase::LButtonUp(CPoint point)
@@ -307,7 +311,8 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
 
         if (pressed && btn.second.rect.PtInRect(point) && btn.second.enable)
         {
-            ButtonClicked(btn.first);
+            if (ButtonClicked(btn.first))
+                return true;
             switch (btn.first)
             {
             //菜单
