@@ -107,7 +107,8 @@ void CUserUi::ResetVolumeToPlayTime()
 void CUserUi::PlaylistLocateToCurrent()
 {
     //遍历Playlist元素
-    IterateAllElements([&](UiElement::Element* element) ->bool {
+    auto root_element = GetMouseEventResponseElement();
+    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
         UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
         if (playlist_element != nullptr)
         {
@@ -120,7 +121,8 @@ void CUserUi::PlaylistLocateToCurrent()
 void CUserUi::ListLocateToCurrent()
 {
     //遍历ListElement元素
-    IterateAllElements([&](UiElement::Element* element) ->bool {
+    auto root_element = GetMouseEventResponseElement();
+    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
         UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
         if (playlist_element != nullptr)
         {
