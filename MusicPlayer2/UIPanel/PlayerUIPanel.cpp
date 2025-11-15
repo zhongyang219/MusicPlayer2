@@ -129,12 +129,14 @@ std::shared_ptr<UiElement::Element> CPlayerUIPanel::GetRootElement() const
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 根据面板类型创建面板对象
-std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlayerUIBase* ui)
+static std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlayerUIBase* ui)
 {
 	switch (panel_type)
 	{
 	case ePanelType::PlayQueue:
 		return std::make_unique<CPlayQueuePanel>(ui);
+	default:
+		return std::make_unique<CPlayerUIPanel>(ui, panel_type);
 	}
 	return nullptr;
 }
