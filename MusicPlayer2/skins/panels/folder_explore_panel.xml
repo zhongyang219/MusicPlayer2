@@ -1,5 +1,5 @@
 <root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd">
-  <ui width="320" margin-right="0">
+  <panel width="320" margin-right="0">
     <verticalLayout margin="8">
       <text type="userDefine" text="%(TXT_FOLDER_EXPLORE)" height="56" font_size="12"/>
       <searchBox height="26" margin-bottom="4"/>
@@ -9,5 +9,5 @@
         <button key="closePanel" height="28" show_text="true"/>
       </horizontalLayout>
     </verticalLayout>
-  </ui>
+  </panel>
 </root>
