@@ -285,6 +285,45 @@
           <xs:documentation>指示器垂直方向的偏移量。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="size_change_to_switch" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>如果为true，则元素尺寸变化时切换动切换显示。需要配合size_change_condition和size_change_value属性使用。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="size_change_condition">
+        <xs:annotation>
+          <xs:documentation>尺寸变化切换的条件，当满足指定的条件时会切换到下一个界面，不满足条件时恢复。仅当size_change_to_switch为true时有效</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="widthGreaterThan">
+              <xs:annotation>
+                <xs:documentation>宽度大于时</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="widthLessThan">
+              <xs:annotation>
+                <xs:documentation>宽度小于时</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="heightGreaterThan">
+              <xs:annotation>
+                <xs:documentation>高度大于时</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="heightLessThan">
+              <xs:annotation>
+                <xs:documentation>高度小于时</xs:documentation>
+              </xs:annotation>
+            </xs:enumeration>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="size_change_value" type="number_or_percent">
+        <xs:annotation>
+          <xs:documentation>尺寸变化切换条件的值。仅当size_change_to_switch为true且设置了size_change_condition属性时有效。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     </xs:complexType>
     <xs:complexType name="rectangleType">

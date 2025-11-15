@@ -72,7 +72,7 @@ int UiElement::StackElement::GetCurIndex() const
 
 std::shared_ptr<UiElement::Element> UiElement::StackElement::CurrentElement()
 {
-    if (hover_to_switch && mouse_hover)
+    if ((hover_to_switch && mouse_hover) || CheckSizeChangeSwitchCondition())
     {
         int next_index = cur_index + 1;
         if (next_index < 0 || next_index >= static_cast<int>(childLst.size()))
@@ -173,4 +173,28 @@ std::shared_ptr<UiElement::Element> UiElement::StackElement::GetElement(int inde
         return childLst[index];
     else
         return childLst[0];
+}
+
+bool UiElement::StackElement::CheckSizeChangeSwitchCondition()
+{
+    if (size_change_to_switch)
+    {
+        if (size_change_value > 0)
+        {
+            switch (size_change_condition)
+            {
+            case SizeChangeSwitchCondition::WIDTH_GREATER_THAN:
+                return rect.Width() > size_change_value;
+            case SizeChangeSwitchCondition::WIDTH_LESS_THAN:
+                return rect.Width() < size_change_value;
+            case SizeChangeSwitchCondition::HEIGHT_GREATER_THAN:
+                return rect.Height() > size_change_value;
+            case SizeChangeSwitchCondition::HEIGHT_LESS_THAN:
+                return rect.Height() < size_change_value;
+            default:
+                return false;
+            }
+        }
+    }
+    return false;
 }

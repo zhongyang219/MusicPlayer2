@@ -154,35 +154,50 @@
       </stackElement>
 
       <!--底部控制栏-->
-      <rectangle height="100" no_corner_radius="true">
-        <verticalLayout margin="6">
+      <rectangle height="88" no_corner_radius="true">
+        <verticalLayout margin="6" margin-top="4">
           <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
-          <horizontalLayout height="68">
+          <stackElement height="62" size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="550">
             <horizontalLayout>
-              <albumCover width="68"/>
+              <horizontalLayout>
+                <albumCover width="62"/>
+                <verticalLayout margin="4">
+                  <text type="title" style="scroll" height="24" font_size="10"/>
+                  <text type="artist" style="scroll" height="24"/>
+                </verticalLayout>
+              </horizontalLayout>
+              <horizontalLayout width="36%">
+                <button key="repeatMode" width="28" height="28" margin="2"/>
+                <button key="previous" width="40" height="40" bigIcon="true" margin="2"/>
+                <button key="playPause" width="40" height="40" bigIcon="true" margin="2"/>
+                <button key="next" width="40" height="40" bigIcon="true" margin="2"/>
+                <button key="favorite" width="28" height="28" margin="2"/>
+              </horizontalLayout>
+              <horizontalLayout margin-right="4">
+                <placeHolder/>
+                <volume show_text="true" width="64" height="28" margin="2" hide-width="160"/>
+                <button key="addToPlaylist" width="28" height="28" margin="2" hide-width="94"/>
+                <button key="mediaLib" width="28" height="28" margin="2"/>
+                <button key="showPlaylist" width="28" height="28" margin="2"/>
+              </horizontalLayout>
+            </horizontalLayout>
+            <horizontalLayout>
+              <albumCover width="62"/>
               <verticalLayout margin="4">
                 <text type="title" style="scroll" height="24" font_size="10"/>
                 <text type="artist" style="scroll" height="24"/>
               </verticalLayout>
-            </horizontalLayout>
-            <horizontalLayout height="60" width="36%">
-              <button key="repeatMode" width="28" height="28" margin="2"/>
               <button key="previous" width="40" height="40" bigIcon="true" margin="2"/>
               <button key="playPause" width="40" height="40" bigIcon="true" margin="2"/>
               <button key="next" width="40" height="40" bigIcon="true" margin="2"/>
+              <volume show_text="false" width="28" height="28" margin="2"/>
+              <button key="repeatMode" width="28" height="28" margin="2"/>
               <button key="favorite" width="28" height="28" margin="2"/>
+              <button key="showPlayQueue" width="28" height="28" margin="2"/>
             </horizontalLayout>
-            <horizontalLayout margin-right="4">
-              <placeHolder/>
-              <volume show_text="true" width="64" height="28" margin="2" hide-width="160"/>
-              <button key="addToPlaylist" width="28" height="28" margin="2" hide-width="94"/>
-              <button key="mediaLib" width="28" height="28" margin="2"/>
-              <button key="showPlaylist" width="28" height="28" margin="2"/>
-            </horizontalLayout>
-          </horizontalLayout>
+          </stackElement>
         </verticalLayout>
       </rectangle>
-
     </verticalLayout>
 
 

@@ -773,6 +773,19 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "sweep_to_switch", stack_element->sweep_to_switch);
                 CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_indicator", stack_element->show_indicator);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "indicator_offset", stack_element->indicator_offset);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "size_change_to_switch", stack_element->size_change_to_switch);
+                std::string str_size_change_condition = CTinyXml2Helper::ElementAttribute(xml_node, "size_change_condition");
+                if (str_size_change_condition == "widthGreaterThan")
+                    stack_element->size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::WIDTH_GREATER_THAN;
+                else if (str_size_change_condition == "widthLessThan")
+                    stack_element->size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::WIDTH_LESS_THAN;
+                else if (str_size_change_condition == "heightGreaterThan")
+                    stack_element->size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::HEIGHT_GREATER_THAN;
+                else if (str_size_change_condition == "heightLessThan")
+                    stack_element->size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::HEIGHT_LESS_THAN;
+                std::string str_size_change_value = CTinyXml2Helper::ElementAttribute(xml_node, "size_change_value");
+                if (!str_size_change_value.empty())
+                    stack_element->size_change_value = stack_element->GetUI()->DPI(atoi(str_size_change_value.c_str()));
             }
         }
         //播放控制栏
