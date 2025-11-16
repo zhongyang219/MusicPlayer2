@@ -5950,7 +5950,17 @@ void CMusicPlayerDlg::OnSaveAsNewPlaylist()
         };
     wstring playlist_path;
     CMusicPlayerCmdHelper cmd_helper(this);
-    cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path);
+    //设置默认的名称
+    const ListItem& cur_list = m_current_cache.at(0);
+    std::wstring default_name;
+    if (cur_list.type != LT_PLAYLIST)
+    {
+        default_name = cur_list.GetDisplayName();
+        if (cur_list.type == LT_FOLDER)
+            default_name = CFilePathHelper(default_name).GetFileNameWithoutExtension();
+        CCommon::FileNameNormalize(default_name);
+    }
+    cmd_helper.OnAddToNewPlaylist(getSongList, playlist_path, default_name);
 }
 
 
