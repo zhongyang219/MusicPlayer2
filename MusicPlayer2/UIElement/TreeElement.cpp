@@ -36,9 +36,10 @@ void UiElement::TreeElement::Node::IterateNodeInOrder(std::function<bool(Node*)>
         if (pCurNode->collapsed && ignore_invisible)
             continue;
 
-        for (auto& child : pCurNode->child_list)
+        // 反向遍历子节点列表，确保正序出栈
+        for (auto it = pCurNode->child_list.rbegin(); it != pCurNode->child_list.rend(); ++it)
         {
-            nodeStack.push(child.get());
+            nodeStack.push(it->get());
         }
     }
 }
