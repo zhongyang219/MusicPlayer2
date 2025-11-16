@@ -206,7 +206,7 @@ bool UiElement::ListElement::MouseMove(CPoint point)
     return true;
 }
 
-bool UiElement::ListElement::RButtunUp(CPoint point)
+bool UiElement::ListElement::RButtonUp(CPoint point)
 {
     if (rect.PtInRect(point))
     {

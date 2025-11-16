@@ -8,15 +8,12 @@ namespace UiElement
     public:
         ClassicalControlBar();
         virtual void Draw() override;
-        virtual bool LButtonUp(CPoint point) override;
-        virtual bool MouseMove(CPoint point) override;
-        virtual bool SetCursor() override;
+
+    protected:
+        virtual void InitComplete() override;
 
     public:
         bool show_switch_display_btn{};
-
-    private:
-        ProgressBar progress_bar;
     };
 }
 

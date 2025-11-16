@@ -67,7 +67,7 @@ bool UiElement::NavigationBar::MouseMove(CPoint point)
     return true;
 }
 
-bool UiElement::NavigationBar::RButtunUp(CPoint point)
+bool UiElement::NavigationBar::RButtonUp(CPoint point)
 {
     //²»µ¯³öÓÒ¼ü²Ëµ¥
     return rect.PtInRect(point);

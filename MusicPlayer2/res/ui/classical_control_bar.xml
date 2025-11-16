@@ -1,0 +1,33 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd">
+  <element>
+    <stackElement size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="350">
+      <horizontalLayout height="36">
+        <button key="stop" bigIcon="true" width="36" height="36"/>
+        <button key="previous" bigIcon="true" width="36" height="36"/>
+        <button key="playPause" bigIcon="true" width="36" height="36"/>
+        <button key="next" bigIcon="true" width="36" height="36"/>
+        <progressBar show_play_time="true" margin-left="4"/>
+        <button key="favorite" width="24" height="24" margin-left="4"/>
+        <button key="addToPlaylist" width="24" height="24" margin-left="2"/>
+        <button key="switchDisplay" width="24" height="24" margin-left="2"/>
+        <button key="mediaLib" width="24" height="24" margin-left="2"/>
+        <button key="showPlaylist" width="24" height="24" margin-left="2"/>
+      </horizontalLayout>
+      <verticalLayout>
+        <progressBar show_play_time="true"/>
+        <horizontalLayout height="36">
+          <button key="stop" bigIcon="true" width="36" height="36"/>
+          <button key="previous" bigIcon="true" width="36" height="36"/>
+          <button key="playPause" bigIcon="true" width="36" height="36"/>
+          <button key="next" bigIcon="true" width="36" height="36"/>
+          <placeHolder/>
+          <button key="favorite" width="24" height="24"/>
+          <button key="addToPlaylist" width="24" height="24" margin-left="2"/>
+          <button key="switchDisplay" width="24" height="24" margin-left="2"/>
+          <button key="mediaLib" width="24" height="24" margin-left="2"/>
+          <button key="showPlaylist" width="24" height="24" margin-left="2"/>
+        </horizontalLayout>
+      </verticalLayout>
+    </stackElement>
+  </element>
+</root>

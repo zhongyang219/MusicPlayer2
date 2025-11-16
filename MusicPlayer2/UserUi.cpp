@@ -150,7 +150,8 @@ void CUserUi::SaveStatackElementIndex(CArchive& archive)
             UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
             if (stack_element != nullptr)
             {
-                archive << static_cast<BYTE>(stack_element->GetCurIndex());
+                if (!stack_element->hover_to_switch && !stack_element->size_change_to_switch)
+                    archive << static_cast<BYTE>(stack_element->GetCurIndex());
             }
             return false;
         });
@@ -163,9 +164,12 @@ void CUserUi::LoadStatackElementIndex(CArchive& archive)
             UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
             if (stack_element != nullptr)
             {
-                BYTE stack_element_index;
-                archive >> stack_element_index;
-                stack_element->SetCurrentElement(stack_element_index);
+                if (!stack_element->hover_to_switch && !stack_element->size_change_to_switch)
+                {
+                    BYTE stack_element_index;
+                    archive >> stack_element_index;
+                    stack_element->SetCurrentElement(stack_element_index);
+                }
             }
             return false;
         });
@@ -362,7 +366,7 @@ bool CUserUi::RButtonUp(CPoint point)
         root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
             if (element != nullptr)
             {
-                if (element->RButtunUp(point))
+                if (element->RButtonUp(point))
                 {
                     rtn = true;
                     return true;
@@ -909,6 +913,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             }
         }
 
+        element->InitComplete();
+
         //递归调用此函数创建子节点
         CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* xml_child)
             {
@@ -926,7 +932,8 @@ void CUserUi::SwitchStackElement()
 {
     m_draw_data.lyric_rect.SetRectEmpty();
     UiElement::StackElement* stack_element = FindElement<UiElement::StackElement>();
-    if (stack_element != nullptr)
+    //当stackElement设置了hover_to_switch或size_change_to_switch时不允许主动切换
+    if (stack_element != nullptr && !stack_element->hover_to_switch && !stack_element->size_change_to_switch)
         stack_element->SwitchDisplay();
 }
 
@@ -934,7 +941,8 @@ void CUserUi::SwitchStackElement(std::string id, int index)
 {
     m_draw_data.lyric_rect.SetRectEmpty();
     UiElement::StackElement* stack_element = FindElement<UiElement::StackElement>(id);
-    if (stack_element != nullptr)
+    //当stackElement设置了hover_to_switch或size_change_to_switch时不允许主动切换
+    if (stack_element != nullptr && !stack_element->hover_to_switch && !stack_element->size_change_to_switch)
     {
         if (index >= 0)
             stack_element->SetCurrentElement(index);

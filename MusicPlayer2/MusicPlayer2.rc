@@ -142,7 +142,9 @@ END
 // TEXT
 //
 
-IDR_PLAY_QUEUE_PANEL    TEXT                    "res\\ui_panel\\play_queue_panel.xml"
+IDR_PLAY_QUEUE_PANEL    TEXT                    "res\\ui\\play_queue_panel.xml"
+
+IDR_CLASSICAL_CONTROL_BAR TEXT                    "res\\ui\\classical_control_bar.xml"
 
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -2608,6 +2610,28 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// TEXT
+//
+
+IDR_COMPILE_TIME        TEXT                    "compile_time.txt"
+
+IDR_LICENSE             TEXT                    "..\\LICENSE"
+
+IDR_UI1                 TEXT                    "skins\\ui1.xml"
+
+IDR_UI2                 TEXT                    "skins\\ui2.xml"
+
+IDR_MINI_UI0            TEXT                    "skins\\miniMode\\miniMode00.xml"
+
+IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement.txt"
+
+IDR_STRING_TABLE        TEXT                    "language\\English.ini"
+
+IDR_CHINESE_PINGYIN     TEXT                    "res\\hzpy-utf8.txt"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Icon
 //
 
@@ -3161,28 +3185,6 @@ BEGIN
     VK_DOWN,        ID_VOLUME_DOWN,         VIRTKEY, NOINVERT
     VK_UP,          ID_VOLUME_UP,           VIRTKEY, NOINVERT
 END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXT
-//
-
-IDR_COMPILE_TIME        TEXT                    "compile_time.txt"
-
-IDR_LICENSE             TEXT                    "..\\LICENSE"
-
-IDR_UI1                 TEXT                    "skins\\ui1.xml"
-
-IDR_UI2                 TEXT                    "skins\\ui2.xml"
-
-IDR_MINI_UI0            TEXT                    "skins\\miniMode\\miniMode00.xml"
-
-IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement.txt"
-
-IDR_STRING_TABLE        TEXT                    "language\\English.ini"
-
-IDR_CHINESE_PINGYIN     TEXT                    "res\\hzpy-utf8.txt"
 
 #endif    // 英语(美国) resources
 /////////////////////////////////////////////////////////////////////////////

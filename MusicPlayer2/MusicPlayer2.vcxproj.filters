@@ -2306,5 +2306,7 @@
     <Xml Include="res\ui_panel\play_queue_panel.xml">
       <Filter>资源文件</Filter>
     </Xml>
+    <Xml Include="res\ui\play_queue_panel.xml" />
+    <Xml Include="res\ui\classical_control_bar.xml" />
   </ItemGroup>
 </Project>

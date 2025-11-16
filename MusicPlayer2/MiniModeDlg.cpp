@@ -519,7 +519,7 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
                 ui->IterateAllElements([&](UiElement::Element* element) ->bool {
                     if (element != nullptr)
                     {
-                        if (element->RButtunUp(point))
+                        if (element->RButtonUp(point))
                         {
                             rtn = true;
                             return true;

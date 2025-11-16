@@ -185,6 +185,8 @@
             <xs:documentation> 面板。 </xs:documentation>
           </xs:annotation>
         </xs:element>
+        <xs:element name="element" type="elementType">
+        </xs:element>
       </xs:choice>
       <xs:attribute name="name" type="xs:string">
         <!--root元素可以有name属性-->

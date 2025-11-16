@@ -378,7 +378,6 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
     case BTN_SKIN:
     case BTN_SKIN_TITLEBAR:
     {
-        m_buttons[BTN_SKIN].hover = false;
         m_buttons[BTN_SKIN_TITLEBAR].hover = false;
         //theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SWITCH_UI);
         CPoint point1;
@@ -391,24 +390,20 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
     }
 
     case BTN_EQ:
-        m_buttons[BTN_EQ].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_EQUALIZER);
         return true;
 
     case BTN_SETTING: case BTN_SETTING_TITLEBAR:
-        m_buttons[BTN_SETTING].hover = false;
         m_buttons[BTN_SETTING_TITLEBAR].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_OPTION_SETTINGS);
         return true;
 
     case BTN_MINI: case BTN_MINI_TITLEBAR:
-        m_buttons[BTN_MINI].hover = false;
         m_buttons[BTN_MINI_TITLEBAR].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE);
         return true;
 
     case BTN_INFO:
-        m_buttons[BTN_INFO].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_SONG_INFO);
         return true;
 
@@ -436,7 +431,6 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
         return true;
 
     case BTN_SHOW_PLAYLIST:
-        m_buttons[BTN_SHOW_PLAYLIST].hover = false;
         if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
             theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FLOAT_PLAYLIST);
         else
@@ -444,17 +438,14 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
         return true;
 
     case BTN_MEDIA_LIB:
-        m_buttons[BTN_MEDIA_LIB].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_MEDIA_LIB);
         return true;
 
     case BTN_FAVOURITE:
-        m_buttons[BTN_FAVOURITE].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_ADD_REMOVE_FROM_FAVOURITE);
         return true;
 
     case BTN_DARK_LIGHT:
-        m_buttons[BTN_DARK_LIGHT].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
         return true;
 
@@ -487,7 +478,6 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
     return true;
 
     case BTN_FIND:
-        m_buttons[BTN_FIND].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FIND);
         return true;
 
@@ -497,7 +487,6 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
         return true;
 
     case BTN_FULL_SCREEN:
-        m_buttons[BTN_FULL_SCREEN].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
         return true;
 
@@ -1094,10 +1083,10 @@ void CPlayerUIBase::DrawPlayEffectTag(CRect parent_rect, CRect& previous_item_re
 
 }
 
-void CPlayerUIBase::DrawControlBarBtn(CRect rect, BtnKey btn_type)
+void CPlayerUIBase::DrawControlBarBtn(CRect rect, BtnKey btn_type, UIButton& btn)
 {
     rect.DeflateRect(DPI(2), DPI(2));
-    DrawUIButton(rect, btn_type);
+    DrawUIButton(rect, btn_type, btn);
 }
 
 void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
@@ -1779,73 +1768,6 @@ void CPlayerUIBase::DrawVolumnAdjBtn()
         m_buttons[BTN_VOLUME_UP].rect = CRect();
         m_buttons[BTN_VOLUME_DOWN].rect = CRect();
     }
-}
-
-CRect CPlayerUIBase::DrawClassicalControlBar(CRect rect, bool draw_switch_display_btn)
-{
-    bool progress_on_top = rect.Width() < m_progress_on_top_threshold;
-    const int progress_height = DPI(4);
-    CRect progress_rect;
-    CRect progress_valid_ret;
-    if (progress_on_top)
-    {
-        progress_rect = rect;
-        int progressbar_height = rect.Height() / 3;
-        progress_rect.bottom = progress_rect.top + progressbar_height;
-        progress_valid_ret = DrawProgressBar(progress_rect);
-        rect.top = progress_rect.bottom;
-    }
-
-    //绘制播放控制按钮
-    const int btn_width = DPI(36);
-    const int btn_height = min(rect.Height(), btn_width);
-
-    CRect rc_btn{ CPoint(rect.left, rect.top + (rect.Height() - btn_height) / 2), CSize(btn_width, btn_height) };
-    DrawUIButton(rc_btn, BTN_STOP, true);
-
-    rc_btn.MoveToX(rc_btn.right);
-    DrawUIButton(rc_btn, BTN_PREVIOUS, true);
-
-    rc_btn.MoveToX(rc_btn.right);
-    DrawUIButton(rc_btn, BTN_PLAY_PAUSE, true);
-
-    rc_btn.MoveToX(rc_btn.right);
-    DrawUIButton(rc_btn, BTN_NEXT, true);
-
-    int progressbar_left = rc_btn.right + Margin();
-
-    //绘制右侧按钮
-    const int btn_side = DPI(24);
-    rc_btn.right = rect.right;
-    rc_btn.left = rc_btn.right - btn_side;
-    rc_btn.top = rect.top + (rect.Height() - btn_side) / 2;
-    rc_btn.bottom = rc_btn.top + btn_side;
-    DrawControlBarBtn(rc_btn, BTN_SHOW_PLAYLIST);
-
-    rc_btn.MoveToX(rc_btn.left - btn_side);
-    m_buttons[BTN_MEDIA_LIB].enable = !CPlayer::GetInstance().m_loading;
-    DrawControlBarBtn(rc_btn, BTN_MEDIA_LIB);
-
-    if (draw_switch_display_btn)
-    {
-        rc_btn.MoveToX(rc_btn.left - btn_side);
-        DrawControlBarBtn(rc_btn, BTN_SWITCH_DISPLAY);
-    }
-
-    rc_btn.MoveToX(rc_btn.left - btn_side);
-    DrawControlBarBtn(rc_btn, BTN_ADD_TO_PLAYLIST);
-
-    rc_btn.MoveToX(rc_btn.left - btn_side);
-    DrawControlBarBtn(rc_btn, BTN_FAVOURITE);
-
-    if (!progress_on_top)
-    {
-        progress_rect = rect;
-        progress_rect.left = progressbar_left;
-        progress_rect.right = rc_btn.left - Margin();
-        progress_valid_ret = DrawProgressBar(progress_rect);
-    }
-    return progress_valid_ret;
 }
 
 CRect CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)

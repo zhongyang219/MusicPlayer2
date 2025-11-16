@@ -53,7 +53,7 @@ void UiElement::Button::Draw()
     }
         break;
     }
-    //这里将按钮的矩形区域保存到CPlayerUIBase::m_buttons中，因为按钮的鼠标提示还依赖CPlayerUIBase::m_buttons
+    //这里将按钮的矩形区域保存到CPlayerUIBase::m_buttons中
     ui->m_buttons[key].rect = rect;
     //将CPlayerUIBase::m_buttons中的enable属性设置为false，因为按钮的点击事件在UiElement::Button中响应，将enable用于避免在CPlayerUIBase中响应点击事件
     ui->m_buttons[key].enable = false;
@@ -337,7 +337,7 @@ bool UiElement::Button::MouseMove(CPoint point)
     return false;
 }
 
-bool UiElement::Button::RButtunUp(CPoint point)
+bool UiElement::Button::RButtonUp(CPoint point)
 {
     if (m_btn.enable && m_btn.rect.PtInRect(point))
     {

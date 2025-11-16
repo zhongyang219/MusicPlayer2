@@ -34,7 +34,7 @@ bool UiElement::ProgressBar::LButtonUp(CPoint point)
 
 bool UiElement::ProgressBar::MouseMove(CPoint point)
 {
-   btn.hover = btn.rect.PtInRect(point) && !(ui->m_show_volume_adj && (ui->m_buttons[CPlayerUIBase::BTN_VOLUME_UP].rect.PtInRect(point) || ui->m_buttons[CPlayerUIBase::BTN_VOLUME_DOWN].rect.PtInRect(point)));
+    btn.hover = btn.rect.PtInRect(point) && !(ui->m_show_volume_adj && (ui->m_buttons[CPlayerUIBase::BTN_VOLUME_UP].rect.PtInRect(point) || ui->m_buttons[CPlayerUIBase::BTN_VOLUME_DOWN].rect.PtInRect(point)));
 
     //鼠标指向进度条时显示定位到几分几秒
     if (btn.hover)
@@ -53,8 +53,9 @@ bool UiElement::ProgressBar::MouseMove(CPoint point)
             ui->UpdateMouseToolTipPosition(UiElement::TooltipIndex::PROGRESS_BAR, btn.rect);
             last_sec = song_pos_time.sec;
         }
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool UiElement::ProgressBar::SetCursor()

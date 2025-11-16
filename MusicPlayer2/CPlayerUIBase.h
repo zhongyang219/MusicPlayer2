@@ -256,11 +256,8 @@ protected:
     void DrawPlayEffectTag(CRect parent_rect, CRect& previous_item_rect);   //绘制播放效果的标签。parent_rect播放效果标签所在父元素的区域；前一个元素的区域，绘制后会更新此矩形区域
     void DrawRectangle(const CRect& rect, bool no_corner_radius = false, bool theme_color = true, ColorMode color_mode = RCM_AUTO);       //绘制矩形。如果no_corner_radius为true，则总是绘制直角矩形，忽略“使用圆角风格按钮”的设置；theme_color：是否使用主题彦颜色
     void DrawRectangle(CRect rect, COLORREF color);
-    void DrawToolBar(CRect rect, bool draw_translate_button);
-    void DrawToolBarWithoutBackground(CRect rect, bool draw_translate_button);
     void DrawBeatIndicator(CRect rect);
     void DrawVolumnAdjBtn();
-    CRect DrawClassicalControlBar(CRect rect, bool draw_switch_display_btn = false);    //绘制经典控制栏（返回进度条部分的矩形区域）
     CRect DrawProgressBar(CRect rect, bool play_time_both_side = false);               //绘制进度条（包含时间）。play_time_both_side如果为true，则播放时间显示的进度条的两侧，否则显示在进度条的右侧（返回进度条部分的矩形区域）
     CRect DrawProgess(CRect rect);                   //绘制进度条（返回进度条部分的矩形区域）
     void DrawTranslateButton(CRect rect);
@@ -294,7 +291,7 @@ protected:
     void DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& btn, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
     void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9, bool checked = false);
     // 绘制一个工具条按钮（将rect四面缩小 DPI(2) 后调用DrawUIButton）
-    void DrawControlBarBtn(CRect rect, BtnKey btn_type);
+    void DrawControlBarBtn(CRect rect, BtnKey btn_type, UIButton& btn);
     // 绘制一个UI按钮，以text文本作为图标
     void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked = false);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool checked = false);
@@ -385,8 +382,6 @@ protected:
     bool m_show_volume_text{};        //是否显示音量文本
 
     std::map<BtnKey, UIButton> m_buttons;
-
-    const int m_progress_on_top_threshold = theApp.DPI(350);        //当控制条的宽度小于此值，将进度条显示在播放控制按钮的上方
 
     bool m_first_draw{ true };
 

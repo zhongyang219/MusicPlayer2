@@ -7,7 +7,7 @@
 namespace UiElement
 {
     //所有界面元素的基类
-    class Element
+    class Element : public IMouseEvent
     {
     public:
         struct Value        //一个布局的数值
@@ -63,18 +63,19 @@ namespace UiElement
 
         //鼠标消息虚函数。
         //即使鼠标的位置不在当前元素的矩形区域内，函数仍然会响应，因此在重写这些虚函数时需要先使用rect.PtInRect(point)判断鼠标位置是否在矩形区域内。
-        virtual bool LButtonUp(CPoint point) { return false; }
-        virtual bool LButtonDown(CPoint point) { return false; }
-        virtual bool MouseMove(CPoint point) { return false; }
-        virtual bool RButtunUp(CPoint point) { return false; }
-        virtual bool RButtonDown(CPoint point) { return false; }
-        virtual bool MouseWheel(int delta, CPoint point) { return false; }
-        virtual bool DoubleClick(CPoint point) { return false; }
-        virtual bool MouseLeave() { return false; }
+        virtual bool LButtonUp(CPoint point) override { return false; }
+        virtual bool LButtonDown(CPoint point) override { return false; }
+        virtual bool MouseMove(CPoint point) override { return false; }
+        virtual bool RButtonUp(CPoint point) override { return false; }
+        virtual bool RButtonDown(CPoint point) override { return false; }
+        virtual bool MouseWheel(int delta, CPoint point) override { return false; }
+        virtual bool DoubleClick(CPoint point) override { return false; }
+        virtual bool MouseLeave() override { return false; }
 
         virtual void CalculateRect();           //计算此元素在界面中的矩形区域
 
         virtual bool SetCursor() { return false; }
+        virtual void InitComplete() {}
 
     protected:
         CRect ParentRect() const;
