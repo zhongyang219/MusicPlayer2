@@ -1,7 +1,7 @@
 <root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd">
     <ui>
       <verticalLayout margin="8">
-        <text type="userDefine" text="%(UI_TXT_PLAY_QUEUE)" height="56" font_size="12"/>
+        <text type="userDefine" text="%(UI_TXT_PLAY_QUEUE)" height="56" font_size="12" hide-height="250"/>
         <searchBox height="26" margin-bottom="4"/>
         <playlist item_height="32"/>
         <horizontalLayout height="32" margin-top="8">
