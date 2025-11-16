@@ -32,6 +32,12 @@ bool UiElement::ProgressBar::LButtonUp(CPoint point)
     return false;
 }
 
+bool UiElement::ProgressBar::RButtonUp(CPoint point)
+{
+    //进度条不弹出右键菜单
+    return btn.rect.PtInRect(point);
+}
+
 bool UiElement::ProgressBar::MouseMove(CPoint point)
 {
     btn.hover = btn.rect.PtInRect(point) && !(ui->m_show_volume_adj && (ui->m_buttons[CPlayerUIBase::BTN_VOLUME_UP].rect.PtInRect(point) || ui->m_buttons[CPlayerUIBase::BTN_VOLUME_DOWN].rect.PtInRect(point)));

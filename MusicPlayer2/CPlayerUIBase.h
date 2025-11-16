@@ -188,7 +188,6 @@ public:
         BTN_NEXT,               //下一曲
         BTN_SHOW_PLAYLIST,      //显示/隐藏播放列表
         BTN_MEDIA_LIB,          //媒体库
-        BTN_COVER,              //专辑封面
         BTN_FULL_SCREEN_TITLEBAR, //标题栏上的全屏显示按钮
         BTN_FULL_SCREEN,        //全屏显示按钮
         BTN_MENU_TITLEBAR,      //标题栏上的主菜单按钮
@@ -293,9 +292,8 @@ protected:
     void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked = false);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool checked = false);
 
-    virtual void AddMouseToolTip(BtnKey btn, LPCTSTR str);      //为一个按钮添加鼠标提示
-    virtual void UpdateMouseToolTip(BtnKey btn, LPCTSTR str);
-    virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override { UpdateMouseToolTip(static_cast<BtnKey>(btn), str); }
+    virtual void AddMouseToolTip(int btn, LPCTSTR str);      //为一个按钮添加鼠标提示
+    virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override;
     virtual void UpdateMouseToolTipPosition(int btn, CRect rect);
 
     virtual void UpdateToolTipPosition() override;
@@ -347,7 +345,6 @@ public:
 private:
     void SetRepeatModeToolTipText();
     void SetSongInfoToolTipText();
-    void SetCoverToolTipText();
     void DrawPlayTag(CRect rect, LPCTSTR str_text);
 
     void DrawStatusBar(CRect rect, bool reset = false);
@@ -369,7 +366,6 @@ protected:
 
     wstring m_repeat_mode_tip;
     wstring m_info_tip;
-    wstring m_cover_tip;
 
     UIData& m_ui_data;
 

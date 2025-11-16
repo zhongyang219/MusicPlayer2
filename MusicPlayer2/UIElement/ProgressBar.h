@@ -11,6 +11,7 @@ namespace UiElement
         virtual void Draw() override;
 
         virtual bool LButtonUp(CPoint point) override;
+        virtual bool RButtonUp(CPoint point) override;
         virtual bool MouseMove(CPoint point) override;
         virtual bool SetCursor() override;
 

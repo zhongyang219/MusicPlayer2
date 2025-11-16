@@ -456,7 +456,6 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
     ini.WriteInt(L"config", L"cortana_back_color", theApp.m_lyric_setting_data.cortana_color);
     ini.WriteInt(L"config", L"volume_map", theApp.m_nc_setting_data.volume_map);
-    ini.WriteBool(L"config", L"show_cover_tip", theApp.m_nc_setting_data.show_cover_tip);
     ini.WriteBool(L"config", L"always_on_top", theApp.m_nc_setting_data.always_on_top);
     ini.WriteInt(L"config", L"max_album_cover_size", theApp.m_nc_setting_data.max_album_cover_size);
 
@@ -661,7 +660,6 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
     theApp.m_lyric_setting_data.cortana_color = ini.GetInt(L"config", L"cortana_back_color", 0);
     theApp.m_nc_setting_data.volume_map = ini.GetInt(L"config", L"volume_map", 100);
-    theApp.m_nc_setting_data.show_cover_tip = ini.GetBool(L"config", L"show_cover_tip", false);
     theApp.m_nc_setting_data.always_on_top = ini.GetBool(L"config", L"always_on_top", false);
     theApp.m_nc_setting_data.max_album_cover_size = ini.GetInt(L"config", L"max_album_cover_size", 800);
 
@@ -4844,11 +4842,6 @@ afx_msg LRESULT CMusicPlayerDlg::OnAlbumCoverDownloadComplete(WPARAM wParam, LPA
     //由于此函数放到线程中处理时，拉伸图片的处理CDrawCommon::BitmapStretch有一定的概率出错，原因未知
     //导致专辑封面背景是黑色的，因此通过发送消息放到主线程中处理
     CPlayer::GetInstance().AlbumCoverGaussBlur();
-
-    if (theApp.m_nc_setting_data.show_cover_tip)
-    {
-        UpdateSongInfoToolTip();
-    }
 
     return 0;
 }

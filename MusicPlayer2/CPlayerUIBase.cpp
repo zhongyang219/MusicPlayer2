@@ -241,12 +241,9 @@ bool CPlayerUIBase::RButtonUp(CPoint point)
     {
         if (btn.second.rect.PtInRect(point))
         {
-            ButtonRClicked(btn.first);
+            if (ButtonRClicked(btn.first))
+                return true;
         }
-
-        //其他按钮上点击右键不弹出菜单
-        if (btn.first != BTN_COVER && btn.second.rect.PtInRect(point) != FALSE)
-            return true;
     }
 
     CPoint point1;
@@ -667,9 +664,6 @@ void CPlayerUIBase::UpdateSongInfoToolTip()
 {
     SetSongInfoToolTipText();
     UpdateMouseToolTip(BTN_INFO, m_info_tip.c_str());
-
-    SetCoverToolTipText();
-    UpdateMouseToolTip(BTN_COVER, m_cover_tip.c_str());
 }
 
 void CPlayerUIBase::UpdatePlayPauseButtonTip()
@@ -1345,12 +1339,16 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
     btn.rect = rect;
 }
 
-void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
+void CPlayerUIBase::AddMouseToolTip(int btn, LPCTSTR str)
 {
-    m_tool_tip.AddTool(m_pMainWnd, str, m_buttons[btn].rect, btn + GetToolTipIdOffset());
+    CRect rect;
+    auto iter = m_buttons.find(static_cast<BtnKey>(btn));
+    if (iter != m_buttons.end())
+        rect = iter->second.rect;
+    m_tool_tip.AddTool(m_pMainWnd, str, rect, btn + GetToolTipIdOffset());
 }
 
-void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
+void CPlayerUIBase::UpdateMouseToolTip(int btn, LPCTSTR str)
 {
     m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetToolTipIdOffset());
 }
@@ -1440,19 +1438,6 @@ void CPlayerUIBase::SetSongInfoToolTipText()
     m_info_tip += theApp.m_str_table.LoadText(L"TXT_ALBUM") + L": " + songInfo.GetAlbum();
 }
 
-void CPlayerUIBase::SetCoverToolTipText()
-{
-    if (theApp.m_nc_setting_data.show_cover_tip && theApp.m_app_setting_data.show_album_cover && CPlayer::GetInstance().AlbumCoverExist())
-    {
-        if (CPlayer::GetInstance().IsInnerCover())
-            m_cover_tip = theApp.m_str_table.LoadTextFormat(L"UI_TIP_COVER_INNER", { CPlayer::GetInstance().GetAlbumCoverType() });
-        else
-            m_cover_tip = theApp.m_str_table.LoadTextFormat(L"UI_TIP_COVER_OUT", { CPlayer::GetInstance().GetAlbumCoverPath() });
-    }
-    else
-        m_cover_tip.clear();
-}
-
 int CPlayerUIBase::Margin() const
 {
     int margin = m_layout.margin;
@@ -1509,8 +1494,7 @@ bool CPlayerUIBase::PointInControlArea(CPoint point) const
     bool point_in_control = false;
     for (const auto& btn : m_buttons)
     {
-        if (btn.first != BTN_COVER)
-            point_in_control |= (btn.second.rect.PtInRect(point) != FALSE);
+        point_in_control |= (btn.second.rect.PtInRect(point) != FALSE);
     }
     return point_in_control;
 }
@@ -3407,8 +3391,6 @@ void CPlayerUIBase::AddToolTips()
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FIND_SONGS");
     tip_str += GetCmdShortcutKeyForTooltips(ID_FIND);
     AddMouseToolTip(BTN_FIND, tip_str.c_str());
-    // 封面
-    AddMouseToolTip(BTN_COVER, m_cover_tip.c_str());
     // 全屏
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FULL_SCREEN");
     tip_str += GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN);
@@ -3458,23 +3440,23 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_LOCATE_TO_CURRENT, tip_str.c_str());
     // 播放列表
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_MENU");
-    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::PLAYLIST_MENU_BTN), tip_str.c_str());
+    AddMouseToolTip(UiElement::TooltipIndex::PLAYLIST_MENU_BTN, tip_str.c_str());
     // 播放列表下拉菜单按钮
     tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST");
-    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::PLAYLIST_DROP_DOWN_BTN), tip_str.c_str());
+    AddMouseToolTip(UiElement::TooltipIndex::PLAYLIST_DROP_DOWN_BTN, tip_str.c_str());
     // 循环模式
     AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip.c_str());
     UpdateRepeatModeToolTip();
     // 播放列表工具提示
-    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::PLAYLIST), L"");
+    AddMouseToolTip(UiElement::TooltipIndex::PLAYLIST, L"");
     // tabElement工具提示
-    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::TAB_ELEMENT), L"");
+    AddMouseToolTip(UiElement::TooltipIndex::TAB_ELEMENT, L"");
     // "播放“我喜欢的音乐”"
     AddMouseToolTip(BTN_PLAY_MY_FAVOURITE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_MY_FAVOURITE").c_str());
     //歌词卡拉OK样式显示
     AddMouseToolTip(BTN_KARAOKE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_KARAOKE").c_str());
     //搜索框清除按钮
-    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::SEARCHBOX_CLEAR_BTN), theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str());
+    AddMouseToolTip(UiElement::TooltipIndex::SEARCHBOX_CLEAR_BTN, theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str());
     //显示播放队列
     AddMouseToolTip(BTN_SHOW_PLAY_QUEUE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_QUEUE").c_str());
     //显示面板
