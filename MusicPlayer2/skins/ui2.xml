@@ -156,7 +156,6 @@
             </verticalLayout>
           </horizontalLayout>
         </rectangle>
-
         <!--<albumCover square="true" margin-right="4" width="120">
             <spectrum draw_reflex="false" fixed_width="true" alignment="center" height="50%" margin-bottom="0"/>
           </albumCover>
@@ -168,6 +167,7 @@
             <lyrics height="20" />
           </verticalLayout>-->
       </horizontalLayout>
+      <lyrics margin-left="8" margin-right="8" max-height="28" hide-height="224"/>
       <rectangle height="24" margin="4" margin-bottom="0">
         <horizontalLayout>
           <button key="repeatMode" width="20" height="20" margin="2"/>

@@ -6,15 +6,15 @@
 UiElement::ClassicalControlBar::ClassicalControlBar()
     : Element()
 {
-    max_height.FromString("56");
+    height.FromString("56");
 }
 
 void UiElement::ClassicalControlBar::Draw()
 {
     if (rect.Width() < ui->DPI(350))
-        max_height.FromString("56");
+        height.FromString("56");
     else
-        max_height.FromString("36");
+        height.FromString("36");
     CalculateRect();
 
     Element::Draw();

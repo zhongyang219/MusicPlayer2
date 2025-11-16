@@ -1881,26 +1881,6 @@ CRect CPlayerUIBase::DrawProgess(CRect rect)
     return progress_rect;
 }
 
-void CPlayerUIBase::DrawTranslateButton(CRect rect)
-{
-    static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_TRANSLATE");
-    m_buttons[BTN_TRANSLATE].enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
-    DrawTextButton(rect, BTN_TRANSLATE, btn_str.c_str(), theApp.m_lyric_setting_data.show_translate);
-}
-
-void CPlayerUIBase::DrawDesktopLyricButton(CRect rect)
-{
-    static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_DESKTOP_LYRIC");
-    DrawTextButton(rect, BTN_LRYIC, btn_str.c_str(), theApp.m_lyric_setting_data.show_desktop_lyric);
-}
-
-void CPlayerUIBase::DrawKaraokeButton(CRect rect)
-{
-    m_buttons[BTN_KARAOKE].enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
-    //如果是卡拉OK样式显示歌词，则按钮显示为选中状态
-    DrawUIButton(rect, BTN_KARAOKE, false, false, 9, theApp.m_lyric_setting_data.lyric_karaoke_disp);
-}
-
 void CPlayerUIBase::DrawTopRightIcons()
 {
     if (!theApp.m_app_setting_data.show_window_frame && !m_ui_data.full_screen)

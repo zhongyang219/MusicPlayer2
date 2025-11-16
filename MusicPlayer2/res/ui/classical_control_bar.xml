@@ -9,7 +9,7 @@
         <progressBar show_play_time="true" margin-left="4"/>
         <button key="favorite" width="24" height="24" margin-left="4"/>
         <button key="addToPlaylist" width="24" height="24" margin-left="2"/>
-        <button key="switchDisplay" width="24" height="24" margin-left="2"/>
+        <button key="switchDisplay" text="%(UI_TIP_BTN_SWITCH_LYRIC_PLAYLIST)" width="24" height="24" margin-left="2"/>
         <button key="mediaLib" width="24" height="24" margin-left="2"/>
         <button key="showPlaylist" width="24" height="24" margin-left="2"/>
       </horizontalLayout>
@@ -23,7 +23,7 @@
           <placeHolder/>
           <button key="favorite" width="24" height="24"/>
           <button key="addToPlaylist" width="24" height="24" margin-left="2"/>
-          <button key="switchDisplay" width="24" height="24" margin-left="2"/>
+          <button key="switchDisplay" text="%(UI_TIP_BTN_SWITCH_LYRIC_PLAYLIST)" width="24" height="24" margin-left="2"/>
           <button key="mediaLib" width="24" height="24" margin-left="2"/>
           <button key="showPlaylist" width="24" height="24" margin-left="2"/>
         </horizontalLayout>
