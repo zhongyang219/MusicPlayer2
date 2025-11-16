@@ -123,6 +123,7 @@
               <button key="darkLightMode" height="28" margin="2" show_text="true"/>
               <button key="skin" height="28" margin="2" show_text="true"/>
               <button key="settings" height="28" width="28" margin="2"/>
+              <button key="info" height="28" margin="2" show_text="true"/>
               <button key="showPanel" icon="folderExplore" text="%(TXT_FOLDER_EXPLORE)" height="28" width="28" margin="2" panel_file_name="folder_explore_panel.xml"/>
               <button key="showPanel" icon="folder" text="%(TXT_FOLDER)" height="28" width="28" margin="2" panel_file_name="folder_explore_panel.xml"/>
               <placeHolder/>
@@ -138,8 +139,23 @@
               <button key="locateTrack" width="82" height="24" margin="2" show_text="true"/>
               <placeHolder/>
             </horizontalLayout>-->
-            <rectangle height="28">
-              <toolbar/>
+            <rectangle height="24">
+              <horizontalLayout>
+                <button key="repeatMode" width="20" height="20" margin="2"/>
+                <button key="settings" width="20" height="20" margin="2"/>
+                <button key="equalizer" width="20" height="20" margin="2"/>
+                <button key="skin" width="20" height="20" margin="2"/>
+                <button key="miniMode" width="20" height="20" margin="2" hide-width="174"/>
+                <button key="info" width="20" height="20" margin="2" hide-width="198"/>
+                <button key="find" width="20" height="20" margin="2" hide-width="222"/>
+                <button key="lyricTranslate" width="20" height="20" margin="2" hide-width="246"/>
+                <button key="darkLightMode" width="20" height="20" margin="2" hide-width="294"/>
+                <button key="abRepeat" width="20" height="20" margin="2" hide-width="318"/>
+                <button key="desktopLyric" width="20" height="20" margin="2" hide-width="270"/>
+                <placeHolder/>
+                <volume width="56" show_text="true"/>
+                <beatIndicator width="44" hide-width="368"/>
+              </horizontalLayout>
             </rectangle>
             <horizontalLayout height="32">
               <searchBox height="28" margin-left="4"/>
@@ -152,6 +168,15 @@
         <verticalLayout>
           <searchBox height="26" margin-bottom="4" list_element_id="medialibFolderExplore5"/>
           <medialibFolderExplore id="medialibFolderExplore5"/>
+        </verticalLayout>
+        
+        <!--第6页-->
+        <verticalLayout>
+          <horizontalLayout height="26">
+            <button key="info" width="28" height="28" margin="2" show_text="true"/>
+            <placeHolder/>
+          </horizontalLayout>
+          <placeHolder/>
         </verticalLayout>
         
       </stackElement>
