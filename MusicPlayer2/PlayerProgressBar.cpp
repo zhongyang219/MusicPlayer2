@@ -78,7 +78,7 @@ void CPlayerProgressBar::OnPaint()
     int progress_width = bar_width * m_bar_count + theApp.DPI(2) * 2;
     rc_tmp.right = rect.left + progress_width;
     drawer.FillRect(rc_tmp, RGB(255, 255, 255));
-    drawer.DrawRectOutLine(rc_tmp, m_theme_color.dark1, theApp.DPI(1), false);
+    drawer.DrawRectOutLine(rc_tmp, m_theme_color.dark0, theApp.DPI(1), false);
     int bar_cnt = m_progress / (100 / m_bar_count) + 1;        //格子数
     int last_bar_percent = m_progress % (100 / m_bar_count);
     CRect rc_bar{ rc_tmp };
@@ -90,12 +90,12 @@ void CPlayerProgressBar::OnPaint()
         rc_bar.MoveToX(start_x_pos + i * bar_width);
         if (i != bar_cnt - 1)
         {
-            drawer.FillRect(rc_bar, m_theme_color.dark1, true);
+            drawer.FillRect(rc_bar, m_theme_color.dark0, true);
         }
         else
         {
             BYTE alpha = ALPHA_CHG(last_bar_percent * m_bar_count);
-            drawer.FillAlphaRect(rc_bar, m_theme_color.dark1, alpha, true);
+            drawer.FillAlphaRect(rc_bar, m_theme_color.dark0, alpha, true);
         }
     }
 }
