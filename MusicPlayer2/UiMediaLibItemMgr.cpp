@@ -374,6 +374,7 @@ void CUiFolderExploreMgr::UpdateFolders()
     }
 
     m_loading = false;
+    m_inited = true;
 }
 
 CUiFolderExploreMgr::CUiFolderExploreMgr()

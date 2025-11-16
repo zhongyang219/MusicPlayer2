@@ -92,6 +92,8 @@ std::wstring UiElement::FolderExploreTree::GetEmptyString()
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_LOADING_INFO");
     else if (!CUiFolderExploreMgr::Instance().IsInited())
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_UNINITED_INFO");
+    else if (tree_searched)
+        return std::wstring();
     else
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
 }
