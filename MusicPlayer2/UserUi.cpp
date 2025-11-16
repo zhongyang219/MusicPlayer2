@@ -187,6 +187,10 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
         //绘制音量调整按钮
         DrawVolumnAdjBtn();
     }
+
+    //绘制面板
+    m_panel_mgr.DrawPanel();
+
     //绘制右上角图标
     DrawTopRightIcons();
 
@@ -195,8 +199,6 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
     {
         DrawCurrentTime();
     }
-
-    m_panel_mgr.DrawPanel();
 
     m_draw_data.thumbnail_rect = draw_rect;
 }
