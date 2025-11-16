@@ -17,7 +17,6 @@ namespace UiElement
     class AlbumCover;
     class Spectrum;
     class TrackInfo;
-    class Toolbar;
     class ProgressBar;
     class Lyrics;
     class Volume;
@@ -74,7 +73,6 @@ public:
     friend class UiElement::AlbumCover;
     friend class UiElement::Spectrum;
     friend class UiElement::TrackInfo;
-    friend class UiElement::Toolbar;
     friend class UiElement::ProgressBar;
     friend class UiElement::Lyrics;
     friend class UiElement::Volume;

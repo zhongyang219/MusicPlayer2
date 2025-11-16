@@ -729,16 +729,6 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     spectrum->align = Alignment::CENTER;
             }
         }
-        //工具条
-        else if (item_name == "toolbar")
-        {
-            UiElement::Toolbar* toolbar = dynamic_cast<UiElement::Toolbar*>(element.get());
-            if (toolbar != nullptr)
-            {
-                std::string str_show_translate_btn = CTinyXml2Helper::ElementAttribute(xml_node, "show_translate_btn");
-                toolbar->show_translate_btn = CTinyXml2Helper::StringToBool(str_show_translate_btn.c_str());
-            }
-        }
         //进度条
         else if (item_name == "progressBar")
         {

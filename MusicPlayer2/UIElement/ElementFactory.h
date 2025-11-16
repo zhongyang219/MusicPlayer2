@@ -9,7 +9,6 @@
 #include "UIElement/Rectangle.h"
 #include "UIElement/AlbumCover.h"
 #include "UIElement/Spectrum.h"
-#include "UIElement/Toolbar.h"
 #include "UIElement/ProgressBar.h"
 #include "UIElement/Volume.h"
 #include "UIElement/ClassicalControlBar.h"

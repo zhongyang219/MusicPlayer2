@@ -138,6 +138,9 @@
               <button key="locateTrack" width="82" height="24" margin="2" show_text="true"/>
               <placeHolder/>
             </horizontalLayout>-->
+            <rectangle height="28">
+              <toolbar/>
+            </rectangle>
             <horizontalLayout height="32">
               <searchBox height="28" margin-left="4"/>
               <placeHolder/>

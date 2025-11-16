@@ -993,9 +993,6 @@
     <ClInclude Include="UIElement\Text.h">
       <Filter>UIElement</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement\Toolbar.h">
-      <Filter>UIElement</Filter>
-    </ClInclude>
     <ClInclude Include="UIElement\TrackInfo.h">
       <Filter>UIElement</Filter>
     </ClInclude>
@@ -1602,9 +1599,6 @@
       <Filter>UIElement</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\Text.cpp">
-      <Filter>UIElement</Filter>
-    </ClCompile>
-    <ClCompile Include="UIElement\Toolbar.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\TrackInfo.cpp">

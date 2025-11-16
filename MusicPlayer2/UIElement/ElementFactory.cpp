@@ -32,8 +32,6 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::Spectrum>();
     else if (name == "trackInfo")
         element = std::make_shared<UiElement::TrackInfo>();
-    else if (name == "toolbar")
-        element = std::make_shared<UiElement::Toolbar>();
     else if (name == "progressBar")
         element = std::make_shared<UiElement::ProgressBar>();
     else if (name == "lyrics")

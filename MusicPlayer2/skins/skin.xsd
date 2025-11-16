@@ -143,7 +143,6 @@
         <xs:element name="albumCover" type="albumCoverType"></xs:element>
         <xs:element name="spectrum" type="spectrumType"></xs:element>
         <xs:element name="trackInfo" type="trackInfoType"></xs:element>
-        <xs:element name="toolbar" type="toolbarType"></xs:element>
         <xs:element name="progressBar" type="progressBarType"></xs:element>
         <xs:element name="lyrics" type="lyricsType"></xs:element>
         <xs:element name="volume" type="volumeType"></xs:element>
@@ -1380,18 +1379,6 @@
     <xs:attribute name="font_size" default="9" type="font_size">
       <xs:annotation>
         <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
-  </xs:complexType>
-  <xs:complexType name="toolbarType">
-    <xs:annotation>
-      <xs:documentation>工具条</xs:documentation>
-    </xs:annotation>
-    <xs:group ref="elements"></xs:group>
-    <xs:attribute name="show_translate_btn" type="xs:boolean" default="false">
-      <xs:annotation>
-        <xs:documentation>是否在工具栏上显示“显示歌词翻译”按钮。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>

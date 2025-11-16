@@ -59,7 +59,22 @@
       </stackElement>
       <!--工具栏-->
       <rectangle height="24" margin="4" margin-bottom="0">
-        <toolbar show_translate_btn="true"/>
+        <horizontalLayout>
+          <button key="repeatMode" width="20" height="20" margin="2"/>
+          <button key="settings" width="20" height="20" margin="2"/>
+          <button key="equalizer" width="20" height="20" margin="2"/>
+          <button key="skin" width="20" height="20" margin="2"/>
+          <button key="miniMode" width="20" height="20" margin="2" hide-width="174"/>
+          <button key="info" width="20" height="20" margin="2" hide-width="198"/>
+          <button key="find" width="20" height="20" margin="2" hide-width="222"/>
+          <button key="lyricTranslate" width="20" height="20" margin="2" hide-width="246"/>
+          <button key="darkLightMode" width="20" height="20" margin="2" hide-width="294"/>
+          <button key="abRepeat" width="20" height="20" margin="2" hide-width="318"/>
+          <button key="desktopLyric" width="20" height="20" margin="2" hide-width="270"/>
+          <placeHolder/>
+          <volume width="56" show_text="true"/>
+          <beatIndicator width="44" hide-width="368"/>
+        </horizontalLayout>
       </rectangle>
       <!--控制条-->
       <classicalControlBar margin="4"/>
@@ -101,7 +116,22 @@
         <spectrum draw_reflex="true" fixed_width="true" alignment="center" height="15%" margin-top="-6" margin-bottom="-12" min-height="24" max-height="80"/>
       </verticalLayout>
       <rectangle height="24" margin="4" margin-bottom="0">
-        <toolbar show_translate_btn="true"/>
+        <horizontalLayout>
+          <button key="repeatMode" width="20" height="20" margin="2"/>
+          <button key="settings" width="20" height="20" margin="2"/>
+          <button key="equalizer" width="20" height="20" margin="2"/>
+          <button key="skin" width="20" height="20" margin="2"/>
+          <button key="miniMode" width="20" height="20" margin="2" hide-width="174"/>
+          <button key="info" width="20" height="20" margin="2" hide-width="198"/>
+          <button key="find" width="20" height="20" margin="2" hide-width="222"/>
+          <button key="lyricTranslate" width="20" height="20" margin="2" hide-width="246"/>
+          <button key="darkLightMode" width="20" height="20" margin="2" hide-width="294"/>
+          <button key="abRepeat" width="20" height="20" margin="2" hide-width="318"/>
+          <button key="desktopLyric" width="20" height="20" margin="2" hide-width="270"/>
+          <placeHolder/>
+          <volume width="56" show_text="true"/>
+          <beatIndicator width="44" hide-width="368"/>
+        </horizontalLayout>
       </rectangle>
       <classicalControlBar margin="4"/>
     </verticalLayout>
@@ -139,7 +169,22 @@
           </verticalLayout>-->
       </horizontalLayout>
       <rectangle height="24" margin="4" margin-bottom="0">
-        <toolbar show_translate_btn="true"/>
+        <horizontalLayout>
+          <button key="repeatMode" width="20" height="20" margin="2"/>
+          <button key="settings" width="20" height="20" margin="2"/>
+          <button key="equalizer" width="20" height="20" margin="2"/>
+          <button key="skin" width="20" height="20" margin="2"/>
+          <button key="miniMode" width="20" height="20" margin="2" hide-width="174"/>
+          <button key="info" width="20" height="20" margin="2" hide-width="198"/>
+          <button key="find" width="20" height="20" margin="2" hide-width="222"/>
+          <button key="lyricTranslate" width="20" height="20" margin="2" hide-width="246"/>
+          <button key="darkLightMode" width="20" height="20" margin="2" hide-width="294"/>
+          <button key="abRepeat" width="20" height="20" margin="2" hide-width="318"/>
+          <button key="desktopLyric" width="20" height="20" margin="2" hide-width="270"/>
+          <placeHolder/>
+          <volume width="56" show_text="true"/>
+          <beatIndicator width="44" hide-width="368"/>
+        </horizontalLayout>
       </rectangle>
       <classicalControlBar margin-top="4"/>
     </verticalLayout>
