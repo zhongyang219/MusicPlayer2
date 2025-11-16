@@ -32,8 +32,8 @@ private:
     const ItemInfo& GetItemInfo(ListItem::ClassificationType type, int index) const;
 
     std::map<ListItem::ClassificationType, std::vector<ItemInfo>> m_item_map;   //保存媒体库中所有分类的名称列表
-    bool m_loading{};
-    bool m_inited{};                        //如果已经初始化过，则为true
+    std::atomic<bool> m_loading{};
+    std::atomic<bool> m_inited{};                        //如果已经初始化过，则为true
     std::map<ListItem::ClassificationType, int> m_current_index_map;    //保存媒体库模式下每种模式正在播放的曲目
     std::map<ListItem::ClassificationType, std::wstring> m_current_name_map;    //保存媒体库模式下每种模式正在播放的曲目
     mutable std::shared_mutex m_shared_mutex;
@@ -59,8 +59,8 @@ private:
     static CUiMyFavouriteItemMgr m_instance;
 
     vector<SongInfo> m_may_favourite_song_list;     //“我喜欢的音乐”列表
-    bool m_loading{};
-    bool m_inited{};                        //如果已经初始化过，则为true
+    std::atomic<bool> m_loading{};
+    std::atomic<bool> m_inited{};                        //如果已经初始化过，则为true
     mutable std::shared_mutex m_shared_mutex;
 
 };
@@ -97,9 +97,9 @@ private:
     static CUiAllTracksMgr m_instance;
 
     std::vector<UTrackInfo> m_all_tracks_list;  //所有曲目信息列表
-    bool m_loading{};                       //如果正在初始化中，则为true
+    std::atomic<bool> m_loading{};                       //如果正在初始化中，则为true
     int m_current_index{ -1 };              //正在播放的曲目在m_all_tracks_list中的序号
-    bool m_inited{};                        //如果已经初始化过，则为true
+    std::atomic<bool> m_inited{};                        //如果已经初始化过，则为true
     mutable std::shared_mutex m_shared_mutex;
 };
 
@@ -121,8 +121,8 @@ private:
 
     static CUiFolderExploreMgr m_instance;
 
-    bool m_loading{};                       //如果正在初始化中，则为true
-    bool m_inited{};                        //如果已经初始化过，则为true
+    std::atomic<bool> m_loading{};                       //如果正在初始化中，则为true
+    std::atomic<bool> m_inited{};                        //如果已经初始化过，则为true
 
     std::vector<std::shared_ptr<UiElement::TreeElement::Node>> m_root_nodes;
     std::map<std::wstring, int> m_folder_audio_files_num;       //保存每个文件夹下音频文件的数量
