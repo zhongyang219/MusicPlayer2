@@ -12,7 +12,7 @@ void UiElement::Button::Draw()
     {
         static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_TRANSLATE");
         m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
-        ui->DrawTextButton(rect, CPlayerUIBase::BTN_TRANSLATE, btn_str.c_str(), theApp.m_lyric_setting_data.show_translate);
+        ui->DrawTextButton(rect, m_btn, btn_str.c_str(), theApp.m_lyric_setting_data.show_translate);
     }
         break;
     case CPlayerUIBase::BTN_LRYIC:

@@ -372,7 +372,8 @@ protected:
     bool m_show_volume_adj{ false };        //显示音量调整按钮
     bool m_show_volume_text{};        //是否显示音量文本
 
-    std::map<BtnKey, UIButton> m_buttons;   //保存UI中的标题栏、菜单栏和音量按钮的信息，其他按钮信息保存在UiElement::Button中
+    //这个map只保存UI中的标题栏、菜单栏和音量按钮的信息，其他按钮信息应该保存在各自的UiElement::Button中，如果map出现了其他UI中的其他按钮应为异常情况
+    std::map<BtnKey, UIButton> m_buttons;
 
     bool m_first_draw{ true };
 
