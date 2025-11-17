@@ -76,3 +76,9 @@ void UiElement::PlaylistIndicator::ClearRect()
     btn_drop_down.rect = CRect();
     btn_menu.rect = CRect();
 }
+
+void UiElement::PlaylistIndicator::HideTooltip()
+{
+    ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_DROP_DOWN_BTN, CRect());
+    ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_MENU_BTN, CRect());
+}

@@ -19,6 +19,7 @@ namespace UiElement
         virtual bool DoubleClick(CPoint point) override;
         void ShowContextMenu(CMenu* menu, CWnd* cmd_reciver);
         virtual void ClearRect() override;
+        virtual void HideTooltip() override;
 
         void EnsureItemVisible(int index);  //确保指定项在播放列表中可见
         void EnsureHighlightItemVisible();  //确保高亮行可见

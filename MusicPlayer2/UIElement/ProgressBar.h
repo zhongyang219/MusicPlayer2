@@ -14,6 +14,7 @@ namespace UiElement
         virtual bool RButtonUp(CPoint point) override;
         virtual bool MouseMove(CPoint point) override;
         virtual bool SetCursor() override;
+        virtual void HideTooltip() override;
 
         bool hover() const;
 

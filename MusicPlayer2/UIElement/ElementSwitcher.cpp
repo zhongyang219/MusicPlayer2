@@ -82,6 +82,11 @@ bool UiElement::ElementSwitcher::SetCursor()
     return false;
 }
 
+void UiElement::ElementSwitcher::HideTooltip()
+{
+    ui->UpdateMouseToolTipPosition(TooltipIndex::ELEMENT_SWITCHER, CRect());
+}
+
 bool UiElement::ElementSwitcher::hover() const
 {
     return btn.hover;

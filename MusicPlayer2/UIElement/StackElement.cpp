@@ -32,22 +32,6 @@ void UiElement::StackElement::Draw()
 {
     auto cur_element{ CurrentElement() };
 
-    //清空不显示的子元素的矩形区域
-    for (size_t i{}; i < childLst.size(); i++)
-    {
-        if (cur_element != childLst[i])
-        {
-            childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
-                if (element != nullptr)
-                {
-                    element->ClearRect();
-                    element->MouseLeave();
-                }
-                return false;
-            });
-        }
-    }
-
     if (cur_element != nullptr)
         cur_element->Draw();
     //只绘制一个子元素
@@ -220,6 +204,23 @@ void UiElement::StackElement::IndexChanged()
                         if (cur_index >= 0 && cur_index < static_cast<int>(stack_element->childLst.size()))
                             stack_element->cur_index = cur_index;
                     }
+                }
+                return false;
+            });
+        }
+    }
+    //清空不显示的子元素的矩形区域和鼠标提示
+    auto cur_element{ CurrentElement() };
+    for (size_t i{}; i < childLst.size(); i++)
+    {
+        if (cur_element != childLst[i])
+        {
+            childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
+                if (element != nullptr)
+                {
+                    element->ClearRect();
+                    element->MouseLeave();
+                    element->HideTooltip();
                 }
                 return false;
             });

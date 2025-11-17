@@ -13,6 +13,7 @@ namespace UiElement
         virtual bool MouseMove(CPoint point) override;
         virtual bool RButtonUp(CPoint point) override;
         virtual bool MouseLeave() override;
+        virtual void HideTooltip() override;
 
         enum IconType
         {

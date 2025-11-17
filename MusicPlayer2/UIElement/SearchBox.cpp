@@ -101,6 +101,11 @@ bool UiElement::SearchBox::LButtonDown(CPoint point)
     return false;
 }
 
+void UiElement::SearchBox::HideTooltip()
+{
+    ui->UpdateMouseToolTipPosition(TooltipIndex::SEARCHBOX_CLEAR_BTN, CRect());
+}
+
 bool UiElement::SearchBox::SetCursor()
 {
     if (hover)

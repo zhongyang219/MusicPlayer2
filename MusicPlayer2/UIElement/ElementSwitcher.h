@@ -21,6 +21,7 @@ namespace UiElement
         virtual bool MouseMove(CPoint point) override;
         virtual bool MouseLeave() override;
         virtual bool SetCursor() override;
+        virtual void HideTooltip() override;
 
         bool hover() const;
 

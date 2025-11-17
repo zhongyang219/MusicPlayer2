@@ -13,6 +13,7 @@ namespace UiElement
         virtual bool MouseMove(CPoint point) override;
         virtual bool MouseLeave() override;
         virtual void ClearRect() override;
+        virtual void HideTooltip() override;
 
         int font_size{ 9 };
 

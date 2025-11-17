@@ -1339,17 +1339,20 @@ void CPlayerUIBase::AddMouseToolTip(int btn, LPCTSTR str)
 
 void CPlayerUIBase::UpdateMouseToolTip(int btn, LPCTSTR str)
 {
-    m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetToolTipIdOffset());
+    if (m_tool_tip.m_hWnd != NULL)
+        m_tool_tip.UpdateTipText(str, m_pMainWnd, btn + GetToolTipIdOffset());
 }
 
 void CPlayerUIBase::UpdateMouseToolTipPosition(int btn, CRect rect)
 {
-    m_tool_tip.SetToolRect(m_pMainWnd, btn + GetToolTipIdOffset(), rect);
+    if (m_tool_tip.m_hWnd != NULL)
+        m_tool_tip.SetToolRect(m_pMainWnd, btn + GetToolTipIdOffset(), rect);
 }
 
 void CPlayerUIBase::UpdateVolumeToolTip()
 {
-    m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetToolTipIdOffset());
+    if (m_tool_tip.m_hWnd != NULL)
+        m_tool_tip.UpdateTipText(GetVolumeTooltipString(), m_pMainWnd, BTN_VOLUME + GetToolTipIdOffset());
 }
 
 void CPlayerUIBase::UpdatePlaylistBtnToolTip()

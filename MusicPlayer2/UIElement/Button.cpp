@@ -357,6 +357,11 @@ bool UiElement::Button::MouseLeave()
     return true;
 }
 
+void UiElement::Button::HideTooltip()
+{
+    ui->UpdateMouseToolTipPosition(key, CRect());
+}
+
 std::wstring UiElement::Button::GetDisplayText() const
 {
     if (!this->text.empty())

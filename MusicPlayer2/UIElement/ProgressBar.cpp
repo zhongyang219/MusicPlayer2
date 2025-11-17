@@ -74,6 +74,11 @@ bool UiElement::ProgressBar::SetCursor()
     return false;
 }
 
+void UiElement::ProgressBar::HideTooltip()
+{
+    ui->UpdateMouseToolTipPosition(TooltipIndex::PROGRESS_BAR, CRect());
+}
+
 bool UiElement::ProgressBar::hover() const
 {
     return btn.hover;

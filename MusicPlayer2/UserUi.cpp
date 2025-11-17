@@ -1051,6 +1051,7 @@ void CUserUi::OnPanelHide()
         panel->GetRootElement()->IterateAllElements([&](UiElement::Element* element) ->bool {
             //调用MouseLeave，以清除鼠标指向状态
             element->MouseLeave();
+            element->HideTooltip();
             return false;
         });
     }

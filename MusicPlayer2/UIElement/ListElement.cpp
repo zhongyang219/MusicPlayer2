@@ -306,6 +306,11 @@ void UiElement::ListElement::ClearRect()
         btn.second.rect = CRect();
 }
 
+void UiElement::ListElement::HideTooltip()
+{
+    ui->UpdateMouseToolTipPosition(GetToolTipIndex(), CRect());
+}
+
 void UiElement::ListElement::EnsureItemVisible(int index)
 {
     if (index <= 0)

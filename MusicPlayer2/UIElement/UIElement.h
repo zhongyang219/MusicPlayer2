@@ -76,6 +76,7 @@ namespace UiElement
 
         virtual bool SetCursor() { return false; }
         virtual void InitComplete() {}
+        virtual void HideTooltip() {}
 
     protected:
         CRect ParentRect() const;

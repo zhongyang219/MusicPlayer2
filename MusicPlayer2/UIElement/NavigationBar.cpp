@@ -79,6 +79,11 @@ bool UiElement::NavigationBar::MouseLeave()
     return true;
 }
 
+void UiElement::NavigationBar::HideTooltip()
+{
+    ui->UpdateMouseToolTipPosition(TooltipIndex::TAB_ELEMENT, CRect());
+}
+
 int UiElement::NavigationBar::SelectedIndex()
 {
     FindStackElement();
