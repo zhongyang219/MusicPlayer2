@@ -53,10 +53,6 @@ void UiElement::Button::Draw()
     }
         break;
     }
-    //这里将按钮的矩形区域保存到CPlayerUIBase::m_buttons中
-    ui->m_buttons[key].rect = rect;
-    //将CPlayerUIBase::m_buttons中的enable属性设置为false，因为按钮的点击事件在UiElement::Button中响应，将enable用于避免在CPlayerUIBase中响应点击事件
-    ui->m_buttons[key].enable = false;
     Element::Draw();
 }
 
@@ -134,6 +130,12 @@ void UiElement::Button::FromString(const std::string& key_type)
 
 void UiElement::Button::IconTypeFromString(const std::string& icon_name)
 {
+    icon_type = NameToIconType(icon_name);
+}
+
+IconMgr::IconType UiElement::Button::NameToIconType(const std::string& icon_name)
+{
+    IconMgr::IconType icon_type{ IconMgr::IT_NO_ICON };
     if (icon_name == "app") icon_type = IconMgr::IT_App;
     else if (icon_name == "appMonochrome") icon_type = IconMgr::IT_App_Monochrome;
     else if (icon_name == "stop") icon_type = IconMgr::IT_Stop;
@@ -245,6 +247,7 @@ void UiElement::Button::IconTypeFromString(const std::string& icon_name)
     else if (icon_name == "treeExpanded") icon_type = IconMgr::IT_TreeExpanded;
     else if (icon_name == "defaultCoverPlaying") icon_type = IconMgr::IT_Default_Cover_Playing;
     else if (icon_name == "defaultCoverStopped") icon_type = IconMgr::IT_Default_Cover_Stopped;
+    return icon_type;
 }
 
 int UiElement::Button::GetMaxWidth(CRect parent_rect) const
@@ -276,7 +279,7 @@ int UiElement::Button::GetMaxWidth(CRect parent_rect) const
 void UiElement::Button::ClearRect()
 {
     Element::ClearRect();
-    ui->m_buttons[key].rect = CRect();
+    m_btn.rect = CRect();
 }
 
 bool UiElement::Button::LButtonUp(CPoint point)
@@ -297,7 +300,7 @@ bool UiElement::Button::LButtonUp(CPoint point)
         }
         else
         {
-            ui->ButtonClicked(key);
+            ui->ButtonClicked(key, m_btn);
         }
         return true;
     }
@@ -341,7 +344,7 @@ bool UiElement::Button::RButtonUp(CPoint point)
 {
     if (m_btn.enable && m_btn.rect.PtInRect(point))
     {
-        return ui->ButtonRClicked(key);
+        return ui->ButtonRClicked(key, m_btn);
     }
 
     return false;

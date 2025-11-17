@@ -286,8 +286,6 @@ protected:
     void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
     void DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& btn, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
     void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9, bool checked = false);
-    // 绘制一个工具条按钮（将rect四面缩小 DPI(2) 后调用DrawUIButton）
-    void DrawControlBarBtn(CRect rect, BtnKey btn_type, UIButton& btn);
     // 绘制一个UI按钮，以text文本作为图标
     void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked = false);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool checked = false);
@@ -300,9 +298,9 @@ protected:
     virtual void AddToolTips();         //为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
 
     //响应一个按钮点击
-    virtual bool ButtonClicked(BtnKey btn_type);
+    virtual bool ButtonClicked(BtnKey btn_type, const UIButton& btn);
     //响应一个按钮右键点击
-    virtual bool ButtonRClicked(BtnKey btn_type);
+    virtual bool ButtonRClicked(BtnKey btn_type, const UIButton& btn);
 
 public:
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
@@ -374,7 +372,7 @@ protected:
     bool m_show_volume_adj{ false };        //显示音量调整按钮
     bool m_show_volume_text{};        //是否显示音量文本
 
-    std::map<BtnKey, UIButton> m_buttons;
+    std::map<BtnKey, UIButton> m_buttons;   //保存UI中的标题栏、菜单栏和音量按钮的信息，其他按钮信息保存在UiElement::Button中
 
     bool m_first_draw{ true };
 

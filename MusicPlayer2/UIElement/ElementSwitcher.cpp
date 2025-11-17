@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ElementSwitcher.h"
+#include "Button.h"
 
 void UiElement::ElementSwitcher::Draw()
 {
@@ -10,8 +11,8 @@ void UiElement::ElementSwitcher::Draw()
     case Style::AlbumCover:
         ui->DrawAlbumCover(rect);
         break;
-    case Style::DropDownIcon:
-        ui->DrawUIButton(rect, btn, IconMgr::IT_DropDown);
+    case Style::Button:
+        ui->DrawUIButton(rect, btn, icon_type);
         break;
     }
 
@@ -48,6 +49,19 @@ bool UiElement::ElementSwitcher::LButtonDown(CPoint point)
 bool UiElement::ElementSwitcher::MouseMove(CPoint point)
 {
     btn.hover = rect.PtInRect(point);
+    //鼠标进入按钮区域时
+    if (!last_hover && btn.hover)
+    {
+        //指定了按钮文本且不显示文本时，显示鼠标提示
+        if (!text.empty())
+            ui->UpdateMouseToolTip(TooltipIndex::ELEMENT_SWITCHER, text.c_str());
+    }
+
+    if (btn.hover && !text.empty())
+    {
+        ui->UpdateMouseToolTipPosition(TooltipIndex::ELEMENT_SWITCHER, rect);
+    }
+    last_hover = btn.hover;
     return true;
 }
 
@@ -72,4 +86,10 @@ bool UiElement::ElementSwitcher::hover() const
 {
     return btn.hover;
     return true;
+}
+
+void UiElement::ElementSwitcher::IconTypeFromString(const std::string& icon_name)
+{
+    if (!icon_name.empty())
+        icon_type = Button::NameToIconType(icon_name);
 }

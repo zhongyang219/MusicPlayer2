@@ -150,7 +150,7 @@
       <!--播放界面-->
       <element>
         <!--固定在左上角的界面切换器，点击后返回主界面-->
-        <elementSwitcher x="4" y="4" width="32" height="32" style="drop_down_icon" stack_element_id="main_stack_element" stack_element_index="0"/>
+        <elementSwitcher x="4" y="4" width="32" height="32" style="button" text="%(UI_TIP_BTN_BACK)" icon="dropDown" stack_element_id="main_stack_element" stack_element_index="0"/>
         <verticalLayout>
           <element>
             <horizontalLayout>
@@ -380,7 +380,7 @@
           </rectangle>
         </verticalLayout>
         <!--固定在左上角的界面切换器，点击后返回主界面-->
-        <elementSwitcher x="4" y="4" width="32" height="32" style="drop_down_icon" stack_element_id="main_stack_element_narrow" stack_element_index="0"/>
+        <elementSwitcher x="4" y="4" width="32" height="32" style="button" text="%(UI_TIP_BTN_BACK)" icon="dropDown" stack_element_id="main_stack_element_narrow" stack_element_index="0"/>
       </element>
     </stackElement>
   </ui>

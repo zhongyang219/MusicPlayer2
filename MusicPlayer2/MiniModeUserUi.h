@@ -23,8 +23,8 @@ private:
     virtual bool IsDrawMenuBar() const override { return false; }
     virtual bool PointInControlArea(CPoint point) const override;
 
-    virtual bool ButtonClicked(BtnKey btn_type) override;
-    virtual bool ButtonRClicked(BtnKey btn_type) override;
+    virtual bool ButtonClicked(BtnKey btn_type, const UIButton& btn) override;
+    virtual bool ButtonRClicked(BtnKey btn_type, const UIButton& btn) override;
 
     bool IsShowUiPlaylist() const;
 

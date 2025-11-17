@@ -152,7 +152,7 @@ bool CMiniModeUserUi::PointInControlArea(CPoint point) const
     }
 }
 
-bool CMiniModeUserUi::ButtonClicked(BtnKey btn_type)
+bool CMiniModeUserUi::ButtonClicked(BtnKey btn_type, const UIButton& btn)
 {
     switch (btn_type)
     {
@@ -179,14 +179,14 @@ bool CMiniModeUserUi::ButtonClicked(BtnKey btn_type)
         return true;
     }
     }
-    return CPlayerUIBase::ButtonClicked(btn_type);
+    return CPlayerUIBase::ButtonClicked(btn_type, btn);
 }
 
-bool CMiniModeUserUi::ButtonRClicked(BtnKey btn_type)
+bool CMiniModeUserUi::ButtonRClicked(BtnKey btn_type, const UIButton& btn)
 {
     if (btn_type == BTN_SHOW_PLAYLIST)
         return false;
-    return CPlayerUIBase::ButtonRClicked(btn_type);
+    return CPlayerUIBase::ButtonRClicked(btn_type, btn);
 }
 
 bool CMiniModeUserUi::IsShowUiPlaylist() const

@@ -241,7 +241,7 @@ bool CPlayerUIBase::RButtonUp(CPoint point)
     {
         if (btn.second.rect.PtInRect(point))
         {
-            if (ButtonRClicked(btn.first))
+            if (ButtonRClicked(btn.first, btn.second))
                 return true;
         }
     }
@@ -308,7 +308,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
 
         if (pressed && btn.second.rect.PtInRect(point) && btn.second.enable)
         {
-            if (ButtonClicked(btn.first))
+            if (ButtonClicked(btn.first, btn.second))
                 return true;
             switch (btn.first)
             {
@@ -340,7 +340,7 @@ bool CPlayerUIBase::LButtonUp(CPoint point)
     return false;
 }
 
-bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
+bool CPlayerUIBase::ButtonClicked(BtnKey btn_type, const UIButton& btn)
 {
     switch (btn_type)
     {
@@ -447,12 +447,10 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
         return true;
 
     case BTN_DARK_LIGHT_TITLE_BAR:
-        m_buttons[BTN_DARK_LIGHT_TITLE_BAR].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
         return true;
 
     case BTN_LOCATE_TO_CURRENT:
-        m_buttons[BTN_LOCATE_TO_CURRENT].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCATE_TO_CURRENT);
         return true;
 
@@ -479,7 +477,6 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
         return true;
 
     case BTN_FULL_SCREEN_TITLEBAR:
-        m_buttons[BTN_FULL_SCREEN_TITLEBAR].hover = false;
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_FULL_SCREEN);
         return true;
 
@@ -489,14 +486,14 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
 
     case BTN_MENU_TITLEBAR:
     {
-        CPoint point(m_buttons[BTN_MENU_TITLEBAR].rect.left, m_buttons[BTN_MENU_TITLEBAR].rect.bottom);
+        CPoint point(btn.rect.left, btn.rect.bottom);
         theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
         return true;
     }
 
     case BTN_MENU:
     {
-        CPoint point(m_buttons[BTN_MENU].rect.left, m_buttons[BTN_MENU].rect.bottom);
+        CPoint point(btn.rect.left, btn.rect.bottom);
         theApp.m_pMainWnd->SendMessage(WM_MAIN_MENU_POPEDUP, (WPARAM)&point);
         return true;
     }
@@ -536,8 +533,7 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
     }
     case BTN_MEDIALIB_FOLDER_SORT:
     {
-        CRect btn_rect(m_buttons[BTN_MEDIALIB_FOLDER_SORT].rect);
-        CPoint point(btn_rect.left, btn_rect.bottom);
+        CPoint point(btn.rect.left, btn.rect.bottom);
         ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
         CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibFolderSortMenu);
         ASSERT(add_to_menu != nullptr);
@@ -552,8 +548,7 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
     }
     case BTN_MEDIALIB_PLAYLIST_SORT:
     {
-        CRect btn_rect(m_buttons[BTN_MEDIALIB_PLAYLIST_SORT].rect);
-        CPoint point(btn_rect.left, btn_rect.bottom);
+        CPoint point(btn.rect.left, btn.rect.bottom);
         ClientToScreen(theApp.m_pMainWnd->GetSafeHwnd(), &point);
         CMenu* add_to_menu = theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistSortMenu);
         ASSERT(add_to_menu != nullptr);
@@ -576,7 +571,7 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type)
     return false;
 }
 
-bool CPlayerUIBase::ButtonRClicked(BtnKey btn_type)
+bool CPlayerUIBase::ButtonRClicked(BtnKey btn_type, const UIButton& btn)
 {
     CPoint point1;
     GetCursorPos(&point1);
@@ -1075,12 +1070,6 @@ void CPlayerUIBase::DrawPlayEffectTag(CRect parent_rect, CRect& previous_item_re
         }
     }
 
-}
-
-void CPlayerUIBase::DrawControlBarBtn(CRect rect, BtnKey btn_type, UIButton& btn)
-{
-    rect.DeflateRect(DPI(2), DPI(2));
-    DrawUIButton(rect, btn_type, btn);
 }
 
 void CPlayerUIBase::DrawPlayTag(CRect rect, LPCTSTR str_text)
@@ -3311,16 +3300,6 @@ void CPlayerUIBase::DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, I
     m_draw.DrawIcon(hIcon, pos_icon, size_icon);
 }
 
-//void CPlayerUIBase::AddMouseToolTip(BtnKey btn, LPCTSTR str)
-//{
-//  m_tool_tip->AddTool(theApp.m_pMainWnd, str, m_buttons[btn].rect, btn + 1);
-//}
-//
-//void CPlayerUIBase::UpdateMouseToolTip(BtnKey btn, LPCTSTR str)
-//{
-//  m_tool_tip->UpdateTipText(str, theApp.m_pMainWnd, btn + 1);
-//}
-
 void CPlayerUIBase::AddToolTips()
 {
     bool is_mini_mode{ IsMiniMode() };
@@ -3461,4 +3440,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_SHOW_PLAY_QUEUE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_QUEUE").c_str());
     //显示面板
     AddMouseToolTip(BTN_SHOW_PANEL, L"");
+    //界面切换器
+    AddMouseToolTip(UiElement::TooltipIndex::ELEMENT_SWITCHER, L"");
 }

@@ -13,7 +13,7 @@ namespace UiElement
         {
             Empty,          //空白
             AlbumCover,     //显示为专辑封面
-            DropDownIcon,       //显示下拉按钮
+            Button,         //按钮样式
         };
 
         virtual bool LButtonUp(CPoint point) override;
@@ -24,11 +24,17 @@ namespace UiElement
 
         bool hover() const;
 
+        void IconTypeFromString(const std::string& icon_name);
+
         Style style{};
         std::string stack_element_id;
         int stack_element_index{ -1 };
+        IconMgr::IconType icon_type{ IconMgr::IT_Switch_Display };    //图标
+        std::wstring text;
+
     protected:
         CPlayerUIBase::UIButton btn;
+        bool last_hover = false;
     };
 }
 

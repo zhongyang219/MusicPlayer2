@@ -15,7 +15,9 @@ namespace UiElement
         std::wstring panel_file_name;   //面板xml文件的文件名，放在skins/panels目录下。如果提供了此属性，则点击按钮后将显示一个面板
 
         void FromString(const std::string& key_type);
-        void IconTypeFromString(const std::string& icon_type);
+        void IconTypeFromString(const std::string& icon_name);
+
+        static IconMgr::IconType NameToIconType(const std::string& icon_name);
 
         virtual void Draw() override;
         virtual int GetMaxWidth(CRect parent_rect) const override;

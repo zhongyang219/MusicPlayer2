@@ -57,7 +57,7 @@ public:
     virtual bool DoubleClick(CPoint point) override;
     virtual void UiSizeChanged() override;
     virtual bool SetCursor() override;
-    virtual bool ButtonClicked(BtnKey btn_type) override;
+    virtual bool ButtonClicked(BtnKey btn_type, const UIButton& btn) override;
 
 protected:
     int m_index{ INT_MAX };

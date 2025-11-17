@@ -482,7 +482,7 @@ bool CUserUi::SetCursor()
     return CPlayerUIBase::SetCursor();
 }
 
-bool CUserUi::ButtonClicked(BtnKey btn_type)
+bool CUserUi::ButtonClicked(BtnKey btn_type, const UIButton& btn)
 {
     if (btn_type == BTN_SHOW_PLAY_QUEUE)
     {
@@ -495,7 +495,7 @@ bool CUserUi::ButtonClicked(BtnKey btn_type)
         m_panel_mgr.HideAllPanel();
         return true;
     }
-    return CPlayerUIBase::ButtonClicked(btn_type);
+    return CPlayerUIBase::ButtonClicked(btn_type, btn);
 }
 
 int CUserUi::GetUiIndex()
@@ -905,11 +905,17 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     element_switcher->style = UiElement::ElementSwitcher::Style::Empty;
                 else if (style == "album_cover")
                     element_switcher->style = UiElement::ElementSwitcher::Style::AlbumCover;
-                else if (style == "drop_down_icon")
-                    element_switcher->style = UiElement::ElementSwitcher::Style::DropDownIcon;
+                else if (style == "button")
+                    element_switcher->style = UiElement::ElementSwitcher::Style::Button;
                 
                 element_switcher->stack_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "stack_element_id");
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "stack_element_index", element_switcher->stack_element_index);
+
+                std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
+                element_switcher->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+                ReplaceUiStringRes(element_switcher->text);
+                std::string str_icon = CTinyXml2Helper::ElementAttribute(xml_node, "icon");
+                element_switcher->IconTypeFromString(str_icon);
             }
         }
 
