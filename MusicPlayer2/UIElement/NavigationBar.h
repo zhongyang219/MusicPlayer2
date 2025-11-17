@@ -10,6 +10,7 @@ namespace UiElement
     public:
         virtual void Draw() override;
         virtual bool LButtonUp(CPoint point) override;
+        virtual bool LButtonDown(CPoint point) override;
         virtual bool MouseMove(CPoint point) override;
         virtual bool RButtonUp(CPoint point) override;
         virtual bool MouseLeave() override;
@@ -39,6 +40,8 @@ namespace UiElement
         std::vector<std::wstring> labels;
         int SelectedIndex();
         int hover_index{ -1 };
+        bool pressed{};
+
     private:
         void FindStackElement();        //查找StackElement
         bool find_stack_element{};      //如果已经查找过StackElement，则为true

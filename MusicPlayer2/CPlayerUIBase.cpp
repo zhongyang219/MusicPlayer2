@@ -3100,7 +3100,7 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
         if (tab_element->hover_index == index)
         {
             DrawAreaGuard guard(&m_draw, rect);
-            DrawRectangle(item_rect, m_colors.color_button_hover);
+            DrawRectangle(item_rect, tab_element->pressed ? m_colors.color_button_pressed : m_colors.color_button_hover);
         }
 
         //绘制图标

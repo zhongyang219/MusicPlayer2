@@ -11,6 +11,7 @@ void UiElement::NavigationBar::Draw()
 
 bool UiElement::NavigationBar::LButtonUp(CPoint point)
 {
+    pressed = false;
     if (rect.PtInRect(point))
     {
         FindStackElement();
@@ -32,6 +33,16 @@ bool UiElement::NavigationBar::LButtonUp(CPoint point)
                 stack_element->SetCurrentElement(selected_index);
             }
         }
+        return true;
+    }
+    return false;
+}
+
+bool UiElement::NavigationBar::LButtonDown(CPoint point)
+{
+    if (rect.PtInRect(point))
+    {
+        pressed = true;
         return true;
     }
     return false;
@@ -76,6 +87,7 @@ bool UiElement::NavigationBar::RButtonUp(CPoint point)
 bool UiElement::NavigationBar::MouseLeave()
 {
     hover_index = -1;
+    pressed = false;
     return true;
 }
 
