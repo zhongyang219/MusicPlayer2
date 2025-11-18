@@ -112,7 +112,7 @@ void UiElement::Element::SetRect(CRect _rect)
 
 void UiElement::Element::ClearRect()
 {
-    rect = CRect();
+    //rect = CRect();
 }
 
 UiElement::Element* UiElement::Element::RootElement()

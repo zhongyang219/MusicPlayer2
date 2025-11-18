@@ -249,11 +249,6 @@ bool CPlayerUIBase::RButtonUp(CPoint point)
     CPoint point1;
     GetCursorPos(&point1);
 
-    if (m_draw_data.lyric_rect.PtInRect(point))    //如果在歌词区域点击了鼠标右键
-    {
-        theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaLrcMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-        return true;
-    }
     // 其他区域显示主界面区域右键菜单
     theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
     return true;
@@ -644,7 +639,7 @@ CRect CPlayerUIBase::GetThumbnailClipArea()
             menu_bar_height += theApp.DPI(1);
     }
 
-    CRect thumbnail_rect = m_draw_data.thumbnail_rect;
+    CRect thumbnail_rect = m_thumbnail_rect;
     thumbnail_rect.MoveToY(thumbnail_rect.top + menu_bar_height);
     return thumbnail_rect;
 }

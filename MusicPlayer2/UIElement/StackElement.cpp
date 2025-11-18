@@ -80,7 +80,6 @@ bool UiElement::StackElement::LButtonUp(CPoint point)
     if ((pressed && indicator.rect.PtInRect(point) && indicator.enable)
         || (click_to_switch && GetRect().PtInRect(point)))
     {
-        ui->m_draw_data.lyric_rect.SetRectEmpty();
         SwitchDisplay();
         mouse_pressed = false;
         return true;

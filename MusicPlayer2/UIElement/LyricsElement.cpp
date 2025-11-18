@@ -18,14 +18,24 @@ void UiElement::Lyrics::Draw()
     //如果父元素中包含了矩形元素，则即使在“外观设置”中勾选了“歌词界面背景”，也不再为歌词区域绘制半透明背景
     ui->DrawLyrics(rect, lyric_font, lyric_tr_font, (!no_background && !IsParentRectangle()), show_song_info);
 
-    ui->m_draw_data.lyric_rect = rect;
     Element::Draw();
 }
 
 void UiElement::Lyrics::ClearRect()
 {
-    Element::ClearRect();
-    ui->m_draw_data.lyric_rect = CRect();
+    rect = CRect();
+}
+
+bool UiElement::Lyrics::RButtonUp(CPoint point)
+{
+    if (rect.PtInRect(point))
+    {
+        CPoint point1;
+        GetCursorPos(&point1);
+        theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaLrcMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return true;
+    }
+    return false;
 }
 
 bool UiElement::Lyrics::IsParentRectangle() const

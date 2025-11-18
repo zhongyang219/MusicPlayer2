@@ -239,14 +239,6 @@ public:
     std::wstring GetButtonText(BtnKey key_type) const;
 
 protected:
-    struct DrawData
-    {
-        //CRect cover_rect;
-        CRect lyric_rect;
-        CRect thumbnail_rect;
-    };
-
-protected:
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) = 0;
     virtual void PreDrawInfo();
     void SetDrawRect();
@@ -357,7 +349,7 @@ protected:
     CUIDrawer m_draw{ m_colors };       //用于绘制文本的对象
     SLayoutData m_layout;
     //CFont m_font_time;
-    DrawData m_draw_data;
+    CRect m_thumbnail_rect;
 
 
     CToolTipCtrl m_tool_tip;

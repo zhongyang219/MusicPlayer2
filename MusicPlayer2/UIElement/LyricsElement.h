@@ -12,6 +12,7 @@ namespace UiElement
         bool show_song_info = false;        //没有歌词时总是显示歌曲信息
         virtual void Draw() override;
         virtual void ClearRect() override;
+        virtual bool RButtonUp(CPoint point) override;
     protected:
         bool IsParentRectangle() const;     //判断父元素中是否有矩形元素
     };

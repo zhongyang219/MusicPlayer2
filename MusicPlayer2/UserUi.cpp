@@ -204,7 +204,7 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
         DrawCurrentTime();
     }
 
-    m_draw_data.thumbnail_rect = draw_rect;
+    m_thumbnail_rect = draw_rect;
 }
 
 std::shared_ptr<UiElement::Element> CUserUi::GetCurrentTypeUi() const
@@ -936,7 +936,6 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
 
 void CUserUi::SwitchStackElement()
 {
-    m_draw_data.lyric_rect.SetRectEmpty();
     UiElement::StackElement* stack_element = FindElement<UiElement::StackElement>();
     //当stackElement设置了hover_to_switch或size_change_to_switch时不允许主动切换
     if (stack_element != nullptr && !stack_element->hover_to_switch && !stack_element->size_change_to_switch)
@@ -945,7 +944,6 @@ void CUserUi::SwitchStackElement()
 
 void CUserUi::SwitchStackElement(std::string id, int index)
 {
-    m_draw_data.lyric_rect.SetRectEmpty();
     UiElement::StackElement* stack_element = FindElement<UiElement::StackElement>(id);
     //当stackElement设置了hover_to_switch或size_change_to_switch时不允许主动切换
     if (stack_element != nullptr && !stack_element->hover_to_switch && !stack_element->size_change_to_switch)
