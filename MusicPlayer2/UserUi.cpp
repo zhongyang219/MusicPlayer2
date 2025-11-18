@@ -451,7 +451,7 @@ bool CUserUi::DoubleClick(CPoint point)
             }
         }
         return false;
-    });
+    }, true);
 
     if (rtn)
         return true;
