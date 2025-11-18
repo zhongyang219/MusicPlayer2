@@ -342,9 +342,10 @@ bool UiElement::Button::MouseMove(CPoint point)
 
 bool UiElement::Button::RButtonUp(CPoint point)
 {
-    if (m_btn.enable && m_btn.rect.PtInRect(point))
+    if (m_btn.rect.PtInRect(point))
     {
-        return ui->ButtonRClicked(key, m_btn);
+        ui->ButtonRClicked(key, m_btn);
+        return true;    //在按钮区域内点击了鼠标右键时总是返回true，不弹出主窗口右键菜单
     }
 
     return false;

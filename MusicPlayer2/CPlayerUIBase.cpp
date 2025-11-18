@@ -241,8 +241,8 @@ bool CPlayerUIBase::RButtonUp(CPoint point)
     {
         if (btn.second.rect.PtInRect(point))
         {
-            if (ButtonRClicked(btn.first, btn.second))
-                return true;
+            ButtonRClicked(btn.first, btn.second);
+            return true;
         }
     }
 
