@@ -1068,6 +1068,9 @@
     <ClInclude Include="IMouseEvent.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\PanelElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1672,6 +1675,9 @@
     </ClCompile>
     <ClCompile Include="UIPanel\PlayerUIPanel.cpp">
       <Filter>PlayerUI\UIPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\PanelElement.cpp">
+      <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

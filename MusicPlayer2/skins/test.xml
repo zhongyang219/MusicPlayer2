@@ -1,5 +1,19 @@
 ﻿<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
       name="test">
+  <panel id="song_info_panel" width="200" height="250">
+    <verticalLayout>
+      <rectangle height="24">
+        <horizontalLayout>
+          <text type="userDefine" text="%(UI_TIP_BTN_PROPERTY)"/>
+          <button key="closePanel" width="24"/>
+        </horizontalLayout>
+      </rectangle>
+      <albumCover square="true"/>
+      <trackInfo height="24"/>
+      <text type="format" height="24"/>
+    </verticalLayout>
+  </panel>
+  
   <ui>
     <verticalLayout>
 
@@ -173,7 +187,7 @@
         <!--第6页-->
         <verticalLayout>
           <horizontalLayout height="26">
-            <button key="info" width="28" height="28" margin="2" show_text="true"/>
+            <button key="showPanel" panel_id="song_info_panel" icon="info" width="28" height="28" margin="2" show_text="true"/>
             <placeHolder/>
           </horizontalLayout>
           <placeHolder/>
@@ -206,7 +220,7 @@
                 <volume show_text="true" width="64" height="28" margin="2" hide-width="160"/>
                 <button key="addToPlaylist" width="28" height="28" margin="2" hide-width="94"/>
                 <button key="mediaLib" width="28" height="28" margin="2"/>
-                <button key="showPlaylist" width="28" height="28" margin="2"/>
+                <button key="showPlayQueue" width="28" height="28" margin="2"/>
               </horizontalLayout>
             </horizontalLayout>
             <horizontalLayout>

@@ -138,6 +138,40 @@ CRect UiElement::Element::ParentRect() const
     }
 }
 
+void UiElement::Element::CalculateRect(CRect rect_parent)
+{
+    const CRect rect_root{ RootElement()->GetRect() };
+    rect = rect_parent;
+    if (x.IsValid())
+        rect.left = x.GetValue(rect_parent) + rect_root.left;
+    if (y.IsValid())
+        rect.top = y.GetValue(rect_parent) + rect_root.top;
+
+    if (margin_left.IsValid())
+        rect.left = rect_parent.left + margin_left.GetValue(rect_parent);
+    if (margin_top.IsValid())
+        rect.top = rect_parent.top + margin_top.GetValue(rect_parent);
+    if (margin_right.IsValid())
+        rect.right = rect_parent.right - margin_right.GetValue(rect_parent);
+    if (margin_bottom.IsValid())
+        rect.bottom = rect_parent.bottom - margin_bottom.GetValue(rect_parent);
+
+    if (IsWidthValid())
+    {
+        if (!x.IsValid() && !margin_left.IsValid() && margin_right.IsValid())
+            rect.left = rect.right - width.GetValue(rect_parent);
+        else
+            rect.right = rect.left + width.GetValue(rect_parent);
+    }
+    if (IsHeightValid())
+    {
+        if (!y.IsValid() && !margin_top.IsValid() && margin_bottom.IsValid())
+            rect.top = rect.bottom - height.GetValue(rect_parent);
+        else
+            rect.bottom = rect.top + height.GetValue(rect_parent);
+    }
+}
+
 void UiElement::Element::CalculateRect()
 {
     if (pParent == nullptr)     //根节点的矩形不需要计算
@@ -155,36 +189,7 @@ void UiElement::Element::CalculateRect()
     {
         //父元素的矩形区域
         const CRect rect_parent{ ParentRect() };
-        const CRect rect_root{ RootElement()->GetRect() };
-        rect = rect_parent;
-        if (x.IsValid())
-            rect.left = x.GetValue(rect_parent) + rect_root.left;
-        if (y.IsValid())
-            rect.top = y.GetValue(rect_parent) + rect_root.top;
-
-        if (margin_left.IsValid())
-            rect.left = rect_parent.left + margin_left.GetValue(rect_parent);
-        if (margin_top.IsValid())
-            rect.top = rect_parent.top + margin_top.GetValue(rect_parent);
-        if (margin_right.IsValid())
-            rect.right = rect_parent.right - margin_right.GetValue(rect_parent);
-        if (margin_bottom.IsValid())
-            rect.bottom = rect_parent.bottom - margin_bottom.GetValue(rect_parent);
-
-        if (IsWidthValid())
-        {
-            if (!x.IsValid() && !margin_left.IsValid() && margin_right.IsValid())
-                rect.left = rect.right - width.GetValue(rect_parent);
-            else
-                rect.right = rect.left + width.GetValue(rect_parent);
-        }
-        if (IsHeightValid())
-        {
-            if (!y.IsValid() && !margin_top.IsValid() && margin_bottom.IsValid())
-                rect.top = rect.bottom - height.GetValue(rect_parent);
-            else
-                rect.bottom = rect.top + height.GetValue(rect_parent);
-        }
+        CalculateRect(rect_parent);
     }
 }
 

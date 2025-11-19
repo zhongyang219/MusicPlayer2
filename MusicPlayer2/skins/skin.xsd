@@ -1153,6 +1153,11 @@
         <xs:documentation>面板xml文件的文件名，点击按钮后将打开一个面板。仅当key指定为showPanel时有效。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="panel_id" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>面板的id，点击按钮后将打开对应的面板。仅当key指定为showPanel时有效。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="textType">

@@ -313,6 +313,7 @@
     <ClInclude Include="UIElement\MiniSpectrum.h" />
     <ClInclude Include="UIElement\MyFavouriteList.h" />
     <ClInclude Include="UIElement\NavigationBar.h" />
+    <ClInclude Include="UIElement\PanelElement.h" />
     <ClInclude Include="UIElement\PlaceHolder.h" />
     <ClInclude Include="UIElement\PlaylistElement.h" />
     <ClInclude Include="UIElement\PlaylistIndicator.h" />
@@ -523,6 +524,7 @@
     <ClCompile Include="UIElement\MiniSpectrum.cpp" />
     <ClCompile Include="UIElement\MyFavouriteList.cpp" />
     <ClCompile Include="UIElement\NavigationBar.cpp" />
+    <ClCompile Include="UIElement\PanelElement.cpp" />
     <ClCompile Include="UIElement\PlaceHolder.cpp" />
     <ClCompile Include="UIElement\PlaylistElement.cpp" />
     <ClCompile Include="UIElement\PlaylistIndicator.cpp" />

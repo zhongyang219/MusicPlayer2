@@ -70,8 +70,10 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::SearchBox>();
     else if (name == "elementSwitcher")
         element = std::make_shared<UiElement::ElementSwitcher>();
-    else if (name == "ui" || name == "root" || name == "element" || name == "panel")
+    else if (name == "ui" || name == "root" || name == "element")
         element = std::make_shared<UiElement::Element>();
+    else if (name == "panel")
+        element = std::make_shared<UiElement::Panel>();
 
     if (element != nullptr)
         element->SetUi(ui);

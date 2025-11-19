@@ -28,6 +28,7 @@
 #include "UIElement/AllTracksList.h"
 #include "UIElement/MiniSpectrum.h"
 #include "UIElement/ElementSwitcher.h"
+#include "UIElement/PanelElement.h"
 
 namespace UiElement
 {

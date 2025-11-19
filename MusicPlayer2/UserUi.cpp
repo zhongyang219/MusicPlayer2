@@ -47,6 +47,15 @@ void CUserUi::LoadFromContents(const std::string& xml_contents)
             else
                 m_root_default = BuildUiElementFromXmlNode(xml_child, this);
         }
+        else if (item_name == "panel")
+        {
+            std::shared_ptr<UiElement::Element> panel_element = BuildUiElementFromXmlNode(xml_child, this);
+            std::wstring panel_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_child, "id"), CodeType::UTF8_NO_BOM);
+            if (!panel_id.empty())
+            {
+                m_panel_mgr.AddPanel(panel_id, std::make_unique<CPlayerUIPanel>(this, panel_element));
+            }
+        }
     });
 }
 
@@ -601,6 +610,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 std::string str_icon = CTinyXml2Helper::ElementAttribute(xml_node, "icon");
                 button->IconTypeFromString(str_icon);
                 button->panel_file_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_file_name"), CodeType::UTF8_NO_BOM);
+                button->panel_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_id"), CodeType::UTF8_NO_BOM);
             }
         }
         else if (item_name == "rectangle")
@@ -1008,7 +1018,8 @@ std::shared_ptr<UiElement::Element> CUserUi::GetMouseEventResponseElement()
 
 void CUserUi::ShowHidePanel(ePanelType panel_type)
 {
-    m_panel_mgr.ShowHidePanel(panel_type);
+    auto* panel = m_panel_mgr.GetPanel(panel_type);
+    m_panel_mgr.ShowHidePanel(panel);
     //显示面板后隐藏界面中按钮的鼠标提示
     if (m_panel_mgr.GetVisiblePanel() != nullptr)
         OnPanelShow();
@@ -1016,7 +1027,17 @@ void CUserUi::ShowHidePanel(ePanelType panel_type)
 
 void CUserUi::ShowHidePanel(const std::wstring panel_file_name)
 {
-    m_panel_mgr.ShowHidePanel(panel_file_name);
+    auto* panel = m_panel_mgr.GetPanel(panel_file_name);
+    m_panel_mgr.ShowHidePanel(panel);
+    //显示面板后隐藏界面中按钮的鼠标提示
+    if (m_panel_mgr.GetVisiblePanel() != nullptr)
+        OnPanelShow();
+}
+
+void CUserUi::ShowHidePanelById(const std::wstring panel_id)
+{
+    auto* panel = m_panel_mgr.GetPanelById(panel_id);
+    m_panel_mgr.ShowHidePanel(panel);
     //显示面板后隐藏界面中按钮的鼠标提示
     if (m_panel_mgr.GetVisiblePanel() != nullptr)
         OnPanelShow();

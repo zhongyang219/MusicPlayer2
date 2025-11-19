@@ -21,6 +21,12 @@ CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, const std::wstring file_name)
 		LoadUIData(xml);
 }
 
+CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Element> panel_element)
+	: m_ui(ui)
+{
+	m_root_element = panel_element;
+}
+
 UINT CPlayerUIPanel::GetPanelResId(ePanelType panel_type)
 {
 	switch (panel_type)
@@ -37,8 +43,16 @@ void CPlayerUIPanel::LoadUIData(const std::string& xml_contents)
 	auto rtn = doc.Parse(xml_contents.c_str(), xml_contents.size());
 	if (rtn == tinyxml2::XML_SUCCESS)
 	{
-		doc.RootElement();
-		m_root_element = CUserUi::BuildUiElementFromXmlNode(doc.RootElement(), m_ui);
+		tinyxml2::XMLElement* root = doc.RootElement();
+		CTinyXml2Helper::IterateChildNode(root, [&](tinyxml2::XMLElement* xml_child) {
+			std::string item_name = CTinyXml2Helper::ElementName(xml_child);
+			//查找panel元素
+			if (item_name == "panel")
+			{
+				if (m_root_element == nullptr)
+					m_root_element = CUserUi::BuildUiElementFromXmlNode(xml_child, m_ui);
+			}
+		});
 	}
 	//初始化搜索框
 	if (m_root_element != nullptr)
@@ -57,7 +71,7 @@ void CPlayerUIPanel::LoadUIData(const std::string& xml_contents)
 
 void CPlayerUIPanel::Draw()
 {
-	if (m_visible)
+	if (m_visible && m_root_element != nullptr)
 	{
 		//绘制一层半透明的黑色背景
 		SLayoutData layoutData;
@@ -82,13 +96,8 @@ void CPlayerUIPanel::Draw()
 		//如果未通过代码获取面板的矩形区域，则根据ui计算面板区域
 		if (m_panel_rect.IsRectEmpty())
 		{
-			m_panel_rect = draw_rect;
-			m_root_element->SetRect(draw_rect);
-			if (!m_root_element->childLst.empty())
-			{
-				m_root_element->childLst[0]->CalculateRect();
-				m_panel_rect = m_root_element->childLst[0]->GetRect();
-			}
+			m_root_element->CalculateRect(draw_rect);
+			m_panel_rect = m_root_element->GetRect();
 		}
 		else
 		{
@@ -150,6 +159,11 @@ void CPanelManager::DrawPanel()
 		cur_panel->Draw();
 }
 
+void CPanelManager::AddPanel(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel)
+{
+	m_panels_in_ui[id] = std::move(panel);
+}
+
 CPanelManager::CPanelManager(CPlayerUIBase* ui)
 	: m_ui(ui)
 {
@@ -183,6 +197,16 @@ CPlayerUIPanel* CPanelManager::GetPanel(const std::wstring& file_name)
 	}
 }
 
+CPlayerUIPanel* CPanelManager::GetPanelById(const std::wstring& id)
+{
+	auto iter = m_panels_in_ui.find(id);
+	if (iter != m_panels_in_ui.end())
+	{
+		return iter->second.get();
+	}
+	return nullptr;
+}
+
 CPlayerUIPanel* CPanelManager::GetVisiblePanel()
 {
 	for (const auto& panel : m_panels)
@@ -195,26 +219,24 @@ CPlayerUIPanel* CPanelManager::GetVisiblePanel()
 		if (panel.second->IsVisible())
 			return panel.second.get();
 	}
+	for (const auto& panel : m_panels_in_ui)
+	{
+		if (panel.second->IsVisible())
+			return panel.second.get();
+	}
 
 	return nullptr;
 }
 
-void CPanelManager::ShowHidePanel(ePanelType panel_type)
+void CPanelManager::ShowHidePanel(CPlayerUIPanel* panel)
 {
-	CPlayerUIPanel* panel = GetPanel(panel_type);
-	bool visible = panel->IsVisible();
-	//先隐藏其他面板
-	HideAllPanel();
-	panel->SetVisible(!visible);
-}
-
-void CPanelManager::ShowHidePanel(const std::wstring& file_name)
-{
-	CPlayerUIPanel* panel = GetPanel(file_name);
-	bool visible = panel->IsVisible();
-	//先隐藏其他面板
-	HideAllPanel();
-	panel->SetVisible(!visible);
+	if (panel != nullptr)
+	{
+		bool visible = panel->IsVisible();
+		//先隐藏其他面板
+		HideAllPanel();
+		panel->SetVisible(!visible);
+	}
 }
 
 void CPanelManager::HideAllPanel()
@@ -224,6 +246,10 @@ void CPanelManager::HideAllPanel()
 		panel.second->SetVisible(false);
 	}
 	for (const auto& panel : m_panels_in_files)
+	{
+		panel.second->SetVisible(false);
+	}
+	for (const auto& panel : m_panels_in_ui)
 	{
 		panel.second->SetVisible(false);
 	}

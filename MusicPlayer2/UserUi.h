@@ -86,6 +86,7 @@ public:
 
     void ShowHidePanel(ePanelType panel_type);
     void ShowHidePanel(const std::wstring panel_file_name);
+    void ShowHidePanelById(const std::wstring panel_id);
 
 protected:
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;

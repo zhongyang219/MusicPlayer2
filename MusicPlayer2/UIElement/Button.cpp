@@ -290,12 +290,15 @@ bool UiElement::Button::LButtonUp(CPoint point)
     if (pressed && m_btn.rect.PtInRect(point) && m_btn.enable)
     {
         //œ‘ æ√Ê∞Â
-        if (key == CPlayerUIBase::BTN_SHOW_PANEL && !panel_file_name.empty())
+        if (key == CPlayerUIBase::BTN_SHOW_PANEL)
         {
             CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
             if (user_ui != nullptr)
             {
-                user_ui->ShowHidePanel(panel_file_name);
+                if (!panel_file_name.empty())
+                    user_ui->ShowHidePanel(panel_file_name);
+                else if (!panel_id.empty())
+                    user_ui->ShowHidePanelById(panel_id);
             }
         }
         else
