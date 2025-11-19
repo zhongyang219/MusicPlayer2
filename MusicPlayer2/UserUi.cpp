@@ -53,6 +53,7 @@ void CUserUi::LoadFromContents(const std::string& xml_contents)
             std::wstring panel_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_child, "id"), CodeType::UTF8_NO_BOM);
             if (!panel_id.empty())
             {
+                //在这里可以根据面板id创建自定义的面板类
                 m_panel_mgr.AddPanel(panel_id, std::make_unique<CPlayerUIPanel>(this, panel_element));
             }
         }

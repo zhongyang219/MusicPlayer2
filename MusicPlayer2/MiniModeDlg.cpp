@@ -519,6 +519,10 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
                 ui->IterateAllElements([&](UiElement::Element* element) ->bool {
                     if (element != nullptr)
                     {
+                        //迷你模式下，歌词界面不弹出歌词右键菜单，仍然使用默认的迷你模式右键菜单
+                        UiElement::Lyrics* lyrics_emelent = dynamic_cast<UiElement::Lyrics*>(element);
+                        if (lyrics_emelent != nullptr)
+                            return false;
                         if (element->RButtonUp(point))
                         {
                             rtn = true;
