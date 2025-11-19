@@ -54,6 +54,8 @@ public:
 	void DrawPanel();
 	void AddPanel(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel);
 
+	const std::map<std::wstring, std::unique_ptr<CPlayerUIPanel>>& GetPanelsInUi() const;
+
 private:
 	CPlayerUIBase* m_ui;
 	std::map<ePanelType, std::unique_ptr<CPlayerUIPanel>> m_panels;				//从资源读取的面板

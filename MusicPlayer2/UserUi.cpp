@@ -149,6 +149,20 @@ void CUserUi::InitSearchBox(CWnd* pWnd)
             search_box->InitSearchBoxControl(pWnd);
         return false;
     });
+    //初始化面板中的SearchBox
+    for (auto iter = m_panel_mgr.GetPanelsInUi().begin(); iter != m_panel_mgr.GetPanelsInUi().end(); ++iter)
+    {
+        auto* root_emement = iter->second->GetRootElement().get();
+        if (root_emement != nullptr)
+        {
+            root_emement->IterateAllElements([&](UiElement::Element* element) ->bool {
+                UiElement::SearchBox* search_box{ dynamic_cast<UiElement::SearchBox*>(element) };
+                if (search_box != nullptr)
+                    search_box->InitSearchBoxControl(pWnd);
+                return false;
+            });
+        }
+    }
 }
 
 void CUserUi::SaveStatackElementIndex(CArchive& archive)

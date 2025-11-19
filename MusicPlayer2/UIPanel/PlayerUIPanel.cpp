@@ -141,6 +141,11 @@ void CPanelManager::AddPanel(const std::wstring& id, std::unique_ptr<CPlayerUIPa
 	m_panels_in_ui[id] = std::move(panel);
 }
 
+const std::map<std::wstring, std::unique_ptr<CPlayerUIPanel>>& CPanelManager::GetPanelsInUi() const
+{
+	return m_panels_in_ui;
+}
+
 CPanelManager::CPanelManager(CPlayerUIBase* ui)
 	: m_ui(ui)
 {

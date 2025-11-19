@@ -1,5 +1,6 @@
 ﻿<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
       name="test">
+  
   <panel id="song_info_panel" width="200" height="250">
     <verticalLayout>
       <rectangle height="24">
@@ -14,6 +15,21 @@
         <text type="title" height="24"/>
         <text type="artist" height="24"/>
         <text type="format" height="24"/>
+      </verticalLayout>
+    </verticalLayout>
+  </panel>
+  
+  <panel id="play_queue_panel" width="200" height="250">
+    <verticalLayout>
+      <rectangle height="24">
+        <horizontalLayout>
+          <text type="userDefine" text="%(UI_TXT_PLAY_QUEUE)" margin-left="4"/>
+          <button key="closePanel" width="24"/>
+        </horizontalLayout>
+      </rectangle>
+      <verticalLayout margin="4">
+        <searchBox height="26" margin-bottom="4"/>
+        <playlist item_height="32"/>
       </verticalLayout>
     </verticalLayout>
   </panel>
@@ -191,7 +207,8 @@
         <!--第6页-->
         <verticalLayout>
           <horizontalLayout height="26">
-            <button key="showPanel" panel_id="song_info_panel" icon="info" width="28" height="28" margin="2" show_text="true"/>
+            <button key="showPanel" panel_id="song_info_panel" icon="info" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PROPERTY)"/>
+            <button key="showPanel" panel_id="play_queue_panel" icon="playInPlaylist" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PLAY_QUEUE)"/>
             <placeHolder/>
           </horizontalLayout>
           <placeHolder/>
