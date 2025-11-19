@@ -438,7 +438,7 @@ bool CUserUi::MouseWheel(int delta, CPoint point)
             }
         }
         return false;
-    });
+    }, true);
 
     if (!rtn)
     {
@@ -451,7 +451,7 @@ bool CUserUi::MouseWheel(int delta, CPoint point)
                 return true;
             }
             return false;
-        });
+        }, true);
     }
 
     if (rtn)
