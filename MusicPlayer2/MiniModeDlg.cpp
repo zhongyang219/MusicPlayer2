@@ -511,28 +511,7 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
         CPlayerUIBase* cur_ui{ GetCurUi() };
         if (cur_ui != nullptr)
         {
-            //遍历所有元素
-            bool rtn = false;
-            CUserUi* ui = dynamic_cast<CUserUi*>(GetCurUi());
-            if (ui != nullptr)
-            {
-                ui->IterateAllElements([&](UiElement::Element* element) ->bool {
-                    if (element != nullptr)
-                    {
-                        //迷你模式下，歌词界面不弹出歌词右键菜单，仍然使用默认的迷你模式右键菜单
-                        UiElement::Lyrics* lyrics_emelent = dynamic_cast<UiElement::Lyrics*>(element);
-                        if (lyrics_emelent != nullptr)
-                            return false;
-                        if (element->RButtonUp(point))
-                        {
-                            rtn = true;
-                            return true;
-                        }
-                    }
-                    return false;
-                    }, true);
-            }
-            if (!rtn)
+            if (!cur_ui->RButtonUp(point))
             {
                 CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::MiniAreaMenu);
                 pContextMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this); //在指定位置显示弹出菜单
