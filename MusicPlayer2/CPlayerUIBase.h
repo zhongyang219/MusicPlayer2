@@ -155,6 +155,7 @@ public:
 
     CRect GetVolumeRect() const;    //获取音量图标的矩形区域
     CRect GetDrawRect() const;
+    CRect GetClientDrawRect() const;    //获取绘图客户区的矩形区域（不包含自绘标题栏、菜单栏、状态栏）
 
     CUIDrawer& GetDrawer() { return m_draw; }
     const UIColors& GetUIColors() const { return m_colors; }
@@ -308,10 +309,10 @@ public:
     int DPI(int pixel) const;
     int DPI(double pixel) const;
     double DPIDouble(double pixel);
+    int CalculateRoundRectRadius(const CRect& rect);        //计算绘制圆角矩形的半径
 
 protected:
     double GetScrollTextPixel(bool slower = false);       //计算滚动文本一次滚动的像素值，如果slower为true，则滚动得稍微慢一点
-    int CalculateRoundRectRadius(const CRect& rect);        //计算绘制圆角矩形的半径
 
     virtual bool IsDrawLargeIcon() const;        //是否绘制大图标
 

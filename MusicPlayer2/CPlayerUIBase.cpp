@@ -2244,6 +2244,24 @@ CRect CPlayerUIBase::GetDrawRect() const
     return m_draw_rect;
 }
 
+CRect CPlayerUIBase::GetClientDrawRect() const
+{
+    CRect client_rect = GetDrawRect();
+    if (IsDrawTitleBar())
+    {
+        client_rect.top += m_layout.titlabar_height;
+    }
+    if (IsDrawMenuBar())
+    {
+        client_rect.top += m_layout.menubar_height;
+    }
+    if (IsDrawStatusBar())
+    {
+        client_rect.bottom -= DPI(20);
+    }
+    return client_rect;
+}
+
 void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
 {
     size_t index{};

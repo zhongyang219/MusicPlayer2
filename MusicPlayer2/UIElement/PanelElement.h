@@ -6,8 +6,11 @@ namespace UiElement
     class Panel : public Element
     {
     public:
-        virtual void CalculateRect(CRect parent_rect);
+        virtual void CalculateRect(CRect parent_rect) override;
+        virtual void Draw() override;
 
+    private:
+        CRect m_draw_rect;
     };
 }
 

@@ -4,13 +4,17 @@
     <verticalLayout>
       <rectangle height="24">
         <horizontalLayout>
-          <text type="userDefine" text="%(UI_TIP_BTN_PROPERTY)"/>
+          <text type="userDefine" text="%(UI_TIP_BTN_PROPERTY)" margin-left="4"/>
           <button key="closePanel" width="24"/>
         </horizontalLayout>
       </rectangle>
-      <albumCover square="true"/>
-      <trackInfo height="24"/>
-      <text type="format" height="24"/>
+      <verticalLayout margin="4">
+        <albumCover square="true"/>
+        <trackInfo height="24"/>
+        <text type="title" height="24"/>
+        <text type="artist" height="24"/>
+        <text type="format" height="24"/>
+      </verticalLayout>
     </verticalLayout>
   </panel>
   
