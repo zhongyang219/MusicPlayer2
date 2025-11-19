@@ -119,7 +119,7 @@
           <horizontalLayout>
             <horizontalLayout proportion="2">
               <!--显示为专辑封面界面切换器，点击后切换到播放界面-->
-              <elementSwitcher style="album_cover" stack_element_id="main_stack_element" stack_element_index="1" width="88"/>
+              <elementSwitcher style="album_cover" text="%(UI_TIP_SHOW_PLAY_DETAIL_PAGE)" stack_element_id="main_stack_element" stack_element_index="1" width="88"/>
               <verticalLayout margin="4">
                 <text type="title" style="scroll" height="24" font_size="10"/>
                 <text type="artist" style="scroll" height="24"/>

@@ -122,7 +122,7 @@
             <horizontalLayout height="68">
               <horizontalLayout>
                 <!--显示为专辑封面界面切换器，点击后切换到播放界面-->
-                <elementSwitcher style="album_cover" stack_element_id="main_stack_element" stack_element_index="1" width="68"/>
+                <elementSwitcher style="album_cover" text="%(UI_TIP_SHOW_PLAY_DETAIL_PAGE)" stack_element_id="main_stack_element" stack_element_index="1" width="68"/>
                 <verticalLayout margin="4">
                   <text type="title" style="scroll" height="24" font_size="10"/>
                   <text type="artist" style="scroll" height="24"/>
@@ -328,7 +328,7 @@
             <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
             <horizontalLayout height="60">
               <!--显示为专辑封面界面切换器，点击后切换到播放界面-->
-              <elementSwitcher style="album_cover" stack_element_id="main_stack_element_narrow" stack_element_index="1" width="60"/>
+              <elementSwitcher style="album_cover" text="%(UI_TIP_SHOW_PLAY_DETAIL_PAGE)" stack_element_id="main_stack_element_narrow" stack_element_index="1" width="60"/>
               <verticalLayout margin="4">
                 <text type="title" style="scroll" height="24" font_size="10"/>
                 <text type="artist" style="scroll" height="24"/>
