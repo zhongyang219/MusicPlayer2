@@ -13,7 +13,7 @@ CPlayerUIHelper::~CPlayerUIHelper()
 {
 }
 
-UIColors CPlayerUIHelper::GetUIColors(const ColorTable & colorTable, bool dark, bool draw_alpha)
+UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
 {
     UIColors colors{};
     //if (theApp.m_app_setting_data.dark_mode)

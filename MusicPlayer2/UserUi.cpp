@@ -715,6 +715,13 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     text->color_mode = CPlayerUIBase::RCM_LIGHT;
                 else
                     text->color_mode = CPlayerUIBase::RCM_AUTO;
+                std::string str_color_style = CTinyXml2Helper::ElementAttribute(xml_node, "color_style");
+                if (str_color_style == "emphasis1")
+                    text->color_style = UiElement::Text::Emphasis1;
+                else if (str_color_style == "emphasis2")
+                    text->color_style = UiElement::Text::Emphasis2;
+                else
+                    text->color_style = UiElement::Text::Default;
             }
         }
         //专辑封面
@@ -1040,9 +1047,9 @@ void CUserUi::ShowHidePanel(ePanelType panel_type)
         OnPanelShow();
 }
 
-void CUserUi::ShowHidePanel(const std::wstring panel_file_name)
+void CUserUi::ShowHidePanelByFileName(const std::wstring panel_file_name)
 {
-    auto* panel = m_panel_mgr.GetPanel(panel_file_name);
+    auto* panel = m_panel_mgr.GetPanelByFileName(panel_file_name);
     m_panel_mgr.ShowHidePanel(panel);
     //显示面板后隐藏界面中按钮的鼠标提示
     if (m_panel_mgr.GetVisiblePanel() != nullptr)

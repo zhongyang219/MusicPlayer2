@@ -165,7 +165,7 @@ CPlayerUIPanel* CPanelManager::GetPanel(ePanelType panel_type)
 	}
 }
 
-CPlayerUIPanel* CPanelManager::GetPanel(const std::wstring& file_name)
+CPlayerUIPanel* CPanelManager::GetPanelByFileName(const std::wstring& file_name)
 {
 	auto iter = m_panels_in_files.find(file_name);
 	if (iter != m_panels_in_files.end())

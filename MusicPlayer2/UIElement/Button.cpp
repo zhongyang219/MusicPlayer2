@@ -295,10 +295,10 @@ bool UiElement::Button::LButtonUp(CPoint point)
             CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
             if (user_ui != nullptr)
             {
-                if (!panel_file_name.empty())
-                    user_ui->ShowHidePanel(panel_file_name);
-                else if (!panel_id.empty())
+                if (!panel_id.empty())
                     user_ui->ShowHidePanelById(panel_id);
+                else if (!panel_file_name.empty())
+                    user_ui->ShowHidePanelByFileName(panel_file_name);
             }
         }
         else

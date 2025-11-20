@@ -29,11 +29,19 @@ namespace UiElement
             PlayTimeAndVolume   //显示为播放时间，如果正在调整音量，则显示当前音量，一段时间后恢复
         };
 
+        enum ColorStyle
+        {
+            Default,
+            Emphasis1,
+            Emphasis2
+        };
+
         Type type;
         int font_size{ 9 };
         bool width_follow_text{};
         CPlayerUIBase::ColorMode color_mode{ CPlayerUIBase::RCM_AUTO };
         bool show_volume{};     //当type为PlayTimeAndVolume时有效，如果为true，则显示为音量
+        ColorStyle color_style{};
 
         virtual void Draw() override;
         virtual int GetMaxWidth(CRect parent_rect) const override;

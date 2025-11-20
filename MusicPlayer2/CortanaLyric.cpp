@@ -491,7 +491,7 @@ void CCortanaLyric::SetUIColors()
     else
         m_colors.dark = m_dark_mode;
 
-	m_lyric_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, m_colors.dark);
+	m_lyric_colors = CPlayerUIHelper::GetUIColors(m_colors.dark);
 
 	if (m_colors.dark)
     {

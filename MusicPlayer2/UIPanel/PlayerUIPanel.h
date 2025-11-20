@@ -46,7 +46,7 @@ class CPanelManager
 public:
 	CPanelManager(CPlayerUIBase* ui);
 	CPlayerUIPanel* GetPanel(ePanelType panel_type);
-	CPlayerUIPanel* GetPanel(const std::wstring& file_name);
+	CPlayerUIPanel* GetPanelByFileName(const std::wstring& file_name);
 	CPlayerUIPanel* GetPanelById(const std::wstring& id);
 	CPlayerUIPanel* GetVisiblePanel();
 	void ShowHidePanel(CPlayerUIPanel* panel);

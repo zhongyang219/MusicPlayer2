@@ -87,7 +87,7 @@ void CMiniModeUserUi::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
 void CMiniModeUserUi::PreDrawInfo()
 {
     //设置颜色
-    m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode, IsDrawBackgroundAlpha());
+    m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.dark_mode, IsDrawBackgroundAlpha());
 
     //设置绘图区域
     int width{}, height{}, height_width_playlist;

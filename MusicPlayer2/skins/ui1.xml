@@ -14,22 +14,22 @@
             <verticalLayout>
               <trackInfo/>
               <horizontalLayout>
-                <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
+                <text width="54" type="userDefine" color_style="emphasis1" text="%(TXT_TITLE):"/>
                 <text type="title" style="scroll"/>
               </horizontalLayout>
             </verticalLayout>
             <placeHolder show_when_use_system_titlebar="true" height="28"/>
           </horizontalLayout>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(TXT_ARTIST):"/>
+            <text width="54" type="userDefine" color_style="emphasis1" text="%(TXT_ARTIST):"/>
             <text type="artist" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(TXT_ALBUM):"/>
+            <text width="54" type="userDefine" color_style="emphasis1" text="%(TXT_ALBUM):"/>
             <text type="album" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout>
-            <text width="54" type="userDefine" text="%(TXT_UI_FORMAT):"/>
+            <text width="54" type="userDefine" color_style="emphasis1" text="%(TXT_UI_FORMAT):"/>
             <text type="format" style="scroll"/>
           </horizontalLayout>
         </verticalLayout>
@@ -85,22 +85,22 @@
               <verticalLayout>
                 <trackInfo/>
                 <horizontalLayout>
-                  <text width="54" type="userDefine" text="%(TXT_TITLE):"/>
+                  <text width="54" type="userDefine" color_style="emphasis1" text="%(TXT_TITLE):"/>
                   <text type="title" style="scroll"/>
                 </horizontalLayout>
               </verticalLayout>
               <placeHolder show_when_use_system_titlebar="true" height="28"/>
             </horizontalLayout>
             <horizontalLayout>
-              <text width="54" type="userDefine" text="%(TXT_ARTIST):"/>
+              <text width="54" type="userDefine" color_style="emphasis1" text="%(TXT_ARTIST):"/>
               <text type="artist" style="scroll"/>
             </horizontalLayout>
             <horizontalLayout>
-              <text width="54" type="userDefine" text="%(TXT_ALBUM):"/>
+              <text width="54" type="userDefine" color_style="emphasis1" text="%(TXT_ALBUM):"/>
               <text type="album" style="scroll"/>
             </horizontalLayout>
             <horizontalLayout>
-              <text width="54" type="userDefine" text="%(TXT_UI_FORMAT):"/>
+              <text width="54" type="userDefine" color_style="emphasis1" text="%(TXT_UI_FORMAT):"/>
               <text type="format" style="scroll"/>
             </horizontalLayout>
           </verticalLayout>

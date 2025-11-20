@@ -10,13 +10,18 @@ void UiElement::Text::Draw()
     //设置字体
     UiFontGuard set_font(ui, font_size);
 
-    COLORREF text_color{};
+    //设置字体颜色
+    UIColors colors{ ui->m_colors };
     if (color_mode == CPlayerUIBase::RCM_LIGHT)
-        text_color = ColorTable::WHITE;
+        colors = CPlayerUIHelper::GetUIColors(false, ui->IsDrawBackgroundAlpha());
     else if (color_mode == CPlayerUIBase::RCM_DARK)
-        text_color = theApp.m_app_setting_data.theme_color.dark2;
-    else
-        text_color = ui->m_colors.color_text;
+        colors = CPlayerUIHelper::GetUIColors(true, ui->IsDrawBackgroundAlpha());
+
+    COLORREF text_color{ colors.color_text };
+    if (color_style == Emphasis1)
+        text_color = colors.color_text_heighlight;
+    else if (color_style == Emphasis2)
+        text_color = colors.color_text_2;
 
     int text_extent{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx };  //文本的实际宽度
     if (rect.Width() >= text_extent)    //如果绘图区域的宽度大于文本的实际宽度，则文本不需要滚动显示

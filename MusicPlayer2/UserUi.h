@@ -85,7 +85,7 @@ public:
     static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node, CPlayerUIBase* ui);
 
     void ShowHidePanel(ePanelType panel_type);
-    void ShowHidePanel(const std::wstring panel_file_name);
+    void ShowHidePanelByFileName(const std::wstring panel_file_name);
     void ShowHidePanelById(const std::wstring panel_id);
 
 protected:

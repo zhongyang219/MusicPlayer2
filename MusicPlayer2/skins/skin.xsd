@@ -1306,6 +1306,30 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
+    <xs:attribute name="color_style" default="default">
+      <xs:annotation>
+        <xs:documentation>文本的颜色样式。</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="default">
+            <xs:annotation>
+              <xs:documentation>默认颜色。</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="emphasis1">
+            <xs:annotation>
+              <xs:documentation>强调色1。</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="emphasis2">
+            <xs:annotation>
+              <xs:documentation>强调色2。</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="albumCoverType">

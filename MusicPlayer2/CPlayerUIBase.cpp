@@ -919,7 +919,7 @@ std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type) const
 void CPlayerUIBase::PreDrawInfo()
 {
     //设置颜色
-    m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.theme_color, theApp.m_app_setting_data.dark_mode, IsDrawBackgroundAlpha());
+    m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.dark_mode, IsDrawBackgroundAlpha());
 
     //设置绘制的矩形区域
     SetDrawRect();

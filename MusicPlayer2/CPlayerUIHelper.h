@@ -26,7 +26,7 @@ public:
     CPlayerUIHelper();
     ~CPlayerUIHelper();
 
-    static UIColors GetUIColors(const ColorTable& colorTable, bool dark, bool draw_alpha = true);
+    static UIColors GetUIColors(bool dark, bool draw_alpha = true);
 
     static bool IsMidiLyric();		//是否绘制MIDI音乐的歌词
     static bool IsDrawStatusBar();  //是否绘制状态栏
