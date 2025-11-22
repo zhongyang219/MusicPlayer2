@@ -1221,7 +1221,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
             else if (btn.hover)
                 back_color = m_colors.color_button_hover;
             else if (checked)
-                back_color = m_colors.color_button_back;
+                back_color = m_colors.color_button_checked;
         }
         if (!theApp.m_app_setting_data.button_round_corners)
             m_draw.FillAlphaRect(rc_tmp, back_color, alpha, true);
@@ -1298,7 +1298,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
                 }
                 else if (checked)
                 {
-                    background_color = m_colors.color_button_back;
+                    background_color = m_colors.color_button_checked;
                 }
             }
 
@@ -2546,7 +2546,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                 //选中项目的背景
                 if (list_element->IsItemSelected(i))
                 {
-                    back_color = m_colors.color_button_back;
+                    back_color = m_colors.color_list_selected;
                 }
                 //偶数行的背景
                 else if (displayed_row_index % 2 == 0)

@@ -13,11 +13,12 @@ struct UIColors		//界面颜色
     COLORREF color_spectrum;			//频谱分析柱形的颜色
     COLORREF color_spectrum_cover;		//有专辑封面时的频谱分析柱形的颜色
     COLORREF color_spectrum_back;		//频谱分析的背景颜色
-    COLORREF color_button_back;			//歌词翻译按钮的背景色
+    COLORREF color_button_checked;		//按钮选中状态的背景色
     COLORREF color_button_pressed;		//按钮按下的颜色
     COLORREF color_button_hover;		//按钮指向时的颜色
     COLORREF color_stack_indicator;     //staticElement指示器的颜色
     COLORREF color_scrollbar_handle;    //滚动条把手的颜色
+    COLORREF color_list_selected;       //列表选中项的颜色
 };
 
 class CPlayerUIHelper
