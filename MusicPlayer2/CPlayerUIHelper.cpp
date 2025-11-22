@@ -44,7 +44,7 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         else
         {
             colors.color_button_pressed = theApp.m_app_setting_data.theme_color.dark1;
-            colors.color_button_hover = theApp.m_app_setting_data.theme_color.dark2;
+            colors.color_button_hover = theApp.m_app_setting_data.theme_color.dark1_5;
             colors.color_list_selected = theApp.m_app_setting_data.theme_color.dark2;
         }
     }
