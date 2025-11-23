@@ -300,6 +300,15 @@ void CAppearanceSettingDlg::GetDataFromUi()
     m_data.show_minimize_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_MINIMIZE_BTN_CHECK) != 0);
     m_data.show_maximize_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_MAXIMIZE_BTN_CHECK) != 0);
     m_data.show_dark_light_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_DARK_LIGHT_BTN_CHECK) != 0);
+
+    CString str;
+    m_default_background_edit.GetWindowText(str);
+    m_data.default_background = str.GetString();
+
+    m_album_cover_name_edit.GetWindowTextW(str);
+    str.Replace(L'/', L'\\');
+    CCommon::StringSplit(wstring(str), L',', m_data.default_album_name);
+
 }
 
 void CAppearanceSettingDlg::ApplyDataToUi()
