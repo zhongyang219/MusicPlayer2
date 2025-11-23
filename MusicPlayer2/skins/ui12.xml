@@ -27,16 +27,30 @@
           </verticalLayout>
           <!--文件夹-->
           <verticalLayout>
+            <horizontalLayout height="28" margin-bottom="4">
+              <button key="openFolder" height="28" show_text="true" proportion="10"/>
+              <button key="medialibFolderSort" height="28" show_text="true" proportion="10"/>
+              <placeHolder proportion="1"/>
+            </horizontalLayout>
             <searchBox height="26" margin-bottom="4"/>
             <mediaLibFolder item_height="32"/>
           </verticalLayout>
           <!--播放列表-->
           <verticalLayout>
+            <horizontalLayout height="28" margin-bottom="4">
+              <button key="newPlaylist" height="28" show_text="true" proportion="10"/>
+              <button key="medialibPlaylistSort" height="28" show_text="true" proportion="10"/>
+              <placeHolder proportion="1"/>
+            </horizontalLayout>
             <searchBox height="26" margin-bottom="4"/>
             <mediaLibPlaylist item_height="32"/>
           </verticalLayout>
           <!--我喜欢的音乐-->
           <verticalLayout>
+            <horizontalLayout height="28" margin-bottom="4">
+              <button key="playMyFavourite" height="28" show_text="true" proportion="10"/>
+              <placeHolder proportion="1"/>
+            </horizontalLayout>
             <searchBox height="26" margin-bottom="4"/>
             <myFavouriteList item_height="32"/>
           </verticalLayout>
@@ -122,16 +136,30 @@
             </verticalLayout>
             <!--文件夹-->
             <verticalLayout>
+              <horizontalLayout height="28" margin-bottom="4">
+                <button key="openFolder" height="28" show_text="true" proportion="10"/>
+                <button key="medialibFolderSort" height="28" show_text="true" proportion="10"/>
+                <placeHolder proportion="1"/>
+              </horizontalLayout>
               <searchBox height="26" margin-bottom="4"/>
               <mediaLibFolder item_height="32"/>
             </verticalLayout>
             <!--播放列表-->
             <verticalLayout>
+              <horizontalLayout height="28" margin-bottom="4">
+                <button key="newPlaylist" height="28" show_text="true" proportion="10"/>
+                <button key="medialibPlaylistSort" height="28" show_text="true" proportion="10"/>
+                <placeHolder proportion="1"/>
+              </horizontalLayout>
               <searchBox height="26" margin-bottom="4"/>
               <mediaLibPlaylist item_height="32"/>
             </verticalLayout>
             <!--我喜欢的音乐-->
             <verticalLayout>
+              <horizontalLayout height="28" margin-bottom="4">
+                <button key="playMyFavourite" height="28" show_text="true" proportion="10"/>
+                <placeHolder proportion="1"/>
+              </horizontalLayout>
               <searchBox height="26" margin-bottom="4"/>
               <myFavouriteList item_height="32"/>
             </verticalLayout>
