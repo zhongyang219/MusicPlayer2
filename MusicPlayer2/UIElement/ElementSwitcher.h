@@ -11,9 +11,9 @@ namespace UiElement
         //界面切换器的样式
         enum class Style
         {
-            Empty,          //空白
-            AlbumCover,     //显示为专辑封面
             Button,         //按钮样式
+            AlbumCover,     //显示为专辑封面
+            Empty,          //空白
         };
 
         virtual bool LButtonUp(CPoint point) override;
