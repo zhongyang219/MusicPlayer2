@@ -26,13 +26,13 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         if (draw_alpha)
             colors.color_back = GRAY(64);
         else
-            colors.color_back = GRAY(40);
+            colors.color_back = GRAY(48);
 
         colors.color_lyric_back = theApp.m_app_setting_data.theme_color.dark3;
         if (draw_alpha)
             colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.dark2;
         else
-            colors.color_control_bar_back = GRAY(54);
+            colors.color_control_bar_back = GRAY(64);
         colors.color_spectrum = theApp.m_app_setting_data.theme_color.light2;
         colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
