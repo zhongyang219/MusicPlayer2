@@ -2005,7 +2005,8 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         CRect rc_progress{ rc_tmp };
         rc_progress.DeflateRect(0, DPI(4));
         DrawAreaGuard guard(&m_draw, rc_progress);
-        m_draw.DrawRectOutLine(rc_progress, m_colors.color_text, DPI(1), false);
+        //m_draw.DrawRectOutLine(rc_progress, m_colors.color_text, DPI(1), false);
+        DrawRectangle(rc_progress, m_colors.color_statusbar_progress_back);
         int bar_cnt = progress_percent / 10 + 1;        //格子数
         int last_bar_percent = progress_percent % 10;
         CRect rc_bar{ rc_progress };

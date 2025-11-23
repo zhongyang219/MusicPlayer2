@@ -66,6 +66,7 @@ BOOL CTestDlg::OnInitDialog()
     //进度条
     m_progress_bar.SetProgress(18);
     m_progress_bar.SetBarCount(10);
+    m_progress_bar.SetBackgroundColor(GetSysColor(COLOR_BTNFACE));
 
     SetTimer(82373, 80, NULL);
 

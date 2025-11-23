@@ -47,6 +47,7 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
             colors.color_button_hover = theApp.m_app_setting_data.theme_color.dark1_5;
             colors.color_list_selected = theApp.m_app_setting_data.theme_color.dark2;
         }
+        colors.color_statusbar_progress_back = theApp.m_app_setting_data.theme_color.dark3;
     }
     else
     {
@@ -74,6 +75,7 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
             colors.color_button_hover = theApp.m_app_setting_data.theme_color.light2_5;
         }
         colors.color_list_selected = theApp.m_app_setting_data.theme_color.light2;
+        colors.color_statusbar_progress_back = theApp.m_app_setting_data.theme_color.light2_5;
     }
 
     return colors;

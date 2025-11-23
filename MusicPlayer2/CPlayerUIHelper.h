@@ -19,6 +19,7 @@ struct UIColors		//界面颜色
     COLORREF color_stack_indicator;     //staticElement指示器的颜色
     COLORREF color_scrollbar_handle;    //滚动条把手的颜色
     COLORREF color_list_selected;       //列表选中项的颜色
+    COLORREF color_statusbar_progress_back; //状态栏中进度条的背景颜色
 };
 
 class CPlayerUIHelper
