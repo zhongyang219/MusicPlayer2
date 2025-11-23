@@ -632,31 +632,40 @@ void CPlayer::MusicControl(Command command, int volume_step)
 
 bool CPlayer::SongIsOver() const
 {
-    if (m_pCore->SongIsOver())
-        return true;
-    if (GetCurrentSongInfo().is_cue || IsMciCore())
-        return (m_playing == PS_PLAYING && m_current_position >= m_song_length && m_current_position.toInt() != 0);
+    if (m_player_core_inited && m_pCore != nullptr)
+    {
+        if (m_pCore->SongIsOver())
+            return true;
+        if (GetCurrentSongInfo().is_cue || IsMciCore())
+            return (m_playing == PS_PLAYING && m_current_position >= m_song_length && m_current_position.toInt() != 0);
+    }
     return false;
 }
 
 void CPlayer::GetPlayerCoreCurrentPosition()
 {
-    int current_position_int = m_pCore->GetCurPosition();
-    if (!IsPlaylistEmpty() && GetCurrentSongInfo().is_cue)
+    if (m_player_core_inited && m_pCore != nullptr)
     {
-        current_position_int -= GetCurrentSongInfo().start_pos.toInt();
+        int current_position_int = m_pCore->GetCurPosition();
+        if (!IsPlaylistEmpty() && GetCurrentSongInfo().is_cue)
+        {
+            current_position_int -= GetCurrentSongInfo().start_pos.toInt();
+        }
+        m_current_position.fromInt(current_position_int);
     }
-    m_current_position.fromInt(current_position_int);
 }
 
 
 void CPlayer::SetVolume()
 {
-    int volume = m_volume;
-    volume = volume * theApp.m_nc_setting_data.volume_map / 100;
-    m_pCore->SetVolume(volume);
-    GetPlayerCoreError(L"SetVolume");
-    SendMessage(theApp.m_pMainWnd->m_hWnd, WM_VOLUME_CHANGED, 0, 0);
+    if (m_player_core_inited && m_pCore != nullptr)
+    {
+        int volume = m_volume;
+        volume = volume * theApp.m_nc_setting_data.volume_map / 100;
+        m_pCore->SetVolume(volume);
+        GetPlayerCoreError(L"SetVolume");
+        SendMessage(theApp.m_pMainWnd->m_hWnd, WM_VOLUME_CHANGED, 0, 0);
+    }
 }
 
 
@@ -664,7 +673,7 @@ void CPlayer::CalculateSpectralData()
 {
     //memcpy_s(m_last_spectral_data, sizeof(m_last_spectral_data), m_spectral_data, sizeof(m_spectral_data));
 
-    if (m_pCore != nullptr && ((GetBassHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)     //确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
+    if (m_player_core_inited && m_pCore != nullptr && ((GetBassHandle() && m_playing != 0 && m_current_position.toInt() < m_song_length.toInt() - 500)     //确保音频句柄不为空，并且歌曲最后500毫秒不显示频谱，以防止歌曲到达末尾无法获取频谱的错误
         || m_pCore->GetCoreType() == PT_FFMPEG) && m_pCore->GetPlayingState() != PS_STOPED)
     {
         int scale = (m_pCore->GetCoreType() == PT_FFMPEG ? 100 : 60);
@@ -686,7 +695,7 @@ void CPlayer::CalculateSpectralData()
 void CPlayer::CalculateSpectralDataPeak()
 {
     //计算频谱顶端的高度
-    if (m_pCore != nullptr && m_pCore->GetPlayingState() != PS_PAUSED)
+    if (m_player_core_inited && m_pCore != nullptr && m_pCore->GetPlayingState() != PS_PAUSED)
     {
         static int fall_count[SPECTRUM_COL];
         for (int i{}; i < SPECTRUM_COL; i++)
@@ -1409,7 +1418,7 @@ void CPlayer::SetOrignalPitch()
 
 bool CPlayer::GetPlayerCoreError(const wchar_t* function_name)
 {
-    if (m_loading)
+    if (m_loading || !m_player_core_inited || m_pCore == nullptr)
         return false;
     int error_code_tmp = m_pCore->GetErrorCode();
     if (error_code_tmp && error_code_tmp != m_error_code)
@@ -1425,7 +1434,7 @@ bool CPlayer::GetPlayerCoreError(const wchar_t* function_name)
 
 bool CPlayer::IsError() const
 {
-    if (m_loading)		//如果播放列表正在加载，则不检测错误
+    if (m_loading || !m_player_core_inited)		//如果播放列表正在加载，则不检测错误
         return false;
     else
         return (m_error_state != ES_NO_ERROR || m_error_code != 0 || m_pCore == nullptr || (m_file_opend && m_pCore->GetCoreType() == PT_BASS && GetBassHandle() == 0));
@@ -1438,7 +1447,7 @@ std::wstring CPlayer::GetErrorInfo()
         error_info = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_ERROR_FILE_NOT_EXIST");
     else if (m_error_state == ES_FILE_CANNOT_BE_OPEN)
         error_info = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_ERROR_FILE_CANNOT_BE_OPEND");
-    else
+    else if (m_player_core_inited && m_pCore != nullptr)
         error_info = m_pCore->GetErrorInfo();
     error_info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_PLAYSTATUS_ERROR_2", { error_info });
     return error_info;
@@ -2374,7 +2383,7 @@ void CPlayer::ResetABRepeat()
 
 void CPlayer::ConnotPlayWarning() const
 {
-    if (m_pCore->IsMidiConnotPlay())
+    if (m_player_core_inited && m_pCore != nullptr && m_pCore->IsMidiConnotPlay())
         PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_CONNOT_PLAY_WARNING, 0, 0);
 }
 

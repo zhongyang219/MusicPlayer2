@@ -142,7 +142,7 @@ public:
 
     SortMode m_sort_mode;           //排序方式
 
-    bool m_loading{ false };        //如果正在载入播放列表，则为true
+    std::atomic_bool m_loading{ false };        //如果正在载入播放列表，则为true
 
     bool m_enable_lastfm;           // 当前歌曲是否启用了last.fm支持
 
@@ -171,7 +171,7 @@ private:
     ABRepeatMode m_ab_repeat_mode{};
 
     bool m_file_opend{ false };             //如果打开了一个文件，则为true
-    bool m_player_core_inited{ false };     //播放内核是否初始化
+    std::atomic_bool m_player_core_inited{ false };     //播放内核是否初始化
     bool m_contain_sub_folder{ false };     //文件夹模式是否包含子文件夹
 
     AlbumCoverInfo m_album_cover_info;
