@@ -1304,7 +1304,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
 
             if (!theApp.m_app_setting_data.button_round_corners)
             {
-                m_draw.FillAlphaRect(rect, background_color, alpha);
+                m_draw.FillAlphaRect(rect, background_color, alpha, true);
             }
             else
             {
