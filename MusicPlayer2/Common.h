@@ -159,6 +159,10 @@ public:
     //替换一个文件名中的无效字符
     static void FileNameNormalize(wstring& file_name);
 
+    //检查一个文件路径的长度，如果超过Windows下的最大长度，则将其截断，并保持扩展名不变
+    //如果已进行截断则返回false，否则返回true
+    static bool CheckFilePathLength(std::wstring& file_path);
+
     static bool IsFileNameValid(const wstring& file_name);
 
     //计算文件大小

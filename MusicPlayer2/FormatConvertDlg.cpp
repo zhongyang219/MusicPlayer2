@@ -454,7 +454,7 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
         out_file_path += index_str;
     }
 
-    // 按照格式字符串生成输出文件名(这里缺少长度检查)
+    // 按照格式字符串生成输出文件名
     out_file_path += CFileNameFormDlg::FileNameFromTag(pthis->m_out_name, song_info);
 
     // 按照输出格式添加后缀
@@ -476,6 +476,9 @@ bool CFormatConvertDlg::EncodeSingleFile(CFormatConvertDlg* pthis, int file_inde
         out_file_path += L".flac";
         break;
     }
+
+    //检查目标文件路径的长度
+    CCommon::CheckFilePathLength(out_file_path);
 
     //判断目标文件是否存在
     if (pthis->m_file_exist_action == 0)		//如果设置了“目标文件存在时自动重命名”，自动在文件名后面添加形如“ (数字)”的编号

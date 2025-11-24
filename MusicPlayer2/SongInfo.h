@@ -107,8 +107,8 @@ struct SongInfo
 
     // 获取艺术家列表（可能存在多个艺术家）
     void GetArtistList(vector<wstring>& artist_list) const;
-    // TODO: 迁移所有用于文件名的艺术家字符串从这里获取
-    // 获取首个艺术家（作为文件名时请从这里获取以限制长度）
+
+    // 获取首个艺术家
     wstring GetFirstArtist() const;
 
     wstring GetTitle() const;

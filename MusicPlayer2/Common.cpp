@@ -495,6 +495,23 @@ void CCommon::FileNameNormalize(wstring& file_name)
     }
 }
 
+bool CCommon::CheckFilePathLength(std::wstring& file_path)
+{
+    CFilePathHelper file_path_helper(file_path);
+    std::wstring file_ext = file_path_helper.GetFileExtension(false, true);
+    std::wstring file_name = file_path_helper.GetFileNameWithoutExtension();
+    std::wstring file_dir = file_path_helper.GetDir();
+    //最大的文件名长度（比MAX_PATH少12个字符，留出一些余裕）
+    int file_name_max_length = MAX_PATH - 12 - static_cast<int>(file_dir.size()) - static_cast<int>(file_ext.size());
+    if (file_name_max_length > 0 && static_cast<int>(file_name.size()) > file_name_max_length)
+    {
+        file_name = file_name.substr(0, file_name_max_length);
+        file_path = file_dir + file_name + file_ext;
+        return false;
+    }
+    return true;
+}
+
 bool CCommon::IsFileNameValid(const wstring& file_name)
 {
     const wstring invalid_chars{ L"\\\"/:*?<>|\a\b\f\n\r\t\v" };

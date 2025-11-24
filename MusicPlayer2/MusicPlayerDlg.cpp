@@ -6229,6 +6229,11 @@ void CMusicPlayerDlg::OnRename()
         if (!reopen.IsLockSuccess())
             continue;
         wstring new_name = CRenameDlg::FileNameFromTag(formular, song);
+        //重命名前检查路径的长度
+        wstring new_file_path_tmp = CFilePathHelper(song.file_path).GetDir() + new_name;
+        if (!CCommon::CheckFilePathLength(new_file_path_tmp))
+            new_name = CFilePathHelper(new_file_path_tmp).GetFileName();
+        //重命名
         wstring new_file_path = CCommon::FileRename(song.file_path, new_name);
         if (!new_file_path.empty())
         {

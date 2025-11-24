@@ -100,7 +100,7 @@ wstring CTagSelBaseDlg::FileNameFromTag(wstring formular, const SongInfo& song_i
 {
     vector<pair<wstring, wstring>> replacements = {
         { FORMULAR_TITLE, song_info.GetTitle() },
-        { FORMULAR_ARTIST, song_info.GetFirstArtist() },
+        { FORMULAR_ARTIST, song_info.GetArtist() },
         { FORMULAR_ALBUM, song_info.GetAlbum() },
         { FORMULAR_TRACK, std::to_wstring(song_info.track) },
         { FORMULAR_GENRE, song_info.GetGenre() },
