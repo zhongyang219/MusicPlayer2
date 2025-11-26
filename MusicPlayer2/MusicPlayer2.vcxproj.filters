@@ -1071,6 +1071,9 @@
     <ClInclude Include="UIElement\PanelElement.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="WildcardMap.h">
+      <Filter>功能逻辑类\SongMultiVersion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">

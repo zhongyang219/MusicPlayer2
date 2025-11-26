@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "CueFile.h"
 #include "MusicPlayer2.h"
+#include "WildcardMap.h"
 
 CTest::CTest()
 {
@@ -54,7 +55,8 @@ void CTest::Test()
     //TestCueSave();
     //TestFilePathHelper();
     //TestStringToInt();
-    TestChinesePingyinMatch();
+    //TestChinesePingyinMatch();
+    TextStringMatchWildcard();
 }
 
 void CTest::TestStringMatch()
@@ -273,4 +275,19 @@ void CTest::TestChinesePingyinMatch()
     ASSERT(theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(L"nihaoshijie", L"你好世界"));
     ASSERT(!theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(L"nh", L"你世界"));
     ASSERT(theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(L"cxqd", L"春夏秋冬"));
+}
+
+void CTest::TextStringMatchWildcard()
+{
+    CWildcardMap<std::vector<std::wstring>> my_map;
+    my_map[L"text|12|file"].push_back(L"text1");
+    ASSERT(my_map.size() == 1);
+    my_map[L"text|*|file"].push_back(L"text2");
+    ASSERT(my_map.size() == 1);
+    my_map[L"text|*|*"].push_back(L"text3");
+    ASSERT(my_map.size() == 1);
+    my_map[L"text|*|file2"].push_back(L"text4");
+    ASSERT(my_map.size() == 2);
+    my_map[L"text|12|file2"].push_back(L"text5");
+    ASSERT(my_map.size() == 2);
 }

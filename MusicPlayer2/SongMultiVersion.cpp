@@ -5,7 +5,7 @@
 void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
 {
 	m_duplicate_songs.clear();
-	std::map<std::wstring, SongInfo> song_map;
+	CWildcardMap<SongInfo> song_map;
 	for (auto iter = songs.begin(); iter != songs.end();)
 	{
 		const auto& song{ *iter };
@@ -127,7 +127,8 @@ bool CSongMultiVersion::IsEmpty() const
 
 std::wstring CSongMultiVersion::MakeKey(const SongInfo& song_info)
 {
-	//仅当标题、艺术家都不为空时，将标题、艺术家、唱片集相同的曲目作为同一首曲目的不同版本
+	//仅当标题、艺术家都不为空时，将标题、艺术家、唱片集、音轨序号相同的曲目作为同一首曲目的不同版本
+	//当唱片集或音轨号为空时允许和对应字段不为空的曲目匹配，也认为是同一首曲目的不同版本
 	std::wstringstream wss;
 	if (!song_info.title.empty() && !song_info.artist.empty())
 	{
@@ -136,9 +137,21 @@ std::wstring CSongMultiVersion::MakeKey(const SongInfo& song_info)
 		song_info.GetArtistList(artist_list);
 		for (const auto& artist : artist_list)
 			wss << artist << L';';
-		wss << L'|' << song_info.album;
+		wss << L'|';
+		//添加唱片集（如果唱片集为空，则使用*作为通配符）
+		if (song_info.album.empty())
+			wss << L'*';
+		else
+			wss << song_info.album;
+		wss << L'|';
+		//添加音轨序号（如果为空，则使用*作为通配符）
+		if (song_info.track == 0)
+			wss << L'*';
+		else
+			wss << std::to_wstring(song_info.track);
 		return wss.str();
 	}
+	//如果标题、艺术家有一个为空，则直接使用路径作为key（不进行合并）
 	else
 	{
 		if (song_info.is_cue)

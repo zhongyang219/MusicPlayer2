@@ -405,6 +405,7 @@
     <ClInclude Include="TestDlg.h" />
     <ClInclude Include="TreeCtrlEx.h" />
     <ClInclude Include="UpdateHelper.h" />
+    <ClInclude Include="WildcardMap.h" />
     <ClInclude Include="WinVersionHelper.h" />
     <ClInclude Include="WmaEncodeCfgDlg.h" />
     <ClInclude Include="FilePathHelper.h" />

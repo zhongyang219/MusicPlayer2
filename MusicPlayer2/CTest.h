@@ -27,5 +27,6 @@ private:
     static void TestFilePathHelper();
     static void TestStringToInt();
     static void TestChinesePingyinMatch();
+    static void TextStringMatchWildcard();
 };
 
