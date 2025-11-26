@@ -95,7 +95,7 @@ using _tstring = std::string;
 #define TIMER_CMD_OPEN_FILES_DELAY 1240
 
 #define UI_INTERVAL_DEFAULT 50   //定义界面刷新时间的默认时间间隔（毫秒）
-#define MIN_UI_INTERVAL 10      //界面刷新时间间隔最小值
+#define MIN_UI_INTERVAL 2      //界面刷新时间间隔最小值
 #define MAX_UI_INTERVAL 300     //界面刷新时间间隔最大值
 #define UI_INTERVAL_STEP 10     //调整界面刷新时间间隔的步长
 #define LYRIC_BLANK_IGNORE_TIME 3000           //歌词双行显示、桌面歌词中忽略空白歌词的时间
