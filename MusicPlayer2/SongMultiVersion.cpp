@@ -34,30 +34,45 @@ void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
 		auto& song_multi_version{ GetSongsMultiVersion(song) };
 		if (!song_multi_version.empty())
 		{
-			bool has_prefered = false;
+			//选中版本的序号
+			int prefered_index = -1;
+			//查找选中的版本
 			for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
 			{
 				const SongInfo& selected_song = song_multi_version[i];
 				if (IsSongPrefered(selected_song))
 				{
 					song = selected_song;
-					has_prefered = true;
+					prefered_index = i;
+					break;
 				}
 			}
 			//如果还没有选择过一个版本，则默认选择比特率最高的项
-			int prefered_index = 0;
-			int max_bitrate = 0;
-			for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
+			if (prefered_index < 0)
 			{
-				const SongInfo& selected_song = song_multi_version[i];
-				if (selected_song.bitrate > max_bitrate)
+				int max_bitrate = 0;
+				for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
 				{
-					max_bitrate = selected_song.bitrate;
-					prefered_index = i;
+					const SongInfo& selected_song = song_multi_version[i];
+					if (selected_song.bitrate > max_bitrate)
+					{
+						max_bitrate = selected_song.bitrate;
+						prefered_index = i;
+					}
+				}
+				if (prefered_index >= 0)
+					song = song_multi_version[prefered_index];
+			}
+			//如果已经确定了一个版本，则应该把其他版本的prefered标记设为false
+			if (prefered_index >= 0)
+			{
+				for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
+				{
+					bool is_prefered = (i == prefered_index);
+					const SongInfo& selected_song = song_multi_version[i];
+					SetSongPrefered(selected_song, is_prefered);
 				}
 			}
-			if (prefered_index > 0)
-				song = song_multi_version[prefered_index];
 		}
 	}
 }

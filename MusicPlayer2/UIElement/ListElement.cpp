@@ -235,7 +235,8 @@ void UiElement::ListElement::ShowContextMenu(CMenu* menu, CWnd* cmd_reciver)
             helper.SetMenuState(menu);
             //使用TPM_RETURNCMD标志指定菜单命令使用返回值返回，TPM_NONOTIFY标志指定选择了菜单命令后不会向窗口发送WM_COMMAND消息，但是仍然必须传递一个有效的窗口句柄
             UINT command = menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD | TPM_NONOTIFY, cursor_pos.x, cursor_pos.y, theApp.m_pMainWnd);
-            helper.OnUiCommand(command);
+            if (command != 0)
+                helper.OnUiCommand(command);
         }
     }
 }
