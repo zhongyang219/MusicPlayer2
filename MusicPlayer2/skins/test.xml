@@ -1,6 +1,7 @@
 ﻿<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
       name="test">
   
+  <!--歌曲详情面板-->
   <panel id="song_info_panel" width="200" height="250">
     <verticalLayout>
       <rectangle height="24">
@@ -19,6 +20,7 @@
     </verticalLayout>
   </panel>
   
+  <!--播放队列面板-->
   <panel id="play_queue_panel" width="200" height="250">
     <verticalLayout>
       <rectangle height="24">
@@ -209,6 +211,8 @@
           <horizontalLayout height="26">
             <button key="showPanel" panel_id="song_info_panel" icon="info" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PROPERTY)"/>
             <button key="showPanel" panel_id="play_queue_panel" icon="playInPlaylist" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PLAY_QUEUE)"/>
+            <icon icon="app" width="28" height="28" margin="2" />
+            <icon icon="appMonochrome" width="28" height="28" margin="2" />
             <placeHolder/>
           </horizontalLayout>
           <placeHolder/>

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "ElementFactory.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +70,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::SearchBox>();
     else if (name == "elementSwitcher")
         element = std::make_shared<UiElement::ElementSwitcher>();
+    else if (name == "icon")
+        element = std::make_shared<UiElement::Icon>();
     else if (name == "ui" || name == "root" || name == "element")
         element = std::make_shared<UiElement::Element>();
     else if (name == "panel")

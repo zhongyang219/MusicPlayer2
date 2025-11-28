@@ -304,6 +304,7 @@
     <ClInclude Include="UIElement\ElementFactory.h" />
     <ClInclude Include="UIElement\ElementSwitcher.h" />
     <ClInclude Include="UIElement\FolderExploreTree.h" />
+    <ClInclude Include="UIElement\IconElement.h" />
     <ClInclude Include="UIElement\Layout.h" />
     <ClInclude Include="UIElement\ListElement.h" />
     <ClInclude Include="UIElement\LyricsElement.h" />
@@ -516,6 +517,7 @@
     <ClCompile Include="UIElement\ElementFactory.cpp" />
     <ClCompile Include="UIElement\ElementSwitcher.cpp" />
     <ClCompile Include="UIElement\FolderExploreTree.cpp" />
+    <ClCompile Include="UIElement\IconElement.cpp" />
     <ClCompile Include="UIElement\Layout.cpp" />
     <ClCompile Include="UIElement\ListElement.cpp" />
     <ClCompile Include="UIElement\LyricsElement.cpp" />

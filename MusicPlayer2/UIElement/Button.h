@@ -1,19 +1,19 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
-    //°´Å¥
+    //æŒ‰é’®
     class Button : public Element
     {
     public:
-        CPlayerUIBase::BtnKey key;      //°´Å¥µÄÀàĞÍ
-        bool big_icon{};                //Èç¹ûÎªfalse£¬ÔòÍ¼±ê³ß´çÎª16x16£¬·ñÔòÎª20x20
-        bool show_text{};               //ÊÇ·ñÔÚÍ¼±êÓÒ²àÏÔÊ¾ÎÄ±¾
-        int font_size{ 9 };             //×ÖÌå´óĞ¡£¬½öÔÚshow_textÎªtrueÊ±ÓĞĞ§
-        std::wstring text;              //°´Å¥µÄÎÄ±¾£¬½öÔÚshow_textÎªtrueÊ±ÓĞĞ§£¬Èç¹ûÎª¿Õ£¬ÔòÎÄ±¾ÓÉ°´Å¥µÄÀàĞÍ¾ö¶¨
-        IconMgr::IconType icon_type{ IconMgr::IT_NO_ICON };    //°´Å¥Í¼±ê£¬Èç¹ûÎ´Ö¸¶¨ÔòÓÉ°´Å¥µÄÀàĞÍ¾ö¶¨
-        std::wstring panel_file_name;   //Ãæ°åxmlÎÄ¼şµÄÎÄ¼şÃû£¬·ÅÔÚskins/panelsÄ¿Â¼ÏÂ¡£½öµ±°´Å¥ÀàĞÍÎªBTN_SHOW_PANELÊ±ÓĞĞ§¡£µã»÷°´Å¥ºó½«ÏÔÊ¾Ò»¸öÃæ°å
-        std::wstring panel_id;          //Ãæ°åµÄid¡£½öµ±°´Å¥ÀàĞÍÎªBTN_SHOW_PANELÊ±ÓĞĞ§¡£µã»÷°´Å¥ºó½«ÏÔÊ¾Ò»¸öÃæ°å
+        CPlayerUIBase::BtnKey key;      //æŒ‰é’®çš„ç±»å‹
+        bool big_icon{};                //å¦‚æœä¸ºfalseï¼Œåˆ™å›¾æ ‡å°ºå¯¸ä¸º16x16ï¼Œå¦åˆ™ä¸º20x20
+        bool show_text{};               //æ˜¯å¦åœ¨å›¾æ ‡å³ä¾§æ˜¾ç¤ºæ–‡æœ¬
+        int font_size{ 9 };             //å­—ä½“å¤§å°ï¼Œä»…åœ¨show_textä¸ºtrueæ—¶æœ‰æ•ˆ
+        std::wstring text;              //æŒ‰é’®çš„æ–‡æœ¬ï¼Œä»…åœ¨show_textä¸ºtrueæ—¶æœ‰æ•ˆï¼Œå¦‚æœä¸ºç©ºï¼Œåˆ™æ–‡æœ¬ç”±æŒ‰é’®çš„ç±»å‹å†³å®š
+        IconMgr::IconType icon_type{ IconMgr::IT_NO_ICON };    //æŒ‰é’®å›¾æ ‡ï¼Œå¦‚æœæœªæŒ‡å®šåˆ™ç”±æŒ‰é’®çš„ç±»å‹å†³å®š
+        std::wstring panel_file_name;   //é¢æ¿xmlæ–‡ä»¶çš„æ–‡ä»¶åï¼Œæ”¾åœ¨skins/panelsç›®å½•ä¸‹ã€‚ä»…å½“æŒ‰é’®ç±»å‹ä¸ºBTN_SHOW_PANELæ—¶æœ‰æ•ˆã€‚ç‚¹å‡»æŒ‰é’®åå°†æ˜¾ç¤ºä¸€ä¸ªé¢æ¿
+        std::wstring panel_id;          //é¢æ¿çš„idã€‚ä»…å½“æŒ‰é’®ç±»å‹ä¸ºBTN_SHOW_PANELæ—¶æœ‰æ•ˆã€‚ç‚¹å‡»æŒ‰é’®åå°†æ˜¾ç¤ºä¸€ä¸ªé¢æ¿
 
         void FromString(const std::string& key_type);
         void IconTypeFromString(const std::string& icon_name);

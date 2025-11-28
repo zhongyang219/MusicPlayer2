@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "UIElement/UIElement.h"
 #include "UIElement/Layout.h"
 #include "UIElement/Text.h"
@@ -29,6 +29,7 @@
 #include "UIElement/MiniSpectrum.h"
 #include "UIElement/ElementSwitcher.h"
 #include "UIElement/PanelElement.h"
+#include "UIElement/IconElement.h"
 
 namespace UiElement
 {

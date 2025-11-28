@@ -950,6 +950,15 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 element_switcher->IconTypeFromString(str_icon);
             }
         }
+        else if (item_name == "icon")
+        {
+            UiElement::Icon* icon = dynamic_cast<UiElement::Icon*>(element.get());
+            if (icon != nullptr)
+            {
+                std::string str_icon = CTinyXml2Helper::ElementAttribute(xml_node, "icon");
+                icon->IconTypeFromString(str_icon);
+            }
+        }
 
         element->InitComplete();
 

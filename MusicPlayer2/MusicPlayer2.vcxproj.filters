@@ -1074,6 +1074,9 @@
     <ClInclude Include="WildcardMap.h">
       <Filter>功能逻辑类\SongMultiVersion</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\IconElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1680,6 +1683,9 @@
       <Filter>PlayerUI\UIPanel</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\PanelElement.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\IconElement.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>

@@ -37,6 +37,7 @@ namespace UiElement
     class FolderExploreTree;
     class SearchBox;
     class ElementSwitcher;
+    class Icon;
 }
 
 struct SLayoutData
@@ -93,6 +94,7 @@ public:
     friend class UiElement::FolderExploreTree;
     friend class UiElement::SearchBox;
     friend class UiElement::ElementSwitcher;
+    friend class UiElement::Icon;
 
     friend class UiFontGuard;
 
