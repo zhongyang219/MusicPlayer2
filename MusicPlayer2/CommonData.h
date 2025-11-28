@@ -322,6 +322,7 @@ struct PlaySettingData
     int fade_time{ 500 };                      //淡入淡出时间（毫秒）
     bool use_media_trans_control{};             //使用系统MediaTransportControls
     bool remember_last_position{ true };        //是否记住上次播放位置
+    bool open_single_file_in_folder_mode{ false };  //打开单个音频文件时是否在文件夹模式中播放（否则在[默认]播放列表中播放）
 
     bool use_mci{ false };              //是否使用MCI内核
     /// 是否使用ffmpeg内核

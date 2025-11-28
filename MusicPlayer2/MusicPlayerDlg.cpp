@@ -495,6 +495,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"fade_time", theApp.m_play_setting_data.fade_time);
     ini.WriteBool(L"config", L"use_media_trans_control", theApp.m_play_setting_data.use_media_trans_control);
     ini.WriteBool(L"config", L"remember_last_position", theApp.m_play_setting_data.remember_last_position);
+    ini.WriteBool(L"config", L"open_single_file_in_folder_mode", theApp.m_play_setting_data.open_single_file_in_folder_mode);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
     ini.WriteBool(L"config", L"use_mci", theApp.m_play_setting_data.use_mci);
     ini.WriteBool(L"config", L"use_ffmpeg", theApp.m_play_setting_data.use_ffmpeg);
@@ -708,6 +709,7 @@ void CMusicPlayerDlg::LoadConfig()
     else
         theApp.m_play_setting_data.use_media_trans_control = false;
     theApp.m_play_setting_data.remember_last_position = ini.GetBool(L"config", L"remember_last_position", true);
+    theApp.m_play_setting_data.open_single_file_in_folder_mode = ini.GetBool(L"config", L"open_single_file_in_folder_mode", false);
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
     theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
     theApp.m_play_setting_data.use_ffmpeg = ini.GetBool(L"config", L"use_ffmpeg", false);
@@ -2449,7 +2451,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
             }
             else        //从命令行参数获取要打开的文件
             {
-                bool open_default_playlist{ true };
+                bool open_files{ true };
                 vector<wstring> files;
                 CCommon::DisposeCmdLineFiles(m_cmdLine, files);
                 if (!files.empty())
@@ -2458,18 +2460,22 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                     {
                         CPlayer::GetInstance().CreateWithPlaylist(files.front());
                         files.erase(files.begin());
-                        open_default_playlist = false;
+                        open_files = false;
                     }
                     else if (CCommon::IsFolder(files.front()))
                     {
                         CPlayer::GetInstance().CreateWithPath(files.front());
                         files.erase(files.begin());
-                        open_default_playlist = false;
+                        open_files = false;
                     }
                 }
-                if (open_default_playlist)
+                if (open_files)
                 {
-                    CPlayer::GetInstance().CreateWithPlaylist(CRecentList::Instance().GetSpecPlaylist(CRecentList::PT_DEFAULT).path);
+                    //设置了打开单个音频文件时在文件夹模式下播放
+                    if (theApp.m_play_setting_data.open_single_file_in_folder_mode && files.size() == 1)
+                        CPlayer::GetInstance().CreateWithPath(CFilePathHelper(files.front()).GetDir());
+                    else
+                        CPlayer::GetInstance().CreateWithPlaylist(CRecentList::Instance().GetSpecPlaylist(CRecentList::PT_DEFAULT).path);
                 }
                 if (!files.empty())
                 {
@@ -2700,8 +2706,16 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         }
         else
         {
-            if (!CPlayer::GetInstance().OpenFilesInDefaultPlaylist(path_songs))
-                path_songs.clear();
+            if (theApp.m_play_setting_data.open_single_file_in_folder_mode && path_songs.size() == 1)
+            {
+                if (!CPlayer::GetInstance().OpenASongInFolderMode(SongInfo(path_songs.front()), true))
+                    path_songs.clear();
+            }
+            else
+            {
+                if (!CPlayer::GetInstance().OpenFilesInDefaultPlaylist(path_songs))
+                    path_songs.clear();
+            }
         }
         m_cmd_open_files_mutx.lock();
         if (!path_playlist.empty())
@@ -3084,7 +3098,12 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
                 }
             }
             else
-                ok = CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files, false);
+            {
+                if (theApp.m_play_setting_data.open_single_file_in_folder_mode && files.size() == 1)
+                    ok = CPlayer::GetInstance().OpenASongInFolderMode(SongInfo(files.front()));
+                else
+                    ok = CPlayer::GetInstance().OpenFilesInDefaultPlaylist(files, false);
+            }
         }
     }
     if (!ok)
