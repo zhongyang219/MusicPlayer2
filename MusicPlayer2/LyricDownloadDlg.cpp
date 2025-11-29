@@ -91,17 +91,36 @@ void CLyricDownloadDlg::LoadConfig()
 	m_search_max_item = ini.GetInt(L"lyric_download", L"search_max_item", 30);
 }
 
-wstring CLyricDownloadDlg::GetSavedDir()
+wstring CLyricDownloadDlg::GetLyricFileName()
 {
-    if (m_save_to_song_folder || !CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()))
-        return CFilePathHelper(m_song.file_path).GetDir();
-    else
-        return theApp.m_lyric_setting_data.AbsoluteLyricPath();
+	std::wstring lyric_name;
+	bool save_to_lyric_folder = (!m_save_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()));	//是否保存到歌曲所在文件夹
+	//cur、osu，或保存到歌词文件夹时，使用“艺术家-标题”格式命名
+	if (m_song.is_cue || CPlayer::GetInstance().IsOsuFile() || save_to_lyric_folder)
+	{
+		lyric_name = CSongInfoHelper::GetDisplayStr(m_song, DF_ARTIST_TITLE);
+		CCommon::FileNameNormalize(lyric_name);
+	}
+	else
+	{
+		lyric_name = m_song.GetFileName();
+		lyric_name = CFilePathHelper(lyric_name).ReplaceFileExtension(nullptr);	//清除文件名的扩展名
+	}
+	return lyric_name;
+}
+
+wstring CLyricDownloadDlg::GetSavedDir() const
+{
+	bool save_to_lyric_folder = (!m_save_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()));	//是否保存到歌曲所在文件夹
+	if (save_to_lyric_folder)
+		return theApp.m_lyric_setting_data.AbsoluteLyricPath();
+	else
+		return CFilePathHelper(m_song.file_path).GetDir();
 }
 
 wstring CLyricDownloadDlg::GetSavedPath()
 {
-    return GetSavedDir() + m_lyric_name + L".lrc";
+    return GetSavedDir() + GetLyricFileName() + L".lrc";
 }
 
 CString CLyricDownloadDlg::GetDialogName() const
@@ -240,24 +259,6 @@ BOOL CLyricDownloadDlg::OnInitDialog()
 	{
 		m_song.album.clear();
 	}
-
-    if (m_song.is_cue || CPlayer::GetInstance().IsOsuFile())
-    {
-        m_lyric_name = CSongInfoHelper::GetDisplayStr(m_song, DF_ARTIST_TITLE);
-        CCommon::FileNameNormalize(m_lyric_name);
-    }
-    else
-    {
-        m_lyric_name = m_song.GetFileName();
-        m_lyric_name = CFilePathHelper(m_lyric_name).ReplaceFileExtension(nullptr);	//清除文件名的扩展名
-    }
-	//if (!song.is_cue)
-	//else
-	//	m_lyric_name = song.artist + L" - " + song.title + L".lrc";
-	//m_file_path = CPlayer::GetInstance().GetCurrentDir() + m_lyric_name;
-	//if (!song.is_cue)
-	//{
-	//}
 
 	SetDlgItemText(IDC_TITLE_EDIT1, m_song.title.c_str());
 	SetDlgItemText(IDC_ARTIST_EDIT1, m_song.artist.c_str());
@@ -515,7 +516,7 @@ afx_msg LRESULT CLyricDownloadDlg::OnSearchComplate(WPARAM wParam, LPARAM lParam
 		}
 	}
 	if(!id_releated)
-		best_matched = CLyricDownloadCommon::SelectMatchedItem(m_down_list, m_song.title, m_song.artist, m_song.album, m_lyric_name, true);
+		best_matched = CLyricDownloadCommon::SelectMatchedItem(m_down_list, m_song.title, m_song.artist, m_song.album, GetLyricFileName(), true);
     wstring info;
 	m_unassciate_lnk.ShowWindow(SW_HIDE);
     SongInfo song_info_ori{ CSongDataManager::GetInstance().GetSongInfo3(m_song) };

@@ -4399,14 +4399,17 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         //保存歌词
         CFilePathHelper lyric_path;
         wstring file_name;
-        if (!song_info_ori.is_cue && !is_osu)   // osu文件使用与cue同样的“艺术家 - 标题”保存自动下载歌词
-            file_name = song_info_ori.GetFileName();
-        else
+        bool save_to_lyric_folder = (!theApp.m_general_setting_data.save_lyric_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()));	//是否保存到歌曲所在文件夹
+        if (song_info_ori.is_cue || is_osu || save_to_lyric_folder)   // cue、osu文件使，或保存到歌词文件夹时用与cue同样的“艺术家 - 标题”保存自动下载歌词
         {
-            file_name = song_info_ori.artist + L" - " + song_info_ori.title + L".lrc";
+            file_name = CSongInfoHelper::GetDisplayStr(song_info_ori, DF_ARTIST_TITLE);
             CCommon::FileNameNormalize(file_name);
         }
-        if (!theApp.m_general_setting_data.save_lyric_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()))
+        else
+        {
+            file_name = song_info_ori.GetFileName();
+        }
+        if (save_to_lyric_folder)
         {
             lyric_path.SetFilePath(theApp.m_lyric_setting_data.AbsoluteLyricPath() + file_name);
         }

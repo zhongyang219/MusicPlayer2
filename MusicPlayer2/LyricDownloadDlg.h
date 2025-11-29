@@ -55,7 +55,6 @@ public:
 
 protected:
     SongInfo m_song;       //要查找歌词的歌曲
-	wstring m_lyric_name;	        //保存的歌词文件的文件名（不含扩展名）
 	wstring m_lyric_dir;			//当前要保存的歌词文件的目录
 	wstring m_search_result;	//查找结果字符串
 	wstring m_lyric_str;	//下载的歌词
@@ -83,7 +82,8 @@ protected:
 	void SaveConfig() const;
 	void LoadConfig();
 
-    wstring GetSavedDir();
+	wstring GetLyricFileName();		//获取保存的歌词文件的文件名（不含扩展名）
+    wstring GetSavedDir() const;
     wstring GetSavedPath();
 
     virtual CString GetDialogName() const override;
