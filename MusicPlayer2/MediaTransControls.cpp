@@ -137,7 +137,7 @@ void MediaTransControls::UpdateControlsMetadata(const SongInfo& song)
     if (!pImpl) return;
     const wstring& title = (!song.IsTitleEmpty() || song.file_path.empty()) ? song.GetTitle() : song.GetFileName();
     vector<wstring> genres(1, song.GetGenre());
-    pImpl->UpdateControlsMetadata(title, song.GetAlbum(), song.album_artist, song.GetAlbum(), genres, song.track, song.total_tracks);
+    pImpl->UpdateControlsMetadata(title, song.artist, song.album_artist, song.GetAlbum(), genres, song.track, song.total_tracks);
     pImpl->UpdateDuration(song.length().toInt());   // milliseconds
 }
 
