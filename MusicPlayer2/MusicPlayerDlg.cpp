@@ -3989,9 +3989,15 @@ void CMusicPlayerDlg::OnCopyAllLyric()
 {
     // TODO: 在此添加命令处理程序代码
     if (CCommon::CopyStringToClipboard(CPlayer::GetInstance().m_Lyrics.GetAllLyricText(theApp.m_lyric_setting_data.show_translate)))
-        MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_ALL_LYRIC").c_str(), NULL, MB_ICONINFORMATION);
+    {
+        CPlayerUIBase* pUI = GetCurrentUi();
+        if (pUI != nullptr)
+            pUI->ShowUiTipInfo(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_ALL_LYRIC"));
+    }
     else
+    {
         MessageBox(theApp.m_str_table.LoadText(L"MSG_COPY_CLIPBOARD_FAILED").c_str(), NULL, MB_ICONWARNING);
+    }
 }
 
 
