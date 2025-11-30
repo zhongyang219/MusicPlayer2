@@ -6456,20 +6456,9 @@ void CMusicPlayerDlg::OnWindowPosChanging(WINDOWPOS* lpwndpos)
     // 最大化时更改为rcWork，全屏时更改为rcMonitor
     if (IsZoomed() || theApp.m_ui_data.full_screen)
     {
-        //保存上次主窗口所在监视器句柄，如果窗口不在任何监视器则返回主监视器句柄
-        static HMONITOR hLastMonitor = MonitorFromWindow(theApp.m_pMainWnd->GetSafeHwnd(), MONITOR_DEFAULTTOPRIMARY);
-        //获取主窗口所在的监视器句柄，如果不存在则返回空
-        HMONITOR hMonitor = MonitorFromWindow(theApp.m_pMainWnd->GetSafeHwnd(), MONITOR_DEFAULTTONULL);
-        //如果未获取到主窗口所在监视器句柄，则使用上一次获取到的的监视器句柄
-        if (hMonitor == NULL)
-        {
-            hMonitor = hLastMonitor;
-        }
-        //获取到了主窗口所在监视器句柄，保存监视器句柄
-        else
-        {
-            hLastMonitor = hMonitor;
-        }
+        //根据窗口位置获取监视器句柄
+        CRect rect(CPoint(lpwndpos->x, lpwndpos->y), CSize(lpwndpos->cx, lpwndpos->cy));
+        HMONITOR hMonitor = MonitorFromRect(rect, MONITOR_DEFAULTTOPRIMARY);
         // 获取监视器信息
         MONITORINFO lpmi;
         lpmi.cbSize = sizeof(lpmi);
