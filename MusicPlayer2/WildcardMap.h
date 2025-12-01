@@ -22,14 +22,10 @@ public:
         if (data.empty())
             return data.end();
 
-        std::vector<std::wstring> tokensKey;
-        CCommon::StringSplit(key, L'|', tokensKey);
-
+        auto& tokensKey = getTokens(key);
         for (auto it = data.begin(); it != data.end(); ++it)
         {
-            std::vector<std::wstring> tokensExisting;
-            CCommon::StringSplit(it->first, L'|', tokensExisting);
-
+            auto& tokensExisting = getTokens(it->first);
             if (tokensKey.size() != tokensExisting.size())
             {
                 continue;
@@ -67,7 +63,22 @@ public:
     }
 
 private:
-    std::map<std::wstring, ValueType> data;
+    // 分割字符串并缓存结果
+    const std::vector<std::wstring>& getTokens(const std::wstring& key)
+    {
+        auto it = tokenCache.find(key);
+        if (it != tokenCache.end())
+        {
+            return it->second;
+        }
 
+        std::vector<std::wstring> tokens;
+        CCommon::StringSplit(key, L'|', tokens);
+        return tokenCache.emplace(key, std::move(tokens)).first->second;
+    }
+
+private:
+    std::map<std::wstring, ValueType> data;
+    std::unordered_map<std::wstring, std::vector<std::wstring>> tokenCache; // token缓存
 };
 
