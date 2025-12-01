@@ -8,6 +8,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "PropertyDlg.h"
 #include "SongDataManager.h"
+#include "CRecentList.h"
 
 
 // CAllMediaDlg 对话框
@@ -311,11 +312,16 @@ void CAllMediaDlg::OnOK()
     if (!songs.empty() || m_type == DT_ALL_MEDIA)
     {
         bool ok{};
-        // 所有曲目单选时使用媒体库模式播放
-        if (m_type == DT_ALL_MEDIA && songs.size() == 1)
+        // 所有曲目单选或未选择时使用媒体库模式播放
+        if (m_type == DT_ALL_MEDIA && songs.size() <= 1)
         {
-            ListItem list_item{ LT_MEDIA_LIB, L"", ListItem::ClassificationType::CT_NONE};
-            list_item.SetPlayTrack(songs.front());
+            ListItem list_item{ LT_MEDIA_LIB, L"", ListItem::ClassificationType::CT_NONE };
+            //未选择曲目时播放上次播放的曲目
+            if (songs.empty())
+                CRecentList::Instance().LoadItem(list_item);
+            //单选时播放选中的曲目
+            else
+                list_item.SetPlayTrack(songs.front());
             ok = CPlayer::GetInstance().SetList(list_item, true, true);
         }
         else
