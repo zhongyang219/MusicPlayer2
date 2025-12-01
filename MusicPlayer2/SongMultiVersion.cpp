@@ -1,24 +1,26 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "SongMultiVersion.h"
 #include "SongDataManager.h"
 
-void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
+void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs, int& percent)
 {
 	m_duplicate_songs.clear();
 	CWildcardMap<SongInfo> song_map;
+	int index = 0;
+	int vec_size = static_cast<int>(songs.size());
 	for (auto iter = songs.begin(); iter != songs.end();)
 	{
 		const auto& song{ *iter };
 		std::wstring key{ MakeKey(song) };
 		auto iter2 = song_map.find(key);
-		//ÓĞÖØ¸´Ïî
+		//æœ‰é‡å¤é¡¹
 		if (iter2 != song_map.end())
 		{
 			if (m_duplicate_songs[key].empty())
 				m_duplicate_songs[key].push_back(iter2->second);
 			m_duplicate_songs[key].push_back(song);
 
-			//½«ÖØ¸´Ïî´ÓÁĞ±íÖĞÒÆ³ı
+			//å°†é‡å¤é¡¹ä»åˆ—è¡¨ä¸­ç§»é™¤
 			iter = songs.erase(iter);
 		}
 		else
@@ -26,17 +28,21 @@ void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
 			++iter;
 		}
 		song_map[key] = song;
+		index++;
+		percent = index * 100 / vec_size;
+		if (percent > 100)
+			percent = 100;
 	}
 
-	//½«ÁĞ±íÖĞÓĞ¶à¸ö°æ±¾µÄÏîÉèÖÃÎªÑ¡ÖĞµÄ°æ±¾
+	//å°†åˆ—è¡¨ä¸­æœ‰å¤šä¸ªç‰ˆæœ¬çš„é¡¹è®¾ç½®ä¸ºé€‰ä¸­çš„ç‰ˆæœ¬
 	for (auto& song : songs)
 	{
 		auto& song_multi_version{ GetSongsMultiVersion(song) };
 		if (!song_multi_version.empty())
 		{
-			//Ñ¡ÖĞ°æ±¾µÄĞòºÅ
+			//é€‰ä¸­ç‰ˆæœ¬çš„åºå·
 			int prefered_index = -1;
-			//²éÕÒÑ¡ÖĞµÄ°æ±¾
+			//æŸ¥æ‰¾é€‰ä¸­çš„ç‰ˆæœ¬
 			for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
 			{
 				const SongInfo& selected_song = song_multi_version[i];
@@ -47,7 +53,7 @@ void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
 					break;
 				}
 			}
-			//Èç¹û»¹Ã»ÓĞÑ¡Ôñ¹ıÒ»¸ö°æ±¾£¬ÔòÄ¬ÈÏÑ¡Ôñ±ÈÌØÂÊ×î¸ßµÄÏî
+			//å¦‚æœè¿˜æ²¡æœ‰é€‰æ‹©è¿‡ä¸€ä¸ªç‰ˆæœ¬ï¼Œåˆ™é»˜è®¤é€‰æ‹©æ¯”ç‰¹ç‡æœ€é«˜çš„é¡¹
 			if (prefered_index < 0)
 			{
 				int max_bitrate = 0;
@@ -63,7 +69,7 @@ void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs)
 				if (prefered_index >= 0)
 					song = song_multi_version[prefered_index];
 			}
-			//Èç¹ûÒÑ¾­È·¶¨ÁËÒ»¸ö°æ±¾£¬ÔòÓ¦¸Ã°ÑÆäËû°æ±¾µÄprefered±ê¼ÇÉèÎªfalse
+			//å¦‚æœå·²ç»ç¡®å®šäº†ä¸€ä¸ªç‰ˆæœ¬ï¼Œåˆ™åº”è¯¥æŠŠå…¶ä»–ç‰ˆæœ¬çš„preferedæ ‡è®°è®¾ä¸ºfalse
 			if (prefered_index >= 0)
 			{
 				for (int i = 0; i < static_cast<int>(song_multi_version.size()); i++)
@@ -82,7 +88,7 @@ void CSongMultiVersion::SelectSongsMultiVersion(int index, SongInfo& cur_song)
 	auto iter = m_duplicate_songs.find(MakeKey(cur_song));
 	if (iter != m_duplicate_songs.end())
 	{
-		//»ñÈ¡Ö®Ç°Ñ¡ÔñµÄ°æ±¾ĞòºÅ
+		//è·å–ä¹‹å‰é€‰æ‹©çš„ç‰ˆæœ¬åºå·
 		int selected_index = -1;
 		for (int i = 0; i < static_cast<int>(iter->second.size()); i++)
 		{
@@ -92,11 +98,11 @@ void CSongMultiVersion::SelectSongsMultiVersion(int index, SongInfo& cur_song)
 				break;
 			}
 		}
-		//½«µ±Ç°ÇúÄ¿±£´æµ½Ö®Ç°Ñ¡ÖĞµÄ°æ±¾
+		//å°†å½“å‰æ›²ç›®ä¿å­˜åˆ°ä¹‹å‰é€‰ä¸­çš„ç‰ˆæœ¬
 		if (selected_index >= 0)
 			iter->second[selected_index] = cur_song;
 
-		//ÉèÖÃĞÂµÄÑ¡ÖĞ°æ±¾
+		//è®¾ç½®æ–°çš„é€‰ä¸­ç‰ˆæœ¬
 		for (int i = 0; i < static_cast<int>(iter->second.size()); i++)
 		{
 			bool is_prefered = (i == index);
@@ -142,8 +148,8 @@ bool CSongMultiVersion::IsEmpty() const
 
 std::wstring CSongMultiVersion::MakeKey(const SongInfo& song_info)
 {
-	//½öµ±±êÌâ¡¢ÒÕÊõ¼Ò¶¼²»Îª¿ÕÊ±£¬½«±êÌâ¡¢ÒÕÊõ¼Ò¡¢³ªÆ¬¼¯¡¢Òô¹ìĞòºÅÏàÍ¬µÄÇúÄ¿×÷ÎªÍ¬Ò»Ê×ÇúÄ¿µÄ²»Í¬°æ±¾
-	//µ±³ªÆ¬¼¯»òÒô¹ìºÅÎª¿ÕÊ±ÔÊĞíºÍ¶ÔÓ¦×Ö¶Î²»Îª¿ÕµÄÇúÄ¿Æ¥Åä£¬Ò²ÈÏÎªÊÇÍ¬Ò»Ê×ÇúÄ¿µÄ²»Í¬°æ±¾
+	//ä»…å½“æ ‡é¢˜ã€è‰ºæœ¯å®¶éƒ½ä¸ä¸ºç©ºæ—¶ï¼Œå°†æ ‡é¢˜ã€è‰ºæœ¯å®¶ã€å”±ç‰‡é›†ã€éŸ³è½¨åºå·ç›¸åŒçš„æ›²ç›®ä½œä¸ºåŒä¸€é¦–æ›²ç›®çš„ä¸åŒç‰ˆæœ¬
+	//å½“å”±ç‰‡é›†æˆ–éŸ³è½¨å·ä¸ºç©ºæ—¶å…è®¸å’Œå¯¹åº”å­—æ®µä¸ä¸ºç©ºçš„æ›²ç›®åŒ¹é…ï¼Œä¹Ÿè®¤ä¸ºæ˜¯åŒä¸€é¦–æ›²ç›®çš„ä¸åŒç‰ˆæœ¬
 	std::wstringstream wss;
 	if (!song_info.title.empty() && !song_info.artist.empty())
 	{
@@ -153,20 +159,20 @@ std::wstring CSongMultiVersion::MakeKey(const SongInfo& song_info)
 		for (const auto& artist : artist_list)
 			wss << artist << L';';
 		wss << L'|';
-		//Ìí¼Ó³ªÆ¬¼¯£¨Èç¹û³ªÆ¬¼¯Îª¿Õ£¬ÔòÊ¹ÓÃ*×÷ÎªÍ¨Åä·û£©
+		//æ·»åŠ å”±ç‰‡é›†ï¼ˆå¦‚æœå”±ç‰‡é›†ä¸ºç©ºï¼Œåˆ™ä½¿ç”¨*ä½œä¸ºé€šé…ç¬¦ï¼‰
 		if (song_info.album.empty())
 			wss << L'*';
 		else
 			wss << song_info.album;
 		wss << L'|';
-		//Ìí¼ÓÒô¹ìĞòºÅ£¨Èç¹ûÎª¿Õ£¬ÔòÊ¹ÓÃ*×÷ÎªÍ¨Åä·û£©
+		//æ·»åŠ éŸ³è½¨åºå·ï¼ˆå¦‚æœä¸ºç©ºï¼Œåˆ™ä½¿ç”¨*ä½œä¸ºé€šé…ç¬¦ï¼‰
 		if (song_info.track == 0)
 			wss << L'*';
 		else
 			wss << std::to_wstring(song_info.track);
 		return wss.str();
 	}
-	//Èç¹û±êÌâ¡¢ÒÕÊõ¼ÒÓĞÒ»¸öÎª¿Õ£¬ÔòÖ±½ÓÊ¹ÓÃÂ·¾¶×÷Îªkey£¨²»½øĞĞºÏ²¢£©
+	//å¦‚æœæ ‡é¢˜ã€è‰ºæœ¯å®¶æœ‰ä¸€ä¸ªä¸ºç©ºï¼Œåˆ™ç›´æ¥ä½¿ç”¨è·¯å¾„ä½œä¸ºkeyï¼ˆä¸è¿›è¡Œåˆå¹¶ï¼‰
 	else
 	{
 		if (song_info.is_cue)

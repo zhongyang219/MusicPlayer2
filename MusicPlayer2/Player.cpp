@@ -201,6 +201,7 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 {
     CCommon::SetThreadLanguageList(theApp.m_str_table.GetLanguageTag());
     ThreadInfo* pInfo = (ThreadInfo*)lpParam;
+    pInfo->merge_same_songs = false;
     wstring remove_list_path{ pInfo->remove_list_path };
     ListItem remove_list{};
     if (CCommon::IsFolder(pInfo->remove_list_path))
@@ -282,25 +283,28 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
         }
     }
 
-    PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);
-    return 0;
-}
-
-void CPlayer::IniPlaylistComplate()
-{
     //检查列表中的曲目是否在“我喜欢”播放列表中
     CPlaylistFile favourite_playlist;
     favourite_playlist.LoadFromFile(CRecentList::Instance().GetSpecPlaylist(CRecentList::PT_FAVOURITE).path);
-    for (auto& item : m_playlist)
+    for (auto& item : play_list)
     {
         item.is_favourite = favourite_playlist.IsSongInPlaylist(item);
     }
 
     //文件夹模式或媒体库模式下，合并同一首歌曲的不同版本
     CSongMultiVersionManager::PlaylistMultiVersionSongs().Clear();
-    if (theApp.m_media_lib_setting_data.merge_song_different_versions && m_playlist_mode != PM_PLAYLIST)
-        CSongMultiVersionManager::PlaylistMultiVersionSongs().MergeSongsMultiVersion(m_playlist);
+    if (theApp.m_media_lib_setting_data.merge_song_different_versions && GetInstance().m_playlist_mode != PM_PLAYLIST)
+    {
+        pInfo->merge_same_songs = true;
+        CSongMultiVersionManager::PlaylistMultiVersionSongs().MergeSongsMultiVersion(play_list, pInfo->merge_same_songs_percent);
+    }
 
+    PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_PLAYLIST_INI_COMPLATE, 0, 0);
+    return 0;
+}
+
+void CPlayer::IniPlaylistComplate()
+{
     //统计列表总时长
     m_total_time = 0;
     for (const auto& song : m_playlist)

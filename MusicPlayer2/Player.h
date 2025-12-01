@@ -55,10 +55,12 @@ public:
         SongKey play_song{};                    // 播放索引，播放列表模式下需要在cue解析时维持其指向
         int process_percent{};
         wstring remove_list_path{};             // 进入初始化线程后通知主窗口移除此播放列表/文件夹
+        bool merge_same_songs{};                // 是否正在合并同一首歌曲的不同版本
+        int merge_same_songs_percent{};
     };
     //初始化播放列表的工作线程函数
     static UINT IniPlaylistThreadFunc(LPVOID lpParam);
-    ThreadInfo m_thread_info;
+    const ThreadInfo& GetThreadInfo() const { return m_thread_info; }
 
     enum ErrorState
     {
@@ -76,6 +78,7 @@ public:
 
 private:
     CWinThread* m_pThread{};        //初始化播放列表的线程
+    ThreadInfo m_thread_info;
 
     IPlayerCore* m_pCore{};
 

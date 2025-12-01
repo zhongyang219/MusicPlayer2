@@ -1,57 +1,57 @@
-#pragma once
+ï»¿#pragma once
 #include "SongInfo.h"
 #include "WildcardMap.h"
 
-//ÓÃÓÚ¹ÜÀíµ±Ç°²¥·ÅÁĞ±íÖĞÍ¬Ò»Ê×¸èÇúµÄ²»Í¬°æ±¾
+//ç”¨äºç®¡ç†å½“å‰æ’­æ”¾åˆ—è¡¨ä¸­åŒä¸€é¦–æ­Œæ›²çš„ä¸åŒç‰ˆæœ¬
 class CSongMultiVersion
 {
 public:
     /**
-     * @brief   ²éÕÒÒ»¸öÇúÄ¿ÁĞ±íÖĞÍ¬Ò»¸öÇúÄ¿µÄ²»Í¬°æ±¾£¬²¢½«ËüÃÇºÏ²¢£¬£¨¸èÇúµÄ±êÌâ¡¢ÒÕÊõ¼Ò¡¢³ªÆ¬¼¯ÏàÍ¬ÔòÈÏÎªÊÇÍ¬Ò»¸öÇúÄ¿µÄ²»Í¬°æ±¾£©
-     * @param[in]   songs ÒªºÏ²¢µÄÇúÄ¿ÁĞ±í
+     * @brief   æŸ¥æ‰¾ä¸€ä¸ªæ›²ç›®åˆ—è¡¨ä¸­åŒä¸€ä¸ªæ›²ç›®çš„ä¸åŒç‰ˆæœ¬ï¼Œå¹¶å°†å®ƒä»¬åˆå¹¶ï¼Œï¼ˆæ­Œæ›²çš„æ ‡é¢˜ã€è‰ºæœ¯å®¶ã€å”±ç‰‡é›†ç›¸åŒåˆ™è®¤ä¸ºæ˜¯åŒä¸€ä¸ªæ›²ç›®çš„ä¸åŒç‰ˆæœ¬ï¼‰
+     * @param[in]   songs è¦åˆå¹¶çš„æ›²ç›®åˆ—è¡¨
      */
-    void MergeSongsMultiVersion(std::vector<SongInfo>& songs);
+    void MergeSongsMultiVersion(std::vector<SongInfo>& songs, int& percent);
 
     /**
-     * @brief   µ±ÕıÔÚ²¥·Å¶ÓÁĞµÄÒ»¸öÇúÄ¿ÓĞ¶à¸ö°æ±¾Ê±£¬Ñ¡ÔñÇúÄ¿µÄÒ»¸ö°æ±¾
-     * @param   index ÇúÄ¿°æ±¾ĞòºÅ
-     * @param   cur_song ÕıÔÚ²¥·Å¶ÓÁĞÖĞµÄÇúÄ¿£¨½«±»Ìæ»»ÎªÑ¡ÖĞµÄ°æ±¾£©
+     * @brief   å½“æ­£åœ¨æ’­æ”¾é˜Ÿåˆ—çš„ä¸€ä¸ªæ›²ç›®æœ‰å¤šä¸ªç‰ˆæœ¬æ—¶ï¼Œé€‰æ‹©æ›²ç›®çš„ä¸€ä¸ªç‰ˆæœ¬
+     * @param   index æ›²ç›®ç‰ˆæœ¬åºå·
+     * @param   cur_song æ­£åœ¨æ’­æ”¾é˜Ÿåˆ—ä¸­çš„æ›²ç›®ï¼ˆå°†è¢«æ›¿æ¢ä¸ºé€‰ä¸­çš„ç‰ˆæœ¬ï¼‰
      */
     void SelectSongsMultiVersion(int index, SongInfo& cur_song);
 
     /**
-     * @brief   µ±ÕıÔÚ²¥·Å¶ÓÁĞµÄÒ»¸öÇúÄ¿ÓĞ¶à¸ö°æ±¾Ê±£¬»ñÈ¡µ±Ç°Ñ¡ÖĞµÄ°æ±¾
-     * @param   cur_song ÕıÔÚ²¥·Å¶ÓÁĞÖĞµÄÇúÄ¿
+     * @brief   å½“æ­£åœ¨æ’­æ”¾é˜Ÿåˆ—çš„ä¸€ä¸ªæ›²ç›®æœ‰å¤šä¸ªç‰ˆæœ¬æ—¶ï¼Œè·å–å½“å‰é€‰ä¸­çš„ç‰ˆæœ¬
+     * @param   cur_song æ­£åœ¨æ’­æ”¾é˜Ÿåˆ—ä¸­çš„æ›²ç›®
      * @return 
      */
     int GetSongMultiVersionIndex(const SongInfo& cur_song);
 
     /**
-     * @brief   »ñÈ¡²¥·Å¶ÓÁĞµÄÒ»¸öÇúÄ¿µÄ¶à¸ö°æ±¾
-     * @param   song ÕıÔÚ²¥·Å¶ÓÁĞÖĞµÄÇúÄ¿
+     * @brief   è·å–æ’­æ”¾é˜Ÿåˆ—çš„ä¸€ä¸ªæ›²ç›®çš„å¤šä¸ªç‰ˆæœ¬
+     * @param   song æ­£åœ¨æ’­æ”¾é˜Ÿåˆ—ä¸­çš„æ›²ç›®
      * @return 
      */
     const std::vector<SongInfo>& GetSongsMultiVersion(const SongInfo& song);
 
     /**
-     * @brief   ÊÇ·ñÎª¿Õ£¨ÕıÔÚ²¥·Å¶ÓÁĞÖĞÃ»ÓĞÇúÄ¿ÓĞ¶à¸ö°æ±¾£©
+     * @brief   æ˜¯å¦ä¸ºç©ºï¼ˆæ­£åœ¨æ’­æ”¾é˜Ÿåˆ—ä¸­æ²¡æœ‰æ›²ç›®æœ‰å¤šä¸ªç‰ˆæœ¬ï¼‰
      * @return 
      */
     bool IsEmpty() const;
 
-    //Çå³ıÇúÄ¿µÄ¶à¸ö°æ±¾
+    //æ¸…é™¤æ›²ç›®çš„å¤šä¸ªç‰ˆæœ¬
     void Clear();
 
 protected:
     std::wstring MakeKey(const SongInfo& song_info);
 
-    //´ÓSongDataMapÖĞ²éÑ¯ÊÇ·ñÎªÑ¡ÖĞµÄÇúÄ¿
+    //ä»SongDataMapä¸­æŸ¥è¯¢æ˜¯å¦ä¸ºé€‰ä¸­çš„æ›²ç›®
     bool IsSongPrefered(const SongInfo& song_info);
 
-    //½«ÊÇ·ñÑ¡ÖĞ±êÖ¾Ğ´Èëµ½SongDataMap
+    //å°†æ˜¯å¦é€‰ä¸­æ ‡å¿—å†™å…¥åˆ°SongDataMap
     void SetSongPrefered(const SongInfo& song_info, bool is_prefered);
 
-    CWildcardMap<std::vector<SongInfo>> m_duplicate_songs;    //±£´æÍ¬Ò»ÇúÄ¿µÄ²»Í¬°æ±¾£¨key Îª SongInfo ÖĞµÄ "title|artist|album"£©
+    CWildcardMap<std::vector<SongInfo>> m_duplicate_songs;    //ä¿å­˜åŒä¸€æ›²ç›®çš„ä¸åŒç‰ˆæœ¬ï¼ˆkey ä¸º SongInfo ä¸­çš„ "title|artist|album"ï¼‰
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////

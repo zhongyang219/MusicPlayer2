@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include "SongInfo.h"
 #include "Common.h"
 
-//Ö§³ÖÍ¨Åä·ûµÄmap£¬keyÊÇstd:wstring£¬valueÎªÄ£°åÀàĞÍ
-//key±ØĞëÊÇÊ¹ÓÃÊúÏß¡°|¡±·Ö¸ôµÄ¶à¸ötoken£¬Ã¿¸ötoken¿ÉÒÔÊÇÈÎÒâ×Ö·û´®£¬»òÕßÒ»¸öĞÇºÅ¡°*¡±
-//ĞÇºÅ¿ÉÓÃÓÚÆ¥ÅäÈÎÒâ×Ö·û´®
+//æ”¯æŒé€šé…ç¬¦çš„mapï¼Œkeyæ˜¯std:wstringï¼Œvalueä¸ºæ¨¡æ¿ç±»å‹
+//keyå¿…é¡»æ˜¯ä½¿ç”¨ç«–çº¿â€œ|â€åˆ†éš”çš„å¤šä¸ªtokenï¼Œæ¯ä¸ªtokenå¯ä»¥æ˜¯ä»»æ„å­—ç¬¦ä¸²ï¼Œæˆ–è€…ä¸€ä¸ªæ˜Ÿå·â€œ*â€
+//æ˜Ÿå·å¯ç”¨äºåŒ¹é…ä»»æ„å­—ç¬¦ä¸²
 template<typename ValueType>
 class CWildcardMap
 {
@@ -17,8 +17,11 @@ public:
     void clear() { data.clear(); }
     bool empty() const { return data.empty(); }
 
-    typename std::map<std::wstring, ValueType>::iterator find(const std::wstring& key)    // findº¯Êı - ·µ»ØÆ¥ÅäµÄµü´úÆ÷
+    typename std::map<std::wstring, ValueType>::iterator find(const std::wstring& key)    // findå‡½æ•° - è¿”å›åŒ¹é…çš„è¿­ä»£å™¨
     {
+        if (data.empty())
+            return data.end();
+
         std::vector<std::wstring> tokensKey;
         CCommon::StringSplit(key, L'|', tokensKey);
 
@@ -58,7 +61,7 @@ public:
             return it->second;
         }
         else {
-            // ²åÈëĞÂ¼üÖµ¶Ô
+            // æ’å…¥æ–°é”®å€¼å¯¹
             return data[key];
         }
     }

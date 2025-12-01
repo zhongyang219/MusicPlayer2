@@ -1986,10 +1986,14 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     //显示播放列表载入状态
     if (CPlayer::GetInstance().m_loading)
     {
-        int progress_percent = CPlayer::GetInstance().m_thread_info.process_percent;
+        int progress_percent;
+        if (CPlayer::GetInstance().GetThreadInfo().merge_same_songs)
+            progress_percent = CPlayer::GetInstance().GetThreadInfo().merge_same_songs_percent;
+        else
+            progress_percent = CPlayer::GetInstance().GetThreadInfo().process_percent;
         //绘制进度右侧的进度百分比
         CRect rc_percent{ rect };
-        rc_percent.left = rc_percent.right - DPI(24);
+        rc_percent.left = rc_percent.right - DPI(32);
         CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));
         CString str_info;
         str_info.Format(_T("%d%%"), progress_percent);
@@ -2030,9 +2034,19 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         //绘制文字
         rc_tmp.right = rc_tmp.left - DPI(4);
         rc_tmp.left = rect.left;
-        static CDrawCommon::ScrollInfo scroll_info0;
-        wstring info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_PLAYLIST_INIT_INFO", { CPlayer::GetInstance().GetSongNum() });
-        m_draw.DrawScrollText(rc_tmp, info.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info0, reset);
+        if (CPlayer::GetInstance().GetThreadInfo().merge_same_songs)
+        {
+            //绘制文字
+            static CDrawCommon::ScrollInfo scroll_info1;
+            wstring info = theApp.m_str_table.LoadText(L"UI_TXT_PLAYLIST_MERGING_SAME_SONG_INFO");
+            m_draw.DrawScrollText(rect, info.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info1, reset);
+        }
+        else
+        {
+            static CDrawCommon::ScrollInfo scroll_info0;
+            wstring info = theApp.m_str_table.LoadTextFormat(L"UI_TXT_PLAYLIST_INIT_INFO", { CPlayer::GetInstance().GetSongNum() });
+            m_draw.DrawScrollText(rc_tmp, info.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info0, reset);
+        }
     }
     //显示AB重复状态
     else if (CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE)
