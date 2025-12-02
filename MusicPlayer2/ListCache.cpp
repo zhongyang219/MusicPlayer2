@@ -41,7 +41,15 @@ size_t CListCache::size() const
 
 const ListItem& CListCache::at(size_t index) const
 {
-    return m_ui_list.at(index);
+    if (index < m_ui_list.size())
+    {
+        return m_ui_list.at(index);
+    }
+    else
+    {
+        static ListItem empty_item;
+        return empty_item;
+    }
 }
 
 int CListCache::playing_index() const
