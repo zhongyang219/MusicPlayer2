@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "SongInfo.h"
-#include "WildcardMap.h"
+//#include "WildcardMap.h"
 
 //用于管理当前播放列表中同一首歌曲的不同版本
 class CSongMultiVersion
@@ -51,7 +51,7 @@ protected:
     //将是否选中标志写入到SongDataMap
     void SetSongPrefered(const SongInfo& song_info, bool is_prefered);
 
-    CWildcardMap<std::vector<SongInfo>> m_duplicate_songs;    //保存同一曲目的不同版本（key 为 SongInfo 中的 "title|artist|album"）
+    std::unordered_map<std::wstring, std::vector<SongInfo>> m_duplicate_songs;    //保存同一曲目的不同版本（key 为 SongInfo 中的 "title|artist|album"）
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////

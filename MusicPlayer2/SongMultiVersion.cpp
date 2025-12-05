@@ -5,7 +5,7 @@
 void CSongMultiVersion::MergeSongsMultiVersion(std::vector<SongInfo>& songs, int& percent)
 {
 	m_duplicate_songs.clear();
-	CWildcardMap<SongInfo> song_map;
+	std::unordered_map<std::wstring, SongInfo> song_map;
 	int index = 0;
 	int vec_size = static_cast<int>(songs.size());
 	for (auto iter = songs.begin(); iter != songs.end();)
@@ -159,17 +159,17 @@ std::wstring CSongMultiVersion::MakeKey(const SongInfo& song_info)
 		for (const auto& artist : artist_list)
 			wss << artist << L';';
 		wss << L'|';
-		//添加唱片集（如果唱片集为空，则使用*作为通配符）
-		if (song_info.album.empty())
-			wss << L'*';
-		else
+		////添加唱片集（如果唱片集为空，则使用*作为通配符）
+		//if (song_info.album.empty())
+		//	wss << L'*';
+		//else
 			wss << song_info.album;
-		wss << L'|';
-		//添加音轨序号（如果为空，则使用*作为通配符）
-		if (song_info.track == 0)
-			wss << L'*';
-		else
-			wss << std::to_wstring(song_info.track);
+		//wss << L'|';
+		////添加音轨序号（如果为空，则使用*作为通配符）
+		//if (song_info.track == 0)
+		//	wss << L'*';
+		//else
+		//	wss << std::to_wstring(song_info.track);
 		return wss.str();
 	}
 	//如果标题、艺术家有一个为空，则直接使用路径作为key（不进行合并）
