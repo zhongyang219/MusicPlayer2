@@ -47,7 +47,7 @@
             <horizontalLayout height="28" margin-bottom="4">
               <button key="openFolder" height="28" show_text="true" proportion="10"/>
               <button key="medialibFolderSort" height="28" show_text="true" proportion="10"/>
-              <button key="showPanel" panel_id="show_folder_explore_panel" icon="folderExplore" height="28" show_text="true" text="%(UI_TIP_BTN_PROPERTY)" proportion="10"/>
+              <button key="showPanel" panel_id="show_folder_explore_panel" icon="folderExplore" height="28" show_text="true" text="%(TXT_FOLDER_EXPLORE)" proportion="10"/>
               <placeHolder proportion="1"/>
             </horizontalLayout>
             <searchBox height="26" margin-bottom="4"/>
