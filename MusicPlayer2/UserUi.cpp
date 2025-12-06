@@ -276,7 +276,7 @@ bool CUserUi::LButtonUp(CPoint point)
     {
         //显示了面板的情况下，点击面板以外的地方关闭面板
         auto* panel = m_panel_mgr.GetVisiblePanel();
-        if (panel != nullptr && !panel->GetPanelRect().PtInRect(point))
+        if (panel != nullptr && !panel->GetPanelRect().PtInRect(point) && !panel->GetPanelRect().PtInRect(m_mouse_clicked_point))
         {
             OnPanelHide();
             m_panel_mgr.HideAllPanel();
@@ -298,6 +298,7 @@ bool CUserUi::LButtonUp(CPoint point)
 
 bool CUserUi::LButtonDown(CPoint point)
 {
+    m_mouse_clicked_point = point;
     if (!CPlayerUIBase::LButtonDown(point))
     {
         bool rtn = false;

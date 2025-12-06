@@ -69,6 +69,7 @@ protected:
     std::wstring m_ui_name;
     bool m_last_mouse_in_draw_area{};
     CPanelManager m_panel_mgr{ this };
+    CPoint m_mouse_clicked_point;
 
 public:
     virtual int GetUiIndex() override;
