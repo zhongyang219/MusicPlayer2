@@ -34,8 +34,8 @@
             <button key="info" width="28" height="28" margin-left="8" margin-right="8"/>
             <button key="favorite" width="28" height="28" margin-left="8" margin-right="8"/>
             <button key="addToPlaylist" width="28" height="28" margin-left="8" margin-right="8"/>
-            <button key="skin" width="28" height="28" margin-left="8" margin-right="8"/>
             <button key="darkLightMode" width="28" height="28" margin-left="8" margin-right="8"/>
+            <volume width="28" height="28" margin-left="8" margin-right="8"/>
           </horizontalLayout>
         </verticalLayout>
         <verticalLayout margin-left="24">

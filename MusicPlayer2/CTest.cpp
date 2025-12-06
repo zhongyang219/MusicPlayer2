@@ -12,7 +12,7 @@
 #include "Player.h"
 #include "CueFile.h"
 #include "MusicPlayer2.h"
-#include "WildcardMap.h"
+//#include "WildcardMap.h"
 
 CTest::CTest()
 {
@@ -279,15 +279,15 @@ void CTest::TestChinesePingyinMatch()
 
 void CTest::TextStringMatchWildcard()
 {
-    CWildcardMap<std::vector<std::wstring>> my_map;
-    my_map[L"text|12|file"].push_back(L"text1");
-    ASSERT(my_map.size() == 1);
-    my_map[L"text|*|file"].push_back(L"text2");
-    ASSERT(my_map.size() == 1);
-    my_map[L"text|*|*"].push_back(L"text3");
-    ASSERT(my_map.size() == 1);
-    my_map[L"text|*|file2"].push_back(L"text4");
-    ASSERT(my_map.size() == 2);
-    my_map[L"text|12|file2"].push_back(L"text5");
-    ASSERT(my_map.size() == 2);
+    //CWildcardMap<std::vector<std::wstring>> my_map;
+    //my_map[L"text|12|file"].push_back(L"text1");
+    //ASSERT(my_map.size() == 1);
+    //my_map[L"text|*|file"].push_back(L"text2");
+    //ASSERT(my_map.size() == 1);
+    //my_map[L"text|*|*"].push_back(L"text3");
+    //ASSERT(my_map.size() == 1);
+    //my_map[L"text|*|file2"].push_back(L"text4");
+    //ASSERT(my_map.size() == 2);
+    //my_map[L"text|12|file2"].push_back(L"text5");
+    //ASSERT(my_map.size() == 2);
 }

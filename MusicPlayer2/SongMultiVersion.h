@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "SongInfo.h"
-//#include "WildcardMap.h"
 
 //用于管理当前播放列表中同一首歌曲的不同版本
 class CSongMultiVersion

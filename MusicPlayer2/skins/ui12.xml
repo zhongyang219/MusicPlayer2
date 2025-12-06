@@ -75,7 +75,7 @@
           <button key="playPause" bigIcon="true" width="36" height="36"/>
           <button key="next" bigIcon="true" width="36" height="36"/>
           <button key="mediaLib" margin="4" width="28" height="28"/>
-          <button key="showPlaylist" margin="4" width="28" height="28"/>
+          <button key="showPlayQueue" margin="4" width="28" height="28"/>
         </horizontalLayout>
       </rectangle>
     </verticalLayout>
@@ -94,7 +94,7 @@
         <button key="playPause" bigIcon="true" width="36" height="36"/>
         <button key="next" bigIcon="true" width="36" height="36"/>
         <button key="mediaLib" margin="4" width="28" height="28"/>
-        <button key="showPlaylist" margin="4" width="28" height="28"/>
+        <button key="showPlayQueue" margin="4" width="28" height="28"/>
       </horizontalLayout>
     </verticalLayout>
     <horizontalLayout height="28" margin-bottom="0" >
@@ -199,7 +199,7 @@
             <text type="play_time_and_volume" width="80" alignment="right" margin-right="4" height="28"/>
             <volume show_text="false" width="28" height="28"/>
             <button key="mediaLib" width="28" height="28"/>
-            <button key="showPlaylist" width="28" height="28"/>
+            <button key="showPlayQueue" width="28" height="28"/>
           </horizontalLayout>
         </horizontalLayout>
       </rectangle>
