@@ -1,5 +1,22 @@
 <root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ./skin.xsd"
       index="12">
+
+  <!--文件夹浏览面板-->
+  <panel id="show_folder_explore_panel" width="320" height="400">
+    <verticalLayout>
+      <rectangle height="24">
+        <horizontalLayout>
+          <text type="userDefine" text="%(TXT_FOLDER_EXPLORE)" margin-left="4"/>
+          <button key="closePanel" width="24"/>
+        </horizontalLayout>
+      </rectangle>
+      <verticalLayout margin="8">
+        <searchBox height="26" margin-bottom="4"/>
+        <medialibFolderExplore item_height="32"/>
+      </verticalLayout>
+    </verticalLayout>
+  </panel>
+
   <ui type="narrow">
     <verticalLayout>
       <verticalLayout margin="8">
@@ -30,6 +47,7 @@
             <horizontalLayout height="28" margin-bottom="4">
               <button key="openFolder" height="28" show_text="true" proportion="10"/>
               <button key="medialibFolderSort" height="28" show_text="true" proportion="10"/>
+              <button key="showPanel" panel_id="show_folder_explore_panel" icon="folderExplore" height="28" show_text="true" text="%(UI_TIP_BTN_PROPERTY)" proportion="10"/>
               <placeHolder proportion="1"/>
             </horizontalLayout>
             <searchBox height="26" margin-bottom="4"/>
@@ -139,6 +157,7 @@
               <horizontalLayout height="28" margin-bottom="4">
                 <button key="openFolder" height="28" show_text="true" proportion="10"/>
                 <button key="medialibFolderSort" height="28" show_text="true" proportion="10"/>
+                <button key="showPanel" panel_id="show_folder_explore_panel" icon="folderExplore" height="28" show_text="true" text="%(TXT_FOLDER_EXPLORE)" proportion="10"/>
                 <placeHolder proportion="1"/>
               </horizontalLayout>
               <searchBox height="26" margin-bottom="4"/>
