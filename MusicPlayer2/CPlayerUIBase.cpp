@@ -11,6 +11,7 @@
 #include "UIElement/PlaylistIndicator.h"
 #include "UIElement/NavigationBar.h"
 #include "UIElement/SearchBox.h"
+#include "PlayerFormulaHelper.h"
 
 bool CPlayerUIBase::m_show_ui_tip_info = false;
 
@@ -2286,10 +2287,14 @@ void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
         if (right_bracket_index == wstring::npos)
             break;
         wstring key_str{ str.begin() + index + 2 , str.begin() + right_bracket_index };
-        const wstring& value_str = theApp.m_str_table.LoadText(key_str);
-        if (value_str == StrTable::error_str)   // LoadText内部已记录错误日志
-            break;
-        str.replace(index, right_bracket_index + 1, value_str);
+        //忽略字符串中的变量，避免被当作字符串表中无效的key
+        if (!CPlayerFormulaHelper::IsValidVariable(key_str))
+        {
+            const wstring& value_str = theApp.m_str_table.LoadText(key_str);
+            if (value_str == StrTable::error_str)   // LoadText内部已记录错误日志
+                break;
+            str.replace(index, right_bracket_index - index + 1, value_str);
+        }
         index = right_bracket_index + 1;
     }
 }

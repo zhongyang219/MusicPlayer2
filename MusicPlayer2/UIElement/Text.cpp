@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Text.h"
 #include "Player.h"
+#include "PlayerFormulaHelper.h"
 
 void UiElement::Text::Draw()
 {
@@ -113,5 +114,9 @@ std::wstring UiElement::Text::GetText() const
     default:
         break;
     }
+
+    //Ìæ»»×Ö·û´®µÄ±äÁ¿
+    CPlayerFormulaHelper::ReplaceStringFormula(draw_text);
+
     return draw_text;
 }

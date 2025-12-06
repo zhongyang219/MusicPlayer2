@@ -303,8 +303,9 @@ public:
     virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
     virtual bool IsDrawMenuBar() const;         //是否需要绘制菜单栏
 
-protected:
     static wstring GetDisplayFormatString();       //获取显示格式的字符串
+
+protected:
     CString GetVolumeTooltipString();       //获取音量鼠标提示字符串
 
 public:

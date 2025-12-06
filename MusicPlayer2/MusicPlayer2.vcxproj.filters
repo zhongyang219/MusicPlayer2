@@ -423,6 +423,9 @@
     <Filter Include="PlayerUI\UIPanel">
       <UniqueIdentifier>{c140813d-f87e-4468-9e37-5e7c1dbd14cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\PlayerFormulaHelper">
+      <UniqueIdentifier>{e142b7dc-494a-46c1-acdd-dbf7b3fcff6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1077,6 +1080,9 @@
     <ClInclude Include="UIElement\IconElement.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerFormulaHelper.h">
+      <Filter>功能逻辑类\PlayerFormulaHelper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1687,6 +1693,9 @@
     </ClCompile>
     <ClCompile Include="UIElement\IconElement.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerFormulaHelper.cpp">
+      <Filter>功能逻辑类\PlayerFormulaHelper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

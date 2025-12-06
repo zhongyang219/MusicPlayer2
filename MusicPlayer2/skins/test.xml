@@ -2,7 +2,7 @@
       name="test">
   
   <!--歌曲详情面板-->
-  <panel id="song_info_panel" width="200" height="250">
+  <panel id="song_info_panel" width="400" height="250">
     <verticalLayout>
       <rectangle height="24">
         <horizontalLayout>
@@ -10,18 +10,23 @@
           <button key="closePanel" width="24"/>
         </horizontalLayout>
       </rectangle>
-      <verticalLayout margin="4">
+      <horizontalLayout margin="4">
         <albumCover square="true"/>
-        <trackInfo height="24"/>
-        <text type="title" height="24"/>
-        <text type="artist" height="24"/>
-        <text type="format" height="24"/>
-      </verticalLayout>
+        <verticalLayout margin-left="4">
+          <trackInfo height="24"/>
+          <text type="userDefine" text="2333%(TXT_TITLE): %(Title)" height="24"/>
+          <text type="userDefine" text="%(TXT_ARTIST): %(Artist)" height="24"/>
+          <text type="userDefine" text="%(TXT_ALBUM): %(Album)" height="24"/>
+          <text type="userDefine" text="%(TXT_FILE_TYPE): %(FileType)" height="24"/>
+          <text type="userDefine" text="%(TXT_BITRATE): %(BitRate)kbps" height="24"/>
+          <text type="userDefine" text="%(TXT_PROPERTY_DLG_FILE_CHANNELS) %(Channels)" height="24"/>
+        </verticalLayout>
+      </horizontalLayout>
     </verticalLayout>
   </panel>
   
   <!--播放队列面板-->
-  <panel id="play_queue_panel" width="200" height="250">
+  <panel id="play_queue_panel" width="300" height="250">
     <verticalLayout>
       <rectangle height="24">
         <horizontalLayout>
@@ -30,6 +35,7 @@
         </horizontalLayout>
       </rectangle>
       <verticalLayout margin="4">
+        <text type="userDefine" text="%(TXT_LIB_STATISTICS_TOTAL_NUM_OF_TRACK): %(PlayQueueNum)" height="24"/>
         <searchBox height="26" margin-bottom="4"/>
         <playlist item_height="32"/>
       </verticalLayout>
