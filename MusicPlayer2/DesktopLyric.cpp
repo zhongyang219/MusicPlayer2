@@ -113,7 +113,7 @@ void CDesktopLyric::UpdateLyric(Gdiplus::Graphics* pGraphics, Gdiplus::Font* pFo
     }
     else
     {
-        const SongInfo& cur_song_info = CPlayer::GetInstance().GetCurrentSongInfo();
+        const SongInfo& cur_song_info = CPlayer::GetInstance().GetSafeCurrentSongInfo();
         std::wstring display_text = CSongInfoHelper::GetDisplayStr(cur_song_info, DF_ARTIST_TITLE);
         if (display_text != GetLyricStr().GetString())
         {

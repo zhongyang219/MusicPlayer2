@@ -996,7 +996,7 @@ void CPlayerUIBase::DrawSongInfo(CRect rect, int font_size, bool reset)
 
     //绘制标识
     wstring tag_str;
-    if (CPlayer::GetInstance().GetCurrentSongInfo().is_cue)
+    if (CPlayer::GetInstance().GetSafeCurrentSongInfo().is_cue)
         tag_str = L"cue";
     else if (CPlayer::GetInstance().IsMidi())
         tag_str = L"midi";
@@ -1546,7 +1546,7 @@ wstring CPlayerUIBase::GetDisplayFormatString()
     wstring chans_str = CSongInfoHelper::GetChannelsString(static_cast<BYTE>(chans));
     wchar_t buff[64];
     if (!CPlayer::GetInstance().IsMidi())
-        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, CPlayer::GetInstance().GetCurrentSongInfo().bitrate, chans_str.c_str());
+        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, CPlayer::GetInstance().GetSafeCurrentSongInfo().bitrate, chans_str.c_str());
     else
         swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.c_str());
     result = buff;
@@ -2383,15 +2383,15 @@ void CPlayerUIBase::DrawAlbumCoverWithInfo(CRect rect)
     CRect rect_artist{ rect_info };
     rect_artist.bottom = rect_artist.top + DPI(16);
     static CDrawCommon::ScrollInfo scroll_info_artist;
-    m_draw.DrawScrollText(rect_artist, CPlayer::GetInstance().GetCurrentSongInfo().GetArtist().c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_artist);
+    m_draw.DrawScrollText(rect_artist, CPlayer::GetInstance().GetSafeCurrentSongInfo().GetArtist().c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_artist);
     //绘制歌曲标题
     CRect rect_title{ rect_info };
     rect_title.top = rect_artist.bottom;
     wstring str_title;
-    if (CPlayer::GetInstance().GetCurrentSongInfo().IsTitleEmpty())             //如果标题为空，则显示文件名
-        str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetFileName();
+    if (CPlayer::GetInstance().GetSafeCurrentSongInfo().IsTitleEmpty())             //如果标题为空，则显示文件名
+        str_title = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetFileName();
     else
-        str_title = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
+        str_title = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetTitle();
     CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(12).GetFont(theApp.m_ui_data.full_screen));
     static CDrawCommon::ScrollInfo scroll_info_title;
     m_draw.DrawScrollText(rect_title, str_title.c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_title);

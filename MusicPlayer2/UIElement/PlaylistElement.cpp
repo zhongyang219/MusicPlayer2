@@ -18,14 +18,14 @@ std::wstring UiElement::Playlist::GetItemText(int row, int col)
         //曲目
         else if (col == COL_TRACK)
         {
-            const SongInfo& song_info{ CPlayer::GetInstance().GetPlayList()[row] };
+            const SongInfo& song_info{ CPlayer::GetInstance().GetSafePlaylistItem(row) };
             std::wstring display_name{ CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format) };
             return display_name;
         }
         //时间
         else if (col == COL_TIME)
         {
-            const SongInfo& song_info{ CPlayer::GetInstance().GetPlayList()[row] };
+            const SongInfo& song_info{ CPlayer::GetInstance().GetSafePlaylistItem(row) };
             return song_info.length().toString();
         }
     }
@@ -59,8 +59,16 @@ int UiElement::Playlist::GetColumnWidth(int col, int total_width)
 
 std::wstring UiElement::Playlist::GetEmptyString()
 {
-    const wstring& info = theApp.m_str_table.LoadText(L"UI_PLAYLIST_EMPTY_INFO");
-    return info;
+    if (CPlayer::GetInstance().m_loading)
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_LOADING_INFO");
+        return info;
+    }
+    else
+    {
+        const wstring& info = theApp.m_str_table.LoadText(L"UI_PLAYLIST_EMPTY_INFO");
+        return info;
+    }
 }
 
 int UiElement::Playlist::GetHighlightRow()
@@ -86,9 +94,9 @@ bool UiElement::Playlist::ShowTooltip()
 
 std::wstring UiElement::Playlist::GetToolTipText(int row)
 {
-    if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+    if (row >= 0 && row < CPlayer::GetInstance().GetSafeSongNum())
     {
-        const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+        const SongInfo& song_info = CPlayer::GetInstance().GetSafePlaylistItem(row);
         bool show_full_path = (!CPlayer::GetInstance().IsFolderMode() || CPlayer::GetInstance().IsContainSubFolder());
         std::wstring str_tip = CSongInfoHelper::GetPlaylistItemToolTip(song_info, true, show_full_path);
         return str_tip;
@@ -183,9 +191,9 @@ std::wstring UiElement::Playlist::GetHoverButtonTooltip(int index, int row)
     else if (index == SongVersionBtnIndex(row, true))
     {
         int version_num{};
-        if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+        if (row >= 0 && row < CPlayer::GetInstance().GetSafeSongNum())
         {
-            const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+            const SongInfo& song_info = CPlayer::GetInstance().GetSafePlaylistItem(row);
             const auto& multi_versions = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song_info);
             version_num = multi_versions.size();
         }
@@ -217,9 +225,9 @@ void UiElement::Playlist::OnHoverButtonClicked(int btn_index, int row)
     //点击了“多个版本”按钮
     else if (btn_index == SongVersionBtnIndex(row, true))
     {
-        if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+        if (row >= 0 && row < CPlayer::GetInstance().GetSafeSongNum())
         {
-            const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+            const SongInfo& song_info = CPlayer::GetInstance().GetSafePlaylistItem(row);
             helper.InitSongMultiVersionMenu(song_info);
             CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::SongMultiVersionMenu);
             ShowContextMenu(menu, nullptr);
@@ -257,9 +265,9 @@ void UiElement::Playlist::OnRowCountChanged()
 
 bool UiElement::Playlist::IsItemMatchKeyWord(int row, const std::wstring& key_word)
 {
-    if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+    if (row >= 0 && row < CPlayer::GetInstance().GetSafeSongNum())
     {
-        const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+        const SongInfo& song_info = CPlayer::GetInstance().GetSafePlaylistItem(row);
         return (theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, song_info.GetFileName())
             || theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, song_info.title)
             || theApp.m_chinese_pingyin_res.IsStringMatchWithPingyin(key_word, song_info.artist)
@@ -273,9 +281,11 @@ bool UiElement::Playlist::HasMultiVersion(int row) const
     if (CSongMultiVersionManager::PlaylistMultiVersionSongs().IsEmpty())
         return false;
 
-    if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+    if (row >= 0 && row < CPlayer::GetInstance().GetSafeSongNum())
     {
-        const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+        const SongInfo& song_info = CPlayer::GetInstance().GetSafePlaylistItem(row);
+        if (song_info.IsEmpty())
+            return false;
         const auto& multi_versions = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song_info);
         //判断是否有曲目的多个版本
         if (!multi_versions.empty())
@@ -337,8 +347,8 @@ int UiElement::Playlist::SongVersionBtnIndex(int row, bool hover) const
 
 int UiElement::Playlist::GetRowCount()
 {
-    int song_num{ CPlayer::GetInstance().GetSongNum() };
-    if (song_num == 1 && CPlayer::GetInstance().GetPlayList()[0].IsEmpty())     //不显示播放列表为空时的占位符
+    int song_num{ CPlayer::GetInstance().GetSafeSongNum() };
+    if (song_num == 1 && CPlayer::GetInstance().GetSafePlaylistItem(0).IsEmpty())     //不显示播放列表为空时的占位符
         song_num = 0;
     return song_num;
 }
@@ -348,9 +358,9 @@ void UiElement::Playlist::DrawHoverButton(int index, int row)
     if (index == SongVersionBtnIndex(row, true))
     {
         CRect rc_button = GetHoverButtonState(index).rect;
-        if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+        if (row >= 0 && row < CPlayer::GetInstance().GetSafeSongNum())
         {
-            const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+            const SongInfo& song_info = CPlayer::GetInstance().GetSafePlaylistItem(row);
             const auto& multi_versions = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song_info);
             std::wstring btn_str = std::to_wstring(multi_versions.size());
             ui->DrawTextButton(rc_button, GetHoverButtonState(index), btn_str.c_str(), true);
@@ -366,9 +376,9 @@ void UiElement::Playlist::DrawUnHoverButton(CRect rc_button, int index, int row)
 {
     if (index == SongVersionBtnIndex(row, false))
     {
-        if (row >= 0 && row < CPlayer::GetInstance().GetSongNum())
+        if (row >= 0 && row < CPlayer::GetInstance().GetSafeSongNum())
         {
-            const SongInfo& song_info = CPlayer::GetInstance().GetPlayList()[row];
+            const SongInfo& song_info = CPlayer::GetInstance().GetSafePlaylistItem(row);
             const auto& multi_versions = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song_info);
             std::wstring btn_str = std::to_wstring(multi_versions.size());
             CPlayerUIBase::UIButton btn;

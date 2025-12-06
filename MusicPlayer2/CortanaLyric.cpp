@@ -190,7 +190,7 @@ void CCortanaLyric::DrawInfo()
                 else            //没有歌词时在Cortana搜索框上以滚动的方式显示当前播放歌曲的文件名
                 {
                     static SongInfo last_song_info;
-                    const SongInfo& song_info = CPlayer::GetInstance().GetCurrentSongInfo();
+                    const SongInfo& song_info = CPlayer::GetInstance().GetSafeCurrentSongInfo();
                     //如果当前播放的歌曲发生变化，DrawCortanaText函数的第2参数为true，即重置滚动位置
                     if (song_info != last_song_info)
                     {
@@ -249,7 +249,7 @@ void CCortanaLyric::DrawInfo()
             else
             {
                 //没有歌词时显示当前播放歌曲的名称
-                str_disp = str_now_playing + CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format);
+                str_disp = str_now_playing + CSongInfoHelper::GetDisplayStr(CPlayer::GetInstance().GetSafeCurrentSongInfo(), theApp.m_media_lib_setting_data.display_format);
             }
 
             if(str_disp != str_disp_last)

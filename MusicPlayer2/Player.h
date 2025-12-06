@@ -396,6 +396,8 @@ public:
 
     //获取播放列表的引用
     vector<SongInfo>& GetPlayList() { return m_playlist; }
+    //获取播放列表中指定项目的索引（用于UI调用）
+    const SongInfo& GetSafePlaylistItem(int index) const;
 
     // 判断参数中的曲目是否存在于m_playlist，存在返回索引不存在返回-1（IsSameSong）
     int IsSongInPlayList(const SongInfo& song);
@@ -403,6 +405,8 @@ public:
     bool IsSongsInPlayList(const vector<SongInfo>& songs_list);
     //获取歌曲总数
     int GetSongNum() const;
+    //获取歌曲总数（用于UI调用）
+    int GetSafeSongNum() const;
     //获取当前播放曲目的目录
     wstring GetCurrentDir() const;
     //获取当前目录（文件夹模式下获取文件夹的目录，而不是正在播放曲目的目录）
@@ -473,6 +477,8 @@ public:
     const SongInfo& GetCurrentSongInfo() const;
     // 获取当前SongInfo引用（可修改），m_index无效时返回m_no_use
     SongInfo& GetCurrentSongInfo2();
+    //获取当前SongInfo常引用，m_index无效或正在加载播放列表时返回m_no_use，用于在UI中访问
+    const SongInfo& GetSafeCurrentSongInfo() const;
     //获取下一个要播放的曲目。如果返回的是空的SongInfo对象，则说明没有下一个曲目或下一个曲目不确定
     SongInfo GetNextTrack() const;
     //为当前歌曲设置“我喜欢”标记

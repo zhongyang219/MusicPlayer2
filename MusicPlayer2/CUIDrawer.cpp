@@ -96,7 +96,7 @@ void CUIDrawer::DrawLyricTextMultiLine(CRect lyric_area, Alignment align, bool s
         if (theApp.m_lyric_setting_data.show_song_info_if_lyric_not_exist || show_song_info)
         {
             CString song_info_str;
-            const SongInfo& cur_song{ CPlayer::GetInstance().GetCurrentSongInfo() };
+            const SongInfo& cur_song{ CPlayer::GetInstance().GetSafeCurrentSongInfo() };
             std::wstring artist{ cur_song.album_artist };
             if (artist.empty())
                 artist = cur_song.GetArtist();
@@ -236,7 +236,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
         if (theApp.m_lyric_setting_data.show_song_info_if_lyric_not_exist || show_song_info)
         {
             CString song_info_str;
-            const SongInfo& cur_song{ CPlayer::GetInstance().GetCurrentSongInfo() };
+            const SongInfo& cur_song{ CPlayer::GetInstance().GetSafeCurrentSongInfo() };
             song_info_str.Format(_T("%s - %s"), cur_song.GetArtist().c_str(), cur_song.GetTitle().c_str());
             static CDrawCommon::ScrollInfo lyric_scroll_info;
             DrawScrollText(rect, song_info_str, m_colors.color_text, CPlayerUIHelper::GetScrollTextPixel(), theApp.m_lyric_setting_data.lyric_align != Alignment::LEFT, lyric_scroll_info);
@@ -268,7 +268,7 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
         {
             //显示歌曲信息
             CString song_info_str;
-            const SongInfo& cur_song{ CPlayer::GetInstance().GetCurrentSongInfo() };
+            const SongInfo& cur_song{ CPlayer::GetInstance().GetSafeCurrentSongInfo() };
             song_info_str.Format(_T("%s - %s"), cur_song.GetArtist().c_str(), cur_song.GetTitle().c_str());
             static CDrawCommon::ScrollInfo lyric_scroll_info;
             DrawScrollText(rect, song_info_str, m_colors.color_text, CPlayerUIHelper::GetScrollTextPixel(), theApp.m_lyric_setting_data.lyric_align != Alignment::LEFT, lyric_scroll_info);

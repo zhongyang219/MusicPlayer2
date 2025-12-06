@@ -70,24 +70,24 @@ std::wstring UiElement::Text::GetText() const
         draw_text = text;
         break;
     case UiElement::Text::Title:
-        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
+        draw_text = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetTitle();
         break;
     case UiElement::Text::Artist:
-        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
+        draw_text = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetArtist();
         break;
     case UiElement::Text::Album:
-        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
+        draw_text = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetAlbum();
         break;
     case UiElement::Text::ArtistTitle:
-        draw_text = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
+        draw_text = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetArtist() + L" - " + CPlayer::GetInstance().GetSafeCurrentSongInfo().GetTitle();
         break;
     case UiElement::Text::ArtistAlbum:
     {
         //优先使用唱片集艺术家，如果为空，则使用艺术家
-        std::wstring artist_display{ CPlayer::GetInstance().GetCurrentSongInfo().album_artist };
+        std::wstring artist_display{ CPlayer::GetInstance().GetSafeCurrentSongInfo().album_artist };
         if (artist_display.empty())
-            artist_display = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
-        draw_text = artist_display + L" - " + CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
+            artist_display = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetArtist();
+        draw_text = artist_display + L" - " + CPlayer::GetInstance().GetSafeCurrentSongInfo().GetAlbum();
     }   break;
     case UiElement::Text::Format:
         draw_text = CPlayerUIBase::GetDisplayFormatString();

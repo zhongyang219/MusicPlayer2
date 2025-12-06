@@ -1585,6 +1585,18 @@ void CPlayer::ExploreLyric() const
     }
 }
 
+const SongInfo& CPlayer::GetSafePlaylistItem(int index) const
+{
+    if (!m_loading && index >= 0 && index < static_cast<int>(m_playlist.size()))
+    {
+        return m_playlist[index];
+    }
+    else
+    {
+        return m_no_use;
+    }
+}
+
 int CPlayer::IsSongInPlayList(const SongInfo& song)
 {
     auto iter = std::find(m_playlist.begin(), m_playlist.end(), song);
@@ -1607,6 +1619,14 @@ bool CPlayer::IsSongsInPlayList(const vector<SongInfo>& songs_list)
 int CPlayer::GetSongNum() const
 {
     return static_cast<int>(m_playlist.size());
+}
+
+int CPlayer::GetSafeSongNum() const
+{
+    if (m_loading)
+        return 0;
+    else
+        return GetSongNum();
 }
 
 wstring CPlayer::GetCurrentDir() const
@@ -1639,12 +1659,12 @@ wstring CPlayer::GetCurrentFilePath() const
 
 wstring CPlayer::GetDisplayName() const
 {
-    const SongInfo& song = GetCurrentSongInfo();
+    const SongInfo& song = GetSafeCurrentSongInfo();
     if (song.is_cue && !song.IsArtistEmpty() && !song.IsTitleEmpty())
         return song.artist + L" - " + song.title;
     if (IsOsuFile() && !song.comment.empty())
         return song.comment;
-    wstring file_name = GetCurrentSongInfo().GetFileName();
+    wstring file_name = song.GetFileName();
     if (!file_name.empty())
         return file_name;
     return theApp.m_str_table.LoadText(L"TXT_EMPTY_FILE_NAME");
@@ -2050,6 +2070,13 @@ const SongInfo& CPlayer::GetCurrentSongInfo() const
 SongInfo& CPlayer::GetCurrentSongInfo2()
 {
     if (m_index >= 0 && m_index < GetSongNum())
+        return m_playlist[m_index];
+    else return m_no_use;
+}
+
+const SongInfo& CPlayer::GetSafeCurrentSongInfo() const
+{
+    if (!m_loading && m_index >= 0 && m_index < GetSongNum())
         return m_playlist[m_index];
     else return m_no_use;
 }
