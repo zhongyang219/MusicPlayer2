@@ -2,24 +2,42 @@
       name="test">
   
   <!--歌曲详情面板-->
-  <panel id="song_info_panel" width="400" height="250">
+  <panel id="song_info_panel" width="450" height="250">
     <verticalLayout>
       <rectangle height="24">
         <horizontalLayout>
-          <text type="userDefine" text="%(UI_TIP_BTN_PROPERTY)" margin-left="4"/>
+          <text type="userDefine" text="%(UI_TIP_BTN_PROPERTY)" style="scroll" margin-left="4"/>
           <button key="closePanel" width="24"/>
         </horizontalLayout>
       </rectangle>
       <horizontalLayout margin="4">
-        <albumCover square="true"/>
-        <verticalLayout margin-left="4">
+        <albumCover square="true" max-width="206"/>
+        <verticalLayout margin-left="8">
           <trackInfo height="24"/>
-          <text type="userDefine" text="2333%(TXT_TITLE): %(Title)" height="24"/>
-          <text type="userDefine" text="%(TXT_ARTIST): %(Artist)" height="24"/>
-          <text type="userDefine" text="%(TXT_ALBUM): %(Album)" height="24"/>
-          <text type="userDefine" text="%(TXT_FILE_TYPE): %(FileType)" height="24"/>
-          <text type="userDefine" text="%(TXT_BITRATE): %(BitRate)kbps" height="24"/>
-          <text type="userDefine" text="%(TXT_PROPERTY_DLG_FILE_CHANNELS) %(Channels)" height="24"/>
+          <horizontalLayout height="24">
+            <icon icon="lyric" width="24"/>
+            <text type="userDefine" text="%(TXT_TITLE): %(Title)" style="scroll"/>
+          </horizontalLayout>
+          <horizontalLayout height="24">
+            <icon icon="artist" width="24"/>
+            <text type="userDefine" text="%(TXT_ARTIST): %(Artist)" style="scroll"/>
+          </horizontalLayout>
+          <horizontalLayout height="24">
+            <icon icon="album" width="24"/>
+            <text type="userDefine" text="%(TXT_ALBUM): %(Album)" style="scroll"/>
+          </horizontalLayout>
+          <horizontalLayout height="24">
+            <icon icon="fileRelate" width="24"/>
+            <text type="userDefine" text="%(TXT_FILE_TYPE): %(FileType)" style="scroll"/>
+          </horizontalLayout>
+          <horizontalLayout height="24">
+            <icon icon="bitrate" width="24"/>
+            <text type="userDefine" text="%(TXT_BITRATE): %(BitRate)kbps" style="scroll"/>
+          </horizontalLayout>
+          <horizontalLayout height="24">
+            <icon icon="reverb" width="24"/>
+            <text type="userDefine" text="%(TXT_PROPERTY_DLG_FILE_CHANNELS) %(Channels)" style="scroll"/>
+          </horizontalLayout>
         </verticalLayout>
       </horizontalLayout>
     </verticalLayout>
