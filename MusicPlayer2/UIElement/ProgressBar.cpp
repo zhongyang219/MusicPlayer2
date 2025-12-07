@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "ProgressBar.h"
 #include "Player.h"
 
@@ -18,7 +18,7 @@ void UiElement::ProgressBar::Draw()
 
 bool UiElement::ProgressBar::LButtonUp(CPoint point)
 {
-    if (hover())
+    if (hover() && btn.rect.PtInRect(point))
     {
         int ckick_pos = point.x - btn.rect.left;
         double progress = static_cast<double>(ckick_pos) / btn.rect.Width();
@@ -34,7 +34,7 @@ bool UiElement::ProgressBar::LButtonUp(CPoint point)
 
 bool UiElement::ProgressBar::RButtonUp(CPoint point)
 {
-    //½ø¶ÈÌõ²»µ¯³öÓÒ¼ü²Ëµ¥
+    //è¿›åº¦æ¡ä¸å¼¹å‡ºå³é”®èœå•
     return btn.rect.PtInRect(point);
 }
 
@@ -42,7 +42,7 @@ bool UiElement::ProgressBar::MouseMove(CPoint point)
 {
     btn.hover = btn.rect.PtInRect(point) && !(ui->m_show_volume_adj && (ui->m_buttons[CPlayerUIBase::BTN_VOLUME_UP].rect.PtInRect(point) || ui->m_buttons[CPlayerUIBase::BTN_VOLUME_DOWN].rect.PtInRect(point)));
 
-    //Êó±êÖ¸Ïò½ø¶ÈÌõÊ±ÏÔÊ¾¶¨Î»µ½¼¸·Ö¼¸Ãë
+    //é¼ æ ‡æŒ‡å‘è¿›åº¦æ¡æ—¶æ˜¾ç¤ºå®šä½åˆ°å‡ åˆ†å‡ ç§’
     if (btn.hover)
     {
         __int64 song_pos;
@@ -50,7 +50,7 @@ bool UiElement::ProgressBar::MouseMove(CPoint point)
         CPlayTime song_pos_time;
         song_pos_time.fromInt(static_cast<int>(song_pos));
         static int last_sec{};
-        if (last_sec != song_pos_time.sec)      //Ö»ÓĞÊó±êÖ¸ÏòÎ»ÖÃ¶ÔÓ¦µÄÃëÊı±ä»¯ÁË²Å¸üĞÂÊó±êÌáÊ¾
+        if (last_sec != song_pos_time.sec)      //åªæœ‰é¼ æ ‡æŒ‡å‘ä½ç½®å¯¹åº”çš„ç§’æ•°å˜åŒ–äº†æ‰æ›´æ–°é¼ æ ‡æç¤º
         {
             wstring min = std::to_wstring(song_pos_time.min);
             wstring sec = std::to_wstring(song_pos_time.sec);
