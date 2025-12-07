@@ -669,6 +669,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 button->IconTypeFromString(str_icon);
                 button->panel_file_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_file_name"), CodeType::UTF8_NO_BOM);
                 button->panel_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_id"), CodeType::UTF8_NO_BOM);
+                button->related_element_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "related_element_id"), CodeType::UTF8_NO_BOM);
             }
         }
         else if (item_name == "rectangle")

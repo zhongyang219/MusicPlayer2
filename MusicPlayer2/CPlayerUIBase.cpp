@@ -867,6 +867,8 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Close;
     case BTN_SHOW_PANEL:
         return IconMgr::IconType::IT_Playlist;
+    case BTN_SHOW_HIDE_ELEMENT:
+        return IconMgr::IconType::IT_Background;
     default:
         ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;
@@ -3478,4 +3480,6 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_SHOW_PANEL, L"");
     //界面切换器
     AddMouseToolTip(UiElement::TooltipIndex::ELEMENT_SWITCHER, L"");
+    //显示/隐藏元素
+    AddMouseToolTip(BTN_SHOW_HIDE_ELEMENT, L"");
 }

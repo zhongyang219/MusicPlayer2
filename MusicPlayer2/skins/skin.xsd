@@ -1121,6 +1121,11 @@
               <xs:documentation>显示面板。</xs:documentation>
             </xs:annotation>
           </xs:enumeration>
+          <xs:enumeration value="showHideElement">
+            <xs:annotation>
+              <xs:documentation>显示/隐藏元素。</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
@@ -1157,6 +1162,11 @@
     <xs:attribute name="panel_id" type="xs:string">
       <xs:annotation>
         <xs:documentation>面板的id，点击按钮后将打开对应的面板。仅当key指定为showPanel时有效。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="related_element_id" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>关联元素的的id，点击按钮后将显示/隐藏对应的元素。仅当key指定为showHideElement时有效。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>

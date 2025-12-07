@@ -14,6 +14,7 @@ namespace UiElement
         IconMgr::IconType icon_type{ IconMgr::IT_NO_ICON };    //按钮图标，如果未指定则由按钮的类型决定
         std::wstring panel_file_name;   //面板xml文件的文件名，放在skins/panels目录下。仅当按钮类型为BTN_SHOW_PANEL时有效。点击按钮后将显示一个面板
         std::wstring panel_id;          //面板的id。仅当按钮类型为BTN_SHOW_PANEL时有效。点击按钮后将显示一个面板
+        std::wstring related_element_id;    //关联元素的id
 
         void FromString(const std::string& key_type);
         void IconTypeFromString(const std::string& icon_name);

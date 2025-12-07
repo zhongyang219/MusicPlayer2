@@ -57,6 +57,8 @@ void UiElement::Element::Draw()
 
 bool UiElement::Element::IsEnable(CRect parent_rect) const
 {
+    if (!visible)
+        return false;
     if (hide_width.IsValid() && hide_width.GetValue(parent_rect) > parent_rect.Width())
         return false;
     if (hide_height.IsValid() && hide_height.GetValue(parent_rect) > parent_rect.Height())

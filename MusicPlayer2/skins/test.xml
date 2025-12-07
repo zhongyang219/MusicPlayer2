@@ -233,13 +233,17 @@
         <!--第6页-->
         <verticalLayout>
           <horizontalLayout height="26">
-            <button key="showPanel" panel_id="song_info_panel" icon="info" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PROPERTY)"/>
-            <button key="showPanel" panel_id="play_queue_panel" icon="playInPlaylist" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PLAY_QUEUE)"/>
             <icon icon="app" width="28" height="28" margin="2" />
             <icon icon="appMonochrome" width="28" height="28" margin="2" />
+            <button key="showPanel" panel_id="song_info_panel" icon="info" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PROPERTY)"/>
+            <button key="showPanel" panel_id="play_queue_panel" icon="playInPlaylist" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PLAY_QUEUE)"/>
+            <button key="showHideElement" related_element_id="page_6_playlist" icon="playlist" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PLAYLIST_SHOW_HIDE)"/>
             <placeHolder/>
           </horizontalLayout>
-          <placeHolder/>
+          <horizontalLayout margin="8">
+            <lyrics margin-right="8"/>
+            <playlist id="page_6_playlist" margin-left="8"/>
+          </horizontalLayout>
         </verticalLayout>
         
       </stackElement>

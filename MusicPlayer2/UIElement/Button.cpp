@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Button.h"
 #include "Player.h"
 #include "UserUI.h"
@@ -30,7 +30,7 @@ void UiElement::Button::Draw()
         else
             info = _T("A-B");
         CFont* pOldFont = ui->m_draw.GetFont();
-        ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //ABÖØ¸´Ê¹ÓÃĞ¡Ò»ºÅ×ÖÌå£¬¼´²¥·ÅÊ±¼äµÄ×ÖÌå
+        ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //ABé‡å¤ä½¿ç”¨å°ä¸€å·å­—ä½“ï¼Œå³æ’­æ”¾æ—¶é—´çš„å­—ä½“
         m_btn.enable = (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
         ui->DrawTextButton(rect, m_btn, info, ab_repeat_mode != CPlayer::AM_NONE);
         ui->m_draw.SetFont(pOldFont);
@@ -39,7 +39,7 @@ void UiElement::Button::Draw()
     case CPlayerUIBase::BTN_KARAOKE:
     {
         m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
-        //Èç¹ûÊÇ¿¨À­OKÑùÊ½ÏÔÊ¾¸è´Ê£¬Ôò°´Å¥ÏÔÊ¾ÎªÑ¡ÖĞ×´Ì¬
+        //å¦‚æœæ˜¯å¡æ‹‰OKæ ·å¼æ˜¾ç¤ºæ­Œè¯ï¼Œåˆ™æŒ‰é’®æ˜¾ç¤ºä¸ºé€‰ä¸­çŠ¶æ€
         ui->DrawUIButton(rect, CPlayerUIBase::BTN_KARAOKE, m_btn, false, false, 9, theApp.m_lyric_setting_data.lyric_karaoke_disp);
     }
         break;
@@ -124,6 +124,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_CLOSE_PANEL;
     else if (key_type == "showPanel")
         key = CPlayerUIBase::BTN_SHOW_PANEL;
+    else if (key_type == "showHideElement")
+        key = CPlayerUIBase::BTN_SHOW_HIDE_ELEMENT;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }
@@ -252,17 +254,17 @@ IconMgr::IconType UiElement::Button::NameToIconType(const std::string& icon_name
 
 int UiElement::Button::GetMaxWidth(CRect parent_rect) const
 {
-    //ÏÔÊ¾ÎÄ±¾£¬²¢ÇÒÃ»ÓĞÖ¸¶¨¿í¶ÈÊ±Ê±¸úËæÎÄ±¾¿í¶È
+    //æ˜¾ç¤ºæ–‡æœ¬ï¼Œå¹¶ä¸”æ²¡æœ‰æŒ‡å®šå®½åº¦æ—¶æ—¶è·Ÿéšæ–‡æœ¬å®½åº¦
     if (show_text && !IsWidthValid())
     {
         std::wstring text = GetDisplayText();
-        //µÚÒ»´ÎÖ´ĞĞµ½ÕâÀïÊ±£¬ÓÉÓÚrect»¹Ã»ÓĞ´ÓlayoutÔªËØÖĞ¼ÆËã³öÀ´£¬Òò´ËÕâÀï×öÒ»ÏÂÅĞ¶Ï£¬Èç¹û¸ß¶ÈÎª0£¬ÔòÖ±½Ó»ñÈ¡heightµÄÖµ
+        //ç¬¬ä¸€æ¬¡æ‰§è¡Œåˆ°è¿™é‡Œæ—¶ï¼Œç”±äºrectè¿˜æ²¡æœ‰ä»layoutå…ƒç´ ä¸­è®¡ç®—å‡ºæ¥ï¼Œå› æ­¤è¿™é‡Œåšä¸€ä¸‹åˆ¤æ–­ï¼Œå¦‚æœé«˜åº¦ä¸º0ï¼Œåˆ™ç›´æ¥è·å–heightçš„å€¼
         int btn_height = rect.Height();
         if (btn_height == 0)
             btn_height = Element::height.GetValue(parent_rect);
         int right_space = (btn_height - ui->DPI(16)) / 2;
 
-        //¼ÆËãÎÄ±¾¿í¶ÈÇ°ÏÈÉèÖÃÒ»ÏÂ×ÖÌå
+        //è®¡ç®—æ–‡æœ¬å®½åº¦å‰å…ˆè®¾ç½®ä¸€ä¸‹å­—ä½“
         UiFontGuard set_font(ui, font_size);
 
         int width_text{ ui->m_draw.GetTextExtent(text.c_str()).cx + right_space + btn_height };
@@ -289,7 +291,7 @@ bool UiElement::Button::LButtonUp(CPoint point)
 
     if (pressed && m_btn.rect.PtInRect(point) && m_btn.enable)
     {
-        //ÏÔÊ¾Ãæ°å
+        //æ˜¾ç¤ºé¢æ¿
         if (key == CPlayerUIBase::BTN_SHOW_PANEL)
         {
             CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
@@ -299,6 +301,19 @@ bool UiElement::Button::LButtonUp(CPoint point)
                     user_ui->ShowHidePanelById(panel_id);
                 else if (!panel_file_name.empty())
                     user_ui->ShowHidePanelByFileName(panel_file_name);
+            }
+        }
+        //æ˜¾ç¤º/éšè—å…ƒç´ 
+        if (key == CPlayerUIBase::BTN_SHOW_HIDE_ELEMENT)
+        {
+            CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
+            if (user_ui != nullptr)
+            {
+                Element* element = user_ui->FindElement<Element>(CCommon::UnicodeToStr(related_element_id, CodeType::UTF8_NO_BOM));
+                if (element != nullptr)
+                {
+                    element->SetVisible(!element->IsVisible());
+                }
             }
         }
         else
@@ -325,10 +340,10 @@ bool UiElement::Button::MouseMove(CPoint point)
     if (m_btn.enable)
     {
         m_btn.hover = (m_btn.rect.PtInRect(point));
-        //Êó±ê½øÈë°´Å¥ÇøÓòÊ±
+        //é¼ æ ‡è¿›å…¥æŒ‰é’®åŒºåŸŸæ—¶
         if (!last_hover && m_btn.hover)
         {
-            //Ö¸¶¨ÁË°´Å¥ÎÄ±¾ÇÒ²»ÏÔÊ¾ÎÄ±¾Ê±£¬ÏÔÊ¾Êó±êÌáÊ¾
+            //æŒ‡å®šäº†æŒ‰é’®æ–‡æœ¬ä¸”ä¸æ˜¾ç¤ºæ–‡æœ¬æ—¶ï¼Œæ˜¾ç¤ºé¼ æ ‡æç¤º
             if (!text.empty() && !show_text)
                 ui->UpdateMouseToolTip(key, text.c_str());
         }
@@ -348,7 +363,7 @@ bool UiElement::Button::RButtonUp(CPoint point)
     if (m_btn.rect.PtInRect(point))
     {
         ui->ButtonRClicked(key, m_btn);
-        return true;    //ÔÚ°´Å¥ÇøÓòÄÚµã»÷ÁËÊó±êÓÒ¼üÊ±×ÜÊÇ·µ»Øtrue£¬²»µ¯³öÖ÷´°¿ÚÓÒ¼ü²Ëµ¥
+        return true;    //åœ¨æŒ‰é’®åŒºåŸŸå†…ç‚¹å‡»äº†é¼ æ ‡å³é”®æ—¶æ€»æ˜¯è¿”å›trueï¼Œä¸å¼¹å‡ºä¸»çª—å£å³é”®èœå•
     }
 
     return false;

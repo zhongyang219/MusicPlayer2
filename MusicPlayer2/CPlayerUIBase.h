@@ -214,6 +214,7 @@ public:
         BTN_SHOW_PLAY_QUEUE,    //显示正确播放队列
         BTN_CLOSE_PANEL,        //关闭面板
         BTN_SHOW_PANEL,         //显示面板
+        BTN_SHOW_HIDE_ELEMENT,  //显示/隐藏一个元素
 
         //菜单栏
         MENU_FILE,
