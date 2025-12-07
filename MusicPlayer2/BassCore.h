@@ -6,6 +6,7 @@
 #include "BASSEncodeLibrary.h"
 #include "BASSWmaLibrary.h"
 #include "BassMixLibrary.h"
+#include "BassFxLibrary.h"
 
 #define PLAYING_STATE_DEFAULT_VALUE 99
 
@@ -107,6 +108,7 @@ private:
     const float FREQ_TABLE[EQU_CH_NUM]{ 80, 125, 250, 500, 1000, 1500, 2000, 4000, 8000, 1600 };		//每个均衡器通道的中心频率
 
     int m_volume{60};
+    float m_freq{};           //当前采样频率，用于调整播放速度（当bass_fx无法加载时）
 
     enum { FADE_TIMER_ID = 1010 };
 
@@ -116,6 +118,7 @@ private:
     static CBASSEncodeLibrary m_bass_encode_lib;
     static CBASSWmaLibrary m_bass_wma_lib;
     static CBassMixLibrary m_bass_mix_lib;
+    static CBassFxLibrary m_bass_fx_lib;
 
     wstring m_encode_dir;
 

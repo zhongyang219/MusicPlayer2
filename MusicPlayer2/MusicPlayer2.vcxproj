@@ -107,7 +107,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>bass.lib;bass_fx.lib;Powrprof.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>bass.lib;Powrprof.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>api-ms-win-core-winrt-l1-1-0.dll;api-ms-win-core-winrt-string-l1-1-0.dll;api-ms-win-shcore-stream-winrt-l1-1-0.dll;powrprof.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <Midl>
@@ -138,7 +138,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>bass_x64.lib;bass_fx_x64.lib;Powrprof.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>bass_x64.lib;Powrprof.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>api-ms-win-core-winrt-l1-1-0.dll;api-ms-win-core-winrt-string-l1-1-0.dll;api-ms-win-shcore-stream-winrt-l1-1-0.dll;powrprof.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <Midl>
@@ -173,7 +173,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>bass.lib;bass_fx.lib;Powrprof.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>bass.lib;Powrprof.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>api-ms-win-core-winrt-l1-1-0.dll;api-ms-win-core-winrt-string-l1-1-0.dll;api-ms-win-shcore-stream-winrt-l1-1-0.dll;powrprof.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
@@ -209,7 +209,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>bass_x64.lib;bass_fx_x64.lib;Powrprof.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>bass_x64.lib;Powrprof.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>api-ms-win-core-winrt-l1-1-0.dll;api-ms-win-core-winrt-string-l1-1-0.dll;api-ms-win-shcore-stream-winrt-l1-1-0.dll;powrprof.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <Midl>
@@ -245,6 +245,7 @@
     <ClInclude Include="bass.h" />
     <ClInclude Include="BassCore.h" />
     <ClInclude Include="BASSEncodeLibrary.h" />
+    <ClInclude Include="BassFxLibrary.h" />
     <ClInclude Include="BASSMidiLibrary.h" />
     <ClInclude Include="BassMixLibrary.h" />
     <ClInclude Include="BASSWmaLibrary.h" />
@@ -460,6 +461,7 @@
     <ClCompile Include="BaseDialog.cpp" />
     <ClCompile Include="BassCore.cpp" />
     <ClCompile Include="BASSEncodeLibrary.cpp" />
+    <ClCompile Include="BassFxLibrary.cpp" />
     <ClCompile Include="BASSMidiLibrary.cpp" />
     <ClCompile Include="BassMixLibrary.cpp" />
     <ClCompile Include="BASSWmaLibrary.cpp" />

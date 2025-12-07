@@ -1080,6 +1080,9 @@
     <ClInclude Include="PlayerFormulaHelper.h">
       <Filter>功能逻辑类\PlayerFormulaHelper</Filter>
     </ClInclude>
+    <ClInclude Include="BassFxLibrary.h">
+      <Filter>公共的类\BASS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1693,6 +1696,9 @@
     </ClCompile>
     <ClCompile Include="PlayerFormulaHelper.cpp">
       <Filter>功能逻辑类\PlayerFormulaHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="BassFxLibrary.cpp">
+      <Filter>公共的类\BASS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

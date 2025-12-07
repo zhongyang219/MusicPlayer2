@@ -13,6 +13,7 @@ CCriticalSection CBassCore::m_critical;
 CBASSEncodeLibrary CBassCore::m_bass_encode_lib;
 CBASSWmaLibrary CBassCore::m_bass_wma_lib;
 CBassMixLibrary CBassCore::m_bass_mix_lib;
+CBassFxLibrary CBassCore::m_bass_fx_lib;
 bool CBassCore::m_fading = false;
 
 #define CONVERTING_TEMP_FILE_NAME L"converting_5k2019u6271iyt8j"
@@ -94,6 +95,10 @@ void CBassCore::InitCore()
     //format.extensions_list = L"*.mp3;*.wma;*.wav;*.flac;*.ogg;*.oga;*.m4a;*.mp4;*.cue;*.mp2;*.mp1;*.aif;*.aiff";
     CAudioCommon::m_surpported_format.push_back(format);
     CAudioCommon::m_all_surpported_extensions = format.extensions;
+
+    //初始化bass_fx
+    m_bass_fx_lib.Init(theApp.m_module_dir + L"bass_fx.dll");
+
     //载入BASS插件
     wstring plugin_dir;
     plugin_dir = theApp.m_local_dir + L"Plugins\\";
@@ -182,6 +187,7 @@ void CBassCore::UnInitCore()
     {
         BASS_PluginFree(handle);
     }
+    m_bass_fx_lib.UnInit();
     m_fading = false;
 }
 
@@ -292,10 +298,13 @@ void CBassCore::Open(const wchar_t * file_path)
         Close();
 
     m_file_path = file_path;
+    DWORD flags = BASS_SAMPLE_FLOAT;
+    if (m_bass_fx_lib.IsSucceed())
+        flags |= BASS_STREAM_DECODE;
     if (CCommon::IsURL(m_file_path))
-        m_musicStream = BASS_StreamCreateURL(file_path, 0, BASS_SAMPLE_FLOAT | BASS_STREAM_DECODE, NULL, NULL);
+        m_musicStream = BASS_StreamCreateURL(file_path, 0, flags, NULL, NULL);
     else
-        m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, BASS_SAMPLE_FLOAT | BASS_STREAM_DECODE);
+        m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, flags);
     BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
     m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
     if (m_bass_midi_lib.IsSucceed() && m_is_midi && m_sfont.font != 0)
@@ -320,7 +329,10 @@ void CBassCore::Open(const wchar_t * file_path)
         m_midi_lyric.midi_no_lyric = true;
     }
     SetFXHandle();
-    m_musicStream = BASS_FX_TempoCreate(m_musicStream, BASS_FX_FREESOURCE);
+    if (m_bass_fx_lib.IsSucceed())
+        m_musicStream = m_bass_fx_lib.BASS_FX_TempoCreate(m_musicStream, BASS_FX_FREESOURCE);
+    else
+        BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_FREQ, &m_freq);
 }
 
 void CBassCore::Close()
@@ -416,19 +428,33 @@ void CBassCore::SetVolume(int vol)
 
 void CBassCore::SetSpeed(float speed)
 {
-    if (std::fabs(speed) < 0.01 || std::fabs(speed - 1) < 0.01 || speed < MIN_PLAY_SPEED || speed > MAX_PLAY_SPEED)
-        speed = 1;
-    float tempo = (speed - 1) * 100;
-    BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_TEMPO, tempo);
+    if (m_bass_fx_lib.IsSucceed())
+    {
+        if (std::fabs(speed) < 0.01 || std::fabs(speed - 1) < 0.01 || speed < MIN_PLAY_SPEED || speed > MAX_PLAY_SPEED)
+            speed = 1;
+        float tempo = (speed - 1) * 100;
+        BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_TEMPO, tempo);
+    }
+    else
+    {
+        float freq;
+        if (std::fabs(speed) < 0.01 || std::fabs(speed - 1) < 0.01 || speed < MIN_PLAY_SPEED || speed > MAX_PLAY_SPEED)
+            speed = 0;
+        freq = m_freq * speed;
+        BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_FREQ, freq);
+    }
 }
 
 void CBassCore::SetPitch(int pitch)
 {
-    if (pitch < MIN_PLAY_PITCH || pitch > MAX_PLAY_PITCH)
+    if (m_bass_fx_lib.IsSucceed())
     {
-        pitch = 0;
+        if (pitch < MIN_PLAY_PITCH || pitch > MAX_PLAY_PITCH)
+        {
+            pitch = 0;
+        }
+        BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_TEMPO_PITCH, pitch);
     }
-    BASS_ChannelSetAttribute(m_musicStream, BASS_ATTRIB_TEMPO_PITCH, pitch);
 }
 
 bool CBassCore::SongIsOver()
