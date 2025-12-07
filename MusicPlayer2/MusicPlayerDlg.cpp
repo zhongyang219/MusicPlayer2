@@ -1707,14 +1707,16 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     bool current_song_valid{ !CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty() };
 
     //播放控制
+    bool speed_valid{ CPlayer::GetInstance().IsSpeedAvailable()};
+    bool pitch_valid{ CPlayer::GetInstance().IsPitchAvailable()};
     pMenu->EnableMenuItem(ID_REW, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
     pMenu->EnableMenuItem(ID_FF, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_SPEED_UP, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_SLOW_DOWN, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_ORIGINAL_SPEED, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_PITCH_UP, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_PITCH_DOWN, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
-    pMenu->EnableMenuItem(ID_ORIGINAL_PITCH, MF_BYCOMMAND | (current_song_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_SPEED_UP, MF_BYCOMMAND | (current_song_valid && speed_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_SLOW_DOWN, MF_BYCOMMAND | (current_song_valid && speed_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ORIGINAL_SPEED, MF_BYCOMMAND | (current_song_valid && speed_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PITCH_UP, MF_BYCOMMAND | (current_song_valid && pitch_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_PITCH_DOWN, MF_BYCOMMAND | (current_song_valid && pitch_valid ? MF_ENABLED : MF_GRAYED));
+    pMenu->EnableMenuItem(ID_ORIGINAL_PITCH, MF_BYCOMMAND | (current_song_valid && pitch_valid ? MF_ENABLED : MF_GRAYED));
 
     //AB重复
     pMenu->EnableMenuItem(ID_NEXT_AB_REPEAT, MF_BYCOMMAND | (current_song_valid && CPlayer::GetInstance().GetABRepeatMode() == CPlayer::AM_AB_REPEAT ? MF_ENABLED : MF_GRAYED));

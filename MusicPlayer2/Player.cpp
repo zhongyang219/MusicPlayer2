@@ -2613,6 +2613,16 @@ bool CPlayer::IsFfmpegCore() const {
     return m_pCore ? m_pCore->GetCoreType() == PT_FFMPEG : false;
 }
 
+bool CPlayer::IsSpeedAvailable() const
+{
+    return m_player_core_inited && m_pCore != nullptr && m_pCore->IsSpeedAvailable();
+}
+
+bool CPlayer::IsPitchAvailable() const
+{
+    return m_player_core_inited && m_pCore != nullptr && m_pCore->IsPitchAvailable();
+}
+
 void CPlayer::MediaTransControlsLoadThumbnail()
 {
     if (CCommon::FileExist(m_album_cover_path))

@@ -540,6 +540,9 @@ public:
     bool IsMciCore() const;
     bool IsBassCore() const;
     bool IsFfmpegCore() const;
+    bool IsSpeedAvailable() const;      //设置播放速度是否可用
+    bool IsPitchAvailable() const;      //设置播放变调是否可用
+
     bool IsFileOpened() const { return m_file_opend; }
     //播放内核是否初始化完成
     bool IsPlayerCoreInited() const { return m_player_core_inited; }

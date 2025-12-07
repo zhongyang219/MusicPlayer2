@@ -208,6 +208,16 @@ void CFfmpegCore::SetPitch(int pitch)
 {
 }
 
+bool CFfmpegCore::IsSpeedAvailable()
+{
+    return true;
+}
+
+bool CFfmpegCore::IsPitchAvailable()
+{
+    return false;
+}
+
 bool CFfmpegCore::SongIsOver() {
     if (IsSucceed() && handle) {
         bool song_is_over = ffmpeg_core_song_is_over(handle);

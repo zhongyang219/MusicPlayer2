@@ -117,6 +117,8 @@ public:
     virtual void SetVolume(int volume) = 0;
     virtual void SetSpeed(float speed) = 0;         //设置播放速度（1为原速）
     virtual void SetPitch(int pitch) = 0;           //设置播放变调，半音为一个单位，[-12, 12]，0为原调
+    virtual bool IsSpeedAvailable() = 0;            //设置播放速度是否可用
+    virtual bool IsPitchAvailable() = 0;            //设置播放变调是否可用
     virtual bool SongIsOver() = 0;                  //曲目是否播放完毕
 
     virtual int GetCurPosition() = 0;               //获取当前播放进度，单位为毫秒

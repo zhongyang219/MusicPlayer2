@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "IPlayerCore.h"
 #include "DllLib.h"
 
@@ -90,6 +90,8 @@ public:
     virtual void SetVolume(int volume) override;
     virtual void SetSpeed(float speed) override;
     virtual void SetPitch(int pitch) override;
+    virtual bool IsSpeedAvailable() override;
+    virtual bool IsPitchAvailable() override;
     virtual bool SongIsOver() override;
     virtual int GetCurPosition() override;
     virtual int GetSongLength() override;

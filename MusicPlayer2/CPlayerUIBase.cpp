@@ -1030,7 +1030,7 @@ void CPlayerUIBase::DrawPlayEffectTag(CRect parent_rect, CRect& previous_item_re
     wstring tag_str;
     int available_width = parent_rect.right - previous_item_rect.right;
     //绘制播放速度
-    if (std::fabs(CPlayer::GetInstance().GetSpeed() - 1) > 1e-3)
+    if (CPlayer::GetInstance().IsSpeedAvailable() && std::fabs(CPlayer::GetInstance().GetSpeed() - 1) > 1e-3)
     {
         wchar_t buff[64];
         swprintf_s(buff, L"%.2f", CPlayer::GetInstance().GetSpeed());
@@ -1049,7 +1049,7 @@ void CPlayerUIBase::DrawPlayEffectTag(CRect parent_rect, CRect& previous_item_re
     }
 
     // 绘制播放变调
-    if (CPlayer::GetInstance().GetPitch() != 0)
+    if (CPlayer::GetInstance().IsPitchAvailable() && CPlayer::GetInstance().GetPitch() != 0)
     {
         wchar_t buff[64];
         int pitch = CPlayer::GetInstance().GetPitch();

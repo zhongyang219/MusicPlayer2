@@ -160,6 +160,16 @@ void CMciCore::SetPitch(int pitch)
 {
 }
 
+bool CMciCore::IsSpeedAvailable()
+{
+    return false;
+}
+
+bool CMciCore::IsPitchAvailable()
+{
+    return false;
+}
+
 bool CMciCore::SongIsOver()
 {
     return false;

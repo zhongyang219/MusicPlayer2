@@ -457,6 +457,16 @@ void CBassCore::SetPitch(int pitch)
     }
 }
 
+bool CBassCore::IsSpeedAvailable()
+{
+    return true;
+}
+
+bool CBassCore::IsPitchAvailable()
+{
+    return m_bass_fx_lib.IsSucceed();
+}
+
 bool CBassCore::SongIsOver()
 {
     DWORD state = BASS_ChannelIsActive(m_musicStream);
