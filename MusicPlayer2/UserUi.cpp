@@ -166,6 +166,48 @@ void CUserUi::InitSearchBox(CWnd* pWnd)
     }
 }
 
+void CUserUi::PlaylistSelectAll()
+{
+    //遍历Playlist元素
+    auto root_element = GetMouseEventResponseElement();
+    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            playlist_element->SelectAll();
+        }
+        return false;
+    });
+}
+
+void CUserUi::PlaylistSelectNone()
+{
+    //遍历Playlist元素
+    auto root_element = GetMouseEventResponseElement();
+    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            playlist_element->SelectNone();
+        }
+        return false;
+    });
+}
+
+void CUserUi::PlaylistSelectRevert()
+{
+    //遍历Playlist元素
+    auto root_element = GetMouseEventResponseElement();
+    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
+        UiElement::Playlist* playlist_element{ dynamic_cast<UiElement::Playlist*>(element) };
+        if (playlist_element != nullptr)
+        {
+            playlist_element->SelectReversed();
+        }
+        return false;
+    });
+}
+
 void CUserUi::SaveStatackElementIndex(CArchive& archive)
 {
     //遍历StackElement元素
@@ -1103,6 +1145,10 @@ void CUserUi::OnPanelHide()
             //调用MouseLeave，以清除鼠标指向状态
             element->MouseLeave();
             element->HideTooltip();
+            //清除列表的选择行
+            UiElement::ListElement* list_element = dynamic_cast<UiElement::ListElement*>(element);
+            if (list_element != nullptr)
+                list_element->SelectNone();
             return false;
         });
     }

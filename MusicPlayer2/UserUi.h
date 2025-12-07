@@ -26,6 +26,10 @@ public:
     void ListLocateToCurrent();         //ui中的所有列表使正在播放的条目可见
     void InitSearchBox(CWnd* pWnd);
 
+    void PlaylistSelectAll();
+    void PlaylistSelectNone();
+    void PlaylistSelectRevert();
+
     //清除所有搜索框的搜索状态。其中模板参数T是搜索框关联的列表元素的类型
     template<class T>
     void ClearSearchResult();
