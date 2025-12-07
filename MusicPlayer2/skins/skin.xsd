@@ -587,6 +587,11 @@
         <xs:documentation> 元素的id。 </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="visible" type="xs:boolean" default="true">
+      <xs:annotation>
+        <xs:documentation>元素是否默认显示</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="x" type="number_or_percent">
       <xs:annotation>
         <xs:documentation>

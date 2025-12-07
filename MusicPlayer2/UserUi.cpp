@@ -581,6 +581,9 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
     {
         element->name = item_name;
         element->id = CTinyXml2Helper::ElementAttribute(xml_node, "id");
+        bool visible{ true };
+        CTinyXml2Helper::GetElementAttributeBool(xml_node, "visible", visible);
+        element->SetVisible(visible);
         //设置元素的基类属性
         std::string str_x = CTinyXml2Helper::ElementAttribute(xml_node, "x");
         std::string str_y = CTinyXml2Helper::ElementAttribute(xml_node, "y");
