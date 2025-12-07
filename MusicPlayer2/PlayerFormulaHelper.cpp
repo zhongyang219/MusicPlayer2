@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "PlayerFormulaHelper.h"
 #include "Player.h"
 #include "UIElement/PlaylistIndicator.h"
@@ -12,7 +12,8 @@ const std::map<std::wstring, PlayerVariable> VariableNameMap{
     { L"Title" , PlayerVariable::Title },
     { L"Artist" , PlayerVariable::Artist },
     { L"Album" , PlayerVariable::Album },
-    { L"ArtistAlbum" , PlayerVariable::ArtistAlbum },
+    { L"AlbumArtist" , PlayerVariable::AlbumArtist },
+    { L"ArtistAndAlbum" , PlayerVariable::ArtistAndAlbum },
     { L"TrackNum" , PlayerVariable::TrackNum },
     { L"Year" , PlayerVariable::Year },
     { L"Genre" , PlayerVariable::Genre },
@@ -58,9 +59,11 @@ std::wstring CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable variabl
         return CPlayer::GetInstance().GetSafeCurrentSongInfo().GetArtist();
     case PlayerVariable::Album:
         return CPlayer::GetInstance().GetSafeCurrentSongInfo().GetAlbum();
-    case PlayerVariable::ArtistAlbum:
+    case PlayerVariable::AlbumArtist:
+        return CPlayer::GetInstance().GetSafeCurrentSongInfo().album_artist;
+    case PlayerVariable::ArtistAndAlbum:
     {
-        //ÓÅÏÈÊ¹ÓÃ³ªÆ¬¼¯ÒÕÊõ¼Ò£¬Èç¹ûÎª¿Õ£¬ÔòÊ¹ÓÃÒÕÊõ¼Ò
+        //ä¼˜å…ˆä½¿ç”¨å”±ç‰‡é›†è‰ºæœ¯å®¶ï¼Œå¦‚æžœä¸ºç©ºï¼Œåˆ™ä½¿ç”¨è‰ºæœ¯å®¶
         std::wstring artist_display{ CPlayer::GetInstance().GetSafeCurrentSongInfo().album_artist };
         if (artist_display.empty())
             artist_display = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetArtist();

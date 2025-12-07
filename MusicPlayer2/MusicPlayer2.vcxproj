@@ -883,7 +883,6 @@
   <ItemGroup>
     <Xml Include="res\ui\classical_control_bar.xml" />
     <Xml Include="res\ui\play_queue_panel.xml" />
-    <Xml Include="res\ui_panel\play_queue_panel.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
