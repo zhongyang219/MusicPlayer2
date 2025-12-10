@@ -289,7 +289,7 @@ bool UiElement::Button::LButtonUp(CPoint point)
     bool pressed = m_btn.pressed;
     m_btn.pressed = false;
 
-    if (pressed && m_btn.rect.PtInRect(point) && m_btn.enable)
+    if (pressed && m_btn.rect.PtInRect(point) && m_btn.enable && IsEnable(ParentRect()))
     {
         //显示面板
         if (key == CPlayerUIBase::BTN_SHOW_PANEL)

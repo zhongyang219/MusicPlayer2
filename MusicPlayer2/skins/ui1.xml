@@ -41,15 +41,15 @@
           <button key="settings" width="20" height="20" margin="2"/>
           <button key="equalizer" width="20" height="20" margin="2"/>
           <button key="skin" width="20" height="20" margin="2"/>
-          <button key="miniMode" width="20" height="20" margin="2" hide-width="174"/>
-          <button key="info" width="20" height="20" margin="2" hide-width="198"/>
-          <button key="find" width="20" height="20" margin="2" hide-width="222"/>
-          <button key="darkLightMode" width="20" height="20" margin="2" hide-width="294"/>
-          <button key="abRepeat" width="20" height="20" margin="2" hide-width="318"/>
-          <button key="desktopLyric" width="20" height="20" margin="2" hide-width="270"/>
+          <button key="miniMode" width="20" height="20" margin="2" hide-width="142"/>
+          <button key="info" width="20" height="20" margin="2" hide-width="166"/>
+          <button key="find" width="20" height="20" margin="2" hide-width="190"/>
+          <button key="darkLightMode" width="20" height="20" margin="2" hide-width="262"/>
+          <button key="abRepeat" width="20" height="20" margin="2" hide-width="286"/>
+          <button key="desktopLyric" width="20" height="20" margin="2" hide-width="238"/>
           <placeHolder/>
           <volume width="56" show_text="true"/>
-          <beatIndicator width="44" hide-width="368"/>
+          <beatIndicator width="44" hide-width="336"/>
         </horizontalLayout>
       </rectangle>
 	  <classicalControlBar margin-top="4" show_switch_display_btn="true"/>
