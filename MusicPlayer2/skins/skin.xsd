@@ -723,6 +723,7 @@
         <xs:element name="navigationBar" type="navigationBarType"></xs:element>
         <xs:element name="miniSpectrum" type="miniSpectrumType"></xs:element>
         <xs:element name="allTracksList" type="allTracksListType"></xs:element>
+        <xs:element name="trackList" type="trackListType"></xs:element>
         <xs:element name="classicalControlBar" type="classicalControlBarType"></xs:element>
         <xs:element name="medialibFolderExplore" type="medialibFolderExploreType"></xs:element>
         <xs:element name="searchBox" type="searchBoxType"></xs:element>
@@ -1599,6 +1600,11 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
+    <xs:attribute name="track_list_element_id" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>显示详细曲目列表的trackList元素的id。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
@@ -1699,6 +1705,11 @@
       <xs:documentation>媒体库的文件夹。</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
+    <xs:attribute name="track_list_element_id" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>显示详细曲目列表的trackList元素的id。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
@@ -1707,6 +1718,11 @@
       <xs:documentation>媒体库的播放列表。</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
+    <xs:attribute name="track_list_element_id" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>显示详细曲目列表的trackList元素的id。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
@@ -1726,6 +1742,14 @@
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
+  <xs:complexType name="trackListType">
+    <xs:annotation>
+      <xs:documentation>自定义曲目列表。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+    <xs:attributeGroup ref="listattr"></xs:attributeGroup>
+  </xs:complexType>
   <xs:complexType name="miniSpectrumType">
     <xs:annotation>
       <xs:documentation>图标大小的频谱分析。</xs:documentation>
@@ -1738,6 +1762,11 @@
       <xs:documentation>媒体库中的文件夹浏览。</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
+    <xs:attribute name="track_list_element_id" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>显示详细曲目列表的trackList元素的id。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>

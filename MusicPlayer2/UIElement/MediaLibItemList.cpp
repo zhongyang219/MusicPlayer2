@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MediaLibItemList.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UiMediaLibItemMgr.h"
@@ -123,7 +123,7 @@ std::wstring UiElement::MediaLibItemList::GetHoverButtonTooltip(int index, int r
 void UiElement::MediaLibItemList::OnHoverButtonClicked(int btn_index, int row)
 {
     CMusicPlayerCmdHelper helper;
-    //µã»÷ÁË¡°²¥·Å¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ’­æ”¾â€æŒ‰é’®
     if (btn_index == BTN_PLAY)
     {
         int item_selected = GetItemSelected();
@@ -135,7 +135,7 @@ void UiElement::MediaLibItemList::OnHoverButtonClicked(int btn_index, int row)
             helper.OnListItemSelected(list_item, true);
         }
     }
-    //µã»÷ÁË¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€æŒ‰é’®
     else if (btn_index == BTN_ADD)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);

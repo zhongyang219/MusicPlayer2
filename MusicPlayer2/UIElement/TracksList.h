@@ -1,17 +1,18 @@
 ﻿#pragma once
 #include "ListElement.h"
+
+class CUISongListMgr;
 namespace UiElement
 {
-    //媒体库项目列表
-    class MediaLibItemList : public ListElement
+    //曲目列表
+    class AbstractTracksList : public ListElement
     {
     public:
-        ListItem::ClassificationType type{};
-
         enum Column
         {
-            COL_NAME,
-            COL_COUNT,
+            COL_INDEX,
+            COL_TRACK,
+            COL_TIME,
             COL_MAX
         };
 
@@ -20,30 +21,50 @@ namespace UiElement
         {
             BTN_PLAY,
             BTN_ADD,
+            BTN_FAVOURITE,
             BTN_MAX
         };
+
+        virtual CUISongListMgr* GetSongListData() = 0;
 
         // 通过 ListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         int GetColumnCount() override;
         int GetColumnWidth(int col, int total_width) override;
-        virtual std::wstring GetEmptyString() override;
         virtual int GetHighlightRow() override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual void OnDoubleClicked() override;
+        virtual std::wstring GetEmptyString() override;
         virtual int GetHoverButtonCount(int row) override;
         virtual int GetHoverButtonColumn() override;
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
         virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
-
-    public:
-        std::string track_list_element_id;
+        virtual int GetUnHoverIconCount(int row) override;
+        virtual IconMgr::IconType GetUnHoverIcon(int index, int row) override;
+        virtual bool IsMultipleSelectionEnable() override;
 
     private:
         int last_highlight_row{ -1 };
+    };
+
+    //////////////////////////////////////////////////////////////////
+    //自定义曲目列表
+    class TrackList : public AbstractTracksList
+    {
+    public:
+        TrackList();
+
+        //设置曲目数据
+        void SetSongList(const std::vector<SongInfo>& song_list);
+
+        virtual CUISongListMgr* GetSongListData() override;
+
+    protected:
+        std::unique_ptr<CUISongListMgr> m_ui_song_list;
+
     };
 }
 

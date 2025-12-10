@@ -1,49 +1,13 @@
-#pragma once
+ï»¿#pragma once
 #include "ListElement.h"
+#include "TracksList.h"
 namespace UiElement
 {
-    //ËùÓÐÇúÄ¿ÁÐ±í
-    class AllTracksList : public ListElement
+    //æ‰€æœ‰æ›²ç›®åˆ—è¡¨
+    class AllTracksList : public AbstractTracksList
     {
     public:
-        enum Column
-        {
-            COL_INDEX,
-            COL_TRACK,
-            COL_TIME,
-            COL_MAX
-        };
-
-        //Êó±êÖ¸ÏòÒ»ÐÐÊ±ÏÔÊ¾µÄ°´Å¥
-        enum BtnKey
-        {
-            BTN_PLAY,
-            BTN_ADD,
-            BTN_FAVOURITE,
-            BTN_MAX
-        };
-
-        // Í¨¹ý ListElement ¼Ì³Ð
-        std::wstring GetItemText(int row, int col) override;
-        int GetRowCount() override;
-        int GetColumnCount() override;
-        int GetColumnWidth(int col, int total_width) override;
-        virtual int GetHighlightRow() override;
-        virtual int GetColumnScrollTextWhenSelected() override;
-        virtual CMenu* GetContextMenu(bool item_selected) override;
-        virtual void OnDoubleClicked() override;
-        virtual std::wstring GetEmptyString() override;
-        virtual int GetHoverButtonCount(int row) override;
-        virtual int GetHoverButtonColumn() override;
-        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
-        virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
-        virtual void OnHoverButtonClicked(int btn_index, int row) override;
-        virtual int GetUnHoverIconCount(int row) override;
-        virtual IconMgr::IconType GetUnHoverIcon(int index, int row) override;
-        virtual bool IsMultipleSelectionEnable() override;
-
-    private:
-        int last_highlight_row{ -1 };
+        virtual CUISongListMgr* GetSongListData() override;
     };
 }
 

@@ -1083,6 +1083,9 @@
     <ClInclude Include="BassFxLibrary.h">
       <Filter>公共的类\BASS</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\TracksList.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1699,6 +1702,9 @@
     </ClCompile>
     <ClCompile Include="BassFxLibrary.cpp">
       <Filter>公共的类\BASS</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\TracksList.cpp">
+      <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

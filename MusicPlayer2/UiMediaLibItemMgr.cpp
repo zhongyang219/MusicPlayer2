@@ -214,18 +214,35 @@ CUiMyFavouriteItemMgr::CUiMyFavouriteItemMgr()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CUiAllTracksMgr CUiAllTracksMgr::m_instance;
-
-CUiAllTracksMgr::~CUiAllTracksMgr()
+CUISongListMgr::CUISongListMgr()
 {
 }
 
-CUiAllTracksMgr& CUiAllTracksMgr::Instance()
+CUISongListMgr::~CUISongListMgr()
 {
-    return m_instance;
 }
 
-int CUiAllTracksMgr::GetSongCount() const
+void CUISongListMgr::Update(const vector<SongInfo>& song_list)
+{
+    m_loading = true;
+    std::shared_lock<std::shared_mutex> lock(m_shared_mutex);
+    m_all_tracks_list.clear();
+    for (const auto& song_info : song_list)
+    {
+        UTrackInfo item;
+        item.song_key = song_info;
+        item.name = CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format);
+        item.length = song_info.length();
+        item.is_favourite = CUiMyFavouriteItemMgr::Instance().Contains(song_info);
+        m_all_tracks_list.emplace_back(item);
+    }
+
+    m_loading = false;
+    m_inited = true;
+
+}
+
+int CUISongListMgr::GetSongCount() const
 {
     if (!m_loading)
         return static_cast<int>(m_all_tracks_list.size());
@@ -233,7 +250,7 @@ int CUiAllTracksMgr::GetSongCount() const
         return 0;
 }
 
-SongInfo CUiAllTracksMgr::GetSongInfo(int index) const
+SongInfo CUISongListMgr::GetSongInfo(int index) const
 {
     if (!m_loading)
     {
@@ -244,7 +261,7 @@ SongInfo CUiAllTracksMgr::GetSongInfo(int index) const
     return empty_song;
 }
 
-const CUiAllTracksMgr::UTrackInfo& CUiAllTracksMgr::GetItem(int index) const
+const CUISongListMgr::UTrackInfo& CUISongListMgr::GetItem(int index) const
 {
     if (!m_loading)
     {
@@ -255,12 +272,12 @@ const CUiAllTracksMgr::UTrackInfo& CUiAllTracksMgr::GetItem(int index) const
     return empty_item;
 }
 
-int CUiAllTracksMgr::GetCurrentIndex() const
+int CUISongListMgr::GetCurrentIndex() const
 {
     return m_current_index;
 }
 
-void CUiAllTracksMgr::SetCurrentSong(const SongInfo& song)
+void CUISongListMgr::SetCurrentSong(const SongInfo& song)
 {
     if (!m_loading && m_inited && !song.IsEmpty())
     {
@@ -275,6 +292,36 @@ void CUiAllTracksMgr::SetCurrentSong(const SongInfo& song)
             index++;
         }
     }
+}
+
+void CUISongListMgr::GetSongList(std::vector<SongInfo>& song_list) const
+{
+    for (const auto& item : m_all_tracks_list)
+    {
+        SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item.song_key) };
+        song_list.push_back(song);
+    }
+}
+
+void CUISongListMgr::AddOrRemoveMyFavourite(int index)
+{
+    if (!m_loading && m_inited && index >= 0 && index < GetSongCount())
+    {
+        m_all_tracks_list[index].is_favourite = !m_all_tracks_list[index].is_favourite;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CUiAllTracksMgr CUiAllTracksMgr::m_instance;
+
+CUiAllTracksMgr::~CUiAllTracksMgr()
+{
+}
+
+CUiAllTracksMgr& CUiAllTracksMgr::Instance()
+{
+    return m_instance;
 }
 
 void CUiAllTracksMgr::UpdateAllTracks()
@@ -306,23 +353,6 @@ void CUiAllTracksMgr::UpdateAllTracks()
         });
     m_loading = false;
     m_inited = true;
-}
-
-void CUiAllTracksMgr::GetSongList(std::vector<SongInfo>& song_list) const
-{
-    for (const auto& item : m_all_tracks_list)
-    {
-        SongInfo song{ CSongDataManager::GetInstance().GetSongInfo(item.song_key) };
-        song_list.push_back(song);
-    }
-}
-
-void CUiAllTracksMgr::AddOrRemoveMyFavourite(int index)
-{
-    if (!m_loading && m_inited && index >= 0 && index < GetSongCount())
-    {
-        m_all_tracks_list[index].is_favourite = !m_all_tracks_list[index].is_favourite;
-    }
 }
 
 CUiAllTracksMgr::CUiAllTracksMgr()

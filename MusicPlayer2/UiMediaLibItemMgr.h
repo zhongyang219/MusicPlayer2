@@ -66,11 +66,11 @@ private:
 };
 
 
-class CUiAllTracksMgr
+class CUISongListMgr
 {
 public:
-    ~CUiAllTracksMgr();
-    static CUiAllTracksMgr& Instance();
+    CUISongListMgr();
+    ~CUISongListMgr();
 
     //用于在UI中显示的曲目信息
     struct UTrackInfo
@@ -81,26 +81,37 @@ public:
         bool is_favourite{};
     };
 
+    void Update(const vector<SongInfo>& song_list);
+
     int GetSongCount() const;
     SongInfo GetSongInfo(int index) const;
     const UTrackInfo& GetItem(int index) const;
     int GetCurrentIndex() const;                //获取正在播放的曲目在m_all_tracks_list中的序号
     void SetCurrentSong(const SongInfo& song);  //设置正在播放的曲目，将其在m_all_tracks_list中的序号保存起来
-    void UpdateAllTracks();                     //从CSongDataManager中更新所有曲目信息
     bool IsLoading() const { return m_loading; }
     bool IsInited() const { return m_inited; }
     void GetSongList(std::vector<SongInfo>& song_list) const;
     void AddOrRemoveMyFavourite(int index);     //仅更新UI中显示的“我喜欢”的状态，不更新到“我喜欢的音乐”播放列表中
-
-private:
-    CUiAllTracksMgr();
-    static CUiAllTracksMgr m_instance;
 
     std::vector<UTrackInfo> m_all_tracks_list;  //所有曲目信息列表
     std::atomic<bool> m_loading{};                       //如果正在初始化中，则为true
     int m_current_index{ -1 };              //正在播放的曲目在m_all_tracks_list中的序号
     std::atomic<bool> m_inited{};                        //如果已经初始化过，则为true
     mutable std::shared_mutex m_shared_mutex;
+
+};
+
+class CUiAllTracksMgr : public CUISongListMgr
+{
+public:
+    ~CUiAllTracksMgr();
+    static CUiAllTracksMgr& Instance();
+
+    void UpdateAllTracks();                     //从CSongDataManager中更新所有曲目信息
+
+private:
+    CUiAllTracksMgr();
+    static CUiAllTracksMgr m_instance;
 };
 
 

@@ -910,6 +910,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     mediaLibItemList->type = ListItem::ClassificationType::CT_BITRATE;
                 else if (str_type == "rating")
                     mediaLibItemList->type = ListItem::ClassificationType::CT_RATING;
+                mediaLibItemList->track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
             }
         }
         //导航栏

@@ -328,6 +328,7 @@
     <ClInclude Include="UIElement\StackElement.h" />
     <ClInclude Include="UIElement\Text.h" />
     <ClInclude Include="UIElement\TrackInfo.h" />
+    <ClInclude Include="UIElement\TracksList.h" />
     <ClInclude Include="UIElement\TreeElement.h" />
     <ClInclude Include="UIElement\UIElement.h" />
     <ClInclude Include="UIElement\Volume.h" />
@@ -542,6 +543,7 @@
     <ClCompile Include="UIElement\StackElement.cpp" />
     <ClCompile Include="UIElement\Text.cpp" />
     <ClCompile Include="UIElement\TrackInfo.cpp" />
+    <ClCompile Include="UIElement\TracksList.cpp" />
     <ClCompile Include="UIElement\TreeElement.cpp" />
     <ClCompile Include="UIElement\UIElement.cpp" />
     <ClCompile Include="UIElement\Volume.cpp" />
