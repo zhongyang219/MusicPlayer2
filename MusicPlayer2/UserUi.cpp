@@ -1122,6 +1122,17 @@ void CUserUi::ShowHidePanelById(const std::wstring panel_id)
         OnPanelShow();
 }
 
+bool CUserUi::IsPanelShown() const
+{
+    return m_panel_mgr.GetVisiblePanel() != nullptr;
+}
+
+void CUserUi::CloseAllPanel()
+{
+    OnPanelHide();
+    m_panel_mgr.HideAllPanel();
+}
+
 void CUserUi::OnPanelShow()
 {
     IterateAllElements([&](UiElement::Element* element) ->bool {

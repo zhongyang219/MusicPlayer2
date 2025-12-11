@@ -2937,9 +2937,18 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
                 search_box->SetFocus();
                 return TRUE;
             }
-            if (pMsg->wParam == VK_ESCAPE)      // 按ESC键退出全屏模式
+            if (pMsg->wParam == VK_ESCAPE)      // 按ESC键
             {
-                if (theApp.m_ui_data.full_screen)
+                //如果显示了面板，关闭面板
+                CUserUi* user_ui = dynamic_cast<CUserUi*>(GetCurrentUi());
+                if (user_ui != nullptr && user_ui->IsPanelShown())
+                {
+                    user_ui->CloseAllPanel();
+                    return TRUE;
+                }
+
+                //退出全屏模式
+                else if (theApp.m_ui_data.full_screen)
                 {
                     OnFullScreen();
                     return TRUE;

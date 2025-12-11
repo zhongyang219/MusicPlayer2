@@ -179,7 +179,7 @@ CPlayerUIPanel* CPanelManager::GetPanelByFileName(const std::wstring& file_name)
 	}
 }
 
-CPlayerUIPanel* CPanelManager::GetPanelById(const std::wstring& id)
+CPlayerUIPanel* CPanelManager::GetPanelById(const std::wstring& id) const
 {
 	auto iter = m_panels_in_ui.find(id);
 	if (iter != m_panels_in_ui.end())
@@ -189,7 +189,7 @@ CPlayerUIPanel* CPanelManager::GetPanelById(const std::wstring& id)
 	return nullptr;
 }
 
-CPlayerUIPanel* CPanelManager::GetVisiblePanel()
+CPlayerUIPanel* CPanelManager::GetVisiblePanel() const
 {
 	for (const auto& panel : m_panels)
 	{

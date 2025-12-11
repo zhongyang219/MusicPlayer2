@@ -92,6 +92,8 @@ public:
     void ShowHidePanel(ePanelType panel_type);
     void ShowHidePanelByFileName(const std::wstring panel_file_name);
     void ShowHidePanelById(const std::wstring panel_id);
+    bool IsPanelShown() const;
+    void CloseAllPanel();
 
 protected:
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;
