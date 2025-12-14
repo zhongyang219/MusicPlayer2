@@ -227,8 +227,8 @@ void CDesktopLyric::LyricSettingDatatOLyricStyleDefaultData(const DesktopLyricSe
 
 void CDesktopLyric::LoadDefaultStyle(CIniHelper& ini)
 {
-    m_default_style[0].normal_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_color1", RGB(37, 152, 10));
-    m_default_style[0].normal_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_color2", RGB(129, 249, 0));
+    m_default_style[0].normal_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_color1", RGB(55, 138, 23));
+    m_default_style[0].normal_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_color2", RGB(192, 221, 28));
     m_default_style[0].normal_style.gradient_mode = ini.GetInt(L"desktop_lyric_default_style", L"default1_text_gradient_mode", 1);
     m_default_style[0].highlight_style.color1 = ini.GetInt(L"desktop_lyric_default_style", L"default1_highlight_color1", RGB(253, 232, 0));
     m_default_style[0].highlight_style.color2 = ini.GetInt(L"desktop_lyric_default_style", L"default1_highlight_color2", RGB(255, 120, 0));
