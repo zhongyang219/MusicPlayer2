@@ -919,8 +919,126 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             UiElement::NavigationBar* tab_emelent = dynamic_cast<UiElement::NavigationBar*>(element.get());
             if (tab_emelent != nullptr)
             {
+                //兼容旧版的“item_list”属性
                 std::string str_item_list = CTinyXml2Helper::ElementAttribute(xml_node, "item_list");
-                CCommon::StringSplit(str_item_list, ',', tab_emelent->tab_list);
+                std::vector<std::string> item_list;
+                CCommon::StringSplit(str_item_list, ',', item_list);
+                for (const std::string& item_str : item_list)
+                {
+                    UiElement::NavigationBar::NavigationItem navigation_item;
+                    if (item_str == "album_cover")
+                    {
+                        navigation_item.icon = IconMgr::IT_Album_Cover;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"UI_TXT_ALBUM_COVER");
+                    }
+                    else if (item_str == "spectrum")
+                    {
+                        navigation_item.icon = IconMgr::IT_Reverb;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"UI_TXT_SPECTRUM");
+                    }
+                    else if (item_str == "lyrics")
+                    {
+                        navigation_item.icon = IconMgr::IT_Lyric;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"UI_TXT_LYRICS");
+                    }
+                    else if (item_str == "now_playing")
+                    {
+                        navigation_item.icon = IconMgr::IT_NowPlaying;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PLAYING");
+                    }
+                    else if (item_str == "play_queue")
+                    {
+                        navigation_item.icon = IconMgr::IT_Play_In_Playlist;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"UI_TXT_PLAY_QUEUE");
+                    }
+                    else if (item_str == "recently_played")
+                    {
+                        navigation_item.icon = IconMgr::IT_History;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED");
+                    }
+                    else if (item_str == "folder")
+                    {
+                        navigation_item.icon = IconMgr::IT_Folder;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_FOLDER");
+                    }
+                    else if (item_str == "playlist")
+                    {
+                        navigation_item.icon = IconMgr::IT_Playlist;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_PLAYLIST");
+                    }
+                    else if (item_str == "artist")
+                    {
+                        navigation_item.icon = IconMgr::IT_Artist;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_ARTIST");
+                    }
+                    else if (item_str == "album")
+                    {
+                        navigation_item.icon = IconMgr::IT_Album;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_ALBUM");
+                    }
+                    else if (item_str == "genre")
+                    {
+                        navigation_item.icon = IconMgr::IT_Genre;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_GENRE");
+                    }
+                    else if (item_str == "year")
+                    {
+                        navigation_item.icon = IconMgr::IT_Year;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_YEAR");
+                    }
+                    else if (item_str == "file_type")
+                    {
+                        navigation_item.icon = IconMgr::IT_File_Relate;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
+                    }
+                    else if (item_str == "bitrate")
+                    {
+                        navigation_item.icon = IconMgr::IT_Bitrate;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_BITRATE");
+                    }
+                    else if (item_str == "rating")
+                    {
+                        navigation_item.icon = IconMgr::IT_Star;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_RATING");
+                    }
+                    else if (item_str == "media_lib")
+                    {
+                        navigation_item.icon = IconMgr::IT_Media_Lib;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_MEDIA_LIB");
+                    }
+                    else if (item_str == "my_favourite")
+                    {
+                        navigation_item.icon = IconMgr::IT_Favorite_On;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_MY_FAVOURITE");
+                    }
+                    else if (item_str == "all_tracks")
+                    {
+                        navigation_item.icon = IconMgr::IT_Media_Lib;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS");
+                    }
+                    else if (item_str == "folder_explore")
+                    {
+                        navigation_item.icon = IconMgr::IT_Folder_Explore;
+                        navigation_item.text = theApp.m_str_table.LoadText(L"TXT_FOLDER_EXPLORE");
+                    }
+                    if (navigation_item.icon != IconMgr::IT_NO_ICON)
+                        tab_emelent->tab_list.push_back(navigation_item);
+                }
+
+                //读取导航栏按钮列表
+                CTinyXml2Helper::IterateChildNode(xml_node, [&](tinyxml2::XMLElement* child_node) {
+                    std::string child_name = CTinyXml2Helper::ElementName(child_node);
+                    if (child_name == "navigationItem")
+                    {
+                        UiElement::NavigationBar::NavigationItem navigation_item;
+                        std::string str_text = CTinyXml2Helper::ElementAttribute(child_node, "text");
+                        navigation_item.text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+                        ReplaceUiStringRes(navigation_item.text);
+                        std::string str_icon = CTinyXml2Helper::ElementAttribute(child_node, "icon");
+                        navigation_item.icon = UiElement::Button::NameToIconType(str_icon);
+                        tab_emelent->tab_list.push_back(navigation_item);
+                    }
+                });
 
                 std::string str_icon_type = CTinyXml2Helper::ElementAttribute(xml_node, "icon_type");
                 if (str_icon_type == "icon_and_text")

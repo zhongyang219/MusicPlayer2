@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "NavigationBar.h"
 #include "StackElement.h"
 
@@ -17,7 +17,7 @@ bool UiElement::NavigationBar::LButtonUp(CPoint point)
         FindStackElement();
         if (stack_element != nullptr)
         {
-            //²éÕÒµã»÷µÄ±êÇ©
+            //æŸ¥æ‰¾ç‚¹å‡»çš„æ ‡ç­¾
             int _selected_index = -1;
             for (size_t i{}; i < item_rects.size(); i++)
             {
@@ -64,15 +64,18 @@ bool UiElement::NavigationBar::MouseMove(CPoint point)
     }
     hover_index = _hover_index;
 
-    //ÏÔÊ¾Êó±êÌáÊ¾
+    //æ˜¾ç¤ºé¼ æ ‡æç¤º
     if (icon_type == ICON_ONLY && hover_index >= 0)
     {
         if (last_hover_index != hover_index)
         {
             last_hover_index = hover_index;
-            std::wstring str_tip = labels[hover_index];
-            ui->UpdateMouseToolTip(TooltipIndex::TAB_ELEMENT, str_tip.c_str());
-            ui->UpdateMouseToolTipPosition(TooltipIndex::TAB_ELEMENT, item_rects[hover_index] & rect);
+            if (hover_index >= 0 && hover_index < static_cast<int>(tab_list.size()))
+            {
+                std::wstring str_tip = tab_list[hover_index].text;
+                ui->UpdateMouseToolTip(TooltipIndex::TAB_ELEMENT, str_tip.c_str());
+                ui->UpdateMouseToolTipPosition(TooltipIndex::TAB_ELEMENT, item_rects[hover_index] & rect);
+            }
         }
     }
     return true;
@@ -80,7 +83,7 @@ bool UiElement::NavigationBar::MouseMove(CPoint point)
 
 bool UiElement::NavigationBar::RButtonUp(CPoint point)
 {
-    //²»µ¯³öÓÒ¼ü²Ëµ¥
+    //ä¸å¼¹å‡ºå³é”®èœå•
     return rect.PtInRect(point);
 }
 
@@ -110,6 +113,6 @@ void UiElement::NavigationBar::FindStackElement()
     if (!find_stack_element)
     {
         stack_element = FindRelatedElement<StackElement>(stack_element_id);
-        find_stack_element = true;  //ÕÒ¹ıÒ»´ÎÃ»ÕÒµ½¾Í²»ÕÒÁË
+        find_stack_element = true;  //æ‰¾è¿‡ä¸€æ¬¡æ²¡æ‰¾åˆ°å°±ä¸æ‰¾äº†
     }
 }

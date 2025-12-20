@@ -694,11 +694,11 @@
       </xs:annotation>
     </xs:attribute>
   </xs:attributeGroup>
+  <!-- 基础元素组 -->
   <xs:group name="elements">
     <xs:sequence><!--sequence 和 choice 配合使用，使得元素可以以任意顺序出现任意次数-->
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="element" type="elementType"></xs:element>
-        <xs:element name="panel" type="panelType"></xs:element>
         <xs:element name="verticalLayout" type="verticalLayoutType"></xs:element>
         <xs:element name="horizontalLayout" type="horizontalLayoutType"></xs:element>
         <xs:element name="stackElement" type="stackElementType"></xs:element>
@@ -729,6 +729,15 @@
         <xs:element name="searchBox" type="searchBoxType"></xs:element>
         <xs:element name="elementSwitcher" type="elementSwitcherType"></xs:element>
         <xs:element name="icon" type="iconType"></xs:element>
+      </xs:choice>
+    </xs:sequence>
+  </xs:group>
+  <!-- navigationBar 元素组 -->
+  <xs:group name="navigationBarElements">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:group ref="elements"/>
+        <xs:element name="navigationItem" type="navigationItemType"/>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -1611,14 +1620,16 @@
   <xs:complexType name="navigationBarType">
     <xs:annotation>
       <xs:documentation>
-        导航栏。用于控制stackElement的切换，依次向上在它的所有父节点下面查找stackElement，如果未找到，则作用于ui元素下第一个stackElement。
+        导航栏。用于控制stackElement的切换。使用stack_element_id元素指定要切换的stackElement，如果未指定stack_element_id元素，则依次向上在它的所有父节点下面查找stackElement，如果未找到，则作用于ui元素下第一个stackElement。
+        要设置导航栏的标签列表，请添加navigationItem类型的元素作为子节点。
       </xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
+    <xs:group ref="navigationBarElements"></xs:group>
     <xs:attribute name="item_list">
       <xs:annotation>
         <xs:documentation>
           标签列表，标签只能在“album_cover,spectrum,lyrics,now_playing,play_queue,recently_played,folder,playlist,artist,album,genre,year,file_type,bitrate,rating,media_lib,my_favourite,all_tracks,folder_explore”中选，多个标签使用半角逗号隔开。
+          如果需要更加灵活地指定导航栏的标签列表，请添加navigationItem类型的元素作为子节点。
         </xs:documentation>
       </xs:annotation>
       <xs:simpleType>
@@ -1844,5 +1855,20 @@
       </xs:annotation>
     </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="navigationItemType">
+    <xs:annotation>
+      <xs:documentation>一个导航栏的标签。</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="icon" type="icon_type">
+      <xs:annotation>
+        <xs:documentation>导航栏标签的图标类型。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="text" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>导航栏标签的文本。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 </xs:schema>

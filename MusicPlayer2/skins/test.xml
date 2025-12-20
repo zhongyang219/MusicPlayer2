@@ -66,7 +66,26 @@
       <stackElement margin-bottom="12" show_indicator="true" indicator_offset="-4">
         <!--第1页-->
         <verticalLayout>
-          <navigationBar height="30" icon_type="icon_only" item_space="4" stack_element_id="stackElement1" item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album,genre,year,file_type,bitrate,rating"/>
+          <!--导航栏-->
+          <navigationBar height="30" icon_type="icon_only" item_space="4" stack_element_id="stackElement1">
+            <!--使用navigationItem元素指定导航栏按钮-->
+            <navigationItem icon="nowPlaying" text="%(UI_TXT_PLAYSTATUS_PLAYING)"/>
+            <navigationItem icon="reverb" text="%(UI_TXT_SPECTRUM)"/>
+            <navigationItem icon="lyric" text="%(UI_TXT_LYRICS)"/>
+            <navigationItem icon="playInPlaylist" text="%(UI_TXT_PLAY_QUEUE)"/>
+            <navigationItem icon="history" text="%(TXT_RECENT_PLAYED)"/>
+            <navigationItem icon="folder" text="%(TXT_FOLDER)"/>
+            <navigationItem icon="playlist" text="%(TXT_PLAYLIST)"/>
+            <navigationItem icon="favoriteOn" text="%(TXT_MY_FAVOURITE)"/>
+            <navigationItem icon="artist" text="%(TXT_ARTIST)"/>
+            <navigationItem icon="album" text="%(TXT_ALBUM)"/>
+            <navigationItem icon="genre" text="%(TXT_GENRE)"/>
+            <navigationItem icon="year" text="%(TXT_YEAR)"/>
+            <navigationItem icon="fileRelate" text="%(TXT_FILE_TYPE)"/>
+            <navigationItem icon="bitrate" text="%(TXT_BITRATE)"/>
+            <navigationItem icon="star" text="%(TXT_RATING)"/>
+            <navigationItem icon="folderExplore" text="%(TXT_FOLDER_EXPLORE)"/>
+          </navigationBar>
           <stackElement id="stackElement1" margin="8">
             <verticalLayout>
               <albumCover square="true" margin="28" margin-bottom="12"/>
@@ -99,13 +118,17 @@
             <mediaLibItemList type="file_type"/>
             <mediaLibItemList type="bitrate"/>
             <mediaLibItemList type="rating"/>
+            <medialibFolderExplore/>
           </stackElement>
         </verticalLayout>
 
         <!--第2页-->
         <horizontalLayout>
-          <navigationBar width="100" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="10"
-                      item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album,genre,year,file_type,bitrate,rating"/>
+          <!--导航栏。使用item_list属性和navigationItem子节点都可以设置导航的标签按钮。item_list属性指定的标签会显示在前面-->
+          <navigationBar width="120" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="10"
+                      item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album,genre,year,file_type,bitrate,rating">
+            <navigationItem icon="folderExplore" text="%(TXT_FOLDER_EXPLORE)"/>
+          </navigationBar>
           <stackElement margin="8" scroll_to_switch="true">
             <verticalLayout>
               <albumCover square="true" margin="28" margin-bottom="12"/>
@@ -134,6 +157,7 @@
             <mediaLibItemList type="file_type"/>
             <mediaLibItemList type="bitrate"/>
             <mediaLibItemList type="rating"/>
+            <medialibFolderExplore/>
           </stackElement>
 
         </horizontalLayout>

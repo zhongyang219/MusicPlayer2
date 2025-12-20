@@ -2996,111 +2996,8 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
     int y_pos{ rect.top };
     int index{};
     tab_element->item_rects.resize(tab_element->tab_list.size());
-    tab_element->labels.resize(tab_element->tab_list.size());
-    for (const std::string& item_str : tab_element->tab_list)
+    for (const auto& navigation_item : tab_element->tab_list)
     {
-        IconMgr::IconType icon;
-        std::wstring& item_text{ tab_element->labels[index]};
-        if (item_str == "album_cover")
-        {
-            if (draw_icon) icon = IconMgr::IT_Album_Cover;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_ALBUM_COVER");
-        }
-        else if (item_str == "spectrum")
-        {
-            if (draw_icon) icon = IconMgr::IT_Reverb;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_SPECTRUM");
-        }
-        else if (item_str == "lyrics")
-        {
-            if (draw_icon) icon = IconMgr::IT_Lyric;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_LYRICS");
-        }
-        else if (item_str == "now_playing")
-        {
-            if (draw_icon) icon = IconMgr::IT_NowPlaying;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAYSTATUS_PLAYING");
-        }
-        else if (item_str == "play_queue")
-        {
-            if (draw_icon) icon = IconMgr::IT_Play_In_Playlist;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"UI_TXT_PLAY_QUEUE");
-        }
-        else if (item_str == "recently_played")
-        {
-            if (draw_icon) icon = IconMgr::IT_History;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED");
-        }
-        else if (item_str == "folder")
-        {
-            if (draw_icon) icon = IconMgr::IT_Folder;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_FOLDER");
-        }
-        else if (item_str == "playlist")
-        {
-            if (draw_icon) icon = IconMgr::IT_Playlist;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_PLAYLIST");
-        }
-        else if (item_str == "artist")
-        {
-            if (draw_icon) icon = IconMgr::IT_Artist;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_ARTIST");
-        }
-        else if (item_str == "album")
-        {
-            if (draw_icon) icon = IconMgr::IT_Album;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_ALBUM");
-        }
-        else if (item_str == "genre")
-        {
-            if (draw_icon) icon = IconMgr::IT_Genre;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_GENRE");
-        }
-        else if (item_str == "year")
-        {
-            if (draw_icon) icon = IconMgr::IT_Year;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_YEAR");
-        }
-        else if (item_str == "file_type")
-        {
-            if (draw_icon) icon = IconMgr::IT_File_Relate;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_FILE_TYPE");
-        }
-        else if (item_str == "bitrate")
-        {
-            if (draw_icon) icon = IconMgr::IT_Bitrate;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_BITRATE");
-        }
-        else if (item_str == "rating")
-        {
-            if (draw_icon) icon = IconMgr::IT_Star;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_RATING");
-        }
-        else if (item_str == "media_lib")
-        {
-            if (draw_icon) icon = IconMgr::IT_Media_Lib;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_MEDIA_LIB");
-        }
-        else if (item_str == "my_favourite")
-        {
-            if (draw_icon) icon = IconMgr::IT_Favorite_On;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_MY_FAVOURITE");
-        }
-        else if (item_str == "all_tracks")
-        {
-            if (draw_icon) icon = IconMgr::IT_Media_Lib;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_ALL_TRACKS");
-        }
-        else if (item_str == "folder_explore")
-        {
-            if (draw_icon) icon = IconMgr::IT_Folder_Explore;
-            if (item_text.empty()) item_text = theApp.m_str_table.LoadText(L"TXT_FOLDER_EXPLORE");
-        }
-        else
-        {
-            continue;
-        }
-
         //计算矩形区域
         int icon_width{};
         int text_width{};
@@ -3110,7 +3007,7 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
             icon_width = (std::max)(DPI(24), item_height - DPI(4));
         }
         if (draw_text)
-            text_width = m_draw.GetTextExtent(item_text.c_str()).cx;
+            text_width = m_draw.GetTextExtent(navigation_item.text.c_str()).cx;
         CRect item_rect{ rect };
         if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
         {
@@ -3150,13 +3047,13 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
                     icon_rect.MoveToX(icon_rect.left + DPI(4));
             }
             //使用跳动的频谱代替正在播放图标
-            if (item_str == "now_playing" && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED && !CPlayer::GetInstance().IsMciCore())
+            if (navigation_item.icon == IconMgr::IT_NowPlaying && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED && !CPlayer::GetInstance().IsMciCore())
             {
                 DrawMiniSpectrum(icon_rect);
             }
             else
             {
-                DrawUiIcon(icon_rect, icon);
+                DrawUiIcon(icon_rect, navigation_item.icon);
             }
         }
         else
@@ -3182,7 +3079,7 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
             CFont* old_font{};  //原先的字体
             bool big_font{ m_ui_data.full_screen && IsDrawLargeIcon() };
             old_font = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(tab_element->font_size).GetFont(big_font));
-            m_draw.DrawWindowText(text_rect, item_text.c_str(), m_colors.color_text, Alignment::LEFT, true);
+            m_draw.DrawWindowText(text_rect, navigation_item.text.c_str(), m_colors.color_text, Alignment::LEFT, true);
             m_draw.SetFont(old_font);
         }
 

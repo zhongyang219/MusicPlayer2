@@ -53,7 +53,7 @@
             </stackElement>
           </verticalLayout>
           <!--右侧播放列表（默认不显示，点击按钮显示）-->
-          <rectangle id="ui_big_right_playlist" visible="false" no_corner_radius="true" theme_color="false" max-width="280">
+          <rectangle id="ui_big_right_playlist" visible="false" no_corner_radius="true" theme_color="false" max-width="320">
             <verticalLayout margin="8">
               <text type="userDefine" text="%(UI_TXT_PLAYLIST_TOTLA_NUM)" height="24" color_style="emphasis1"/>
               <playlistIndicator height="30" margin-bottom="4"/>

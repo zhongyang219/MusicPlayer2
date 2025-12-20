@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
     class StackElement;
 
-    //µ¼º½À¸
+    //å¯¼èˆªæ 
     class NavigationBar : public Element
     {
     public:
@@ -29,22 +29,28 @@ namespace UiElement
             Vertical,
         };
 
+        //ä¸€ä¸ªå¯¼èˆªæ æ ‡ç­¾
+        struct NavigationItem
+        {
+            std::wstring text;
+            IconMgr::IconType icon{ IconMgr::IT_NO_ICON };
+        };
+
         IconType icon_type{};
         Orientation orientation{ Horizontal };
         int item_space{};
         int item_height{ 28 };
         int font_size{ 9 };
         std::string stack_element_id;
-        std::vector<std::string> tab_list;
+        std::vector<NavigationItem> tab_list;   //å¯¼èˆªæ æ ‡ç­¾åˆ—è¡¨
         std::vector<CRect> item_rects;
-        std::vector<std::wstring> labels;
         int SelectedIndex();
         int hover_index{ -1 };
         bool pressed{};
 
     private:
-        void FindStackElement();        //²éÕÒStackElement
-        bool find_stack_element{};      //Èç¹ûÒÑ¾­²éÕÒ¹ıStackElement£¬ÔòÎªtrue
+        void FindStackElement();        //æŸ¥æ‰¾StackElement
+        bool find_stack_element{};      //å¦‚æœå·²ç»æŸ¥æ‰¾è¿‡StackElementï¼Œåˆ™ä¸ºtrue
         StackElement* stack_element{};
         int selected_index{};
         int last_hover_index{ -1 };
