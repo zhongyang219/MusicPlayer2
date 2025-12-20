@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Text.h"
 #include "Player.h"
 #include "PlayerFormulaHelper.h"
@@ -8,15 +8,16 @@ void UiElement::Text::Draw()
     CalculateRect();
     std::wstring draw_text{ GetText() };
 
-    //ÉèÖÃ×ÖÌå
+    //è®¾ç½®å­—ä½“
     UiFontGuard set_font(ui, font_size);
 
-    //ÉèÖÃ×ÖÌåÑÕÉ«
+    //è®¾ç½®å­—ä½“é¢œè‰²
     UIColors colors{ ui->m_colors };
+    //æ–‡æœ¬çš„é¢œè‰²æ¨¡å¼ä¸ºæµ…è‰²æ—¶ï¼Œè·å–æ·±è‰²æ¨¡å¼ä¸‹çš„é¢œè‰²ï¼Œå¦åˆ™è·å–æµ…è‰²æ¨¡å¼ä¸‹çš„é¢œè‰²
     if (color_mode == CPlayerUIBase::RCM_LIGHT)
-        colors = CPlayerUIHelper::GetUIColors(false, ui->IsDrawBackgroundAlpha());
-    else if (color_mode == CPlayerUIBase::RCM_DARK)
         colors = CPlayerUIHelper::GetUIColors(true, ui->IsDrawBackgroundAlpha());
+    else if (color_mode == CPlayerUIBase::RCM_DARK)
+        colors = CPlayerUIHelper::GetUIColors(false, ui->IsDrawBackgroundAlpha());
 
     COLORREF text_color{ colors.color_text };
     if (color_style == Emphasis1)
@@ -24,8 +25,8 @@ void UiElement::Text::Draw()
     else if (color_style == Emphasis2)
         text_color = colors.color_text_2;
 
-    int text_extent{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx };  //ÎÄ±¾µÄÊµ¼Ê¿í¶È
-    if (rect.Width() >= text_extent)    //Èç¹û»æÍ¼ÇøÓòµÄ¿í¶È´óÓÚÎÄ±¾µÄÊµ¼Ê¿í¶È£¬ÔòÎÄ±¾²»ĞèÒª¹ö¶¯ÏÔÊ¾
+    int text_extent{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx };  //æ–‡æœ¬çš„å®é™…å®½åº¦
+    if (rect.Width() >= text_extent)    //å¦‚æœç»˜å›¾åŒºåŸŸçš„å®½åº¦å¤§äºæ–‡æœ¬çš„å®é™…å®½åº¦ï¼Œåˆ™æ–‡æœ¬ä¸éœ€è¦æ»šåŠ¨æ˜¾ç¤º
     {
         ui->m_draw.DrawWindowText(rect, draw_text.c_str(), text_color, align);
     }
@@ -84,7 +85,7 @@ std::wstring UiElement::Text::GetText() const
         break;
     case UiElement::Text::ArtistAlbum:
     {
-        //ÓÅÏÈÊ¹ÓÃ³ªÆ¬¼¯ÒÕÊõ¼Ò£¬Èç¹ûÎª¿Õ£¬ÔòÊ¹ÓÃÒÕÊõ¼Ò
+        //ä¼˜å…ˆä½¿ç”¨å”±ç‰‡é›†è‰ºæœ¯å®¶ï¼Œå¦‚æœä¸ºç©ºï¼Œåˆ™ä½¿ç”¨è‰ºæœ¯å®¶
         std::wstring artist_display{ CPlayer::GetInstance().GetSafeCurrentSongInfo().album_artist };
         if (artist_display.empty())
             artist_display = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetArtist();
@@ -115,7 +116,7 @@ std::wstring UiElement::Text::GetText() const
         break;
     }
 
-    //Ìæ»»×Ö·û´®µÄ±äÁ¿
+    //æ›¿æ¢å­—ç¬¦ä¸²çš„å˜é‡
     CPlayerFormulaHelper::ReplaceStringFormula(draw_text);
 
     return draw_text;
