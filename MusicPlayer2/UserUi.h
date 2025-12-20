@@ -34,12 +34,14 @@ public:
     template<class T>
     void ClearSearchResult();
 
-    void SaveStatackElementIndex(CArchive& archive);
-    void LoadStatackElementIndex(CArchive& archive);
+    void SaveUiData(CArchive& archive);
+    void LoadUiData(CArchive& archive, int version);
 
     //查找一个UiElement中指定类型的元素
     template<class T>
     T* FindElement(const std::string& id = std::string());
+    template<class T>
+    T* FindElementInAllUi(const std::string& id = std::string());
 
     //遍历所有指定类型的元素
     //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点
@@ -144,6 +146,26 @@ inline T* CUserUi::FindElement(const std::string& id)
         }
         return false;
     });
+
+    return element_found;
+}
+
+template<class T>
+inline T* CUserUi::FindElementInAllUi(const std::string& id)
+{
+    T* element_found{};
+    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool {
+        T* ele = dynamic_cast<T*>(element);
+        if (ele != nullptr)
+        {
+            if (id.empty() || id == element->id)
+            {
+                element_found = ele;
+                return true;
+            }
+        }
+        return false;
+        });
 
     return element_found;
 }

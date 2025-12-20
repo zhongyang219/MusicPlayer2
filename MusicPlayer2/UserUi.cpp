@@ -208,38 +208,74 @@ void CUserUi::PlaylistSelectRevert()
     });
 }
 
-void CUserUi::SaveStatackElementIndex(CArchive& archive)
+void CUserUi::SaveUiData(CArchive& archive)
 {
-    //遍历StackElement元素
-    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool
+    //使用了“显示/隐藏元素”属性的按钮指定的元素的显示/隐藏状态
+    std::vector<std::pair<std::string, bool>> elements_show_hide_status;
+    //保存StackElement元素
+    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool {
+        UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
+        if (stack_element != nullptr)
         {
-            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
-            if (stack_element != nullptr)
-            {
-                if (!stack_element->hover_to_switch && !stack_element->size_change_to_switch)
-                    archive << static_cast<BYTE>(stack_element->GetCurIndex());
-            }
-            return false;
-        });
-}
-
-void CUserUi::LoadStatackElementIndex(CArchive& archive)
-{
-    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool
+            if (!stack_element->hover_to_switch && !stack_element->size_change_to_switch)
+                archive << static_cast<BYTE>(stack_element->GetCurIndex());
+        }
+        UiElement::Button* button_element{ dynamic_cast<UiElement::Button*>(element) };
+        if (button_element != nullptr)
         {
-            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
-            if (stack_element != nullptr)
+            if (button_element->key == BtnKey::BTN_SHOW_HIDE_ELEMENT)
             {
-                if (!stack_element->hover_to_switch && !stack_element->size_change_to_switch)
+                UiElement::Element* element = FindElementInAllUi<UiElement::Element>(button_element->related_element_id);
+                if (element != nullptr)
                 {
-                    BYTE stack_element_index;
-                    archive >> stack_element_index;
-                    stack_element->SetCurrentElement(stack_element_index);
+                    bool element_show = element->IsVisible();
+                    elements_show_hide_status.push_back(std::make_pair(button_element->related_element_id, element_show));
                 }
             }
-            return false;
-        });
+        }
+        return false;
+    });
 
+    archive << static_cast<int>(elements_show_hide_status.size());
+    for (const auto& element_show_hide : elements_show_hide_status)
+    {
+        archive << CString(CCommon::StrToUnicode(element_show_hide.first, CodeType::UTF8_NO_BOM).c_str());
+        archive << (BYTE)element_show_hide.second;
+    }
+}
+
+void CUserUi::LoadUiData(CArchive& archive, int version)
+{
+    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool {
+        UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
+        if (stack_element != nullptr)
+        {
+            if (!stack_element->hover_to_switch && !stack_element->size_change_to_switch)
+            {
+                BYTE stack_element_index;
+                archive >> stack_element_index;
+                stack_element->SetCurrentElement(stack_element_index);
+            }
+        }
+        return false;
+    });
+    //载入使用了“显示/隐藏元素”属性的按钮指定的元素的显示/隐藏状态
+    if (version >= 1)
+    {
+        int element_size{};
+        archive >> element_size;
+        for (int i = 0; i < element_size; i++)
+        {
+            CString str_id;
+            archive >> str_id;
+            std::string str_element_id = CCommon::UnicodeToStr(str_id.GetString(), CodeType::UTF8_NO_BOM);
+            BYTE show;
+            archive >> show;
+            UiElement::Element* element = FindElementInAllUi<UiElement::Element>(str_element_id);
+            if (element != nullptr)
+                element->SetVisible(show);
+        }
+    }
 }
 
 
@@ -672,7 +708,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 button->IconTypeFromString(str_icon);
                 button->panel_file_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_file_name"), CodeType::UTF8_NO_BOM);
                 button->panel_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_id"), CodeType::UTF8_NO_BOM);
-                button->related_element_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "related_element_id"), CodeType::UTF8_NO_BOM);
+                button->related_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "related_element_id");
             }
         }
         else if (item_name == "rectangle")

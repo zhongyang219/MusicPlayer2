@@ -309,7 +309,7 @@ bool UiElement::Button::LButtonUp(CPoint point)
             CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
             if (user_ui != nullptr)
             {
-                Element* element = user_ui->FindElement<Element>(CCommon::UnicodeToStr(related_element_id, CodeType::UTF8_NO_BOM));
+                Element* element = user_ui->FindElement<Element>(related_element_id);
                 if (element != nullptr)
                 {
                     element->SetVisible(!element->IsVisible());

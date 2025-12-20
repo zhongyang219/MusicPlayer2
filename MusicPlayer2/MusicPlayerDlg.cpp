@@ -3890,13 +3890,13 @@ void CMusicPlayerDlg::SaveUiData()
     }
     CArchive ar(&file, CArchive::store);
     /// 版本号
-    ar << (uint16_t)1;
+    ar << (uint16_t)2;
     for (const auto& ui : m_ui_list)
     {
         CUserUi* user_ui{ dynamic_cast<CUserUi*>(ui.get()) };
         if (user_ui != nullptr)
         {
-            user_ui->SaveStatackElementIndex(ar);
+            user_ui->SaveUiData(ar);
         }
     }
     ar.Close();
@@ -3919,7 +3919,7 @@ void CMusicPlayerDlg::LoadUiData()
             CUserUi* user_ui{ dynamic_cast<CUserUi*>(ui.get()) };
             if (user_ui != nullptr)
             {
-                user_ui->LoadStatackElementIndex(ar);
+                user_ui->LoadUiData(ar, version);
             }
         }
     }
