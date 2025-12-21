@@ -3375,6 +3375,8 @@ void CPlayerUIBase::AddToolTips()
     AddMouseToolTip(BTN_SHOW_PLAY_QUEUE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_QUEUE").c_str());
     //显示面板
     AddMouseToolTip(BTN_SHOW_PANEL, L"");
+    //关闭面板
+    AddMouseToolTip(BTN_CLOSE_PANEL, theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE").c_str());
     //界面切换器
     AddMouseToolTip(UiElement::TooltipIndex::ELEMENT_SWITCHER, L"");
     //显示/隐藏元素
