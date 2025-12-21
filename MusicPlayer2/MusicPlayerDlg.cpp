@@ -32,6 +32,7 @@
 #include "UiMediaLibItemMgr.h"
 #include "CRecentList.h"
 #include "UIElement/PlaylistElement.h"
+#include "ClosseMainWindowInqueryDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -468,6 +469,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"other", L"light_mode_default_transparency", theApp.m_nc_setting_data.light_mode_default_transparency);
     ini.WriteInt(L"other", L"dark_mode_default_transparency", theApp.m_nc_setting_data.dark_mode_default_transparency);
     ini.WriteInt(L"other", L"debug_log", theApp.m_nc_setting_data.debug_log);
+    ini.WriteBool(L"other", L"show_close_main_window_inquery", theApp.m_nc_setting_data.show_close_main_window_inquery);
 
     ini.WriteStringList(L"config", L"default_file_type", theApp.m_nc_setting_data.default_file_type);
     ini.WriteStringList(L"config", L"user_defined_type_ffmpeg", theApp.m_nc_setting_data.user_defined_type_ffmpeg);
@@ -674,6 +676,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_nc_setting_data.light_mode_default_transparency = ini.GetInt(L"other", L"light_mode_default_transparency", 80);
     theApp.m_nc_setting_data.dark_mode_default_transparency = ini.GetInt(L"other", L"dark_mode_default_transparency", 40);
     theApp.m_nc_setting_data.debug_log = ini.GetInt(L"other", L"debug_log", NonCategorizedSettingData::LT_ERROR);
+    theApp.m_nc_setting_data.show_close_main_window_inquery = ini.GetBool(L"other", L"show_close_main_window_inquery", true);
 
     ini.GetStringList(L"config", L"default_file_type", theApp.m_nc_setting_data.default_file_type, vector<wstring>{L"mp3", L"wma", L"wav", L"flac", L"ogg", L"oga", L"m4a", L"mp4", L"cue", L"mp2", L"mp1", L"aif", L"aiff", L"asf"});
     ini.GetStringList(L"config", L"user_defined_type_ffmpeg", theApp.m_nc_setting_data.user_defined_type_ffmpeg, vector<wstring>{});
@@ -4994,19 +4997,29 @@ void CMusicPlayerDlg::OnClose()
 
 void CMusicPlayerDlg::OnCancel()
 {
-    // TODO: 在此添加专用代码和/或调用基类
-    if (theApp.m_general_setting_data.minimize_to_notify_icon)
+    bool close_window = true;
+    if (theApp.m_nc_setting_data.show_close_main_window_inquery)
     {
-        ShowWindow(SW_HIDE);
-        if (IsFloatPlaylistExist())
-        {
-            m_pFloatPlaylistDlg->ShowWindow(SW_HIDE);
-        }
+        CClosseMainWindowInqueryDlg dlg;
+        if (dlg.DoModal() != IDOK)
+            close_window = false;
     }
-    else
+
+    if (close_window)
     {
-        CMainDialogBase::OnCancel();
-        CBaseDialog::CloseAllWindow();
+        if (theApp.m_general_setting_data.minimize_to_notify_icon)
+        {
+            ShowWindow(SW_HIDE);
+            if (IsFloatPlaylistExist())
+            {
+                m_pFloatPlaylistDlg->ShowWindow(SW_HIDE);
+            }
+        }
+        else
+        {
+            CMainDialogBase::OnCancel();
+            CBaseDialog::CloseAllWindow();
+        }
     }
 }
 

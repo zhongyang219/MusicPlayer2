@@ -413,6 +413,7 @@ struct NonCategorizedSettingData
 
     int max_album_cover_size{ 800 };
     bool show_debug_info{ false };
+    bool show_close_main_window_inquery{ true };    //是否显示关闭主窗口时的提示信息
 
     int light_mode_default_transparency{ 80 };
     int dark_mode_default_transparency{ 40 };

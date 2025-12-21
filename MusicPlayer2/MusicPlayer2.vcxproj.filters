@@ -426,6 +426,9 @@
     <Filter Include="功能逻辑类\PlayerFormulaHelper">
       <UniqueIdentifier>{e142b7dc-494a-46c1-acdd-dbf7b3fcff6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\ClosseMainWindowInqueryDlg">
+      <UniqueIdentifier>{23ec0931-552a-49c6-8ac2-fc2051dfdc73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1086,6 +1089,9 @@
     <ClInclude Include="UIElement\TracksList.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="ClosseMainWindowInqueryDlg.h">
+      <Filter>对话框类\ClosseMainWindowInqueryDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1705,6 +1711,9 @@
     </ClCompile>
     <ClCompile Include="UIElement\TracksList.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="ClosseMainWindowInqueryDlg.cpp">
+      <Filter>对话框类\ClosseMainWindowInqueryDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

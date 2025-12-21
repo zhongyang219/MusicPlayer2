@@ -268,6 +268,7 @@
 #define IDR_PLAY_QUEUE_PANEL            637
 #define IDR_TEXT2                       638
 #define IDR_CLASSICAL_CONTROL_BAR       638
+#define IDD_CLOSE_WINDOW_INQUERY_DIALOG 639
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -775,8 +776,9 @@
 #define IDC_TXT_OPEN_SINGLE_FILE_BEHAVIR_STATIC 1378
 #define IDC_PLAY_IN_DEFAULT_PLAYLIST_RADIO 1379
 #define IDC_PLAY_IN_FOLDER_MODE_RADIO   1380
-#define IDC_CHECK1                      1381
 #define IDC_DISABLE_SCREEN_SLEEP_CHECK  1381
+#define IDC_NO_LONGER_ASK_CHECK         1382
+#define IDC_CLOSE_MAIN_WINDOW_INQUERY_INFO_STATIC 1383
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -1026,9 +1028,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        639
+#define _APS_NEXT_RESOURCE_VALUE        640
 #define _APS_NEXT_COMMAND_VALUE         33512
-#define _APS_NEXT_CONTROL_VALUE         1382
+#define _APS_NEXT_CONTROL_VALUE         1384
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

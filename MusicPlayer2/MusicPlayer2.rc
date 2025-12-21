@@ -81,6 +81,20 @@ BEGIN
     PUSHBUTTON      "Close",IDCANCEL,131,130,50,14
 END
 
+IDD_CLOSE_WINDOW_INQUERY_DIALOG DIALOGEX 0, 0, 195, 79
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Close Main Window"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,84,58,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,138,58,50,14
+    LTEXT           "You have clicked the close button, you want to:\r\n(This option can be changed in ""Options""-""General Settings"")",IDC_CLOSE_MAIN_WINDOW_INQUERY_INFO_STATIC,7,7,181,26
+    CONTROL         "Minimize to notification area",IDC_MINIMIZE_TO_NOTIFY_RADIO,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP,15,34,173,8
+    CONTROL         "Exit the program",IDC_EXIT_PROGRAM_RADIO,"Button",BS_AUTORADIOBUTTON,15,46,173,8
+    CONTROL         "No longer ask",IDC_NO_LONGER_ASK_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,72,10
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -101,6 +115,15 @@ BEGIN
         TOPMARGIN, 4
         BOTTOMMARGIN, 144
     END
+
+    IDD_CLOSE_WINDOW_INQUERY_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 188
+        VERTGUIDE, 15
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 72
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -119,6 +142,17 @@ IDD_COVER_PREVIEW_DIALOG AFX_DIALOG_LAYOUT
 BEGIN
     0,
     100, 100, 0, 0
+END
+
+IDD_CLOSE_WINDOW_INQUERY_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    100, 100, 0, 0,
+    100, 100, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0,
+    0, 100, 100, 0
 END
 
 

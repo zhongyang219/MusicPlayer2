@@ -6,6 +6,7 @@
 #include "UIElement/StackElement.h"
 #include "UIElement/ListElement.h"
 #include "UIElement/SearchBox.h"
+#include "ClosseMainWindowInqueryDlg.h"
 
 CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
     : CUserUi(pMainWnd, xml_path)
@@ -182,11 +183,23 @@ bool CMiniModeUserUi::ButtonClicked(BtnKey btn_type, const UIButton& btn)
         m_pMainWnd->SendMessage(WM_COMMAND, IDOK);
         return true;
     case BTN_CLOSE:
-        if (theApp.m_general_setting_data.minimize_to_notify_icon)
-            m_pMainWnd->ShowWindow(HIDE_WINDOW);
-        else
-            m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
+    {
+        bool close_window = true;
+        if (theApp.m_nc_setting_data.show_close_main_window_inquery)
+        {
+            CClosseMainWindowInqueryDlg dlg;
+            if (dlg.DoModal() != IDOK)
+                close_window = false;
+        }
+        if (close_window)
+        {
+            if (theApp.m_general_setting_data.minimize_to_notify_icon)
+                m_pMainWnd->ShowWindow(HIDE_WINDOW);
+            else
+                m_pMainWnd->SendMessage(WM_COMMAND, ID_MINI_MODE_EXIT);
+        }
         return true;
+    }
     case BTN_SHOW_PLAYLIST:
         m_pMainWnd->SendMessage(WM_COMMAND, ID_SHOW_PLAY_LIST);
         return true;
