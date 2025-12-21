@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "CMainDialogBase.h"
-#include "Common.h"
 #include "MusicPlayer2.h"
+#include "Player.h"
 
 IMPLEMENT_DYNAMIC(CMainDialogBase, CDialog)
 
@@ -24,7 +24,7 @@ void CMainDialogBase::SetFullScreen(bool full_screen)
 		HMONITOR hMonitor = MonitorFromWindow(theApp.m_pMainWnd->GetSafeHwnd(), MONITOR_DEFAULTTOPRIMARY);
 
 		// 获取监视器信息
-		MONITORINFO lpmi;
+		MONITORINFO lpmi{};
 		lpmi.cbSize = sizeof(lpmi);
 		GetMonitorInfo(hMonitor, &lpmi);
 
@@ -34,19 +34,19 @@ void CMainDialogBase::SetFullScreen(bool full_screen)
 		CRect monitor{ lpmi.rcMonitor };
 		POINT offset{ lpmi.rcWork.left - lpmi.rcMonitor.left, lpmi.rcWork.top - lpmi.rcMonitor.top };
 		// 设置窗口对象参数，为全屏做好准备并进入全屏状态
-		WINDOWPLACEMENT struWndpl;
+		WINDOWPLACEMENT struWndpl{};
 		struWndpl.length = sizeof(WINDOWPLACEMENT);
 		struWndpl.flags = 0;
 		struWndpl.showCmd = SW_SHOWNORMAL;
 		struWndpl.rcNormalPosition = monitor - offset;
-		SetWindowPlacement(&struWndpl);//该函数设置指定窗口的显示状态和显示大小位置等，是我们该程序最为重要的函数
-		SetThreadExecutionState(ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED);//禁用屏保
+		SetWindowPlacement(&struWndpl);//该函数设置指定窗口的显示状态和显示大小位置等
 	}
 	else
 	{
 		SetWindowPlacement(&m_struOldWndpl);
-		SetThreadExecutionState(ES_CONTINUOUS);//开启屏保
 	}
+
+	SetDisableScreenSleep();
 }
 
 void CMainDialogBase::ShowTitlebar(bool show)
@@ -71,6 +71,22 @@ void CMainDialogBase::ShowSizebox(bool show)
     {
         ModifyStyle(WS_SIZEBOX, 0, SWP_FRAMECHANGED);        // 去掉大小边框
     }
+}
+
+void CMainDialogBase::SetDisableScreenSleep()
+{
+	if (m_bFullScreen && theApp.m_play_setting_data.disable_screen_sleep_when_fullscreen_play && CPlayer::GetInstance().IsPlaying())
+	{
+		//禁用屏幕休眠
+		SetThreadExecutionState(ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED);
+		m_disable_screen_sleep = true;
+	}
+	else
+	{
+		//恢复屏幕休眠
+		if (m_disable_screen_sleep)
+			SetThreadExecutionState(ES_CONTINUOUS);
+	}
 }
 
 BEGIN_MESSAGE_MAP(CMainDialogBase, CDialog)

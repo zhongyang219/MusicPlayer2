@@ -495,6 +495,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"fade_time", theApp.m_play_setting_data.fade_time);
     ini.WriteBool(L"config", L"use_media_trans_control", theApp.m_play_setting_data.use_media_trans_control);
     ini.WriteBool(L"config", L"remember_last_position", theApp.m_play_setting_data.remember_last_position);
+    ini.WriteBool(L"config", L"disable_screen_sleep_when_fullscreen_play", theApp.m_play_setting_data.disable_screen_sleep_when_fullscreen_play);
     ini.WriteBool(L"config", L"open_single_file_in_folder_mode", theApp.m_play_setting_data.open_single_file_in_folder_mode);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
     ini.WriteBool(L"config", L"use_mci", theApp.m_play_setting_data.use_mci);
@@ -709,6 +710,7 @@ void CMusicPlayerDlg::LoadConfig()
     else
         theApp.m_play_setting_data.use_media_trans_control = false;
     theApp.m_play_setting_data.remember_last_position = ini.GetBool(L"config", L"remember_last_position", true);
+    theApp.m_play_setting_data.disable_screen_sleep_when_fullscreen_play = ini.GetBool(L"config", L"disable_screen_sleep_when_fullscreen_play", false);
     theApp.m_play_setting_data.open_single_file_in_folder_mode = ini.GetBool(L"config", L"open_single_file_in_folder_mode", false);
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
     theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
@@ -1133,6 +1135,8 @@ void CMusicPlayerDlg::UpdatePlayPauseButton()
         m_miniModeDlg.UpdatePlayPauseButton();
 
     m_pUI->UpdatePlayPauseButtonTip();
+
+    SetDisableScreenSleep();
 }
 
 void CMusicPlayerDlg::TaskBarSetClipArea(CRect rect)
@@ -1221,6 +1225,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     bool SMTC_enable_changed{ theApp.m_play_setting_data.use_media_trans_control != optionDlg.m_tab4_dlg.m_data.use_media_trans_control };
     bool playlist_btn_changed{ theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist != optionDlg.m_media_lib_dlg.m_data.playlist_btn_for_float_playlist };
     bool lyric_download_service_changed{ theApp.m_general_setting_data.lyric_download_service != optionDlg.m_tab3_dlg.m_data.lyric_download_service };
+    bool disable_screen_sleep_changed{ theApp.m_play_setting_data.disable_screen_sleep_when_fullscreen_play != optionDlg.m_tab4_dlg.m_data.disable_screen_sleep_when_fullscreen_play };
 
     theApp.m_lyric_setting_data = optionDlg.m_tab1_dlg.m_data;
     theApp.m_app_setting_data = optionDlg.m_tab2_dlg.m_data;
@@ -1371,6 +1376,11 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     if (lyric_download_service_changed)
     {
         theApp.InitLyricDownload();
+    }
+
+    if (disable_screen_sleep_changed)
+    {
+        SetDisableScreenSleep();
     }
 
     //根据当前选择的深色/浅色模式，将当前“背景不透明度”设置更新到对应的深色/浅色“背景不透明度”设置中

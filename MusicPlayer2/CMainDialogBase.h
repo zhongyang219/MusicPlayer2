@@ -13,9 +13,12 @@ protected:
 	void ShowTitlebar(bool show);				//是否显示标题栏
 	void ShowSizebox(bool show);				//是否显示大小边框
 
+	void SetDisableScreenSleep();				//设置全屏时禁用屏幕休眠
+
 private:
 	bool m_bFullScreen{ false };
 	WINDOWPLACEMENT m_struOldWndpl{};           // 结构中包含了有关窗口在屏幕上位置的信息
+	bool m_disable_screen_sleep{};				//是否禁用了屏幕休眠
 
 public:
 	DECLARE_MESSAGE_MAP()

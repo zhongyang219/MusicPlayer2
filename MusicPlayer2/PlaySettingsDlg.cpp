@@ -99,6 +99,7 @@ void CPlaySettingsDlg::GetDataFromUi()
     m_data.continue_when_switch_playlist = (IsDlgButtonChecked(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK) != FALSE);
     m_data.use_media_trans_control = (IsDlgButtonChecked(IDC_USE_MEDIA_TRANS_CONTORL_CHECK) != FALSE);
     m_data.remember_last_position = (IsDlgButtonChecked(IDC_REMEMBER_LAST_POSITION_CHECK) != FALSE);
+    m_data.disable_screen_sleep_when_fullscreen_play = (IsDlgButtonChecked(IDC_DISABLE_SCREEN_SLEEP_CHECK) != FALSE);
     m_data.open_single_file_in_folder_mode = (IsDlgButtonChecked(IDC_PLAY_IN_FOLDER_MODE_RADIO) != FALSE);
 
     m_data.use_mci = (IsDlgButtonChecked(IDC_MCI_RADIO) != FALSE);
@@ -140,6 +141,7 @@ bool CPlaySettingsDlg::InitializeControls()
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_PLAY_CORE");
 
     SetDlgControlText(IDC_REMEMBER_LAST_POSITION_CHECK, L"TXT_OPT_REMEMBER_LAST_POSITION");
+    SetDlgControlText(IDC_DISABLE_SCREEN_SLEEP_CHECK, L"TXT_OPT_DISABLE_SCREEN_SLEEP_CHECK");
     SetDlgControlText(IDC_TXT_OPEN_SINGLE_FILE_BEHAVIR_STATIC, L"TXT_OPT_OPEN_SINGLE_FILE_BEHAVIR_STATIC");
     SetDlgControlText(IDC_PLAY_IN_DEFAULT_PLAYLIST_RADIO, L"TXT_OPT_PLAY_IN_DEFAULT_PLAYLIST_RADIO");
     SetDlgControlText(IDC_PLAY_IN_FOLDER_MODE_RADIO, L"TXT_OPT_PLAY_IN_FOLDER_MODE_RADIO");
@@ -263,6 +265,7 @@ BOOL CPlaySettingsDlg::OnInitDialog()
     CheckDlgButton(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, m_data.continue_when_switch_playlist);
     CheckDlgButton(IDC_USE_MEDIA_TRANS_CONTORL_CHECK, m_data.use_media_trans_control);
     CheckDlgButton(IDC_REMEMBER_LAST_POSITION_CHECK, m_data.remember_last_position);
+    CheckDlgButton(IDC_DISABLE_SCREEN_SLEEP_CHECK, m_data.disable_screen_sleep_when_fullscreen_play);
     if (m_data.open_single_file_in_folder_mode)
         CheckDlgButton(IDC_PLAY_IN_FOLDER_MODE_RADIO, true);
     else
