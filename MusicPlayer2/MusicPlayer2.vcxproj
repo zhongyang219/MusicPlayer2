@@ -322,6 +322,7 @@
     <ClInclude Include="UIElement\PlaylistElement.h" />
     <ClInclude Include="UIElement\PlaylistIndicator.h" />
     <ClInclude Include="UIElement\ProgressBar.h" />
+    <ClInclude Include="UIElement\RatingElement.h" />
     <ClInclude Include="UIElement\RecentPlayedList.h" />
     <ClInclude Include="UIElement\Rectangle.h" />
     <ClInclude Include="UIElement\SearchBox.h" />
@@ -538,6 +539,7 @@
     <ClCompile Include="UIElement\PlaylistElement.cpp" />
     <ClCompile Include="UIElement\PlaylistIndicator.cpp" />
     <ClCompile Include="UIElement\ProgressBar.cpp" />
+    <ClCompile Include="UIElement\RatingElement.cpp" />
     <ClCompile Include="UIElement\RecentPlayedList.cpp" />
     <ClCompile Include="UIElement\Rectangle.cpp" />
     <ClCompile Include="UIElement\SearchBox.cpp" />
@@ -824,6 +826,7 @@
     <Image Include="res\speed_up_d.ico" />
     <Image Include="res\star.ico" />
     <Image Include="res\star_d.ico" />
+    <Image Include="res\star_select.ico" />
     <Image Include="res\statistics_d.ico" />
     <Image Include="res\stop_dark.ico" />
     <Image Include="res\stop_white.ico" />

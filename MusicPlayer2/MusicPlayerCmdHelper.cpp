@@ -541,6 +541,38 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
     return album_cover_path;
 }
 
+bool CMusicPlayerCmdHelper::SetRating(const SongInfo& song, int rating)
+{
+    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
+    song_info.rating = static_cast<BYTE>(rating);
+    bool succeed{};
+    // cue、osu!、不支持写入的文件分级只保存到媒体库
+    if (CAudioTag::IsFileRatingSupport(CFilePathHelper(song_info.file_path).GetFileExtension()) && !song_info.is_cue && !COSUPlayerHelper::IsOsuFile(song_info.file_path))
+    {
+        CAudioTag audio_tag(song_info);
+        succeed = audio_tag.WriteAudioRating();
+    }
+    else
+    {
+        succeed = true;     //如果文件格式不支持写入分级，也返回true
+    }
+    CSongDataManager::GetInstance().AddItem(song_info);
+    return succeed;
+}
+
+int CMusicPlayerCmdHelper::GetRating(const SongInfo& song)
+{
+    SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
+    // 对非cue且支持读取分级的本地音频获取分级
+    if (!song_info.is_cue && COSUPlayerHelper::IsOsuFile(song_info.file_path) && song_info.rating > 5 && CAudioTag::IsFileRatingSupport(CFilePathHelper(song_info.file_path).GetFileExtension()))      //分级大于5，说明没有获取过分级，在这里重新获取
+    {
+        CAudioTag audio_tag(song_info);
+        audio_tag.GetAudioRating();
+        CSongDataManager::GetInstance().AddItem(song_info);
+    }
+    return song_info.rating;
+}
+
 bool CMusicPlayerCmdHelper::OnRating(const SongInfo& song, DWORD command)
 {
     if ((command >= ID_RATING_1 && command <= ID_RATING_5) || command == ID_RATING_NONE)     //如果命令是歌曲分级（应确保分级命令的ID是连续的）
@@ -548,21 +580,7 @@ bool CMusicPlayerCmdHelper::OnRating(const SongInfo& song, DWORD command)
         int rating = 0;
         if (command >= ID_RATING_1 && command <= ID_RATING_5)
             rating = command - ID_RATING_1 + 1;
-        SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(song) };
-        song_info.rating = static_cast<BYTE>(rating);
-        bool succeed{};
-        // cue、osu!、不支持写入的文件分级只保存到媒体库
-        if (CAudioTag::IsFileRatingSupport(CFilePathHelper(song_info.file_path).GetFileExtension()) && !song_info.is_cue && !COSUPlayerHelper::IsOsuFile(song_info.file_path))
-        {
-            CAudioTag audio_tag(song_info);
-            succeed = audio_tag.WriteAudioRating();
-        }
-        else
-        {
-            succeed = true;     //如果文件格式不支持写入分级，也返回true
-        }
-        CSongDataManager::GetInstance().AddItem(song_info);
-        return succeed;
+        return SetRating(song, rating);
     }
     return true;
 }

@@ -1092,6 +1092,9 @@
     <ClInclude Include="ClosseMainWindowInqueryDlg.h">
       <Filter>对话框类\ClosseMainWindowInqueryDlg</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\RatingElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1715,6 +1718,9 @@
     <ClCompile Include="ClosseMainWindowInqueryDlg.cpp">
       <Filter>对话框类\ClosseMainWindowInqueryDlg</Filter>
     </ClCompile>
+    <ClCompile Include="UIElement\RatingElement.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">
@@ -2337,11 +2343,14 @@
     <Image Include="res\tree_branch_expanded_d.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
-    <Image Include="res\drop_down.ico">
-      <Filter>资源文件</Filter>
-    </Image>
     <Image Include="res\drop_down_d.ico">
-      <Filter>资源文件</Filter>
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\drop_down.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\star_select.ico">
+      <Filter>资源文件\Icons</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

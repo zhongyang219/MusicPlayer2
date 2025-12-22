@@ -83,6 +83,7 @@ public:
         IT_Help,                    // 帮助
         IT_Fix,                     // 扳手/修复
         IT_Star,                    // 星星/分级
+        IT_StarSelected,            // 星星/分级（点亮的星星）
         IT_Artist,                  // 艺术家
         IT_Album,                   // 专辑
         IT_Genre,                   // 流派

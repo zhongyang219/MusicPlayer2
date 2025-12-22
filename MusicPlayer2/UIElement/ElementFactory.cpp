@@ -76,6 +76,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::Element>();
     else if (name == "panel")
         element = std::make_shared<UiElement::Panel>();
+    else if (name == "rating")
+        element = std::make_shared<UiElement::RatingElement>();
 
     if (element != nullptr)
         element->SetUi(ui);

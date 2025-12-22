@@ -34,9 +34,15 @@ public:
     //查找匹配的外部专辑封面
     std::wstring SearchAlbumCover(const SongInfo& song);
 
-    //响应歌曲分级命令
+    //设置歌曲分级（1~5）
     //（分级数据会写入到音频文件和song_data.dat文件中。如果文件写入失败，则返回false，否则返回true。
     //但是如果此文件格式不支持将分级，则只会写入到song_data.dat文件中，函数仍然返回true）
+    bool SetRating(const SongInfo& song, int rating);
+
+    //获取歌曲分级（1~5）
+    int GetRating(const SongInfo& song);
+
+    //响应歌曲分级命令
     bool OnRating(const SongInfo& song, DWORD command);
 
     //更新媒体库，返回新增的歌曲数。（此函数执行时间可能会较长，应该在后台线程中执行）

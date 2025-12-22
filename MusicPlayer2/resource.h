@@ -269,6 +269,8 @@
 #define IDR_TEXT2                       638
 #define IDR_CLASSICAL_CONTROL_BAR       638
 #define IDD_CLOSE_WINDOW_INQUERY_DIALOG 639
+#define IDI_ICON1                       640
+#define IDI_STAR_SELECTED               640
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -1028,7 +1030,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        640
+#define _APS_NEXT_RESOURCE_VALUE        641
 #define _APS_NEXT_COMMAND_VALUE         33512
 #define _APS_NEXT_CONTROL_VALUE         1384
 #define _APS_NEXT_SYMED_VALUE           101

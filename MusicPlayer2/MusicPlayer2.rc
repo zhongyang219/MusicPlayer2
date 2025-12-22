@@ -3055,6 +3055,8 @@ IDI_DROP_DOWN           ICON                    "res\\drop_down.ico"
 
 IDI_DROP_DOWN_D         ICON                    "res\\drop_down_d.ico"
 
+IDI_STAR_SELECTED       ICON                    "res\\star_select.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

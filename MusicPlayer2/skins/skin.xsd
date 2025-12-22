@@ -729,6 +729,7 @@
         <xs:element name="searchBox" type="searchBoxType"></xs:element>
         <xs:element name="elementSwitcher" type="elementSwitcherType"></xs:element>
         <xs:element name="icon" type="iconType"></xs:element>
+        <xs:element name="rating" type="ratingType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -1870,5 +1871,12 @@
         <xs:documentation>导航栏标签的文本。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="ratingType">
+    <xs:annotation>
+      <xs:documentation>歌曲分级（5个五角星）。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

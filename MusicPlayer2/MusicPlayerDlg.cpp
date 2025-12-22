@@ -1483,15 +1483,8 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     }
     if (is_main_pop || single_selected)
     {
-        SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(rating_file_songinfo) };
-        // 对非cue且支持读取分级的本地音频获取分级
-        if (!song_info.is_cue && COSUPlayerHelper::IsOsuFile(song_info.file_path) && song_info.rating > 5 && CAudioTag::IsFileRatingSupport(CFilePathHelper(song_info.file_path).GetFileExtension()))      //分级大于5，说明没有获取过分级，在这里重新获取
-        {
-            CAudioTag audio_tag(song_info);
-            audio_tag.GetAudioRating();
-            CSongDataManager::GetInstance().AddItem(song_info);
-        }
-        rating = song_info.rating;
+        CMusicPlayerCmdHelper helper(this);
+        rating = helper.GetRating(rating_file_songinfo);
 
         //rating_enable = CAudioTag::IsFileRatingSupport(CFilePathHelper(rating_file_path).GetFileExtension());
     }

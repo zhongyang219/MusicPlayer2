@@ -228,6 +228,8 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
         return { IDI_FIX_D, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Star:
         return { IDI_STAR_D, IDI_STAR, NULL, NULL };
+    case IconMgr::IconType::IT_StarSelected:
+        return { IDI_STAR_SELECTED, NULL, NULL, NULL };
     case IconMgr::IconType::IT_Artist:
         return { IDI_ARTIST_D, IDI_ARTIST, NULL, NULL };
     case IconMgr::IconType::IT_Album:

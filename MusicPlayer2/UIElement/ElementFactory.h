@@ -30,6 +30,7 @@
 #include "UIElement/ElementSwitcher.h"
 #include "UIElement/PanelElement.h"
 #include "UIElement/IconElement.h"
+#include "UIElement/RatingElement.h"
 
 namespace UiElement
 {
