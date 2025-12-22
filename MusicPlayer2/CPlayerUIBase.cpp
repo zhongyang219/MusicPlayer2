@@ -2599,7 +2599,10 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                         CRect rect_mini_spectrum{ rect_cur_indicator };
                         rect_mini_spectrum.MoveToX(rect_mini_spectrum.right + DPI(4));
                         rect_mini_spectrum.right = rect_mini_spectrum.left + DPI(24);
-                        DrawMiniSpectrum(rect_mini_spectrum);
+                        if (CPlayer::GetInstance().IsMciCore())
+                            DrawUiIcon(rect_mini_spectrum, IconMgr::IT_NowPlaying);
+                        else
+                            DrawMiniSpectrum(rect_mini_spectrum);
                     }
                 }
 
