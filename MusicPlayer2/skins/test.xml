@@ -2,7 +2,7 @@
       name="test">
   
   <!--歌曲详情面板-->
-  <panel id="song_info_panel" width="450" height="250">
+  <panel id="song_info_panel" width="450" height="270">
     <verticalLayout>
       <rectangle height="24">
         <horizontalLayout>
@@ -16,35 +16,42 @@
           <trackInfo height="24"/>
           <horizontalLayout height="24">
             <icon icon="lyric" width="24"/>
-            <text type="userDefine" text="%(TXT_TITLE): %(Title)" style="scroll"/>
+            <text type="userDefine" width="70" text="%(TXT_TITLE):" color_style="emphasis1"/>
+            <text type="userDefine" text="%(Title)" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout height="24">
             <icon icon="artist" width="24"/>
-            <text type="userDefine" text="%(TXT_ARTIST): %(Artist)" style="scroll"/>
+            <text type="userDefine"  width="70" text="%(TXT_ARTIST):" color_style="emphasis1"/>
+            <text type="userDefine" text="%(Artist)" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout height="24">
             <icon icon="album" width="24"/>
-            <text type="userDefine" text="%(TXT_ALBUM): %(Album)" style="scroll"/>
+            <text type="userDefine"  width="70" text="%(TXT_ALBUM):" color_style="emphasis1"/>
+            <text type="userDefine" text="%(Album)" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout height="24">
             <icon icon="fileRelate" width="24"/>
-            <text type="userDefine" text="%(TXT_FILE_TYPE): %(FileType)" style="scroll"/>
+            <text type="userDefine"  width="70" text="%(TXT_FILE_TYPE):" color_style="emphasis1"/>
+            <text type="userDefine" text="%(FileType)" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout height="24">
             <icon icon="bitrate" width="24"/>
-            <text type="userDefine" text="%(TXT_BITRATE): %(BitRate)kbps" style="scroll"/>
+            <text type="userDefine"  width="70" text="%(TXT_BITRATE):" color_style="emphasis1"/>
+            <text type="userDefine" text="%(BitRate)kbps" style="scroll"/>
           </horizontalLayout>
           <horizontalLayout height="24">
             <icon icon="reverb" width="24"/>
-            <text type="userDefine" text="%(TXT_PROPERTY_DLG_FILE_CHANNELS) %(Channels)" style="scroll"/>
+            <text type="userDefine"  width="70" text="%(TXT_PROPERTY_DLG_FILE_CHANNELS)" color_style="emphasis1"/>
+            <text type="userDefine" text="%(Channels)" style="scroll"/>
           </horizontalLayout>
+          <rating height="24" margin-left="4"/>
         </verticalLayout>
       </horizontalLayout>
     </verticalLayout>
   </panel>
   
   <!--播放队列面板-->
-  <panel id="play_queue_panel" width="300" height="250">
+  <panel id="play_queue_panel" width="300" height="350">
     <verticalLayout>
       <rectangle height="24">
         <horizontalLayout>
@@ -60,10 +67,35 @@
     </verticalLayout>
   </panel>
   
+  <!--最近播放面板-->
+  <panel id="renect_played_panel" width="300" height="350">
+    <verticalLayout>
+      <rectangle height="24">
+        <horizontalLayout>
+          <text type="userDefine" text="%(TXT_RECENT_PLAYED)" margin-left="4"/>
+          <button key="closePanel" width="24"/>
+        </horizontalLayout>
+      </rectangle>
+      <verticalLayout margin="4">
+        <searchBox height="26" margin-bottom="4"/>
+        <recentPlayedList item_height="32"/>
+      </verticalLayout>
+    </verticalLayout>
+  </panel>
+  
+  
   <ui>
     <verticalLayout>
-
-      <stackElement margin-bottom="12" show_indicator="true" indicator_offset="-4">
+      <!--顶部导航栏-->
+      <navigationBar height="30" icon_type="icon_and_text" item_space="4" stack_element_id="main_stack_element">
+        <navigationItem icon="lyric" text="水平标签"/>
+        <navigationItem icon="lyric" text="垂直标签"/>
+        <navigationItem icon="keyBoard" text="文本测试"/>
+        <navigationItem icon="reverb" text="频谱分析/按钮"/>
+        <navigationItem icon="folderExplore" text="文件夹浏览"/>
+        <navigationItem icon="playInPlaylist" text="歌词/播放列表"/>
+      </navigationBar>
+      <stackElement id="main_stack_element" margin-top="4" show_indicator="false">
         <!--第1页-->
         <verticalLayout>
           <!--导航栏-->
@@ -85,6 +117,7 @@
             <navigationItem icon="bitrate" text="%(TXT_BITRATE)"/>
             <navigationItem icon="star" text="%(TXT_RATING)"/>
             <navigationItem icon="folderExplore" text="%(TXT_FOLDER_EXPLORE)"/>
+            <navigationItem icon="mediaLib" text="%(TXT_ALL_TRACKS)"/>
           </navigationBar>
           <stackElement id="stackElement1" margin="8">
             <verticalLayout>
@@ -119,15 +152,20 @@
             <mediaLibItemList type="bitrate"/>
             <mediaLibItemList type="rating"/>
             <medialibFolderExplore/>
+            <verticalLayout>
+              <searchBox height="26" margin-bottom="4"/>
+              <allTracksList/>
+            </verticalLayout>
           </stackElement>
         </verticalLayout>
 
         <!--第2页-->
         <horizontalLayout>
           <!--导航栏。使用item_list属性和navigationItem子节点都可以设置导航的标签按钮。item_list属性指定的标签会显示在前面-->
-          <navigationBar width="120" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="10"
+          <navigationBar width="120" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="9"
                       item_list="now_playing,spectrum,lyrics,play_queue,recently_played,folder,playlist,my_favourite,artist,album,genre,year,file_type,bitrate,rating">
             <navigationItem icon="folderExplore" text="%(TXT_FOLDER_EXPLORE)"/>
+            <navigationItem icon="mediaLib" text="%(TXT_ALL_TRACKS)"/>
           </navigationBar>
           <stackElement margin="8" scroll_to_switch="true">
             <verticalLayout>
@@ -158,6 +196,10 @@
             <mediaLibItemList type="bitrate"/>
             <mediaLibItemList type="rating"/>
             <medialibFolderExplore/>
+            <verticalLayout>
+              <searchBox height="26" margin-bottom="4"/>
+              <allTracksList/>
+            </verticalLayout>
           </stackElement>
 
         </horizontalLayout>
@@ -261,13 +303,20 @@
             <icon icon="appMonochrome" width="28" height="28" margin="2" />
             <button key="showPanel" panel_id="song_info_panel" icon="info" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PROPERTY)"/>
             <button key="showPanel" panel_id="play_queue_panel" icon="playInPlaylist" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PLAY_QUEUE)"/>
+            <button key="showPanel" panel_id="renect_played_panel" icon="history" width="28" height="28" margin="2" text="%(TXT_RECENT_PLAYED)"/>
             <button key="showHideElement" related_element_id="page_6_playlist" icon="playlist" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PLAYLIST_SHOW_HIDE)"/>
             <rating width="92" height="28" margin="2"/>
+            <text type="format" margin-top="6"/>
             <placeHolder/>
           </horizontalLayout>
+          <trackInfo height="28" margin-left="8"/>
           <horizontalLayout margin="8">
             <lyrics margin-right="8"/>
-            <playlist id="page_6_playlist" margin-left="8"/>
+            <verticalLayout id="page_6_playlist" margin-left="8">
+              <playlistIndicator height="26" margin-bottom="4"/>
+              <searchBox height="26" margin-bottom="4"/>
+              <playlist/>
+            </verticalLayout>
           </horizontalLayout>
         </verticalLayout>
         
