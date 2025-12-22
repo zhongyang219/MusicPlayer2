@@ -211,12 +211,6 @@ void CPlayerUIBase::DrawInfo(bool reset)
     }
 }
 
-void CPlayerUIBase::ClearInfo()
-{
-    PreDrawInfo();
-    m_pDC->FillSolidRect(m_draw_rect, CONSTVAL::BACKGROUND_COLOR);
-}
-
 bool CPlayerUIBase::LButtonDown(CPoint point)
 {
     for (auto& btn : m_buttons)

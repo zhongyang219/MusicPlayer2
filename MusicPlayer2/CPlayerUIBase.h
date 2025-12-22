@@ -101,7 +101,6 @@ public:
 public:
     void Init(CDC* pDC) override;
     virtual void DrawInfo(bool reset = false) override final;
-    virtual void ClearInfo() override;
 
     // IMouseEvent
     virtual bool LButtonDown(CPoint point) override;

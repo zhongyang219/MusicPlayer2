@@ -1810,7 +1810,6 @@ void CMusicPlayerDlg::HideFloatPlaylist()
 
 void CMusicPlayerDlg::ShowHidePlaylist()
 {
-    m_pUI->ClearInfo();
     theApp.m_ui_data.show_playlist = !theApp.m_ui_data.show_playlist;
 
     if (theApp.m_ui_data.show_playlist)
@@ -4167,15 +4166,20 @@ HBRUSH CMusicPlayerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
     HBRUSH hbr = CMainDialogBase::OnCtlColor(pDC, pWnd, nCtlColor);
 
-    // TODO:  在此更改 DC 的任何特性
+    static HBRUSH hBackBrush{};
+    if (hBackBrush == NULL)
+        hBackBrush = CreateSolidBrush(CONSTVAL::BACKGROUND_COLOR);
 
-    // TODO:  如果默认的不是所需画笔，则返回另一个画笔
-    if (pWnd == this || pWnd == &m_ui_static_ctrl /*|| pWnd == &m_path_static*/)
+    static HBRUSH hDarkBackBrush{};
+    if (hDarkBackBrush == NULL)
+        hDarkBackBrush = CreateSolidBrush(GRAY(48));
+
+    if (pWnd == this /*|| pWnd == &m_path_static*/)
     {
-        static HBRUSH hBackBrush{};
-        if (hBackBrush == NULL)
-            hBackBrush = CreateSolidBrush(CONSTVAL::BACKGROUND_COLOR);
-        return hBackBrush;
+        if (theApp.m_app_setting_data.dark_mode && !theApp.m_ui_data.show_playlist)
+            return hDarkBackBrush;
+        else
+            return hBackBrush;
     }
 
     return hbr;
