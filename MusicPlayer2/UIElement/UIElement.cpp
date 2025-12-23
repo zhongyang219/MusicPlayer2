@@ -2,6 +2,7 @@
 #include "UIElement.h"
 #include "Layout.h"
 #include "StackElement.h"
+#include "UserUi.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,12 +120,12 @@ void UiElement::Element::ClearRect()
 
 UiElement::Element* UiElement::Element::RootElement()
 {
-    Element* ele{ this };
-    while (ele != nullptr && ele->pParent != nullptr)
+    CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
+    if (user_ui != nullptr)
     {
-        ele = ele->pParent;
+        return user_ui->GetCurrentTypeUi().get();
     }
-    return ele;
+    return nullptr;
 }
 
 CRect UiElement::Element::ParentRect() const
@@ -142,7 +143,10 @@ CRect UiElement::Element::ParentRect() const
 
 void UiElement::Element::CalculateRect(CRect rect_parent)
 {
-    const CRect rect_root{ RootElement()->GetRect() };
+    CRect rect_root;
+    UiElement::Element* root = RootElement();
+    if (root != nullptr)
+        rect_root = RootElement()->GetRect();
     rect = rect_parent;
     if (x.IsValid())
         rect.left = x.GetValue(rect_parent) + rect_root.left;

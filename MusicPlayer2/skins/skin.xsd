@@ -1693,6 +1693,11 @@
         <xs:documentation>标签的高度。仅在垂直排列模式下起作用。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="item_left_space" type="xs:int">
+      <xs:annotation>
+        <xs:documentation>垂直排列模式下，且样式为图标和文本或仅文本时，图标或文本左侧的边距，默认为4。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="font_size" default="9" type="font_size">
       <xs:annotation>
         <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>

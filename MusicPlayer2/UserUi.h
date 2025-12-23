@@ -97,9 +97,9 @@ public:
     bool IsPanelShown() const;
     void CloseAllPanel();
 
-protected:
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;
 
+protected:
     static std::shared_ptr<CUserUi> FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except);
     static int GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list);
 

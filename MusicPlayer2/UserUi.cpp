@@ -1094,6 +1094,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", tab_emelent->item_height);
                 CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", tab_emelent->font_size);
                 tab_emelent->stack_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "stack_element_id");
+                CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_left_space", tab_emelent->item_left_space);
+
             }
         }
         else if (item_name == "playlistIndicator")

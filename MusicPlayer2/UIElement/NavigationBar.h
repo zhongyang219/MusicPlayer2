@@ -39,6 +39,7 @@ namespace UiElement
         IconType icon_type{};
         Orientation orientation{ Horizontal };
         int item_space{};
+        int item_left_space{ 4 };
         int item_height{ 28 };
         int font_size{ 9 };
         std::string stack_element_id;

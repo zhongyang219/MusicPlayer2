@@ -209,6 +209,17 @@
     </stackElement>
   </ui>
 
+  <!--左侧导航面板-->
+  <panel id="ui_narrow_navigation_panel" width="180" margin-left="0">
+    <verticalLayout margin="4">
+      <horizontalLayout height="36">
+        <button key="closePanel" icon="menu" text="%(UI_TXT_CLOSE_NAVIGATION)" width="40"/>
+        <placeHolder/>
+      </horizontalLayout>
+      <navigationBar margin-top="4" margin-bottom="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="36" stack_element_id="ui_narraw_nav_stack_element" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
+      <button key="settings" show_text="true" height="36"/>
+    </verticalLayout>
+  </panel>
 
   <ui type="narrow">
     <stackElement id="main_stack_element_narrow" related_stack_elements="main_stack_element">
@@ -216,8 +227,9 @@
       <verticalLayout>
         <horizontalLayout>
           <verticalLayout width="48" margin-top="4" margin-bottom="4">
-            <navigationBar margin="4" orientation="vertical" icon_type="icon_only" item_space="4" item_height="36" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
-            <button key="settings" width="40" height="36" margin="2"/>
+            <button key="showPanel" panel_id="ui_narrow_navigation_panel" icon="menu" text="%(UI_TXT_OPEN_NAVIGATION)" width="40" height="36"/>
+            <navigationBar margin="4" orientation="vertical" icon_type="icon_only" item_space="4" item_height="36" stack_element_id="ui_narraw_nav_stack_element" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
+            <button key="settings" width="40" height="36"/>
           </verticalLayout>
           <stackElement margin-top="8" margin-left="8" margin-right="8" id="ui_narraw_nav_stack_element" related_stack_elements="ui_big_nav_stack_element">
             <!--正在播放-->
@@ -348,7 +360,11 @@
       <element>
         <verticalLayout>
           <verticalLayout margin="4">
-            <horizontalLayout height="110" margin-top="28">
+            <horizontalLayout height="32" margin-left="4">
+              <elementSwitcher width="32" height="32" style="button" text="%(UI_TIP_BTN_BACK)" icon="dropDown" stack_element_id="main_stack_element_narrow" stack_element_index="0"/>
+              <placeHolder/>
+            </horizontalLayout>
+            <horizontalLayout height="110">
               <albumCover width="120" square="true" margin="4"/>
               <verticalLayout margin="4">
                 <text type="title" style="scroll" height="24" font_size="11"/>
@@ -380,7 +396,6 @@
           </rectangle>
         </verticalLayout>
         <!--固定在左上角的界面切换器，点击后返回主界面-->
-        <elementSwitcher x="4" y="4" width="32" height="32" style="button" text="%(UI_TIP_BTN_BACK)" icon="dropDown" stack_element_id="main_stack_element_narrow" stack_element_index="0"/>
       </element>
     </stackElement>
   </ui>

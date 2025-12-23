@@ -3041,7 +3041,7 @@ void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_
             {
                 icon_rect.right = icon_rect.left + icon_width;
                 if (tab_element->orientation == UiElement::NavigationBar::Vertical)
-                    icon_rect.MoveToX(icon_rect.left + DPI(4));
+                    icon_rect.MoveToX(icon_rect.left + DPI(tab_element->item_left_space));
             }
             //使用跳动的频谱代替正在播放图标
             if (navigation_item.icon == IconMgr::IT_NowPlaying && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED && !CPlayer::GetInstance().IsMciCore())
