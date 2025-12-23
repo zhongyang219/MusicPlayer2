@@ -183,7 +183,7 @@
   <ui type="narrow">
     <stackElement id="ui_narrow_main_stack_element" related_stack_elements="ui_big_main_stack_element">
       <verticalLayout margin="8">
-        <navigationBar height="30" margin-bottom="8" icon_type="icon_only" item_space="4" stack_element_id="ui_narrow_stack_element" item_list="play_queue,folder,playlist,recently_played,artist,album,folder_explore"/>
+        <navigationBar height="30" margin-bottom="8" icon_type="icon_only" item_space="4" stack_element_id="ui_narrow_stack_element" item_list="play_queue,folder,playlist,recently_played,artist,album,all_tracks,folder_explore"/>
         <stackElement id="ui_narrow_stack_element">
           <!--播放队列-->
           <verticalLayout>
@@ -225,6 +225,11 @@
           <verticalLayout>
             <searchBox height="26" margin-bottom="4"/>
             <mediaLibItemList type="album"/>
+          </verticalLayout>
+          <!--所有曲目-->
+          <verticalLayout>
+            <searchBox height="26" margin-bottom="4"/>
+            <allTracksList/>
           </verticalLayout>
           <!--文件夹浏览-->
           <verticalLayout>

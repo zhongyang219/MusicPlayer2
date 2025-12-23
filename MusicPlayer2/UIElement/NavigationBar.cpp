@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "NavigationBar.h"
 #include "StackElement.h"
+#include "UserUi.h"
 
 void UiElement::NavigationBar::Draw()
 {
@@ -31,6 +32,13 @@ bool UiElement::NavigationBar::LButtonUp(CPoint point)
             {
                 selected_index = _selected_index;
                 stack_element->SetCurrentElement(selected_index);
+                //点击导航栏标签时，如果导航栏在面板中但是关联的stackElement在面板外，则关闭面板
+                if (CheckNavigationBarInPanel())
+                {
+                    CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
+                    if (user_ui != nullptr)
+                        user_ui->CloseAllPanel();
+                }
             }
         }
         return true;
@@ -115,4 +123,40 @@ void UiElement::NavigationBar::FindStackElement()
         stack_element = FindRelatedElement<StackElement>(stack_element_id);
         find_stack_element = true;  //找过一次没找到就不找了
     }
+}
+
+bool UiElement::NavigationBar::CheckNavigationBarInPanel()
+{
+    //当前导航栏是否面板中
+    bool is_in_panel = false;
+    //向上遍历父节点
+    Element* ele = this;
+    Element* panel = nullptr;
+    while (ele != nullptr)
+    {
+        if (ele->name == "panel")
+        {
+            is_in_panel = true;
+            panel = ele;
+            break;
+        }
+        ele = ele->pParent;
+    }
+
+    if (is_in_panel && stack_element != nullptr)
+    {
+        //判断stack_element是否在面板中
+        bool stack_element_in_panel = false;
+        panel->IterateAllElements([&](Element* cur_ele)->bool {
+            if (cur_ele == stack_element)
+            {
+                stack_element_in_panel = true;
+                return true;
+            }
+            return false;
+        });
+        if (!stack_element_in_panel)
+            return true;
+    }
+    return false;
 }

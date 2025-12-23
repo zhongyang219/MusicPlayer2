@@ -51,6 +51,13 @@ namespace UiElement
 
     private:
         void FindStackElement();        //查找StackElement
+
+        /**
+         * 检查导航栏是否在面板中
+         * return 当导航栏在面板中但是关联的stackElement不在面板中时返回true，否则返回false
+         */
+        bool CheckNavigationBarInPanel();
+
         bool find_stack_element{};      //如果已经查找过StackElement，则为true
         StackElement* stack_element{};
         int selected_index{};

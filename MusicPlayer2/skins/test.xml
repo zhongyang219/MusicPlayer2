@@ -4,49 +4,66 @@
   <!--歌曲详情面板-->
   <panel id="song_info_panel" width="450" height="270">
     <verticalLayout>
+      <!--标题栏-->
       <rectangle height="24">
         <horizontalLayout>
           <text type="userDefine" text="%(UI_TIP_BTN_PROPERTY)" style="scroll" margin-left="4"/>
           <button key="closePanel" width="24"/>
         </horizontalLayout>
       </rectangle>
-      <horizontalLayout margin="4">
-        <albumCover square="true" max-width="206"/>
-        <verticalLayout margin-left="8">
-          <trackInfo height="24"/>
-          <horizontalLayout height="24">
-            <icon icon="lyric" width="24"/>
-            <text type="userDefine" width="70" text="%(TXT_TITLE):" color_style="emphasis1"/>
-            <text type="userDefine" text="%(Title)" style="scroll"/>
-          </horizontalLayout>
-          <horizontalLayout height="24">
-            <icon icon="artist" width="24"/>
-            <text type="userDefine"  width="70" text="%(TXT_ARTIST):" color_style="emphasis1"/>
-            <text type="userDefine" text="%(Artist)" style="scroll"/>
-          </horizontalLayout>
-          <horizontalLayout height="24">
-            <icon icon="album" width="24"/>
-            <text type="userDefine"  width="70" text="%(TXT_ALBUM):" color_style="emphasis1"/>
-            <text type="userDefine" text="%(Album)" style="scroll"/>
-          </horizontalLayout>
-          <horizontalLayout height="24">
-            <icon icon="fileRelate" width="24"/>
-            <text type="userDefine"  width="70" text="%(TXT_FILE_TYPE):" color_style="emphasis1"/>
-            <text type="userDefine" text="%(FileType)" style="scroll"/>
-          </horizontalLayout>
-          <horizontalLayout height="24">
-            <icon icon="bitrate" width="24"/>
-            <text type="userDefine"  width="70" text="%(TXT_BITRATE):" color_style="emphasis1"/>
-            <text type="userDefine" text="%(BitRate)kbps" style="scroll"/>
-          </horizontalLayout>
-          <horizontalLayout height="24">
-            <icon icon="reverb" width="24"/>
-            <text type="userDefine"  width="70" text="%(TXT_PROPERTY_DLG_FILE_CHANNELS)" color_style="emphasis1"/>
-            <text type="userDefine" text="%(Channels)" style="scroll"/>
-          </horizontalLayout>
-          <rating height="24" margin-left="4"/>
+      <!--导航栏-->
+      <navigationBar margin="4" margin-bottom="0" height="28" item_space="4" stack_element_id="song_info_panel_stack_element">
+        <navigationItem icon="albumCover" text="封面/详情"/>
+        <navigationItem icon="reverb" text="%(UI_TXT_SPECTRUM)"/>
+      </navigationBar>
+      <stackElement id="song_info_panel_stack_element" margin="4">
+        <!--专辑封面/曲目详情-->
+        <horizontalLayout margin="4">
+          <albumCover square="true" max-width="206"/>
+          <verticalLayout margin-left="8">
+            <trackInfo height="24"/>
+            <horizontalLayout height="24">
+              <icon icon="lyric" width="24"/>
+              <text type="userDefine" width="70" text="%(TXT_TITLE):" color_style="emphasis1"/>
+              <text type="userDefine" text="%(Title)" style="scroll"/>
+            </horizontalLayout>
+            <horizontalLayout height="24">
+              <icon icon="artist" width="24"/>
+              <text type="userDefine"  width="70" text="%(TXT_ARTIST):" color_style="emphasis1"/>
+              <text type="userDefine" text="%(Artist)" style="scroll"/>
+            </horizontalLayout>
+            <horizontalLayout height="24">
+              <icon icon="album" width="24"/>
+              <text type="userDefine"  width="70" text="%(TXT_ALBUM):" color_style="emphasis1"/>
+              <text type="userDefine" text="%(Album)" style="scroll"/>
+            </horizontalLayout>
+            <horizontalLayout height="24">
+              <icon icon="fileRelate" width="24"/>
+              <text type="userDefine"  width="70" text="%(TXT_FILE_TYPE):" color_style="emphasis1"/>
+              <text type="userDefine" text="%(FileType)" style="scroll"/>
+            </horizontalLayout>
+            <horizontalLayout height="24">
+              <icon icon="bitrate" width="24"/>
+              <text type="userDefine"  width="70" text="%(TXT_BITRATE):" color_style="emphasis1"/>
+              <text type="userDefine" text="%(BitRate)kbps" style="scroll"/>
+            </horizontalLayout>
+            <horizontalLayout height="24">
+              <icon icon="reverb" width="24"/>
+              <text type="userDefine"  width="70" text="%(TXT_PROPERTY_DLG_FILE_CHANNELS)" color_style="emphasis1"/>
+              <text type="userDefine" text="%(Channels)" style="scroll"/>
+            </horizontalLayout>
+            <rating height="24" margin-left="4"/>
+          </verticalLayout>
+        </horizontalLayout>
+        <!--频谱分析-->
+        <verticalLayout margin="4">
+          <text type="title" alignment="center" font_size="12" style="scroll" height="32"/>
+          <text type="artist" alignment="center" font_size="10" style="scroll" height="32"/>
+          <text type="album" alignment="center" font_size="10" style="scroll" height="32"/>
+          <spectrum alignment="center" max-height="30%" fixed_width="true" draw_reflex="true" margin-top="24" proportion="4"/>
         </verticalLayout>
-      </horizontalLayout>
+      </stackElement>
+
     </verticalLayout>
   </panel>
   
