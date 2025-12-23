@@ -1046,3 +1046,58 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         break;
     }
 }
+
+void MenuMgr::AutoDisableMenuIfAllChildrenDisabled(CMenu* pMenu)
+{
+    if (!pMenu)
+        return;
+
+    int nItemCount = pMenu->GetMenuItemCount();
+
+    for (int i = 0; i < nItemCount; ++i)
+    {
+        UINT nID = pMenu->GetMenuItemID(i);
+
+        if (nID == (UINT)-1) // 弹出菜单（有子菜单）
+        {
+            CMenu* pSubMenu = pMenu->GetSubMenu(i);
+            if (pSubMenu)
+            {
+                // 递归处理子菜单
+                AutoDisableMenuIfAllChildrenDisabled(pSubMenu);
+
+                // 检查子菜单中是否有任何一个非分隔符项是启用的
+                bool bHasEnabledItem = false;
+                int nSubItemCount = pSubMenu->GetMenuItemCount();
+
+                for (int j = 0; j < nSubItemCount; ++j)
+                {
+                    UINT nSubState = pSubMenu->GetMenuState(j, MF_BYPOSITION);
+                    if (nSubState == (UINT)-1)
+                        continue; // 无效项，跳过
+
+                    // 跳过分隔符
+                    if (nSubState & MF_SEPARATOR)
+                        continue;
+
+                    // 如果该项未被禁用，则视为有效启用项
+                    if (!(nSubState & MF_GRAYED))
+                    {
+                        bHasEnabledItem = true;
+                        break;
+                    }
+                }
+
+                // 如果子菜单中没有启用的非分隔符项，则禁用该弹出菜单项
+                if (!bHasEnabledItem)
+                {
+                    pMenu->EnableMenuItem(i, MF_BYPOSITION | MF_GRAYED);
+                }
+                else
+                {
+                    pMenu->EnableMenuItem(i, MF_BYPOSITION | MF_ENABLED);
+                }
+            }
+        }
+    }
+}

@@ -104,6 +104,9 @@ public:
     // 获取菜单在 <language>.ini 中的键名字符串
     static const wchar_t* GetMenuNameStr(MenuType menu_type);
 
+    //禁用所有子菜单项为灰色禁用状态的菜单项
+    static void AutoDisableMenuIfAllChildrenDisabled(CMenu* pMenu);
+
 private:
     class MenuBase;
     MenuBase& GetMenuBase(MenuType menu_type);

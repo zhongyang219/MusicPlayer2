@@ -1738,6 +1738,9 @@ void CMusicPlayerDlg::SetMenuState(CMenu* pMenu)
     //专辑封面
     bool always_use_external_album_cover{ cur_song_ori.AlwaysUseExternalAlbumCover() };
     pMenu->CheckMenuItem(ID_ALWAYS_USE_EXTERNAL_ALBUM_COVER, (always_use_external_album_cover ? MF_CHECKED : MF_UNCHECKED));
+
+    //遍历菜单，如果全部子节点被禁用，则将父节点也禁用
+    MenuMgr::AutoDisableMenuIfAllChildrenDisabled(pMenu);
 }
 
 
