@@ -377,6 +377,7 @@
               <icon icon="previous" width="24" height="24" margin="2"/>
               <icon icon="next" width="24" height="24" margin="2"/>
               <icon icon="favoriteOff" width="24" height="24" margin="2"/>
+              <icon icon="favoriteOn" width="24" height="24" margin="2"/>
               <icon icon="mediaLib" width="24" height="24" margin="2"/>
               <icon icon="playlist" width="24" height="24" margin="2"/>
               <icon icon="menu" width="24" height="24" margin="2"/>
@@ -387,10 +388,10 @@
               <icon icon="maxmizeOff" width="24" height="24" margin="2"/>
               <icon icon="close" width="24" height="24" margin="2"/>
               <icon icon="playOrder" width="24" height="24" margin="2"/>
-              <icon icon="loopPlaylist" width="24" height="24" margin="2"/>
             </horizontalLayout>
             <!--第2行-->
             <horizontalLayout height="28">
+              <icon icon="loopPlaylist" width="24" height="24" margin="2"/>
               <icon icon="loopTrack" width="24" height="24" margin="2"/>
               <icon icon="playShuffle" width="24" height="24" margin="2"/>
               <icon icon="playRandom" width="24" height="24" margin="2"/>
@@ -410,10 +411,10 @@
               <icon icon="volume3" width="24" height="24" margin="2"/>
               <icon icon="switchDisplay" width="24" height="24" margin="2"/>
               <icon icon="folder" width="24" height="24" margin="2"/>
-              <icon icon="music" width="24" height="24" margin="2"/>
             </horizontalLayout>
             <!--第3行-->
             <horizontalLayout height="28">
+              <icon icon="music" width="24" height="24" margin="2"/>
               <icon icon="link" width="24" height="24" margin="2"/>
               <icon icon="exit" width="24" height="24" margin="2"/>
               <icon icon="rewind" width="24" height="24" margin="2"/>
@@ -433,10 +434,10 @@
               <icon icon="folderExplore" width="24" height="24" margin="2"/>
               <icon icon="internalLyric" width="24" height="24" margin="2"/>
               <icon icon="download" width="24" height="24" margin="2"/>
-              <icon icon="downloadBatch" width="24" height="24" margin="2"/>
             </horizontalLayout>
             <!--第4行-->
             <horizontalLayout height="28">
+              <icon icon="downloadBatch" width="24" height="24" margin="2"/>
               <icon icon="playlistDock" width="24" height="24" margin="2"/>
               <icon icon="playlistFloat" width="24" height="24" margin="2"/>
               <icon icon="pin" width="24" height="24" margin="2"/>
@@ -449,17 +450,18 @@
               <icon icon="help" width="24" height="24" margin="2"/>
               <icon icon="fix" width="24" height="24" margin="2"/>
               <icon icon="star" width="24" height="24" margin="2"/>
+              <icon icon="starSelected" width="24" height="24" margin="2"/>
               <icon icon="artist" width="24" height="24" margin="2"/>
               <icon icon="album" width="24" height="24" margin="2"/>
               <icon icon="genre" width="24" height="24" margin="2"/>
               <icon icon="year" width="24" height="24" margin="2"/>
               <icon icon="bitrate" width="24" height="24" margin="2"/>
               <icon icon="history" width="24" height="24" margin="2"/>
-              <icon icon="keyBoard" width="24" height="24" margin="2"/>
-              <icon icon="reverb" width="24" height="24" margin="2"/>
             </horizontalLayout>
             <!--第5行-->
             <horizontalLayout height="28">
+              <icon icon="keyBoard" width="24" height="24" margin="2"/>
+              <icon icon="reverb" width="24" height="24" margin="2"/>
               <icon icon="doubleLine" width="24" height="24" margin="2"/>
               <icon icon="lock" width="24" height="24" margin="2"/>
               <icon icon="playAsNext" width="24" height="24" margin="2"/>
@@ -475,16 +477,18 @@
               <icon icon="background" width="24" height="24" margin="2"/>
               <icon icon="dropDown" width="24" height="24" margin="2"/>
               <icon icon="leTagInsert" width="24" height="24" margin="2"/>
+              <icon icon="leTagReplace" width="24" height="24" margin="2"/>
               <icon icon="leTagDelete" width="24" height="24" margin="2"/>
               <icon icon="leSave" width="24" height="24" margin="2"/>
-              <icon icon="leFind" width="24" height="24" margin="2"/>
-              <icon icon="leReplace" width="24" height="24" margin="2"/>
-              <icon icon="triangleLeft" width="24" height="24" margin="2"/>
             </horizontalLayout>
             <!--第6行-->
             <horizontalLayout height="28">
+              <icon icon="leFind" width="24" height="24" margin="2"/>
+              <icon icon="leReplace" width="24" height="24" margin="2"/>
+              <icon icon="triangleLeft" width="24" height="24" margin="2"/>
               <icon icon="triangleUp" width="24" height="24" margin="2"/>
               <icon icon="triangleRight" width="24" height="24" margin="2"/>
+              <icon icon="triangleDown" width="24" height="24" margin="2"/>
               <icon icon="ok" width="24" height="24" margin="2"/>
               <icon icon="cancel" width="24" height="24" margin="2"/>
               <icon icon="treeCollapsed" width="24" height="24" margin="2"/>

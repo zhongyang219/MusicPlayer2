@@ -211,6 +211,7 @@ IconMgr::IconType UiElement::Button::NameToIconType(const std::string& icon_name
     else if (icon_name == "help") icon_type = IconMgr::IT_Help;
     else if (icon_name == "fix") icon_type = IconMgr::IT_Fix;
     else if (icon_name == "star") icon_type = IconMgr::IT_Star;
+    else if (icon_name == "starSelected") icon_type = IconMgr::IT_StarSelected;
     else if (icon_name == "artist") icon_type = IconMgr::IT_Artist;
     else if (icon_name == "album") icon_type = IconMgr::IT_Album;
     else if (icon_name == "genre") icon_type = IconMgr::IT_Genre;

@@ -389,6 +389,11 @@
           <xs:documentation>星星/分级</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
+      <xs:enumeration value="starSelected">
+        <xs:annotation>
+          <xs:documentation>点亮的星星</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
       <xs:enumeration value="artist">
         <xs:annotation>
           <xs:documentation>艺术家</xs:documentation>
