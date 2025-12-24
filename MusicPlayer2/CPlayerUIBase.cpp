@@ -926,7 +926,7 @@ void CPlayerUIBase::PreDrawInfo()
     if (last_ui_size != GetUiSize())
     {
         ClearBtnRect();
-        UiSizeChanged();
+        UiSizeChanged(last_ui_size);
         last_ui_size = GetUiSize();
     }
 }

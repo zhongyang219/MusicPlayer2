@@ -150,7 +150,7 @@ public:
 
     UiSize GetUiSize() const;
 
-    virtual void UiSizeChanged() {}
+    virtual void UiSizeChanged(UiSize last_ui_size) {}
 
     static CString GetCmdShortcutKeyForTooltips(UINT id);      //获取用于显示在鼠标提示中的键盘快捷键
 

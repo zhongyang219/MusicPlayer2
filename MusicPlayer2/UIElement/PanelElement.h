@@ -1,16 +1,13 @@
-#pragma once
+Ôªø#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
-    //√Ê∞Â
+    //Èù¢Êùø
     class Panel : public Element
     {
     public:
         virtual void CalculateRect(CRect parent_rect) override;
         virtual void Draw() override;
-
-    private:
-        CRect m_draw_rect;
     };
 }
 

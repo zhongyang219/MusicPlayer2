@@ -61,7 +61,7 @@ public:
     virtual bool RButtonDown(CPoint point) override;
     virtual bool MouseWheel(int delta, CPoint point) override;
     virtual bool DoubleClick(CPoint point) override;
-    virtual void UiSizeChanged() override;
+    virtual void UiSizeChanged(UiSize last_ui_size) override;
     virtual bool SetCursor() override;
     virtual bool ButtonClicked(BtnKey btn_type, const UIButton& btn) override;
 
@@ -100,6 +100,7 @@ public:
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;
 
 protected:
+    std::shared_ptr<UiElement::Element> GetUiByUiSize(UiSize ui_size) const;
     static std::shared_ptr<CUserUi> FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except);
     static int GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list);
 

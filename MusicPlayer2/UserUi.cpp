@@ -311,9 +311,14 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
 
 std::shared_ptr<UiElement::Element> CUserUi::GetCurrentTypeUi() const
 {
-    std::shared_ptr<UiElement::Element> draw_element;
     //根据不同的窗口大小选择不同的界面元素的根节点绘图
     auto ui_size = GetUiSize();
+    return GetUiByUiSize(ui_size);
+}
+
+std::shared_ptr<UiElement::Element> CUserUi::GetUiByUiSize(UiSize ui_size) const
+{
+    std::shared_ptr<UiElement::Element> draw_element;
     //<ui type="small">
     if (ui_size == CPlayerUIBase::UiSize::SMALL)
     {
@@ -561,9 +566,15 @@ bool CUserUi::DoubleClick(CPoint point)
     return CPlayerUIBase::DoubleClick(point);
 }
 
-void CUserUi::UiSizeChanged()
+void CUserUi::UiSizeChanged(UiSize last_ui_size)
 {
     ListLocateToCurrent();
+    //清除之前UI的鼠标提示
+    auto last_ui = GetUiByUiSize(last_ui_size);
+    last_ui->IterateAllElements([&](UiElement::Element* element) ->bool {
+        element->HideTooltip();
+        return false;
+    });
 }
 
 bool CUserUi::SetCursor()
