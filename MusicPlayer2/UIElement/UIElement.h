@@ -99,13 +99,18 @@ namespace UiElement
     //UI中除按钮外其他元素的鼠标提示id，必须大于按钮枚举（CPlayerUIBase::BtnKey）的最大值，且小于1000
     namespace TooltipIndex
     {
-        const int PLAYLIST = 900;
-        const int TAB_ELEMENT = 901;
-        const int PLAYLIST_DROP_DOWN_BTN = 902;
-        const int PLAYLIST_MENU_BTN = 903;
-        const int SEARCHBOX_CLEAR_BTN = 904;
-        const int PROGRESS_BAR = 905;
-        const int ELEMENT_SWITCHER = 906;
+        enum
+        {
+            INDEX_MIN = 900,
+            PLAYLIST = 900,
+            TAB_ELEMENT,
+            PLAYLIST_DROP_DOWN_BTN,
+            PLAYLIST_MENU_BTN,
+            SEARCHBOX_CLEAR_BTN,
+            PROGRESS_BAR,
+            ELEMENT_SWITCHER,
+            INDEX_MAX,
+        };
     }
 
     template<class T>

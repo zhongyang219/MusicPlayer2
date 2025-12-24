@@ -343,9 +343,26 @@ bool UiElement::Button::MouseMove(CPoint point)
         //鼠标进入按钮区域时
         if (!last_hover && m_btn.hover)
         {
-            //指定了按钮文本且不显示文本时，显示鼠标提示
-            if (!text.empty() && !show_text)
-                ui->UpdateMouseToolTip(key, text.c_str());
+            std::wstring tooltip_text;
+            if (show_text)
+            {
+                tooltip_text = ui->GetItemTooltip(key);
+                if (tooltip_text.empty())
+                    tooltip_text = text;
+            }
+            else
+            {
+                tooltip_text = text;
+                if (tooltip_text.empty())
+                    tooltip_text = ui->GetItemTooltip(key);
+            }
+            if (tooltip_text.empty())
+                tooltip_text = ui->GetButtonText(key);
+            //指定了按钮文本，且不显示文本或显示文本和鼠标提示不同时，显示鼠标提示
+            if (!tooltip_text.empty() && (!show_text || tooltip_text != GetDisplayText()))
+                ui->UpdateMouseToolTip(key, tooltip_text.c_str());
+            else
+                ui->UpdateMouseToolTip(key, _T(""));
         }
 
         if (m_btn.hover)

@@ -653,26 +653,15 @@ void CPlayerUIBase::UpdateSongInfoToolTip()
 
 void CPlayerUIBase::UpdatePlayPauseButtonTip()
 {
-    if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
-        UpdateMouseToolTip(BTN_PLAY_PAUSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE").c_str());
-    else
-        UpdateMouseToolTip(BTN_PLAY_PAUSE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY").c_str());
+    std::wstring play_pause_tooltip = GetItemTooltip(BTN_PLAY_PAUSE);
+    UpdateMouseToolTip(BTN_PLAY_PAUSE, play_pause_tooltip.c_str());
 }
 
 void CPlayerUIBase::UpdateFullScreenTip()
 {
-    if (m_ui_data.full_screen)
-    {
-        wstring tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FULL_SCREEN_EXIT") + GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN).GetString();
-        UpdateMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, tip_str.c_str());
-        UpdateMouseToolTip(BTN_FULL_SCREEN, tip_str.c_str());
-    }
-    else
-    {
-        wstring tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FULL_SCREEN") + GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN).GetString();
-        UpdateMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, tip_str.c_str());
-        UpdateMouseToolTip(BTN_FULL_SCREEN, tip_str.c_str());
-    }
+    std::wstring fullscreen_tooltip = GetItemTooltip(BTN_FULL_SCREEN);
+    UpdateMouseToolTip(BTN_FULL_SCREEN, fullscreen_tooltip.c_str());
+    UpdateMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, fullscreen_tooltip.c_str());
 }
 
 void CPlayerUIBase::UpdateTitlebarBtnToolTip()
@@ -3232,150 +3221,174 @@ void CPlayerUIBase::DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, I
     m_draw.DrawIcon(hIcon, pos_icon, size_icon);
 }
 
-void CPlayerUIBase::AddToolTips()
+std::wstring CPlayerUIBase::GetItemTooltip(int tooltip_index)
 {
     bool is_mini_mode{ IsMiniMode() };
-    wstring tip_str;
-    // 翻译
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_TRANSLATION");
-    AddMouseToolTip(BTN_TRANSLATE, tip_str.c_str());
-    // 音量
-    AddMouseToolTip(BTN_VOLUME, GetVolumeTooltipString());
-    // 切换界面
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_UI");
-    if (!is_mini_mode) tip_str += GetCmdShortcutKeyForTooltips(ID_SWITCH_UI);
-    AddMouseToolTip(BTN_SKIN, tip_str.c_str());
-    AddMouseToolTip(BTN_SKIN_TITLEBAR, tip_str.c_str());
-    // 音效
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_SOUND_EFFECT_SETTING");
-    tip_str += GetCmdShortcutKeyForTooltips(ID_EQUALIZER);
-    AddMouseToolTip(BTN_EQ, tip_str.c_str());
-    // 设置
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING");
-    tip_str += GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS);
-    AddMouseToolTip(BTN_SETTING, tip_str.c_str());
-    AddMouseToolTip(BTN_SETTING_TITLEBAR, tip_str.c_str());
-    // MINI模式
-    if (is_mini_mode)
-        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE_RTN");
-    else
-        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE");
-    tip_str += GetCmdShortcutKeyForTooltips(ID_MINI_MODE);
-    AddMouseToolTip(BTN_MINI, tip_str.c_str());
-    AddMouseToolTip(BTN_MINI_TITLEBAR, tip_str.c_str());
-    // 曲目信息（属性）
-    AddMouseToolTip(BTN_INFO, m_info_tip.c_str());
-    UpdateSongInfoToolTip();
-    // 停止
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
-    AddMouseToolTip(BTN_STOP, tip_str.c_str());
-    // 上一曲
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS");
-    AddMouseToolTip(BTN_PREVIOUS, tip_str.c_str());
-    // 播放/暂停
-    if (CPlayer::GetInstance().IsPlaying())
-        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE");
-    else
-        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
-    AddMouseToolTip(BTN_PLAY_PAUSE, tip_str.c_str());
-    // 下一曲
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT");
-    AddMouseToolTip(BTN_NEXT, tip_str.c_str());
-    // 进度条
-    tip_str = theApp.m_str_table.LoadTextFormat(L"UI_TIP_SEEK_TO_MINUTE_SECOND", { L"0", L"00" });
-    AddMouseToolTip(static_cast<CPlayerUIBase::BtnKey>(UiElement::TooltipIndex::PROGRESS_BAR), tip_str.c_str());
-    // 显示/隐藏播放列表
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
-    if (!is_mini_mode)
+    switch (tooltip_index)
     {
-        if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
-            tip_str += GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST);
-        else
-            tip_str += GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST);
-    }
-    AddMouseToolTip(BTN_SHOW_PLAYLIST, tip_str.c_str());
-    // 媒体库
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MEDIA_LIB");
-    tip_str += GetCmdShortcutKeyForTooltips(ID_MEDIA_LIB);
-    AddMouseToolTip(BTN_MEDIA_LIB, tip_str.c_str());
-    // 查找歌曲
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FIND_SONGS");
-    tip_str += GetCmdShortcutKeyForTooltips(ID_FIND);
-    AddMouseToolTip(BTN_FIND, tip_str.c_str());
-    // 全屏
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FULL_SCREEN");
-    tip_str += GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN);
-    AddMouseToolTip(BTN_FULL_SCREEN_TITLEBAR, tip_str.c_str());
-    AddMouseToolTip(BTN_FULL_SCREEN, tip_str.c_str());
-    // 主菜单
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAIN_MENU");
-    AddMouseToolTip(BTN_MENU_TITLEBAR, tip_str.c_str());
-    AddMouseToolTip(BTN_MENU, tip_str.c_str());
-    // “我喜欢的音乐”
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
-    AddMouseToolTip(BTN_FAVOURITE, tip_str.c_str());
-    // 桌面歌词
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC");
-    AddMouseToolTip(BTN_LRYIC, tip_str.c_str());
-    // AB重复
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_AB_REPEAT");
-    tip_str += GetCmdShortcutKeyForTooltips(ID_AB_REPEAT);
-    AddMouseToolTip(BTN_AB_REPEAT, tip_str.c_str());
-    // 关闭
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE");
-    AddMouseToolTip(BTN_APP_CLOSE, tip_str.c_str());
-    AddMouseToolTip(BTN_CLOSE, tip_str.c_str());
-    // 最小化
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMIZE");
-    AddMouseToolTip(BTN_MINIMIZE, tip_str.c_str());
-    // 最大化
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAXIMIZE");
-    AddMouseToolTip(BTN_MAXIMIZE, tip_str.c_str());
-    // 添加到播放列表
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
-    AddMouseToolTip(BTN_ADD_TO_PLAYLIST, tip_str.c_str());
+    // 翻译
+    case BTN_TRANSLATE:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_TRANSLATION");
+    // 音量
+    case BTN_VOLUME:
+        return GetVolumeTooltipString().GetString();
     // 切换界面
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_DISPLAY");
-    AddMouseToolTip(BTN_SWITCH_DISPLAY, tip_str.c_str());
+    case BTN_SKIN: case BTN_SKIN_TITLEBAR:
+    {
+        wstring tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_UI");
+        if (!is_mini_mode) tip_str += GetCmdShortcutKeyForTooltips(ID_SWITCH_UI);
+        return tip_str;
+    }
+    // 音效
+    case BTN_EQ:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SOUND_EFFECT_SETTING") + GetCmdShortcutKeyForTooltips(ID_EQUALIZER).GetString();
+    // 设置
+    case BTN_SETTING: case BTN_SETTING_TITLEBAR:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING") + GetCmdShortcutKeyForTooltips(ID_OPTION_SETTINGS).GetString();
+    // MINI模式
+    case BTN_MINI: case BTN_MINI_TITLEBAR:
+    {
+        wstring tip_str;
+        if (is_mini_mode)
+            tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE_RTN");
+        else
+            tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE");
+        tip_str += GetCmdShortcutKeyForTooltips(ID_MINI_MODE);
+        return tip_str;
+    }
+    // 曲目信息（属性）
+    case BTN_INFO:
+        SetSongInfoToolTipText();
+        return m_info_tip;
+    // 停止
+    case BTN_STOP:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_STOP");
+    // 上一曲
+    case BTN_PREVIOUS:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PREVIOUS");
+    // 下一曲
+    case BTN_NEXT:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_NEXT");
+    // 播放/暂停
+    case BTN_PLAY_PAUSE:
+        if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsError())
+            return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PAUSE");
+        else
+           return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    // 进度条
+    case UiElement::TooltipIndex::PROGRESS_BAR:
+        return theApp.m_str_table.LoadTextFormat(L"UI_TIP_SEEK_TO_MINUTE_SECOND", { L"0", L"00" });
+    // 显示/隐藏播放列表
+    case BTN_SHOW_PLAYLIST:
+    {
+        wstring tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_SHOW_HIDE");
+        if (!is_mini_mode)
+        {
+            if (theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist)
+                tip_str += GetCmdShortcutKeyForTooltips(ID_FLOAT_PLAYLIST);
+            else
+                tip_str += GetCmdShortcutKeyForTooltips(ID_SHOW_PLAYLIST);
+        }
+        return tip_str;
+    }
+    // 媒体库
+    case BTN_MEDIA_LIB:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MEDIA_LIB") + GetCmdShortcutKeyForTooltips(ID_MEDIA_LIB).GetString();
+    // 查找歌曲
+    case BTN_FIND:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FIND_SONGS") + GetCmdShortcutKeyForTooltips(ID_FIND).GetString();
+    // 全屏
+    case BTN_FULL_SCREEN: case BTN_FULL_SCREEN_TITLEBAR:
+    {
+        wstring tip_str;
+        if (m_ui_data.full_screen)
+            tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FULL_SCREEN_EXIT");
+        else
+            tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_FULL_SCREEN");
+        tip_str += GetCmdShortcutKeyForTooltips(ID_FULL_SCREEN);
+        return tip_str;
+    }
+    // 主菜单
+    case BTN_MENU: case BTN_MENU_TITLEBAR:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAIN_MENU");
+    // “我喜欢的音乐”
+    case BTN_FAVOURITE:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FAVOURITE");
+    // 桌面歌词
+    case BTN_LRYIC:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_DESKTOP_LYRIC");
+    // AB重复
+    case BTN_AB_REPEAT:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_AB_REPEAT");
+    // 关闭
+    case BTN_CLOSE: case BTN_APP_CLOSE:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE");
+    // 最小化
+    case BTN_MINIMIZE:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMIZE");
+    // 最大化
+    case BTN_MAXIMIZE:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MAXIMIZE");
+    // 添加到播放列表
+    case BTN_ADD_TO_PLAYLIST:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    // 切换界面
+    case BTN_SWITCH_DISPLAY:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_DISPLAY");
     // 深色/浅色模式
-    if (theApp.m_app_setting_data.dark_mode)
-        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE");
-    else
-        tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
-    tip_str += GetCmdShortcutKeyForTooltips(ID_DARK_MODE);
-    AddMouseToolTip(BTN_DARK_LIGHT, tip_str.c_str());
-    AddMouseToolTip(BTN_DARK_LIGHT_TITLE_BAR, tip_str.c_str());
+    case BTN_DARK_LIGHT: case BTN_DARK_LIGHT_TITLE_BAR:
+    {
+        wstring tip_str;
+        if (theApp.m_app_setting_data.dark_mode)
+            tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_LIGHT_MODE");
+        else
+            tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_DARK_LIGHT_TO_DARK_MODE");
+        tip_str += GetCmdShortcutKeyForTooltips(ID_DARK_MODE);
+        return tip_str;
+    }
     // 播放列表定位到当前播放
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT");
-    tip_str += GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT);
-    AddMouseToolTip(BTN_LOCATE_TO_CURRENT, tip_str.c_str());
-    // 播放列表
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_MENU");
-    AddMouseToolTip(UiElement::TooltipIndex::PLAYLIST_MENU_BTN, tip_str.c_str());
+    case BTN_LOCATE_TO_CURRENT:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT") + GetCmdShortcutKeyForTooltips(ID_LOCATE_TO_CURRENT).GetString();
+    // 播放列表菜单按钮
+    case UiElement::TooltipIndex::PLAYLIST_MENU_BTN:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAYLIST_MENU");
     // 播放列表下拉菜单按钮
-    tip_str = theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST");
-    AddMouseToolTip(UiElement::TooltipIndex::PLAYLIST_DROP_DOWN_BTN, tip_str.c_str());
+    case UiElement::TooltipIndex::PLAYLIST_DROP_DOWN_BTN:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_RECENT_FOLDER_OR_PLAYLIST");
     // 循环模式
-    AddMouseToolTip(BTN_REPETEMODE, m_repeat_mode_tip.c_str());
-    UpdateRepeatModeToolTip();
-    // 播放列表工具提示
-    AddMouseToolTip(UiElement::TooltipIndex::PLAYLIST, L"");
-    // tabElement工具提示
-    AddMouseToolTip(UiElement::TooltipIndex::TAB_ELEMENT, L"");
+    case BTN_REPETEMODE:
+        SetRepeatModeToolTipText();
+        return m_repeat_mode_tip;
     // "播放“我喜欢的音乐”"
-    AddMouseToolTip(BTN_PLAY_MY_FAVOURITE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_MY_FAVOURITE").c_str());
+    case BTN_PLAY_MY_FAVOURITE:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_MY_FAVOURITE");
     //歌词卡拉OK样式显示
-    AddMouseToolTip(BTN_KARAOKE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_KARAOKE").c_str());
+    case BTN_KARAOKE:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_KARAOKE");
     //搜索框清除按钮
-    AddMouseToolTip(UiElement::TooltipIndex::SEARCHBOX_CLEAR_BTN, theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN").c_str());
+    case UiElement::TooltipIndex::SEARCHBOX_CLEAR_BTN:
+        return theApp.m_str_table.LoadText(L"TIP_SEARCH_EDIT_CLEAN");
     //显示播放队列
-    AddMouseToolTip(BTN_SHOW_PLAY_QUEUE, theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_QUEUE").c_str());
-    //显示面板
-    AddMouseToolTip(BTN_SHOW_PANEL, L"");
+    case BTN_SHOW_PLAY_QUEUE:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_QUEUE");
     //关闭面板
-    AddMouseToolTip(BTN_CLOSE_PANEL, theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE").c_str());
-    //界面切换器
-    AddMouseToolTip(UiElement::TooltipIndex::ELEMENT_SWITCHER, L"");
-    //显示/隐藏元素
-    AddMouseToolTip(BTN_SHOW_HIDE_ELEMENT, L"");
+    case BTN_CLOSE_PANEL:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE");
+    }
+    return std::wstring();
+}
+
+void CPlayerUIBase::AddToolTips()
+{
+    //添加所有按钮鼠标提示
+    for (int i = 0; i < BTN_MAX; i++)
+    {
+        std::wstring str_tooltip = GetItemTooltip(i);
+        AddMouseToolTip(i, str_tooltip.c_str());
+    }
+    for (int i = UiElement::TooltipIndex::INDEX_MIN; i < UiElement::TooltipIndex::INDEX_MAX; i++)
+    {
+        std::wstring str_tooltip = GetItemTooltip(i);
+        AddMouseToolTip(i, str_tooltip.c_str());
+    }
 }

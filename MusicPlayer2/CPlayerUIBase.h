@@ -168,6 +168,7 @@ protected:
 public:
     enum BtnKey     //标识按钮的类型
     {
+        BTN_INVALID,            //无效的按钮
         BTN_REPETEMODE,         //“循环模式”按钮
         BTN_VOLUME,             //音量按钮
         BTN_VOLUME_UP,
@@ -224,7 +225,7 @@ public:
         MENU_TOOLS,
         MENU_HELP,
 
-        BTN_INVALID,            //无效的按钮
+        BTN_MAX,
     };
 
     enum ColorMode
@@ -338,6 +339,9 @@ public:
     virtual int GetUiIndex() { return 1; }  //UI的序号，用于区分每个界面，不会为0
 
     void ShowUiTipInfo(const std::wstring& info);       //在界面的中央显示一个提示信息，几秒钟后自动消失
+
+    //获取一个按钮或其他界面元素的鼠标提示（tooltip_index可以是按钮的key，或者Element::TooltipIndex中的枚举值）
+    std::wstring GetItemTooltip(int tooltip_index);
 
 private:
     void SetRepeatModeToolTipText();
