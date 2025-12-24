@@ -99,24 +99,46 @@
       </verticalLayout>
     </verticalLayout>
   </panel>
-  
-  
+
+  <!--左侧导航面板-->
+  <panel id="navigation_panel" width="180" margin-left="0">
+    <verticalLayout margin="4">
+      <horizontalLayout height="36" margin-bottom="4">
+        <button key="closePanel" icon="menu" text="%(UI_TXT_CLOSE_NAVIGATION)" width="36"/>
+        <placeHolder/>
+      </horizontalLayout>
+      <navigationBar orientation="vertical" icon_type="icon_and_text" item_space="4" item_left_space="2" item_height="36" stack_element_id="main_stack_element">
+        <navigationItem icon="playlistDisplayMode" text="水平标签"/>
+        <navigationItem icon="playlistDock" text="垂直标签"/>
+        <navigationItem icon="year" text="文本测试"/>
+        <navigationItem icon="reverb" text="频谱分析/按钮"/>
+        <navigationItem icon="star" text="按钮/图标测试"/>
+        <navigationItem icon="folderExplore" text="文件夹浏览"/>
+        <navigationItem icon="lyric" text="歌词/播放列表"/>
+      </navigationBar>
+    </verticalLayout>
+  </panel>
+
   <ui>
     <verticalLayout>
       <horizontalLayout>
         <!--左侧导航栏-->
         <rectangle width="44" no_corner_radius="true">
-          <navigationBar width="36" margin="4" orientation="vertical" icon_type="icon_only" item_space="4" item_height="36" stack_element_id="main_stack_element">
-            <navigationItem icon="lyric" text="水平标签"/>
-            <navigationItem icon="lyric" text="垂直标签"/>
-            <navigationItem icon="keyBoard" text="文本测试"/>
-            <navigationItem icon="reverb" text="频谱分析/按钮"/>
-            <navigationItem icon="folderExplore" text="文件夹浏览"/>
-            <navigationItem icon="playInPlaylist" text="歌词/播放列表"/>
-          </navigationBar>
+          <verticalLayout margin="4">
+            <button key="showPanel" icon="menu" text="%(UI_TXT_OPEN_NAVIGATION)" panel_id="navigation_panel" width="36" height="36" margin-bottom="4"/>
+            <navigationBar width="36" orientation="vertical" icon_type="icon_only" item_space="4" item_height="36" stack_element_id="main_stack_element">
+              <navigationItem icon="playlistDisplayMode" text="水平标签"/>
+              <navigationItem icon="playlistDock" text="垂直标签"/>
+              <navigationItem icon="year" text="文本测试"/>
+              <navigationItem icon="reverb" text="频谱分析/按钮"/>
+              <navigationItem icon="star" text="按钮/图标测试"/>
+              <navigationItem icon="folderExplore" text="文件夹浏览"/>
+              <navigationItem icon="lyric" text="歌词/播放列表"/>
+            </navigationBar>
+          </verticalLayout>
         </rectangle>
         <stackElement id="main_stack_element" margin-top="4" show_indicator="false">
-          <!--第1页-->
+          <!--第1页 水平标签-->
           <verticalLayout>
             <!--导航栏-->
             <navigationBar height="30" icon_type="icon_only" item_space="4" stack_element_id="stackElement1">
@@ -179,7 +201,7 @@
             </stackElement>
           </verticalLayout>
 
-          <!--第2页-->
+          <!--第2页 垂直标签-->
           <horizontalLayout>
             <!--导航栏。使用item_list属性和navigationItem子节点都可以设置导航的标签按钮。item_list属性指定的标签会显示在前面-->
             <navigationBar width="120" margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="32" font_size="9"
@@ -224,32 +246,28 @@
 
           </horizontalLayout>
 
-          <!--第3页-->
-          <verticalLayout>
+          <!--第3页 文本测试-->
+          <verticalLayout margin="4">
             <trackInfo height="28"/>
             <trackInfo font_size="10" height="28"/>
             <albumCover proportion="2"/>
             <text type="title" font_size="16" style="scroll" height="32"/>
-            <text type="artist" font_size="14" style="scroll" height="32"/>
-            <text type="album" font_size="12" style="scroll" height="32"/>
+            <text type="artist" font_size="14" style="scroll" height="32" color_style="emphasis1"/>
+            <text type="album" font_size="12" style="scroll" height="32" color_style="emphasis2"/>
             <!--<placeHolder height="24" hide-height="200"/>-->
-            <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
             <horizontalLayout height="30" margin="4">
-              <rectangle height="26">
-                <horizontalLayout>
-                  <button key="karaoke" width="22" height="22"/>
-                  <placeHolder/>
-                </horizontalLayout>
-              </rectangle>
+              <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
               <searchBox width="180" height="26" margin-left="4"/>
             </horizontalLayout>
             <rectangle proportion="1">
               <lyrics margin="8" use_default_font="true" font_size="9"/>
             </rectangle>
+            <text text="%(CurrentLyric)" height="24"/>
           </verticalLayout>
 
-          <!--第4页-->
-          <verticalLayout margin-right="60">
+          <!--第4页 频谱分析/按钮-->
+          <verticalLayout margin="4">
+            <text height="24" text="频谱分析测试"/>
             <verticalLayout>
               <spectrum type="64col" margin="8" min-height="40"/>
               <spectrum type="32col" margin="8" min-height="40" width="50%"/>
@@ -259,6 +277,7 @@
               </horizontalLayout>
             </verticalLayout>
             <verticalLayout>
+              <text height="24" text="带标签的图标测试"/>
               <horizontalLayout height="32">
                 <button key="menu" height="28" margin="2" show_text="true" font_size="10"/>
                 <button key="miniMode" height="28" margin="2" show_text="true"/>
@@ -269,22 +288,13 @@
                 <button key="darkLightMode" height="28" margin="2" show_text="true"/>
                 <button key="skin" height="28" margin="2" show_text="true"/>
                 <button key="settings" height="28" width="28" margin="2"/>
-                <button key="info" height="28" margin="2" show_text="true"/>
+                <button key="info" height="28" margin="2" show_text="true" text="详细信息按钮"/>
+                <button key="info" height="28" width="28" margin="2" show_text="false" text="详细信息按钮"/>
                 <button key="showPanel" icon="folderExplore" text="%(TXT_FOLDER_EXPLORE)" height="28" width="28" margin="2" panel_file_name="folder_explore_panel.xml"/>
                 <button key="showPanel" icon="folder" text="%(TXT_FOLDER)" height="28" width="28" margin="2" panel_file_name="folder_explore_panel.xml"/>
-                <placeHolder/>
               </horizontalLayout>
-              <!--<horizontalLayout height="28">
-                <button key="find" width="82" height="24" margin="2" show_text="true"/>
-                <button key="stop" width="82" height="24" margin="2" show_text="true"/>
-                <button key="previous" width="82" height="24" margin="2" show_text="true"/>
-                <button key="playPause" width="82" height="24" margin="2" show_text="true"/>
-                <button key="next" width="82" height="24" margin="2" show_text="true"/>
-                <button key="favorite" width="82" height="24" margin="2" show_text="true"/>
-                <button key="mediaLib" width="82" height="24" margin="2" show_text="true"/>
-                <button key="locateTrack" width="82" height="24" margin="2" show_text="true"/>
-                <placeHolder/>
-              </horizontalLayout>-->
+
+              <text height="24" text="工具栏测试"/>
               <rectangle height="24">
                 <horizontalLayout>
                   <button key="repeatMode" width="20" height="20" margin="2"/>
@@ -298,8 +308,8 @@
                   <button key="darkLightMode" width="20" height="20" margin="2" hide-width="294"/>
                   <button key="abRepeat" width="20" height="20" margin="2" hide-width="318"/>
                   <button key="desktopLyric" width="20" height="20" margin="2" hide-width="270"/>
-                  <placeHolder/>
                   <volume width="56" show_text="true"/>
+                  <placeHolder/>
                   <beatIndicator width="44" hide-width="368"/>
                 </horizontalLayout>
               </rectangle>
@@ -310,13 +320,187 @@
             </verticalLayout>
           </verticalLayout>
         
-          <!--第5页-->
-          <verticalLayout>
+          <!--第5页 按钮/图标测试-->
+          <verticalLayout margin="4">
+            <!--按钮-->
+            <text text="按钮测试" height="24"/>
+            <!--第1行-->
+            <horizontalLayout height="32">
+              <button key="menu" width="28" height="28" margin="2"/>
+              <button key="miniMode" width="28" height="28" margin="2"/>
+              <button key="fullScreen" width="28" height="28" margin="2"/>
+              <button key="repeatMode" width="28" height="28" margin="2"/>
+              <button key="settings" width="28" height="28" margin="2"/>
+              <button key="equalizer" width="28" height="28" margin="2"/>
+              <button key="skin" width="28" height="28" margin="2"/>
+              <button key="info" width="28" height="28" margin="2"/>
+              <button key="find" width="28" height="28" margin="2"/>
+              <button key="abRepeat" width="28" height="28" margin="2"/>
+            </horizontalLayout>
+            <!--第2行-->
+            <horizontalLayout height="32">
+              <button key="desktopLyric" width="28" height="28" margin="2"/>
+              <button key="lyricTranslate" width="28" height="28" margin="2"/>
+              <button key="stop" width="28" height="28" margin="2"/>
+              <button key="previous" width="28" height="28" margin="2"/>
+              <button key="next" width="28" height="28" margin="2"/>
+              <button key="playPause" width="28" height="28" margin="2"/>
+              <button key="favorite" width="28" height="28" margin="2"/>
+              <button key="mediaLib" width="28" height="28" margin="2"/>
+              <button key="showPlaylist" width="28" height="28" margin="2"/>
+              <button key="addToPlaylist" width="28" height="28" margin="2"/>
+            </horizontalLayout>
+            <!--第3行-->
+            <horizontalLayout height="32">
+              <button key="switchDisplay" width="28" height="28" margin="2"/>
+              <button key="darkLightMode" width="28" height="28" margin="2"/>
+              <button key="locateTrack" width="28" height="28" margin="2"/>
+              <button key="openFolder" width="28" height="28" margin="2"/>
+              <button key="newPlaylist" width="28" height="28" margin="2"/>
+              <button key="playMyFavourite" width="28" height="28" margin="2"/>
+              <button key="medialibFolderSort" width="28" height="28" margin="2"/>
+              <button key="medialibPlaylistSort" width="28" height="28" margin="2"/>
+              <button key="karaoke" width="28" height="28" margin="2"/>
+              <button key="showPlayQueue" width="28" height="28" margin="2"/>
+            </horizontalLayout>
+
+            <!--图标-->
+            <text text="图标测试" height="24"/>
+            <!--第1行-->
+            <horizontalLayout height="28">
+              <icon icon="app" width="24" height="24" margin="2"/>
+              <icon icon="appMonochrome" width="24" height="24" margin="2"/>
+              <icon icon="stop" width="24" height="24" margin="2"/>
+              <icon icon="play" width="24" height="24" margin="2"/>
+              <icon icon="pause" width="24" height="24" margin="2"/>
+              <icon icon="playPause" width="24" height="24" margin="2"/>
+              <icon icon="previous" width="24" height="24" margin="2"/>
+              <icon icon="next" width="24" height="24" margin="2"/>
+              <icon icon="favoriteOff" width="24" height="24" margin="2"/>
+              <icon icon="mediaLib" width="24" height="24" margin="2"/>
+              <icon icon="playlist" width="24" height="24" margin="2"/>
+              <icon icon="menu" width="24" height="24" margin="2"/>
+              <icon icon="fullScreenOn" width="24" height="24" margin="2"/>
+              <icon icon="fullScreenOff" width="24" height="24" margin="2"/>
+              <icon icon="minimize" width="24" height="24" margin="2"/>
+              <icon icon="maxmizeOn" width="24" height="24" margin="2"/>
+              <icon icon="maxmizeOff" width="24" height="24" margin="2"/>
+              <icon icon="close" width="24" height="24" margin="2"/>
+              <icon icon="playOrder" width="24" height="24" margin="2"/>
+              <icon icon="loopPlaylist" width="24" height="24" margin="2"/>
+            </horizontalLayout>
+            <!--第2行-->
+            <horizontalLayout height="28">
+              <icon icon="loopTrack" width="24" height="24" margin="2"/>
+              <icon icon="playShuffle" width="24" height="24" margin="2"/>
+              <icon icon="playRandom" width="24" height="24" margin="2"/>
+              <icon icon="playTrack" width="24" height="24" margin="2"/>
+              <icon icon="setting" width="24" height="24" margin="2"/>
+              <icon icon="equalizer" width="24" height="24" margin="2"/>
+              <icon icon="skin" width="24" height="24" margin="2"/>
+              <icon icon="miniOn" width="24" height="24" margin="2"/>
+              <icon icon="miniOff" width="24" height="24" margin="2"/>
+              <icon icon="info" width="24" height="24" margin="2"/>
+              <icon icon="find" width="24" height="24" margin="2"/>
+              <icon icon="darkModeOn" width="24" height="24" margin="2"/>
+              <icon icon="darkModeOff" width="24" height="24" margin="2"/>
+              <icon icon="volume0" width="24" height="24" margin="2"/>
+              <icon icon="volume1" width="24" height="24" margin="2"/>
+              <icon icon="volume2" width="24" height="24" margin="2"/>
+              <icon icon="volume3" width="24" height="24" margin="2"/>
+              <icon icon="switchDisplay" width="24" height="24" margin="2"/>
+              <icon icon="folder" width="24" height="24" margin="2"/>
+              <icon icon="music" width="24" height="24" margin="2"/>
+            </horizontalLayout>
+            <!--第3行-->
+            <horizontalLayout height="28">
+              <icon icon="link" width="24" height="24" margin="2"/>
+              <icon icon="exit" width="24" height="24" margin="2"/>
+              <icon icon="rewind" width="24" height="24" margin="2"/>
+              <icon icon="fastForward" width="24" height="24" margin="2"/>
+              <icon icon="speedUp" width="24" height="24" margin="2"/>
+              <icon icon="slowDown" width="24" height="24" margin="2"/>
+              <icon icon="add" width="24" height="24" margin="2"/>
+              <icon icon="save" width="24" height="24" margin="2"/>
+              <icon icon="saveAs" width="24" height="24" margin="2"/>
+              <icon icon="sortMode" width="24" height="24" margin="2"/>
+              <icon icon="playlistDisplayMode" width="24" height="24" margin="2"/>
+              <icon icon="locate" width="24" height="24" margin="2"/>
+              <icon icon="lyric" width="24" height="24" margin="2"/>
+              <icon icon="copy" width="24" height="24" margin="2"/>
+              <icon icon="edit" width="24" height="24" margin="2"/>
+              <icon icon="unlink" width="24" height="24" margin="2"/>
+              <icon icon="folderExplore" width="24" height="24" margin="2"/>
+              <icon icon="internalLyric" width="24" height="24" margin="2"/>
+              <icon icon="download" width="24" height="24" margin="2"/>
+              <icon icon="downloadBatch" width="24" height="24" margin="2"/>
+            </horizontalLayout>
+            <!--第4行-->
+            <horizontalLayout height="28">
+              <icon icon="playlistDock" width="24" height="24" margin="2"/>
+              <icon icon="playlistFloat" width="24" height="24" margin="2"/>
+              <icon icon="pin" width="24" height="24" margin="2"/>
+              <icon icon="convert" width="24" height="24" margin="2"/>
+              <icon icon="online" width="24" height="24" margin="2"/>
+              <icon icon="shortcut" width="24" height="24" margin="2"/>
+              <icon icon="albumCover" width="24" height="24" margin="2"/>
+              <icon icon="statistics" width="24" height="24" margin="2"/>
+              <icon icon="fileRelate" width="24" height="24" margin="2"/>
+              <icon icon="help" width="24" height="24" margin="2"/>
+              <icon icon="fix" width="24" height="24" margin="2"/>
+              <icon icon="star" width="24" height="24" margin="2"/>
+              <icon icon="artist" width="24" height="24" margin="2"/>
+              <icon icon="album" width="24" height="24" margin="2"/>
+              <icon icon="genre" width="24" height="24" margin="2"/>
+              <icon icon="year" width="24" height="24" margin="2"/>
+              <icon icon="bitrate" width="24" height="24" margin="2"/>
+              <icon icon="history" width="24" height="24" margin="2"/>
+              <icon icon="keyBoard" width="24" height="24" margin="2"/>
+              <icon icon="reverb" width="24" height="24" margin="2"/>
+            </horizontalLayout>
+            <!--第5行-->
+            <horizontalLayout height="28">
+              <icon icon="doubleLine" width="24" height="24" margin="2"/>
+              <icon icon="lock" width="24" height="24" margin="2"/>
+              <icon icon="playAsNext" width="24" height="24" margin="2"/>
+              <icon icon="rename" width="24" height="24" margin="2"/>
+              <icon icon="playInPlaylist" width="24" height="24" margin="2"/>
+              <icon icon="playInFolder" width="24" height="24" margin="2"/>
+              <icon icon="tag" width="24" height="24" margin="2"/>
+              <icon icon="more" width="24" height="24" margin="2"/>
+              <icon icon="nowPlaying" width="24" height="24" margin="2"/>
+              <icon icon="karaoke" width="24" height="24" margin="2"/>
+              <icon icon="refresh" width="24" height="24" margin="2"/>
+              <icon icon="newFolder" width="24" height="24" margin="2"/>
+              <icon icon="background" width="24" height="24" margin="2"/>
+              <icon icon="dropDown" width="24" height="24" margin="2"/>
+              <icon icon="leTagInsert" width="24" height="24" margin="2"/>
+              <icon icon="leTagDelete" width="24" height="24" margin="2"/>
+              <icon icon="leSave" width="24" height="24" margin="2"/>
+              <icon icon="leFind" width="24" height="24" margin="2"/>
+              <icon icon="leReplace" width="24" height="24" margin="2"/>
+              <icon icon="triangleLeft" width="24" height="24" margin="2"/>
+            </horizontalLayout>
+            <!--第6行-->
+            <horizontalLayout height="28">
+              <icon icon="triangleUp" width="24" height="24" margin="2"/>
+              <icon icon="triangleRight" width="24" height="24" margin="2"/>
+              <icon icon="ok" width="24" height="24" margin="2"/>
+              <icon icon="cancel" width="24" height="24" margin="2"/>
+              <icon icon="treeCollapsed" width="24" height="24" margin="2"/>
+              <icon icon="treeExpanded" width="24" height="24" margin="2"/>
+              <icon icon="defaultCoverPlaying" width="24" height="24" margin="2"/>
+              <icon icon="defaultCoverStopped" width="24" height="24" margin="2"/>
+            </horizontalLayout>
+          </verticalLayout>
+          
+          <!--第6页 文件夹浏览-->
+          <verticalLayout margin="4">
             <searchBox height="26" margin-bottom="4" list_element_id="medialibFolderExplore5"/>
             <medialibFolderExplore id="medialibFolderExplore5"/>
           </verticalLayout>
         
-          <!--第6页-->
+          <!--第7页 歌词/播放列表-->
           <verticalLayout>
             <horizontalLayout height="26">
               <icon icon="app" width="28" height="28" margin="2" />
