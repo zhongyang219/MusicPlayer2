@@ -2663,11 +2663,11 @@ IDR_COMPILE_TIME        TEXT                    "compile_time.txt"
 
 IDR_LICENSE             TEXT                    "..\\LICENSE"
 
-IDR_UI1                 TEXT                    "skins\\ui1.xml"
+IDR_UI1                 TEXT                    "res\\skins\\ui1.xml"
 
-IDR_UI2                 TEXT                    "skins\\ui2.xml"
+IDR_UI2                 TEXT                    "res\\skins\\ui2.xml"
 
-IDR_MINI_UI0            TEXT                    "skins\\miniMode\\miniMode00.xml"
+IDR_MINI_UI0            TEXT                    "res\\skins\\miniMode00.xml"
 
 IDR_ACKNOWLEDGEMENT     TEXT                    "res\\Acknowledgement.txt"
 

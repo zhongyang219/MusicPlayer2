@@ -680,9 +680,9 @@
     <None Include="language\English.ini" />
     <None Include="res\drag.cur" />
     <None Include="res\MusicPlayer2.rc2" />
-    <None Include="skins\ui1.xml" />
-    <None Include="skins\ui2.xml" />
-    <None Include="skins\miniMode\miniMode00.xml" />
+    <None Include="res\skins\ui1.xml" />
+    <None Include="res\skins\ui2.xml" />
+    <None Include="res\skins\miniMode00.xml" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\about.bmp" />

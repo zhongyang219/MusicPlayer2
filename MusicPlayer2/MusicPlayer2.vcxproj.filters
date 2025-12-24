@@ -1735,13 +1735,13 @@
       <Filter>资源文件\Icons</Filter>
     </None>
     <None Include="..\LICENSE" />
-    <None Include="skins\ui1.xml">
+    <None Include="res\skins\ui1.xml">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="skins\ui2.xml">
+    <None Include="res\skins\ui2.xml">
       <Filter>资源文件</Filter>
     </None>
-    <None Include="skins\miniMode\miniMode00.xml">
+    <None Include="res\skins\miniMode00.xml">
       <Filter>资源文件</Filter>
     </None>
     <None Include="language\English.ini">
