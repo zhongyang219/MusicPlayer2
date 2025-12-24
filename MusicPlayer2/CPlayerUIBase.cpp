@@ -2242,7 +2242,12 @@ CRect CPlayerUIBase::GetVolumeRect() const
 
 CRect CPlayerUIBase::GetDrawRect() const
 {
-    return m_draw_rect;
+    CRect draw_rect = m_draw_rect;
+    if (m_ui_data.full_screen)
+    {
+        draw_rect.DeflateRect(EdgeMargin(true), EdgeMargin(false));
+    }
+    return draw_rect;
 }
 
 CRect CPlayerUIBase::GetClientDrawRect() const
