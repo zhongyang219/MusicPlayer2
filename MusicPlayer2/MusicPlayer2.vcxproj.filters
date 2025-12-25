@@ -2352,6 +2352,111 @@
     <Image Include="res\star_select.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\background.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\copy_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\dark_mode_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\double_line.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\download.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\download1.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\edit.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\exit.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\ff_new.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\fix.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\hot_key_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\internal_lyric.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\light_mode_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\lock.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\lyric_delay_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\lyric_forward_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\more.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\music.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\ok_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\online.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\pin.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_as_next_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_in_folder_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\play_pause.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\playlist_float.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\rename.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\rew_new.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\save_as.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\save_new_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\shortcut.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\slow_down.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\speed_up.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\statistics.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\tag_d.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
+    <Image Include="res\up.ico">
+      <Filter>资源文件\Icons</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\ui\classical_control_bar.xml">

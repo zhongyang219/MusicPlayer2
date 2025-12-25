@@ -110,7 +110,7 @@
       <navigationBar orientation="vertical" icon_type="icon_and_text" item_space="4" item_left_space="2" item_height="36" stack_element_id="main_stack_element">
         <navigationItem icon="playlistDisplayMode" text="水平标签"/>
         <navigationItem icon="playlistDock" text="垂直标签"/>
-        <navigationItem icon="year" text="文本测试"/>
+        <navigationItem icon="keyBoard" text="文本测试"/>
         <navigationItem icon="reverb" text="频谱分析/按钮"/>
         <navigationItem icon="star" text="按钮/图标测试"/>
         <navigationItem icon="folderExplore" text="文件夹浏览"/>
@@ -129,7 +129,7 @@
             <navigationBar width="36" orientation="vertical" icon_type="icon_only" item_space="4" item_height="36" stack_element_id="main_stack_element">
               <navigationItem icon="playlistDisplayMode" text="水平标签"/>
               <navigationItem icon="playlistDock" text="垂直标签"/>
-              <navigationItem icon="year" text="文本测试"/>
+              <navigationItem icon="keyBoard" text="文本测试"/>
               <navigationItem icon="reverb" text="频谱分析/按钮"/>
               <navigationItem icon="star" text="按钮/图标测试"/>
               <navigationItem icon="folderExplore" text="文件夹浏览"/>

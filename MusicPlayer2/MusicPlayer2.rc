@@ -2811,9 +2811,9 @@ IDI_EXPLORE_FOLDER      ICON                    "res\\explorer_folder.ico"
 
 IDI_GENRE_D             ICON                    "res\\genre_d.ico"
 
-IDI_LYRIC_DELAY_D       ICON                    "res\\lyric_delay.ico"
+IDI_LYRIC_DELAY_D       ICON                    "res\\lyric_delay_d.ico"
 
-IDI_LYRIC_FORWARD_D     ICON                    "res\\lyric_forward.ico"
+IDI_LYRIC_FORWARD_D     ICON                    "res\\lyric_forward_d.ico"
 
 IDI_RECENT_SONG_D       ICON                    "res\\recent_songs_d.ico"
 
@@ -2839,7 +2839,7 @@ IDI_NEXT_NEW            ICON                    "res\\next_white.ico"
 
 IDI_NEXT_NEW_D          ICON                    "res\\next_dark.ico"
 
-IDI_SAVE_NEW_D          ICON                    "res\\save_new.ico"
+IDI_SAVE_NEW_D          ICON                    "res\\save_new_d.ico"
 
 IDI_MUSIC_D             ICON                    "res\\music_d.ico"
 
@@ -2875,7 +2875,7 @@ IDI_EXIT_D              ICON                    "res\\exit_d.ico"
 
 IDI_ALBUM_COVER_D       ICON                    "res\\album_cover_d.ico"
 
-IDI_DARK_MODE_D         ICON                    "res\\dark_mode.ico"
+IDI_DARK_MODE_D         ICON                    "res\\dark_mode_d.ico"
 
 IDI_LYRIC_D             ICON                    "res\\lyric_d.ico"
 
@@ -2889,7 +2889,7 @@ IDI_PLAY_RANDOM         ICON                    "res\\随机播放1.ico"
 
 IDI_PLAY_RANDOM_D       ICON                    "res\\随机播放1_d.ico"
 
-IDI_OK_D                ICON                    "res\\ok.ico"
+IDI_OK_D                ICON                    "res\\ok_d.ico"
 
 IDI_RENAME_D            ICON                    "res\\rename_d.ico"
 
@@ -3056,6 +3056,78 @@ IDI_DROP_DOWN           ICON                    "res\\drop_down.ico"
 IDI_DROP_DOWN_D         ICON                    "res\\drop_down_d.ico"
 
 IDI_STAR_SELECTED       ICON                    "res\\star_select.ico"
+
+IDI_PLAY_PAUSE_L        ICON                    "res\\play_pause.ico"
+
+IDI_MUSIC               ICON                    "res\\music.ico"
+
+IDI_EXIT                ICON                    "res\\exit.ico"
+
+IDI_REW_NEW             ICON                    "res\\rew_new.ico"
+
+IDI_FF_NEW              ICON                    "res\\ff_new.ico"
+
+IDI_SPEED_UP            ICON                    "res\\speed_up.ico"
+
+IDI_SLOW_DOWN           ICON                    "res\\slow_down.ico"
+
+IDI_SAVE_NEW            ICON                    "res\\save_new.ico"
+
+IDI_SAVE_AS             ICON                    "res\\save_as.ico"
+
+IDI_COPY_D              ICON                    "res\\copy_d.ico"
+
+IDI_EDIT                ICON                    "res\\edit.ico"
+
+IDI_INTERNAL_LYRIC      ICON                    "res\\internal_lyric.ico"
+
+IDI_DOWNLOAD            ICON                    "res\\download.ico"
+
+IDI_DOWNLOAD1           ICON                    "res\\download1.ico"
+
+IDI_PLAYLIST_FLOAT      ICON                    "res\\playlist_float.ico"
+
+IDI_PIN                 ICON                    "res\\pin.ico"
+
+IDI_CONVERT             ICON                    "res\\convert.ico"
+
+IDI_ONLINE              ICON                    "res\\online.ico"
+
+IDI_SHORTCUT            ICON                    "res\\shortcut.ico"
+
+IDI_STATISTICS          ICON                    "res\\statistics.ico"
+
+IDI_FIX                 ICON                    "res\\fix.ico"
+
+IDI_HOT_KEY_D           ICON                    "res\\hot_key_d.ico"
+
+IDI_DOUBLE_LINE         ICON                    "res\\double_line.ico"
+
+IDI_LOCK                ICON                    "res\\lock.ico"
+
+IDI_PLAY_AS_NEXT_D      ICON                    "res\\play_as_next_d.ico"
+
+IDI_RENAME              ICON                    "res\\rename.ico"
+
+IDI_PLAY_IN_FOLDER_D    ICON                    "res\\play_in_folder_d.ico"
+
+IDI_TAG_D               ICON                    "res\\tag_d.ico"
+
+IDI_MORE                ICON                    "res\\more.ico"
+
+IDI_BACKGROUND          ICON                    "res\\background.ico"
+
+IDI_LYRIC_DELAY         ICON                    "res\\lyric_delay.ico"
+
+IDI_LYRIC_FORWARD       ICON                    "res\\lyric_forward.ico"
+
+IDI_UP                  ICON                    "res\\up.ico"
+
+IDI_OK                  ICON                    "res\\ok.ico"
+
+IDI_DARK_MODE           ICON                    "res\\dark_mode.ico"
+
+IDI_LIGHT_MODE_D        ICON                    "res\\light_mode_d.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////

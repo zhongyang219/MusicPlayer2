@@ -271,6 +271,42 @@
 #define IDD_CLOSE_WINDOW_INQUERY_DIALOG 639
 #define IDI_ICON1                       640
 #define IDI_STAR_SELECTED               640
+#define IDI_PLAY_PAUSE_L                641
+#define IDI_MUSIC                       642
+#define IDI_EXIT                        643
+#define IDI_REW_NEW                     644
+#define IDI_FF_NEW                      645
+#define IDI_SPEED_UP                    646
+#define IDI_SLOW_DOWN                   647
+#define IDI_SAVE_NEW                    648
+#define IDI_SAVE_AS                     649
+#define IDI_COPY_D                      650
+#define IDI_EDIT                        651
+#define IDI_INTERNAL_LYRIC              652
+#define IDI_DOWNLOAD                    653
+#define IDI_DOWNLOAD1                   654
+#define IDI_PLAYLIST_FLOAT              655
+#define IDI_PIN                         656
+#define IDI_ONLINE                      657
+#define IDI_SHORTCUT                    658
+#define IDI_STATISTICS                  659
+#define IDI_FIX                         660
+#define IDI_HOT_KEY_D                   661
+#define IDI_DOUBLE_LINE                 662
+#define IDI_LOCK                        663
+#define IDI_PLAY_AS_NEXT_D              664
+#define IDI_RENAME                      665
+#define IDI_PLAY_IN_FOLDER_D            666
+#define IDI_TAG_D                       667
+#define IDI_MORE                        668
+#define IDI_BACKGROUND                  669
+#define IDI_LYRIC_DELAY                 670
+#define IDI_UP                          671
+#define IDI_OK                          672
+#define IDI_CONVERT                     673
+#define IDI_LYRIC_FORWARD               674
+#define IDI_DARK_MODE                   675
+#define IDI_LIGHT_MODE_D                676
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -1030,7 +1066,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        641
+#define _APS_NEXT_RESOURCE_VALUE        677
 #define _APS_NEXT_COMMAND_VALUE         33512
 #define _APS_NEXT_CONTROL_VALUE         1384
 #define _APS_NEXT_SYMED_VALUE           101
