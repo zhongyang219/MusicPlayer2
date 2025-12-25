@@ -153,11 +153,15 @@
           <placeHolder show_when_use_system_titlebar="true" height="28"/>
           <lyrics margin="4"/>
           <horizontalLayout height="142">
-            <albumCover width="126" margin="8" margin-left="8"/>
+            <albumCover width="126" margin="8"/>
             <verticalLayout>
               <text type="title" style="scroll" height="32" font_size="14"/>
               <text type="artist_album" style="scroll" height="32" font_size="10"/>
-              <text type="format" style="scroll" height="32"/>
+              <horizontalLayout height="24">
+                <rating width="96"/>
+                <placeHolder/>
+              </horizontalLayout>
+              <text type="format" style="scroll" height="28"/>
             </verticalLayout>
           </horizontalLayout>
           <rectangle height="88" no_corner_radius="true">
