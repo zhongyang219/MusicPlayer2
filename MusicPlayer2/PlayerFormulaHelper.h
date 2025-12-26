@@ -8,7 +8,7 @@ enum class PlayerVariable
 	Artist,			//当前播放曲目的艺术家
 	Album,			//当前播放曲目的唱片集
 	AlbumArtist,	//当前播放曲目的唱片集艺术家
-	ArtistAndAlbum,	//当前播放曲目的艺术家-标题
+	ArtistAndAlbum,	//当前播放曲目的艺术家-唱片集
 	TrackNum,		//当前播放曲目的音轨号
 	Year,			//当前播放曲目的年份
 	Genre,			//当前播放曲目的流派

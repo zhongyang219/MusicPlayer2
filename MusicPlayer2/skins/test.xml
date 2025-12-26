@@ -243,26 +243,175 @@
                 <allTracksList/>
               </verticalLayout>
             </stackElement>
-
           </horizontalLayout>
 
           <!--第3页 文本测试-->
-          <verticalLayout margin="4">
-            <trackInfo height="28"/>
-            <trackInfo font_size="10" height="28"/>
-            <albumCover proportion="2"/>
-            <text type="title" font_size="16" style="scroll" height="32"/>
-            <text type="artist" font_size="14" style="scroll" height="32" color_style="emphasis1"/>
-            <text type="album" font_size="12" style="scroll" height="32" color_style="emphasis2"/>
-            <!--<placeHolder height="24" hide-height="200"/>-->
-            <horizontalLayout height="30" margin="4">
-              <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
-              <searchBox width="180" height="26" margin-left="4"/>
-            </horizontalLayout>
-            <rectangle proportion="1">
-              <lyrics margin="8" use_default_font="true" font_size="9"/>
-            </rectangle>
-            <text text="%(CurrentLyric)" height="24"/>
+          <verticalLayout margin="4" margin-top="0">
+            <navigationBar height="30" icon_type="icon_and_text" item_space="4">
+              <navigationItem icon="tag" text="变量测试"/>
+              <navigationItem icon="keyBoard" text="文本样式测试"/>
+            </navigationBar>
+            <stackElement margin-top="4">
+              <!--变量测试-->
+              <horizontalLayout>
+                <!--第1列-->
+                <verticalLayout margin-right="4">
+                  <horizontalLayout height="20">
+                    <text text="文件名:" width="100" color_style="emphasis1"/>
+                    <text text="%(FileName)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="文件路径:" width="100" color_style="emphasis1"/>
+                    <text text="%(FilePath)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="标题:" width="100" color_style="emphasis1"/>
+                    <text text="%(Title)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="艺术家:" width="100" color_style="emphasis1"/>
+                    <text text="%(Artist)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="唱片集:" width="100" color_style="emphasis1"/>
+                    <text text="%(Album)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="唱片集艺术家:" width="100" color_style="emphasis1"/>
+                    <text text="%(AlbumArtist)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="艺术家-唱片集:" width="100" color_style="emphasis1"/>
+                    <text text="%(ArtistAndAlbum)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="音轨号:" width="100" color_style="emphasis1"/>
+                    <text text="%(TrackNum)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="年份:" width="100" color_style="emphasis1"/>
+                    <text text="%(Year)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="流派:" width="100" color_style="emphasis1"/>
+                    <text text="%(Genre)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="注释:" width="100" color_style="emphasis1"/>
+                    <text text="%(Comment)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="文件类型:" width="100" color_style="emphasis1"/>
+                    <text text="%(FileType)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="比特率:" width="100" color_style="emphasis1"/>
+                    <text text="%(BitRate)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="声道数:" width="100" color_style="emphasis1"/>
+                    <text text="%(Channels)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="采样频率:" width="100" color_style="emphasis1"/>
+                    <text text="%(SampleFreq)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="位深度:" width="100" color_style="emphasis1"/>
+                    <text text="%(BitDepth)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="歌词文件:" width="100" color_style="emphasis1"/>
+                    <text text="%(LyricsFile)" style="scroll"/>
+                  </horizontalLayout>
+                </verticalLayout>
+                <!--第2列-->
+                <verticalLayout margin-left="4">
+                  <horizontalLayout height="20">
+                    <text text="格式:" width="100" color_style="emphasis1"/>
+                    <text text="%(Format)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="Midi音色库名称:" width="100" color_style="emphasis1"/>
+                    <text text="%(MidiSoundFont)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="Midi音乐的速度:" width="100" color_style="emphasis1"/>
+                    <text text="%(MidiSpeed)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="Midi音乐的位置:" width="100" color_style="emphasis1"/>
+                    <text text="%(MidiPosition)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="Midi音乐的长度:" width="100" color_style="emphasis1"/>
+                    <text text="%(MidiLength)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="播放状态:" width="100" color_style="emphasis1"/>
+                    <text text="%(PlayingStatus)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="播放项目类型:" width="100" color_style="emphasis1"/>
+                    <text text="%(PlayModeName)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="播放项目名称:" width="100" color_style="emphasis1"/>
+                    <text text="%(PlayListName)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="当前位置:" width="100" color_style="emphasis1"/>
+                    <text text="%(CurrentPosition)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="长度:" width="100" color_style="emphasis1"/>
+                    <text text="%(SongLength)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="歌词:" width="100" color_style="emphasis1"/>
+                    <text text="%(CurrentLyric)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="循环模式:" width="100" color_style="emphasis1"/>
+                    <text text="%(RepeatMode)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="音量:" width="100" color_style="emphasis1"/>
+                    <text text="%(Volume)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="帧率:" width="100" color_style="emphasis1"/>
+                    <text text="%(FPS)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="播放队列曲目数:" width="100" color_style="emphasis1"/>
+                    <text text="%(PlayQueueNum)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
+                    <text text="播放曲目序号:" width="100" color_style="emphasis1"/>
+                    <text text="%(PlayQueueIndex)" style="scroll"/>
+                  </horizontalLayout>
+                </verticalLayout>
+              </horizontalLayout>
+              <!--文本样式测试-->
+              <verticalLayout>
+                <trackInfo height="28"/>
+                <trackInfo font_size="10" height="28"/>
+                <albumCover proportion="2"/>
+                <text type="title" font_size="16" style="scroll" height="32"/>
+                <text type="artist" font_size="14" style="scroll" height="32" color_style="emphasis1"/>
+                <text type="album" font_size="12" style="scroll" height="32" color_style="emphasis2"/>
+                <!--<placeHolder height="24" hide-height="200"/>-->
+                <horizontalLayout height="30" margin="4">
+                  <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
+                  <searchBox width="180" height="26" margin-left="4"/>
+                </horizontalLayout>
+                <rectangle proportion="1">
+                  <lyrics margin="8" use_default_font="true" font_size="9"/>
+                </rectangle>
+                <text text="%(CurrentLyric)" height="24"/>
+              </verticalLayout>
+            </stackElement>
           </verticalLayout>
 
           <!--第4页 频谱分析/按钮-->
