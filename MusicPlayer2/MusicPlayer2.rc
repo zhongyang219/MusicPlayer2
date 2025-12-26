@@ -3136,8 +3136,8 @@ IDI_LIGHT_MODE_D        ICON                    "res\\light_mode_d.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,7,7,1
- PRODUCTVERSION 2,7,7,1
+ FILEVERSION 2,7,8,0
+ PRODUCTVERSION 2,7,8,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -3154,12 +3154,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "By ZhongYang"
             VALUE "FileDescription", "MusicPlayer2"
-            VALUE "FileVersion", "2.7.7.1"
+            VALUE "FileVersion", "2.7.8.0"
             VALUE "InternalName", "MusicPlayer2.exe"
             VALUE "LegalCopyright", "By ZhongYang. All rights reserved."
             VALUE "OriginalFilename", "MusicPlayer2.exe"
             VALUE "ProductName", "MusicPlayer2"
-            VALUE "ProductVersion", "2.7.7.1"
+            VALUE "ProductVersion", "2.7.8.0"
         END
     END
     BLOCK "VarFileInfo"
