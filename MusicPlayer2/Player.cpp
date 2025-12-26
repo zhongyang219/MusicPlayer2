@@ -1345,10 +1345,7 @@ void CPlayer::SpeedUp()
 {
     if (m_speed < MAX_PLAY_SPEED)
     {
-        if (m_speed == MIN_PLAY_SPEED)
-            m_speed = 0.25f;
-        else
-            m_speed += 0.25f;
+        m_speed += 0.05f;
         if (m_speed > MAX_PLAY_SPEED)
             m_speed = MAX_PLAY_SPEED;
         if (std::fabs(m_speed - 1) < 0.01)
@@ -1362,7 +1359,7 @@ void CPlayer::SlowDown()
 {
     if (m_speed > MIN_PLAY_SPEED)
     {
-        m_speed -= 0.25f;
+        m_speed -= 0.05f;
         if (m_speed < MIN_PLAY_SPEED)
             m_speed = MIN_PLAY_SPEED;
         if (std::fabs(m_speed - 1) < 0.01)
@@ -1373,7 +1370,7 @@ void CPlayer::SlowDown()
 }
 
 void CPlayer::SetSpeed(float speed) {
-    if (speed > MIN_PLAY_SPEED && speed < MAX_PLAY_SPEED) {
+    if (speed >= MIN_PLAY_SPEED && speed <= MAX_PLAY_SPEED) {
         m_speed = speed;
         m_pCore->SetSpeed(m_speed);
         m_controls.UpdateSpeed(m_speed);
