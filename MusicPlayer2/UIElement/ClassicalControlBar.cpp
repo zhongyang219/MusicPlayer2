@@ -11,10 +11,14 @@ UiElement::ClassicalControlBar::ClassicalControlBar()
 
 void UiElement::ClassicalControlBar::Draw()
 {
-    if (rect.Width() < ui->DPI(350))
-        height.FromString("56");
-    else
-        height.FromString("36");
+    if (m_stack_element != nullptr)
+    {
+        //如果stackElement当前显示的是进度条在中间的布局，则高度设置为36，如果是进度条在上方的布局，则高度设置为56
+        if (!m_stack_element->childLst.empty() && m_stack_element->CurrentElement() == m_stack_element->childLst[0])
+            height.FromString("36");
+        else
+            height.FromString("56");
+    }
     CalculateRect();
 
     Element::Draw();
@@ -51,12 +55,16 @@ void UiElement::ClassicalControlBar::InitComplete()
                 {
                     auto iter = std::find_if(button->pParent->childLst.begin(), button->pParent->childLst.end(), [&](const std::shared_ptr<Element>& cur_ele) {
                         return cur_ele.get() == button;
-                        });
+                    });
                     if (iter != button->pParent->childLst.end())
                         button->pParent->childLst.erase(iter);
                 }
             }
         }
+        //保存stackElement
+        if (element->id == "classical_control_bar_stack_element")
+            m_stack_element = dynamic_cast<StackElement*>(element);
+
         return false;
     });
 }
