@@ -732,6 +732,7 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
     pMenu->EnableMenuItem(ID_LIB_FOLDER_PROPERTIES, MF_BYCOMMAND | (select_valid ? MF_ENABLED : MF_GRAYED));
 
     SetAddToPlaylistMenuState(pMenu);
+    MenuMgr::AutoDisableMenuIfAllChildrenDisabled(pMenu);
 }
 
 void CUIWindowCmdHelper::SetMediaLibPlaylistMenuState(CMenu* pMenu)

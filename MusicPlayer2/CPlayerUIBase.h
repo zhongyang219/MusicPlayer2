@@ -48,7 +48,6 @@ struct SLayoutData
     const int height_threshold = theApp.DPI(260);               //界面布局从big或narrow变为small时的高度
     const int path_edit_height = theApp.DPI(24);                //当前路径Edit控件的高度
     const int search_edit_height = theApp.DPI(26);              //歌曲搜索框Edit控件区域的高度
-    const CSize spectral_size{ theApp.DPI(120), theApp.DPI(90) };   //频谱分析区域的大小
     const int toolbar_height = theApp.DPI(24);                  //播放列表工具栏的高度
     const int titlabar_height = theApp.DPI(28);                 //标题栏的高度
     const int menubar_height = theApp.DPI(24);                  //菜单栏的高度

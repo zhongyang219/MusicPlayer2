@@ -289,7 +289,7 @@
                 <button key="skin" height="28" margin="2" show_text="true"/>
                 <button key="settings" height="28" width="28" margin="2"/>
                 <button key="info" height="28" margin="2" show_text="true" text="详细信息按钮"/>
-                <button key="info" height="28" width="28" margin="2" show_text="false" text="详细信息按钮"/>
+                <button key="info" height="28" width="28" margin="2" show_text="false" text="详细信息按钮" bigIcon="true"/>
                 <button key="showPanel" icon="folderExplore" text="%(TXT_FOLDER_EXPLORE)" height="28" width="28" margin="2" panel_file_name="folder_explore_panel.xml"/>
                 <button key="showPanel" icon="folder" text="%(TXT_FOLDER)" height="28" width="28" margin="2" panel_file_name="folder_explore_panel.xml"/>
               </horizontalLayout>

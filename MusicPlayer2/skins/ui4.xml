@@ -109,7 +109,7 @@
             <horizontalLayout height="72">
               <horizontalLayout margin-right="8">
                 <!--显示为专辑封面的界面切换器，点击后进入播放详情页-->
-                <elementSwitcher style="album_cover" width="72" stack_element_id="ui_big_main_stack_element" stack_element_index="1"/>
+                <elementSwitcher style="album_cover" width="72" text="%(UI_TIP_SHOW_PLAY_DETAIL_PAGE)" stack_element_id="ui_big_main_stack_element" stack_element_index="1"/>
                 <verticalLayout margin="4">
                   <text type="title" style="scroll" height="24" font_size="10"/>
                   <text type="artist" style="scroll" height="24"/>
@@ -133,7 +133,7 @@
             <!--窄布局-->
             <horizontalLayout height="72" margin-right="4">
               <!--显示为专辑封面的界面切换器，点击后进入播放详情页-->
-              <elementSwitcher style="album_cover" width="72" stack_element_id="ui_big_main_stack_element" stack_element_index="1"/>
+              <elementSwitcher style="album_cover" width="72" text="%(UI_TIP_SHOW_PLAY_DETAIL_PAGE)" stack_element_id="ui_big_main_stack_element" stack_element_index="1"/>
               <!--这里用element元素包裹一个verticalLayout和一个placeHolder的作用是，-->
               <!--verticalLayout设置了hide-width，当宽度小于一定值隐藏时，这里还有一个placeHolder，确保左侧的专辑封面左对齐，右侧的按钮右对齐-->
               <element>
