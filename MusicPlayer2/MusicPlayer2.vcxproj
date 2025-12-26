@@ -249,7 +249,6 @@
     <ClInclude Include="BASSMidiLibrary.h" />
     <ClInclude Include="BassMixLibrary.h" />
     <ClInclude Include="BASSWmaLibrary.h" />
-    <ClInclude Include="bass_fx.h" />
     <ClInclude Include="BrowseEdit.h" />
     <ClInclude Include="CDevicesManager.h" />
     <ClInclude Include="CDonateDlg.h" />
