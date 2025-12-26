@@ -1478,8 +1478,10 @@ void CPlayer::SaveConfig() const
     ini.WriteString(L"config", L"default_album_file_name", CCommon::StringMerge(theApp.m_app_setting_data.default_album_name, L','));
     ini.WriteString(L"config", L"album_cover_path", theApp.m_app_setting_data.album_cover_path);
     // ini.WriteInt(L"config", L"playlist_mode", m_playlist_mode);
-    ini.WriteDouble(L"config", L"speed", m_speed);
-    ini.WriteInt(L"config", L"pitch", m_pitch);
+
+    //播放速度、变调的设置只有程序运行时生效，不保存到配置文件中
+    //ini.WriteDouble(L"config", L"speed", m_speed);
+    //ini.WriteInt(L"config", L"pitch", m_pitch);
 
     //保存均衡器设定
     ini.WriteBool(L"equalizer", L"equalizer_enable", m_equ_enable);
@@ -1528,12 +1530,15 @@ void CPlayer::LoadConfig()
     // 此项弃用不再保存，使用CRecentList记录的最近播放列表代替
     // bool playlist_mode_default = !CCommon::FileExist(theApp.m_recent_path_dat_path);
     // m_playlist_mode = static_cast<PlaylistMode>(ini.GetInt(L"config", L"playlist_mode", playlist_mode_default));
-    m_speed = static_cast<float>(ini.GetDouble(L"config", L"speed", 1));
-    if (m_speed < MIN_PLAY_SPEED || m_speed > MAX_PLAY_SPEED)
-        m_speed = 1;
-    m_pitch = static_cast<int>(ini.GetInt(L"config", L"pitch", 0));
-    if (m_pitch < MIN_PLAY_PITCH || m_pitch > MAX_PLAY_PITCH)
-        m_pitch = 0;
+    
+    //播放速度、变调的设置只有程序运行时生效，不保存到配置文件中
+    //m_speed = static_cast<float>(ini.GetDouble(L"config", L"speed", 1));
+    //if (m_speed < MIN_PLAY_SPEED || m_speed > MAX_PLAY_SPEED)
+    //    m_speed = 1;
+    //m_pitch = static_cast<int>(ini.GetInt(L"config", L"pitch", 0));
+    //if (m_pitch < MIN_PLAY_PITCH || m_pitch > MAX_PLAY_PITCH)
+    //    m_pitch = 0;
+
     //读取均衡器设定
     m_equ_enable = ini.GetBool(L"equalizer", L"equalizer_enable", false);
     m_equ_style = ini.GetInt(L"equalizer", L"equalizer_style", 0);	//读取均衡器预设
