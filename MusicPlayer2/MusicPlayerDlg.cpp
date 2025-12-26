@@ -655,7 +655,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.show_maximize_btn_in_titlebar = ini.GetBool(L"config", L"show_maximize_btn_in_titlebar", true);
     theApp.m_app_setting_data.show_minimode_btn_in_titlebar = ini.GetBool(L"config", L"show_minimode_btn_in_titlebar", true);
     theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar = ini.GetBool(L"config", L"show_fullscreen_btn_in_titlebar", true);
-    theApp.m_app_setting_data.show_skin_btn_in_titlebar = ini.GetBool(L"config", L"show_skin_btn_in_titlebar", false);
+    theApp.m_app_setting_data.show_skin_btn_in_titlebar = ini.GetBool(L"config", L"show_skin_btn_in_titlebar", true);
     theApp.m_app_setting_data.show_settings_btn_in_titlebar = ini.GetBool(L"config", L"show_settings_btn_in_titlebar", false);
     theApp.m_app_setting_data.show_dark_light_btn_in_titlebar = ini.GetBool(L"config", L"show_dark_light_btn_in_titlebar", false);
     theApp.m_app_setting_data.remove_titlebar_top_frame = ini.GetBool(L"config", L"remove_titlebar_top_frame", true);
