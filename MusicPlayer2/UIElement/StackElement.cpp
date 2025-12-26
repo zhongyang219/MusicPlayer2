@@ -30,6 +30,8 @@ void UiElement::StackElement::SwitchDisplay(bool previous)
 
 void UiElement::StackElement::Draw()
 {
+    CalculateRect();
+
     auto cur_element{ CurrentElement() };
 
     if (cur_element != nullptr)
