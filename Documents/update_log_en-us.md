@@ -1,6 +1,81 @@
 **[简体中文](./update_log.md) | English**
 
 # MusicPlayer2 Update log
+
+## V2.78 (2025/12/27)
+
+**New Features:**
+- When using the BASS kernel, implemented changing playback speed without pitch shifting. Added pitch shifting functionality to "Play Settings".
+- Added list search functionality to the Find dialog.
+- Added a "Remember last playback position" option in "Play Settings," allowing tracks to play from the beginning when switching lists #834.
+- Added support for using QQ Music as a download service, with corresponding options in General Settings.
+- Added right-click menu to the album cover download dialog.
+- Added duration display to the search list in the album cover download/Get tag information online dialog.
+- Added Traditional Chinese language support.
+- Added call stack information to crash message dialog.
+- In Options Settings, the "Lyrics folder", "Album cover folder", and "Default background image" edit boxes now allow manual path input.
+- Added an option in Options Settings → Media Library to merge different versions of the same song in the Now Playing list.
+- Added a "Remove top border of title bar" option in Options Settings → Appearance Settings to resolve the issue of a white border at the top of the window title bar.
+- When using GDI+ to draw album covers, if rounded corners are enabled, album covers are also clipped to rounded corners.
+- Added playback speed and pitch shifting display to the status bar.
+- Added mini spectrum visualization before the currently playing track in the playlist UI.
+- Adjusted the background color in Dark Mode when "Enable background" is unchecked.
+- In rename and format convert function, check the length of the target file path. If the path is too long, truncate the filename. Artist field to use the original name instead of the first artist #792.
+- Minimum UI refresh interval adjusted to 2 milliseconds.
+- Added the "Opening a single audio file in command line" option in Playback Settings to set the default behavior when opening a single file in command line.
+- When downloading lyrics to the lyric folder, use the "Artist-Title" format for naming.
+- Added an option in Options Settings → Playback Settings to disable screen sleep during full-screen playback #868.
+- Added a dialog asking whether to minimize to the notification area when closing the main window.
+
+**Customizable UI:**
+
+- Added folder browsing element `medialibFolderExplore`.
+- Added search box element `searchBox`.
+- In UI1, UI2, and UI6, when "Use system standard title bar" is checked, the style of the top-right buttons reverts to the previous effect, no longer occupying an entire row.
+- Optimized the layout of UI2.
+- Changed the style of "CUE" and playback speed labels on the left side of playback info in the UI to filled rectangles instead of rectangular borders.
+- When the interface height is below a certain value, use the "small" layout even when the playlist is not displayed.
+- Added `elementSwitcher` element for switching `stackElement`.
+- Added `id` attribute to `element`.
+- Added `stack_element_id` attribute to navigation bar element `navigationBar`.
+- Added functionality to set navigation bar buttons via child element `navigationItem` in `navigationBar`.
+- Added mouse press effect to `navigationBar`.
+- In the "Groove Music Style" UI, added the ability to enter the playback page by clicking the album.
+- Fixed the issue where two identical button elements could not be added to the same UI.
+- Added display panel functionality and `panel` element. Added optional values "showPanel" and "closePanel" to the `key` attribute in `button` element for showing and closing panels.
+- Added optional value "showPlayQueue" to the `key` attribute in  `Button`  element for displaying the playback queue panel.
+- Added optional value "showHideElement" to the `key` attribute in button element `Button` for showing/hiding any element.
+- Added `text` attribute to `button` element, supporting custom display text.
+- Added `icon` attribute to button element `Button`, supporting custom display icons.
+- Added `panel_file_name` and `panel_id` attributes to `button` element for displaying corresponding panel when clicked.
+- Added `related_element_id` attribute to `button` element for showing/hiding an element when clicked.
+- Added `sweep_to_switch` attribute to `stackElement`, allowing switching interfaces via mouse sweep left/right.
+- Added `size_change_to_switch` attribute to `stackElement`, allowing switching display when size changes.
+- Added `related_stack_elements` attribute to `stackElement` for setting linked switching between stack elements.
+- Removed `toolbar` element; toolbars in UI1 and UI2 are now created in XML.
+- Added `color_style` attribute to text element `Text`, allowing setting text color styles.
+- Updated UI12, adding buttons under the "Folder", "Playlist", and "My favorite" tabs.
+- Added `icon` type for displaying static icons.
+- Updated Interface 4 with a new left-side navigation bar.
+
+**Bug Fixes:**
+
+- Fixed the issue where double-clicking in the mini-mode playlist did not play the track.
+- Fixed the issue where the "Update Source" option in General Settings was not saved to the configuration file #836.
+- Fixed the issue in the lyric edit dialog where executing "Replace Time Tag" or "Delete Time Tag" when the current line had no time tag would delete the entire line #835.
+- Fixed the issue in the lyric edit dialog where executing "Swap Lyrics and Translation" without a translation would result in an extra " / ".
+- Fixed the issue in the Media Library dialog → Folder tab where the "Play Selected" button remained grayed out after selecting a folder.
+- Fixed the issue where the tree control background color in the "Media Library" dialog → "Folder explore" appeared abnormal in Wine environments.
+- Fixed the issue in "Options Settings" where album cover files and default background images using relative paths might not be recognized #861.
+- Fixed the flickering issue in the title bar area when activating the window after removing the top border #876.
+- Fixed lyric search failures caused by changes to the NetEase Cloud Music API #887.
+- Fixed the issue where some audio files would get stuck at the end of playback when using the FFMPEG kernel #820 #822.
+- Fixed the issue in the format conversion dialog where the progress bar remained at 0% if conversion failed to start due to an error.
+- Fixed the issue in "Options Settings" → "Appearance Settings" where directly editing the "External picture file name" text box and clicking OK would not save the changes.
+- Fixed the issue where album information was incorrectly passed as artist information to the system media transport controls #896.
+- Fixed the issue where, after maximizing the main window on a secondary monitor, minimizing and then clicking the taskbar button would cause the window to display on the primary monitor #859.
+- Fixed various crash issues.
+
 ## V2.77.1 (2024/08/23)
 
 This update fixed several issues since version 2.77. No new features added.
