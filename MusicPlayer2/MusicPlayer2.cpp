@@ -499,6 +499,7 @@ void CMusicPlayerApp::SaveConfig()
     CIniHelper ini(m_config_path);
     ini.WriteString(L"app", L"version", APP_VERSION);
     ini.WriteBool(L"general", L"check_update_when_start", m_general_setting_data.check_update_when_start);
+    ini.WriteInt(L"general", L"update_source", theApp.m_general_setting_data.update_source);
     // ini.WriteInt(_T("general"), _T("language"), static_cast<int>(m_general_setting_data.language));
     ini.WriteString(L"general", L"language_", m_general_setting_data.language_);
     if (!CWinVersionHelper::IsWindows81OrLater())
@@ -511,6 +512,8 @@ void CMusicPlayerApp::LoadConfig()
     CIniHelper ini(m_config_path);
     wstring config_version = ini.GetString(L"app", L"version", L"");
     m_general_setting_data.check_update_when_start = ini.GetBool(L"general", L"check_update_when_start", true);
+    bool is_zh_cn = theApp.m_str_table.IsSimplifiedChinese();       //当前语言是否为简体中文
+    m_general_setting_data.update_source = ini.GetInt(L"general", L"update_source", is_zh_cn ? 1 : 0);   //如果当前语言为简体，则默认更新源为Gitee，否则为GitHub
     // m_general_setting_data.language = static_cast<Language>(ini.GetInt(L"general", L"language", 0));
     m_general_setting_data.language_ = ini.GetString(L"general", L"language_", L"");     // 留空表示“跟随系统”
     if (!CWinVersionHelper::IsWindows81OrLater())

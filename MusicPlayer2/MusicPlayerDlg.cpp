@@ -485,7 +485,6 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"general", L"midi_use_inner_lyric", theApp.m_play_setting_data.midi_use_inner_lyric);
     ini.WriteBool(L"general", L"minimize_to_notify_icon", theApp.m_general_setting_data.minimize_to_notify_icon);
     ini.WriteBool(L"general", L"global_mouse_wheel_volume_adjustment", theApp.m_general_setting_data.global_mouse_wheel_volume_adjustment);
-    ini.WriteInt(L"general", L"update_source", theApp.m_general_setting_data.update_source);
     ini.WriteInt(L"general", L"lyric_download_service", theApp.m_general_setting_data.lyric_download_service);
 
     ini.WriteBool(L"config", L"stop_when_error", theApp.m_play_setting_data.stop_when_error);
@@ -693,8 +692,6 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_general_setting_data.minimize_to_notify_icon = ini.GetBool(L"general", L"minimize_to_notify_icon", false);
     theApp.m_general_setting_data.global_mouse_wheel_volume_adjustment = ini.GetBool(L"general", L"global_mouse_wheel_volume_adjustment", true);
 
-    bool is_zh_cn = theApp.m_str_table.IsSimplifiedChinese();       //当前语言是否为简体中文
-    theApp.m_general_setting_data.update_source = ini.GetInt(L"general", L"update_source", is_zh_cn ? 1 : 0);   //如果当前语言为简体，则默认更新源为Gitee，否则为GitHub
     theApp.m_general_setting_data.lyric_download_service = static_cast<GeneralSettingData::LyricDownloadService>(ini.GetInt(L"general", L"lyric_download_service", 0));
 
     theApp.m_play_setting_data.stop_when_error = ini.GetBool(L"config", L"stop_when_error", true);
