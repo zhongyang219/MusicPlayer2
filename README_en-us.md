@@ -4,7 +4,7 @@
 
 # MusicPlayer2 Introduction
 
-MusicPlayer2 is an audio playback software that integrates a wide range of features including music playback, lyrics display, and format conversion. It supports lyric display, karaoke-style lyric rendering, online lyric downloading, lyric editing, song tag recognition, album cover display, online album cover downloading, spectrum analysis, audio effect settings, taskbar thumbnail controls, theme colors, format conversion, and more. The player also offers highly customizable interface layouts and supports multiple playback kernels (BASS and FFMpeg). It is compatible with most common audio formats.
+MusicPlayer2 is a powerful local music player software designed to provide users with the best local music playback experience. It integrates a wide range of features including lyric display, karaoke-style lyric rendering, online lyric downloading, lyric editing, song tag recognition, album cover display, online album cover downloading, spectrum analysis, audio effect settings, taskbar thumbnail controls, theme colors, format conversion, and more. The player also offers highly customizable interface layouts and supports multiple playback kernels (BASS and FFMpeg). It is compatible with most common audio formats.
 
 # Related Links
 
@@ -92,7 +92,7 @@ Main window (UI4)▼
 
 Playback detail page (UI4)▼
 
-<img src="images/main_window_ui4_detail.png" style="zoom:80%;" />
+<img src="Screenshots/main_window_ui4_detail.png" style="zoom:80%;" />
 
 Main window (UI5)▼
 
@@ -100,17 +100,17 @@ Main window (UI5)▼
 
 Main window (Groove Music Style Windows 11)
 
-<img src="images/main_window_ui_groove_music.png" style="zoom:80%;" />
+<img src="Screenshots/main_window_ui_groove_music.png" style="zoom:80%;" />
 
 Playback detail page (Groove Music Style Windows 11)
 
-<img src="images/main_window_ui_groove_music_detail.png" style="zoom:80%;" />
+<img src="Screenshots/main_window_ui_groove_music_detail.png" style="zoom:80%;" />
 
 Mini mode▼
 
 <img src="Screenshots/Mini_mode.png" style="zoom:80%;" />
 
-Show lyrics in Cortana search box▼
+Show lyrics in Windows 10 search box▼
 
 <img src="Screenshots/Cortana_lyric.png" style="zoom:80%;" />
 
