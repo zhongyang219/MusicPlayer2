@@ -35,7 +35,7 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
             colors.color_control_bar_back = GRAY(64);
         colors.color_spectrum = theApp.m_app_setting_data.theme_color.light2;
         colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
-        colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.dark1;
+        colors.color_progress_back = theApp.m_app_setting_data.theme_color.dark1;
         colors.color_button_checked = theApp.m_app_setting_data.theme_color.dark3;
         colors.color_stack_indicator = theApp.m_app_setting_data.theme_color.light2;
         colors.color_scrollbar_handle = theApp.m_app_setting_data.theme_color.dark1;
@@ -64,7 +64,7 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.light3;
         colors.color_spectrum = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
-        colors.color_spectrum_back = theApp.m_app_setting_data.theme_color.light3;
+        colors.color_progress_back = theApp.m_app_setting_data.theme_color.light2_5;
         colors.color_button_checked = theApp.m_app_setting_data.theme_color.light2;
         colors.color_stack_indicator = theApp.m_app_setting_data.theme_color.dark0;
         colors.color_scrollbar_handle = theApp.m_app_setting_data.theme_color.light2;

@@ -1775,9 +1775,9 @@ CRect CPlayerUIBase::DrawProgess(CRect rect)
     rect.bottom = rect.top + progress_height;
 
     if (IsDrawBackgroundAlpha())
-        m_draw.FillAlphaRect(rect, m_colors.color_spectrum_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
+        m_draw.FillAlphaRect(rect, m_colors.color_progress_back, ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3);
     else
-        m_draw.FillRect(rect, m_colors.color_spectrum_back);
+        m_draw.FillRect(rect, m_colors.color_progress_back);
 
     double progress = static_cast<double>(CPlayer::GetInstance().GetCurrentPosition()) / CPlayer::GetInstance().GetSongLength();
     if (progress > 1)
