@@ -523,6 +523,8 @@
 #define IDC_SF2_PATH_EDIT               1109
 #define IDC_DONATE_SYSLINK              1109
 #define IDC_OUT_FORMAT_COMBO            1110
+#define IDC_GITHUB_SYSLINK2             1110
+#define IDC_GITEE_SYSLINK               1110
 #define IDC_OUT_DIR_EDIT                1111
 #define IDC_CBR_RADIO                   1112
 #define IDC_OUT_NAME_EDIT               1112

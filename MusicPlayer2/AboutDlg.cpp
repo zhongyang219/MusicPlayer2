@@ -54,8 +54,6 @@ bool CAboutDlg::InitializeControls()
     SetDlgItemTextW(IDC_SYSLINK1, temp.c_str());
     temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_CHECK_UPDATE") + L"</a>";
     SetDlgItemTextW(IDC_SYSLINK2, temp.c_str());
-    temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_GITHUB") + L"</a>";
-    SetDlgItemTextW(IDC_GITHUB_SYSLINK, temp.c_str());
     temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_LICENSE") + L"</a>";
     SetDlgItemTextW(IDC_LICENSE_SYSLINK, temp.c_str());
     temp = L"<a>" + theApp.m_str_table.LoadText(L"TXT_ABOUTBOX_DONATE") + L"</a>";
@@ -66,12 +64,13 @@ bool CAboutDlg::InitializeControls()
     SetDlgItemTextW(IDOK, temp.c_str());
 
     RepositionTextBasedControls({
-        { CtrlTextInfo::L3, IDC_SYSLINK1, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L2, IDC_SYSLINK2, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L1, IDC_GITHUB_SYSLINK, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L3, IDC_LICENSE_SYSLINK, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L2, IDC_DONATE_SYSLINK, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L1, IDC_ACKNOWLEDGEMENT_SYSLINK, CtrlTextInfo::W_50 }
+        { CtrlTextInfo::L4, IDC_SYSLINK1, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L3, IDC_SYSLINK2, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L2, IDC_GITHUB_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L1, IDC_GITEE_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L4, IDC_LICENSE_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L3, IDC_DONATE_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L2, IDC_ACKNOWLEDGEMENT_SYSLINK, CtrlTextInfo::W_50 }
         });
 
     return true;
@@ -86,6 +85,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CBaseDialog)
     ON_NOTIFY(NM_CLICK, IDC_SYSLINK1, &CAboutDlg::OnNMClickSyslink1)
     ON_NOTIFY(NM_CLICK, IDC_SYSLINK2, &CAboutDlg::OnNMClickSyslink2)
     ON_NOTIFY(NM_CLICK, IDC_GITHUB_SYSLINK, &CAboutDlg::OnNMClickGithubSyslink)
+    ON_NOTIFY(NM_CLICK, IDC_GITEE_SYSLINK, &CAboutDlg::OnNMClickGiteeSyslink)
     ON_NOTIFY(NM_CLICK, IDC_DONATE_SYSLINK, &CAboutDlg::OnNMClickDonateSyslink)
     ON_WM_PAINT()
     ON_NOTIFY(NM_CLICK, IDC_LICENSE_SYSLINK, &CAboutDlg::OnNMClickLicenseSyslink)
@@ -110,6 +110,7 @@ BOOL CAboutDlg::OnInitDialog()
     m_tool_tip.Create(this);
     m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK1), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_SEND_EMAIL_TO_AUTHOR") + L"\r\nmailto:zhongyang219@hotmail.com").c_str());
     m_tool_tip.AddTool(GetDlgItem(IDC_GITHUB_SYSLINK), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_GOTO_GITHUB") + L"\r\nhttps://github.com/zhongyang219/MusicPlayer2").c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_GITEE_SYSLINK), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_GOTO_GITEE") + L"\r\nhttps://gitee.com/zhongyang219/MusicPlayer2").c_str());
     m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_BASS), L"http://www.un4seen.com/bass.html");
     m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TAGLIB), L"http://taglib.org/");
     m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_TINYXML2), L"https://github.com/leethomason/tinyxml2");
@@ -160,6 +161,12 @@ void CAboutDlg::OnNMClickGithubSyslink(NMHDR* pNMHDR, LRESULT* pResult)
 {
     // TODO: 在此添加控件通知处理程序代码
     ShellExecute(NULL, _T("open"), _T("https://github.com/zhongyang219/MusicPlayer2/"), NULL, NULL, SW_SHOW);   //打开超链接
+    *pResult = 0;
+}
+
+void CAboutDlg::OnNMClickGiteeSyslink(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    ShellExecute(NULL, _T("open"), _T("https://gitee.com/zhongyang219/MusicPlayer2/"), NULL, NULL, SW_SHOW);   //打开超链接
     *pResult = 0;
 }
 
