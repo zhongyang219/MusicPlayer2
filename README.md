@@ -1,5 +1,7 @@
 **简体中文 | [English](./README_en-us.md)**
 
+<a href="https://hellogithub.com/repository/zhongyang219/MusicPlayer2" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=1ad354e5ab404301919665ac7973cd07&claim_uid=CeVqou2T1dIvfQP&theme=neutral" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 # MusicPlayer2 简介
 
 MusicPlayer2是一款集音乐播放、歌词显示、格式转换等众多功能于一身的音频播放软件。支持歌词显示、歌词卡拉OK样式显示、歌词在线下载、歌词编辑、歌曲标签识别、专辑封面显示、专辑封面在线下载、频谱分析、音效设置、任务栏缩略图按钮、主题颜色、格式转换等功能，支持高度自定义的界面布局，支持多种播放内核（BASS和FFMpeg）。播放器支持大部分常见的音频格式。

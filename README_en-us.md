@@ -1,5 +1,7 @@
 **[简体中文](./README.md) | English**
 
+<a href="https://hellogithub.com/repository/zhongyang219/MusicPlayer2" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=1ad354e5ab404301919665ac7973cd07&claim_uid=CeVqou2T1dIvfQP&theme=neutral" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 # MusicPlayer2 Introduction
 
 MusicPlayer2 is an audio playback software that integrates a wide range of features including music playback, lyrics display, and format conversion. It supports lyric display, karaoke-style lyric rendering, online lyric downloading, lyric editing, song tag recognition, album cover display, online album cover downloading, spectrum analysis, audio effect settings, taskbar thumbnail controls, theme colors, format conversion, and more. The player also offers highly customizable interface layouts and supports multiple playback kernels (BASS and FFMpeg). It is compatible with most common audio formats.
