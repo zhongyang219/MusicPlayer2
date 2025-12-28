@@ -152,23 +152,22 @@
         <verticalLayout>
           <placeHolder show_when_use_system_titlebar="true" height="28"/>
           <lyrics margin="4"/>
-          <horizontalLayout height="142">
-            <albumCover width="126" margin="8"/>
+          <horizontalLayout height="126">
+            <albumCover width="110" margin="8"/>
             <verticalLayout>
               <text type="title" style="scroll" height="32" font_size="14"/>
               <text type="artist_album" style="scroll" height="32" font_size="10"/>
-              <horizontalLayout height="24">
-                <rating width="96"/>
-                <placeHolder/>
-              </horizontalLayout>
-              <text type="format" style="scroll" height="28"/>
+              <spectrum draw_reflex="true" fixed_width="true" height="42"/>
             </verticalLayout>
           </horizontalLayout>
           <rectangle height="88" no_corner_radius="true">
             <horizontalLayout>
               <verticalLayout proportion="2">
-                <text type="title" style="scroll" height="24" font_size="10" margin-left="8"/>
-                <text type="artist" style="scroll" height="24" margin-left="8"/>
+                <horizontalLayout height="24" margin-left="8">
+                  <rating width="96"/>
+                  <placeHolder/>
+                </horizontalLayout>
+                <text type="format" style="scroll" height="28" margin-left="8"/>
               </verticalLayout>
               <verticalLayout proportion="3">
                 <horizontalLayout height="60">
@@ -182,10 +181,10 @@
               </verticalLayout>
               <horizontalLayout margin-right="4" proportion="2">
                 <placeHolder/>
-                <volume show_text="true" width="64" height="26" margin="2"/>
+                <volume show_text="true" width="64" height="24" margin="2"/>
                 <button key="addToPlaylist" width="26" height="26" margin="2"/>
                 <button key="mediaLib" width="26" height="26" margin="2"/>
-                <button key="showPlayQueue" width="26" height="26" margin="2"/>
+                <button key="showPlayQueue" width="26" height="24" margin="2"/>
               </horizontalLayout>
             </horizontalLayout>
           </rectangle>
