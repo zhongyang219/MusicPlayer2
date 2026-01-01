@@ -218,6 +218,11 @@ CFindListDlg::FindListItem CFindListDlg::GetSelectedItem() const
     return list_item;
 }
 
+void CFindListDlg::SetSearchBoxFocus()
+{
+    m_search_edit.SetFocus();
+}
+
 void CFindListDlg::DoDataExchange(CDataExchange* pDX)
 {
     CTabDlg::DoDataExchange(pDX);

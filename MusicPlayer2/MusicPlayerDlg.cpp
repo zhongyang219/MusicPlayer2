@@ -2906,8 +2906,8 @@ void CMusicPlayerDlg::OnMediaLib()
 
 void CMusicPlayerDlg::OnFind()
 {
-    // TODO: 在此添加命令处理程序代码
     m_findDlg.ShowModelessDialog(IDD_FIND_CONTAINER_DIALOG);
+    m_findDlg.CenterWindow(this);
 }
 
 void CMusicPlayerDlg::OnExplorePath()

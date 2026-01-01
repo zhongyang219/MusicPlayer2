@@ -72,6 +72,7 @@ protected:
 
 public: 
     void ClearFindResult();
+    void SetSearchBoxFocus();
 
     DECLARE_MESSAGE_MAP()
 

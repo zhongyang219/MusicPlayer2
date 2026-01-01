@@ -6,6 +6,7 @@
 #include "afxdialogex.h"
 #include "FindContainerDlg.h"
 
+#define FIND_DLG_TIMER_ID 2539
 
 // CFindContainerDlg 对话框
 
@@ -59,6 +60,7 @@ bool CFindContainerDlg::InitializeControls()
 BEGIN_MESSAGE_MAP(CFindContainerDlg, CBaseDialog)
 	ON_MESSAGE(WM_PLAY_SELECTED_BTN_ENABLE, &CFindContainerDlg::OnPlaySelectedBtnEnable)
 	ON_WM_DESTROY()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -89,6 +91,9 @@ BOOL CFindContainerDlg::OnInitDialog()
 	m_tab_ctrl.AdjustTabWindowSize();
 
 	m_tab_ctrl.SetCurTab(m_tab_selected);
+
+	//启动一个定时器，用于延迟一定时间后将焦点设置到搜索框
+	SetTimer(FIND_DLG_TIMER_ID, 200, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -125,4 +130,23 @@ void CFindContainerDlg::OnDestroy()
 	m_tab_ctrl.Clear();
 	delete m_find_list_dlg;
 	m_find_list_dlg = nullptr;
+}
+
+
+void CFindContainerDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == FIND_DLG_TIMER_ID)
+	{
+		//将焦点设置到搜索框
+		CWnd* cur_tab = m_tab_ctrl.GetCurrentTab();
+		CFindDlg* find_dlg = dynamic_cast<CFindDlg*>(cur_tab);
+		if (find_dlg != nullptr)
+			find_dlg->SetSearchBoxFocus();
+		CFindListDlg* find_list_dlg = dynamic_cast<CFindListDlg*>(cur_tab);
+		if (find_list_dlg != nullptr)
+			find_list_dlg->SetSearchBoxFocus();
+
+		KillTimer(FIND_DLG_TIMER_ID);
+	}
+	CBaseDialog::OnTimer(nIDEvent);
 }

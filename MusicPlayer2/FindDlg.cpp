@@ -137,6 +137,15 @@ void CFindDlg::SetPlaySelectedEnable(bool enable)
     ::SendMessage(pParent->GetSafeHwnd(), WM_PLAY_SELECTED_BTN_ENABLE, WPARAM(enable), 0);
 }
 
+void CFindDlg::SetSearchBoxFocus()
+{
+    CWnd* search_box = GetDlgItem(IDC_FIND_EDIT);
+    if (search_box != nullptr)
+    {
+        search_box->SetFocus();
+    }
+}
+
 void CFindDlg::ClearFindResult()
 {
     m_find_result.clear();
