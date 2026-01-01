@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MyFavouriteList.h"
 #include "UiMediaLibItemMgr.h"
 #include "SongInfoHelper.h"
@@ -10,12 +10,12 @@ std::wstring UiElement::MyFavouriteList::GetItemText(int row, int col)
 {
     if (row >= 0 && row < GetRowCount())
     {
-        //ÐòºÅ
+        //åºå·
         if (col == COL_INDEX)
         {
             return std::to_wstring(row + 1);
         }
-        //ÇúÄ¿
+        //æ›²ç›®
         if (col == COL_TRACK)
         {
             if (row >= 0 && row < CUiMyFavouriteItemMgr::Instance().GetSongCount())
@@ -25,7 +25,7 @@ std::wstring UiElement::MyFavouriteList::GetItemText(int row, int col)
                 return display_name;
             }
         }
-        //Ê±¼ä
+        //æ—¶é—´
         else if (col == COL_TIME)
         {
             const SongInfo& song_info{ CUiMyFavouriteItemMgr::Instance().GetSongInfo(row) };
@@ -64,13 +64,13 @@ int UiElement::MyFavouriteList::GetColumnWidth(int col, int total_width)
     return 0;
 }
 
-int UiElement::MyFavouriteList::GetHighlightRow()
+bool UiElement::MyFavouriteList::IsHighlightRow(int row)
 {
     if (CRecentList::Instance().IsPlayingSpecPlaylist(CRecentList::PT_FAVOURITE))
     {
-        return CPlayer::GetInstance().GetIndex();
+        return CPlayer::GetInstance().GetIndex() == row;
     }
-    return -1;
+    return false;
 }
 
 int UiElement::MyFavouriteList::GetColumnScrollTextWhenSelected()
@@ -141,7 +141,7 @@ std::wstring UiElement::MyFavouriteList::GetHoverButtonTooltip(int index, int ro
 void UiElement::MyFavouriteList::OnHoverButtonClicked(int btn_index, int row)
 {
     CMusicPlayerCmdHelper helper;
-    //µã»÷ÁË¡°²¥·Å¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ’­æ”¾â€æŒ‰é’®
     if (btn_index == BTN_PLAY)
     {
         int item_selected = GetItemSelected();
@@ -152,7 +152,7 @@ void UiElement::MyFavouriteList::OnHoverButtonClicked(int btn_index, int row)
             helper.OnPlayMyFavourite(song_info);
         }
     }
-    //µã»÷ÁË¡°Ìí¼Óµ½²¥·ÅÁÐ±í¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€æŒ‰é’®
     else if (btn_index == BTN_ADD)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);

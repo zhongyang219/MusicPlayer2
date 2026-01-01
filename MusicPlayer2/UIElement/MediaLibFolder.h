@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include "ListElement.h"
 namespace UiElement
 {
     class TrackList;
 
-    //Ã½Ìå¿âµÄÎÄ¼ş¼ĞÁĞ±í
+    //åª’ä½“åº“çš„æ–‡ä»¶å¤¹åˆ—è¡¨
     class MediaLibFolder : public ListElement
     {
     public:
@@ -18,7 +18,7 @@ namespace UiElement
             COL_MAX
         };
 
-        //Êó±êÖ¸ÏòÒ»ĞĞÊ±ÏÔÊ¾µÄ°´Å¥
+        //é¼ æ ‡æŒ‡å‘ä¸€è¡Œæ—¶æ˜¾ç¤ºçš„æŒ‰é’®
         enum BtnKey
         {
             BTN_PLAY,
@@ -27,12 +27,12 @@ namespace UiElement
             BTN_MAX
         };
 
-        // Í¨¹ı ListElement ¼Ì³Ğ
+        // é€šè¿‡ ListElement ç»§æ‰¿
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         int GetColumnCount() override;
         int GetColumnWidth(int col, int total_width) override;
-        virtual int GetHighlightRow() override;
+        virtual bool IsHighlightRow(int row) override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual void OnDoubleClicked() override;
@@ -47,11 +47,11 @@ namespace UiElement
         std::string track_list_element_id;
 
     private:
-        void FindTrackList();        //²éÕÒTrackList
+        void FindTrackList();        //æŸ¥æ‰¾TrackList
 
     private:
         TrackList* track_list;
-        bool find_track_list{};      //Èç¹ûÒÑ¾­²éÕÒ¹ıTrackList£¬ÔòÎªtrue
+        bool find_track_list{};      //å¦‚æœå·²ç»æŸ¥æ‰¾è¿‡TrackListï¼Œåˆ™ä¸ºtrue
     };
 }
 

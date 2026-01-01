@@ -86,8 +86,6 @@ public:
     int GetSongCount() const;
     SongInfo GetSongInfo(int index) const;
     const UTrackInfo& GetItem(int index) const;
-    int GetCurrentIndex() const;                //获取正在播放的曲目在m_all_tracks_list中的序号
-    void SetCurrentSong(const SongInfo& song);  //设置正在播放的曲目，将其在m_all_tracks_list中的序号保存起来
     bool IsLoading() const { return m_loading; }
     bool IsInited() const { return m_inited; }
     void GetSongList(std::vector<SongInfo>& song_list) const;
@@ -95,7 +93,6 @@ public:
 
     std::vector<UTrackInfo> m_all_tracks_list;  //所有曲目信息列表
     std::atomic<bool> m_loading{};                       //如果正在初始化中，则为true
-    int m_current_index{ -1 };              //正在播放的曲目在m_all_tracks_list中的序号
     std::atomic<bool> m_inited{};                        //如果已经初始化过，则为true
     mutable std::shared_mutex m_shared_mutex;
 

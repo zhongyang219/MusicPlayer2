@@ -2574,7 +2574,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
 
                 bool draw_mini_spectrum = false;    //是否在正在播放行绘制迷你频谱
                 //绘制正在播放指示
-                if (i == list_element->GetHighlightRow())
+                if (list_element->IsHighlightRow(i))
                 {
                     CRect rect_cur_indicator{ rect_item };
                     rect_cur_indicator.right = rect_cur_indicator.left + DPI(4);
@@ -2587,7 +2587,8 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                         m_draw.FillRect(rect_cur_indicator, m_colors.color_text_heighlight, true);
 
                     //播放列表中正在播放行绘制迷你频谱
-                    if (dynamic_cast<UiElement::Playlist*>(list_element) != nullptr && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED)
+                    if ((dynamic_cast<UiElement::Playlist*>(list_element) != nullptr || dynamic_cast<UiElement::TrackList*>(list_element) != nullptr|| dynamic_cast<UiElement::MyFavouriteList*>(list_element) != nullptr)
+                        && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED)
                     {
                         draw_mini_spectrum = true;
                         CRect rect_mini_spectrum{ rect_cur_indicator };

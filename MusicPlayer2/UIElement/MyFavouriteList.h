@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include "ListElement.h"
 namespace UiElement
 {
-    //ÎÒÏ²»¶µÄÒôÀÖÁĞ±í
+    //æˆ‘å–œæ¬¢çš„éŸ³ä¹åˆ—è¡¨
     class MyFavouriteList : public ListElement
     {
     public:
@@ -14,7 +14,7 @@ namespace UiElement
             COL_MAX
         };
 
-        //Êó±êÖ¸ÏòÒ»ĞĞÊ±ÏÔÊ¾µÄ°´Å¥
+        //é¼ æ ‡æŒ‡å‘ä¸€è¡Œæ—¶æ˜¾ç¤ºçš„æŒ‰é’®
         enum BtnKey
         {
             BTN_PLAY,
@@ -22,12 +22,12 @@ namespace UiElement
             BTN_MAX
         };
 
-        // Í¨¹ı ListElement ¼Ì³Ğ
+        // é€šè¿‡ ListElement ç»§æ‰¿
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         int GetColumnCount() override;
         int GetColumnWidth(int col, int total_width) override;
-        virtual int GetHighlightRow() override;
+        virtual bool IsHighlightRow(int row) override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual void OnDoubleClicked() override;

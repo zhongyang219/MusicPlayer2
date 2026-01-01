@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "TracksList.h"
 #include "MusicPlayerCmdHelper.h"
 #include "MediaLibHelper.h"
@@ -32,7 +32,7 @@ void UiElement::TrackList::SetListItem(const ListItem& list_item)
         CAudioCommon::GetAudioFiles(list_item.path, song_list, MAX_SONG_NUM, list_item.contain_sub_folder);
         auto sort_fun = SongInfo::GetSortFunc(list_item.sort_mode == SM_UNSORT ? SM_U_FILE : list_item.sort_mode);
         std::stable_sort(song_list.begin(), song_list.end(), sort_fun);
-        //»ñÈ¡ÇúÄ¿ĞÅÏ¢
+        //è·å–æ›²ç›®ä¿¡æ¯
         for (auto& cur_song : song_list)
         {
             cur_song = CSongDataManager::GetInstance().GetSongInfo3(cur_song);
@@ -43,7 +43,7 @@ void UiElement::TrackList::SetListItem(const ListItem& list_item)
         CPlaylistFile playlist;
         playlist.LoadFromFile(list_item.path);
         playlist.MoveToSongList(song_list);
-        //»ñÈ¡ÇúÄ¿ĞÅÏ¢
+        //è·å–æ›²ç›®ä¿¡æ¯
         for (auto& cur_song : song_list)
         {
             cur_song = CSongDataManager::GetInstance().GetSongInfo3(cur_song);
@@ -51,6 +51,7 @@ void UiElement::TrackList::SetListItem(const ListItem& list_item)
     }
     m_ui_song_list->Update(song_list);
     playlist_offset = 0;
+    EnsureHighlightItemVisible();
 }
 
 void UiElement::TrackList::ClearListItem()
@@ -69,7 +70,7 @@ std::wstring UiElement::TrackList::GetEmptyString()
 
 CUISongListMgr* UiElement::TrackList::GetSongListData()
 {
-    //Èç¹ûÏÔÊ¾µÄÁĞ±íÎªËùÓĞÇúÄ¿£¬ÔòÖ±½ÓÊ¹ÓÃCUiAllTracksMgrµÄÊı¾İ
+    //å¦‚æœæ˜¾ç¤ºçš„åˆ—è¡¨ä¸ºæ‰€æœ‰æ›²ç›®ï¼Œåˆ™ç›´æ¥ä½¿ç”¨CUiAllTracksMgrçš„æ•°æ®
     if (m_list_item.type == LT_MEDIA_LIB && m_list_item.medialib_type == ListItem::ClassificationType::CT_NONE)
         return &CUiAllTracksMgr::Instance();
     else

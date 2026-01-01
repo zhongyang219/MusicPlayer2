@@ -1,17 +1,18 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "TracksList.h"
 #include "MusicPlayerCmdHelper.h"
+#include "Player.h"
 
 std::wstring UiElement::AbstractTracksList::GetItemText(int row, int col)
 {
     if (row >= 0 && row < GetRowCount())
     {
-        //ÐòºÅ
+        //åºå·
         if (col == COL_INDEX)
         {
             return std::to_wstring(row + 1);
         }
-        //ÇúÄ¿
+        //æ›²ç›®
         if (col == COL_TRACK)
         {
             if (row >= 0 && row < GetSongListData()->GetSongCount())
@@ -19,7 +20,7 @@ std::wstring UiElement::AbstractTracksList::GetItemText(int row, int col)
                 return GetSongListData()->GetItem(row).name;
             }
         }
-        //Ê±¼ä
+        //æ—¶é—´
         else if (col == COL_TIME)
         {
             if (row >= 0 && row < GetSongListData()->GetSongCount())
@@ -60,15 +61,17 @@ int UiElement::AbstractTracksList::GetColumnWidth(int col, int total_width)
     return 0;
 }
 
-int UiElement::AbstractTracksList::GetHighlightRow()
+bool UiElement::AbstractTracksList::IsHighlightRow(int row)
 {
-    int highlight_row = GetSongListData()->GetCurrentIndex();
-    if (last_highlight_row != highlight_row)
+    CUISongListMgr* ui_song_list_mgr = GetSongListData();
+    if (ui_song_list_mgr != nullptr)
     {
-        EnsureItemVisible(highlight_row);
-        last_highlight_row = highlight_row;
+        SongKey song_key = ui_song_list_mgr->GetItem(row).song_key;
+        const auto& current_song = CPlayer::GetInstance().GetSafeCurrentSongInfo();
+        if (!song_key.path.empty() && !current_song.IsEmpty())
+            return (std::equal_to<SongKey>()(SongKey(current_song), song_key));
     }
-    return highlight_row;
+    return false;
 }
 
 int UiElement::AbstractTracksList::GetColumnScrollTextWhenSelected()
@@ -147,31 +150,31 @@ std::wstring UiElement::AbstractTracksList::GetHoverButtonTooltip(int index, int
 void UiElement::AbstractTracksList::OnHoverButtonClicked(int btn_index, int row)
 {
     CMusicPlayerCmdHelper helper;
-    //µã»÷ÁË¡°²¥·Å¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ’­æ”¾â€æŒ‰é’®
     if (btn_index == BTN_PLAY)
     {
         const SongInfo& song{ GetSongListData()->GetSongInfo(row) };
         CMusicPlayerCmdHelper helper;
         helper.OnPlayAllTrack(song);
     }
-    //µã»÷ÁË¡°Ìí¼Óµ½²¥·ÅÁÐ±í¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€æŒ‰é’®
     else if (btn_index == BTN_ADD)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
         ShowContextMenu(menu, nullptr);
     }
-    //µã»÷ÁË¡°Ìí¼Óµ½ÎÒÏ²»¶µÄÒôÀÖ¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ·»åŠ åˆ°æˆ‘å–œæ¬¢çš„éŸ³ä¹â€æŒ‰é’®
     else if (btn_index == BTN_FAVOURITE)
     {
         const SongInfo& song{ GetSongListData()->GetSongInfo(row) };
         helper.OnAddRemoveFromFavourite(song);
-        GetSongListData()->AddOrRemoveMyFavourite(row);        //¸üÐÂUIÖÐµÄÏÔÊ¾
+        GetSongListData()->AddOrRemoveMyFavourite(row);        //æ›´æ–°UIä¸­çš„æ˜¾ç¤º
     }
 }
 
 int UiElement::AbstractTracksList::GetUnHoverIconCount(int row)
 {
-    //Êó±êÎ´Ö¸ÏòµÄÁÐ£¬Èç¹ûÇúÄ¿ÔÚ¡°ÎÒÏ²»¶µÄÒôÀÖ¡±ÖÐ£¬ÔòÏÔÊ¾ºìÐÄÍ¼±ê
+    //é¼ æ ‡æœªæŒ‡å‘çš„åˆ—ï¼Œå¦‚æžœæ›²ç›®åœ¨â€œæˆ‘å–œæ¬¢çš„éŸ³ä¹â€ä¸­ï¼Œåˆ™æ˜¾ç¤ºçº¢å¿ƒå›¾æ ‡
     if (GetSongListData()->GetItem(row).is_favourite)
         return 1;
     else

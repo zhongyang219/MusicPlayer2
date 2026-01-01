@@ -32,7 +32,7 @@ namespace UiElement
         int GetRowCount() override;
         int GetColumnCount() override;
         int GetColumnWidth(int col, int total_width) override;
-        virtual int GetHighlightRow() override;
+        virtual bool IsHighlightRow(int row) override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual CMenu* GetContextMenu(bool item_selected) override;
         virtual void OnDoubleClicked() override;

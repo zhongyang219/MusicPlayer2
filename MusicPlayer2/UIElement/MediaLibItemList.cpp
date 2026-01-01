@@ -51,7 +51,7 @@ std::wstring UiElement::MediaLibItemList::GetEmptyString()
         return theApp.m_str_table.LoadText(L"UI_MEDIALIB_LIST_EMPTY_INFO");
 }
 
-int UiElement::MediaLibItemList::GetHighlightRow()
+bool UiElement::MediaLibItemList::IsHighlightRow(int row)
 {
     if (CPlayer::GetInstance().IsMediaLibMode() && CPlayer::GetInstance().GetMediaLibPlaylistType() == type)
     {
@@ -61,9 +61,9 @@ int UiElement::MediaLibItemList::GetHighlightRow()
             EnsureItemVisible(highlight_row);
             last_highlight_row = highlight_row;
         }
-        return highlight_row;
+        return highlight_row == row;
     }
-    return -1;
+    return false;
 }
 
 int UiElement::MediaLibItemList::GetColumnScrollTextWhenSelected()

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MediaLibPlaylist.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UserUi.h"
@@ -45,9 +45,9 @@ int UiElement::MediaLibPlaylist::GetColumnWidth(int col, int total_width)
     return 0;
 }
 
-int UiElement::MediaLibPlaylist::GetHighlightRow()
+bool UiElement::MediaLibPlaylist::IsHighlightRow(int row)
 {
-    return m_list_cache.playing_index();
+    return m_list_cache.playing_index() == row;
 }
 
 int UiElement::MediaLibPlaylist::GetColumnScrollTextWhenSelected()
@@ -74,7 +74,7 @@ void UiElement::MediaLibPlaylist::OnDoubleClicked()
 int UiElement::MediaLibPlaylist::GetHoverButtonCount(int row)
 {
     FindTrackList();
-    //Èç¹ûÓĞ¹ØÁªµÄTrackList£¬Ôò²»ÏÔÊ¾×îºóµÄ¡°Ô¤ÀÀ¡±°´Å¥
+    //å¦‚æœæœ‰å…³è”çš„TrackListï¼Œåˆ™ä¸æ˜¾ç¤ºæœ€åçš„â€œé¢„è§ˆâ€æŒ‰é’®
     if (track_list != nullptr && track_list->IsEnable())
         return BTN_MAX - 1;
     else
@@ -108,7 +108,7 @@ std::wstring UiElement::MediaLibPlaylist::GetHoverButtonTooltip(int index, int r
 
 void UiElement::MediaLibPlaylist::OnHoverButtonClicked(int btn_index, int row)
 {
-    //µã»÷ÁË¡°²¥·Å¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ’­æ”¾â€æŒ‰é’®
     if (btn_index == BTN_PLAY)
     {
         ListItem list_item = m_list_cache.GetItem(row);
@@ -118,7 +118,7 @@ void UiElement::MediaLibPlaylist::OnHoverButtonClicked(int btn_index, int row)
             helper.OnListItemSelected(list_item, true);
         }
     }
-    //µã»÷ÁËÔ¤ÀÀ°´Å¥
+    //ç‚¹å‡»äº†é¢„è§ˆæŒ‰é’®
     else if (btn_index == BTN_PREVIEW)
     {
         CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
@@ -131,7 +131,7 @@ void UiElement::MediaLibPlaylist::OnHoverButtonClicked(int btn_index, int row)
 
 void UiElement::MediaLibPlaylist::OnSelectionChanged()
 {
-    //»ñÈ¡¹ØÁªµÄtrackListÔªËØ
+    //è·å–å…³è”çš„trackListå…ƒç´ 
     FindTrackList();
     if (track_list != nullptr && track_list->IsEnable())
     {
@@ -153,6 +153,6 @@ void UiElement::MediaLibPlaylist::FindTrackList()
     if (!find_track_list)
     {
         track_list = FindRelatedElement<TrackList>(track_list_element_id);
-        find_track_list = true;  //ÕÒ¹ıÒ»´ÎÃ»ÕÒµ½¾Í²»ÕÒÁË
+        find_track_list = true;  //æ‰¾è¿‡ä¸€æ¬¡æ²¡æ‰¾åˆ°å°±ä¸æ‰¾äº†
     }
 }

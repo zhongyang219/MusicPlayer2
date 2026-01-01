@@ -272,28 +272,6 @@ const CUISongListMgr::UTrackInfo& CUISongListMgr::GetItem(int index) const
     return empty_item;
 }
 
-int CUISongListMgr::GetCurrentIndex() const
-{
-    return m_current_index;
-}
-
-void CUISongListMgr::SetCurrentSong(const SongInfo& song)
-{
-    if (!m_loading && m_inited && !song.IsEmpty())
-    {
-        int index{};
-        for (const auto& item : m_all_tracks_list)
-        {
-            if (std::equal_to<SongKey>()(SongKey(song), item.song_key))
-            {
-                m_current_index = index;
-                break;
-            }
-            index++;
-        }
-    }
-}
-
 void CUISongListMgr::GetSongList(std::vector<SongInfo>& song_list) const
 {
     for (const auto& item : m_all_tracks_list)

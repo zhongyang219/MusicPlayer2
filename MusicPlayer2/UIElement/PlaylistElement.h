@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/ListElement.h"
 namespace UiElement
 {
-    //²¥·ÅÁĞ±í
+    //æ’­æ”¾åˆ—è¡¨
     class Playlist : public ListElement
     {
     public:
@@ -14,7 +14,7 @@ namespace UiElement
             COL_MAX
         };
 
-        ////Êó±êÖ¸ÏòÒ»ĞĞÊ±ÏÔÊ¾µÄ°´Å¥
+        ////é¼ æ ‡æŒ‡å‘ä¸€è¡Œæ—¶æ˜¾ç¤ºçš„æŒ‰é’®
         //enum BtnKey
         //{
         //    BTN_PLAY,
@@ -24,13 +24,13 @@ namespace UiElement
         //};
 
 
-        // Í¨¹ı ListElement ¼Ì³Ğ
+        // é€šè¿‡ ListElement ç»§æ‰¿
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         int GetColumnCount() override;
         virtual int GetColumnWidth(int col, int total_width) override;
         virtual std::wstring GetEmptyString() override;
-        virtual int GetHighlightRow() override;
+        virtual bool IsHighlightRow(int row) override;
         virtual int GetColumnScrollTextWhenSelected() override;
         virtual bool ShowTooltip() override;
         virtual std::wstring GetToolTipText(int row) override;
@@ -57,12 +57,12 @@ namespace UiElement
     private:
         bool HasMultiVersion(int row) const;
 
-        //»ñÈ¡°´Å¥µÄË÷Òı
+        //è·å–æŒ‰é’®çš„ç´¢å¼•
         /*
-          °´Å¥ÅÅÁĞ£º
-                    |   ÎŞ¶à¸ö°æ±¾         |  ÓĞ¶à¸ö°æ±¾
-          Êó±êÖ¸Ïò   |  ²¥·Å£¬Ìí¼Ó£¬ÎÒÏ²»¶   |  ²¥·Å£¬Ìí¼Ó£¬ÎÒÏ²»¶£¬¶à¸ö°æ±¾
-          Êó±ê²»Ö¸Ïò |  ÎÒÏ²»¶            |  ÎÒÏ²»¶£¬¶à¸ö°æ±¾
+          æŒ‰é’®æ’åˆ—ï¼š
+                    |   æ— å¤šä¸ªç‰ˆæœ¬         |  æœ‰å¤šä¸ªç‰ˆæœ¬
+          é¼ æ ‡æŒ‡å‘   |  æ’­æ”¾ï¼Œæ·»åŠ ï¼Œæˆ‘å–œæ¬¢   |  æ’­æ”¾ï¼Œæ·»åŠ ï¼Œæˆ‘å–œæ¬¢ï¼Œå¤šä¸ªç‰ˆæœ¬
+          é¼ æ ‡ä¸æŒ‡å‘ |  æˆ‘å–œæ¬¢            |  æˆ‘å–œæ¬¢ï¼Œå¤šä¸ªç‰ˆæœ¬
         */
         int PlayBtnIndex(int row, bool hover) const;
         int AddBtnIndex(int row, bool hover) const;

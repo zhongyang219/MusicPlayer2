@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "PlaylistElement.h"
 #include "Player.h"
 #include "SongInfoHelper.h"
@@ -10,19 +10,19 @@ std::wstring UiElement::Playlist::GetItemText(int row, int col)
 {
     if (row >= 0 && row < GetRowCount())
     {
-        //ĞòºÅ
+        //åºå·
         if (col == COL_INDEX)
         {
             return std::to_wstring(row + 1);
         }
-        //ÇúÄ¿
+        //æ›²ç›®
         else if (col == COL_TRACK)
         {
             const SongInfo& song_info{ CPlayer::GetInstance().GetSafePlaylistItem(row) };
             std::wstring display_name{ CSongInfoHelper::GetDisplayStr(song_info, theApp.m_media_lib_setting_data.display_format) };
             return display_name;
         }
-        //Ê±¼ä
+        //æ—¶é—´
         else if (col == COL_TIME)
         {
             const SongInfo& song_info{ CPlayer::GetInstance().GetSafePlaylistItem(row) };
@@ -71,7 +71,7 @@ std::wstring UiElement::Playlist::GetEmptyString()
     }
 }
 
-int UiElement::Playlist::GetHighlightRow()
+bool UiElement::Playlist::IsHighlightRow(int row)
 {
     int highlight_row = CPlayer::GetInstance().GetIndex();
     if (last_highlight_row != highlight_row)
@@ -79,7 +79,7 @@ int UiElement::Playlist::GetHighlightRow()
         EnsureItemVisible(highlight_row);
         last_highlight_row = highlight_row;
     }
-    return highlight_row;
+    return highlight_row == row;
 }
 
 int UiElement::Playlist::GetColumnScrollTextWhenSelected()
@@ -121,7 +121,7 @@ CMenu* UiElement::Playlist::GetContextMenu(bool item_selected)
 
 CWnd* UiElement::Playlist::GetCmdRecivedWnd()
 {
-    //PlaylistÖĞµÄÓÒ¼ü²Ëµ¥ÃüÁîÔÚÖ÷´°¿ÚÖĞÏìÓ¦
+    //Playlistä¸­çš„å³é”®èœå•å‘½ä»¤åœ¨ä¸»çª—å£ä¸­å“åº”
     return theApp.m_pMainWnd;
 }
 
@@ -206,23 +206,23 @@ std::wstring UiElement::Playlist::GetHoverButtonTooltip(int index, int row)
 void UiElement::Playlist::OnHoverButtonClicked(int btn_index, int row)
 {
     CMusicPlayerCmdHelper helper;
-    //µã»÷ÁË¡°²¥·Å¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ’­æ”¾â€æŒ‰é’®
     if (btn_index == PlayBtnIndex(row, true))
     {
         helper.OnPlayTrack(row);
     }
-    //µã»÷ÁË¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€æŒ‰é’®
     else if (btn_index == AddBtnIndex(row, true))
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
         ShowContextMenu(menu, nullptr);
     }
-    //µã»÷ÁË¡°Ìí¼Óµ½ÎÒÏ²»¶µÄÒôÀÖ¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ·»åŠ åˆ°æˆ‘å–œæ¬¢çš„éŸ³ä¹â€æŒ‰é’®
     else if (btn_index == FavouriteBtnIndex(row, true))
     {
         helper.OnAddRemoveFromFavourite(row);
     }
-    //µã»÷ÁË¡°¶à¸ö°æ±¾¡±°´Å¥
+    //ç‚¹å‡»äº†â€œå¤šä¸ªç‰ˆæœ¬â€æŒ‰é’®
     else if (btn_index == SongVersionBtnIndex(row, true))
     {
         if (row >= 0 && row < CPlayer::GetInstance().GetSafeSongNum())
@@ -237,7 +237,7 @@ void UiElement::Playlist::OnHoverButtonClicked(int btn_index, int row)
 
 int UiElement::Playlist::GetUnHoverIconCount(int row)
 {
-    //Êó±êÎ´Ö¸ÏòµÄÁĞ£¬Èç¹ûÇúÄ¿ÔÚ¡°ÎÒÏ²»¶µÄÒôÀÖ¡±ÖĞ£¬ÔòÏÔÊ¾ºìĞÄÍ¼±ê
+    //é¼ æ ‡æœªæŒ‡å‘çš„åˆ—ï¼Œå¦‚æœæ›²ç›®åœ¨â€œæˆ‘å–œæ¬¢çš„éŸ³ä¹â€ä¸­ï¼Œåˆ™æ˜¾ç¤ºçº¢å¿ƒå›¾æ ‡
     int icon_count{};
     if (CPlayer::GetInstance().IsFavourite(row))
         icon_count++;
@@ -259,7 +259,7 @@ IconMgr::IconType UiElement::Playlist::GetUnHoverIcon(int index, int row)
 void UiElement::Playlist::OnRowCountChanged()
 {
     ListElement::OnRowCountChanged();
-    //²¥·ÅÁĞ±íĞĞÊı¸Ä±äÊ±£¬Í¨ÖªÖ÷´°¿ÚÈ¡Ïû²¥·ÅÁĞ±íÑ¡ÖĞÏî
+    //æ’­æ”¾åˆ—è¡¨è¡Œæ•°æ”¹å˜æ—¶ï¼Œé€šçŸ¥ä¸»çª—å£å–æ¶ˆæ’­æ”¾åˆ—è¡¨é€‰ä¸­é¡¹
     ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAYLIST_SELECT_NONE, 0);
 }
 
@@ -287,7 +287,7 @@ bool UiElement::Playlist::HasMultiVersion(int row) const
         if (song_info.IsEmpty())
             return false;
         const auto& multi_versions = CSongMultiVersionManager::PlaylistMultiVersionSongs().GetSongsMultiVersion(song_info);
-        //ÅĞ¶ÏÊÇ·ñÓĞÇúÄ¿µÄ¶à¸ö°æ±¾
+        //åˆ¤æ–­æ˜¯å¦æœ‰æ›²ç›®çš„å¤šä¸ªç‰ˆæœ¬
         if (!multi_versions.empty())
             return true;
     }
@@ -348,7 +348,7 @@ int UiElement::Playlist::SongVersionBtnIndex(int row, bool hover) const
 int UiElement::Playlist::GetRowCount()
 {
     int song_num{ CPlayer::GetInstance().GetSafeSongNum() };
-    if (song_num == 1 && CPlayer::GetInstance().GetSafePlaylistItem(0).IsEmpty())     //²»ÏÔÊ¾²¥·ÅÁĞ±íÎª¿ÕÊ±µÄÕ¼Î»·û
+    if (song_num == 1 && CPlayer::GetInstance().GetSafePlaylistItem(0).IsEmpty())     //ä¸æ˜¾ç¤ºæ’­æ”¾åˆ—è¡¨ä¸ºç©ºæ—¶çš„å ä½ç¬¦
         song_num = 0;
     return song_num;
 }

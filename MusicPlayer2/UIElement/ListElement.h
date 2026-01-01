@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
-    //ÁĞ±íÔªËØ
+    //åˆ—è¡¨å…ƒç´ 
     class ListElement : public Element
     {
     public:
@@ -21,58 +21,58 @@ namespace UiElement
         virtual void ClearRect() override;
         virtual void HideTooltip() override;
 
-        void EnsureItemVisible(int index);  //È·±£Ö¸¶¨ÏîÔÚ²¥·ÅÁĞ±íÖĞ¿É¼û
-        void EnsureHighlightItemVisible();  //È·±£¸ßÁÁĞĞ¿É¼û
-        void RestrictOffset();             //½«²¥·ÅÁĞ±íÆ«ÒÆÁ¿ÏŞÖÆÔÚÕıÈ·µÄ·¶Î§
-        void CalculateItemRects();         //¼ÆËã²¥·ÅÁĞ±íÖĞÃ¿Ò»ÏîµÄ¾ØĞÎÇøÓò£¬±£´æÔÚplaylist_info.item_rectsÖĞ
+        void EnsureItemVisible(int index);  //ç¡®ä¿æŒ‡å®šé¡¹åœ¨æ’­æ”¾åˆ—è¡¨ä¸­å¯è§
+        void EnsureHighlightItemVisible();  //ç¡®ä¿é«˜äº®è¡Œå¯è§
+        void RestrictOffset();             //å°†æ’­æ”¾åˆ—è¡¨åç§»é‡é™åˆ¶åœ¨æ­£ç¡®çš„èŒƒå›´
+        void CalculateItemRects();         //è®¡ç®—æ’­æ”¾åˆ—è¡¨ä¸­æ¯ä¸€é¡¹çš„çŸ©å½¢åŒºåŸŸï¼Œä¿å­˜åœ¨playlist_info.item_rectsä¸­
         int ItemHeight() const;
-        void SetItemSelected(int index);    //ÉèÖÃµ¥¸öÏîÄ¿Ñ¡ÖĞ
-        int GetItemSelected() const;        //»ñÈ¡µ¥¸öÏîÄ¿Ñ¡ÖĞ
-        void SetItemsSelected(const vector<int>& indexes);  //ÉèÖÃ¶à¸öÏîÄ¿Ñ¡ÖĞ
-        void GetItemsSelected(vector<int>& indexes) const;  //»ñÈ¡¶à¸öÏîÄ¿Ñ¡ÖĞ
-        bool IsItemSelected(int index) const;   //ÅĞ¶ÏÖ¸¶¨ĞĞÊÇ·ñÑ¡ÖĞ
-        bool IsMultipleSelected() const;        //ÊÇ·ñÑ¡ÖĞÁË³¬¹ı1¸öÏîÄ¿
+        void SetItemSelected(int index);    //è®¾ç½®å•ä¸ªé¡¹ç›®é€‰ä¸­
+        int GetItemSelected() const;        //è·å–å•ä¸ªé¡¹ç›®é€‰ä¸­
+        void SetItemsSelected(const vector<int>& indexes);  //è®¾ç½®å¤šä¸ªé¡¹ç›®é€‰ä¸­
+        void GetItemsSelected(vector<int>& indexes) const;  //è·å–å¤šä¸ªé¡¹ç›®é€‰ä¸­
+        bool IsItemSelected(int index) const;   //åˆ¤æ–­æŒ‡å®šè¡Œæ˜¯å¦é€‰ä¸­
+        bool IsMultipleSelected() const;        //æ˜¯å¦é€‰ä¸­äº†è¶…è¿‡1ä¸ªé¡¹ç›®
 
-        void SelectAll();                   //È«Ñ¡£¨½öIsMultipleSelectionEnable·µ»ØtrueÊ±Ö§³Ö£©
-        void SelectNone();                  //È¡ÏûËùÓĞÑ¡Ôñ
-        void SelectReversed();              //·´ÏòÑ¡Ôñ£¨½öIsMultipleSelectionEnable·µ»ØtrueÊ±Ö§³Ö£©
-
+        void SelectAll();                   //å…¨é€‰ï¼ˆä»…IsMultipleSelectionEnableè¿”å›trueæ—¶æ”¯æŒï¼‰
+        void SelectNone();                  //å–æ¶ˆæ‰€æœ‰é€‰æ‹©
+        void SelectReversed();              //åå‘é€‰æ‹©ï¼ˆä»…IsMultipleSelectionEnableè¿”å›trueæ—¶æ”¯æŒï¼‰
+        
         virtual std::wstring GetItemText(int row, int col) = 0;
         virtual int GetRowCount() = 0;
         virtual int GetColumnCount() = 0;
         virtual int GetColumnWidth(int col, int total_width) = 0;
         virtual IconMgr::IconType GetIcon(int row) { return IconMgr::IT_NO_ICON; }
         virtual bool HasIcon() { return false; }
-        virtual std::wstring GetEmptyString() { return std::wstring(); }    //ÁĞ±íÎª¿ÕÊ±ÏÔÊ¾µÄÎÄ±¾
-        virtual int GetHighlightRow() { return -1; }
-        virtual int GetColumnScrollTextWhenSelected() { return -1; }    //»ñÈ¡Ñ¡ÖĞÊ±ĞèÒª¹ö¶¯ÏÔÊ¾µÄÁĞ
+        virtual std::wstring GetEmptyString() { return std::wstring(); }    //åˆ—è¡¨ä¸ºç©ºæ—¶æ˜¾ç¤ºçš„æ–‡æœ¬
+        virtual bool IsHighlightRow(int row) { return false; }
+        virtual int GetColumnScrollTextWhenSelected() { return -1; }    //è·å–é€‰ä¸­æ—¶éœ€è¦æ»šåŠ¨æ˜¾ç¤ºçš„åˆ—
         virtual bool ShowTooltip() { return false; }
         virtual std::wstring GetToolTipText(int row) { return std::wstring(); }
         virtual int GetToolTipIndex() const { return 0; }
         virtual CMenu* GetContextMenu(bool item_selected) { return nullptr; }
-        virtual CWnd* GetCmdRecivedWnd() { return nullptr; }        //»ñÈ¡ÓÒ¼ü²Ëµ¥ÃüÁîµÄ½ÓÊÕ´°¿Ú£¬Èç¹û·µ»Ø¿ÕÖ¸Õë£¬ÔòÔÚCUIWindowCmdHelperÖĞÏìÓ¦
+        virtual CWnd* GetCmdRecivedWnd() { return nullptr; }        //è·å–å³é”®èœå•å‘½ä»¤çš„æ¥æ”¶çª—å£ï¼Œå¦‚æœè¿”å›ç©ºæŒ‡é’ˆï¼Œåˆ™åœ¨CUIWindowCmdHelperä¸­å“åº”
         virtual void OnDoubleClicked() {}
         virtual void OnClicked() {}
         virtual void OnSelectionChanged() {}
-        virtual int GetHoverButtonCount(int row) { return 0; }     //»ñÈ¡Êó±êÖ¸ÏòÒ»ĞĞÊ±ÒªÏÔÊ¾µÄ°´Å¥ÊıÁ¿
-        virtual int GetHoverButtonColumn() { return 0; }    //»ñÈ¡Êó±êÖ¸ÏòÊ±ÒªÏÔÊ¾µÄ°´Å¥ËùÔÚÁĞ
-        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) { return IconMgr::IT_NO_ICON; } //»ñÈ¡Êó±êÖ¸ÏòÒ»ĞĞÊ±°´Å¥µÄÍ¼±ê
+        virtual int GetHoverButtonCount(int row) { return 0; }     //è·å–é¼ æ ‡æŒ‡å‘ä¸€è¡Œæ—¶è¦æ˜¾ç¤ºçš„æŒ‰é’®æ•°é‡
+        virtual int GetHoverButtonColumn() { return 0; }    //è·å–é¼ æ ‡æŒ‡å‘æ—¶è¦æ˜¾ç¤ºçš„æŒ‰é’®æ‰€åœ¨åˆ—
+        virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) { return IconMgr::IT_NO_ICON; } //è·å–é¼ æ ‡æŒ‡å‘ä¸€è¡Œæ—¶æŒ‰é’®çš„å›¾æ ‡
         virtual void DrawHoverButton(int index, int row);
-        virtual std::wstring GetHoverButtonTooltip(int index, int row) { return std::wstring(); }     //»ñÈ¡Êó±êÖ¸ÏòÒ»ĞĞÊ±°´Å¥µÄÊó±êÌáÊ¾
-        virtual void OnHoverButtonClicked(int btn_index, int row) {}    //ÏìÓ¦Êó±êÖ¸ÏòÊ±°´Å¥µã»÷
-        IPlayerUI::UIButton& GetHoverButtonState(int btn_index);        //»ñÈ¡´¢´æÊó±êÖ¸ÏòÊ±°´Å¥ĞÅÏ¢µÄ½á¹¹Ìå
-        virtual int GetUnHoverIconCount(int row) { return 0; }          //»ñÈ¡Êó±êÎ´Ö¸ÏòµÄĞĞÒªÏÔÊ¾µÄÍ¼±êÊıÁ¿£¨ÁĞÎªGetHoverButtonColumn·µ»ØµÄÁĞ£©
-        virtual IconMgr::IconType GetUnHoverIcon(int index, int row) { return IconMgr::IT_NO_ICON; }   //»ñÈ¡Êó±êÎ´Ö¸ÏòµÄĞĞÒªÏÔÊ¾µÄÍ¼±ê
+        virtual std::wstring GetHoverButtonTooltip(int index, int row) { return std::wstring(); }     //è·å–é¼ æ ‡æŒ‡å‘ä¸€è¡Œæ—¶æŒ‰é’®çš„é¼ æ ‡æç¤º
+        virtual void OnHoverButtonClicked(int btn_index, int row) {}    //å“åº”é¼ æ ‡æŒ‡å‘æ—¶æŒ‰é’®ç‚¹å‡»
+        IPlayerUI::UIButton& GetHoverButtonState(int btn_index);        //è·å–å‚¨å­˜é¼ æ ‡æŒ‡å‘æ—¶æŒ‰é’®ä¿¡æ¯çš„ç»“æ„ä½“
+        virtual int GetUnHoverIconCount(int row) { return 0; }          //è·å–é¼ æ ‡æœªæŒ‡å‘çš„è¡Œè¦æ˜¾ç¤ºçš„å›¾æ ‡æ•°é‡ï¼ˆåˆ—ä¸ºGetHoverButtonColumnè¿”å›çš„åˆ—ï¼‰
+        virtual IconMgr::IconType GetUnHoverIcon(int index, int row) { return IconMgr::IT_NO_ICON; }   //è·å–é¼ æ ‡æœªæŒ‡å‘çš„è¡Œè¦æ˜¾ç¤ºçš„å›¾æ ‡
         virtual void DrawUnHoverButton(CRect rc_button, int index, int row);
 
-        virtual bool IsMultipleSelectionEnable() { return false; }      //ÊÇ·ñÔÊĞí¶àÑ¡
-        virtual void OnRowCountChanged();       //µ±ÁĞ±íĞĞÊı·¢Éú±ä»¯Ê±ÏìÓ¦´Ëº¯Êı
+        virtual bool IsMultipleSelectionEnable() { return false; }      //æ˜¯å¦å…è®¸å¤šé€‰
+        virtual void OnRowCountChanged();       //å½“åˆ—è¡¨è¡Œæ•°å‘ç”Ÿå˜åŒ–æ—¶å“åº”æ­¤å‡½æ•°
 
-        virtual void QuickSearch(const std::wstring& key_word);         //¸ù¾İ¹Ø¼üÖ´ĞĞ¿ìËÙËÑË÷£¨É¸Ñ¡³öÆ¥ÅäµÄÏî£©
-        virtual bool IsItemMatchKeyWord(int row, const std::wstring& key_word);     //ÅĞ¶ÏÖ¸¶¨ĞĞÊÇ·ñÆ¥Åä¹Ø¼ü×Ö£¨ÓÃÓÚ¿ìËÙËÑË÷¹¦ÄÜ£¬Ä¬ÈÏÆ¥ÅäÃ¿Ò»ÁĞÖĞµÄÎÄ±¾£¬Ö»ÒªÓĞÒ»ÁĞµÄÎÄ±¾Æ¥Åä¾Í·µ»Øtrue£¬ÅÉÉúÀà¿ÉÖØĞ´´Ëº¯Êı£©
+        virtual void QuickSearch(const std::wstring& key_word);         //æ ¹æ®å…³é”®æ‰§è¡Œå¿«é€Ÿæœç´¢ï¼ˆç­›é€‰å‡ºåŒ¹é…çš„é¡¹ï¼‰
+        virtual bool IsItemMatchKeyWord(int row, const std::wstring& key_word);     //åˆ¤æ–­æŒ‡å®šè¡Œæ˜¯å¦åŒ¹é…å…³é”®å­—ï¼ˆç”¨äºå¿«é€Ÿæœç´¢åŠŸèƒ½ï¼Œé»˜è®¤åŒ¹é…æ¯ä¸€åˆ—ä¸­çš„æ–‡æœ¬ï¼Œåªè¦æœ‰ä¸€åˆ—çš„æ–‡æœ¬åŒ¹é…å°±è¿”å›trueï¼Œæ´¾ç”Ÿç±»å¯é‡å†™æ­¤å‡½æ•°ï¼‰
 
-        int GetDisplayRowCount();       //»ñÈ¡ÒªÏÔÊ¾µÄĞĞÊı¡££¨´¦ÓÚËÑË÷×´Ì¬Ê±·µ»ØËÑË÷½á¹ûÊıÁ¿£¬Õı³£×´Ì¬ÏÂÍ¬GetRowCount£©
-        bool IsRowDisplayed(int row);   //ÅĞ¶ÏÒ»ĞĞÊÇ·ñÏÔÊ¾¡££¨½ö´¦ÓÚËÑË÷×´Ì¬Ê±²»Æ¥ÅäµÄĞĞ»á·µ»Øfalse£©
+        int GetDisplayRowCount();       //è·å–è¦æ˜¾ç¤ºçš„è¡Œæ•°ã€‚ï¼ˆå¤„äºæœç´¢çŠ¶æ€æ—¶è¿”å›æœç´¢ç»“æœæ•°é‡ï¼Œæ­£å¸¸çŠ¶æ€ä¸‹åŒGetRowCountï¼‰
+        bool IsRowDisplayed(int row);   //åˆ¤æ–­ä¸€è¡Œæ˜¯å¦æ˜¾ç¤ºã€‚ï¼ˆä»…å¤„äºæœç´¢çŠ¶æ€æ—¶ä¸åŒ¹é…çš„è¡Œä¼šè¿”å›falseï¼‰
 
         void SetRelatedSearchBox(SearchBox* search_box) { related_search_box = search_box; }
 
@@ -80,36 +80,36 @@ namespace UiElement
         int font_size{ 9 };
 
     private:
-        void DisplayRowToAbsoluteRow(int& row); //½«ÏÔÊ¾µÄĞĞºÅ×ª»»Îª¾ø¶ÔĞĞºÅ
-        void AbsoluteRowToDisplayRow(int& row); //½«¾ø¶ÔĞĞºÅ×ª»»ÎªÏÔÊ¾µÄĞĞºÅ
+        void DisplayRowToAbsoluteRow(int& row); //å°†æ˜¾ç¤ºçš„è¡Œå·è½¬æ¢ä¸ºç»å¯¹è¡Œå·
+        void AbsoluteRowToDisplayRow(int& row); //å°†ç»å¯¹è¡Œå·è½¬æ¢ä¸ºæ˜¾ç¤ºçš„è¡Œå·
         int GetDisplayedIndexByPoint(CPoint point);
 
     protected:
         int GetListIndexByPoint(CPoint point);
 
     protected:
-        bool mouse_pressed{ };          //Êó±ê×ó¼üÊÇ·ñ°´ÏÂ
-        bool hover{};                   //Ö¸±êÖ¸Ïò²¥·ÅÁĞ±íÇøÓò
-        CPoint mouse_pos;               //Êó±êÖ¸ÏòµÄÇøÓò
-        CPoint mouse_pressed_pos;       //Êó±ê°´ÏÂÊ±µÄÎ»ÖÃ
-        int mouse_pressed_offset{};     //Êó±ê°´ÏÂÊ±²¥·ÅÁĞ±íµÄÎ»ÒÆ
-        int playlist_offset{};          //µ±Ç°²¥·ÅÁĞ±í¹ö¶¯µÄÎ»ÒÆ
-        std::set<int> items_selected; //Ñ¡ÖĞµÄĞòºÅ
-        CDrawCommon::ScrollInfo selected_item_scroll_info;  //»æÖÆÑ¡ÖĞÏî¹ö¶¯ÎÄ±¾µÄ½á¹¹Ìå
-        std::vector<CRect> item_rects;  //²¥·ÅÁĞ±íÖĞÃ¿¸öÏîÄ¿µÄ¾ØĞÎÇøÓò
-        CRect scrollbar_rect{};         //¹ö¶¯ÌõµÄÎ»ÖÃ
-        CRect scrollbar_handle_rect;    //¹ö¶¯Ìõ°ÑÊÖµÄÎ»ÖÃ
-        bool scrollbar_hover{};         //Êó±êÖ¸Ïò¹ö¶¯Ìõ
-        bool scrollbar_handle_pressed{};    //¹ö¶¯Ìõ°ÑÊÖ±»°´ÏÂ
-        int scroll_handle_length_comp{};    //¼ÆËã¹ö¶¯Ìõ°ÑÊÖ³¤¶ÈÊ±µÄ²¹³¥Á¿
-        std::map<int, IPlayerUI::UIButton> hover_buttons;   //Êó±êÖ¸ÏòÊ±µÄ°´Å¥
+        bool mouse_pressed{ };          //é¼ æ ‡å·¦é”®æ˜¯å¦æŒ‰ä¸‹
+        bool hover{};                   //æŒ‡æ ‡æŒ‡å‘æ’­æ”¾åˆ—è¡¨åŒºåŸŸ
+        CPoint mouse_pos;               //é¼ æ ‡æŒ‡å‘çš„åŒºåŸŸ
+        CPoint mouse_pressed_pos;       //é¼ æ ‡æŒ‰ä¸‹æ—¶çš„ä½ç½®
+        int mouse_pressed_offset{};     //é¼ æ ‡æŒ‰ä¸‹æ—¶æ’­æ”¾åˆ—è¡¨çš„ä½ç§»
+        int playlist_offset{};          //å½“å‰æ’­æ”¾åˆ—è¡¨æ»šåŠ¨çš„ä½ç§»
+        std::set<int> items_selected; //é€‰ä¸­çš„åºå·
+        CDrawCommon::ScrollInfo selected_item_scroll_info;  //ç»˜åˆ¶é€‰ä¸­é¡¹æ»šåŠ¨æ–‡æœ¬çš„ç»“æ„ä½“
+        std::vector<CRect> item_rects;  //æ’­æ”¾åˆ—è¡¨ä¸­æ¯ä¸ªé¡¹ç›®çš„çŸ©å½¢åŒºåŸŸ
+        CRect scrollbar_rect{};         //æ»šåŠ¨æ¡çš„ä½ç½®
+        CRect scrollbar_handle_rect;    //æ»šåŠ¨æ¡æŠŠæ‰‹çš„ä½ç½®
+        bool scrollbar_hover{};         //é¼ æ ‡æŒ‡å‘æ»šåŠ¨æ¡
+        bool scrollbar_handle_pressed{};    //æ»šåŠ¨æ¡æŠŠæ‰‹è¢«æŒ‰ä¸‹
+        int scroll_handle_length_comp{};    //è®¡ç®—æ»šåŠ¨æ¡æŠŠæ‰‹é•¿åº¦æ—¶çš„è¡¥å¿é‡
+        std::map<int, IPlayerUI::UIButton> hover_buttons;   //é¼ æ ‡æŒ‡å‘æ—¶çš„æŒ‰é’®
         int last_row_count{};
         int last_row_selected{ -1 };
     private:
-        std::vector<int> search_result; //±£´æËÑË÷½á¹ûµÄĞòºÅ
-        bool searched{};                //ÊÇ·ñ´¦ÓÚËÑË÷×´Ì¬
-        SearchBox* related_search_box{};    //¹ØÁªµÄ¼ü¿ò
-        mutable std::recursive_mutex m_selection_mutex;     //±£»¤items_selectedµÄ»¥³âÁ¿
+        std::vector<int> search_result; //ä¿å­˜æœç´¢ç»“æœçš„åºå·
+        bool searched{};                //æ˜¯å¦å¤„äºæœç´¢çŠ¶æ€
+        SearchBox* related_search_box{};    //å…³è”çš„é”®æ¡†
+        mutable std::recursive_mutex m_selection_mutex;     //ä¿æŠ¤items_selectedçš„äº’æ–¥é‡
     };
 }
 

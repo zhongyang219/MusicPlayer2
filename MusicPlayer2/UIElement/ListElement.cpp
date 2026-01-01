@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "ListElement.h"
 #include "UIWindowCmdHelper.h"
 #include "SearchBox.h"
@@ -31,8 +31,8 @@ bool UiElement::ListElement::LButtonUp(CPoint point)
     scrollbar_handle_pressed = false;
     if (rect.PtInRect(point))
     {
-        int row{ GetListIndexByPoint(point) };        //µã»÷µÄĞĞ
-        //ÉèÖÃ°´Å¥µÄ°´ÏÂ×´Ì¬
+        int row{ GetListIndexByPoint(point) };        //ç‚¹å‡»çš„è¡Œ
+        //è®¾ç½®æŒ‰é’®çš„æŒ‰ä¸‹çŠ¶æ€
         for (int i{}; i < GetHoverButtonCount(row); i++)
         {
             auto& btn{ GetHoverButtonState(i) };
@@ -50,39 +50,39 @@ bool UiElement::ListElement::LButtonUp(CPoint point)
 
 bool UiElement::ListElement::LButtonDown(CPoint point)
 {
-    //µã»÷ÁË¿Ø¼şÇøÓò
+    //ç‚¹å‡»äº†æ§ä»¶åŒºåŸŸ
     if (rect.PtInRect(point))
     {
-        //µã»÷ÁË¹ö¶¯ÌõÇøÓò
+        //ç‚¹å‡»äº†æ»šåŠ¨æ¡åŒºåŸŸ
         if (scrollbar_rect.PtInRect(point))
         {
-            //µã»÷ÁË¹ö¶¯Ìõ°ÑÊÖÇøÓò
+            //ç‚¹å‡»äº†æ»šåŠ¨æ¡æŠŠæ‰‹åŒºåŸŸ
             if (scrollbar_handle_rect.PtInRect(point))
             {
                 scrollbar_handle_pressed = true;
             }
-            //µã»÷ÁË¹ö¶¯Ìõ¿Õ°×ÇøÓò
+            //ç‚¹å‡»äº†æ»šåŠ¨æ¡ç©ºç™½åŒºåŸŸ
             else
             {
                 mouse_pressed = false;
             }
         }
-        //µã»÷ÁËÁĞ±íÇøÓò
+        //ç‚¹å‡»äº†åˆ—è¡¨åŒºåŸŸ
         else
         {
-            int clicked_index{ GetListIndexByPoint(point) };        //µã»÷µÄĞĞ
-            //ÉèÖÃ°´Å¥µÄ°´ÏÂ×´Ì¬
+            int clicked_index{ GetListIndexByPoint(point) };        //ç‚¹å‡»çš„è¡Œ
+            //è®¾ç½®æŒ‰é’®çš„æŒ‰ä¸‹çŠ¶æ€
             for (int i{}; i < GetHoverButtonCount(clicked_index); i++)
             {
                 auto& btn{ GetHoverButtonState(i) };
                 btn.pressed = btn.rect.PtInRect(point);
             }
 
-            //ÔÊĞí¶àÑ¡Ê±
+            //å…è®¸å¤šé€‰æ—¶
             if (IsMultipleSelectionEnable())
             {
                 std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
-                //ÊÇ·ñ°´ÏÂCtrl¼ü
+                //æ˜¯å¦æŒ‰ä¸‹Ctrlé”®
                 if (GetKeyState(VK_CONTROL) & 0x80)
                 {
                     if (items_selected.contains(clicked_index))
@@ -90,18 +90,18 @@ bool UiElement::ListElement::LButtonDown(CPoint point)
                     else
                         items_selected.insert(clicked_index);
                 }
-                //ÊÇ·ñ°´ÏÂShift¼ü£¬²¢ÇÒÖÁÉÙÑ¡ÖĞÁËÒ»ĞĞ
+                //æ˜¯å¦æŒ‰ä¸‹Shifté”®ï¼Œå¹¶ä¸”è‡³å°‘é€‰ä¸­äº†ä¸€è¡Œ
                 else if (GetKeyState(VK_SHIFT) & 0x8000 && !items_selected.empty())
                 {
-                    int first_selected = *items_selected.begin();   //Ñ¡ÖĞµÄµÚÒ»ĞĞ
+                    int first_selected = *items_selected.begin();   //é€‰ä¸­çš„ç¬¬ä¸€è¡Œ
                     items_selected.clear();
-                    //µã»÷µÄĞĞÔÚÑ¡ÖĞµÄµÚÒ»ĞĞºóÃæ
+                    //ç‚¹å‡»çš„è¡Œåœ¨é€‰ä¸­çš„ç¬¬ä¸€è¡Œåé¢
                     if (first_selected < clicked_index)
                     {
                         for (int i = first_selected; i <= clicked_index; i++)
                             items_selected.insert(i);
                     }
-                    //µã»÷µÄĞĞÔÚÑ¡ÖĞµÄµÚÒ»ĞĞÇ°Ãæ
+                    //ç‚¹å‡»çš„è¡Œåœ¨é€‰ä¸­çš„ç¬¬ä¸€è¡Œå‰é¢
                     else
                     {
                         for (int i = clicked_index; i <= first_selected; i++)
@@ -113,7 +113,7 @@ bool UiElement::ListElement::LButtonDown(CPoint point)
                     SetItemSelected(clicked_index);
                 }
             }
-            //½öµ¥Ñ¡Ê±
+            //ä»…å•é€‰æ—¶
             else
             {
                 SetItemSelected(clicked_index);
@@ -126,7 +126,7 @@ bool UiElement::ListElement::LButtonDown(CPoint point)
         mouse_pressed_pos = point;
         return true;
     }
-    //µã»÷ÁË¿Ø¼şÍâ
+    //ç‚¹å‡»äº†æ§ä»¶å¤–
     else
     {
         mouse_pressed = false;
@@ -145,8 +145,8 @@ bool UiElement::ListElement::MouseMove(CPoint point)
     scrollbar_hover = scrollbar_rect.PtInRect(point);
     if (scrollbar_handle_pressed)
     {
-        int delta_scrollbar_offset = mouse_pressed_pos.y - point.y;  //¹ö¶¯ÌõÒÆ¶¯µÄ¾àÀë
-        //½«¹ö¶¯ÌõÒÆ¶¯µÄ¾àÀë×ª»»³É²¥·ÅÁĞ±íµÄÎ»ÒÆ
+        int delta_scrollbar_offset = mouse_pressed_pos.y - point.y;  //æ»šåŠ¨æ¡ç§»åŠ¨çš„è·ç¦»
+        //å°†æ»šåŠ¨æ¡ç§»åŠ¨çš„è·ç¦»è½¬æ¢æˆæ’­æ”¾åˆ—è¡¨çš„ä½ç§»
         int scroll_area_height = rect.Height() - scroll_handle_length_comp;
         if (scroll_area_height > 0)
         {
@@ -159,10 +159,10 @@ bool UiElement::ListElement::MouseMove(CPoint point)
         playlist_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
     }
 
-    //²éÕÒÊó±êÖ¸ÏòµÄĞĞ
+    //æŸ¥æ‰¾é¼ æ ‡æŒ‡å‘çš„è¡Œ
     int row = GetListIndexByPoint(point);
 
-    //Èç¹ûÏÔÊ¾ÁË°´Å¥
+    //å¦‚æœæ˜¾ç¤ºäº†æŒ‰é’®
     bool mouse_in_btn{ false };
     if (GetHoverButtonCount(row) > 0)
     {
@@ -191,7 +191,7 @@ bool UiElement::ListElement::MouseMove(CPoint point)
         }
     }
 
-    //ÏÔÊ¾Êó±êÌáÊ¾
+    //æ˜¾ç¤ºé¼ æ ‡æç¤º
     if (!mouse_in_btn && ShowTooltip() && hover && !scrollbar_hover && !scrollbar_handle_pressed)
     {
         if (row >= 0)
@@ -233,14 +233,14 @@ void UiElement::ListElement::ShowContextMenu(CMenu* menu, CWnd* cmd_reciver)
         GetCursorPos(&cursor_pos);
         if (cmd_reciver != nullptr)
         {
-            //µ¯³öÓÒ¼ü²Ëµ¥£¬µ±Ñ¡ÔñÁËÒ»¸ö²Ëµ¥ÃüÁîÊ±Ïòcmd_reciver·¢ËÍWM_COMMANDÏûÏ¢
+            //å¼¹å‡ºå³é”®èœå•ï¼Œå½“é€‰æ‹©äº†ä¸€ä¸ªèœå•å‘½ä»¤æ—¶å‘cmd_reciverå‘é€WM_COMMANDæ¶ˆæ¯
             menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, cursor_pos.x, cursor_pos.y, cmd_reciver);
         }
         else
         {
             CUIWindowCmdHelper helper(this);
             helper.SetMenuState(menu);
-            //Ê¹ÓÃTPM_RETURNCMD±êÖ¾Ö¸¶¨²Ëµ¥ÃüÁîÊ¹ÓÃ·µ»ØÖµ·µ»Ø£¬TPM_NONOTIFY±êÖ¾Ö¸¶¨Ñ¡ÔñÁË²Ëµ¥ÃüÁîºó²»»áÏò´°¿Ú·¢ËÍWM_COMMANDÏûÏ¢£¬µ«ÊÇÈÔÈ»±ØĞë´«µİÒ»¸öÓĞĞ§µÄ´°¿Ú¾ä±ú
+            //ä½¿ç”¨TPM_RETURNCMDæ ‡å¿—æŒ‡å®šèœå•å‘½ä»¤ä½¿ç”¨è¿”å›å€¼è¿”å›ï¼ŒTPM_NONOTIFYæ ‡å¿—æŒ‡å®šé€‰æ‹©äº†èœå•å‘½ä»¤åä¸ä¼šå‘çª—å£å‘é€WM_COMMANDæ¶ˆæ¯ï¼Œä½†æ˜¯ä»ç„¶å¿…é¡»ä¼ é€’ä¸€ä¸ªæœ‰æ•ˆçš„çª—å£å¥æŸ„
             UINT command = menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON | TPM_RETURNCMD | TPM_NONOTIFY, cursor_pos.x, cursor_pos.y, theApp.m_pMainWnd);
             if (command != 0)
                 helper.OnUiCommand(command);
@@ -256,7 +256,7 @@ bool UiElement::ListElement::RButtonDown(CPoint point)
     {
         if (!scrollbar_rect.PtInRect(point))
         {
-            int clicked_index{ GetListIndexByPoint(point) };        //µã»÷µÄĞĞ
+            int clicked_index{ GetListIndexByPoint(point) };        //ç‚¹å‡»çš„è¡Œ
             if (!IsItemSelected(clicked_index))
             {
                 SetItemSelected(clicked_index);
@@ -277,13 +277,13 @@ bool UiElement::ListElement::MouseWheel(int delta, CPoint point)
 {
     if (rect.PtInRect(point))
     {
-        //Ò»´Î¹ö¶¯µÄĞĞÊı
+        //ä¸€æ¬¡æ»šåŠ¨çš„è¡Œæ•°
         int lines = rect.Height() / ItemHeight() / 2;
         if (lines > 3)
             lines = 3;
         if (lines < 1)
             lines = 1;
-        playlist_offset += (-delta * lines * ItemHeight() / 120);  //120ÎªÊó±ê¹öÂÖÒ»ĞĞÊ±deltaµÄÖµ
+        playlist_offset += (-delta * lines * ItemHeight() / 120);  //120ä¸ºé¼ æ ‡æ»šè½®ä¸€è¡Œæ—¶deltaçš„å€¼
         return true;
     }
     return false;
@@ -335,16 +335,16 @@ void UiElement::ListElement::EnsureItemVisible(int index)
         return;
 
     CRect item_rect{ item_rects[index] };
-    //È·¶¨µ±Ç°ÏîÄ¿ÊÇ·ñ´¦ÓÚ¿É¼û×´Ì¬
+    //ç¡®å®šå½“å‰é¡¹ç›®æ˜¯å¦å¤„äºå¯è§çŠ¶æ€
     if (item_rect.top > rect.top && item_rect.bottom < rect.bottom)
         return;
 
-    //¼ÆËãÒªÊ¹Ö¸¶¨Ïî¿É¼ûÊ±µÄÆ«ÒÆÁ¿
+    //è®¡ç®—è¦ä½¿æŒ‡å®šé¡¹å¯è§æ—¶çš„åç§»é‡
     int delta_offset{};
-    //Ö¸¶¨ÏîÄ¿ÔÚ²¥·ÅÁĞ±íÉÏ·½
+    //æŒ‡å®šé¡¹ç›®åœ¨æ’­æ”¾åˆ—è¡¨ä¸Šæ–¹
     if (item_rect.top < rect.top)
         delta_offset = rect.top - item_rect.top;
-    //Ö¸¶¨ÏîÄ¿ÔÚ²¥·ÅÁĞ±íÏÂ·½
+    //æŒ‡å®šé¡¹ç›®åœ¨æ’­æ”¾åˆ—è¡¨ä¸‹æ–¹
     else if (item_rect.bottom > rect.bottom)
         delta_offset = rect.bottom - item_rect.bottom;
     playlist_offset -= delta_offset;
@@ -352,7 +352,18 @@ void UiElement::ListElement::EnsureItemVisible(int index)
 
 void UiElement::ListElement::EnsureHighlightItemVisible()
 {
-    int highlight_row{ GetHighlightRow() };
+    //æŸ¥æ‰¾æ­£åœ¨æ’­æ”¾è¡Œ
+    int highlight_row = -1;
+    int row_count = GetRowCount();
+    for (int i = 0; i < row_count; i++)
+    {
+        if (IsHighlightRow(i))
+        {
+            highlight_row = i;
+            break;
+        }
+    }
+
     if (highlight_row >= 0)
         EnsureItemVisible(highlight_row);
 }
@@ -374,13 +385,13 @@ void UiElement::ListElement::CalculateItemRects()
     item_rects.resize(GetRowCount());
     for (size_t i{}; i < item_rects.size(); i++)
     {
-        //¼ÆËãÃ¿Ò»ĞĞµÄ¾ØĞÎÇøÓò
+        //è®¡ç®—æ¯ä¸€è¡Œçš„çŸ©å½¢åŒºåŸŸ
         int start_y = -playlist_offset + rect.top + i * ItemHeight();
         CRect rect_item{ rect };
         rect_item.top = start_y;
         rect_item.bottom = rect_item.top + ItemHeight();
 
-        //±£´æÃ¿Ò»ĞĞµÄ¾ØĞÎÇøÓò
+        //ä¿å­˜æ¯ä¸€è¡Œçš„çŸ©å½¢åŒºåŸŸ
         item_rects[i] = rect_item;
     }
 }
@@ -488,9 +499,9 @@ void UiElement::ListElement::DrawUnHoverButton(CRect rc_button, int index, int r
 
 void UiElement::ListElement::OnRowCountChanged()
 {
-    //Èç¹ûÁĞ±íµÄĞĞÊıÓĞ±ä»¯£¬ÔòÇå³ıÑ¡ÖĞ
+    //å¦‚æœåˆ—è¡¨çš„è¡Œæ•°æœ‰å˜åŒ–ï¼Œåˆ™æ¸…é™¤é€‰ä¸­
     SelectNone();
-    //Çå³ıËÑË÷¿ò
+    //æ¸…é™¤æœç´¢æ¡†
     if (related_search_box != nullptr)
         related_search_box->Clear();
 }
@@ -499,7 +510,7 @@ void UiElement::ListElement::QuickSearch(const std::wstring& key_word)
 {
     searched = !key_word.empty();
 
-    //²éÕÒÆ¥ÅäµÄĞòºÅ
+    //æŸ¥æ‰¾åŒ¹é…çš„åºå·
     search_result.clear();
     if (key_word.empty())
         return;
@@ -513,7 +524,7 @@ void UiElement::ListElement::QuickSearch(const std::wstring& key_word)
 bool UiElement::ListElement::IsItemMatchKeyWord(int row, const std::wstring& key_word)
 {
     bool rtn = false;
-    //Ä¬ÈÏÆ¥ÅäÃ¿Ò»ÁĞÖĞµÄÎÄ±¾
+    //é»˜è®¤åŒ¹é…æ¯ä¸€åˆ—ä¸­çš„æ–‡æœ¬
     for (int i = 0; i < GetColumnCount(); i++)
     {
         std::wstring text = GetItemText(row, i);
@@ -535,12 +546,12 @@ bool UiElement::ListElement::IsRowDisplayed(int row)
 {
     if (row >= 0 && row < GetRowCount())
     {
-        //ËÑË÷×´Ì¬ÏÂ£¬½öËÑË÷½á¹ûÖĞµÄĞĞÏÔÊ¾
+        //æœç´¢çŠ¶æ€ä¸‹ï¼Œä»…æœç´¢ç»“æœä¸­çš„è¡Œæ˜¾ç¤º
         if (searched)
         {
             return CCommon::IsItemInVector(search_result, row);
         }
-        //·ÇËÑË÷×´Ì¬ÏÂ£¬ËùÓĞĞĞ¶¼ÏÔÊ¾
+        //éæœç´¢çŠ¶æ€ä¸‹ï¼Œæ‰€æœ‰è¡Œéƒ½æ˜¾ç¤º
         else
         {
             return true;
@@ -551,7 +562,7 @@ bool UiElement::ListElement::IsRowDisplayed(int row)
 
 void UiElement::ListElement::DisplayRowToAbsoluteRow(int& row)
 {
-    if (searched)       //²éÕÒ×´Ì¬ÏÂĞèÒª×ª»»ĞĞºÅ
+    if (searched)       //æŸ¥æ‰¾çŠ¶æ€ä¸‹éœ€è¦è½¬æ¢è¡Œå·
     {
         if (row >= 0 && row < static_cast<int>(search_result.size()))
             row = search_result[row];
@@ -562,7 +573,7 @@ void UiElement::ListElement::DisplayRowToAbsoluteRow(int& row)
 
 void UiElement::ListElement::AbsoluteRowToDisplayRow(int& row)
 {
-    if (searched)       //²éÕÒ×´Ì¬ÏÂĞèÒª×ª»»ĞĞºÅ
+    if (searched)       //æŸ¥æ‰¾çŠ¶æ€ä¸‹éœ€è¦è½¬æ¢è¡Œå·
     {
         bool row_exist{};
         for (int i{}; i < static_cast<int>(search_result.size()); i++)
