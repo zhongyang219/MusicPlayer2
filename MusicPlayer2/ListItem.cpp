@@ -91,7 +91,8 @@ wstring ListItem::GetDisplayName() const
         if (!path.empty())
         {
             wstring tmp{ path };
-            tmp.pop_back();
+            if (tmp.back() == L'\\' || tmp.back() == L'/')
+                tmp.pop_back();
             return tmp;
         }
         else
