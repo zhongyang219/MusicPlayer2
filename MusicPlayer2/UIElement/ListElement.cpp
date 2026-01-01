@@ -15,6 +15,12 @@ void UiElement::ListElement::Draw()
         last_row_count = GetRowCount();
     }
 
+    if (last_row_selected != GetItemSelected())
+    {
+        OnSelectionChanged();
+        last_row_selected = GetItemSelected();
+    }
+
     ui->DrawList(rect, this, ItemHeight());
     Element::Draw();
 }
@@ -75,6 +81,7 @@ bool UiElement::ListElement::LButtonDown(CPoint point)
             //允许多选时
             if (IsMultipleSelectionEnable())
             {
+                std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
                 //是否按下Ctrl键
                 if (GetKeyState(VK_CONTROL) & 0x80)
                 {
@@ -261,7 +268,7 @@ bool UiElement::ListElement::RButtonDown(CPoint point)
     }
     else
     {
-        items_selected.clear();
+        //items_selected.clear();
         return false;
     }
 }
@@ -385,6 +392,7 @@ int UiElement::ListElement::ItemHeight() const
 
 void UiElement::ListElement::SetItemSelected(int index)
 {
+    std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     items_selected.clear();
     if (index >= 0)
     {
@@ -395,6 +403,7 @@ void UiElement::ListElement::SetItemSelected(int index)
 
 int UiElement::ListElement::GetItemSelected() const
 {
+    std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     if (!items_selected.empty())
         return *items_selected.begin();
     return -1;
@@ -402,6 +411,7 @@ int UiElement::ListElement::GetItemSelected() const
 
 void UiElement::ListElement::SetItemsSelected(const vector<int>& indexes)
 {
+    std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     items_selected.clear();
     for (int index : indexes)
         items_selected.insert(index);
@@ -409,6 +419,7 @@ void UiElement::ListElement::SetItemsSelected(const vector<int>& indexes)
 
 void UiElement::ListElement::GetItemsSelected(vector<int>& indexes) const
 {
+    std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     indexes.clear();
     for (int index : items_selected)
         indexes.push_back(index);
@@ -416,12 +427,14 @@ void UiElement::ListElement::GetItemsSelected(vector<int>& indexes) const
 
 bool UiElement::ListElement::IsItemSelected(int index) const
 {
+    std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     auto iter = std::find(items_selected.begin(), items_selected.end(), index);
     return iter != items_selected.end();
 }
 
 bool UiElement::ListElement::IsMultipleSelected() const
 {
+    std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     return items_selected.size() > 1;
 }
 
@@ -429,6 +442,7 @@ void UiElement::ListElement::SelectAll()
 {
     if (IsMultipleSelectionEnable())
     {
+        std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
         items_selected.clear();
         for (int i{}; i < GetRowCount(); i++)
             items_selected.insert(i);
@@ -437,6 +451,7 @@ void UiElement::ListElement::SelectAll()
 
 void UiElement::ListElement::SelectNone()
 {
+    std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     items_selected.clear();
 }
 
@@ -444,6 +459,7 @@ void UiElement::ListElement::SelectReversed()
 {
     if (IsMultipleSelectionEnable())
     {
+        std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
         auto items_selected_old{ items_selected };
         items_selected.clear();
         for (int i{}; i < GetRowCount(); i++)

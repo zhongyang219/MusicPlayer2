@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "UserUi.h"
 #include "UiSearchBox.h"
+#include "UIPanel/ListPreviewPanel.h"
 
 CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
     : CPlayerUIBase(theApp.m_ui_data, pMainWnd), m_xml_path(xml_path)
@@ -960,6 +961,39 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 mediaLibItemList->track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
             }
         }
+        else if (item_name == "mediaLibFolder")
+        {
+            UiElement::MediaLibFolder* medialib_folder = dynamic_cast<UiElement::MediaLibFolder*>(element.get());
+            if (medialib_folder != nullptr)
+            {
+                medialib_folder->track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
+            }
+
+        }
+        else if (item_name == "mediaLibPlaylist")
+        {
+            UiElement::MediaLibPlaylist* medialib_playlist = dynamic_cast<UiElement::MediaLibPlaylist*>(element.get());
+            if (medialib_playlist != nullptr)
+            {
+                medialib_playlist->track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
+            }
+        }
+        else if (item_name == "recentPlayedList")
+        {
+            UiElement::RecentPlayedList* recent_played_list = dynamic_cast<UiElement::RecentPlayedList*>(element.get());
+            if (recent_played_list != nullptr)
+            {
+                recent_played_list->track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
+            }
+        }
+        else if (item_name == "medialibFolderExplore")
+        {
+            UiElement::FolderExploreTree* folder_explore = dynamic_cast<UiElement::FolderExploreTree*>(element.get());
+            if (folder_explore != nullptr)
+            {
+                folder_explore->track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
+            }
+        }
         //导航栏
         else if (item_name == "navigationBar")
         {
@@ -1262,31 +1296,34 @@ std::shared_ptr<UiElement::Element> CUserUi::GetMouseEventResponseElement()
     return GetCurrentTypeUi();
 }
 
-void CUserUi::ShowHidePanel(ePanelType panel_type)
+CPlayerUIPanel* CUserUi::ShowHidePanel(ePanelType panel_type)
 {
     auto* panel = m_panel_mgr.GetPanel(panel_type);
     m_panel_mgr.ShowHidePanel(panel);
     //显示面板后隐藏界面中按钮的鼠标提示
     if (m_panel_mgr.GetVisiblePanel() != nullptr)
         OnPanelShow();
+    return panel;
 }
 
-void CUserUi::ShowHidePanelByFileName(const std::wstring panel_file_name)
+CPlayerUIPanel* CUserUi::ShowHidePanelByFileName(const std::wstring panel_file_name)
 {
     auto* panel = m_panel_mgr.GetPanelByFileName(panel_file_name);
     m_panel_mgr.ShowHidePanel(panel);
     //显示面板后隐藏界面中按钮的鼠标提示
     if (m_panel_mgr.GetVisiblePanel() != nullptr)
         OnPanelShow();
+    return panel;
 }
 
-void CUserUi::ShowHidePanelById(const std::wstring panel_id)
+CPlayerUIPanel* CUserUi::ShowHidePanelById(const std::wstring panel_id)
 {
     auto* panel = m_panel_mgr.GetPanelById(panel_id);
     m_panel_mgr.ShowHidePanel(panel);
     //显示面板后隐藏界面中按钮的鼠标提示
     if (m_panel_mgr.GetVisiblePanel() != nullptr)
         OnPanelShow();
+    return panel;
 }
 
 bool CUserUi::IsPanelShown() const
@@ -1298,6 +1335,13 @@ void CUserUi::CloseAllPanel()
 {
     OnPanelHide();
     m_panel_mgr.HideAllPanel();
+}
+
+void CUserUi::ShowSongListPreviewPanel(const ListItem& list_item)
+{
+    CListPreviewPanel* panel = dynamic_cast<CListPreviewPanel*>(ShowHidePanel(ePanelType::ListPreview));
+    if (panel != nullptr)
+        panel->SetListData(list_item);
 }
 
 void CUserUi::OnPanelShow()

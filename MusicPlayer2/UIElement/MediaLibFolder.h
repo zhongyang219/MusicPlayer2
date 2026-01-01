@@ -2,6 +2,8 @@
 #include "ListElement.h"
 namespace UiElement
 {
+    class TrackList;
+
     //媒体库的文件夹列表
     class MediaLibFolder : public ListElement
     {
@@ -21,6 +23,7 @@ namespace UiElement
         {
             BTN_PLAY,
             BTN_ADD,
+            BTN_PREVIEW,
             BTN_MAX
         };
 
@@ -38,6 +41,17 @@ namespace UiElement
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
         virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
+        virtual void OnSelectionChanged() override;
+    
+    public:
+        std::string track_list_element_id;
+
+    private:
+        void FindTrackList();        //查找TrackList
+
+    private:
+        TrackList* track_list;
+        bool find_track_list{};      //如果已经查找过TrackList，则为true
     };
 }
 

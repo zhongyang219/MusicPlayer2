@@ -2,11 +2,11 @@
 #include "PlayerUIPanel.h"
 #include "UserUi.h"
 #include "PlayQueuePanel.h"
+#include "ListPreviewPanel.h"
 
-CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, ePanelType panel_type)
+CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, UINT res_id)
 	: m_ui(ui)
 {
-	UINT res_id = GetPanelResId(panel_type);
 	string xml = CCommon::GetTextResourceRawData(res_id);
 	if (!xml.empty())
 		LoadUIData(xml);
@@ -25,15 +25,6 @@ CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Ele
 	: m_ui(ui)
 {
 	m_root_element = panel_element;
-}
-
-UINT CPlayerUIPanel::GetPanelResId(ePanelType panel_type)
-{
-	switch (panel_type)
-	{
-	case ePanelType::PlayQueue: return IDR_PLAY_QUEUE_PANEL;
-	}
-	return 0;
 }
 
 void CPlayerUIPanel::LoadUIData(const std::string& xml_contents)
@@ -121,8 +112,8 @@ static std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlaye
 	{
 	case ePanelType::PlayQueue:
 		return std::make_unique<CPlayQueuePanel>(ui);
-	default:
-		return std::make_unique<CPlayerUIPanel>(ui, panel_type);
+	case ePanelType::ListPreview:
+		return std::make_unique<CListPreviewPanel>(ui);
 	}
 	return nullptr;
 }

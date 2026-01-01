@@ -1092,6 +1092,12 @@
     <ClInclude Include="UIElement\RatingElement.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIPanel\ListPreviewPanel.h">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\AbstractTracksList.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1716,6 +1722,12 @@
       <Filter>对话框类\ClosseMainWindowInqueryDlg</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\RatingElement.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\ListPreviewPanel.cpp">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\AbstractTracksList.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2460,6 +2472,9 @@
       <Filter>资源文件</Filter>
     </Xml>
     <Xml Include="res\ui\play_queue_panel.xml">
+      <Filter>资源文件</Filter>
+    </Xml>
+    <Xml Include="res\ui\list_preview_panel.xml">
       <Filter>资源文件</Filter>
     </Xml>
   </ItemGroup>

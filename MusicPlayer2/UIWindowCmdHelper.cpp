@@ -54,10 +54,10 @@ void CUIWindowCmdHelper::OnUiCommand(DWORD command)
     {
         OnMyFavouriteListCommand(my_favourite_list, command);
     }
-    UiElement::AllTracksList* all_tracks_list = dynamic_cast<UiElement::AllTracksList*>(m_context_menu_sender);
-    if (all_tracks_list != nullptr)
+    UiElement::TrackList* track_list = dynamic_cast<UiElement::TrackList*>(m_context_menu_sender);
+    if (track_list != nullptr)
     {
-        OnAllTracksListCommand(all_tracks_list, command);
+        OnTrackListCommand(track_list, command);
     }
     UiElement::FolderExploreTree* folder_explore = dynamic_cast<UiElement::FolderExploreTree*>(m_context_menu_sender);
     if (folder_explore != nullptr)
@@ -79,11 +79,11 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     {
         SetMediaLibItemListMenuState(pMenu);
     }
-    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu))
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::UiFolderMenu))
     {
         SetMediaLibFolderMenuState(pMenu);
     }
-    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibPlaylistMenu))
+    else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::UiPlaylistMenu))
     {
         SetMediaLibPlaylistMenuState(pMenu);
     }
@@ -97,7 +97,7 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
     }
     else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::LibRightMenu))
     {
-        SetAllTracksListMenuState(pMenu);
+        SetTrackListMenuState(pMenu);
     }
     else if (pMenu == theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu))
     {
@@ -182,6 +182,15 @@ void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* 
         }
         helper.OnViewInMediaLib(tab, item_name);
     }
+    //预览
+    else if (command == ID_LIST_ITEM_PREVIEW)
+    {
+        CUserUi* user_ui = dynamic_cast<CUserUi*>(medialib_item_list->GetUi());
+        if (user_ui != nullptr)
+        {
+            user_ui->ShowSongListPreviewPanel(list_item);
+        }
+    }
     else
     {
         helper.OnAddToPlaylistCommand(getSongList, command);
@@ -257,6 +266,15 @@ void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* 
             dlg.DoModal();
         }
     }
+    //预览
+    else if (command == ID_LIST_ITEM_PREVIEW)
+    {
+        CUserUi* user_ui = dynamic_cast<CUserUi*>(medialib_item_list->GetUi());
+        if (user_ui != nullptr)
+        {
+            user_ui->ShowSongListPreviewPanel(list_item);
+        }
+    }
 }
 
 void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medialib_folder, DWORD command)
@@ -328,6 +346,15 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
         wstring playlist_path;
         helper.OnAddToNewPlaylist(getSongList, playlist_path, CFilePathHelper(list_item.path).GetFolderName());
     }
+    //预览
+    else if (command == ID_LIST_ITEM_PREVIEW)
+    {
+        CUserUi* user_ui = dynamic_cast<CUserUi*>(medialib_folder->GetUi());
+        if (user_ui != nullptr)
+        {
+            user_ui->ShowSongListPreviewPanel(list_item);
+        }
+    }
     //添加到播放列表
     else
     {
@@ -383,6 +410,15 @@ void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* 
     {
         CPlaylistPropertiesDlg dlg(list_item);
         dlg.DoModal();
+    }
+    //预览
+    else if (command == ID_LIST_ITEM_PREVIEW)
+    {
+        CUserUi* user_ui = dynamic_cast<CUserUi*>(medialib_folder->GetUi());
+        if (user_ui != nullptr)
+        {
+            user_ui->ShowSongListPreviewPanel(list_item);
+        }
     }
 }
 
@@ -510,15 +546,16 @@ void CUIWindowCmdHelper::OnMyFavouriteListCommand(UiElement::MyFavouriteList* my
     }
 }
 
-void CUIWindowCmdHelper::OnAllTracksListCommand(UiElement::AllTracksList* all_tracks_list, DWORD command)
+void CUIWindowCmdHelper::OnTrackListCommand(UiElement::TrackList* all_tracks_list, DWORD command)
 {
     std::vector<int> indexes;
     all_tracks_list->GetItemsSelected(indexes);
+    CUISongListMgr* track_lst_mgr = all_tracks_list->GetSongListData();
     vector<SongInfo> songs;
     for (int i : indexes)
     {
-        if (i >= 0 && i < CUiAllTracksMgr::Instance().GetSongCount())
-            songs.push_back(CUiAllTracksMgr::Instance().GetSongInfo(i));
+        if (i >= 0 && i < track_lst_mgr->GetSongCount())
+            songs.push_back(track_lst_mgr->GetSongInfo(i));
     }
 
     if (songs.empty())
@@ -533,7 +570,7 @@ void CUIWindowCmdHelper::OnAllTracksListCommand(UiElement::AllTracksList* all_tr
         //播放
         if (command == ID_PLAY_ITEM)
         {
-            const SongInfo& song_info = CUiAllTracksMgr::Instance().GetSongInfo(item_selected);
+            const SongInfo& song_info = track_lst_mgr->GetSongInfo(item_selected);
             helper.OnPlayAllTrack(song_info);
         }
         //属性
@@ -547,7 +584,7 @@ void CUIWindowCmdHelper::OnAllTracksListCommand(UiElement::AllTracksList* all_tr
             else
             {
                 std::vector<SongInfo> song_list;
-                CUiAllTracksMgr::Instance().GetSongList(song_list);
+                track_lst_mgr->GetSongList(song_list);
                 CPropertyDlg dlg(song_list, item_selected, false);
                 dlg.DoModal();
             }
@@ -614,6 +651,17 @@ void CUIWindowCmdHelper::OnMedialibFolderExploreCommand(UiElement::FolderExplore
     {
         wstring playlist_path;
         helper.OnAddToNewPlaylist(getSongList, playlist_path, folder_name);
+    }
+    //预览
+    else if (command == ID_LIST_ITEM_PREVIEW)
+    {
+        CUserUi* user_ui = dynamic_cast<CUserUi*>(folder_explore->GetUi());
+        if (user_ui != nullptr)
+        {
+            ListItem list_item{ LT_FOLDER, folder_path };
+            list_item.contain_sub_folder = true;
+            user_ui->ShowSongListPreviewPanel(list_item);
+        }
     }
     //添加到播放列表
     else
@@ -788,18 +836,19 @@ void CUIWindowCmdHelper::SetMyFavouriteListMenuState(CMenu* pMenu)
     SetAddToPlaylistMenuState(pMenu);
 }
 
-void CUIWindowCmdHelper::SetAllTracksListMenuState(CMenu* pMenu)
+void CUIWindowCmdHelper::SetTrackListMenuState(CMenu* pMenu)
 {
     bool selected_in_current_playing_list{ false }; //选中是否正在播放
     bool can_del{ false };
-    UiElement::AllTracksList* all_tracks_list = dynamic_cast<UiElement::AllTracksList*>(m_context_menu_sender);
+    UiElement::TrackList* all_tracks_list = dynamic_cast<UiElement::TrackList*>(m_context_menu_sender);
     if (all_tracks_list != nullptr)
     {
+        CUISongListMgr* track_lst_mgr = all_tracks_list->GetSongListData();
         int item_selected{ all_tracks_list->GetItemSelected() };
-        if (item_selected >= 0 && item_selected < static_cast<int>(CUiAllTracksMgr::Instance().GetSongCount()))
+        if (item_selected >= 0 && item_selected < static_cast<int>(track_lst_mgr->GetSongCount()))
         {
             //获取选中曲目
-            const SongInfo& selected_song{ CUiAllTracksMgr::Instance().GetSongInfo(item_selected) };
+            const SongInfo& selected_song{ track_lst_mgr->GetSongInfo(item_selected) };
             std::vector<SongInfo> selected_songs{ selected_song };
             //判断是否可以下一首播放
             selected_in_current_playing_list = CPlayer::GetInstance().IsSongsInPlayList(selected_songs);

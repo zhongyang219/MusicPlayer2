@@ -91,11 +91,12 @@ public:
      */
     static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node, CPlayerUIBase* ui);
 
-    void ShowHidePanel(ePanelType panel_type);
-    void ShowHidePanelByFileName(const std::wstring panel_file_name);
-    void ShowHidePanelById(const std::wstring panel_id);
+    CPlayerUIPanel* ShowHidePanel(ePanelType panel_type);
+    CPlayerUIPanel* ShowHidePanelByFileName(const std::wstring panel_file_name);
+    CPlayerUIPanel* ShowHidePanelById(const std::wstring panel_id);
     bool IsPanelShown() const;
     void CloseAllPanel();
+    void ShowSongListPreviewPanel(const ListItem& list_item);
 
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;
 

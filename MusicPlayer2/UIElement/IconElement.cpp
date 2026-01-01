@@ -14,3 +14,8 @@ void UiElement::Icon::IconTypeFromString(const std::string& icon_name)
     icon_type = Button::NameToIconType(icon_name);
 
 }
+
+void UiElement::Icon::SetIcon(IconMgr::IconType icon)
+{
+    icon_type = icon;
+}

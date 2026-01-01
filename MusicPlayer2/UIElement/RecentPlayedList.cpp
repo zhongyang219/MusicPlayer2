@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RecentPlayedList.h"
 #include "MusicPlayerCmdHelper.h"
+#include "UserUi.h"
 
 CListCache UiElement::RecentPlayedList::m_list_cache(CListCache::SubsetType::ST_RECENT);
 
@@ -83,7 +84,7 @@ CMenu* UiElement::RecentPlayedList::GetContextMenu(bool item_selected)
 
 int UiElement::RecentPlayedList::GetHoverButtonCount(int row)
 {
-    return 1;
+    return BTN_MAX;
 }
 
 int UiElement::RecentPlayedList::GetHoverButtonColumn()
@@ -93,15 +94,21 @@ int UiElement::RecentPlayedList::GetHoverButtonColumn()
 
 IconMgr::IconType UiElement::RecentPlayedList::GetHoverButtonIcon(int index, int row)
 {
-    if (index == 0)
-        return IconMgr::IT_Play;
+    switch (index)
+    {
+    case BTN_PLAY: return IconMgr::IT_Play;
+    case BTN_PREVIEW: return IconMgr::IT_Info;
+    }
     return IconMgr::IT_NO_ICON;
 }
 
 std::wstring UiElement::RecentPlayedList::GetHoverButtonTooltip(int index, int row)
 {
-    if (index == 0)
-        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    switch (index)
+    {
+    case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_PREVIEW: return theApp.m_str_table.LoadText(L"UI_TXT_PREVIEW");
+    }
     return std::wstring();
 }
 
@@ -109,12 +116,43 @@ void UiElement::RecentPlayedList::OnHoverButtonClicked(int btn_index, int row)
 {
     CMusicPlayerCmdHelper helper;
     //点击了“播放”按钮
-    if (btn_index == 0)
+    if (btn_index == BTN_PLAY)
     {
         if (row >= 0 && row < GetRowCount())
         {
             CMusicPlayerCmdHelper helper;
             helper.OnListItemSelected(m_list_cache.GetItem(row), true);
+        }
+    }
+    //点击了预览按钮
+    else if (btn_index == BTN_PREVIEW)
+    {
+        CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
+        if (user_ui != nullptr)
+        {
+            user_ui->ShowSongListPreviewPanel(m_list_cache.GetItem(row));
+        }
+    }
+}
+
+void UiElement::RecentPlayedList::OnSelectionChanged()
+{
+    //获取关联的trackList元素
+    if (!track_list_element_id.empty())
+    {
+        TrackList* track_list = FindRelatedElement<TrackList>(track_list_element_id);
+        if (track_list != nullptr && track_list->IsEnable())
+        {
+            int row = GetItemSelected();
+            if (row >= 0 && row < GetRowCount())
+            {
+                ListItem list_item = m_list_cache.GetItem(row);
+                track_list->SetListItem(list_item);
+            }
+            else
+            {
+                track_list->ClearListItem();
+            }
         }
     }
 }

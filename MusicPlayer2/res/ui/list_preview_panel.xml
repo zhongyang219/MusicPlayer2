@@ -1,0 +1,21 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd">
+  <!--列表预览面板-->
+  <panel width="320" height="420">
+    <verticalLayout>
+      <!--标题栏-->
+      <rectangle height="24">
+        <horizontalLayout>
+          <icon id="title_bar_icon" width="24" visible="false"/>
+          <text id="title_bar_text" type="userDefine" text="" style="scroll"/>
+          <button key="closePanel" width="24"/>
+        </horizontalLayout>
+      </rectangle>
+      <!--曲目列表-->
+      <verticalLayout margin="8">
+        <text id="track_num_text" type="userDefine" text="" height="24" color_style="emphasis1"/>
+        <searchBox height="26" margin-bottom="4"/>
+        <trackList id="track_list"/>
+      </verticalLayout>
+    </verticalLayout>
+  </panel>
+</root>

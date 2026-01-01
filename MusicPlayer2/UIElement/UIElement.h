@@ -60,7 +60,10 @@ namespace UiElement
         void IterateAllElements(std::function<bool(UiElement::Element*)> func, bool visible_only = false);
         void SetUi(CPlayerUIBase* _ui);
         void AddChild(std::shared_ptr<Element> child);
+        bool IsEnable() const;
+        //设置元素的显示/隐藏属性
         void SetVisible(bool visible) { this->visible = visible; }
+        //获取元素的显示/隐藏属性
         bool IsVisible() const { return visible; }
 
         //鼠标消息虚函数。
@@ -80,6 +83,11 @@ namespace UiElement
         virtual void InitComplete() {}
         virtual void HideTooltip() {}
 
+        //根据id查找一个子节点
+        Element* FindElement(const std::string& id);
+
+        CPlayerUIBase* GetUi() const { return ui; }
+
     protected:
         CRect ParentRect() const;
         virtual void CalculateRect();           //计算此元素在界面中的矩形区域
@@ -93,7 +101,7 @@ namespace UiElement
     protected:
         CRect rect;     //用于保存计算得到的元素的矩形区域
         CPlayerUIBase* ui{};
-        bool visible{ true };   //元素是否可见
+        bool visible{ true };   //元素的显示/隐藏属性
     };
 
     //UI中除按钮外其他元素的鼠标提示id，必须大于按钮枚举（CPlayerUIBase::BtnKey）的最大值，且小于1000

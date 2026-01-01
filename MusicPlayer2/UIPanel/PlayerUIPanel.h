@@ -2,19 +2,19 @@
 #include "UIElement/UIElement.h"
 #include "CPlayerUIBase.h"
 
+//内置UI面板的类型
 enum class ePanelType
 {
-	PlayQueue,
+	PlayQueue,		//播放队列面板
+	ListPreview,	//列表预览面板
 };
 
 class CPlayerUIPanel
 {
 public:
-	CPlayerUIPanel(CPlayerUIBase* ui, ePanelType panel_type);
+	CPlayerUIPanel(CPlayerUIBase* ui, UINT res_id);
 	CPlayerUIPanel(CPlayerUIBase* ui, const std::wstring file_name);
 	CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Element> panel_element);
-
-	static UINT GetPanelResId(ePanelType panel_type);
 
 	//从xml读取UI配置
 	void LoadUIData(const std::string& xml_contents);

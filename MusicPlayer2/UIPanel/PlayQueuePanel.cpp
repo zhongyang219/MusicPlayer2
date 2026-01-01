@@ -2,7 +2,7 @@
 #include "PlayQueuePanel.h"
 
 CPlayQueuePanel::CPlayQueuePanel(CPlayerUIBase* ui)
-	: CPlayerUIPanel(ui, ePanelType::PlayQueue)
+	: CPlayerUIPanel(ui, IDR_PLAY_QUEUE_PANEL)
 {
 }
 CRect CPlayQueuePanel::CalculatePanelRect()

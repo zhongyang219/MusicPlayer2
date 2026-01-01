@@ -2,6 +2,8 @@
 #include "FolderExploreTree.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UiMediaLibItemMgr.h"
+#include "UserUi.h"
+#include "TracksList.h"
 
 std::shared_ptr<UiElement::TestTree::Node> UiElement::FolderExploreTree::CreateNode(std::wstring name, int song_num, std::shared_ptr<Node> parent)
 {
@@ -66,7 +68,7 @@ CMenu* UiElement::FolderExploreTree::GetContextMenu(bool item_selected)
 {
     if (item_selected)
     {
-        return theApp.m_menu_mgr.GetMenu(MenuMgr::LibFolderExploreMenu);
+        return theApp.m_menu_mgr.GetMenu(MenuMgr::UiFolderExploreMenu);
     }
     return nullptr;
 }
@@ -100,7 +102,12 @@ std::wstring UiElement::FolderExploreTree::GetEmptyString()
 
 int UiElement::FolderExploreTree::GetHoverButtonCount(int row)
 {
-    return BTN_MAX;
+    FindTrackList();
+    //如果有关联的TrackList，则不显示最后的“预览”按钮
+    if (track_list != nullptr && track_list->IsEnable())
+        return BTN_MAX - 1;
+    else
+        return BTN_MAX;
 }
 
 int UiElement::FolderExploreTree::GetHoverButtonColumn()
@@ -114,6 +121,7 @@ IconMgr::IconType UiElement::FolderExploreTree::GetHoverButtonIcon(int index, in
     {
     case BTN_PLAY: return IconMgr::IT_Play;
     case BTN_ADD: return IconMgr::IT_Add;
+    case BTN_PREVIEW: return IconMgr::IT_Info;
     }
     return IconMgr::IT_NO_ICON;
 }
@@ -124,6 +132,7 @@ std::wstring UiElement::FolderExploreTree::GetHoverButtonTooltip(int index, int 
     {
     case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
     case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    case BTN_PREVIEW: return theApp.m_str_table.LoadText(L"UI_TXT_PREVIEW");
     }
     return std::wstring();
 }
@@ -151,6 +160,25 @@ void UiElement::FolderExploreTree::OnHoverButtonClicked(int btn_index, int row)
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
         ShowContextMenu(menu, nullptr);
     }
+    //点击了“预览”按钮
+    else if (btn_index == BTN_PREVIEW)
+    {
+        if (row >= 0 && row < GetRowCount())
+        {
+            auto selected_node = GetNodeByIndex(row);
+            if (selected_node != nullptr)
+            {
+                std::wstring folder_path = GetNodePath(selected_node);
+                ListItem list_item{ LT_FOLDER, folder_path };
+                list_item.contain_sub_folder = true;
+                CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
+                if (user_ui != nullptr)
+                {
+                    user_ui->ShowSongListPreviewPanel(list_item);
+                }
+            }
+        }
+    }
 }
 
 bool UiElement::FolderExploreTree::IsMultipleSelectionEnable()
@@ -158,7 +186,37 @@ bool UiElement::FolderExploreTree::IsMultipleSelectionEnable()
     return false;
 }
 
+void UiElement::FolderExploreTree::OnSelectionChanged()
+{
+    //获取关联的trackList元素
+    FindTrackList();
+    if (track_list != nullptr && track_list->IsEnable())
+    {
+        auto selected_node = GetNodeByIndex(GetItemSelected());
+        if (selected_node != nullptr)
+        {
+            std::wstring folder_path = GetNodePath(selected_node);
+            ListItem list_item{ LT_FOLDER, folder_path };
+            list_item.contain_sub_folder = true;
+            track_list->SetListItem(list_item);
+        }
+        else
+        {
+            track_list->ClearListItem();
+        }
+    }
+}
+
 std::vector<std::shared_ptr<UiElement::TestTree::Node>>& UiElement::FolderExploreTree::GetRootNodes()
 {
     return CUiFolderExploreMgr::Instance().GetRootNodes();
+}
+
+void UiElement::FolderExploreTree::FindTrackList()
+{
+    if (!find_track_list)
+    {
+        track_list = FindRelatedElement<TrackList>(track_list_element_id);
+        find_track_list = true;  //找过一次没找到就不找了
+    }
 }

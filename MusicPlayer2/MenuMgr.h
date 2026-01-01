@@ -65,6 +65,9 @@ public:
         UiLibLeftMenu,                      // UI中媒体库列表菜单
         UiRecentPlayedMenu,                 // UI中最近播放列表菜单
         UiMyFavouriteMenu,                  // UI中“我喜欢的音乐”菜单
+        UiFolderMenu,                       // UI中文件夹标签页菜单
+        UiPlaylistMenu,                     // UI中播放列表标签页菜单
+        UiFolderExploreMenu,                // UI中文件夹浏览左侧菜单
 
         LibPlaylistSortMenu,                // 媒体库播放列表排序菜单
         LibFolderSortMenu,                  // 媒体库文件夹排序菜单

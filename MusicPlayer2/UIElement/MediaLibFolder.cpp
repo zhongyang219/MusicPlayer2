@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MediaLibFolder.h"
 #include "MusicPlayerCmdHelper.h"
+#include "UserUi.h"
+#include "TracksList.h"
 
 CListCache UiElement::MediaLibFolder::m_list_cache(CListCache::SubsetType::ST_FOLDER);
 
@@ -55,7 +57,7 @@ int UiElement::MediaLibFolder::GetColumnScrollTextWhenSelected()
 
 CMenu* UiElement::MediaLibFolder::GetContextMenu(bool item_selected)
 {
-    return theApp.m_menu_mgr.GetMenu(MenuMgr::LibSetPathMenu);
+    return theApp.m_menu_mgr.GetMenu(MenuMgr::UiFolderMenu);
 }
 
 void UiElement::MediaLibFolder::OnDoubleClicked()
@@ -71,7 +73,12 @@ void UiElement::MediaLibFolder::OnDoubleClicked()
 
 int UiElement::MediaLibFolder::GetHoverButtonCount(int row)
 {
-    return BTN_MAX;
+    FindTrackList();
+    //如果有关联的TrackList，则不显示最后的“预览”按钮
+    if (track_list != nullptr && track_list->IsEnable())
+        return BTN_MAX - 1;
+    else
+        return BTN_MAX;
 }
 
 int UiElement::MediaLibFolder::GetHoverButtonColumn()
@@ -85,6 +92,7 @@ IconMgr::IconType UiElement::MediaLibFolder::GetHoverButtonIcon(int index, int r
     {
     case BTN_PLAY: return IconMgr::IT_Play;
     case BTN_ADD: return IconMgr::IT_Add;
+    case BTN_PREVIEW: return IconMgr::IT_Info;
     }
     return IconMgr::IT_NO_ICON;
 }
@@ -95,6 +103,7 @@ std::wstring UiElement::MediaLibFolder::GetHoverButtonTooltip(int index, int row
     {
     case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
     case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    case BTN_PREVIEW: return theApp.m_str_table.LoadText(L"UI_TXT_PREVIEW");
     }
     return std::wstring();
 }
@@ -116,5 +125,42 @@ void UiElement::MediaLibFolder::OnHoverButtonClicked(int btn_index, int row)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
         ShowContextMenu(menu, nullptr);
+    }
+    //点击了预览按钮
+    else if (btn_index == BTN_PREVIEW)
+    {
+        CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
+        if (user_ui != nullptr)
+        {
+            user_ui->ShowSongListPreviewPanel(m_list_cache.GetItem(row));
+        }
+    }
+}
+
+void UiElement::MediaLibFolder::OnSelectionChanged()
+{
+    //获取关联的trackList元素
+    FindTrackList();
+    if (track_list != nullptr && track_list->IsEnable())
+    {
+        int row = GetItemSelected();
+        if (row >= 0 && row < GetRowCount())
+        {
+            ListItem list_item = m_list_cache.GetItem(row);
+            track_list->SetListItem(list_item);
+        }
+        else
+        {
+            track_list->ClearListItem();
+        }
+    }
+}
+
+void UiElement::MediaLibFolder::FindTrackList()
+{
+    if (!find_track_list)
+    {
+        track_list = FindRelatedElement<TrackList>(track_list_element_id);
+        find_track_list = true;  //找过一次没找到就不找了
     }
 }

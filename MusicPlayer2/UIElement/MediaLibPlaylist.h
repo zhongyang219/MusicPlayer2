@@ -2,6 +2,8 @@
 #include "ListElement.h"
 namespace UiElement
 {
+    class TrackList;
+
     //媒体库的播放列表列表
     class MediaLibPlaylist : public ListElement
     {
@@ -13,6 +15,14 @@ namespace UiElement
             COL_NAME,
             COL_COUNT,
             COL_MAX
+        };
+
+        //鼠标指向一行时显示的按钮
+        enum BtnKey
+        {
+            BTN_PLAY,
+            BTN_PREVIEW,
+            BTN_MAX
         };
 
         // 通过 ListElement 继承
@@ -29,6 +39,17 @@ namespace UiElement
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) override;
         virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
+        virtual void OnSelectionChanged() override;
+    
+    public:
+        std::string track_list_element_id;
+
+    private:
+        void FindTrackList();        //查找TrackList
+
+    private:
+        TrackList* track_list;
+        bool find_track_list{};      //如果已经查找过TrackList，则为true
     };
 }
 

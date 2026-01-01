@@ -98,7 +98,7 @@ public:
     // 播放一个ListItem，play为true用于直接双击ListItem列表及一系列等价情况
     // play为false用于快捷切换列表菜单命令处理
     // 不设置播放特定曲目，list_item为空时直接返回
-    void OnListItemSelected(const ListItem& list_item, bool play = false);
+    void OnListItemSelected(const ListItem& list_item, bool play = false, bool force = false);
 
     bool OnRenamePlaylist(const ListItem& list_item);
     // 询问新播放列表名称后创建新播放列表，返回新播放列表的路径

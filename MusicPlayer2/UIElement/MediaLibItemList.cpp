@@ -3,6 +3,8 @@
 #include "MusicPlayerCmdHelper.h"
 #include "UiMediaLibItemMgr.h"
 #include "Player.h"
+#include "UserUi.h"
+#include "TracksList.h"
 
 std::wstring UiElement::MediaLibItemList::GetItemText(int row, int col)
 {
@@ -92,7 +94,12 @@ void UiElement::MediaLibItemList::OnDoubleClicked()
 
 int UiElement::MediaLibItemList::GetHoverButtonCount(int row)
 {
-    return BTN_MAX;
+    FindTrackList();
+    //如果有关联的TrackList，则不显示最后的“预览”按钮
+    if (track_list != nullptr && track_list->IsEnable())
+        return BTN_MAX - 1;
+    else
+        return BTN_MAX;
 }
 
 int UiElement::MediaLibItemList::GetHoverButtonColumn()
@@ -106,6 +113,7 @@ IconMgr::IconType UiElement::MediaLibItemList::GetHoverButtonIcon(int index, int
     {
     case BTN_PLAY: return IconMgr::IT_Play;
     case BTN_ADD: return IconMgr::IT_Add;
+    case BTN_PREVIEW: return IconMgr::IT_Info;
     }
     return IconMgr::IT_NO_ICON;
 }
@@ -116,6 +124,7 @@ std::wstring UiElement::MediaLibItemList::GetHoverButtonTooltip(int index, int r
     {
     case BTN_PLAY: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
     case BTN_ADD: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_ADD_TO_PLAYLIST");
+    case BTN_PREVIEW: return theApp.m_str_table.LoadText(L"UI_TXT_PREVIEW");
     }
     return std::wstring();
 }
@@ -140,5 +149,48 @@ void UiElement::MediaLibItemList::OnHoverButtonClicked(int btn_index, int row)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
         ShowContextMenu(menu, nullptr);
+    }
+    //点击了“预览”按钮
+    else if (btn_index == BTN_PREVIEW)
+    {
+        int item_selected = GetItemSelected();
+        if (item_selected >= 0 && item_selected < GetRowCount())
+        {
+            std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
+            ListItem list_item{ LT_MEDIA_LIB, item_name, type };
+            CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
+            if (user_ui != nullptr)
+            {
+                user_ui->ShowSongListPreviewPanel(list_item);
+            }
+        }
+    }
+}
+
+void UiElement::MediaLibItemList::OnSelectionChanged()
+{
+    FindTrackList();
+    if (track_list != nullptr && track_list->IsEnable())
+    {
+        int item_selected = GetItemSelected();
+        if (item_selected >= 0 && item_selected < GetRowCount())
+        {
+            std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(type, item_selected);
+            ListItem list_item{ LT_MEDIA_LIB, item_name, type };
+            track_list->SetListItem(list_item);
+        }
+        else
+        {
+            track_list->ClearListItem();
+        }
+    }
+}
+
+void UiElement::MediaLibItemList::FindTrackList()
+{
+    if (!find_track_list)
+    {
+        track_list = FindRelatedElement<TrackList>(track_list_element_id);
+        find_track_list = true;  //找过一次没找到就不找了
     }
 }

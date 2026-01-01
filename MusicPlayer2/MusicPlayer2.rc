@@ -180,6 +180,8 @@ IDR_PLAY_QUEUE_PANEL    TEXT                    "res\\ui\\play_queue_panel.xml"
 
 IDR_CLASSICAL_CONTROL_BAR TEXT                    "res\\ui\\classical_control_bar.xml"
 
+IDR_LIST_PREVIEW_PANEL  TEXT                    "res\\ui\\list_preview_panel.xml"
+
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 

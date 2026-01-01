@@ -1563,6 +1563,11 @@
       <xs:documentation>最近播放项目的列表。</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
+    <xs:attribute name="track_list_element_id" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>显示详细曲目列表的trackList元素的id。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>

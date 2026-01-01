@@ -78,6 +78,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::Panel>();
     else if (name == "rating")
         element = std::make_shared<UiElement::RatingElement>();
+    else if (name == "trackList")
+        element = std::make_shared<UiElement::TrackList>();
 
     if (element != nullptr)
         element->SetUi(ui);

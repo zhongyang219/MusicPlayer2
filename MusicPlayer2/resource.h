@@ -307,6 +307,7 @@
 #define IDI_LYRIC_FORWARD               674
 #define IDI_DARK_MODE                   675
 #define IDI_LIGHT_MODE_D                676
+#define IDR_LIST_PREVIEW_PANEL          677
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -1063,13 +1064,14 @@
 #define ID_ORIGINAL_PITCH               33480
 #define ID_SONGS_MULTI_VERSION_ITEM_START 33481
 #define ID_SONGS_MULTI_VERSION_ITEM_MAX 33511
+#define ID_LIST_ITEM_PREVIEW            33512
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        677
-#define _APS_NEXT_COMMAND_VALUE         33512
+#define _APS_NEXT_RESOURCE_VALUE        678
+#define _APS_NEXT_COMMAND_VALUE         33513
 #define _APS_NEXT_CONTROL_VALUE         1384
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

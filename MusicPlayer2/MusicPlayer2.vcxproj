@@ -298,6 +298,7 @@
     <ClInclude Include="NeteaseLyricDownload.h" />
     <ClInclude Include="PlaylistPropertiesDlg.h" />
     <ClInclude Include="SimplePropertiesDlg.h" />
+    <ClInclude Include="UIElement\AbstractTracksList.h" />
     <ClInclude Include="UIElement\AlbumCover.h" />
     <ClInclude Include="UIElement\AllTracksList.h" />
     <ClInclude Include="UIElement\BeatIndicator.h" />
@@ -359,6 +360,7 @@
     <ClInclude Include="TagLibHelper.h" />
     <ClInclude Include="TinyXml2Helper.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
+    <ClInclude Include="UIPanel\ListPreviewPanel.h" />
     <ClInclude Include="UIPanel\PlayerUIPanel.h" />
     <ClInclude Include="UIPanel\PlayQueuePanel.h" />
     <ClInclude Include="UiSearchBox.h" />
@@ -515,6 +517,7 @@
     <ClCompile Include="NeteaseLyricDownload.cpp" />
     <ClCompile Include="PlaylistPropertiesDlg.cpp" />
     <ClCompile Include="SimplePropertiesDlg.cpp" />
+    <ClCompile Include="UIElement\AbstractTracksList.cpp" />
     <ClCompile Include="UIElement\AlbumCover.cpp" />
     <ClCompile Include="UIElement\AllTracksList.cpp" />
     <ClCompile Include="UIElement\BeatIndicator.cpp" />
@@ -582,6 +585,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UIPanel\ListPreviewPanel.cpp" />
     <ClCompile Include="UIPanel\PlayerUIPanel.cpp" />
     <ClCompile Include="UIPanel\PlayQueuePanel.cpp" />
     <ClCompile Include="UiSearchBox.cpp" />
@@ -923,6 +927,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\ui\classical_control_bar.xml" />
+    <Xml Include="res\ui\list_preview_panel.xml" />
     <Xml Include="res\ui\play_queue_panel.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -128,6 +128,20 @@ UiElement::Element* UiElement::Element::RootElement()
     return nullptr;
 }
 
+UiElement::Element* UiElement::Element::FindElement(const std::string& id)
+{
+    UiElement::Element* ele_found = nullptr;
+    IterateAllElements([&](UiElement::Element* ele)->bool {
+        if (ele != nullptr && ele->id == id)
+        {
+            ele_found = ele;
+            return true;
+        }
+        return false;
+    });
+    return ele_found;
+}
+
 CRect UiElement::Element::ParentRect() const
 {
     if (pParent == nullptr)
@@ -243,4 +257,17 @@ void UiElement::Element::AddChild(std::shared_ptr<Element> child)
 {
     child->pParent = this;
     childLst.push_back(child);
+}
+
+bool UiElement::Element::IsEnable() const
+{
+    if (pParent != nullptr)
+    {
+        bool enable = IsEnable(pParent->GetRect());
+        return enable && pParent->IsEnable();
+    }
+    else
+    {
+        return true;
+    }
 }

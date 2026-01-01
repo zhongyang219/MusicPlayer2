@@ -879,11 +879,11 @@ bool CMusicPlayerCmdHelper::FixWrongFilePath(wstring& file_path, const std::unor
     return fixed;
 }
 
-void CMusicPlayerCmdHelper::OnListItemSelected(const ListItem& list_item, bool play)
+void CMusicPlayerCmdHelper::OnListItemSelected(const ListItem& list_item, bool play, bool force)
 {
     if (list_item.empty())
         return;
-    if (!CPlayer::GetInstance().SetList(list_item, play))
+    if (!CPlayer::GetInstance().SetList(list_item, play, force))
     {
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
         GetOwner()->MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);

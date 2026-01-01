@@ -31,6 +31,7 @@
 #include "UIElement/PanelElement.h"
 #include "UIElement/IconElement.h"
 #include "UIElement/RatingElement.h"
+#include "UIElement/TracksList.h"
 
 namespace UiElement
 {

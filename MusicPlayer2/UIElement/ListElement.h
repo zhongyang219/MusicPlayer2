@@ -51,8 +51,9 @@ namespace UiElement
         virtual int GetToolTipIndex() const { return 0; }
         virtual CMenu* GetContextMenu(bool item_selected) { return nullptr; }
         virtual CWnd* GetCmdRecivedWnd() { return nullptr; }        //获取右键菜单命令的接收窗口，如果返回空指针，则在CUIWindowCmdHelper中响应
-        virtual void OnDoubleClicked() {};
-        virtual void OnClicked() {};
+        virtual void OnDoubleClicked() {}
+        virtual void OnClicked() {}
+        virtual void OnSelectionChanged() {}
         virtual int GetHoverButtonCount(int row) { return 0; }     //获取鼠标指向一行时要显示的按钮数量
         virtual int GetHoverButtonColumn() { return 0; }    //获取鼠标指向时要显示的按钮所在列
         virtual IconMgr::IconType GetHoverButtonIcon(int index, int row) { return IconMgr::IT_NO_ICON; } //获取鼠标指向一行时按钮的图标
@@ -103,10 +104,12 @@ namespace UiElement
         int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
         std::map<int, IPlayerUI::UIButton> hover_buttons;   //鼠标指向时的按钮
         int last_row_count{};
+        int last_row_selected{ -1 };
     private:
         std::vector<int> search_result; //保存搜索结果的序号
         bool searched{};                //是否处于搜索状态
         SearchBox* related_search_box{};    //关联的键框
+        mutable std::recursive_mutex m_selection_mutex;     //保护items_selected的互斥量
     };
 }
 

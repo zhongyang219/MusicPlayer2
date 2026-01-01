@@ -386,6 +386,8 @@ SongInfo CSongDataManager::GetSongInfo(const SongKey& key) const
     std::shared_lock<std::shared_mutex> readLock(m_shared_mutex);
     ASSERT(!key.path.empty());
     SongInfo tmp;
+    tmp.file_path = key.path;
+    tmp.track = key.cue_track;
     auto iter = m_song_data.find(key);
     if (iter != m_song_data.end())
         tmp = iter->second;

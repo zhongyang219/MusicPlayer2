@@ -162,38 +162,102 @@
               <navigationItem icon="mediaLib" text="%(TXT_ALL_TRACKS)"/>
             </navigationBar>
             <stackElement id="stackElement1" margin="8">
+              <!--正在播放-->
               <verticalLayout>
                 <albumCover square="true" margin="28" margin-bottom="12"/>
                 <text type="title" style="scroll" height="36" font_size="12" margin-left="16" margin-right="16" alignment="center"/>
                 <text type="artist_album" style="scroll" height="24" font_size="10" margin-left="16" margin-right="16" alignment="center"/>
               </verticalLayout>
+              <!--频谱分析-->
               <verticalLayout>
                 <text type="title" alignment="center" font_size="12" style="scroll" height="32"/>
                 <text type="artist" alignment="center" font_size="10" style="scroll" height="32"/>
                 <text type="album" alignment="center" font_size="10" style="scroll" height="32"/>
                 <spectrum alignment="center" max-height="30%" fixed_width="true" draw_reflex="true" margin-top="24" proportion="4"/>
               </verticalLayout>
+              <!--歌词-->
               <lyrics/>
+              <!--播放队列-->
               <verticalLayout>
                 <playlistIndicator height="30" margin-bottom="4"/>
                 <searchBox height="26" margin-bottom="4"/>
                 <playlist/>
               </verticalLayout>
-              <verticalLayout>
-                <searchBox height="26" margin-bottom="4"/>
-                <recentPlayedList/>
+              <!--最近播放-->
+              <horizontalLayout>
+                <verticalLayout max-width="520">
+                  <searchBox height="26" margin-bottom="4"/>
+                  <recentPlayedList track_list_element_id="recent_played_track_list"/>
+                </verticalLayout>
+                <trackList id="recent_played_track_list" margin-left="8" hide-width="520"/>
+              </horizontalLayout>
+              <!--文件夹-->
+              <horizontalLayout>
+                <verticalLayout max-width="520">
+                  <searchBox height="26" margin-bottom="4"/>
+                  <mediaLibFolder track_list_element_id="folder_track_list"/>
+                </verticalLayout>
+                <trackList id="folder_track_list" margin-left="8" hide-width="520"/>
+              </horizontalLayout>
+              <!--播放列表-->
+              <horizontalLayout>
+                <verticalLayout max-width="520">
+                  <searchBox height="26" margin-bottom="4"/>
+                  <mediaLibPlaylist track_list_element_id="playlist_track_list"/>
+                </verticalLayout>
+                <trackList id="playlist_track_list" margin-left="8" hide-width="520"/>
+              </horizontalLayout>
+              <!--我喜欢的音乐-->
+              <verticalLayout max-width="520">
+                <horizontalLayout height="26" margin-bottom="4">
+                  <button key="playMyFavourite" height="28" show_text="true" proportion="10"/>
+                  <placeHolder proportion="1"/>
+                  <searchBox max-width="200" proportion="10"/>
+                </horizontalLayout>
+                <myFavouriteList/>
               </verticalLayout>
-              <mediaLibFolder/>
-              <mediaLibPlaylist/>
-              <myFavouriteList/>
-              <mediaLibItemList type="artist"/>
-              <mediaLibItemList type="album"/>
-              <mediaLibItemList type="genre"/>
+              <!--艺术家-->
+              <horizontalLayout>
+                <verticalLayout max-width="520">
+                  <searchBox height="26" margin-bottom="4"/>
+                  <mediaLibItemList type="artist" track_list_element_id="artist_track_list"/>
+                </verticalLayout>
+                <trackList id="artist_track_list" margin-left="8" hide-width="520"/>
+              </horizontalLayout>
+              <!--唱片集-->
+              <horizontalLayout>
+                <verticalLayout max-width="520">
+                  <searchBox height="26" margin-bottom="4"/>
+                  <mediaLibItemList type="album" track_list_element_id="album_track_list"/>
+                </verticalLayout>
+                <trackList id="album_track_list" margin-left="8" hide-width="520"/>
+              </horizontalLayout>
+              <!--流派-->
+              <horizontalLayout>
+                <verticalLayout max-width="520">
+                  <searchBox height="26" margin-bottom="4"/>
+                  <mediaLibItemList type="genre" track_list_element_id="genre_track_list"/>
+                </verticalLayout>
+                <trackList id="genre_track_list" margin-left="8" hide-width="520"/>
+              </horizontalLayout>
+              <!--年份-->
               <mediaLibItemList type="year"/>
+              <!--文件类型-->
               <mediaLibItemList type="file_type"/>
+              <!--文件类型-->
+              <!--比特率-->
               <mediaLibItemList type="bitrate"/>
+              <!--分级-->
               <mediaLibItemList type="rating"/>
-              <medialibFolderExplore/>
+              <!--文件夹浏览-->
+              <horizontalLayout>
+                <verticalLayout max-width="520">
+                  <searchBox height="26" margin-bottom="4"/>
+                  <medialibFolderExplore track_list_element_id="folder_explore_track_list"/>
+                </verticalLayout>
+                <trackList id="folder_explore_track_list" margin-left="8" hide-width="520"/>
+              </horizontalLayout>
+              <!--所有曲目-->
               <verticalLayout>
                 <searchBox height="26" margin-bottom="4"/>
                 <allTracksList/>
