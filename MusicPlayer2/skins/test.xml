@@ -689,13 +689,14 @@
               <icon icon="newFolder" width="24" height="24" margin="2"/>
               <icon icon="background" width="24" height="24" margin="2"/>
               <icon icon="dropDown" width="24" height="24" margin="2"/>
+              <icon icon="listPreview" width="24" height="24" margin="2"/>
               <icon icon="leTagInsert" width="24" height="24" margin="2"/>
               <icon icon="leTagReplace" width="24" height="24" margin="2"/>
               <icon icon="leTagDelete" width="24" height="24" margin="2"/>
-              <icon icon="leSave" width="24" height="24" margin="2"/>
             </horizontalLayout>
             <!--第6行-->
             <horizontalLayout height="28">
+              <icon icon="leSave" width="24" height="24" margin="2"/>
               <icon icon="leFind" width="24" height="24" margin="2"/>
               <icon icon="leReplace" width="24" height="24" margin="2"/>
               <icon icon="triangleLeft" width="24" height="24" margin="2"/>

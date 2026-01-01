@@ -91,7 +91,7 @@ IconMgr::IconType UiElement::MediaLibPlaylist::GetHoverButtonIcon(int index, int
     switch (index)
     {
     case BTN_PLAY: return IconMgr::IT_Play;
-    case BTN_PREVIEW: return IconMgr::IT_Info;
+    case BTN_PREVIEW: return IconMgr::IT_ListPreview;
     }
     return IconMgr::IT_NO_ICON;
 }

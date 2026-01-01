@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "RecentPlayedList.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UserUi.h"
@@ -97,7 +97,7 @@ IconMgr::IconType UiElement::RecentPlayedList::GetHoverButtonIcon(int index, int
     switch (index)
     {
     case BTN_PLAY: return IconMgr::IT_Play;
-    case BTN_PREVIEW: return IconMgr::IT_Info;
+    case BTN_PREVIEW: return IconMgr::IT_ListPreview;
     }
     return IconMgr::IT_NO_ICON;
 }
@@ -115,7 +115,7 @@ std::wstring UiElement::RecentPlayedList::GetHoverButtonTooltip(int index, int r
 void UiElement::RecentPlayedList::OnHoverButtonClicked(int btn_index, int row)
 {
     CMusicPlayerCmdHelper helper;
-    //µã»÷ÁË¡°²¥·Å¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ’­æ”¾â€æŒ‰é’®
     if (btn_index == BTN_PLAY)
     {
         if (row >= 0 && row < GetRowCount())
@@ -124,7 +124,7 @@ void UiElement::RecentPlayedList::OnHoverButtonClicked(int btn_index, int row)
             helper.OnListItemSelected(m_list_cache.GetItem(row), true);
         }
     }
-    //µã»÷ÁËÔ¤ÀÀ°´Å¥
+    //ç‚¹å‡»äº†é¢„è§ˆæŒ‰é’®
     else if (btn_index == BTN_PREVIEW)
     {
         CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
@@ -137,7 +137,7 @@ void UiElement::RecentPlayedList::OnHoverButtonClicked(int btn_index, int row)
 
 void UiElement::RecentPlayedList::OnSelectionChanged()
 {
-    //»ñÈ¡¹ØÁªµÄtrackListÔªËØ
+    //è·å–å…³è”çš„trackListå…ƒç´ 
     if (!track_list_element_id.empty())
     {
         TrackList* track_list = FindRelatedElement<TrackList>(track_list_element_id);

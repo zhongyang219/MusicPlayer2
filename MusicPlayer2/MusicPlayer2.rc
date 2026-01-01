@@ -3132,6 +3132,10 @@ IDI_DARK_MODE           ICON                    "res\\dark_mode.ico"
 
 IDI_LIGHT_MODE_D        ICON                    "res\\light_mode_d.ico"
 
+IDI_LIST_PREVIEW_D      ICON                    "res\\list_preview_d.ico"
+
+IDI_LIST_PREVIEW      ICON                    "res\\list_preview.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

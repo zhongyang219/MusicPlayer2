@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "FolderExploreTree.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UiMediaLibItemMgr.h"
@@ -103,7 +103,7 @@ std::wstring UiElement::FolderExploreTree::GetEmptyString()
 int UiElement::FolderExploreTree::GetHoverButtonCount(int row)
 {
     FindTrackList();
-    //Èç¹ûÓĞ¹ØÁªµÄTrackList£¬Ôò²»ÏÔÊ¾×îºóµÄ¡°Ô¤ÀÀ¡±°´Å¥
+    //å¦‚æœæœ‰å…³è”çš„TrackListï¼Œåˆ™ä¸æ˜¾ç¤ºæœ€åçš„â€œé¢„è§ˆâ€æŒ‰é’®
     if (track_list != nullptr && track_list->IsEnable())
         return BTN_MAX - 1;
     else
@@ -121,7 +121,7 @@ IconMgr::IconType UiElement::FolderExploreTree::GetHoverButtonIcon(int index, in
     {
     case BTN_PLAY: return IconMgr::IT_Play;
     case BTN_ADD: return IconMgr::IT_Add;
-    case BTN_PREVIEW: return IconMgr::IT_Info;
+    case BTN_PREVIEW: return IconMgr::IT_ListPreview;
     }
     return IconMgr::IT_NO_ICON;
 }
@@ -140,7 +140,7 @@ std::wstring UiElement::FolderExploreTree::GetHoverButtonTooltip(int index, int 
 void UiElement::FolderExploreTree::OnHoverButtonClicked(int btn_index, int row)
 {
     CMusicPlayerCmdHelper helper;
-    //µã»÷ÁË¡°²¥·Å¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ’­æ”¾â€æŒ‰é’®
     if (btn_index == 0)
     {
         if (row >= 0 && row < GetRowCount())
@@ -154,13 +154,13 @@ void UiElement::FolderExploreTree::OnHoverButtonClicked(int btn_index, int row)
             }
         }
     }
-    //µã»÷ÁË¡°Ìí¼Óµ½²¥·ÅÁĞ±í¡±°´Å¥
+    //ç‚¹å‡»äº†â€œæ·»åŠ åˆ°æ’­æ”¾åˆ—è¡¨â€æŒ‰é’®
     else if (btn_index == BTN_ADD)
     {
         CMenu* menu = theApp.m_menu_mgr.GetMenu(MenuMgr::AddToPlaylistMenu);
         ShowContextMenu(menu, nullptr);
     }
-    //µã»÷ÁË¡°Ô¤ÀÀ¡±°´Å¥
+    //ç‚¹å‡»äº†â€œé¢„è§ˆâ€æŒ‰é’®
     else if (btn_index == BTN_PREVIEW)
     {
         if (row >= 0 && row < GetRowCount())
@@ -188,7 +188,7 @@ bool UiElement::FolderExploreTree::IsMultipleSelectionEnable()
 
 void UiElement::FolderExploreTree::OnSelectionChanged()
 {
-    //»ñÈ¡¹ØÁªµÄtrackListÔªËØ
+    //è·å–å…³è”çš„trackListå…ƒç´ 
     FindTrackList();
     if (track_list != nullptr && track_list->IsEnable())
     {
@@ -217,6 +217,6 @@ void UiElement::FolderExploreTree::FindTrackList()
     if (!find_track_list)
     {
         track_list = FindRelatedElement<TrackList>(track_list_element_id);
-        find_track_list = true;  //ÕÒ¹ıÒ»´ÎÃ»ÕÒµ½¾Í²»ÕÒÁË
+        find_track_list = true;  //æ‰¾è¿‡ä¸€æ¬¡æ²¡æ‰¾åˆ°å°±ä¸æ‰¾äº†
     }
 }

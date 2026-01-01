@@ -504,6 +504,11 @@
           <xs:documentation>下拉箭头</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
+      <xs:enumeration value="listPreview">
+        <xs:annotation>
+          <xs:documentation>列表预览</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
       <xs:enumeration value="leTagInsert">
         <xs:annotation>
           <xs:documentation>Le 插入时间标签</xs:documentation>

@@ -879,7 +879,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
         menu.AppendItem(EX_ID(ID_VIEW_IN_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
-        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW));
+        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW), IconMgr::IconType::IT_ListPreview);
         break;
     case MenuMgr::UiRecentPlayedMenu:
         menu.CreateMenu(true, false);
@@ -890,7 +890,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_VIEW_IN_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
         menu.AppendItem(EX_ID(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES), IconMgr::IconType::IT_Info);
-        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW));
+        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW), IconMgr::IconType::IT_ListPreview);
         break;
     case MenuMgr::UiMyFavouriteMenu:
         menu.CreateMenu(true, false);
@@ -921,7 +921,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_CLEAR_INVALID_PATH));
         menu.AppendItem(EX_ID(ID_FILE_OPEN_FOLDER), IconMgr::IconType::IT_NewFolder);
-        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW));
+        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW), IconMgr::IconType::IT_ListPreview);
         menu.AppendItem(EX_ID(ID_LIB_FOLDER_PROPERTIES), IconMgr::IconType::IT_Info);
         break;
     case MenuMgr::UiPlaylistMenu:
@@ -937,7 +937,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_PLAYLIST_FIX_PATH_ERROR), IconMgr::IconType::IT_Fix);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_NEW_PLAYLIST), IconMgr::IconType::IT_Add);
-        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW));
+        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW), IconMgr::IconType::IT_ListPreview);
         menu.AppendItem(EX_ID(ID_LIB_PLAYLIST_PROPERTIES), IconMgr::IconType::IT_Info);
         break;
     case MenuMgr::UiFolderExploreMenu:
@@ -949,7 +949,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
         menu.AppendItem(EX_ID(ID_BROWSE_PATH), IconMgr::IconType::IT_Folder_Explore);
-        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW));
+        menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW), IconMgr::IconType::IT_ListPreview);
         break;
     case MenuMgr::LibPlaylistSortMenu:
         menu.CreateMenu(true, false);
