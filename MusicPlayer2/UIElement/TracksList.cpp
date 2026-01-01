@@ -30,6 +30,11 @@ void UiElement::TrackList::SetListItem(const ListItem& list_item)
     else if (list_item.type == LT_FOLDER)
     {
         CAudioCommon::GetAudioFiles(list_item.path, song_list, MAX_SONG_NUM, list_item.contain_sub_folder);
+        //展开cue
+        int cnt{};
+        bool flag{};
+        CAudioCommon::GetCueTracks(song_list, cnt, flag, MR_MIN_REQUIRED);
+        //排序
         auto sort_fun = SongInfo::GetSortFunc(list_item.sort_mode == SM_UNSORT ? SM_U_FILE : list_item.sort_mode);
         std::stable_sort(song_list.begin(), song_list.end(), sort_fun);
         //获取曲目信息

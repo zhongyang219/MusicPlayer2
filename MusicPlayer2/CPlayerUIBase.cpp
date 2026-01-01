@@ -2587,7 +2587,7 @@ void CPlayerUIBase::DrawList(CRect rect, UiElement::ListElement* list_element, i
                         m_draw.FillRect(rect_cur_indicator, m_colors.color_text_heighlight, true);
 
                     //播放列表中正在播放行绘制迷你频谱
-                    if ((dynamic_cast<UiElement::Playlist*>(list_element) != nullptr || dynamic_cast<UiElement::TrackList*>(list_element) != nullptr|| dynamic_cast<UiElement::MyFavouriteList*>(list_element) != nullptr)
+                    if ((dynamic_cast<UiElement::Playlist*>(list_element) != nullptr || dynamic_cast<UiElement::AbstractTracksList*>(list_element) != nullptr|| dynamic_cast<UiElement::MyFavouriteList*>(list_element) != nullptr)
                         && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED)
                     {
                         draw_mini_spectrum = true;
