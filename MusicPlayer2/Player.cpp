@@ -1034,6 +1034,10 @@ bool CPlayer::SetList(ListItem list_item, bool play, bool force)
         else
             m_current_position.fromInt(0);
     }
+    else
+    {
+        m_current_position.fromInt(0);
+    }
 
     switch (list_item.type)
     {
