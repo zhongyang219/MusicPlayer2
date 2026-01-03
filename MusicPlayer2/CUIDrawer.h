@@ -8,11 +8,13 @@ class CUIDrawer :
 public:
     enum SpectrumCol        //绘制频谱分析的柱形数量
     {
+        SC_AUTO,
         SC_128,
         SC_64,
         SC_32,
         SC_16,
-        SC_8
+        SC_8,
+        SC_4
     };
 
 public:

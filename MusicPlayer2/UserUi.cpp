@@ -842,9 +842,11 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 std::string str_fixed_width = CTinyXml2Helper::ElementAttribute(xml_node, "fixed_width");
                 spectrum->fixed_width = CTinyXml2Helper::StringToBool(str_fixed_width.c_str());
                 std::string str_type = CTinyXml2Helper::ElementAttribute(xml_node, "type");
-                if (str_type == "128col")
+                if (str_type == "auto_col")
+                    spectrum->type = CUIDrawer::SC_AUTO;
+                else if (str_type == "128col")
                     spectrum->type = CUIDrawer::SC_128;
-                if (str_type == "64col")
+                else if (str_type == "64col")
                     spectrum->type = CUIDrawer::SC_64;
                 else if (str_type == "32col")
                     spectrum->type = CUIDrawer::SC_32;
@@ -852,6 +854,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                     spectrum->type = CUIDrawer::SC_16;
                 else if (str_type == "8col")
                     spectrum->type = CUIDrawer::SC_8;
+                else if (str_type == "4col")
+                    spectrum->type = CUIDrawer::SC_4;
                 //alignment
                 std::string str_alignment = CTinyXml2Helper::ElementAttribute(xml_node, "alignment");
                 if (str_alignment == "left")

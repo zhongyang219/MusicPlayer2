@@ -329,6 +329,23 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
     int cols;		//要显示的频谱柱形的数量
     switch (col)
     {
+    case CUIDrawer::SC_AUTO:
+    {
+        //柱形数量为自动时，根据矩形区域的宽度设置柱形的数量
+        if (rect.Width() < DPI(20))
+            cols = 4;
+        else if (rect.Width() < DPI(52))
+            cols = 8;
+        else if (rect.Width() < DPI(120))
+            cols = 16;
+        else if (rect.Width() < DPI(240))
+            cols = 32;
+        else if (rect.Width() < DPI(480))
+            cols = 64;
+        else
+            cols = 128;
+    }
+    break;
     case CUIDrawer::SC_128:
         cols = 128;
         break;
@@ -344,6 +361,9 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
     case CUIDrawer::SC_8:
         cols = 8;
         break;
+    case CUIDrawer::SC_4:
+        cols = 4;
+        break;
     default:
         cols = SPECTRUM_COL;
         break;
@@ -351,10 +371,7 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
     int max_width{ rect.Width() };
     if (fixed_width)
     {
-        if (col == SC_64)
-        {
-            max_width = DPI(280);
-        }
+        max_width = DPI(static_cast<int>(cols * 4.375));
     }
     double gap_width_double{ max_width * 256.0 / (cols * 672.0) };   //频谱柱形间隙宽度
     if (theApp.m_ui_data.full_screen && !m_for_cortana_lyric)

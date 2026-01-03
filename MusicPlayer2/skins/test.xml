@@ -483,12 +483,13 @@
           <verticalLayout margin="4">
             <text height="24" text="频谱分析测试"/>
             <verticalLayout>
-              <spectrum type="128col" margin="8" min-height="40"/>
-              <spectrum type="64col" margin="8" min-height="40"/>
+              <spectrum type="128col" margin="8" min-height="40" fixed_width="true"/>
+              <spectrum type="64col" margin="8" min-height="40" fixed_width="true"/>
               <horizontalLayout min-height="40">
-                <spectrum type="32col" margin="8" min-height="40" width="50%"/>
-                <spectrum type="16col" margin="8" min-height="40" width="25%"/>
-                <spectrum type="8col" margin="8" min-height="40" width="13%"/>
+                <spectrum type="32col" margin="8" min-height="40" proportion="8" fixed_width="true"/>
+                <spectrum type="16col" margin="8" min-height="40" proportion="4" fixed_width="true"/>
+                <spectrum type="8col" margin="8" min-height="40" proportion="2" fixed_width="true"/>
+                <spectrum type="4col" margin="8" min-height="40" proportion="1" fixed_width="true"/>
               </horizontalLayout>
             </verticalLayout>
             <verticalLayout>
@@ -528,8 +529,8 @@
                 </horizontalLayout>
               </rectangle>
               <horizontalLayout height="30" margin="4">
-                <spectrum max-height="80" fixed_width="true" draw_reflex="true"/>
-                <searchBox width="180" height="26" margin-left="4"/>
+                <spectrum max-height="80" type="auto_col" draw_reflex="true"/>
+                <searchBox width="250" height="26" margin-left="4"/>
               </horizontalLayout>
             </verticalLayout>
           </verticalLayout>

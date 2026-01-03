@@ -1407,11 +1407,13 @@
       </xs:annotation>
       <xs:simpleType>
         <xs:restriction base="xs:string">
+          <xs:enumeration value="auto_col"></xs:enumeration>
           <xs:enumeration value="128col"></xs:enumeration>
           <xs:enumeration value="64col"></xs:enumeration>
           <xs:enumeration value="32col"></xs:enumeration>
           <xs:enumeration value="16col"></xs:enumeration>
           <xs:enumeration value="8col"></xs:enumeration>
+          <xs:enumeration value="4col"></xs:enumeration>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
