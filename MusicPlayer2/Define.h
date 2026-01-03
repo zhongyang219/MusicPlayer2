@@ -105,9 +105,8 @@ using _tstring = std::string;
 //#define TIMER_ID_EXIT 1237
 
 //频谱分析
-#define FFT_SAMPLE 256			//频谱分析采样点数
-//#define FFT_NUM 128			//要使用的频谱的点数
-#define SPECTRUM_COL 64			//频谱分析柱形的条数（必须为2的整数次方且小于或等于FFT_SAMPLE）
+#define FFT_SAMPLE 512			//频谱分析采样点数
+#define SPECTRUM_COL (FFT_SAMPLE / 4)	//频谱分析柱形的条数（必须为2的整数次方且小于或等于FFT_SAMPLE）
 
 #define IDC_SAVE_COMBO_BOX 1990		//定义添加到“另存为”对话框中的组合框的ID
 #define IDC_OPEN_CHECKBOX 1991		//定义添加到“添加文件夹”对话框中的复选框的ID

@@ -3146,7 +3146,7 @@ void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
         if ((i + 1 - COL_MIN) % ((COL_MAX - COL_MIN) / COLS) == 0)
         {
             CRect rect_tmp{ rects[col_index] };
-            int spetral_height = static_cast<int>(spetral_data * rects[0].Height() * 0.06 / COLS);  //调整这里常数的值可以调整频谱的整体高度
+            int spetral_height = static_cast<int>(spetral_data * rects[0].Height() * 15.0 / FFT_SAMPLE / COLS);  //调整这里常数的值可以调整频谱的整体高度
             if (spetral_height <= 0 || CPlayer::GetInstance().IsError())
                 spetral_height = 1;
             rect_tmp.top = rect_tmp.bottom - spetral_height;

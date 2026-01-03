@@ -842,6 +842,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 std::string str_fixed_width = CTinyXml2Helper::ElementAttribute(xml_node, "fixed_width");
                 spectrum->fixed_width = CTinyXml2Helper::StringToBool(str_fixed_width.c_str());
                 std::string str_type = CTinyXml2Helper::ElementAttribute(xml_node, "type");
+                if (str_type == "128col")
+                    spectrum->type = CUIDrawer::SC_128;
                 if (str_type == "64col")
                     spectrum->type = CUIDrawer::SC_64;
                 else if (str_type == "32col")

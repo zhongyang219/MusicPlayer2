@@ -172,7 +172,7 @@
             </horizontalLayout>
             <!--底部频谱分析 （使用horizontalLayout包裹确保水平剧中，margin-bottom设为0确保与父元素下对齐）-->
             <horizontalLayout height="32" margin-bottom="0" >
-              <spectrum draw_reflex="false" width="280" alignment="center"/>
+              <spectrum type="128col" draw_reflex="false" width="520" alignment="center"/>
             </horizontalLayout>
           </element>
           <!--播放控制栏-->

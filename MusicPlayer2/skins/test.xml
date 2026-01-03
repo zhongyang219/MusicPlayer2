@@ -483,9 +483,10 @@
           <verticalLayout margin="4">
             <text height="24" text="频谱分析测试"/>
             <verticalLayout>
+              <spectrum type="128col" margin="8" min-height="40"/>
               <spectrum type="64col" margin="8" min-height="40"/>
-              <spectrum type="32col" margin="8" min-height="40" width="50%"/>
               <horizontalLayout min-height="40">
+                <spectrum type="32col" margin="8" min-height="40" width="50%"/>
                 <spectrum type="16col" margin="8" min-height="40" width="25%"/>
                 <spectrum type="8col" margin="8" min-height="40" width="13%"/>
               </horizontalLayout>

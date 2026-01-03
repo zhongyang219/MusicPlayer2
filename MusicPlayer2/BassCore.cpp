@@ -895,7 +895,7 @@ void CBassCore::ClearReverb()
 
 void CBassCore::GetFFTData(float fft_data[FFT_SAMPLE])
 {
-    BASS_ChannelGetData(m_musicStream, fft_data, BASS_DATA_FFT512);
+    BASS_ChannelGetData(m_musicStream, fft_data, BASS_DATA_FFT1024);
 }
 
 int CBassCore::GetErrorCode()

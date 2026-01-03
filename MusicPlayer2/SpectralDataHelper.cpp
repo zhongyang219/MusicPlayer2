@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "SpectralDataHelper.h"
 
-const int LINEAR_SAMPLE_COUNT{ 107 };
+const int LINEAR_SAMPLE_COUNT{ FFT_SAMPLE * 110 / 256 };
 
 CSpectralDataHelper::CSpectralDataHelper()
 {

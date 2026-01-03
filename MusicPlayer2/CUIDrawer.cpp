@@ -329,6 +329,9 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
     int cols;		//要显示的频谱柱形的数量
     switch (col)
     {
+    case CUIDrawer::SC_128:
+        cols = 128;
+        break;
     case CUIDrawer::SC_64:
         cols = 64;
         break;
@@ -353,7 +356,7 @@ void CUIDrawer::DrawSpectrum(CRect rect, SpectrumCol col, bool draw_reflex /*= f
             max_width = DPI(280);
         }
     }
-    double gap_width_double{ max_width * (SPECTRUM_COL / cols) / 168.0 };   //频谱柱形间隙宽度
+    double gap_width_double{ max_width * 256.0 / (cols * 672.0) };   //频谱柱形间隙宽度
     if (theApp.m_ui_data.full_screen && !m_for_cortana_lyric)
         gap_width_double *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
     int gap_width{ static_cast<int>(gap_width_double + 0.5) };		//这里加0.5用作将小数四舍五入处理
