@@ -199,5 +199,5 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define COPY_DATA_OPEN_FILE 1       //打开文件
 #define COPY_DATA_ADD_FILE 2        //添加文件
 
-#define MAX_FPS 120
-#define FPS_LIMIT_MARGIN 20
+#define MAX_FPS 90      //UI的最大帧率
+#define FPS_LIMIT_MARGIN 10 //限制帧率上下浮动范围
