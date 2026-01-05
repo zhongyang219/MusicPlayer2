@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "BeatIndicator.h"
 
 void UiElement::BeatIndicator::Draw()

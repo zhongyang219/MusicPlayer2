@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "MiniSpectrum.h"
 
 void UiElement::MiniSpectrum::Draw()

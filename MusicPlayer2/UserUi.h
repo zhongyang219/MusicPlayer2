@@ -24,7 +24,6 @@ public:
     void ResetVolumeToPlayTime();   //定时器SHOW_VOLUME_TIMER_ID响应时需要调用此函数
     void PlaylistLocateToCurrent();     //播放列表控件使正在播放的条目可见
     void ListLocateToCurrent();         //ui中的所有列表使正在播放的条目可见
-    void InitSearchBox(CWnd* pWnd);
 
     void PlaylistSelectAll();
     void PlaylistSelectNone();
@@ -91,11 +90,11 @@ public:
      */
     static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node, CPlayerUIBase* ui);
 
-    CPlayerUIPanel* ShowHidePanel(ePanelType panel_type);
-    CPlayerUIPanel* ShowHidePanelByFileName(const std::wstring panel_file_name);
-    CPlayerUIPanel* ShowHidePanelById(const std::wstring panel_id);
+    CPlayerUIPanel* ShowPanel(ePanelType panel_type);
+    CPlayerUIPanel* ShowPanelByFileName(const std::wstring panel_file_name);
+    CPlayerUIPanel* ShowPanelById(const std::wstring panel_id);
     bool IsPanelShown() const;
-    void CloseAllPanel();
+    void ClosePanel();
     void ShowSongListPreviewPanel(const ListItem& list_item);
 
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;

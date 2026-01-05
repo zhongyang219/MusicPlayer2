@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "UserUi.h"
 #include "UiSearchBox.h"
+#include "UIPanel/PlayerUIPanel.h"
 #include "UIPanel/ListPreviewPanel.h"
 
 CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
@@ -55,7 +56,7 @@ void CUserUi::LoadFromContents(const std::string& xml_contents)
             if (!panel_id.empty())
             {
                 //在这里可以根据面板id创建自定义的面板类
-                m_panel_mgr.AddPanel(panel_id, std::make_unique<CPlayerUIPanel>(this, panel_element));
+                m_panel_mgr.AddPanelFromUi(panel_id, std::make_unique<CPlayerUIPanel>(this, panel_element));
             }
         }
     });
@@ -141,30 +142,6 @@ void CUserUi::ListLocateToCurrent()
         }
         return false;
     });
-}
-
-void CUserUi::InitSearchBox(CWnd* pWnd)
-{
-    IterateAllElementsInAllUi([&](UiElement::Element* element) ->bool {
-        UiElement::SearchBox* search_box{ dynamic_cast<UiElement::SearchBox*>(element) };
-        if (search_box != nullptr)
-            search_box->InitSearchBoxControl(pWnd);
-        return false;
-    });
-    //初始化面板中的SearchBox
-    for (auto iter = m_panel_mgr.GetPanelsInUi().begin(); iter != m_panel_mgr.GetPanelsInUi().end(); ++iter)
-    {
-        auto* root_emement = iter->second->GetRootElement().get();
-        if (root_emement != nullptr)
-        {
-            root_emement->IterateAllElements([&](UiElement::Element* element) ->bool {
-                UiElement::SearchBox* search_box{ dynamic_cast<UiElement::SearchBox*>(element) };
-                if (search_box != nullptr)
-                    search_box->InitSearchBoxControl(pWnd);
-                return false;
-            });
-        }
-    }
 }
 
 void CUserUi::PlaylistSelectAll()
@@ -363,7 +340,7 @@ bool CUserUi::LButtonUp(CPoint point)
         if (panel != nullptr && !panel->GetPanelRect().PtInRect(point) && !panel->GetPanelRect().PtInRect(m_mouse_clicked_point))
         {
             OnPanelHide();
-            m_panel_mgr.HideAllPanel();
+            m_panel_mgr.HidePanel();
             return true;
         }
 
@@ -601,13 +578,13 @@ bool CUserUi::ButtonClicked(BtnKey btn_type, const UIButton& btn)
 {
     if (btn_type == BTN_SHOW_PLAY_QUEUE)
     {
-        ShowHidePanel(ePanelType::PlayQueue);
+        ShowPanel(ePanelType::PlayQueue);
         return true;
     }
     else if (btn_type == BTN_CLOSE_PANEL)
     {
         OnPanelHide();
-        m_panel_mgr.HideAllPanel();
+        m_panel_mgr.HidePanel();
         return true;
     }
     return CPlayerUIBase::ButtonClicked(btn_type, btn);
@@ -1302,32 +1279,29 @@ std::shared_ptr<UiElement::Element> CUserUi::GetMouseEventResponseElement()
     return GetCurrentTypeUi();
 }
 
-CPlayerUIPanel* CUserUi::ShowHidePanel(ePanelType panel_type)
+CPlayerUIPanel* CUserUi::ShowPanel(ePanelType panel_type)
 {
-    auto* panel = m_panel_mgr.GetPanel(panel_type);
-    m_panel_mgr.ShowHidePanel(panel);
+    auto* panel = m_panel_mgr.ShowPanel(CPanelManager::PanelKey(panel_type, std::wstring()));
     //显示面板后隐藏界面中按钮的鼠标提示
-    if (m_panel_mgr.GetVisiblePanel() != nullptr)
+    if (panel != nullptr)
         OnPanelShow();
     return panel;
 }
 
-CPlayerUIPanel* CUserUi::ShowHidePanelByFileName(const std::wstring panel_file_name)
+CPlayerUIPanel* CUserUi::ShowPanelByFileName(const std::wstring panel_file_name)
 {
-    auto* panel = m_panel_mgr.GetPanelByFileName(panel_file_name);
-    m_panel_mgr.ShowHidePanel(panel);
+    auto* panel = m_panel_mgr.ShowPanel(CPanelManager::PanelKey(ePanelType::PanelFromFile, panel_file_name));
     //显示面板后隐藏界面中按钮的鼠标提示
-    if (m_panel_mgr.GetVisiblePanel() != nullptr)
+    if (panel != nullptr)
         OnPanelShow();
     return panel;
 }
 
-CPlayerUIPanel* CUserUi::ShowHidePanelById(const std::wstring panel_id)
+CPlayerUIPanel* CUserUi::ShowPanelById(const std::wstring panel_id)
 {
-    auto* panel = m_panel_mgr.GetPanelById(panel_id);
-    m_panel_mgr.ShowHidePanel(panel);
+    auto* panel = m_panel_mgr.ShowPanel(CPanelManager::PanelKey(ePanelType::PanelFromUi, panel_id));
     //显示面板后隐藏界面中按钮的鼠标提示
-    if (m_panel_mgr.GetVisiblePanel() != nullptr)
+    if (panel != nullptr)
         OnPanelShow();
     return panel;
 }
@@ -1337,15 +1311,15 @@ bool CUserUi::IsPanelShown() const
     return m_panel_mgr.GetVisiblePanel() != nullptr;
 }
 
-void CUserUi::CloseAllPanel()
+void CUserUi::ClosePanel()
 {
     OnPanelHide();
-    m_panel_mgr.HideAllPanel();
+    m_panel_mgr.HidePanel();
 }
 
 void CUserUi::ShowSongListPreviewPanel(const ListItem& list_item)
 {
-    CListPreviewPanel* panel = dynamic_cast<CListPreviewPanel*>(ShowHidePanel(ePanelType::ListPreview));
+    CListPreviewPanel* panel = dynamic_cast<CListPreviewPanel*>(ShowPanel(ePanelType::ListPreview));
     if (panel != nullptr)
         panel->SetListData(list_item);
 }

@@ -244,10 +244,6 @@ BOOL CMiniModeDlg::OnInitDialog()
     for (auto& ui : m_ui_list)
     {
         ui->Init(m_pDC);
-
-        CUserUi* cur_ui{ dynamic_cast<CUserUi*>(ui.get()) };
-        if (cur_ui != nullptr)
-            cur_ui->InitSearchBox(this);
     }
 
     m_show_playlist = false;

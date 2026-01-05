@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
-    //ÃÔÄãÆµÆ×
+    //è¿·ä½ é¢‘è°±
     class MiniSpectrum : public Element
     {
     public:

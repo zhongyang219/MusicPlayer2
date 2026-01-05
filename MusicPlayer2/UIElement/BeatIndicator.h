@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
-    //½ÚÅÄÖ¸Ê¾
+    //èŠ‚æ‹æŒ‡ç¤º
     class BeatIndicator : public Element
     {
     public:

@@ -1,12 +1,15 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 #include "CPlayerUIBase.h"
 
-//ÄÚÖÃUIÃæ°åµÄÀàĞÍ
+//UIé¢æ¿çš„ç±»å‹
 enum class ePanelType
 {
-	PlayQueue,		//²¥·Å¶ÓÁĞÃæ°å
-	ListPreview,	//ÁĞ±íÔ¤ÀÀÃæ°å
+	PanelFromUi,	//æ¥è‡ªuiçš„é¢æ¿
+	PanelFromFile,	//æ¥è‡ªæ–‡ä»¶çš„é¢æ¿
+	//å†…ç½®çš„é¢æ¿
+	PlayQueue,		//æ’­æ”¾é˜Ÿåˆ—é¢æ¿
+	ListPreview	//åˆ—è¡¨é¢„è§ˆé¢æ¿
 };
 
 class CPlayerUIPanel
@@ -16,49 +19,62 @@ public:
 	CPlayerUIPanel(CPlayerUIBase* ui, const std::wstring file_name);
 	CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Element> panel_element);
 
-	//´Óxml¶ÁÈ¡UIÅäÖÃ
+	//ä»xmlè¯»å–UIé…ç½®
 	void LoadUIData(const std::string& xml_contents);
 
-	//»æÖÆÃæ°å
+	//ç»˜åˆ¶é¢æ¿
 	virtual void Draw();
-
-	void SetVisible(bool visible);
-	bool IsVisible() const;
 
 	CRect GetPanelRect() { return m_panel_rect; }
 
 	std::shared_ptr<UiElement::Element> GetRootElement() const;
 
 protected:
-	//¼ÆËãÃæ°åµÄ¾ØĞÎÇøÓò£¬Èç¹ûÎª¿Õ£¬ÔòÄ¬ÈÏÎªÕû¸ö½çÃæÇøÓò
+	//è®¡ç®—é¢æ¿çš„çŸ©å½¢åŒºåŸŸï¼Œå¦‚æœä¸ºç©ºï¼Œåˆ™é»˜è®¤ä¸ºæ•´ä¸ªç•Œé¢åŒºåŸŸ
 	virtual CRect CalculatePanelRect() { return CRect(); }
 
 protected:
 	std::shared_ptr<UiElement::Element> m_root_element;
 	CPlayerUIBase* m_ui;
-	bool m_visible{ false };
 	CRect m_panel_rect;
 };
-
 
 class CPanelManager
 {
 public:
 	CPanelManager(CPlayerUIBase* ui);
-	CPlayerUIPanel* GetPanel(ePanelType panel_type);
-	CPlayerUIPanel* GetPanelByFileName(const std::wstring& file_name);
-	CPlayerUIPanel* GetPanelById(const std::wstring& id) const;
-	CPlayerUIPanel* GetVisiblePanel() const;
-	void ShowHidePanel(CPlayerUIPanel* panel);
-	void HideAllPanel();
-	void DrawPanel();
-	void AddPanel(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel);
 
-	const std::map<std::wstring, std::unique_ptr<CPlayerUIPanel>>& GetPanelsInUi() const;
+	struct PanelKey
+	{
+		ePanelType type;	//é¢æ¿çš„ç±»å‹
+		std::wstring id;	//å½“é¢æ¿ç±»å‹ä¸ºPanelFromUiæ—¶ä¸ºidï¼Œé¢æ¿ç±»å‹ä¸ºPanelFromFileæ—¶ä¸ºæ–‡ä»¶åï¼Œå…¶ä»–æƒ…å†µ
+
+		PanelKey(ePanelType _type, const std::wstring& _id)
+			: type(_type), id(_id)
+		{}
+
+		bool operator<(const PanelKey& key) const
+		{
+			if (type != key.type)
+				return type < key.type;
+			else
+				return id < key.id;
+		}
+
+		bool operator==(const PanelKey& key) const
+		{
+			return type == key.type && id == key.id;
+		}
+	};
+
+	CPlayerUIPanel* GetVisiblePanel() const;
+	CPlayerUIPanel* ShowPanel(PanelKey key);
+	void HidePanel();
+	void DrawPanel();
+	void AddPanelFromUi(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel);		//æ·»åŠ ä¸€ä¸ªuiä¸­çš„é¢æ¿
 
 private:
 	CPlayerUIBase* m_ui;
-	std::map<ePanelType, std::unique_ptr<CPlayerUIPanel>> m_panels;				//´Ó×ÊÔ´¶ÁÈ¡µÄÃæ°å
-	std::map<std::wstring, std::unique_ptr<CPlayerUIPanel>> m_panels_in_files;	//´ÓÎÄ¼ş¶ÁÈ¡µÄÃæ°å£¨keyÊÇÃæ°åxmlÎÄ¼şÃû£©
-	std::map<std::wstring, std::unique_ptr<CPlayerUIPanel>> m_panels_in_ui;		//´ÓUIÖĞ¶ÁÈ¡µÄÃæ°å£¨keyÊÇÃæ°åid£©
+	std::stack<CPlayerUIPanel*> m_displayed_panels;		//æ˜¾ç¤ºçš„é¢æ¿
+	std::map<PanelKey, std::unique_ptr<CPlayerUIPanel>> m_panels;		//ä¿å­˜æ‰€æœ‰å·²åŠ è½½çš„é¢æ¿
 };

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "PlayerUIPanel.h"
 #include "UserUi.h"
 #include "PlayQueuePanel.h"
@@ -29,7 +29,7 @@ CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Ele
 
 void CPlayerUIPanel::LoadUIData(const std::string& xml_contents)
 {
-	//¶ÁÈ¡xml
+	//è¯»å–xml
 	tinyxml2::XMLDocument doc;
 	auto rtn = doc.Parse(xml_contents.c_str(), xml_contents.size());
 	if (rtn == tinyxml2::XML_SUCCESS)
@@ -37,7 +37,7 @@ void CPlayerUIPanel::LoadUIData(const std::string& xml_contents)
 		tinyxml2::XMLElement* root = doc.RootElement();
 		CTinyXml2Helper::IterateChildNode(root, [&](tinyxml2::XMLElement* xml_child) {
 			std::string item_name = CTinyXml2Helper::ElementName(xml_child);
-			//²éÕÒpanelÔªËØ
+			//æŸ¥æ‰¾panelå…ƒç´ 
 			if (item_name == "panel")
 			{
 				if (m_root_element == nullptr)
@@ -45,26 +45,13 @@ void CPlayerUIPanel::LoadUIData(const std::string& xml_contents)
 			}
 		});
 	}
-	//³õÊ¼»¯ËÑË÷¿ò
-	if (m_root_element != nullptr)
-	{
-		m_root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-			UiElement::SearchBox* search_box{ dynamic_cast<UiElement::SearchBox*>(element) };
-			if (search_box != nullptr)
-			{
-				search_box->InitSearchBoxControl(theApp.m_pMainWnd);
-				theApp.m_pMainWnd->SetFocus();
-			}
-			return false;
-		});
-	}
 }
 
 void CPlayerUIPanel::Draw()
 {
-	if (m_visible && m_root_element != nullptr)
+	if (m_root_element != nullptr)
 	{
-		//»æÖÆÒ»²ã°ëÍ¸Ã÷µÄºÚÉ«±³¾°
+		//ç»˜åˆ¶ä¸€å±‚åŠé€æ˜çš„é»‘è‰²èƒŒæ™¯
 		SLayoutData layoutData;
 		CRect draw_rect = m_ui->GetClientDrawRect();
 
@@ -72,7 +59,7 @@ void CPlayerUIPanel::Draw()
 		m_ui->GetDrawer().FillAlphaRect(draw_rect, m_ui->GetUIColors().color_back, alpha);
 
 		m_panel_rect = CalculatePanelRect();
-		//Èç¹ûÎ´Í¨¹ı´úÂë»ñÈ¡Ãæ°åµÄ¾ØĞÎÇøÓò£¬Ôò¸ù¾İui¼ÆËãÃæ°åÇøÓò
+		//å¦‚æœæœªé€šè¿‡ä»£ç è·å–é¢æ¿çš„çŸ©å½¢åŒºåŸŸï¼Œåˆ™æ ¹æ®uiè®¡ç®—é¢æ¿åŒºåŸŸ
 		if (m_panel_rect.IsRectEmpty())
 		{
 			m_root_element->CalculateRect(draw_rect);
@@ -84,19 +71,9 @@ void CPlayerUIPanel::Draw()
 			m_root_element->SetRect(m_panel_rect);
 		}
 
-		//»æÖÆÃæ°å
+		//ç»˜åˆ¶é¢æ¿
 		m_root_element->Draw();
 	}
-}
-
-void CPlayerUIPanel::SetVisible(bool visible)
-{
-	m_visible = visible;
-}
-
-bool CPlayerUIPanel::IsVisible() const
-{
-	return m_visible;
 }
 
 std::shared_ptr<UiElement::Element> CPlayerUIPanel::GetRootElement() const
@@ -105,7 +82,7 @@ std::shared_ptr<UiElement::Element> CPlayerUIPanel::GetRootElement() const
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ¸ù¾İÃæ°åÀàĞÍ´´½¨Ãæ°å¶ÔÏó
+// æ ¹æ®é¢æ¿ç±»å‹åˆ›å»ºé¢æ¿å¯¹è±¡
 static std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlayerUIBase* ui)
 {
 	switch (panel_type)
@@ -127,14 +104,9 @@ void CPanelManager::DrawPanel()
 		cur_panel->Draw();
 }
 
-void CPanelManager::AddPanel(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel)
+void CPanelManager::AddPanelFromUi(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel)
 {
-	m_panels_in_ui[id] = std::move(panel);
-}
-
-const std::map<std::wstring, std::unique_ptr<CPlayerUIPanel>>& CPanelManager::GetPanelsInUi() const
-{
-	return m_panels_in_ui;
+	m_panels[PanelKey(ePanelType::PanelFromUi, id)] = std::move(panel);
 }
 
 CPanelManager::CPanelManager(CPlayerUIBase* ui)
@@ -142,88 +114,56 @@ CPanelManager::CPanelManager(CPlayerUIBase* ui)
 {
 }
 
-CPlayerUIPanel* CPanelManager::GetPanel(ePanelType panel_type)
-{
-	auto iter = m_panels.find(panel_type);
-	if (iter != m_panels.end())
-	{
-		return iter->second.get();
-	}
-	else
-	{
-		auto result = m_panels.emplace(panel_type, CreatePanel(panel_type, m_ui));
-		return result.first->second.get();
-	}
-}
-
-CPlayerUIPanel* CPanelManager::GetPanelByFileName(const std::wstring& file_name)
-{
-	auto iter = m_panels_in_files.find(file_name);
-	if (iter != m_panels_in_files.end())
-	{
-		return iter->second.get();
-	}
-	else
-	{
-		auto result = m_panels_in_files.emplace(file_name, std::make_unique<CPlayerUIPanel>(m_ui, file_name));
-		return result.first->second.get();
-	}
-}
-
-CPlayerUIPanel* CPanelManager::GetPanelById(const std::wstring& id) const
-{
-	auto iter = m_panels_in_ui.find(id);
-	if (iter != m_panels_in_ui.end())
-	{
-		return iter->second.get();
-	}
-	return nullptr;
-}
-
 CPlayerUIPanel* CPanelManager::GetVisiblePanel() const
 {
-	for (const auto& panel : m_panels)
-	{
-		if (panel.second->IsVisible())
-			return panel.second.get();
-	}
-	for (const auto& panel : m_panels_in_files)
-	{
-		if (panel.second->IsVisible())
-			return panel.second.get();
-	}
-	for (const auto& panel : m_panels_in_ui)
-	{
-		if (panel.second->IsVisible())
-			return panel.second.get();
-	}
-
-	return nullptr;
+	//ä»…æ ˆé¡¶çš„é¢æ¿å¯è§
+	if (m_displayed_panels.empty())
+		return nullptr;
+	else
+		return m_displayed_panels.top();
 }
 
-void CPanelManager::ShowHidePanel(CPlayerUIPanel* panel)
+CPlayerUIPanel* CPanelManager::ShowPanel(PanelKey key)
 {
+	CPlayerUIPanel* panel = nullptr;
+	auto iter = m_panels.find(key);
+	if (iter != m_panels.end())
+	{
+		panel = iter->second.get();
+	}
+	//é¢æ¿ä¸å­˜åœ¨æ—¶åˆ›å»º
+	else
+	{
+		if (key.type == ePanelType::PanelFromFile)
+		{
+			if (!key.id.empty())
+			{
+				auto result = m_panels.emplace(key, std::make_unique<CPlayerUIPanel>(m_ui, key.id));
+				panel = result.first->second.get();
+			}
+		}
+		else if (key.type == ePanelType::PanelFromUi)
+		{
+			//UIä¸­çš„é¢æ¿ä¸åœ¨æ­¤å¤„åˆ›å»ºï¼Œé€šè¿‡AddPanelå‡½æ•°æ·»åŠ 
+		}
+		else
+		{
+			auto result = m_panels.emplace(key, CreatePanel(key.type, m_ui));
+			panel = result.first->second.get();
+		}
+
+	}
 	if (panel != nullptr)
 	{
-		bool visible = panel->IsVisible();
-		//ÏÈÒş²ØÆäËûÃæ°å
-		HideAllPanel();
-		panel->SetVisible(!visible);
+		//å°†æ˜¾ç¤ºçš„é¢æ¿å…¥æ ˆ
+		m_displayed_panels.push(panel);
 	}
+	return panel;
 }
 
-void CPanelManager::HideAllPanel()
+void CPanelManager::HidePanel()
 {
-	for (const auto& panel : m_panels)
-	{
-		panel.second->SetVisible(false);
-	}
-	for (const auto& panel : m_panels_in_files)
-	{
-		panel.second->SetVisible(false);
-	}
-	for (const auto& panel : m_panels_in_ui)
-	{
-		panel.second->SetVisible(false);
-	}
+	//å°†å½“å‰æ˜¾ç¤ºçš„é¢æ¿å‡ºæ ˆ
+	if (!m_displayed_panels.empty())
+		m_displayed_panels.pop();
 }

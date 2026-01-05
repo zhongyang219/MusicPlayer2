@@ -159,6 +159,7 @@ public:
 
     CUIDrawer& GetDrawer() { return m_draw; }
     const UIColors& GetUIColors() const { return m_colors; }
+    CWnd* GetOwner() const { return m_pMainWnd; }
 
 protected:
     // 将字符串形如“%(KEY_STR)”格式的字符替换成当前<language>.ini中对应id的字符串

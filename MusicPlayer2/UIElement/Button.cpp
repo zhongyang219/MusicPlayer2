@@ -300,9 +300,9 @@ bool UiElement::Button::LButtonUp(CPoint point)
             if (user_ui != nullptr)
             {
                 if (!panel_id.empty())
-                    user_ui->ShowHidePanelById(panel_id);
+                    user_ui->ShowPanelById(panel_id);
                 else if (!panel_file_name.empty())
-                    user_ui->ShowHidePanelByFileName(panel_file_name);
+                    user_ui->ShowPanelByFileName(panel_file_name);
             }
         }
         //显示/隐藏元素

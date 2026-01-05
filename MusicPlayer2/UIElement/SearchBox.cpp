@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "SearchBox.h"
 #include "UiSearchBox.h"
 #include "ListElement.h"
@@ -14,9 +14,13 @@ UiElement::SearchBox::~SearchBox()
 
 void UiElement::SearchBox::InitSearchBoxControl(CWnd* pWnd)
 {
-    CCommon::DeleteModelessDialog(search_box_ctrl);
-    search_box_ctrl = new CUiSearchBox(pWnd);
-    search_box_ctrl->Create();
+    if (!m_init)
+    {
+        CCommon::DeleteModelessDialog(search_box_ctrl);
+        search_box_ctrl = new CUiSearchBox(pWnd);
+        search_box_ctrl->Create();
+        m_init = true;
+    }
 }
 
 void UiElement::SearchBox::OnKeyWordsChanged()
@@ -42,17 +46,17 @@ bool UiElement::SearchBox::MouseMove(CPoint point)
 {
     hover = false;
     clear_btn.hover = false;
-    //Êó±êÖ¸ÏòÍ¼±êÇøÓò
+    //é¼ æ ‡æŒ‡å‘å›¾æ ‡åŒºåŸŸ
     if (icon_rect.PtInRect(point))
     {
         clear_btn.hover = true;
-        //¸üĞÂÊó±êÌáÊ¾
+        //æ›´æ–°é¼ æ ‡æç¤º
         if (!key_word.empty())
             ui->UpdateMouseToolTipPosition(TooltipIndex::SEARCHBOX_CLEAR_BTN, clear_btn.rect);
         else
             ui->UpdateMouseToolTipPosition(TooltipIndex::SEARCHBOX_CLEAR_BTN, CRect());
     }
-    //Ö¸ÏòËÑË÷¿òÇøÓò
+    //æŒ‡å‘æœç´¢æ¡†åŒºåŸŸ
     else if (rect.PtInRect(point))
     {
         hover = true;
@@ -72,16 +76,20 @@ bool UiElement::SearchBox::LButtonUp(CPoint point)
     clear_btn.pressed = false;
     if (rect.PtInRect(point))
     {
-        //µã»÷Çå³ı°´Å¥Ê±Çå³ıËÑË÷½á¹û
+        //ç‚¹å‡»æ¸…é™¤æŒ‰é’®æ—¶æ¸…é™¤æœç´¢ç»“æœ
         if (icon_rect.PtInRect(point))
         {
-            search_box_ctrl->Clear();
+            if (search_box_ctrl != nullptr)
+                search_box_ctrl->Clear();
         }
-        //µã»÷ËÑË÷¿òÇøÓòÊ±ÏÔÊ¾ËÑË÷¿ò¿Ø¼ş
-        else if (search_box_ctrl != nullptr && rect.PtInRect(point))
+        //ç‚¹å‡»æœç´¢æ¡†åŒºåŸŸæ—¶æ˜¾ç¤ºæœç´¢æ¡†æ§ä»¶
+        else if (rect.PtInRect(point))
         {
             bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
-            search_box_ctrl->Show(this, big_font);
+            CWnd* pWnd = ui->GetOwner();
+            InitSearchBoxControl(pWnd);
+            if (search_box_ctrl != nullptr)
+                search_box_ctrl->Show(this, big_font);
         }
         return true;
     }
@@ -123,6 +131,6 @@ void UiElement::SearchBox::FindListElement()
         list_element = FindRelatedElement<ListElement>(list_element_id);
         if (list_element != nullptr)
             list_element->SetRelatedSearchBox(this);
-        find_list_element = true;  //ÕÒ¹ıÒ»´ÎÃ»ÕÒµ½¾Í²»ÕÒÁË
+        find_list_element = true;  //æ‰¾è¿‡ä¸€æ¬¡æ²¡æ‰¾åˆ°å°±ä¸æ‰¾äº†
     }
 }

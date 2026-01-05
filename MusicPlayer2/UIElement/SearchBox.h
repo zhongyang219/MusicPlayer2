@@ -1,15 +1,15 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 class CUiSearchBox;
 namespace UiElement
 {
-    //ËÑË÷¿ò
+    //æœç´¢æ¡†
     class SearchBox : public Element
     {
     public:
         SearchBox();
         ~SearchBox();
-        void InitSearchBoxControl(CWnd* pWnd);  //³õÊ¼»¯ËÑË÷¿ò¿Ø¼ş¡£pWnd£º¸¸´°¿Ú
+        void InitSearchBoxControl(CWnd* pWnd);  //åˆå§‹åŒ–æœç´¢æ¡†æ§ä»¶ã€‚pWndï¼šçˆ¶çª—å£
         void OnKeyWordsChanged();
         void Clear();
         ListElement* GetListElement() { return list_element; }
@@ -23,17 +23,18 @@ namespace UiElement
 
         virtual bool SetCursor() override;
 
-        bool hover{};       //Èç¹ûÊó±êÖ¸ÏòËÑË÷¿ò£¬ÔòÎªtrue
-        std::wstring key_word;  //ËÑË÷¿òÖĞµÄÎÄ±¾
-        CUiSearchBox* search_box_ctrl{};    //ËÑË÷¿ò¿Ø¼ş
-        CRect icon_rect;    //Í¼±êµÄÇøÓò
-        CPlayerUIBase::UIButton clear_btn;      //Çå³ı°´Å¥
-        std::string list_element_id;        //¹ØÁªµÄListElementµÄid
+        bool hover{};       //å¦‚æœé¼ æ ‡æŒ‡å‘æœç´¢æ¡†ï¼Œåˆ™ä¸ºtrue
+        std::wstring key_word;  //æœç´¢æ¡†ä¸­çš„æ–‡æœ¬
+        CUiSearchBox* search_box_ctrl{};    //æœç´¢æ¡†æ§ä»¶
+        CRect icon_rect;    //å›¾æ ‡çš„åŒºåŸŸ
+        CPlayerUIBase::UIButton clear_btn;      //æ¸…é™¤æŒ‰é’®
+        std::string list_element_id;        //å…³è”çš„ListElementçš„id
 
     private:
-        void FindListElement();         //²éÕÒListElement
-        bool find_list_element{};       //Èç¹ûÒÑ¾­²éÕÒ¹ıListElement£¬ÔòÎªtrue
-        ListElement* list_element{};    //¹ØÁªµÄListElement
+        void FindListElement();         //æŸ¥æ‰¾ListElement
+        bool find_list_element{};       //å¦‚æœå·²ç»æŸ¥æ‰¾è¿‡ListElementï¼Œåˆ™ä¸ºtrue
+        ListElement* list_element{};    //å…³è”çš„ListElement
+        bool m_init{ false };
     };
 }
 

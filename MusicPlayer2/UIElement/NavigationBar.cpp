@@ -37,7 +37,7 @@ bool UiElement::NavigationBar::LButtonUp(CPoint point)
                 {
                     CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
                     if (user_ui != nullptr)
-                        user_ui->CloseAllPanel();
+                        user_ui->ClosePanel();
                 }
             }
         }
