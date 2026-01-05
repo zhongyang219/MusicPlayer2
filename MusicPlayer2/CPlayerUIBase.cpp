@@ -908,7 +908,7 @@ void CPlayerUIBase::PreDrawInfo()
     m_colors = CPlayerUIHelper::GetUIColors(theApp.m_app_setting_data.dark_mode, IsDrawBackgroundAlpha());
 
     //设置绘制的矩形区域
-    SetDrawRect();
+    m_draw_rect = CRect(0, 0, m_ui_data.draw_area_width, m_ui_data.draw_area_height);
 
     //检测到界面布局发生了变化时
     static UiSize last_ui_size{};
@@ -918,11 +918,6 @@ void CPlayerUIBase::PreDrawInfo()
         UiSizeChanged(last_ui_size);
         last_ui_size = GetUiSize();
     }
-}
-
-void CPlayerUIBase::SetDrawRect()
-{
-    m_draw_rect = CRect(0, 0, m_ui_data.draw_area_width, m_ui_data.draw_area_height);
 }
 
 void CPlayerUIBase::DrawBackground()

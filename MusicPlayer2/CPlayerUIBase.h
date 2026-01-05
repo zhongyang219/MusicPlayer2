@@ -245,7 +245,6 @@ public:
 protected:
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) = 0;
     virtual void PreDrawInfo();
-    void SetDrawRect();
     void DrawBackground();
 
 public:
