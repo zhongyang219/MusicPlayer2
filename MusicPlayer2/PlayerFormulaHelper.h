@@ -34,6 +34,7 @@ enum class PlayerVariable
 	RepeatMode,			//循环模式
 	Volume,				//音量
 	FPS,				//界面帧率
+	UiRefreshInterval,	//界面刷新时间间隔
 	PlayQueueNum,		//播放队列中的曲目数
 	PlayQueueIndex,		//当前播放曲目在播放队列中的索引
 };

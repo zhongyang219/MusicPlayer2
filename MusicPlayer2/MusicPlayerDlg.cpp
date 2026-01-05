@@ -1210,7 +1210,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
                                     || theApp.m_media_lib_setting_data.artist_split_ext != optionDlg.m_media_lib_dlg.m_data.artist_split_ext
     };
     bool use_inner_lyric_changed{ theApp.m_lyric_setting_data.use_inner_lyric_first != optionDlg.m_tab1_dlg.m_data.use_inner_lyric_first };
-    //bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != optionDlg.m_tab2_dlg.m_data.ui_refresh_interval };
+    bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != optionDlg.m_tab2_dlg.m_data.ui_refresh_interval };
     bool notify_icon_changed{ theApp.m_app_setting_data.notify_icon_selected != optionDlg.m_tab2_dlg.m_data.notify_icon_selected };
     bool media_lib_display_item_changed{ theApp.m_media_lib_setting_data.display_item != optionDlg.m_media_lib_dlg.m_data.display_item };
     bool default_background_changed{ theApp.m_app_setting_data.default_background != optionDlg.m_tab2_dlg.m_data.default_background
@@ -1381,6 +1381,11 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     if (disable_screen_sleep_changed)
     {
         SetDisableScreenSleep();
+    }
+
+    if (timer_interval_changed)
+    {
+        m_ui_refresh_interval = theApp.m_app_setting_data.ui_refresh_interval;
     }
 
     //根据当前选择的深色/浅色模式，将当前“背景不透明度”设置更新到对应的深色/浅色“背景不透明度”设置中
@@ -2659,6 +2664,12 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //每隔一秒保存一次统计的帧率
         theApp.m_fps = m_fps_cnt;
         m_fps_cnt = 0;
+
+        //限制帧率
+        if (theApp.m_fps > MAX_FPS + FPS_LIMIT_MARGIN)
+            m_ui_refresh_interval++;
+        if (m_ui_refresh_interval > theApp.m_app_setting_data.ui_refresh_interval && theApp.m_fps < MAX_FPS - FPS_LIMIT_MARGIN)
+           m_ui_refresh_interval--;
     }
 
     else if (nIDEvent == CUserUi::SHOW_VOLUME_TIMER_ID)
@@ -4459,6 +4470,7 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
     UIThreadPara* pPara = (UIThreadPara*)lpParam;
     CMusicPlayerDlg* pThis = dynamic_cast<CMusicPlayerDlg*>(theApp.m_pMainWnd);
     int fresh_cnt{ };
+    pThis->m_ui_refresh_interval = theApp.m_app_setting_data.ui_refresh_interval;
     while (true)
     {
         if (pPara->ui_thread_exit)
@@ -4523,7 +4535,8 @@ UINT CMusicPlayerDlg::UiThreadFunc(LPVOID lpParam)
 
         CPlayer::GetInstance().m_controls.UpdatePosition(CPlayer::GetInstance().GetCurrentPosition());
         pThis->m_fps_cnt++;
-        Sleep(theApp.m_app_setting_data.ui_refresh_interval);
+
+        Sleep(pThis->m_ui_refresh_interval);
     }
     return 0;
 }

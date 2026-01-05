@@ -198,3 +198,6 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 //定义通过WM_COPYDATA消息传输数据的类型
 #define COPY_DATA_OPEN_FILE 1       //打开文件
 #define COPY_DATA_ADD_FILE 2        //添加文件
+
+#define MAX_FPS 120
+#define FPS_LIMIT_MARGIN 20

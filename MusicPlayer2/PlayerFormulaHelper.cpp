@@ -5,6 +5,7 @@
 #include "SongInfoHelper.h"
 #include "CPlayerUIBase.h"
 #include "CPlayerUIHelper.h"
+#include "MusicPlayerDlg.h"
 
 const std::map<std::wstring, PlayerVariable> VariableNameMap{
     { L"FileName", PlayerVariable::FileName },
@@ -39,6 +40,7 @@ const std::map<std::wstring, PlayerVariable> VariableNameMap{
     { L"RepeatMode" , PlayerVariable::RepeatMode },
     { L"Volume" , PlayerVariable::Volume },
     { L"FPS" , PlayerVariable::FPS },
+    { L"UiRefreshInterval" , PlayerVariable::UiRefreshInterval },
     { L"PlayQueueNum" , PlayerVariable::PlayQueueNum },
     { L"PlayQueueIndex", PlayerVariable::PlayQueueIndex },
 };
@@ -190,6 +192,14 @@ std::wstring CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable variabl
         return std::to_wstring(CPlayer::GetInstance().GetVolume());
     case PlayerVariable::FPS:
         return std::to_wstring(theApp.m_fps);
+    case PlayerVariable::UiRefreshInterval:
+    {
+        std::wstring ui_refresh_interval;
+        CMusicPlayerDlg* dlg = CMusicPlayerDlg::GetInstance();
+        if (dlg != nullptr)
+            ui_refresh_interval = std::to_wstring(dlg->GetUiRefreshInterval());
+        return ui_refresh_interval;
+    }
     case PlayerVariable::PlayQueueNum:
         return std::to_wstring(CPlayer::GetInstance().GetSafeSongNum());
     case PlayerVariable::PlayQueueIndex:

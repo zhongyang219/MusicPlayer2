@@ -56,6 +56,7 @@ public:
     bool IsMiniMode() const;
     CMiniModeDlg* GetMinimodeDlg();
     void UiForceRefresh();      //通知UI线程强制刷新一次
+    int GetUiRefreshInterval() const { return m_ui_refresh_interval; }
 
     // 对话框数据
 #ifdef AFX_DESIGN_TIME
@@ -169,6 +170,7 @@ protected:
     CNotifyIcon m_notify_icon;
 
     bool m_theme_color_changed{ false };
+    std::atomic<int> m_ui_refresh_interval{};    //界面实际刷新时间（毫秒）
 
     CDevicesManager* devicesManager;
 

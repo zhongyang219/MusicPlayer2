@@ -1952,11 +1952,11 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
     if (theApp.m_app_setting_data.show_fps)
     {
         CRect rc_fps{ rect };
-        rc_fps.left = rc_fps.right - DPI(36);
+        rc_fps.left = rc_fps.right - DPI(40);
         CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));
         CString str_info;
         str_info.Format(_T("%dFPS"), theApp.m_fps);
-        m_draw.DrawWindowText(rc_fps, str_info, m_colors.color_text);
+        m_draw.DrawWindowText(rc_fps, str_info, m_colors.color_text, Alignment::RIGHT);
         m_draw.SetFont(pOldFont);
 
         rect.right = rc_fps.left;

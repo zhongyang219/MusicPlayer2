@@ -448,6 +448,10 @@
                     <text text="%(FPS)" style="scroll"/>
                   </horizontalLayout>
                   <horizontalLayout height="20">
+                    <text text="界面刷新时间间隔:" width="100" color_style="emphasis1"/>
+                    <text text="%(UiRefreshInterval)" style="scroll"/>
+                  </horizontalLayout>
+                  <horizontalLayout height="20">
                     <text text="播放队列曲目数:" width="100" color_style="emphasis1"/>
                     <text text="%(PlayQueueNum)" style="scroll"/>
                   </horizontalLayout>
