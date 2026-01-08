@@ -461,7 +461,7 @@ void CDrawCommon::FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_
     DrawAreaGuard guard(this, rect, true, !no_clip_area);
     if (alpha == 255)
     {
-        FillRect(rect, color, no_clip_area);
+        m_pDC->FillSolidRect(rect, color);
         return;
     }
     CDC cdc;
