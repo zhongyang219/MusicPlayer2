@@ -9,7 +9,7 @@ namespace UiElement
     class MediaLibFolder;
     class MediaLibPlaylist;
     class MyFavouriteList;
-    class TrackList;
+    class AbstractTracksList;
     class FolderExploreTree;
     class Playlist;
 }
@@ -28,7 +28,7 @@ private:
     void OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command);
     bool OnSongListCommand(const std::vector<SongInfo>& songs, DWORD command);
     void OnMyFavouriteListCommand(UiElement::MyFavouriteList* my_favourite_list, DWORD command);
-    void OnTrackListCommand(UiElement::TrackList* all_tracks_list, DWORD command);
+    void OnTrackListCommand(UiElement::AbstractTracksList* all_tracks_list, DWORD command);
     void OnMedialibFolderExploreCommand(UiElement::FolderExploreTree* folder_explore, DWORD command);
     void OnAddToPlaystCommand(UiElement::Playlist* playlist, DWORD command);
     void OnSetSongMultiVersionCommand(UiElement::Playlist* playlist, DWORD command);

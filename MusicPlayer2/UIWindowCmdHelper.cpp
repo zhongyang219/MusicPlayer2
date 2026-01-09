@@ -54,7 +54,7 @@ void CUIWindowCmdHelper::OnUiCommand(DWORD command)
     {
         OnMyFavouriteListCommand(my_favourite_list, command);
     }
-    UiElement::TrackList* track_list = dynamic_cast<UiElement::TrackList*>(m_context_menu_sender);
+    UiElement::AbstractTracksList* track_list = dynamic_cast<UiElement::AbstractTracksList*>(m_context_menu_sender);
     if (track_list != nullptr)
     {
         OnTrackListCommand(track_list, command);
@@ -481,6 +481,20 @@ bool CUIWindowCmdHelper::OnSongListCommand(const std::vector<SongInfo>& songs, D
         wstring playlist_path;
         helper.OnAddToNewPlaylist(getSongList, playlist_path);
     }
+    //添加到新播放列表并播放
+    else if (command == ID_ADD_TO_NEW_PLAYLIST_AND_PLAY)
+    {
+        wstring playlist_path;
+        if (helper.OnAddToNewPlaylist(getSongList, playlist_path))
+        {
+            if (!CPlayer::GetInstance().SetPlaylist(playlist_path, 0, 0, true))
+            {
+                const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                AfxMessageBox(info.c_str(), MB_ICONINFORMATION | MB_OK);
+            }
+        }
+    }
+
     //添加到播放列表
     else
     {
@@ -546,7 +560,7 @@ void CUIWindowCmdHelper::OnMyFavouriteListCommand(UiElement::MyFavouriteList* my
     }
 }
 
-void CUIWindowCmdHelper::OnTrackListCommand(UiElement::TrackList* all_tracks_list, DWORD command)
+void CUIWindowCmdHelper::OnTrackListCommand(UiElement::AbstractTracksList* all_tracks_list, DWORD command)
 {
     std::vector<int> indexes;
     all_tracks_list->GetItemsSelected(indexes);
