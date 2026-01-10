@@ -96,7 +96,8 @@ void CPlaySettingsDlg::GetDataFromUi()
     m_data.auto_play_when_start = (IsDlgButtonChecked(IDC_AUTO_PLAY_WHEN_START_CHECK) != FALSE);
     m_data.show_taskbar_progress = (IsDlgButtonChecked(IDC_SHOW_TASKBAR_PROGRESS) != FALSE);
     m_data.show_playstate_icon = (IsDlgButtonChecked(IDC_SHOW_PLAY_STATE_ICON_CHECK) != FALSE);
-    m_data.fade_effect = (IsDlgButtonChecked(IDC_SOUND_FADE_CHECK) != FALSE);
+    if (CPlayer::GetInstance().IsBassCore())
+        m_data.fade_effect = (IsDlgButtonChecked(IDC_SOUND_FADE_CHECK) != FALSE);
     m_data.continue_when_switch_playlist = (IsDlgButtonChecked(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK) != FALSE);
     m_data.use_media_trans_control = (IsDlgButtonChecked(IDC_USE_MEDIA_TRANS_CONTORL_CHECK) != FALSE);
     m_data.remember_last_position = (IsDlgButtonChecked(IDC_REMEMBER_LAST_POSITION_CHECK) != FALSE);
@@ -265,7 +266,8 @@ BOOL CPlaySettingsDlg::OnInitDialog()
     CheckDlgButton(IDC_AUTO_PLAY_WHEN_START_CHECK, m_data.auto_play_when_start);
     CheckDlgButton(IDC_SHOW_TASKBAR_PROGRESS, m_data.show_taskbar_progress);
     CheckDlgButton(IDC_SHOW_PLAY_STATE_ICON_CHECK, m_data.show_playstate_icon);
-    CheckDlgButton(IDC_SOUND_FADE_CHECK, m_data.fade_effect);
+    if (CPlayer::GetInstance().IsBassCore())
+        CheckDlgButton(IDC_SOUND_FADE_CHECK, m_data.fade_effect);
     CheckDlgButton(IDC_CONTINUE_WHEN_SWITCH_PLAYLIST_CHECK, m_data.continue_when_switch_playlist);
     CheckDlgButton(IDC_USE_MEDIA_TRANS_CONTORL_CHECK, m_data.use_media_trans_control);
     CheckDlgButton(IDC_REMEMBER_LAST_POSITION_CHECK, m_data.remember_last_position);
