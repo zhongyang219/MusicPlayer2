@@ -805,6 +805,10 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,52,141,8
     CONTROL         "Remember last position",IDC_REMEMBER_LAST_POSITION_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,52,145,8
+    CONTROL         "Disable screen sleep during full-screen playback",IDC_DISABLE_SCREEN_SLEEP_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,65,141,8
+    CONTROL         "Stop when device changed",IDC_STOP_WHEN_DEVICE_CHANGED_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,65,145,8
     LTEXT           "Opening a single audio file:",IDC_TXT_OPEN_SINGLE_FILE_BEHAVIR_STATIC,14,78,294,8
     CONTROL         "Play in [Default] playlist",IDC_PLAY_IN_DEFAULT_PLAYLIST_RADIO,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP,22,89,133,10
@@ -837,8 +841,6 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,344,294,8
     LTEXT           "MIDI sound font path:",IDC_TXT_OPT_DATA_MIDI_SF2_PATH_STATIC,14,357,40,8
     CONTROL         "",IDC_SF2_PATH_EDIT,"MfcEditBrowse",WS_BORDER | WS_TABSTOP | 0x80,60,356,248,12
-    CONTROL         "Disable screen sleep during full-screen playback",IDC_DISABLE_SCREEN_SLEEP_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,64,294,10
 END
 
 IDD_PROPERTY_DIALOG DIALOGEX 0, 0, 344, 148
@@ -2173,6 +2175,8 @@ BEGIN
     50, 0, 50, 0,
     0, 0, 100, 0,
     50, 0, 50, 0,
+    0, 0, 0, 0,
+    50, 0, 50, 0,
     0, 0, 100, 0,
     0, 0, 50, 0,
     50, 0, 50, 0,
@@ -2199,8 +2203,7 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 100, 0,
     0, 0, 0, 0,
-    0, 0, 100, 0,
-    0, 0, 0, 0
+    0, 0, 100, 0
 END
 
 IDD_PROPERTY_DIALOG AFX_DIALOG_LAYOUT
@@ -3134,7 +3137,7 @@ IDI_LIGHT_MODE_D        ICON                    "res\\light_mode_d.ico"
 
 IDI_LIST_PREVIEW_D      ICON                    "res\\list_preview_d.ico"
 
-IDI_LIST_PREVIEW      ICON                    "res\\list_preview.ico"
+IDI_LIST_PREVIEW        ICON                    "res\\list_preview.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////

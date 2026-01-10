@@ -2466,6 +2466,12 @@
     <Image Include="res\up.ico">
       <Filter>资源文件\Icons</Filter>
     </Image>
+    <Image Include="res\list_preview_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\list_preview.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\ui\classical_control_bar.xml">

@@ -62,6 +62,6 @@ void CDevicesManager::ReleaseDeviceEnumerator()
 void CDevicesManager::DefaultMultimediaDeviceChanged()
 {
     TRACE("PostMessage: WM_RE_INIT_BASS_CONTINUE_PLAY\n");
-    PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_RE_INIT_BASS_CONTINUE_PLAY, 0, 0);
+    PostMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_RE_INIT_BASS_CONTINUE_PLAY, theApp.m_play_setting_data.stop_when_play_device_changed, 0);
 }
 

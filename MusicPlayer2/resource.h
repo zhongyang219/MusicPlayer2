@@ -399,6 +399,7 @@
 #define IDC_REMEMBER_LAST_POSITION_CHECK 1029
 #define IDC_ALL_CHECK                   1030
 #define IDC_FONT_SIZE_EDIT2             1030
+#define IDC_STOP_WHEN_DEVICE_CHANGED_CHECK 1030
 #define IDC_SLIDER1                     1031
 #define IDC_TRANSPARENT_SLIDER          1031
 #define IDC_RECENT_CHECK                1031

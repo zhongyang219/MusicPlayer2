@@ -497,6 +497,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"use_media_trans_control", theApp.m_play_setting_data.use_media_trans_control);
     ini.WriteBool(L"config", L"remember_last_position", theApp.m_play_setting_data.remember_last_position);
     ini.WriteBool(L"config", L"disable_screen_sleep_when_fullscreen_play", theApp.m_play_setting_data.disable_screen_sleep_when_fullscreen_play);
+    ini.WriteBool(L"config", L"stop_when_play_device_changed", theApp.m_play_setting_data.stop_when_play_device_changed);
     ini.WriteBool(L"config", L"open_single_file_in_folder_mode", theApp.m_play_setting_data.open_single_file_in_folder_mode);
     ini.WriteString(L"config", L"output_device", theApp.m_play_setting_data.output_device);
     ini.WriteBool(L"config", L"use_mci", theApp.m_play_setting_data.use_mci);
@@ -711,6 +712,7 @@ void CMusicPlayerDlg::LoadConfig()
         theApp.m_play_setting_data.use_media_trans_control = false;
     theApp.m_play_setting_data.remember_last_position = ini.GetBool(L"config", L"remember_last_position", true);
     theApp.m_play_setting_data.disable_screen_sleep_when_fullscreen_play = ini.GetBool(L"config", L"disable_screen_sleep_when_fullscreen_play", false);
+    theApp.m_play_setting_data.stop_when_play_device_changed = ini.GetBool(L"config", L"stop_when_play_device_changed", false);
     theApp.m_play_setting_data.open_single_file_in_folder_mode = ini.GetBool(L"config", L"open_single_file_in_folder_mode", false);
     theApp.m_play_setting_data.output_device = ini.GetString(L"config", L"output_device", L"");
     theApp.m_play_setting_data.use_mci = ini.GetBool(L"config", L"use_mci", false);
@@ -6450,7 +6452,8 @@ afx_msg LRESULT CMusicPlayerDlg::OnReInitBassContinuePlay(WPARAM wParam, LPARAM 
 {
     if (CPlayer::GetInstance().GetPlayerCore() != nullptr && CPlayer::GetInstance().GetPlayerCore()->GetCoreType() == PlayerCoreType::PT_BASS)
     {
-        CPlayer::GetInstance().ReIniPlayerCore(true);       // 重新初始化播放内核
+        bool stop_play = (wParam != 0);
+        CPlayer::GetInstance().ReIniPlayerCore(!stop_play);       // 重新初始化播放内核
     }
     return 0;
 }
