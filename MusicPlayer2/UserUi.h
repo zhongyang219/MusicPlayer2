@@ -63,6 +63,7 @@ public:
     virtual void UiSizeChanged(UiSize last_ui_size) override;
     virtual bool SetCursor() override;
     virtual bool ButtonClicked(BtnKey btn_type, const UIButton& btn) override;
+    virtual bool IsDrawTitlebarLeftBtn() const;
 
 protected:
     int m_index{ INT_MAX };

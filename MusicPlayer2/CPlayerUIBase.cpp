@@ -852,6 +852,8 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Playlist;
     case BTN_SHOW_HIDE_ELEMENT:
         return IconMgr::IconType::IT_Background;
+    case BTN_CLOSE_PANEL_TITLE_BAR:
+        return IconMgr::IT_Triangle_Left;
     default:
         ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;
@@ -897,6 +899,7 @@ std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type) const
     case BTN_PLAY_MY_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
     case BTN_MEDIALIB_FOLDER_SORT: case BTN_MEDIALIB_PLAYLIST_SORT: return theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_SORT");
     case BTN_CLOSE_PANEL: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE");
+    case BTN_CLOSE_PANEL_TITLE_BAR: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_BACK");
     }
 
     return std::wstring();
@@ -1482,9 +1485,7 @@ bool CPlayerUIBase::PointInAppIconArea(CPoint point) const
     if (!IsDrawTitleBar())
         return false;
 
-    CRect rect_app_icon{};
-    rect_app_icon.right = rect_app_icon.bottom = m_layout.titlabar_height;
-    return (rect_app_icon.PtInRect(point) != FALSE);
+    return (m_app_icon_rect.PtInRect(point) != FALSE);
 }
 
 bool CPlayerUIBase::PointInMenubarArea(CPoint point) const
@@ -2111,10 +2112,21 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
     else
         m_draw.FillRect(rect, m_colors.color_control_bar_back);
 
-    //绘制应用图标
     CRect rect_temp = rect;
+    //绘制左侧图标
+    if (IsDrawTitlebarLeftBtn())
+    {
+        rect_temp.right = rect_temp.left + m_layout.titlabar_height;
+        DrawUIButton(rect_temp, BTN_CLOSE_PANEL_TITLE_BAR);
+        rect_temp.left = rect_temp.right;
+    }
+
+    //绘制应用图标
     rect_temp.right = rect_temp.left + m_layout.titlabar_height;
     DrawUiIcon(rect_temp, IconMgr::IconType::IT_App);
+    m_app_icon_rect = rect_temp;
+
+    int text_left_pos = rect_temp.right;
 
     //绘制右侧图标
     rect_temp = rect;
@@ -2204,7 +2216,7 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
 
     //绘制标题栏文本
     rect_temp.right = rect_temp.left;
-    rect_temp.left = m_layout.titlabar_height;
+    rect_temp.left = text_left_pos;
     static CDrawCommon::ScrollInfo scroll_info{};
     m_draw.DrawScrollText(rect_temp, theApp.m_window_title.c_str(), m_colors.color_text, GetScrollTextPixel(), false, scroll_info);
     //m_draw.DrawWindowText(rect_temp, title.GetString(), m_colors.color_text);
@@ -3375,6 +3387,9 @@ std::wstring CPlayerUIBase::GetItemTooltip(int tooltip_index)
     //关闭面板
     case BTN_CLOSE_PANEL:
         return theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE");
+    //标题栏中的关闭面板
+    case BTN_CLOSE_PANEL_TITLE_BAR:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_BACK");
     }
     return std::wstring();
 }

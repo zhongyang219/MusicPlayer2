@@ -51,7 +51,7 @@ void CUserUi::LoadFromContents(const std::string& xml_contents)
         }
         else if (item_name == "panel")
         {
-            std::shared_ptr<UiElement::Element> panel_element = BuildUiElementFromXmlNode(xml_child, this);
+            std::shared_ptr<UiElement::Panel> panel_element = std::dynamic_pointer_cast<UiElement::Panel>(BuildUiElementFromXmlNode(xml_child, this));
             std::wstring panel_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_child, "id"), CodeType::UTF8_NO_BOM);
             if (!panel_id.empty())
             {
@@ -267,9 +267,14 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
             draw_rect.DeflateRect(EdgeMargin(true), EdgeMargin(false));
         }
         draw_element->SetRect(draw_rect);
-        draw_element->Draw();
-        //绘制音量调整按钮
-        DrawVolumnAdjBtn();
+
+        //仅当面板未占满整个窗口时才绘制界面
+        if (!m_panel_mgr.IsPanelFullFill())
+        {
+            draw_element->Draw();
+            //绘制音量调整按钮
+            DrawVolumnAdjBtn();
+        }
     }
 
     //绘制面板
@@ -581,13 +586,19 @@ bool CUserUi::ButtonClicked(BtnKey btn_type, const UIButton& btn)
         ShowPanel(ePanelType::PlayQueue);
         return true;
     }
-    else if (btn_type == BTN_CLOSE_PANEL)
+    else if (btn_type == BTN_CLOSE_PANEL || btn_type == BTN_CLOSE_PANEL_TITLE_BAR)
     {
         OnPanelHide();
         m_panel_mgr.HidePanel();
         return true;
     }
     return CPlayerUIBase::ButtonClicked(btn_type, btn);
+}
+
+bool CUserUi::IsDrawTitlebarLeftBtn() const
+{
+    //面板占满窗口时在标题栏左侧显示返回按钮
+    return m_panel_mgr.IsPanelFullFill();
 }
 
 int CUserUi::GetUiIndex()

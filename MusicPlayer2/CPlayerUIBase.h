@@ -215,6 +215,7 @@ public:
         BTN_CLOSE_PANEL,        //关闭面板
         BTN_SHOW_PANEL,         //显示面板
         BTN_SHOW_HIDE_ELEMENT,  //显示/隐藏一个元素
+        BTN_CLOSE_PANEL_TITLE_BAR,  //标题栏中的关闭面板按钮
 
         //菜单栏
         MENU_FILE,
@@ -333,6 +334,7 @@ protected:
     virtual void SwitchStackElement(std::string id, int index) {}
 
     bool IsMiniMode() const;
+    virtual bool IsDrawTitlebarLeftBtn() const { return false; }  //是否显示标题栏左侧图标
 
 public:
     virtual int GetUiIndex() { return 1; }  //UI的序号，用于区分每个界面，不会为0
@@ -389,6 +391,7 @@ private:
     static bool m_show_ui_tip_info;
     wstring m_ui_tip_info;
     int m_top_right_buttons_width{};
+    CRect m_app_icon_rect{};        //标题栏应用图标区域
 };
 
 //用于在UI中设置字体。

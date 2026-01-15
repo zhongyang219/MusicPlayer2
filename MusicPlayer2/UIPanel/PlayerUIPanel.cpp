@@ -21,7 +21,7 @@ CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, const std::wstring file_name)
 		LoadUIData(xml);
 }
 
-CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Element> panel_element)
+CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Panel> panel_element)
 	: m_ui(ui)
 {
 	m_root_element = panel_element;
@@ -41,7 +41,7 @@ void CPlayerUIPanel::LoadUIData(const std::string& xml_contents)
 			if (item_name == "panel")
 			{
 				if (m_root_element == nullptr)
-					m_root_element = CUserUi::BuildUiElementFromXmlNode(xml_child, m_ui);
+					m_root_element = std::dynamic_pointer_cast<UiElement::Panel>(CUserUi::BuildUiElementFromXmlNode(xml_child, m_ui));
 			}
 		});
 	}
@@ -51,12 +51,13 @@ void CPlayerUIPanel::Draw()
 {
 	if (m_root_element != nullptr)
 	{
-		//绘制一层半透明的黑色背景
-		SLayoutData layoutData;
 		CRect draw_rect = m_ui->GetClientDrawRect();
-
-		BYTE alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
-		m_ui->GetDrawer().FillAlphaRect(draw_rect, m_ui->GetUIColors().color_back, alpha);
+		//绘制一层半透明的黑色背景
+		if (!m_root_element->IsFullFill())
+		{
+			BYTE alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+			m_ui->GetDrawer().FillAlphaRect(draw_rect, m_ui->GetUIColors().color_back, alpha);
+		}
 
 		m_panel_rect = CalculatePanelRect();
 		//如果未通过代码获取面板的矩形区域，则根据ui计算面板区域
@@ -76,7 +77,7 @@ void CPlayerUIPanel::Draw()
 	}
 }
 
-std::shared_ptr<UiElement::Element> CPlayerUIPanel::GetRootElement() const
+std::shared_ptr<UiElement::Panel> CPlayerUIPanel::GetRootElement() const
 {
 	return m_root_element;
 }
@@ -107,6 +108,18 @@ void CPanelManager::DrawPanel()
 void CPanelManager::AddPanelFromUi(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel)
 {
 	m_panels[PanelKey(ePanelType::PanelFromUi, id)] = std::move(panel);
+}
+
+bool CPanelManager::IsPanelFullFill() const
+{
+	CPlayerUIPanel* panel = GetVisiblePanel();
+	if (panel != nullptr)
+	{
+		UiElement::Panel* panel_element = panel->GetRootElement().get();
+		if (panel_element != nullptr)
+			return panel_element->IsFullFill();
+	}
+	return false;
 }
 
 CPanelManager::CPanelManager(CPlayerUIBase* ui)

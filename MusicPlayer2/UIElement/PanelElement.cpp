@@ -5,7 +5,7 @@ void UiElement::Panel::CalculateRect(CRect parent_rect)
 {
     Element::CalculateRect(parent_rect);
 
-    //ÊÇ·ñÎª¾ÓÖÐ¶ÔÆë£¨Èç¹ûÃ»ÓÐÉèÖÃ4¸ömarginÇÒÃ»ÓÐÉèÖÃx¡¢yÔò¾ÓÖÐ¶ÔÆë£©
+    //æ˜¯å¦ä¸ºå±…ä¸­å¯¹é½ï¼ˆå¦‚æžœæ²¡æœ‰è®¾ç½®4ä¸ªmarginä¸”æ²¡æœ‰è®¾ç½®xã€yåˆ™å±…ä¸­å¯¹é½ï¼‰
     bool is_center = !margin_left.IsValid() && !margin_top.IsValid() && !margin_right.IsValid() && !margin_bottom.IsValid() && !x.IsValid() && !y.IsValid();
     if (is_center)
     {
@@ -20,18 +20,27 @@ void UiElement::Panel::CalculateRect(CRect parent_rect)
 
 void UiElement::Panel::Draw()
 {
-    //»æÖÆÃæ°å±³¾°
-    BYTE alpha = 255;
-    if (ui->IsDrawBackgroundAlpha())
-        alpha = 255 - (255 - alpha) / 2;
+    //ç»˜åˆ¶é¢æ¿èƒŒæ™¯
+    if (!IsFullFill())
+    {
+        BYTE alpha = 255;
+        if (ui->IsDrawBackgroundAlpha())
+            alpha = 255 - (255 - alpha) / 2;
 
-    CRect draw_rect = ui->GetClientDrawRect();
-    //µ±Ãæ°åµÄËÄ¸ö±ß¶¼Ã»ÓÐÌû¿¿UI»æÍ¼¾ØÐÎÇøÓòÊ±£¬²Å»æÖÆÔ²½Ç¾ØÐÎ
-    bool draw_round_background = rect.left != draw_rect.left && rect.top != draw_rect.top && rect.right != draw_rect.right && rect.bottom != draw_rect.bottom;
-    if (theApp.m_app_setting_data.button_round_corners && draw_round_background)
-        ui->GetDrawer().DrawRoundRect(rect, ui->GetUIColors().color_back, ui->CalculateRoundRectRadius(rect), alpha);
-    else
-        ui->GetDrawer().FillAlphaRect(rect, ui->GetUIColors().color_back, alpha, true);
+        CRect draw_rect = ui->GetClientDrawRect();
+        //å½“é¢æ¿çš„å››ä¸ªè¾¹éƒ½æ²¡æœ‰å¸–é UIç»˜å›¾çŸ©å½¢åŒºåŸŸæ—¶ï¼Œæ‰ç»˜åˆ¶åœ†è§’çŸ©å½¢
+        bool draw_round_background = rect.left != draw_rect.left && rect.top != draw_rect.top && rect.right != draw_rect.right && rect.bottom != draw_rect.bottom;
+        if (theApp.m_app_setting_data.button_round_corners && draw_round_background)
+            ui->GetDrawer().DrawRoundRect(rect, ui->GetUIColors().color_back, ui->CalculateRoundRectRadius(rect), alpha);
+        else
+            ui->GetDrawer().FillAlphaRect(rect, ui->GetUIColors().color_back, alpha, true);
+    }
 
     Element::Draw();
+}
+
+bool UiElement::Panel::IsFullFill() const
+{
+    CRect draw_rect = ui->GetClientDrawRect();
+    return rect.left <= draw_rect.left && rect.top <= draw_rect.top && rect.right >= draw_rect.right && rect.bottom >= draw_rect.bottom;
 }

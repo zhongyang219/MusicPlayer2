@@ -119,6 +119,14 @@
     </verticalLayout>
   </panel>
 
+  <!--全屏面板-->
+  <panel id="full_panel_test">
+    <horizontalLayout margin="8">
+      <albumCover margin="16"/>
+      <lyrics/>
+    </horizontalLayout>
+  </panel>
+  
   <ui>
     <verticalLayout>
       <horizontalLayout>
@@ -733,6 +741,7 @@
               <button key="showPanel" panel_id="play_queue_panel" icon="playInPlaylist" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PLAY_QUEUE)"/>
               <button key="showPanel" panel_id="renect_played_panel" icon="history" width="28" height="28" margin="2" text="%(TXT_RECENT_PLAYED)"/>
               <button key="showHideElement" related_element_id="page_6_playlist" icon="playlist" width="28" height="28" margin="2" text="%(UI_TIP_BTN_PLAYLIST_SHOW_HIDE)"/>
+              <button key="showPanel" panel_id="full_panel_test" icon="albumCover" width="28" height="28" margin="2" text="全屏面板测试"/>
               <rating width="92" height="28" margin="2"/>
               <text type="format" margin-top="6"/>
             </horizontalLayout>

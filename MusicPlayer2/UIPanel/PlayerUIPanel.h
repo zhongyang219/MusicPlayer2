@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "UIElement/UIElement.h"
+#include "UIElement/PanelElement.h"
 #include "CPlayerUIBase.h"
 
 //UI面板的类型
@@ -17,7 +17,7 @@ class CPlayerUIPanel
 public:
 	CPlayerUIPanel(CPlayerUIBase* ui, UINT res_id);
 	CPlayerUIPanel(CPlayerUIBase* ui, const std::wstring file_name);
-	CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Element> panel_element);
+	CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Panel> panel_element);
 
 	//从xml读取UI配置
 	void LoadUIData(const std::string& xml_contents);
@@ -27,14 +27,14 @@ public:
 
 	CRect GetPanelRect() { return m_panel_rect; }
 
-	std::shared_ptr<UiElement::Element> GetRootElement() const;
+	std::shared_ptr<UiElement::Panel> GetRootElement() const;
 
 protected:
 	//计算面板的矩形区域，如果为空，则默认为整个界面区域
 	virtual CRect CalculatePanelRect() { return CRect(); }
 
 protected:
-	std::shared_ptr<UiElement::Element> m_root_element;
+	std::shared_ptr<UiElement::Panel> m_root_element;
 	CPlayerUIBase* m_ui;
 	CRect m_panel_rect;
 };
@@ -72,6 +72,7 @@ public:
 	void HidePanel();
 	void DrawPanel();
 	void AddPanelFromUi(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel);		//添加一个ui中的面板
+	bool IsPanelFullFill() const;	//面板是否占满了整个窗口
 
 private:
 	CPlayerUIBase* m_ui;
