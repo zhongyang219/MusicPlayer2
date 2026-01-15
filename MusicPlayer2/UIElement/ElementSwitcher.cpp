@@ -49,10 +49,10 @@ bool UiElement::ElementSwitcher::LButtonDown(CPoint point)
 bool UiElement::ElementSwitcher::MouseMove(CPoint point)
 {
     btn.hover = rect.PtInRect(point);
-    //Êó±ê½øÈë°´Å¥ÇøÓòÊ±
+    //é¼ æ ‡è¿›å…¥æŒ‰é’®åŒºåŸŸæ—¶
     if (!last_hover && btn.hover)
     {
-        //Ö¸¶¨ÁË°´Å¥ÎÄ±¾ÇÒ²»ÏÔÊ¾ÎÄ±¾Ê±£¬ÏÔÊ¾Êó±êÌáÊ¾
+        //æŒ‡å®šäº†æŒ‰é’®æ–‡æœ¬ä¸”ä¸æ˜¾ç¤ºæ–‡æœ¬æ—¶ï¼Œæ˜¾ç¤ºé¼ æ ‡æç¤º
         if (!text.empty())
             ui->UpdateMouseToolTip(TooltipIndex::ELEMENT_SWITCHER, text.c_str());
     }
@@ -90,7 +90,6 @@ void UiElement::ElementSwitcher::HideTooltip()
 bool UiElement::ElementSwitcher::hover() const
 {
     return btn.hover;
-    return true;
 }
 
 void UiElement::ElementSwitcher::IconTypeFromString(const std::string& icon_name)

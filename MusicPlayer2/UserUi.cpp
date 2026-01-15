@@ -709,6 +709,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 button->panel_file_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_file_name"), CodeType::UTF8_NO_BOM);
                 button->panel_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_id"), CodeType::UTF8_NO_BOM);
                 button->related_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "related_element_id");
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "hand_cursor", button->hand_cursor);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "empty_btn", button->empty_btn);
             }
         }
         else if (item_name == "rectangle")

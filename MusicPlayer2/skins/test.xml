@@ -765,7 +765,10 @@
           <stackElement height="62" size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="550">
             <horizontalLayout>
               <horizontalLayout>
-                <albumCover width="62"/>
+                <!--用一个空白按钮包裹专辑封面，实现点击封面时显示播放详情面板的效果-->
+                <button width="62" key="showPanel" panel_id="full_panel_test" empty_btn="true" hand_cursor="true" text="%(UI_TIP_SHOW_PLAY_DETAIL_PAGE)">
+                  <albumCover/>
+                </button>
                 <verticalLayout margin="4">
                   <text type="title" style="scroll" height="24" font_size="10"/>
                   <text type="artist" style="scroll" height="24"/>

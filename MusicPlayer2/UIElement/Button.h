@@ -15,6 +15,8 @@ namespace UiElement
         std::wstring panel_file_name;   //面板xml文件的文件名，放在skins/panels目录下。仅当按钮类型为BTN_SHOW_PANEL时有效。点击按钮后将显示一个面板
         std::wstring panel_id;          //面板的id。仅当按钮类型为BTN_SHOW_PANEL时有效。点击按钮后将显示一个面板
         std::string related_element_id;    //关联元素的id
+        bool hand_cursor{};             //是否显示为手形光标
+        bool empty_btn{};               //是否为空白按钮（不绘制任何东西）
 
         void FromString(const std::string& key_type);
         void IconTypeFromString(const std::string& icon_name);
@@ -30,6 +32,7 @@ namespace UiElement
         virtual bool RButtonUp(CPoint point) override;
         virtual bool MouseLeave() override;
         virtual void HideTooltip() override;
+        virtual bool SetCursor() override;
 
     private:
         std::wstring GetDisplayText() const;

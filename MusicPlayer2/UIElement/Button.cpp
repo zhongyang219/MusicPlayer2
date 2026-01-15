@@ -6,52 +6,59 @@
 void UiElement::Button::Draw()
 {
     CalculateRect();
-    switch (key)
+    if (!empty_btn)
     {
-    case CPlayerUIBase::BTN_TRANSLATE:
-    {
-        static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_TRANSLATE");
-        m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
-        ui->DrawTextButton(rect, m_btn, btn_str.c_str(), theApp.m_lyric_setting_data.show_translate);
-    }
+        switch (key)
+        {
+        case CPlayerUIBase::BTN_TRANSLATE:
+        {
+            static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_TRANSLATE");
+            m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
+            ui->DrawTextButton(rect, m_btn, btn_str.c_str(), theApp.m_lyric_setting_data.show_translate);
+        }
         break;
-    case CPlayerUIBase::BTN_LRYIC:
-    {
-        static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_DESKTOP_LYRIC");
-        ui->DrawTextButton(rect, m_btn, btn_str.c_str(), theApp.m_lyric_setting_data.show_desktop_lyric);
-    }
+        case CPlayerUIBase::BTN_LRYIC:
+        {
+            static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_DESKTOP_LYRIC");
+            ui->DrawTextButton(rect, m_btn, btn_str.c_str(), theApp.m_lyric_setting_data.show_desktop_lyric);
+        }
         break;
-    case CPlayerUIBase::BTN_AB_REPEAT:
-    {
-        CString info;
-        CPlayer::ABRepeatMode ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
-        if (ab_repeat_mode == CPlayer::AM_A_SELECTED)
-            info = _T("A-");
-        else
-            info = _T("A-B");
-        CFont* pOldFont = ui->m_draw.GetFont();
-        ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
-        m_btn.enable = (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
-        ui->DrawTextButton(rect, m_btn, info, ab_repeat_mode != CPlayer::AM_NONE);
-        ui->m_draw.SetFont(pOldFont);
-    }
+        case CPlayerUIBase::BTN_AB_REPEAT:
+        {
+            CString info;
+            CPlayer::ABRepeatMode ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
+            if (ab_repeat_mode == CPlayer::AM_A_SELECTED)
+                info = _T("A-");
+            else
+                info = _T("A-B");
+            CFont* pOldFont = ui->m_draw.GetFont();
+            ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
+            m_btn.enable = (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
+            ui->DrawTextButton(rect, m_btn, info, ab_repeat_mode != CPlayer::AM_NONE);
+            ui->m_draw.SetFont(pOldFont);
+        }
         break;
-    case CPlayerUIBase::BTN_KARAOKE:
-    {
-        m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
-        //如果是卡拉OK样式显示歌词，则按钮显示为选中状态
-        ui->DrawUIButton(rect, CPlayerUIBase::BTN_KARAOKE, m_btn, false, false, 9, theApp.m_lyric_setting_data.lyric_karaoke_disp);
-    }
+        case CPlayerUIBase::BTN_KARAOKE:
+        {
+            m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
+            //如果是卡拉OK样式显示歌词，则按钮显示为选中状态
+            ui->DrawUIButton(rect, CPlayerUIBase::BTN_KARAOKE, m_btn, false, false, 9, theApp.m_lyric_setting_data.lyric_karaoke_disp);
+        }
         break;
-    default:
-    {
-        std::wstring text;
-        if (show_text)
-            text = GetDisplayText();
-        ui->DrawUIButton(rect, m_btn, GetBtnIconType(), big_icon, text, font_size, false);
+        default:
+        {
+            std::wstring text;
+            if (show_text)
+                text = GetDisplayText();
+            ui->DrawUIButton(rect, m_btn, GetBtnIconType(), big_icon, text, font_size, false);
 
-    }
+        }
         break;
+        }
+    }
+    else
+    {
+        m_btn.rect = rect;
     }
     Element::Draw();
 }
@@ -398,6 +405,16 @@ bool UiElement::Button::MouseLeave()
 void UiElement::Button::HideTooltip()
 {
     ui->UpdateMouseToolTipPosition(key, CRect());
+}
+
+bool UiElement::Button::SetCursor()
+{
+    if (m_btn.hover && hand_cursor)
+    {
+        ::SetCursor(::LoadCursor(NULL, IDC_HAND));
+        return true;
+    }
+    return false;
 }
 
 std::wstring UiElement::Button::GetDisplayText() const

@@ -1195,6 +1195,16 @@
         <xs:documentation>关联元素的的id，点击按钮后将显示/隐藏对应的元素。仅当key指定为showHideElement时有效。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="hand_cursor" type="xs:boolean" default="false">
+      <xs:annotation>
+        <xs:documentation>是否显示为手形光标</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="empty_btn" type="xs:boolean" default="false">
+      <xs:annotation>
+        <xs:documentation>是否为空的按钮</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="textType">
