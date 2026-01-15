@@ -2173,9 +2173,9 @@ BEGIN
     50, 0, 50, 0,
     0, 0, 50, 0,
     50, 0, 50, 0,
-    0, 0, 100, 0,
+    0, 0, 50, 0,
     50, 0, 50, 0,
-    0, 0, 0, 0,
+    0, 0, 50, 0,
     50, 0, 50, 0,
     0, 0, 100, 0,
     0, 0, 50, 0,
@@ -3138,6 +3138,10 @@ IDI_LIGHT_MODE_D        ICON                    "res\\light_mode_d.ico"
 IDI_LIST_PREVIEW_D      ICON                    "res\\list_preview_d.ico"
 
 IDI_LIST_PREVIEW        ICON                    "res\\list_preview.ico"
+
+IDI_ARROW_LEFT          ICON                    "res\\arrow_left.ico"
+
+IDI_ARROW_LEFT_D        ICON                    "res\\arrow_left_d.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////

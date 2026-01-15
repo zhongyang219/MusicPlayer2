@@ -509,6 +509,11 @@
           <xs:documentation>列表预览</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
+      <xs:enumeration value="arrowLeft">
+        <xs:annotation>
+          <xs:documentation>向左箭头（返回）</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
       <xs:enumeration value="leTagInsert">
         <xs:annotation>
           <xs:documentation>Le 插入时间标签</xs:documentation>

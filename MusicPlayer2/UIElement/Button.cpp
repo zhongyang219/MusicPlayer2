@@ -242,6 +242,7 @@ IconMgr::IconType UiElement::Button::NameToIconType(const std::string& icon_name
     else if (icon_name == "background") icon_type = IconMgr::IT_Background;
     else if (icon_name == "dropDown") icon_type = IconMgr::IT_DropDown;
     else if (icon_name == "listPreview") icon_type = IconMgr::IT_ListPreview;
+    else if (icon_name == "arrowLeft") icon_type = IconMgr::IT_Arrow_Left;
     else if (icon_name == "leTagInsert") icon_type = IconMgr::IT_Le_Tag_Insert;
     else if (icon_name == "leTagReplace") icon_type = IconMgr::IT_Le_Tag_Replace;
     else if (icon_name == "leTagDelete") icon_type = IconMgr::IT_Le_Tag_Delete;

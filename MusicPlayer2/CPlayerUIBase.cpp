@@ -853,7 +853,7 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
     case BTN_SHOW_HIDE_ELEMENT:
         return IconMgr::IconType::IT_Background;
     case BTN_CLOSE_PANEL_TITLE_BAR:
-        return IconMgr::IT_Triangle_Left;
+        return IconMgr::IT_Arrow_Left;
     default:
         ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;

@@ -11,6 +11,9 @@ namespace UiElement
 
         //面板是否占满整个窗口
         bool IsFullFill() const;
+
+    private:
+        bool m_is_full_fill{};
     };
 }
 

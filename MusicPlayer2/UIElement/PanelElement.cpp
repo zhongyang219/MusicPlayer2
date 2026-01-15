@@ -16,6 +16,9 @@ void UiElement::Panel::CalculateRect(CRect parent_rect)
         rect.MoveToX(rect.left + (parent_rect.Width() - rect.Width()) / 2);
         rect.MoveToY(rect.top + (parent_rect.Height() - rect.Height()) / 2);
     }
+
+    //判断面板是否充满整个窗口
+    m_is_full_fill = rect.left <= parent_rect.left && rect.top <= parent_rect.top && rect.right >= parent_rect.right && rect.bottom >= parent_rect.bottom;
 }
 
 void UiElement::Panel::Draw()
@@ -41,6 +44,5 @@ void UiElement::Panel::Draw()
 
 bool UiElement::Panel::IsFullFill() const
 {
-    CRect draw_rect = ui->GetClientDrawRect();
-    return rect.left <= draw_rect.left && rect.top <= draw_rect.top && rect.right >= draw_rect.right && rect.bottom >= draw_rect.bottom;
+    return m_is_full_fill;
 }

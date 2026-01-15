@@ -121,10 +121,41 @@
 
   <!--全屏面板-->
   <panel id="full_panel_test">
-    <horizontalLayout margin="8">
-      <albumCover margin="16"/>
-      <lyrics/>
-    </horizontalLayout>
+    <verticalLayout>
+      <horizontalLayout margin="8">
+        <albumCover margin="16" square="true"/>
+        <lyrics/>
+      </horizontalLayout>
+      <!--底部控制栏-->
+      <rectangle height="88" no_corner_radius="true">
+        <verticalLayout margin="6" margin-top="4">
+          <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
+          <horizontalLayout height="62">
+            <element>
+              <verticalLayout margin="4">
+                <text type="title" style="scroll" height="24" font_size="10"/>
+                <text type="artist" style="scroll" height="24"/>
+              </verticalLayout>
+            </element>
+            <horizontalLayout width="36%">
+              <button key="repeatMode" width="28" height="28" margin="2"/>
+              <button key="previous" width="40" height="40" bigIcon="true" margin="2"/>
+              <button key="playPause" width="40" height="40" bigIcon="true" margin="2"/>
+              <button key="next" width="40" height="40" bigIcon="true" margin="2"/>
+              <button key="favorite" width="28" height="28" margin="2"/>
+            </horizontalLayout>
+            <horizontalLayout margin-right="4">
+              <placeHolder/>
+              <volume show_text="true" width="64" height="28" margin="2" hide-width="160"/>
+              <button key="addToPlaylist" width="28" height="28" margin="2" hide-width="94"/>
+              <button key="mediaLib" width="28" height="28" margin="2"/>
+              <button key="showPlayQueue" width="28" height="28" margin="2"/>
+            </horizontalLayout>
+          </horizontalLayout>
+        </verticalLayout>
+      </rectangle>
+
+    </verticalLayout>
   </panel>
   
   <ui>
@@ -704,12 +735,13 @@
               <icon icon="background" width="24" height="24" margin="2"/>
               <icon icon="dropDown" width="24" height="24" margin="2"/>
               <icon icon="listPreview" width="24" height="24" margin="2"/>
+              <icon icon="arrowLeft" width="24" height="24" margin="2"/>
               <icon icon="leTagInsert" width="24" height="24" margin="2"/>
               <icon icon="leTagReplace" width="24" height="24" margin="2"/>
-              <icon icon="leTagDelete" width="24" height="24" margin="2"/>
             </horizontalLayout>
             <!--第6行-->
             <horizontalLayout height="28">
+              <icon icon="leTagDelete" width="24" height="24" margin="2"/>
               <icon icon="leSave" width="24" height="24" margin="2"/>
               <icon icon="leFind" width="24" height="24" margin="2"/>
               <icon icon="leReplace" width="24" height="24" margin="2"/>
