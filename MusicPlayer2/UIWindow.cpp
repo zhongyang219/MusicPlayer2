@@ -68,8 +68,8 @@ void CUIWindow::OnLButtonUp(UINT nFlags, CPoint point)
     if (pUi->PointInAppIconArea(point))
     {
         CPoint point1{};
-        SLayoutData lyout;
-        point1.y = lyout.titlabar_height;
+        point1.x = pUi->GetAppIconRect().left;
+        point1.y = pUi->GetAppIconRect().bottom;
         ClientToScreen(&point1);
         theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
     }

@@ -156,6 +156,7 @@ public:
     CRect GetVolumeRect() const;    //获取音量图标的矩形区域
     CRect GetDrawRect() const;
     CRect GetClientDrawRect() const;    //获取绘图客户区的矩形区域（不包含自绘标题栏、菜单栏、状态栏）
+    CRect GetAppIconRect() const;       //获取应用程序图标矩形区域
 
     CUIDrawer& GetDrawer() { return m_draw; }
     const UIColors& GetUIColors() const { return m_colors; }

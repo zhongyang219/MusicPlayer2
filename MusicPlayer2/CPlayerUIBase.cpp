@@ -1906,6 +1906,18 @@ void CPlayerUIBase::DrawTopRightIcons()
         m_buttons[BTN_MENU_TITLEBAR].rect.SetRectEmpty();
     }
     m_top_right_buttons_width = icon_num * (icon_size + DPI(4));
+
+    //绘制左上角返回图标
+    if (IsDrawTitlebarLeftBtn())
+    {
+        rect_btn.MoveToXY(0, 0);
+        DrawUIButton(rect_btn, BTN_CLOSE_PANEL_TITLE_BAR);
+    }
+    else
+    {
+        m_buttons[BTN_CLOSE_PANEL_TITLE_BAR].rect = CRect();
+    }
+
 }
 
 void CPlayerUIBase::DrawCurrentTime()
@@ -2268,6 +2280,11 @@ CRect CPlayerUIBase::GetClientDrawRect() const
         client_rect.bottom -= DPI(20);
     }
     return client_rect;
+}
+
+CRect CPlayerUIBase::GetAppIconRect() const
+{
+    return m_app_icon_rect;
 }
 
 void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
