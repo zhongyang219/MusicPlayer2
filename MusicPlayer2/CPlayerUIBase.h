@@ -120,7 +120,7 @@ public:
     virtual void UpdateVolumeToolTip();
     void UpdatePlaylistBtnToolTip();
     void UpdateDarkLightModeBtnToolTip();
-    void UpdateToolTipPositionLater();
+    void HideTooltip();
 
     virtual bool SetCursor() override;
 
@@ -293,7 +293,6 @@ protected:
     virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override;
     virtual void UpdateMouseToolTipPosition(int btn, CRect rect);
 
-    virtual void UpdateToolTipPosition() override;
     virtual void AddToolTips();         //为每一个按钮添加鼠标提示（由于按钮的矩形区域只有在第一次绘图之后才能确定，所以此函数必须在第一次绘图之后调用）
 
     //响应一个按钮点击
@@ -383,8 +382,6 @@ protected:
 
 private:
     CBitmap m_mem_bitmap_static;
-
-    bool m_need_update_tooltip_pos{ false };   //是否需要更新鼠标提示
 
     enum { UI_TIP_INFO_TIMER_ID = 1728 };
 

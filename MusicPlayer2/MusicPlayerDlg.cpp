@@ -1404,7 +1404,7 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
         pCurUi->ClearBtnRect();
     DrawInfo(true);
     if (pCurUi != nullptr)
-        pCurUi->UpdateToolTipPositionLater();
+        pCurUi->HideTooltip();
     if (pCurUi != nullptr && playlist_btn_changed)
         pCurUi->UpdatePlaylistBtnToolTip();
 }
@@ -5133,7 +5133,7 @@ void CMusicPlayerDlg::OnShowMenuBar()
     DrawInfo(true);
 
     if (pCurUi != nullptr)
-        pCurUi->UpdateToolTipPositionLater();
+        pCurUi->HideTooltip();
 
     //隐藏菜单栏后弹出提示，告诉用户如何再次显示菜单栏
     if (!theApp.m_ui_data.show_menu_bar)

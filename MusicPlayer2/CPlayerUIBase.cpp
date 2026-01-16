@@ -155,21 +155,21 @@ void CPlayerUIBase::DrawInfo(bool reset)
             }
         }
 
-        //如果切换了显示/隐藏状态栏，则需要更新鼠标提示的位置
+        //如果切换了显示/隐藏状态栏，则需要清除之前的鼠标提示
         static bool last_draw_status_bar{ false };
         if (draw_status_bar != last_draw_status_bar)
         {
             last_draw_status_bar = draw_status_bar;
-            m_need_update_tooltip_pos = true;
-        }
+            HideTooltip();
+    }
 
-        //如果标题栏显示按钮发生了改变，则更新鼠标提示的位置
+        //如果标题栏显示按钮发生了改变，则需要清除之前的鼠标提示
         static int last_titlebar_btn{};
         int titlebar_btn{ theApp.m_app_setting_data.TitleDisplayItem() };
         if (last_titlebar_btn != titlebar_btn)
         {
             last_titlebar_btn = titlebar_btn;
-            m_need_update_tooltip_pos = true;
+            HideTooltip();
         }
     }
 
@@ -186,8 +186,8 @@ void CPlayerUIBase::DrawInfo(bool reset)
         if (last_width != m_draw_rect.Width() || last_height != m_draw_rect.Height()
             || (last_ui_index != GetUiIndex() && GetUiIndex() != 0))
         {
-            //更新工具提示的位置
-            m_need_update_tooltip_pos = true;
+            //清除之前的鼠标提示
+            HideTooltip();
 
             //更新任务栏缩略图区域
             CRect thumbnail_rect = GetThumbnailClipArea();
@@ -203,12 +203,6 @@ void CPlayerUIBase::DrawInfo(bool reset)
         }
     }
     m_first_draw = false;
-
-    if (m_need_update_tooltip_pos)
-    {
-        UpdateToolTipPosition();
-        m_need_update_tooltip_pos = false;
-    }
 }
 
 bool CPlayerUIBase::LButtonDown(CPoint point)
@@ -256,7 +250,11 @@ bool CPlayerUIBase::MouseMove(CPoint point)
     {
         if (btn.second.enable)
         {
-            btn.second.hover = (btn.second.rect.PtInRect(point) != FALSE);
+            bool hover = (btn.second.rect.PtInRect(point) != FALSE);
+            if (!btn.second.hover && hover)
+                UpdateMouseToolTipPosition(btn.first, btn.second.rect);
+
+            btn.second.hover = hover;
             rtn |= btn.second.hover;
         }
     }
@@ -1328,6 +1326,12 @@ void CPlayerUIBase::UpdateMouseToolTipPosition(int btn, CRect rect)
         m_tool_tip.SetToolRect(m_pMainWnd, btn + GetToolTipIdOffset(), rect);
 }
 
+void CPlayerUIBase::HideTooltip()
+{
+    for (const auto& btn : m_buttons)
+        UpdateMouseToolTipPosition(btn.first, CRect());
+}
+
 void CPlayerUIBase::UpdateVolumeToolTip()
 {
     if (m_tool_tip.m_hWnd != NULL)
@@ -1354,19 +1358,6 @@ void CPlayerUIBase::UpdateDarkLightModeBtnToolTip()
     tip_str += GetCmdShortcutKeyForTooltips(ID_DARK_MODE).GetString();
     UpdateMouseToolTip(BTN_DARK_LIGHT, tip_str.c_str());
     UpdateMouseToolTip(BTN_DARK_LIGHT_TITLE_BAR, tip_str.c_str());
-}
-
-void CPlayerUIBase::UpdateToolTipPositionLater()
-{
-    m_need_update_tooltip_pos = true;
-}
-
-void CPlayerUIBase::UpdateToolTipPosition()
-{
-    for (const auto& btn : m_buttons)
-    {
-        m_tool_tip.SetToolRect(m_pMainWnd, btn.first + GetToolTipIdOffset(), btn.second.rect);
-    }
 }
 
 void CPlayerUIBase::ShowUiTipInfo(const std::wstring& info)
@@ -2119,6 +2110,10 @@ void CPlayerUIBase::DrawTitleBar(CRect rect)
         rect_temp.right = rect_temp.left + m_layout.titlabar_height;
         DrawUIButton(rect_temp, BTN_CLOSE_PANEL_TITLE_BAR);
         rect_temp.left = rect_temp.right;
+    }
+    else
+    {
+        m_buttons[BTN_CLOSE_PANEL_TITLE_BAR].rect = CRect();
     }
 
     //绘制应用图标

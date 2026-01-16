@@ -128,8 +128,8 @@ bool UiElement::StackElement::MouseMove(CPoint point)
     if (indicator.enable)
         indicator.hover = (indicator.rect.PtInRect(point) != FALSE);
     bool hover{ GetRect().PtInRect(point) != FALSE };
-    if (!mouse_hover && hover)
-        ui->UpdateToolTipPositionLater();
+    //if (!mouse_hover && hover)
+    //    ui->UpdateToolTipPositionLater();
 
     mouse_hover = hover;
     return true;

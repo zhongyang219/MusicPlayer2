@@ -1358,6 +1358,7 @@ void CUserUi::OnPanelShow()
 
 void CUserUi::OnPanelHide()
 {
+    HideTooltip();
     auto* panel = m_panel_mgr.GetTopPanel();
     if (panel != nullptr)
     {
