@@ -88,7 +88,11 @@
                 </verticalLayout>
                 <!--所有曲目-->
                 <verticalLayout>
-                  <searchBox height="26" margin-bottom="4"/>
+                  <horizontalLayout height="32" margin-bottom="4">
+                    <button key="playAllTracks" height="32" show_text="true" proportion="10"/>
+                    <placeHolder proportion="1"/>
+                    <searchBox height="26" max-width="200" proportion="10"/>
+                  </horizontalLayout>
                   <allTracksList/>
                 </verticalLayout>
                 <!--文件夹浏览-->

@@ -119,6 +119,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_NEW_PLAYLIST;
     else if (key_type == "playMyFavourite")
         key = CPlayerUIBase::BTN_PLAY_MY_FAVOURITE;
+    else if (key_type == "playAllTracks")
+        key = CPlayerUIBase::BTN_PLAY_ALL_TRACKS;
     else if (key_type == "medialibFolderSort")
         key = CPlayerUIBase::BTN_MEDIALIB_FOLDER_SORT;
     else if (key_type == "medialibPlaylistSort")

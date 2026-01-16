@@ -519,6 +519,12 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type, const UIButton& btn)
         helper.OnPlayMyFavourite();
         return true;
     }
+    case BTN_PLAY_ALL_TRACKS:
+    {
+        CMusicPlayerCmdHelper helper;
+        helper.OnPlayAllTrack();
+        return true;
+    }
     case BTN_MEDIALIB_FOLDER_SORT:
     {
         CPoint point(btn.rect.left, btn.rect.bottom);
@@ -836,7 +842,7 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_NewFolder;
     case BTN_NEW_PLAYLIST:
         return IconMgr::IconType::IT_Add;
-    case BTN_PLAY_MY_FAVOURITE:
+    case BTN_PLAY_MY_FAVOURITE: case BTN_PLAY_ALL_TRACKS:
         return IconMgr::IconType::IT_Play;
     case BTN_MEDIALIB_FOLDER_SORT: case BTN_MEDIALIB_PLAYLIST_SORT:
         return IconMgr::IconType::IT_Sort_Mode;
@@ -894,7 +900,7 @@ std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type) const
     case BTN_LOCATE_TO_CURRENT:return theApp.m_str_table.LoadText(L"UI_TIP_BTN_LOCATE_TO_CURRENT");
     case BTN_OPEN_FOLDER: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_OPEN_FOLDER");
     case BTN_NEW_PLAYLIST: return theApp.m_str_table.LoadText(L"UI_TXT_BTN_NEW_PLAYLIST");
-    case BTN_PLAY_MY_FAVOURITE: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
+    case BTN_PLAY_MY_FAVOURITE: case BTN_PLAY_ALL_TRACKS: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY");
     case BTN_MEDIALIB_FOLDER_SORT: case BTN_MEDIALIB_PLAYLIST_SORT: return theApp.m_str_table.LoadText(L"TXT_LIB_PLAYLIST_SORT");
     case BTN_CLOSE_PANEL: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_CLOSE");
     case BTN_CLOSE_PANEL_TITLE_BAR: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_BACK");
@@ -3387,6 +3393,9 @@ std::wstring CPlayerUIBase::GetItemTooltip(int tooltip_index)
     // "播放“我喜欢的音乐”"
     case BTN_PLAY_MY_FAVOURITE:
         return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_MY_FAVOURITE");
+    // "播放“所有曲目”"
+    case BTN_PLAY_ALL_TRACKS:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PLAY_ALL_TRACKS");
     //歌词卡拉OK样式显示
     case BTN_KARAOKE:
         return theApp.m_str_table.LoadText(L"UI_TIP_BTN_KARAOKE");

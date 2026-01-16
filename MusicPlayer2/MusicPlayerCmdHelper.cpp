@@ -1235,6 +1235,23 @@ void CMusicPlayerCmdHelper::OnPlayAllTrack(const SongInfo& song)
     }
 }
 
+void CMusicPlayerCmdHelper::OnPlayAllTrack()
+{
+    //已经在播放“所有曲目”
+    ListItem list_item{ LT_MEDIA_LIB, L"", ListItem::ClassificationType::CT_NONE };
+    if (CRecentList::Instance().IsCurrentList(list_item))
+    {
+        //不在播放状态时执行播放命令
+        if (!CPlayer::GetInstance().IsPlaying())
+            theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_PLAY);
+    }
+    //没有播放“所有曲目”的情况下，播放“所有曲目”
+    else
+    {
+        OnListItemSelected(list_item, true);
+    }
+}
+
 void CMusicPlayerCmdHelper::OnPlayTrack(int track)
 {
     if (!CPlayer::GetInstance().PlayTrack(track))

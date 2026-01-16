@@ -122,6 +122,7 @@ public:
     void OnPlayMyFavourite(const SongKey& song_key);
     void OnPlayMyFavourite();
     void OnPlayAllTrack(const SongInfo& song);
+    void OnPlayAllTrack();
 
     void OnPlayTrack(int track);
 

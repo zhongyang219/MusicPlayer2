@@ -1122,6 +1122,11 @@
               <xs:documentation>播放“我喜欢的音乐”。</xs:documentation>
             </xs:annotation>
           </xs:enumeration>
+          <xs:enumeration value="playAllTracks">
+            <xs:annotation>
+              <xs:documentation>播放“所有曲目”。</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
           <xs:enumeration value="medialibFolderSort">
             <xs:annotation>
               <xs:documentation>媒体库“文件夹”排序方式。</xs:documentation>
