@@ -3128,7 +3128,7 @@ void CMusicPlayerDlg::OnDropFiles(HDROP hDropInfo)
             }
         }
     }
-    if (!ok)
+    if (!ok && !files.empty())
     {
         const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
         MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
