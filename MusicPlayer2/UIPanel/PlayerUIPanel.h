@@ -29,6 +29,8 @@ public:
 
 	std::shared_ptr<UiElement::Panel> GetRootElement() const;
 
+	bool IsFullFill() const;
+
 protected:
 	//计算面板的矩形区域，如果为空，则默认为整个界面区域
 	virtual CRect CalculatePanelRect() { return CRect(); }
@@ -67,7 +69,7 @@ public:
 		}
 	};
 
-	CPlayerUIPanel* GetVisiblePanel() const;
+	CPlayerUIPanel* GetTopPanel() const;		//获取最顶层面板
 	CPlayerUIPanel* ShowPanel(PanelKey key);
 	void HidePanel();
 	void DrawPanel();
@@ -76,6 +78,6 @@ public:
 
 private:
 	CPlayerUIBase* m_ui;
-	std::stack<CPlayerUIPanel*> m_displayed_panels;		//显示的面板
+	std::list<CPlayerUIPanel*> m_displayed_panels;		//显示的面板
 	std::map<PanelKey, std::unique_ptr<CPlayerUIPanel>> m_panels;		//保存所有已加载的面板
 };

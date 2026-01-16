@@ -82,6 +82,13 @@ std::shared_ptr<UiElement::Panel> CPlayerUIPanel::GetRootElement() const
 	return m_root_element;
 }
 
+bool CPlayerUIPanel::IsFullFill() const
+{
+	if (m_root_element != nullptr)
+		return m_root_element->IsFullFill();
+	return false;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 根据面板类型创建面板对象
 static std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlayerUIBase* ui)
@@ -100,9 +107,26 @@ static std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlaye
 
 void CPanelManager::DrawPanel()
 {
-	CPlayerUIPanel* cur_panel = GetVisiblePanel();
-	if (cur_panel != nullptr)
-		cur_panel->Draw();
+	if (!m_displayed_panels.empty())
+	{
+		CPlayerUIPanel* top_panel = m_displayed_panels.front();
+		//如果栈顶的面板是不全屏面板，查找全屏面板并绘制
+		if (!top_panel->IsFullFill())
+		{
+			auto iter = m_displayed_panels.begin();
+			++iter;
+			for (; iter != m_displayed_panels.end(); ++iter)
+			{
+				if ((*iter)->IsFullFill())
+				{
+					(*iter)->Draw();
+				}
+			}
+		}
+
+		//绘制栈顶面板
+		top_panel->Draw();
+	}
 }
 
 void CPanelManager::AddPanelFromUi(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel)
@@ -112,12 +136,10 @@ void CPanelManager::AddPanelFromUi(const std::wstring& id, std::unique_ptr<CPlay
 
 bool CPanelManager::IsPanelFullFill() const
 {
-	CPlayerUIPanel* panel = GetVisiblePanel();
-	if (panel != nullptr)
+	for (auto& panel : m_displayed_panels)
 	{
-		UiElement::Panel* panel_element = panel->GetRootElement().get();
-		if (panel_element != nullptr)
-			return panel_element->IsFullFill();
+		if (panel->IsFullFill())
+			return true;
 	}
 	return false;
 }
@@ -127,13 +149,13 @@ CPanelManager::CPanelManager(CPlayerUIBase* ui)
 {
 }
 
-CPlayerUIPanel* CPanelManager::GetVisiblePanel() const
+CPlayerUIPanel* CPanelManager::GetTopPanel() const
 {
 	//仅栈顶的面板可见
 	if (m_displayed_panels.empty())
 		return nullptr;
 	else
-		return m_displayed_panels.top();
+		return m_displayed_panels.front();
 }
 
 CPlayerUIPanel* CPanelManager::ShowPanel(PanelKey key)
@@ -169,7 +191,7 @@ CPlayerUIPanel* CPanelManager::ShowPanel(PanelKey key)
 	if (panel != nullptr)
 	{
 		//将显示的面板入栈
-		m_displayed_panels.push(panel);
+		m_displayed_panels.push_front(panel);
 	}
 	return panel;
 }
@@ -178,5 +200,5 @@ void CPanelManager::HidePanel()
 {
 	//将当前显示的面板出栈
 	if (!m_displayed_panels.empty())
-		m_displayed_panels.pop();
+		m_displayed_panels.pop_front();
 }

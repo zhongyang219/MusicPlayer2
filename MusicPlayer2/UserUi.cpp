@@ -341,7 +341,7 @@ bool CUserUi::LButtonUp(CPoint point)
     if (!CPlayerUIBase::LButtonUp(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         //显示了面板的情况下，点击面板以外的地方关闭面板
-        auto* panel = m_panel_mgr.GetVisiblePanel();
+        auto* panel = m_panel_mgr.GetTopPanel();
         if (panel != nullptr && !panel->GetPanelRect().PtInRect(point) && !panel->GetPanelRect().PtInRect(m_mouse_clicked_point))
         {
             OnPanelHide();
@@ -1286,7 +1286,7 @@ int CUserUi::GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list)
 
 std::shared_ptr<UiElement::Element> CUserUi::GetMouseEventResponseElement()
 {
-    auto* panel = m_panel_mgr.GetVisiblePanel();
+    auto* panel = m_panel_mgr.GetTopPanel();
     if (panel != nullptr)
         return panel->GetRootElement();
     return GetCurrentTypeUi();
@@ -1321,7 +1321,7 @@ CPlayerUIPanel* CUserUi::ShowPanelById(const std::wstring panel_id)
 
 bool CUserUi::IsPanelShown() const
 {
-    return m_panel_mgr.GetVisiblePanel() != nullptr;
+    return m_panel_mgr.GetTopPanel() != nullptr;
 }
 
 void CUserUi::ClosePanel()
@@ -1358,7 +1358,7 @@ void CUserUi::OnPanelShow()
 
 void CUserUi::OnPanelHide()
 {
-    auto* panel = m_panel_mgr.GetVisiblePanel();
+    auto* panel = m_panel_mgr.GetTopPanel();
     if (panel != nullptr)
     {
         panel->GetRootElement()->IterateAllElements([&](UiElement::Element* element) ->bool {
