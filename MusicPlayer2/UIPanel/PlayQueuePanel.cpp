@@ -1,10 +1,11 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "PlayQueuePanel.h"
 
 CPlayQueuePanel::CPlayQueuePanel(CPlayerUIBase* ui)
 	: CPlayerUIPanel(ui, IDR_PLAY_QUEUE_PANEL)
 {
 }
+
 CRect CPlayQueuePanel::CalculatePanelRect()
 {
 	CRect draw_rect = m_ui->GetDrawRect();

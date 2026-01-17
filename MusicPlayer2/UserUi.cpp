@@ -1,7 +1,6 @@
 ﻿#include "stdafx.h"
 #include "UserUi.h"
 #include "UiSearchBox.h"
-#include "UIPanel/PlayerUIPanel.h"
 #include "UIPanel/ListPreviewPanel.h"
 
 CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path)

@@ -3,6 +3,7 @@
 #include "TinyXml2Helper.h"
 #include "UIElement/ElementFactory.h"
 #include "UIPanel/PlayerUIPanel.h"
+#include "UIPanel/PanelManager.h"
 
 class CUserUi :
     public CPlayerUIBase

@@ -361,6 +361,7 @@
     <ClInclude Include="TinyXml2Helper.h" />
     <ClInclude Include="tinyxml2\tinyxml2.h" />
     <ClInclude Include="UIPanel\ListPreviewPanel.h" />
+    <ClInclude Include="UIPanel\PanelManager.h" />
     <ClInclude Include="UIPanel\PlayerUIPanel.h" />
     <ClInclude Include="UIPanel\PlayQueuePanel.h" />
     <ClInclude Include="UiSearchBox.h" />
@@ -586,6 +587,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UIPanel\ListPreviewPanel.cpp" />
+    <ClCompile Include="UIPanel\PanelManager.cpp" />
     <ClCompile Include="UIPanel\PlayerUIPanel.cpp" />
     <ClCompile Include="UIPanel\PlayQueuePanel.cpp" />
     <ClCompile Include="UiSearchBox.cpp" />

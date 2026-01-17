@@ -1,8 +1,6 @@
 ﻿#include "stdafx.h"
 #include "PlayerUIPanel.h"
 #include "UserUi.h"
-#include "PlayQueuePanel.h"
-#include "ListPreviewPanel.h"
 
 CPlayerUIPanel::CPlayerUIPanel(CPlayerUIBase* ui, UINT res_id)
 	: m_ui(ui)
@@ -52,13 +50,8 @@ void CPlayerUIPanel::Draw()
 	if (m_root_element != nullptr)
 	{
 		CRect draw_rect = m_ui->GetClientDrawRect();
-		//绘制一层半透明的黑色背景
-		if (!m_root_element->IsFullFill())
-		{
-			BYTE alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
-			m_ui->GetDrawer().FillAlphaRect(draw_rect, m_ui->GetUIColors().color_back, alpha);
-		}
 
+		//计算面板矩形区域
 		m_panel_rect = CalculatePanelRect();
 		//如果未通过代码获取面板的矩形区域，则根据ui计算面板区域
 		if (m_panel_rect.IsRectEmpty())
@@ -70,6 +63,32 @@ void CPlayerUIPanel::Draw()
 		{
 			m_panel_rect &= draw_rect;
 			m_root_element->SetRect(m_panel_rect);
+		}
+
+		//判断面板是否占满整个窗口
+		m_is_full_fill = (m_panel_rect.left == draw_rect.left) && (m_panel_rect.top == draw_rect.top) && (m_panel_rect.right == draw_rect.right) && (m_panel_rect.bottom == draw_rect.bottom);
+
+		//绘制一层半透明的黑色背景
+		if (!m_is_full_fill)
+		{
+			BYTE alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+			m_ui->GetDrawer().FillAlphaRect(draw_rect, m_ui->GetUIColors().color_back, alpha);
+		}
+
+		//绘制面板背景
+		if (!IsFullFill())
+		{
+			BYTE alpha = 255;
+			if (m_ui->IsDrawBackgroundAlpha())
+				alpha = 255 - (255 - alpha) / 2;
+
+			CRect draw_rect = m_ui->GetClientDrawRect();
+			//当面板的四个边都没有帖靠UI绘图矩形区域时，才绘制圆角矩形
+			bool draw_round_background = m_panel_rect.left != draw_rect.left && m_panel_rect.top != draw_rect.top && m_panel_rect.right != draw_rect.right && m_panel_rect.bottom != draw_rect.bottom;
+			if (theApp.m_app_setting_data.button_round_corners && draw_round_background)
+				m_ui->GetDrawer().DrawRoundRect(m_panel_rect, m_ui->GetUIColors().color_back, m_ui->CalculateRoundRectRadius(m_panel_rect), alpha);
+			else
+				m_ui->GetDrawer().FillAlphaRect(m_panel_rect, m_ui->GetUIColors().color_back, alpha, true);
 		}
 
 		//绘制面板
@@ -84,121 +103,5 @@ std::shared_ptr<UiElement::Panel> CPlayerUIPanel::GetRootElement() const
 
 bool CPlayerUIPanel::IsFullFill() const
 {
-	if (m_root_element != nullptr)
-		return m_root_element->IsFullFill();
-	return false;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 根据面板类型创建面板对象
-static std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlayerUIBase* ui)
-{
-	switch (panel_type)
-	{
-	case ePanelType::PlayQueue:
-		return std::make_unique<CPlayQueuePanel>(ui);
-	case ePanelType::ListPreview:
-		return std::make_unique<CListPreviewPanel>(ui);
-	}
-	return nullptr;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void CPanelManager::DrawPanel()
-{
-	if (!m_displayed_panels.empty())
-	{
-		CPlayerUIPanel* top_panel = m_displayed_panels.front();
-		//如果栈顶的面板是不全屏面板，查找全屏面板并绘制
-		if (!top_panel->IsFullFill())
-		{
-			auto iter = m_displayed_panels.begin();
-			++iter;
-			for (; iter != m_displayed_panels.end(); ++iter)
-			{
-				if ((*iter)->IsFullFill())
-				{
-					(*iter)->Draw();
-				}
-			}
-		}
-
-		//绘制栈顶面板
-		top_panel->Draw();
-	}
-}
-
-void CPanelManager::AddPanelFromUi(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel)
-{
-	m_panels[PanelKey(ePanelType::PanelFromUi, id)] = std::move(panel);
-}
-
-bool CPanelManager::IsPanelFullFill() const
-{
-	for (auto& panel : m_displayed_panels)
-	{
-		if (panel->IsFullFill())
-			return true;
-	}
-	return false;
-}
-
-CPanelManager::CPanelManager(CPlayerUIBase* ui)
-	: m_ui(ui)
-{
-}
-
-CPlayerUIPanel* CPanelManager::GetTopPanel() const
-{
-	//仅栈顶的面板可见
-	if (m_displayed_panels.empty())
-		return nullptr;
-	else
-		return m_displayed_panels.front();
-}
-
-CPlayerUIPanel* CPanelManager::ShowPanel(PanelKey key)
-{
-	CPlayerUIPanel* panel = nullptr;
-	auto iter = m_panels.find(key);
-	if (iter != m_panels.end())
-	{
-		panel = iter->second.get();
-	}
-	//面板不存在时创建
-	else
-	{
-		if (key.type == ePanelType::PanelFromFile)
-		{
-			if (!key.id.empty())
-			{
-				auto result = m_panels.emplace(key, std::make_unique<CPlayerUIPanel>(m_ui, key.id));
-				panel = result.first->second.get();
-			}
-		}
-		else if (key.type == ePanelType::PanelFromUi)
-		{
-			//UI中的面板不在此处创建，通过AddPanel函数添加
-		}
-		else
-		{
-			auto result = m_panels.emplace(key, CreatePanel(key.type, m_ui));
-			panel = result.first->second.get();
-		}
-
-	}
-	if (panel != nullptr)
-	{
-		//将显示的面板入栈
-		m_displayed_panels.push_front(panel);
-	}
-	return panel;
-}
-
-void CPanelManager::HidePanel()
-{
-	//将当前显示的面板出栈
-	if (!m_displayed_panels.empty())
-		m_displayed_panels.pop_front();
+	return m_is_full_fill;
 }

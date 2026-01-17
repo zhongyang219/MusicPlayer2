@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "PlayerUIPanel.h"
 class CPlayQueuePanel : public CPlayerUIPanel
 {

@@ -1098,6 +1098,9 @@
     <ClInclude Include="UIElement\AbstractTracksList.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIPanel\PanelManager.h">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1729,6 +1732,9 @@
     </ClCompile>
     <ClCompile Include="UIElement\AbstractTracksList.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\PanelManager.cpp">
+      <Filter>PlayerUI\UIPanel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
