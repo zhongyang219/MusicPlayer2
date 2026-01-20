@@ -313,6 +313,7 @@
 #define IDI_ARROW_LEFT                  680
 #define IDI_ARROW_LEFT_D                681
 #define IDR_TEST_PANEL                  682
+#define IDI_CHECKBOX                    683
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -1077,7 +1078,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        683
+#define _APS_NEXT_RESOURCE_VALUE        684
 #define _APS_NEXT_COMMAND_VALUE         33513
 #define _APS_NEXT_CONTROL_VALUE         1384
 #define _APS_NEXT_SYMED_VALUE           101

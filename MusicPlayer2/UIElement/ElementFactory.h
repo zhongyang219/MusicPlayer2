@@ -32,6 +32,7 @@
 #include "UIElement/IconElement.h"
 #include "UIElement/RatingElement.h"
 #include "UIElement/TracksList.h"
+#include "UIElement/CheckBox.h"
 
 namespace UiElement
 {

@@ -1203,6 +1203,15 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 icon->IconTypeFromString(str_icon);
             }
         }
+        else if (item_name == "checkBox")
+        {
+            UiElement::CheckBox* check_box = dynamic_cast<UiElement::CheckBox*>(element.get());
+            if (check_box != nullptr)
+            {
+                std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
+                check_box->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+            }
+        }
 
         element->InitComplete();
 

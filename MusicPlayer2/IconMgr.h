@@ -108,6 +108,7 @@ public:
         IT_DropDown,                // 下拉箭头
         IT_ListPreview,             // 列表预览
         IT_Arrow_Left,              // 向左箭头（返回）
+        IT_CheckBox,                // 复选框的勾
 
         IT_Le_Tag_Insert,           // Le 插入时间标签
         IT_Le_Tag_Replace,          // Le 替换时间标签

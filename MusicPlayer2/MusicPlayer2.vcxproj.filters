@@ -1104,6 +1104,9 @@
     <ClInclude Include="UIPanel\TestPanel.h">
       <Filter>PlayerUI\UIPanel</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\CheckBox.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1741,6 +1744,9 @@
     </ClCompile>
     <ClCompile Include="UIPanel\TestPanel.cpp">
       <Filter>PlayerUI\UIPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\CheckBox.cpp">
+      <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

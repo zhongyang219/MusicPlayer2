@@ -3145,6 +3145,8 @@ IDI_ARROW_LEFT          ICON                    "res\\arrow_left.ico"
 
 IDI_ARROW_LEFT_D        ICON                    "res\\arrow_left_d.ico"
 
+IDI_CHECKBOX            ICON                    "res\\checkbox.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

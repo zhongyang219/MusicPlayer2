@@ -303,6 +303,7 @@
     <ClInclude Include="UIElement\AllTracksList.h" />
     <ClInclude Include="UIElement\BeatIndicator.h" />
     <ClInclude Include="UIElement\Button.h" />
+    <ClInclude Include="UIElement\CheckBox.h" />
     <ClInclude Include="UIElement\ClassicalControlBar.h" />
     <ClInclude Include="UIElement\ElementFactory.h" />
     <ClInclude Include="UIElement\ElementSwitcher.h" />
@@ -524,6 +525,7 @@
     <ClCompile Include="UIElement\AllTracksList.cpp" />
     <ClCompile Include="UIElement\BeatIndicator.cpp" />
     <ClCompile Include="UIElement\Button.cpp" />
+    <ClCompile Include="UIElement\CheckBox.cpp" />
     <ClCompile Include="UIElement\ClassicalControlBar.cpp" />
     <ClCompile Include="UIElement\ElementFactory.cpp" />
     <ClCompile Include="UIElement\ElementSwitcher.cpp" />

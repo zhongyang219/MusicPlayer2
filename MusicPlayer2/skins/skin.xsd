@@ -745,6 +745,7 @@
         <xs:element name="elementSwitcher" type="elementSwitcherType"></xs:element>
         <xs:element name="icon" type="iconType"></xs:element>
         <xs:element name="rating" type="ratingType"></xs:element>
+        <xs:element name="checkBox" type="checkBoxType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -1920,6 +1921,18 @@
       <xs:documentation>歌曲分级（5个五角星）。</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="checkBoxType">
+    <xs:annotation>
+      <xs:documentation>复选框。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attribute name="text" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>显示的文本。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

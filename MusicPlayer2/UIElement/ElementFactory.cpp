@@ -80,6 +80,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::RatingElement>();
     else if (name == "trackList")
         element = std::make_shared<UiElement::TrackList>();
+    else if (name == "checkBox")
+        element = std::make_shared<UiElement::CheckBox>();
 
     if (element != nullptr)
         element->SetUi(ui);
