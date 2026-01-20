@@ -55,7 +55,7 @@ void CUserUi::LoadFromContents(const std::string& xml_contents)
             if (!panel_id.empty())
             {
                 //在这里可以根据面板id创建自定义的面板类
-                m_panel_mgr.AddPanelFromUi(panel_id, std::make_unique<CPlayerUIPanel>(this, panel_element));
+                m_panel_mgr.AddPanel(CPanelManager::PanelKey(ePanelType::PanelFromUi, panel_id), std::make_unique<CPlayerUIPanel>(this, panel_element));
             }
         }
     });
@@ -582,7 +582,7 @@ bool CUserUi::ButtonClicked(BtnKey btn_type, const UIButton& btn)
 {
     if (btn_type == BTN_SHOW_PLAY_QUEUE)
     {
-        ShowPanel(ePanelType::PlayQueue);
+        ShowPanelByResId(IDR_PLAY_QUEUE_PANEL);
         return true;
     }
     else if (btn_type == BTN_CLOSE_PANEL || btn_type == BTN_CLOSE_PANEL_TITLE_BAR)
@@ -1291,9 +1291,9 @@ std::shared_ptr<UiElement::Element> CUserUi::GetMouseEventResponseElement()
     return GetCurrentTypeUi();
 }
 
-CPlayerUIPanel* CUserUi::ShowPanel(ePanelType panel_type)
+CPlayerUIPanel* CUserUi::ShowPanelByResId(UINT resId)
 {
-    auto* panel = m_panel_mgr.ShowPanel(CPanelManager::PanelKey(panel_type, std::wstring()));
+    auto* panel = m_panel_mgr.ShowPanel(CPanelManager::PanelKey(resId));
     //显示面板后隐藏界面中按钮的鼠标提示
     if (panel != nullptr)
         OnPanelShow();
@@ -1331,7 +1331,7 @@ void CUserUi::ClosePanel()
 
 void CUserUi::ShowSongListPreviewPanel(const ListItem& list_item)
 {
-    CListPreviewPanel* panel = dynamic_cast<CListPreviewPanel*>(ShowPanel(ePanelType::ListPreview));
+    CListPreviewPanel* panel = dynamic_cast<CListPreviewPanel*>(ShowPanelByResId(IDR_LIST_PREVIEW_PANEL));
     if (panel != nullptr)
         panel->SetListData(list_item);
 }

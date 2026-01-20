@@ -92,7 +92,7 @@ public:
      */
     static std::shared_ptr<UiElement::Element> BuildUiElementFromXmlNode(tinyxml2::XMLElement* xml_node, CPlayerUIBase* ui);
 
-    CPlayerUIPanel* ShowPanel(ePanelType panel_type);
+    CPlayerUIPanel* ShowPanelByResId(UINT resId);
     CPlayerUIPanel* ShowPanelByFileName(const std::wstring panel_file_name);
     CPlayerUIPanel* ShowPanelById(const std::wstring panel_id);
     bool IsPanelShown() const;

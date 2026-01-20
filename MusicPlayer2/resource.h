@@ -312,6 +312,7 @@
 #define IDI_LIST_PREVIEW                679
 #define IDI_ARROW_LEFT                  680
 #define IDI_ARROW_LEFT_D                681
+#define IDR_TEST_PANEL                  682
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -849,7 +850,8 @@
 #define ID_TEST                         32831
 #define ID_ITEM_PROPERTY                32833
 #define ID_TEST_DIALOG                  32834
-#define ID_REMOVE_FROM_PLAYLIST         32835
+#define ID_TEST_PANEL                   32835
+#define ID_REMOVE_FROM_PLAYLIST         32836
 #define ID_EXPLORE_TRACK                32840
 #define ID_RE_INI_BASS                  32843
 #define ID_SORT_BY_FILE                 32850
@@ -1075,7 +1077,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        682
+#define _APS_NEXT_RESOURCE_VALUE        683
 #define _APS_NEXT_COMMAND_VALUE         33513
 #define _APS_NEXT_CONTROL_VALUE         1384
 #define _APS_NEXT_SYMED_VALUE           101

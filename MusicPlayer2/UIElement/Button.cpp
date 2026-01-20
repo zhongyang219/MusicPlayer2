@@ -303,8 +303,13 @@ bool UiElement::Button::LButtonUp(CPoint point)
 
     if (pressed && m_btn.rect.PtInRect(point) && m_btn.enable && IsEnable(ParentRect()))
     {
+        //如果设置了点击触发函数，则调用设置的点击触发函数
+        if (m_clicked_trigger)
+        {
+            m_clicked_trigger(this);
+        }
         //显示面板
-        if (key == CPlayerUIBase::BTN_SHOW_PANEL)
+        else if (key == CPlayerUIBase::BTN_SHOW_PANEL)
         {
             CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
             if (user_ui != nullptr)
@@ -418,6 +423,11 @@ bool UiElement::Button::SetCursor()
         return true;
     }
     return false;
+}
+
+void UiElement::Button::SetClickedTrigger(std::function<void(Button*)> func)
+{
+    m_clicked_trigger = func;
 }
 
 std::wstring UiElement::Button::GetDisplayText() const

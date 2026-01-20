@@ -1101,6 +1101,9 @@
     <ClInclude Include="UIPanel\PanelManager.h">
       <Filter>PlayerUI\UIPanel</Filter>
     </ClInclude>
+    <ClInclude Include="UIPanel\TestPanel.h">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1734,6 +1737,9 @@
       <Filter>UIElement</Filter>
     </ClCompile>
     <ClCompile Include="UIPanel\PanelManager.cpp">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\TestPanel.cpp">
       <Filter>PlayerUI\UIPanel</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2478,6 +2484,12 @@
     <Image Include="res\list_preview.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\arrow_left.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\arrow_left_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\ui\classical_control_bar.xml">
@@ -2489,5 +2501,6 @@
     <Xml Include="res\ui\list_preview_panel.xml">
       <Filter>资源文件</Filter>
     </Xml>
+    <Xml Include="res\ui\test_panel.xml" />
   </ItemGroup>
 </Project>

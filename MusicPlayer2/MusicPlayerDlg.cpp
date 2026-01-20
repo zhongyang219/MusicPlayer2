@@ -3440,6 +3440,14 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     {
         CTestDlg dlg;
         dlg.DoModal();
+        break;
+    }
+    case ID_TEST_PANEL:
+    {
+        CUserUi* user_ui = dynamic_cast<CUserUi*>(GetCurrentUi());
+        if (user_ui != nullptr)
+            user_ui->ShowPanelByResId(IDR_TEST_PANEL);
+        break;
     }
     break;
     }

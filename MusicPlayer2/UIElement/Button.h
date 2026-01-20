@@ -34,6 +34,8 @@ namespace UiElement
         virtual void HideTooltip() override;
         virtual bool SetCursor() override;
 
+        void SetClickedTrigger(std::function<void(Button*)> func);
+
     private:
         std::wstring GetDisplayText() const;
         IconMgr::IconType GetBtnIconType() const;
@@ -41,6 +43,7 @@ namespace UiElement
     private:
         CPlayerUIBase::UIButton m_btn;
         bool last_hover = false;
+        std::function<void(Button*)> m_clicked_trigger;
     };
 }
 

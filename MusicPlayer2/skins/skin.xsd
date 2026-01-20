@@ -979,7 +979,7 @@
       <xs:documentation>按钮</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
-    <xs:attribute name="key" use="required">
+    <xs:attribute name="key">
       <xs:annotation>
         <xs:documentation> 按钮的类型。 </xs:documentation>
       </xs:annotation>

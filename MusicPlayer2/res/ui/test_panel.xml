@@ -1,0 +1,15 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd">
+  <panel>
+    <verticalLayout margin="8">
+      <verticalLayout>
+        <text id="text1" type="userDefine" height="24"/>
+        <text id="text1" type="userDefine" height="24" color_style="emphasis1"/>
+      </verticalLayout>
+      <horizontalLayout height="28" margin-top="8">
+        <placeHolder/>
+        <button id="okBtn" icon="ok" text="%(TXT_APPLY)" height="28" show_text="true"/>
+        <button id="cancelBtn" icon="cancel" text="%(TXT_CLOSE)" show_text="true"/>
+      </horizontalLayout>
+    </verticalLayout>
+  </panel>
+</root>

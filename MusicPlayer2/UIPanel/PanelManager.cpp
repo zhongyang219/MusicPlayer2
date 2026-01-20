@@ -2,17 +2,22 @@
 #include "PanelManager.h"
 #include "PlayQueuePanel.h"
 #include "ListPreviewPanel.h"
+#include "TestPanel.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 根据面板类型创建面板对象
-static std::unique_ptr<CPlayerUIPanel> CreatePanel(ePanelType panel_type, CPlayerUIBase* ui)
+static std::unique_ptr<CPlayerUIPanel> CreatePanelFromRes(UINT resId, CPlayerUIBase* ui)
 {
-	switch (panel_type)
+	switch (resId)
 	{
-	case ePanelType::PlayQueue:
+	case IDR_PLAY_QUEUE_PANEL:
 		return std::make_unique<CPlayQueuePanel>(ui);
-	case ePanelType::ListPreview:
+	case IDR_LIST_PREVIEW_PANEL:
 		return std::make_unique<CListPreviewPanel>(ui);
+	case IDR_TEST_PANEL:
+		return std::make_unique<CTestPanel>(ui);
+	default:
+		return std::make_unique<CPlayerUIPanel>(ui, resId);
 	}
 	return nullptr;
 }
@@ -48,9 +53,15 @@ void CPanelManager::DrawPanel()
 	}
 }
 
-void CPanelManager::AddPanelFromUi(const std::wstring& id, std::unique_ptr<CPlayerUIPanel>&& panel)
+void CPanelManager::AddPanel(PanelKey key, std::unique_ptr<CPlayerUIPanel>&& panel)
 {
-	m_panels[PanelKey(ePanelType::PanelFromUi, id)] = std::move(panel);
+	m_panels[key] = std::move(panel);
+}
+
+bool CPanelManager::PanelExist(PanelKey key)
+{
+	auto iter = m_panels.find(key);
+	return iter != m_panels.end();
 }
 
 bool CPanelManager::IsPanelFullFill() const
@@ -95,9 +106,9 @@ CPlayerUIPanel* CPanelManager::ShowPanel(PanelKey key)
 		{
 			//UI中的面板不在此处创建，通过AddPanel函数添加
 		}
-		else
+		else if (key.type == ePanelType::PanelFromRes)
 		{
-			auto result = m_panels.emplace(key, CreatePanel(key.type, m_ui));
+			auto result = m_panels.emplace(key, CreatePanelFromRes(key.resId, m_ui));
 			panel = result.first->second.get();
 		}
 

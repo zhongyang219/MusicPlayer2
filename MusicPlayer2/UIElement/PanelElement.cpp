@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "PanelElement.h"
 
 void UiElement::Panel::CalculateRect(CRect parent_rect)
