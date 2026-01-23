@@ -33,6 +33,7 @@
 #include "UIElement/RatingElement.h"
 #include "UIElement/TracksList.h"
 #include "UIElement/CheckBox.h"
+#include "UIElement/ToggleButton.h"
 
 namespace UiElement
 {

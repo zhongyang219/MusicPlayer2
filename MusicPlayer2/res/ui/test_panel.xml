@@ -6,8 +6,21 @@
           <checkBox id="checkbox1" text="测试复选框"/>
           <placeHolder/>
         </horizontalLayout>
+        
+        <rectangle height="60">
+          <horizontalLayout>
+            <icon icon="setting" width="52"/>
+            <verticalLayout>
+              <text text="主要文本" height="20" font_size="10"/>
+              <text text="次要文本" color_style="emphasis1" height="20"/>
+            </verticalLayout>
+            <toggleButton id="toggleBtn1" width="80" margin-right="16"/>
+          </horizontalLayout>
+        </rectangle>
+        
         <placeHolder/>
-        <text id="text1" type="userDefine" height="24"/>
+        <text id="text1" type="userDefine" height="20"/>
+        <text id="text2" type="userDefine" height="20"/>
       </verticalLayout>
       <horizontalLayout height="28" margin-top="8">
         <placeHolder/>

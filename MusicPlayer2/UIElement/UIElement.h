@@ -86,6 +86,12 @@ namespace UiElement
         //根据id查找一个子节点
         Element* FindElement(const std::string& id);
 
+        template<class T>
+        T* FindElement(const std::string& id)
+        {
+            return dynamic_cast<T*>(FindElement(id));
+        }
+
         CPlayerUIBase* GetUi() const { return ui; }
 
     protected:

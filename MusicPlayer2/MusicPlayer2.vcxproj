@@ -330,6 +330,7 @@
     <ClInclude Include="UIElement\Spectrum.h" />
     <ClInclude Include="UIElement\StackElement.h" />
     <ClInclude Include="UIElement\Text.h" />
+    <ClInclude Include="UIElement\ToggleButton.h" />
     <ClInclude Include="UIElement\TrackInfo.h" />
     <ClInclude Include="UIElement\TracksList.h" />
     <ClInclude Include="UIElement\TreeElement.h" />
@@ -552,6 +553,7 @@
     <ClCompile Include="UIElement\Spectrum.cpp" />
     <ClCompile Include="UIElement\StackElement.cpp" />
     <ClCompile Include="UIElement\Text.cpp" />
+    <ClCompile Include="UIElement\ToggleButton.cpp" />
     <ClCompile Include="UIElement\TrackInfo.cpp" />
     <ClCompile Include="UIElement\TracksList.cpp" />
     <ClCompile Include="UIElement\TreeElement.cpp" />

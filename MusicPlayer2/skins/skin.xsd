@@ -746,6 +746,7 @@
         <xs:element name="icon" type="iconType"></xs:element>
         <xs:element name="rating" type="ratingType"></xs:element>
         <xs:element name="checkBox" type="checkBoxType"></xs:element>
+        <xs:element name="toggleButton" type="toggleButtonType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -1933,6 +1934,13 @@
         <xs:documentation>显示的文本。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="toggleButtonType">
+    <xs:annotation>
+      <xs:documentation>开关按钮。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>
