@@ -763,6 +763,7 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
         return IconMgr::IconType::IT_Equalizer;
     case BTN_SETTING:
     case BTN_SETTING_TITLEBAR:
+    case BTN_SHOW_SETTINGS_PANEL:
         return IconMgr::IconType::IT_Setting;
     case BTN_MINI:
     case BTN_MINI_TITLEBAR:
@@ -3412,7 +3413,10 @@ std::wstring CPlayerUIBase::GetItemTooltip(int tooltip_index)
     //标题栏中的关闭面板
     case BTN_CLOSE_PANEL_TITLE_BAR:
         return theApp.m_str_table.LoadText(L"UI_TIP_BTN_BACK");
-    }
+    //显示设置面板
+    case BTN_SHOW_SETTINGS_PANEL:
+        return theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING");
+ }
     return std::wstring();
 }
 

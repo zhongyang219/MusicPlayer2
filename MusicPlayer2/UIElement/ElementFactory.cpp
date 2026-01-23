@@ -84,6 +84,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::CheckBox>();
     else if (name == "toggleButton")
         element = std::make_shared<UiElement::ToggleButton>();
+    else if (name == "toggleSettingGroup")
+        element = std::make_shared<UiElement::ToggleSettingGroup>();
 
     if (element != nullptr)
         element->SetUi(ui);

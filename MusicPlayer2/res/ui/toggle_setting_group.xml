@@ -1,0 +1,15 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd">
+  <!--用于设置界面的开关按钮组合控件，包含一个图标，两行提示文本，和右侧的开关按钮-->
+  <element>
+    <rectangle height="60">
+      <horizontalLayout>
+        <icon id="icon" width="52"/>
+        <verticalLayout>
+          <text id="mainText" font_size="10" height="20"/>
+          <text id="subText" color_style="emphasis1" height="20"/>
+        </verticalLayout>
+        <toggleButton id="toggleBtn" width="80" margin-right="16"/>
+      </horizontalLayout>
+    </rectangle>
+  </element>
+</root>

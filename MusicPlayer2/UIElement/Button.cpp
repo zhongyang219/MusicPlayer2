@@ -135,6 +135,8 @@ void UiElement::Button::FromString(const std::string& key_type)
         key = CPlayerUIBase::BTN_SHOW_PANEL;
     else if (key_type == "showHideElement")
         key = CPlayerUIBase::BTN_SHOW_HIDE_ELEMENT;
+    else if (key_type == "showSettingsPanel")
+        key = CPlayerUIBase::BTN_SHOW_SETTINGS_PANEL;
     else
         key = CPlayerUIBase::BTN_INVALID;
 }

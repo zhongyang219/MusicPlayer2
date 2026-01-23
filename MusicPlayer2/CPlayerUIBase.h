@@ -218,6 +218,7 @@ public:
         BTN_SHOW_PANEL,         //显示面板
         BTN_SHOW_HIDE_ELEMENT,  //显示/隐藏一个元素
         BTN_CLOSE_PANEL_TITLE_BAR,  //标题栏中的关闭面板按钮
+        BTN_SHOW_SETTINGS_PANEL,  //显示设置面板
 
         //菜单栏
         MENU_FILE,

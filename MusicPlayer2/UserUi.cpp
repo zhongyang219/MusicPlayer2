@@ -591,6 +591,11 @@ bool CUserUi::ButtonClicked(BtnKey btn_type, const UIButton& btn)
         m_panel_mgr.HidePanel();
         return true;
     }
+    else if (btn_type == BTN_SHOW_SETTINGS_PANEL)
+    {
+        ShowPanelByResId(IDR_SETTINGS_PANEL);
+        return true;
+    }
     return CPlayerUIBase::ButtonClicked(btn_type, btn);
 }
 
@@ -1210,6 +1215,16 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             {
                 std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
                 check_box->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+            }
+        }
+        else if (item_name == "toggleSettingGroup")
+        {
+            UiElement::ToggleSettingGroup* ele = dynamic_cast<UiElement::ToggleSettingGroup*>(element.get());
+            if (ele != nullptr)
+            {
+                ele->icon_name = CTinyXml2Helper::ElementAttribute(xml_node, "icon");
+                ele->main_text = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "mainText"), CodeType::UTF8_NO_BOM);
+                ele->sub_text = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "subText"), CodeType::UTF8_NO_BOM);
             }
         }
 

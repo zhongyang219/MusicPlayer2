@@ -747,6 +747,7 @@
         <xs:element name="rating" type="ratingType"></xs:element>
         <xs:element name="checkBox" type="checkBoxType"></xs:element>
         <xs:element name="toggleButton" type="toggleButtonType"></xs:element>
+        <xs:element name="toggleSettingGroup" type="toggleSettingGroupType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -1162,6 +1163,11 @@
           <xs:enumeration value="showHideElement">
             <xs:annotation>
               <xs:documentation>显示/隐藏元素。</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="showSettingsPanel">
+            <xs:annotation>
+              <xs:documentation>显示设置面板。</xs:documentation>
             </xs:annotation>
           </xs:enumeration>
         </xs:restriction>
@@ -1941,6 +1947,28 @@
       <xs:documentation>开关按钮。</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="toggleSettingGroupType">
+    <xs:annotation>
+      <xs:documentation>带开关按钮的选项设置组。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attribute name="icon" type="icon_type">
+      <xs:annotation>
+        <xs:documentation>左侧的图标。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="mainText" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>主要的文本。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="subText" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>次要的文本。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

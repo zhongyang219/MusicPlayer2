@@ -305,6 +305,8 @@
     <ClInclude Include="UIElement\Button.h" />
     <ClInclude Include="UIElement\CheckBox.h" />
     <ClInclude Include="UIElement\ClassicalControlBar.h" />
+    <ClInclude Include="UIElement\CombinedElement\CombinedElement.h" />
+    <ClInclude Include="UIElement\CombinedElement\ToggleSettingGroup.h" />
     <ClInclude Include="UIElement\ElementFactory.h" />
     <ClInclude Include="UIElement\ElementSwitcher.h" />
     <ClInclude Include="UIElement\FolderExploreTree.h" />
@@ -366,6 +368,7 @@
     <ClInclude Include="UIPanel\PanelManager.h" />
     <ClInclude Include="UIPanel\PlayerUIPanel.h" />
     <ClInclude Include="UIPanel\PlayQueuePanel.h" />
+    <ClInclude Include="UIPanel\SettingsPanel.h" />
     <ClInclude Include="UIPanel\TestPanel.h" />
     <ClInclude Include="UiSearchBox.h" />
     <ClInclude Include="UIWindow.h" />
@@ -528,6 +531,8 @@
     <ClCompile Include="UIElement\Button.cpp" />
     <ClCompile Include="UIElement\CheckBox.cpp" />
     <ClCompile Include="UIElement\ClassicalControlBar.cpp" />
+    <ClCompile Include="UIElement\CombinedElement\CombinedElement.cpp" />
+    <ClCompile Include="UIElement\CombinedElement\ToggleSettingGroup.cpp" />
     <ClCompile Include="UIElement\ElementFactory.cpp" />
     <ClCompile Include="UIElement\ElementSwitcher.cpp" />
     <ClCompile Include="UIElement\FolderExploreTree.cpp" />
@@ -595,6 +600,7 @@
     <ClCompile Include="UIPanel\PanelManager.cpp" />
     <ClCompile Include="UIPanel\PlayerUIPanel.cpp" />
     <ClCompile Include="UIPanel\PlayQueuePanel.cpp" />
+    <ClCompile Include="UIPanel\SettingsPanel.cpp" />
     <ClCompile Include="UIPanel\TestPanel.cpp" />
     <ClCompile Include="UiSearchBox.cpp" />
     <ClCompile Include="UIWindow.cpp" />
@@ -712,6 +718,7 @@
     <Image Include="res\background_d.ico" />
     <Image Include="res\bitrate.ico" />
     <Image Include="res\bitrate_d.ico" />
+    <Image Include="res\checkbox.ico" />
     <Image Include="res\close.ico" />
     <Image Include="res\close_d.ico" />
     <Image Include="res\convert.ico" />
@@ -941,7 +948,9 @@
     <Xml Include="res\ui\classical_control_bar.xml" />
     <Xml Include="res\ui\list_preview_panel.xml" />
     <Xml Include="res\ui\play_queue_panel.xml" />
+    <Xml Include="res\ui\settings_panel.xml" />
     <Xml Include="res\ui\test_panel.xml" />
+    <Xml Include="res\ui\toggle_setting_group.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

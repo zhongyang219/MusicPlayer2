@@ -3,6 +3,7 @@
 #include "PlayQueuePanel.h"
 #include "ListPreviewPanel.h"
 #include "TestPanel.h"
+#include "SettingsPanel.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 根据面板类型创建面板对象
@@ -16,6 +17,8 @@ static std::unique_ptr<CPlayerUIPanel> CreatePanelFromRes(UINT resId, CPlayerUIB
 		return std::make_unique<CListPreviewPanel>(ui);
 	case IDR_TEST_PANEL:
 		return std::make_unique<CTestPanel>(ui);
+	case IDR_SETTINGS_PANEL:
+		return std::make_unique<CSettingsPanel>(ui);
 	default:
 		return std::make_unique<CPlayerUIPanel>(ui, resId);
 	}

@@ -1,0 +1,73 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd">
+  <panel>
+    <verticalLayout margin="8">
+      <!--标题-->
+      <text type="userDefine" text="%(TITLE_OPT)" height="56" margin-left="16" font_size="12"/>
+      <horizontalLayout>
+        <!--左侧导航栏-->
+        <verticalLayout width="134">
+          <navigationBar orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="36">
+            <navigationItem icon="skin" text="%(TITLE_OPT_APC)"/>
+          </navigationBar>
+          <button key="settings" text="%(UI_TXT_MORE_SETTINGS)" show_text="true" height="32"/>
+        </verticalLayout>
+        <stackElement margin-left="8">
+          <verticalLayout>
+            <toggleSettingGroup height="60" icon="darkModeOn" mainText="%(TXT_OPT_APC_DARK_MODE)" subText="%(TXT_OPT_DESC_DARK_MODE)"/>
+            <!--显示频谱分析选项-->
+            <rectangle height="60">
+              <horizontalLayout>
+                <icon icon="reverb" width="52"/>
+                <verticalLayout>
+                  <text text="%(TXT_OPT_APC_SPECTRUM_SHOW)" font_size="10" height="20"/>
+                  <text text="%(TXT_OPT_DESC_SHOW_SPECTRUM)" color_style="emphasis1" height="20"/>
+                </verticalLayout>
+                <toggleButton id="showSpectrumBtn" width="80" margin-right="16"/>
+              </horizontalLayout>
+            </rectangle>
+              
+            <!--显示专辑封面选项-->
+            <rectangle height="60" margin-top="4">
+              <horizontalLayout>
+                <icon icon="albumCover" width="52"/>
+                <verticalLayout>
+                  <text text="%(TXT_OPT_APC_COVER_SHOW)" font_size="10" height="20"/>
+                  <text text="%(TXT_OPT_DESC_SHOW_ALBUM_COVER)" color_style="emphasis1" height="20"/>
+                </verticalLayout>
+                <toggleButton id="showAlbumCoverBtn" width="80" margin-right="16"/>
+              </horizontalLayout>
+            </rectangle>
+              
+            <!--启用背景选项-->
+            <rectangle height="60" margin-top="4">
+              <horizontalLayout>
+                <icon icon="background" width="52"/>
+                <verticalLayout>
+                  <text text="%(TXT_OPT_APC_BG_ENABLE)" font_size="10" height="20"/>
+                  <text text="%(TXT_OPT_DESC_SHOW_BACKGROUND)" color_style="emphasis1" height="20"/>
+                </verticalLayout>
+                <toggleButton id="enableBackground" width="80" margin-right="16"/>
+              </horizontalLayout>
+            </rectangle>
+              
+            <!--显示状态栏选项-->
+            <rectangle height="60" margin-top="4">
+              <horizontalLayout>
+                <icon icon="setting" width="52"/>
+                <verticalLayout>
+                  <text text="%(TXT_OPT_APC_ALWAYS_SHOW_STATUS_BAR)" font_size="10" height="20"/>
+                  <text text="%(TXT_OPT_DESC_SHOW_TASKBAR)" color_style="emphasis1" height="20"/>
+                </verticalLayout>
+                <toggleButton id="showStatusbarBtn" width="80" margin-right="16"/>
+              </horizontalLayout>
+            </rectangle>
+
+            <placeHolder/>
+          </verticalLayout>
+          
+        </stackElement>
+          
+      </horizontalLayout>
+    </verticalLayout>
+  </panel>
+</root>

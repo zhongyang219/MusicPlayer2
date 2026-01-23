@@ -34,6 +34,7 @@
 #include "UIElement/TracksList.h"
 #include "UIElement/CheckBox.h"
 #include "UIElement/ToggleButton.h"
+#include "CombinedElement/ToggleSettingGroup.h"
 
 namespace UiElement
 {

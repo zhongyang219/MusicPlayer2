@@ -184,6 +184,10 @@ IDR_LIST_PREVIEW_PANEL  TEXT                    "res\\ui\\list_preview_panel.xml
 
 IDR_TEST_PANEL          TEXT                    "res\\ui\\test_panel.xml"
 
+IDR_SETTINGS_PANEL      TEXT                    "res\\ui\\settings_panel.xml"
+
+IDR_TOGGLE_SETTING_GROUP TEXT                    "res\\ui\\toggle_setting_group.xml"
+
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 

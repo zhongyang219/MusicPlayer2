@@ -429,6 +429,9 @@
     <Filter Include="对话框类\ClosseMainWindowInqueryDlg">
       <UniqueIdentifier>{23ec0931-552a-49c6-8ac2-fc2051dfdc73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UIElement\CombinedElement">
+      <UniqueIdentifier>{31c5ebf7-9cee-4c95-ac32-515975ac05d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1110,6 +1113,15 @@
     <ClInclude Include="UIElement\ToggleButton.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIPanel\SettingsPanel.h">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\CombinedElement\ToggleSettingGroup.h">
+      <Filter>UIElement\CombinedElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\CombinedElement\CombinedElement.h">
+      <Filter>UIElement\CombinedElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1753,6 +1765,15 @@
     </ClCompile>
     <ClCompile Include="UIElement\ToggleButton.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\SettingsPanel.cpp">
+      <Filter>PlayerUI\UIPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\CombinedElement\ToggleSettingGroup.cpp">
+      <Filter>UIElement\CombinedElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\CombinedElement\CombinedElement.cpp">
+      <Filter>UIElement\CombinedElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2502,6 +2523,9 @@
     <Image Include="res\arrow_left_d.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\checkbox.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\ui\classical_control_bar.xml">
@@ -2514,5 +2538,7 @@
       <Filter>资源文件</Filter>
     </Xml>
     <Xml Include="res\ui\test_panel.xml" />
+    <Xml Include="res\ui\settings_panel.xml" />
+    <Xml Include="res\ui\toggle_setting_group.xml" />
   </ItemGroup>
 </Project>
