@@ -27,7 +27,10 @@ private:
     UiElement::ToggleSettingGroup* dard_mode_btn;
     UiElement::ToggleSettingGroup* show_spectrum_btn;
     UiElement::ToggleSettingGroup* show_album_cover_btn;
+    UiElement::ToggleSettingGroup* round_corder_btn;
     UiElement::ToggleSettingGroup* enable_bckground_btn;
     UiElement::ToggleSettingGroup* show_statusbar_btn;
+    UiElement::ToggleSettingGroup* use_standard_titlebar;
+    UiElement::ToggleSettingGroup* show_menubar_btn;
 };
 

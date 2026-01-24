@@ -20,10 +20,14 @@
               <toggleSettingGroup id="showSpectrum" height="60" margin-top="4" icon="reverb" mainText="%(TXT_OPT_APC_SPECTRUM_SHOW)" subText="%(TXT_OPT_DESC_SHOW_SPECTRUM)"/>
               <!--显示专辑封面选项-->
               <toggleSettingGroup id="showAlbumCover" height="60" margin-top="4" icon="albumCover" mainText="%(TXT_OPT_APC_COVER_SHOW)" subText="%(TXT_OPT_DESC_SHOW_ALBUM_COVER)"/>
+              <!--使用圆角风格-->
+              <toggleSettingGroup id="roundCornerStyle" height="60" margin-top="4" icon="ok" mainText="%(TXT_OPT_APC_ROUND_CORNERS)"/>
               <!--启用背景选项-->
               <toggleSettingGroup id="enableBackground" height="60" margin-top="4" icon="background" mainText="%(TXT_OPT_APC_BG_ENABLE)" subText="%(TXT_OPT_DESC_SHOW_BACKGROUND)"/>
               <!--显示状态栏选项-->
               <toggleSettingGroup id="showStatusbar" height="60" margin-top="4" icon="setting" mainText="%(TXT_OPT_APC_ALWAYS_SHOW_STATUS_BAR)" subText="%(TXT_OPT_DESC_SHOW_TASKBAR)"/>
+              <!--显示系统标准标题栏-->
+              <toggleSettingGroup id="showStandardTitlebar" height="60" margin-top="4" icon="setting" mainText="%(TXT_OPT_APC_USE_SYSTEM_TITLE_BAR)" subText="%(TXT_OPT_DESC_USE_STANDARD_TITLEBAR)"/>
               <placeHolder/>
             </verticalLayout>
           </scrollArea>

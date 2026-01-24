@@ -16,10 +16,15 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	ConnectToggleTrigger(show_spectrum_btn, m_apperence_data.show_spectrum);
 	show_album_cover_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("showAlbumCover");
 	ConnectToggleTrigger(show_album_cover_btn, m_apperence_data.show_album_cover);
+	round_corder_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("roundCornerStyle");
+	ConnectToggleTrigger(round_corder_btn, m_apperence_data.button_round_corners);
 	enable_bckground_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("enableBackground");
 	ConnectToggleTrigger(enable_bckground_btn, m_apperence_data.enable_background);
 	show_statusbar_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("showStatusbar");
 	ConnectToggleTrigger(show_statusbar_btn, m_apperence_data.always_show_statusbar);
+	use_standard_titlebar = m_root_element->FindElement<UiElement::ToggleSettingGroup>("showStandardTitlebar");
+	ConnectToggleTrigger(use_standard_titlebar, m_apperence_data.show_window_frame);
+
 
 	//更新控件的状态
 	SettingDataToUi();
@@ -59,8 +64,10 @@ void CSettingsPanel::SettingDataToUi()
 	dard_mode_btn->GetToggleBtn()->SetChecked(m_apperence_data.dark_mode);
 	show_spectrum_btn->GetToggleBtn()->SetChecked(m_apperence_data.show_spectrum);
 	show_album_cover_btn->GetToggleBtn()->SetChecked(m_apperence_data.show_album_cover);
+	round_corder_btn->GetToggleBtn()->SetChecked(m_apperence_data.button_round_corners);
 	enable_bckground_btn->GetToggleBtn()->SetChecked(m_apperence_data.enable_background);
 	show_statusbar_btn->GetToggleBtn()->SetChecked(m_apperence_data.always_show_statusbar);
+	use_standard_titlebar->GetToggleBtn()->SetChecked(m_apperence_data.show_window_frame);
 }
 
 void CSettingsPanel::OnSettingsChanged() const

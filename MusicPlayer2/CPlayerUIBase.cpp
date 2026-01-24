@@ -94,37 +94,44 @@ void CPlayerUIBase::DrawInfo(bool reset)
         //绘制背景
         DrawBackground();
 
-        //绘制状态栏
+        //计算状态栏、标题栏、菜单栏的位置
         CRect draw_rect = m_draw_rect;
+        CRect rc_status_bar;
+        CRect rc_title_bar;
+        CRect rc_menu_bar;
+        //状态栏
         bool draw_status_bar = IsDrawStatusBar();
         if (draw_status_bar)
         {
-            CRect rc_status_bar = draw_rect;
+            rc_status_bar = draw_rect;
             draw_rect.bottom -= DPI(20);
             rc_status_bar.top = draw_rect.bottom;
-            DrawStatusBar(rc_status_bar, reset);
         }
-
-        //如果不显示Windows标准标题栏，则绘制标题栏
+        //标题栏
         if (IsDrawTitleBar())
         {
-            CRect rc_title_bar = draw_rect;
+            rc_title_bar = draw_rect;
             rc_title_bar.bottom = rc_title_bar.top + m_layout.titlabar_height;
             draw_rect.top = rc_title_bar.bottom;
-            DrawTitleBar(rc_title_bar);
         }
-
-        //绘制菜单栏
+        //菜单栏
         if (IsDrawMenuBar())
         {
-            CRect rc_menu_bar = draw_rect;
+            rc_menu_bar = draw_rect;
             rc_menu_bar.bottom = rc_menu_bar.top + m_layout.menubar_height;
             draw_rect.top = rc_menu_bar.bottom;
-            DrawUiMenuBar(rc_menu_bar);
         }
 
         //绘制界面中其他信息
         _DrawInfo(draw_rect, reset);
+
+        //绘制状态栏、标题栏、菜单栏
+        if (!rc_status_bar.IsRectEmpty())
+            DrawStatusBar(rc_status_bar, reset);
+        if (!rc_title_bar.IsRectEmpty())
+            DrawTitleBar(rc_title_bar);
+        if (!rc_menu_bar.IsRectEmpty())
+            DrawUiMenuBar(rc_menu_bar);
 
         //绘制提示信息
         if (m_show_ui_tip_info && !m_ui_tip_info.empty())

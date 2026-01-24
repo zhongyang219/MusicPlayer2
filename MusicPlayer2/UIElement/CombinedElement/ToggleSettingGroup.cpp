@@ -23,9 +23,15 @@ namespace UiElement
         if (main_text_ele != nullptr)
             main_text_ele->SetText(main_text);
 
+        //如果没有次要文本，则将其隐藏
         Text* sub_text_ele = FindElement<Text>("subText");
         if (sub_text_ele != nullptr)
-            sub_text_ele->SetText(sub_text);
+        {
+            if (sub_text.empty())
+                sub_text_ele->SetVisible(false);
+            else
+                sub_text_ele->SetText(sub_text);
+        }
 
         m_toggle_btn = FindElement<ToggleButton>("toggleBtn");
     }
