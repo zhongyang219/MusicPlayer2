@@ -71,7 +71,7 @@ public:
     //no_clip_area: 如果为true，则不在输出文字时限制绘图区域
     //multi_line: 是否多行显示
     //default_right_align: 如果文本的宽度大于矩形区域，是否右对齐
-    void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align = Alignment::LEFT, bool no_clip_area = false, bool multi_line = false, bool default_right_align = false);
+    void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align = Alignment::LEFT, bool no_clip_area = true, bool multi_line = false, bool default_right_align = false);
 
     //在指定的矩形区域内绘制分割颜色的文本
     //rect: 文本的矩形区域
@@ -81,7 +81,7 @@ public:
     //split: 颜色分割位置，取值为0~1000（用于歌词动态显示）
     //align: 文本对齐方式
     //no_clip_area: 如果为true，则不在输出文字时限制绘图区域
-    void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, Alignment align = Alignment::LEFT, bool no_clip_area = false);
+    void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color1, COLORREF color2, int split, Alignment align = Alignment::LEFT, bool no_clip_area = true);
 
     //在控件上绘制滚动的文本（当长度不够时），pixel指定此函数调用一次移动的像素值，如果reset为true，则滚动到初始位置
     //rect: 文本的矩形区域
@@ -98,22 +98,22 @@ public:
 
 public:
     //绘制一个位图（使用GDI）
-    void DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
-    void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
-    void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
+    void DrawBitmap(CBitmap& bitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = true);
+    void DrawBitmap(UINT bitmap_id, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = true);
+    void DrawBitmap(HBITMAP hbitmap, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = true);
 
     //绘制一个图像（使用GDI+）
-    void DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
-    void DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
+    void DrawImage(const CImage& image, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = true);
+    void DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = true);
     //绘制一个图像，并剪裁为圆角矩形（使用GDI+）
-    void DrawRoundImage(const CImage& image, int radius, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = false);
+    void DrawRoundImage(const CImage& image, int radius, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area = true);
 
     void DrawIcon(HICON hIcon, CPoint start_point, CSize size);
     void DrawIcon(HICON hIcon, CRect rect);
     void DrawIcon(HICON hIcon, CRect rect, int icon_size);
 
-    void FillRect(CRect rect, COLORREF color, bool no_clip_area = false);
-    void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area = false);		//填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）
+    void FillRect(CRect rect, COLORREF color, bool no_clip_area = true);
+    void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area = true);		//填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）
 
     void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
     void DrawRectOutLine(CRect rect, COLORREF color, int width, bool dot_line);

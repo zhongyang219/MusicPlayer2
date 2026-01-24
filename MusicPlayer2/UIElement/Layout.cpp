@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Layout.h"
 
 
@@ -6,24 +6,24 @@
 ///////////////////////////////////////////////////////////////////////////////
 void UiElement::Layout::CalculateChildrenRect()
 {
-    //Ë®Æ½²¼¾Ö
+    //æ°´å¹³å¸ƒå±€
     if (type == Horizontal)
     {
-        vector<int> size_list;          // ÒÑÈ·¶¨×ÓÔªËØ³ß´ç¼ÇÂ¼(²»º¬±ß¾à)£¬Î´È·¶¨ÏîÎªINT_MIN
-        int total_size{};               // ËùÓĞÒÑÖ¸¶¨ÔªËØµÄ¿í¶È(·Ç¸¡¶¯¿í¶È)ÓëÒÑÈ·¶¨µÄ×Ü±ß¾à
-        int item_fixed_size_num{};      // ÓĞ¹Ì¶¨¿í¶ÈµÄÔªËØµÄ¸öÊı
+        vector<int> size_list;          // å·²ç¡®å®šå­å…ƒç´ å°ºå¯¸è®°å½•(ä¸å«è¾¹è·)ï¼Œæœªç¡®å®šé¡¹ä¸ºINT_MIN
+        int total_size{};               // æ‰€æœ‰å·²æŒ‡å®šå…ƒç´ çš„å®½åº¦(éæµ®åŠ¨å®½åº¦)ä¸å·²ç¡®å®šçš„æ€»è¾¹è·
+        int item_fixed_size_num{};      // æœ‰å›ºå®šå®½åº¦çš„å…ƒç´ çš„ä¸ªæ•°
 
-        // µÚÒ»´Î±éÀú£¬»ñÈ¡¹Ì¶¨²»±äµÄ³ß´çÊı¾İ
+        // ç¬¬ä¸€æ¬¡éå†ï¼Œè·å–å›ºå®šä¸å˜çš„å°ºå¯¸æ•°æ®
         for (const auto& child : childLst)
         {
-            if (!child->IsEnable(GetRect()))            // ÉèÖÃÎª²»ÏÔÊ¾Ê±°´³ß´çÎª0µÄ¹Ì¶¨³ß´çÔªËØ´¦Àí£¬²¢ºöÂÔ´ËÔªËØ±ß¾à
+            if (!child->IsEnable(GetRect()))            // è®¾ç½®ä¸ºä¸æ˜¾ç¤ºæ—¶æŒ‰å°ºå¯¸ä¸º0çš„å›ºå®šå°ºå¯¸å…ƒç´ å¤„ç†ï¼Œå¹¶å¿½ç•¥æ­¤å…ƒç´ è¾¹è·
             {
                 size_list.push_back(0);
                 item_fixed_size_num++;
             }
             else
             {
-                if (child->IsWidthValid() && child->proportion < 1)    // proportionÉè¶¨Ê±ºöÂÔwidth
+                if (child->IsWidthValid() && child->proportion < 1)    // proportionè®¾å®šæ—¶å¿½ç•¥width
                 {
                     int width{ child->GetWidth(GetRect()) };
                     total_size += width;
@@ -32,7 +32,7 @@ void UiElement::Layout::CalculateChildrenRect()
                 }
                 else
                 {
-                    size_list.push_back(INT_MIN); // Õâ¸ö×ÓÔªËØ³ß´çÎ´¶¨
+                    size_list.push_back(INT_MIN); // è¿™ä¸ªå­å…ƒç´ å°ºå¯¸æœªå®š
                 }
                 if (child->margin_left.IsValid())
                     total_size += child->margin_left.GetValue(GetRect());
@@ -41,28 +41,28 @@ void UiElement::Layout::CalculateChildrenRect()
             }
         }
 
-        int left_space{};                // È«²¿¾ßÓĞ¹Ì¶¨³ß´çÊ±Ê××ÓÔªËØÓë¿ªÊ¼±ßÔµµÄ¼ä¾à
+        int left_space{};                // å…¨éƒ¨å…·æœ‰å›ºå®šå°ºå¯¸æ—¶é¦–å­å…ƒç´ ä¸å¼€å§‹è¾¹ç¼˜çš„é—´è·
         bool all_ok{};
         while (!all_ok)
         {
-            //Èç¹ûÃ¿¸öÔªËØ¶¼ÓĞ¹Ì¶¨µÄ³ß´ç£¬ÔòÈÃÕâĞ©ÔªËØÔÚ²¼¾ÖÖĞ¾ÓÖĞ
+            //å¦‚æœæ¯ä¸ªå…ƒç´ éƒ½æœ‰å›ºå®šçš„å°ºå¯¸ï¼Œåˆ™è®©è¿™äº›å…ƒç´ åœ¨å¸ƒå±€ä¸­å±…ä¸­
             if (childLst.size() == item_fixed_size_num)
             {
                 left_space = (GetRect().Width() - total_size) / 2;
-                if (left_space < 0)      // ¿Õ¼ä²»×ãÊ±ÓÅÏÈÏÔÊ¾ÈİÆ÷Ç°¶ËÔªËØ
+                if (left_space < 0)      // ç©ºé—´ä¸è¶³æ—¶ä¼˜å…ˆæ˜¾ç¤ºå®¹å™¨å‰ç«¯å…ƒç´ 
                     left_space = 0;
                 all_ok = true;
             }
             else
             {
-                // ´ËÊ±size_listÖĞÎªINT_MINµÄ×ÓÔªËØÓ¦°´±ÈÀı´¦Àí
-                int proportion{};                           // ¸÷Î´¹Ì¶¨×ÓÔªËØ±ÈÀıÏµÊıºÍ
-                for (size_t i{}; i < childLst.size(); ++i)  // ¼ÆËã±ÈÀıÏµÊıºÍ
+                // æ­¤æ—¶size_listä¸­ä¸ºINT_MINçš„å­å…ƒç´ åº”æŒ‰æ¯”ä¾‹å¤„ç†
+                int proportion{};                           // å„æœªå›ºå®šå­å…ƒç´ æ¯”ä¾‹ç³»æ•°å’Œ
+                for (size_t i{}; i < childLst.size(); ++i)  // è®¡ç®—æ¯”ä¾‹ç³»æ•°å’Œ
                 {
                     if (size_list[i] == INT_MIN)
-                        proportion += max(childLst[i]->proportion, 1);  // ¾ùÎ´ÉèÖÃÊ±°´1´¦Àí
+                        proportion += max(childLst[i]->proportion, 1);  // å‡æœªè®¾ç½®æ—¶æŒ‰1å¤„ç†
                 }
-                // Öğ¸ö¼ì²éÊÇ·ñ·ûºÏ×îÖµ
+                // é€ä¸ªæ£€æŸ¥æ˜¯å¦ç¬¦åˆæœ€å€¼
                 bool ok{ true };
                 for (size_t i{}; i < childLst.size(); ++i)
                 {
@@ -72,7 +72,7 @@ void UiElement::Layout::CalculateChildrenRect()
                         int size{ (GetRect().Width() - total_size) * max(child->proportion, 1) / proportion };
                         int max_size{ child->GetMaxWidth(GetRect()) };
                         int min_size{ child->min_width.IsValid() ? child->min_width.GetValue(GetRect()) : 0 };
-                        if (size < min_size || max_size < min_size)    // ±ÈÀıÓë×îÖµ³åÍ»Ê±°´×îÖµ´¦Àí²¢½«´ËÔªËØ±ê¼ÇÎª¹Ì¶¨³ß´çÔªËØ£¬ÓÉÓÚÎÄ±¾ÊÕËõµÄÒıÈë×î´óÖµ¿ÉÄÜ±ÈÔ¤ÆÚĞ¡¹Ê¸øÓë×îĞ¡Öµ¸ü¸ßµÄÓÅÏÈ¼¶
+                        if (size < min_size || max_size < min_size)    // æ¯”ä¾‹ä¸æœ€å€¼å†²çªæ—¶æŒ‰æœ€å€¼å¤„ç†å¹¶å°†æ­¤å…ƒç´ æ ‡è®°ä¸ºå›ºå®šå°ºå¯¸å…ƒç´ ï¼Œç”±äºæ–‡æœ¬æ”¶ç¼©çš„å¼•å…¥æœ€å¤§å€¼å¯èƒ½æ¯”é¢„æœŸå°æ•…ç»™ä¸æœ€å°å€¼æ›´é«˜çš„ä¼˜å…ˆçº§
                         {
                             size_list[i] = min_size;
                             total_size += min_size;
@@ -90,11 +90,11 @@ void UiElement::Layout::CalculateChildrenRect()
                         }
                     }
                 }
-                if (!ok)        // okÎªfalseËµÃ÷Ôö¼ÓÁËÒ»¸ö¹Ì¶¨ÔªËØ£¬ÖØĞÂ¼ÆËã±ÈÀı
+                if (!ok)        // okä¸ºfalseè¯´æ˜å¢åŠ äº†ä¸€ä¸ªå›ºå®šå…ƒç´ ï¼Œé‡æ–°è®¡ç®—æ¯”ä¾‹
                 {
                     continue;
                 }
-                else            // okÎªtrueËµÃ÷µ±Ç°±ÈÀı¿ÉÂú×ã×îÖµÒªÇó£¬ÏÂÃæÕıÊ½½øĞĞ±ÈÀıÓ¦ÓÃ
+                else            // okä¸ºtrueè¯´æ˜å½“å‰æ¯”ä¾‹å¯æ»¡è¶³æœ€å€¼è¦æ±‚ï¼Œä¸‹é¢æ­£å¼è¿›è¡Œæ¯”ä¾‹åº”ç”¨
                 {
                     for (size_t i{}; i < childLst.size(); ++i)
                     {
@@ -112,7 +112,7 @@ void UiElement::Layout::CalculateChildrenRect()
         }
         ASSERT(find(size_list.begin(), size_list.end(), INT_MIN) == size_list.end());
 
-        //¼ÆËãÃ¿¸ö×ÓÔªËØµÄ¾ØĞÎÇøÓò
+        //è®¡ç®—æ¯ä¸ªå­å…ƒç´ çš„çŸ©å½¢åŒºåŸŸ
         int w{};
         bool first_child{ true };
         for (size_t i{}; i < childLst.size(); i++)
@@ -155,24 +155,24 @@ void UiElement::Layout::CalculateChildrenRect()
             child->SetRect(child_rect);
         }
     }
-    //´¹Ö±²¼¾Ö
+    //å‚ç›´å¸ƒå±€
     else
     {
-        vector<int> size_list;          // ÒÑÈ·¶¨×ÓÔªËØ³ß´ç¼ÇÂ¼(²»º¬±ß¾à)£¬Î´È·¶¨ÏîÎªINT_MIN
-        int total_size{};               // ËùÓĞÒÑÖ¸¶¨ÔªËØµÄ¸ß¶È(·Ç¸¡¶¯¸ß¶È)ÓëÒÑÈ·¶¨µÄ×Ü±ß¾à
-        int item_fixed_size_num{};      // ÓĞ¹Ì¶¨¸ß¶ÈµÄÔªËØµÄ¸öÊı
+        vector<int> size_list;          // å·²ç¡®å®šå­å…ƒç´ å°ºå¯¸è®°å½•(ä¸å«è¾¹è·)ï¼Œæœªç¡®å®šé¡¹ä¸ºINT_MIN
+        int total_size{};               // æ‰€æœ‰å·²æŒ‡å®šå…ƒç´ çš„é«˜åº¦(éæµ®åŠ¨é«˜åº¦)ä¸å·²ç¡®å®šçš„æ€»è¾¹è·
+        int item_fixed_size_num{};      // æœ‰å›ºå®šé«˜åº¦çš„å…ƒç´ çš„ä¸ªæ•°
 
-        // µÚÒ»´Î±éÀú£¬»ñÈ¡¹Ì¶¨²»±äµÄ³ß´çÊı¾İ
+        // ç¬¬ä¸€æ¬¡éå†ï¼Œè·å–å›ºå®šä¸å˜çš„å°ºå¯¸æ•°æ®
         for (const auto& child : childLst)
         {
-            if (!child->IsEnable(GetRect()))            // ÉèÖÃÎª²»ÏÔÊ¾Ê±°´³ß´çÎª0µÄ¹Ì¶¨³ß´çÔªËØ´¦Àí
+            if (!child->IsEnable(GetRect()))            // è®¾ç½®ä¸ºä¸æ˜¾ç¤ºæ—¶æŒ‰å°ºå¯¸ä¸º0çš„å›ºå®šå°ºå¯¸å…ƒç´ å¤„ç†
             {
                 size_list.push_back(0);
                 item_fixed_size_num++;
             }
             else
             {
-                if (child->IsHeightValid() && child->proportion < 1)       // proportionÉè¶¨Ê±ºöÂÔheight
+                if (child->IsHeightValid() && child->proportion < 1)       // proportionè®¾å®šæ—¶å¿½ç•¥height
                 {
                     int height{ child->GetHeight(GetRect()) };
                     total_size += height;
@@ -181,7 +181,7 @@ void UiElement::Layout::CalculateChildrenRect()
                 }
                 else
                 {
-                    size_list.push_back(INT_MIN); // Õâ¸ö×ÓÔªËØ³ß´çÎ´¶¨
+                    size_list.push_back(INT_MIN); // è¿™ä¸ªå­å…ƒç´ å°ºå¯¸æœªå®š
                 }
                 if (child->margin_top.IsValid())
                     total_size += child->margin_top.GetValue(GetRect());
@@ -190,28 +190,28 @@ void UiElement::Layout::CalculateChildrenRect()
             }
         }
 
-        int top_space{};                // È«²¿¾ßÓĞ¹Ì¶¨³ß´çÊ±Ê××ÓÔªËØÓë¿ªÊ¼±ßÔµµÄ¼ä¾à
+        int top_space{};                // å…¨éƒ¨å…·æœ‰å›ºå®šå°ºå¯¸æ—¶é¦–å­å…ƒç´ ä¸å¼€å§‹è¾¹ç¼˜çš„é—´è·
         bool all_ok{};
         while (!all_ok)
         {
-            //Èç¹ûÃ¿¸öÔªËØ¶¼ÓĞ¹Ì¶¨µÄ³ß´ç£¬ÔòÈÃÕâĞ©ÔªËØÔÚ²¼¾ÖÖĞ¾ÓÖĞ
+            //å¦‚æœæ¯ä¸ªå…ƒç´ éƒ½æœ‰å›ºå®šçš„å°ºå¯¸ï¼Œåˆ™è®©è¿™äº›å…ƒç´ åœ¨å¸ƒå±€ä¸­å±…ä¸­
             if (childLst.size() == item_fixed_size_num)
             {
                 top_space = (GetRect().Height() - total_size) / 2;
-                if (top_space < 0)      // ¿Õ¼ä²»×ãÊ±ÓÅÏÈÏÔÊ¾ÈİÆ÷Ç°¶ËÔªËØ
+                if (top_space < 0)      // ç©ºé—´ä¸è¶³æ—¶ä¼˜å…ˆæ˜¾ç¤ºå®¹å™¨å‰ç«¯å…ƒç´ 
                     top_space = 0;
                 all_ok = true;
             }
             else
             {
-                // ´ËÊ±size_listÖĞÎªINT_MINµÄ×ÓÔªËØÓ¦°´±ÈÀı´¦Àí
-                int proportion{};                           // ¸÷Î´¹Ì¶¨×ÓÔªËØ±ÈÀıÏµÊıºÍ
-                for (size_t i{}; i < childLst.size(); ++i)  // ¼ÆËã±ÈÀıÏµÊıºÍ
+                // æ­¤æ—¶size_listä¸­ä¸ºINT_MINçš„å­å…ƒç´ åº”æŒ‰æ¯”ä¾‹å¤„ç†
+                int proportion{};                           // å„æœªå›ºå®šå­å…ƒç´ æ¯”ä¾‹ç³»æ•°å’Œ
+                for (size_t i{}; i < childLst.size(); ++i)  // è®¡ç®—æ¯”ä¾‹ç³»æ•°å’Œ
                 {
                     if (size_list[i] == INT_MIN)
-                        proportion += max(childLst[i]->proportion, 1);  // ¾ùÎ´ÉèÖÃÊ±°´1´¦Àí
+                        proportion += max(childLst[i]->proportion, 1);  // å‡æœªè®¾ç½®æ—¶æŒ‰1å¤„ç†
                 }
-                // Öğ¸ö¼ì²éÊÇ·ñ·ûºÏ×îÖµ
+                // é€ä¸ªæ£€æŸ¥æ˜¯å¦ç¬¦åˆæœ€å€¼
                 bool ok{ true };
                 for (size_t i{}; i < childLst.size(); ++i)
                 {
@@ -221,7 +221,7 @@ void UiElement::Layout::CalculateChildrenRect()
                         int size{ (GetRect().Height() - total_size) * max(child->proportion, 1) / proportion };
                         int max_size{ child->max_height.IsValid() ? child->max_height.GetValue(GetRect()) : INT_MAX };
                         int min_size{ child->min_height.IsValid() ? child->min_height.GetValue(GetRect()) : 0 };
-                        if (size < min_size || max_size < min_size)                // ±ÈÀıÓë×îÖµ³åÍ»Ê±°´×îÖµ´¦Àí²¢½«´ËÔªËØ±ê¼ÇÎª¹Ì¶¨³ß´çÔªËØ
+                        if (size < min_size || max_size < min_size)                // æ¯”ä¾‹ä¸æœ€å€¼å†²çªæ—¶æŒ‰æœ€å€¼å¤„ç†å¹¶å°†æ­¤å…ƒç´ æ ‡è®°ä¸ºå›ºå®šå°ºå¯¸å…ƒç´ 
                         {
                             size_list[i] = min_size;
                             total_size += min_size;
@@ -239,11 +239,11 @@ void UiElement::Layout::CalculateChildrenRect()
                         }
                     }
                 }
-                if (!ok)        // okÎªfalseËµÃ÷Ôö¼ÓÁËÒ»¸ö¹Ì¶¨ÔªËØ£¬ÖØĞÂ¼ÆËã±ÈÀı
+                if (!ok)        // okä¸ºfalseè¯´æ˜å¢åŠ äº†ä¸€ä¸ªå›ºå®šå…ƒç´ ï¼Œé‡æ–°è®¡ç®—æ¯”ä¾‹
                 {
                     continue;
                 }
-                else            // okÎªtrueËµÃ÷µ±Ç°±ÈÀı¿ÉÂú×ã×îÖµÒªÇó£¬ÏÂÃæÕıÊ½½øĞĞ±ÈÀıÓ¦ÓÃ
+                else            // okä¸ºtrueè¯´æ˜å½“å‰æ¯”ä¾‹å¯æ»¡è¶³æœ€å€¼è¦æ±‚ï¼Œä¸‹é¢æ­£å¼è¿›è¡Œæ¯”ä¾‹åº”ç”¨
                 {
                     for (size_t i{}; i < childLst.size(); ++i)
                     {
@@ -261,7 +261,7 @@ void UiElement::Layout::CalculateChildrenRect()
         }
         ASSERT(find(size_list.begin(), size_list.end(), INT_MIN) == size_list.end());
 
-        // ¼ÆËãÃ¿¸ö×ÓÔªËØµÄ¾ØĞÎÇøÓò
+        // è®¡ç®—æ¯ä¸ªå­å…ƒç´ çš„çŸ©å½¢åŒºåŸŸ
         int h{};
         bool first_child{ true };
         for (size_t i{}; i < childLst.size(); i++)
@@ -312,4 +312,23 @@ void UiElement::Layout::Draw()
     CalculateRect();
     CalculateChildrenRect();
     Element::Draw();
+}
+
+int UiElement::Layout::GetChildredTotalSize() const
+{
+    if (childLst.empty())
+        return 0;
+
+    int total_size = 0;
+    //æ°´å¹³å¸ƒå±€æ—¶ï¼Œä½¿ç”¨æœ€åä¸€ä¸ªå…ƒç´ çš„rightå‡å»ç¬¬ä¸€ä¸ªå…ƒç´ çš„left
+    if (type == Horizontal)
+    {
+        total_size = childLst.back()->GetRect().right - childLst.front()->GetRect().left + margin_left.GetValue(GetRect()) + margin_right.GetValue(GetRect());
+    }
+    //å‚ç›´å¸ƒå±€æ—¶ï¼Œä½¿ç”¨æœ€åä¸€ä¸ªå…ƒç´ çš„bottomå‡å»ç¬¬ä¸€ä¸ªå…ƒç´ çš„top
+    else
+    {
+        total_size = childLst.back()->GetRect().bottom - childLst.front()->GetRect().top + margin_top.GetValue(GetRect()) + margin_bottom.GetValue(GetRect());
+    }
+    return total_size;
 }

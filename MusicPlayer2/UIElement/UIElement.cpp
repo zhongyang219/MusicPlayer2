@@ -3,6 +3,7 @@
 #include "Layout.h"
 #include "StackElement.h"
 #include "UserUi.h"
+#include "ScrollArea.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -151,7 +152,11 @@ CRect UiElement::Element::ParentRect() const
     else
     {
         pParent->CalculateRect();
-        return pParent->GetRect();
+        ScrollArea* scroll_area = dynamic_cast<ScrollArea*>(pParent);
+        if (scroll_area != nullptr)
+            return scroll_area->GetScrollAreaRect();
+        else
+            return pParent->GetRect();
     }
 }
 

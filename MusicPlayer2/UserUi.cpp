@@ -339,9 +339,9 @@ bool CUserUi::LButtonUp(CPoint point)
 {
     if (!CPlayerUIBase::LButtonUp(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
-        //显示了面板的情况下，点击面板以外的地方关闭面板
+        //显示了面板，且不是全屏面板的情况下，点击面板以外的地方关闭面板
         auto* panel = m_panel_mgr.GetTopPanel();
-        if (panel != nullptr && !panel->GetPanelRect().PtInRect(point) && !panel->GetPanelRect().PtInRect(m_mouse_clicked_point))
+        if (panel != nullptr && !panel->IsFullFill() && !panel->GetPanelRect().PtInRect(point) && !panel->GetPanelRect().PtInRect(m_mouse_clicked_point))
         {
             OnPanelHide();
             m_panel_mgr.HidePanel();

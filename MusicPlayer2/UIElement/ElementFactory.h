@@ -35,6 +35,7 @@
 #include "UIElement/CheckBox.h"
 #include "UIElement/ToggleButton.h"
 #include "CombinedElement/ToggleSettingGroup.h"
+#include "UIElement/ScrollArea.h"
 
 namespace UiElement
 {

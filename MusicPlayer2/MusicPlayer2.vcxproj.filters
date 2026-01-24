@@ -1122,6 +1122,12 @@
     <ClInclude Include="UIElement\CombinedElement\CombinedElement.h">
       <Filter>UIElement\CombinedElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\ScrollArea.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\AbstractScrollArea.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1774,6 +1780,12 @@
     </ClCompile>
     <ClCompile Include="UIElement\CombinedElement\CombinedElement.cpp">
       <Filter>UIElement\CombinedElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\ScrollArea.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\AbstractScrollArea.cpp">
+      <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

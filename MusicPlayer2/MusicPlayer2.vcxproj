@@ -298,6 +298,7 @@
     <ClInclude Include="NeteaseLyricDownload.h" />
     <ClInclude Include="PlaylistPropertiesDlg.h" />
     <ClInclude Include="SimplePropertiesDlg.h" />
+    <ClInclude Include="UIElement\AbstractScrollArea.h" />
     <ClInclude Include="UIElement\AbstractTracksList.h" />
     <ClInclude Include="UIElement\AlbumCover.h" />
     <ClInclude Include="UIElement\AllTracksList.h" />
@@ -328,6 +329,7 @@
     <ClInclude Include="UIElement\RatingElement.h" />
     <ClInclude Include="UIElement\RecentPlayedList.h" />
     <ClInclude Include="UIElement\Rectangle.h" />
+    <ClInclude Include="UIElement\ScrollArea.h" />
     <ClInclude Include="UIElement\SearchBox.h" />
     <ClInclude Include="UIElement\Spectrum.h" />
     <ClInclude Include="UIElement\StackElement.h" />
@@ -524,6 +526,7 @@
     <ClCompile Include="NeteaseLyricDownload.cpp" />
     <ClCompile Include="PlaylistPropertiesDlg.cpp" />
     <ClCompile Include="SimplePropertiesDlg.cpp" />
+    <ClCompile Include="UIElement\AbstractScrollArea.cpp" />
     <ClCompile Include="UIElement\AbstractTracksList.cpp" />
     <ClCompile Include="UIElement\AlbumCover.cpp" />
     <ClCompile Include="UIElement\AllTracksList.cpp" />
@@ -554,6 +557,7 @@
     <ClCompile Include="UIElement\RatingElement.cpp" />
     <ClCompile Include="UIElement\RecentPlayedList.cpp" />
     <ClCompile Include="UIElement\Rectangle.cpp" />
+    <ClCompile Include="UIElement\ScrollArea.cpp" />
     <ClCompile Include="UIElement\SearchBox.cpp" />
     <ClCompile Include="UIElement\Spectrum.cpp" />
     <ClCompile Include="UIElement\StackElement.cpp" />

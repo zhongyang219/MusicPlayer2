@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
-    //²¼¾Ö
+    //å¸ƒå±€
     class Layout : public Element
     {
     public:
@@ -12,8 +12,10 @@ namespace UiElement
             Horizontal,
         };
         Type type;
-        void CalculateChildrenRect();      //¼ÆËã²¼¾ÖÖĞËùÓĞ×ÓÔªËØµÄÎ»ÖÃ
+        void CalculateChildrenRect();      //è®¡ç®—å¸ƒå±€ä¸­æ‰€æœ‰å­å…ƒç´ çš„ä½ç½®
         virtual void Draw() override;
+
+        int GetChildredTotalSize() const;       //è·å–å­å…ƒç´ çš„æ€»å®½åº¦ï¼ˆæˆ–é«˜åº¦ï¼‰
     };
 
 }

@@ -12,19 +12,21 @@
           <button key="settings" text="%(UI_TXT_MORE_SETTINGS)" show_text="true" height="32"/>
         </verticalLayout>
         <stackElement margin-left="8">
-          <verticalLayout>
-            <!--深色模式-->
-            <toggleSettingGroup id="darkMode" height="60" icon="darkModeOn" mainText="%(TXT_OPT_APC_DARK_MODE)" subText="%(TXT_OPT_DESC_DARK_MODE)"/>
-            <!--显示频谱分析选项-->
-            <toggleSettingGroup id="showSpectrum" height="60" margin-top="4" icon="reverb" mainText="%(TXT_OPT_APC_SPECTRUM_SHOW)" subText="%(TXT_OPT_DESC_SHOW_SPECTRUM)"/>
-            <!--显示专辑封面选项-->
-            <toggleSettingGroup id="showAlbumCover" height="60" margin-top="4" icon="albumCover" mainText="%(TXT_OPT_APC_COVER_SHOW)" subText="%(TXT_OPT_DESC_SHOW_ALBUM_COVER)"/>
-            <!--启用背景选项-->
-            <toggleSettingGroup id="enableBackground" height="60" margin-top="4" icon="background" mainText="%(TXT_OPT_APC_BG_ENABLE)" subText="%(TXT_OPT_DESC_SHOW_BACKGROUND)"/>
-            <!--显示状态栏选项-->
-            <toggleSettingGroup id="showStatusbar" height="60" margin-top="4" icon="setting" mainText="%(TXT_OPT_APC_ALWAYS_SHOW_STATUS_BAR)" subText="%(TXT_OPT_DESC_SHOW_TASKBAR)"/>
-            <placeHolder/>
-          </verticalLayout>
+          <scrollArea>
+            <verticalLayout>
+              <!--深色模式-->
+              <toggleSettingGroup id="darkMode" height="60" icon="darkModeOn" mainText="%(TXT_OPT_APC_DARK_MODE)" subText="%(TXT_OPT_DESC_DARK_MODE)"/>
+              <!--显示频谱分析选项-->
+              <toggleSettingGroup id="showSpectrum" height="60" margin-top="4" icon="reverb" mainText="%(TXT_OPT_APC_SPECTRUM_SHOW)" subText="%(TXT_OPT_DESC_SHOW_SPECTRUM)"/>
+              <!--显示专辑封面选项-->
+              <toggleSettingGroup id="showAlbumCover" height="60" margin-top="4" icon="albumCover" mainText="%(TXT_OPT_APC_COVER_SHOW)" subText="%(TXT_OPT_DESC_SHOW_ALBUM_COVER)"/>
+              <!--启用背景选项-->
+              <toggleSettingGroup id="enableBackground" height="60" margin-top="4" icon="background" mainText="%(TXT_OPT_APC_BG_ENABLE)" subText="%(TXT_OPT_DESC_SHOW_BACKGROUND)"/>
+              <!--显示状态栏选项-->
+              <toggleSettingGroup id="showStatusbar" height="60" margin-top="4" icon="setting" mainText="%(TXT_OPT_APC_ALWAYS_SHOW_STATUS_BAR)" subText="%(TXT_OPT_DESC_SHOW_TASKBAR)"/>
+              <placeHolder/>
+            </verticalLayout>
+          </scrollArea>
           
         </stackElement>
           

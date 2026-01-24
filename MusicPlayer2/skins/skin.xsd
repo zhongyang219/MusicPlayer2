@@ -748,6 +748,7 @@
         <xs:element name="checkBox" type="checkBoxType"></xs:element>
         <xs:element name="toggleButton" type="toggleButtonType"></xs:element>
         <xs:element name="toggleSettingGroup" type="toggleSettingGroupType"></xs:element>
+        <xs:element name="scrollArea" type="scrollAreaType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -760,6 +761,12 @@
       </xs:choice>
     </xs:sequence>
   </xs:group>
+  <!--scrollArea 元素组-->
+  <xs:group name="scrollAreaElements">
+    <xs:sequence>
+      <!-- scrollArea 下面 verticalLayout 元素必须出现，且只能出现一次 -->
+      <xs:element name="verticalLayout" type="verticalLayoutType"></xs:element>
+    </xs:sequence>  </xs:group>
   <xs:element name="root">
     <!--定义root元素信息-->
     <xs:annotation>
@@ -1969,6 +1976,13 @@
         <xs:documentation>次要的文本。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="scrollAreaType">
+    <xs:annotation>
+      <xs:documentation>滚动区域（垂直）。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="scrollAreaElements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>
