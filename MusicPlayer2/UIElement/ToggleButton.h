@@ -16,12 +16,14 @@ namespace UiElement
         bool Checked() const;
 
         void SetClickedTrigger(std::function<void(ToggleButton*)> func);
+        void BindBool(bool* value);
 
     private:
         bool m_hover{};
         bool m_pressed{};
         bool m_checked{};
         std::function<void(ToggleButton*)> m_clicked_trigger;
+        bool* m_value{ nullptr };
     };
 }
 

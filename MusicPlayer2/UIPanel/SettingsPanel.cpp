@@ -11,7 +11,13 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 
 	//查找控件并添加触发事件
 	dard_mode_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("darkMode");
-	ConnectToggleTrigger(dard_mode_btn, m_apperence_data.dark_mode);
+	dard_mode_btn->GetToggleBtn()->BindBool(&theApp.m_app_setting_data.dark_mode);
+	dard_mode_btn->GetToggleBtn()->SetClickedTrigger([&](UiElement::ToggleButton* sender) {
+		//点击深色模式时使用主窗口的ID_DARK_MODE命令，由于ID_DARK_MODE中也会对theApp.m_app_setting_data.dark_mode取非，因此这里再取一次非
+		theApp.m_app_setting_data.dark_mode = !theApp.m_app_setting_data.dark_mode;
+		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
+	});
+
 	show_spectrum_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("showSpectrum");
 	ConnectToggleTrigger(show_spectrum_btn, m_apperence_data.show_spectrum);
 	show_album_cover_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("showAlbumCover");

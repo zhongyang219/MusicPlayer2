@@ -1,6 +1,7 @@
 <root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd">
   <panel>
     <verticalLayout margin="8">
+      <placeHolder show_when_use_system_titlebar="true" height="28"/>
       <!--标题-->
       <!--<text type="userDefine" text="%(TITLE_OPT)" height="56" margin-left="16" font_size="12"/>-->
       <horizontalLayout>

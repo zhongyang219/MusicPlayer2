@@ -14,7 +14,7 @@ void UiElement::ToggleButton::Draw()
     toggle_rect.top = rect.top + (rect.Height() - toggle_height) / 2;
     toggle_rect.bottom = toggle_rect.top + toggle_height;
     COLORREF toggle_back_color;
-    if (m_checked)
+    if (Checked())
     {
         if (theApp.m_app_setting_data.dark_mode)
         {
@@ -63,13 +63,13 @@ void UiElement::ToggleButton::Draw()
 
     //绘制按钮中的圆
     CRect handle_rect = toggle_rect;
-    if (m_checked)
+    if (Checked())
         handle_rect.left = handle_rect.right - toggle_height;
     else
         handle_rect.right = handle_rect.left + toggle_height;
     handle_rect.DeflateRect(ui->DPI(4), ui->DPI(4));
     COLORREF handle_color;
-    if (m_checked)
+    if (Checked())
     {
         if (theApp.m_app_setting_data.dark_mode)
         {
@@ -97,7 +97,7 @@ void UiElement::ToggleButton::Draw()
     CRect text_rect = rect;
     text_rect.right = toggle_rect.left - ui->DPI(4);
     std::wstring text;
-    if (m_checked)
+    if (Checked())
         text = theApp.m_str_table.LoadText(L"UI_TXT_ON");
     else
         text = theApp.m_str_table.LoadText(L"UI_TXT_OFF");
@@ -113,7 +113,7 @@ bool UiElement::ToggleButton::LButtonUp(CPoint point)
 
     if (pressed && rect.PtInRect(point) && IsEnable(ParentRect()))
     {
-        m_checked = !m_checked;
+        SetChecked(!Checked());
         if (m_clicked_trigger)
         {
             m_clicked_trigger(this);
@@ -148,15 +148,26 @@ bool UiElement::ToggleButton::MouseLeave()
 
 void UiElement::ToggleButton::SetChecked(bool checked)
 {
-    m_checked = checked;
+    if (m_value != nullptr)
+        *m_value = checked;
+    else
+        m_checked = checked;
 }
 
 bool UiElement::ToggleButton::Checked() const
 {
-    return m_checked;
+    if (m_value != nullptr)
+        return *m_value;
+    else
+        return m_checked;
 }
 
 void UiElement::ToggleButton::SetClickedTrigger(std::function<void(ToggleButton*)> func)
 {
     m_clicked_trigger = func;
+}
+
+void UiElement::ToggleButton::BindBool(bool* value)
+{
+    m_value = value;
 }
