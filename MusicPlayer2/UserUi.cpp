@@ -1360,6 +1360,11 @@ void CUserUi::ShowSongListPreviewPanel(const ListItem& list_item)
         panel->SetListData(list_item);
 }
 
+CPlayerUIPanel* CUserUi::GetTopPanel() const
+{
+    return m_panel_mgr.GetTopPanel();
+}
+
 void CUserUi::OnPanelShow()
 {
     IterateAllElements([&](UiElement::Element* element) ->bool {

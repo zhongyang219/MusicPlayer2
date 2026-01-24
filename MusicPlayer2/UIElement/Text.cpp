@@ -121,3 +121,9 @@ std::wstring UiElement::Text::GetText() const
 
     return draw_text;
 }
+
+void UiElement::Text::SetText(const std::wstring& str_text)
+{
+    text = str_text;
+    CPlayerUIBase::ReplaceUiStringRes(text);
+}

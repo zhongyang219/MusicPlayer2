@@ -9,6 +9,9 @@ public:
 	CPlayerUIPanel(CPlayerUIBase* ui, const std::wstring file_name);
 	CPlayerUIPanel(CPlayerUIBase* ui, std::shared_ptr<UiElement::Panel> panel_element);
 
+	//面板显示时被调用
+	virtual void OnPanelShown() {};
+
 	//从xml读取UI配置
 	void LoadUIData(const std::string& xml_contents);
 

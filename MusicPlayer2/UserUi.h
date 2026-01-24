@@ -98,6 +98,7 @@ public:
     bool IsPanelShown() const;
     void ClosePanel();
     void ShowSongListPreviewPanel(const ListItem& list_item);
+    CPlayerUIPanel* GetTopPanel() const;
 
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;
 

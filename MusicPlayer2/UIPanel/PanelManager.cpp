@@ -121,6 +121,7 @@ CPlayerUIPanel* CPanelManager::ShowPanel(PanelKey key)
 		//将显示的面板入栈
 		if (GetTopPanel() != panel)
 			m_displayed_panels.push_front(panel);
+		panel->OnPanelShown();
 	}
 	return panel;
 }

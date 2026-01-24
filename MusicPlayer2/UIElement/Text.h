@@ -1,32 +1,32 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
-    //ÎÄ±¾
+    //æ–‡æœ¬
     class Text : public Element
     {
     public:
         std::wstring text;
-        Alignment align{};    //¶ÔÆë·½Ê½
-        enum Style       //ÎÄ±¾µÄÑùÊ½
+        Alignment align{};    //å¯¹é½æ–¹å¼
+        enum Style       //æ–‡æœ¬çš„æ ·å¼
         {
-            Static,     //¾²Ö¹µÄÎÄ±¾
-            Scroll,     //¹ö¶¯µÄÎÄ±¾
-            Scroll2     //ÁíÒ»ÖÖ¹ö¶¯µÄÎÄ±¾£¨Ö»³¯Ò»¸ö·½Ïò¹ö¶¯£©
+            Static,     //é™æ­¢çš„æ–‡æœ¬
+            Scroll,     //æ»šåŠ¨çš„æ–‡æœ¬
+            Scroll2     //å¦ä¸€ç§æ»šåŠ¨çš„æ–‡æœ¬ï¼ˆåªæœä¸€ä¸ªæ–¹å‘æ»šåŠ¨ï¼‰
         };
         Style style;
 
-        enum Type       //ÎÄ±¾µÄÀàĞÍ
+        enum Type       //æ–‡æœ¬çš„ç±»å‹
         {
-            UserDefine, //ÓÃ»§Ö¸¶¨£¨textµÄÖµ£©
-            Title,      //¸èÇú±êÌâ
-            Artist,     //¸èÇúÒÕÊõ¼Ò
-            Album,      //¸èÇú³ªÆ¬¼¯
-            ArtistTitle,    //ÒÕÊõ¼Ò - ±êÌâ
-            ArtistAlbum,    //ÒÕÊõ¼Ò - ³ªÆ¬¼¯
-            Format,     //¸èÇú¸ñÊ½
-            PlayTime,   //²¥·ÅÊ±¼ä
-            PlayTimeAndVolume   //ÏÔÊ¾Îª²¥·ÅÊ±¼ä£¬Èç¹ûÕıÔÚµ÷ÕûÒôÁ¿£¬ÔòÏÔÊ¾µ±Ç°ÒôÁ¿£¬Ò»¶ÎÊ±¼äºó»Ö¸´
+            UserDefine, //ç”¨æˆ·æŒ‡å®šï¼ˆtextçš„å€¼ï¼‰
+            Title,      //æ­Œæ›²æ ‡é¢˜
+            Artist,     //æ­Œæ›²è‰ºæœ¯å®¶
+            Album,      //æ­Œæ›²å”±ç‰‡é›†
+            ArtistTitle,    //è‰ºæœ¯å®¶ - æ ‡é¢˜
+            ArtistAlbum,    //è‰ºæœ¯å®¶ - å”±ç‰‡é›†
+            Format,     //æ­Œæ›²æ ¼å¼
+            PlayTime,   //æ’­æ”¾æ—¶é—´
+            PlayTimeAndVolume   //æ˜¾ç¤ºä¸ºæ’­æ”¾æ—¶é—´ï¼Œå¦‚æœæ­£åœ¨è°ƒæ•´éŸ³é‡ï¼Œåˆ™æ˜¾ç¤ºå½“å‰éŸ³é‡ï¼Œä¸€æ®µæ—¶é—´åæ¢å¤
         };
 
         enum ColorStyle
@@ -40,12 +40,13 @@ namespace UiElement
         int font_size{ 9 };
         bool width_follow_text{};
         CPlayerUIBase::ColorMode color_mode{ CPlayerUIBase::RCM_AUTO };
-        bool show_volume{};     //µ±typeÎªPlayTimeAndVolumeÊ±ÓĞĞ§£¬Èç¹ûÎªtrue£¬ÔòÏÔÊ¾ÎªÒôÁ¿
+        bool show_volume{};     //å½“typeä¸ºPlayTimeAndVolumeæ—¶æœ‰æ•ˆï¼Œå¦‚æœä¸ºtrueï¼Œåˆ™æ˜¾ç¤ºä¸ºéŸ³é‡
         ColorStyle color_style{};
 
         virtual void Draw() override;
         virtual int GetMaxWidth(CRect parent_rect) const override;
         std::wstring GetText() const;
+        void SetText(const std::wstring& str_text);
 
     private:
         mutable CDrawCommon::ScrollInfo scroll_info;

@@ -19,11 +19,11 @@ void UiElement::ToggleButton::Draw()
         if (theApp.m_app_setting_data.dark_mode)
         {
             if (m_pressed)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.dark1_5;
-            else if (m_hover)
                 toggle_back_color = theApp.m_app_setting_data.theme_color.dark1;
-            else
+            else if (m_hover)
                 toggle_back_color = theApp.m_app_setting_data.theme_color.dark0;
+            else
+                toggle_back_color = theApp.m_app_setting_data.theme_color.light1;
         }
         else
         {

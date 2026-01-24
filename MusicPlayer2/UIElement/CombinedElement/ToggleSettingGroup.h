@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CombinedElement.h"
 #include "../ToggleButton.h"
 namespace UiElement
@@ -7,10 +7,10 @@ namespace UiElement
     {
     public:
         ToggleSettingGroup();
+        ToggleButton* GetToggleBtn() const;
+
     protected:
         virtual void InitComplete() override;
-
-        void SetToggleBtnTrigger(std::function<void(ToggleButton*)> func);
 
     public:
         std::string icon_name;

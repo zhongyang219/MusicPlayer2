@@ -246,6 +246,21 @@ protected:
     void FirstRunCreateShortcut();            // 如果是首次运行那么提示用户是否创建桌面快捷方式
 
     void ApplySettings(const COptionsDlg& optionDlg);		//从选项设置对话框获取设置
+
+public:
+    //应用选项设置
+    void ApplySettings(const LyricSettingData& lyrics_data,
+        const ApperanceSettingData& apperence_data,
+        const GeneralSettingData& general_data,
+        const PlaySettingData& play_data,
+        const MediaLibSettingData& media_lib_data,
+        bool lyrics_font_changed = false,
+        bool search_box_font_changed = false,
+        bool auto_run_changed = false,
+        bool auto_run = false
+    );
+
+protected:
     void ApplyThemeColor();			//应用主题颜色设置
 
     void ThemeColorChanged();

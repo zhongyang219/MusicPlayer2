@@ -237,8 +237,11 @@ void CPlayerFormulaHelper::ReplaceStringFormula(std::wstring& str)
         if (right_bracket_index == wstring::npos)
             break;
         wstring key_str{ str.begin() + index + 2 , str.begin() + right_bracket_index };
-        wstring value_str = GetPlayerVariableValue(key_str);
-        str.replace(index, right_bracket_index - index + 1, value_str);
+        if (IsValidVariable(key_str))
+        {
+            wstring value_str = GetPlayerVariableValue(key_str);
+            str.replace(index, right_bracket_index - index + 1, value_str);
+        }
         index = right_bracket_index + 1;
     }
 }

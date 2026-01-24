@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "ToggleSettingGroup.h"
 #include "TinyXml2Helper.h"
 #include "UserUi.h"
@@ -21,18 +21,17 @@ namespace UiElement
 
         Text* main_text_ele = FindElement<Text>("mainText");
         if (main_text_ele != nullptr)
-            main_text_ele->text = main_text;
+            main_text_ele->SetText(main_text);
 
         Text* sub_text_ele = FindElement<Text>("subText");
         if (sub_text_ele != nullptr)
-            sub_text_ele->text = sub_text;
+            sub_text_ele->SetText(sub_text);
 
         m_toggle_btn = FindElement<ToggleButton>("toggleBtn");
     }
 
-    void ToggleSettingGroup::SetToggleBtnTrigger(std::function<void(ToggleButton*)> func)
+    ToggleButton* ToggleSettingGroup::GetToggleBtn() const
     {
-        if (m_toggle_btn != nullptr)
-            m_toggle_btn->SetClickedTrigger(func);
+        return m_toggle_btn;
     }
 }
