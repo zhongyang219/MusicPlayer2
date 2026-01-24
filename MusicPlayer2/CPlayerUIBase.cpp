@@ -882,7 +882,7 @@ std::wstring CPlayerUIBase::GetButtonText(BtnKey key_type) const
         break;
     case BTN_SKIN: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SWITCH_UI");
     case BTN_EQ: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_SOUND_EFFECT_SETTING");
-    case BTN_SETTING: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING");
+    case BTN_SETTING: case BTN_SHOW_SETTINGS_PANEL: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_OPTION_SETTING");
     case BTN_MINI: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_MINIMODE");
     case BTN_INFO: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_PROPERTY");
     case BTN_FIND: return theApp.m_str_table.LoadText(L"UI_TIP_BTN_FIND_SONGS");
