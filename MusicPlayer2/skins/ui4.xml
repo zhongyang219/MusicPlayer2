@@ -15,7 +15,7 @@
         <navigationItem icon="history" text="%(TXT_RECENT_PLAYED)"/>
         <navigationItem icon="mediaLib" text="%(TXT_MEDIA_LIB)"/>
       </navigationBar>
-      <button key="settings" show_text="true" height="36"/>
+      <button key="showSettingsPanel" show_text="true" height="36"/>
     </verticalLayout>
   </panel>
   
@@ -36,7 +36,7 @@
                 <navigationItem icon="history" text="%(TXT_RECENT_PLAYED)"/>
                 <navigationItem icon="mediaLib" text="%(TXT_MEDIA_LIB)"/>
               </navigationBar>
-              <button key="settings" width="36" height="36"/>
+              <button key="showSettingsPanel" width="36" height="36"/>
             </verticalLayout>
           </rectangle>
           <stackElement id="ui_big_navigation_stack_emelemt">

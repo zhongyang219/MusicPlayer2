@@ -8,7 +8,7 @@
           <!--左侧导航栏-->
           <verticalLayout width="134" margin-top="4" margin-bottom="4">
             <navigationBar margin="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="36" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
-            <button key="settings" height="36" margin-left="4" margin-right="4" show_text="true"/>
+            <button key="showSettingsPanel" height="36" margin-left="4" margin-right="4" show_text="true"/>
           </verticalLayout>
           <stackElement margin-top="8" margin-left="16" margin-right="16" id="ui_big_nav_stack_element" related_stack_elements="ui_narraw_nav_stack_element">
             <!--正在播放-->
@@ -221,7 +221,7 @@
         <placeHolder/>
       </horizontalLayout>
       <navigationBar margin-top="4" margin-bottom="4" orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="36" stack_element_id="ui_narraw_nav_stack_element" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
-      <button key="settings" show_text="true" height="36"/>
+      <button key="showSettingsPanel" show_text="true" height="36"/>
     </verticalLayout>
   </panel>
 
@@ -233,7 +233,7 @@
           <verticalLayout width="48" margin-top="4" margin-bottom="4">
             <button key="showPanel" panel_id="ui_narrow_navigation_panel" icon="menu" text="%(UI_TXT_OPEN_NAVIGATION)" width="40" height="36"/>
             <navigationBar margin="4" orientation="vertical" icon_type="icon_only" item_space="4" item_height="36" stack_element_id="ui_narraw_nav_stack_element" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
-            <button key="settings" width="40" height="36"/>
+            <button key="showSettingsPanel" width="40" height="36"/>
           </verticalLayout>
           <stackElement margin-top="8" margin-left="8" margin-right="8" id="ui_narraw_nav_stack_element" related_stack_elements="ui_big_nav_stack_element">
             <!--正在播放-->

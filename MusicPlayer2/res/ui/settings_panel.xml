@@ -8,35 +8,14 @@
         <!--左侧导航栏-->
         <verticalLayout width="134">
           <navigationBar orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="36">
-            <navigationItem icon="lyric" text="%(TITLE_OPT_LRC)"/>
             <navigationItem icon="skin" text="%(TITLE_OPT_APC)"/>
+            <navigationItem icon="lyric" text="%(TITLE_OPT_LRC)"/>
             <navigationItem icon="setting" text="%(TITLE_OPT_DATA)"/>
           </navigationBar>
           <button key="settings" text="%(UI_TXT_MORE_SETTINGS)" show_text="true" height="32"/>
         </verticalLayout>
         <stackElement margin-left="8">
-          <!--第1页 歌词设置-->
-          <scrollArea>
-            <verticalLayout>
-              <!--歌词卡拉OK样式显示-->
-              <toggleSettingGroup id="lyricKaraokeStyle" height="60" icon="karaoke" mainText="%(TXT_OPT_LRC_KARAOKE_DISP)" subText="%(TXT_OPT_DESC_LYRIC_KARAOKE)"/>
-              <!--窗口歌词字体-->
-              <rectangle height="60" margin-top="4">
-                <horizontalLayout>
-                  <icon icon="lyric" width="52"/>
-                  <verticalLayout>
-                    <text font_size="10" text="%(TXT_OPT_LYRIC_FONT_SETTING)" height="20"/>
-                    <text id="lyricFontSettingSubText" color_style="emphasis1" height="20"/>
-                  </verticalLayout>
-                  <button id="lyricFontSettingBtn" icon="shortcut" height="28" text="%(TXT_OPT_LRC_FONT_SEL)" show_text="true" margin-right="16"/>
-                </horizontalLayout>
-              </rectangle>
-              <!--显示桌面歌词-->
-              <toggleSettingGroup id="showDesktopLyric" height="60" margin-top="4" icon="lyric" mainText="%(TXT_OPT_LRC_DESKTOP_LRC_ENABLE)"/>
-            </verticalLayout>
-          </scrollArea>
-
-          <!--第2页 外观设置-->
+          <!--第1页 外观设置-->
           <scrollArea>
             <verticalLayout>
               <!--深色模式-->
@@ -121,6 +100,27 @@
             </verticalLayout>
           </scrollArea>
           
+          <!--第2页 歌词设置-->
+          <scrollArea>
+            <verticalLayout>
+              <!--歌词卡拉OK样式显示-->
+              <toggleSettingGroup id="lyricKaraokeStyle" height="60" icon="karaoke" mainText="%(TXT_OPT_LRC_KARAOKE_DISP)" subText="%(TXT_OPT_DESC_LYRIC_KARAOKE)"/>
+              <!--窗口歌词字体-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="lyric" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_LYRIC_FONT_SETTING)" height="20"/>
+                    <text id="lyricFontSettingSubText" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <button id="lyricFontSettingBtn" icon="shortcut" height="28" text="%(TXT_OPT_LRC_FONT_SEL)" show_text="true" margin-right="16"/>
+                </horizontalLayout>
+              </rectangle>
+              <!--显示桌面歌词-->
+              <toggleSettingGroup id="showDesktopLyric" height="60" margin-top="4" icon="lyric" mainText="%(TXT_OPT_LRC_DESKTOP_LRC_ENABLE)"/>
+            </verticalLayout>
+          </scrollArea>
+
           <!--第3页 常规设置-->
           <scrollArea>
             <verticalLayout>

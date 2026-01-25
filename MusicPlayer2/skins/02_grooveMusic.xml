@@ -7,7 +7,7 @@
         <horizontalLayout>
           <verticalLayout width="134">
             <navigationBar orientation="vertical" icon_type="icon_and_text" item_height="40" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
-            <button key="settings" height="40" show_text="true"/>
+            <button key="showSettingsPanel" height="40" show_text="true"/>
           </verticalLayout>
           <stackElement id="ui_big_nav_stack_element" related_stack_elements="ui_narraw_nav_stack_element">
             <!--正在播放-->
@@ -205,7 +205,7 @@
         <placeHolder/>
       </horizontalLayout>
       <navigationBar orientation="vertical" icon_type="icon_and_text" item_height="48" item_left_space="3" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
-      <button key="settings" show_text="true" height="48"/>
+      <button key="showSettingsPanel" show_text="true" height="48"/>
     </verticalLayout>
   </panel>
 
@@ -215,7 +215,7 @@
         <verticalLayout width="48">
           <button key="showPanel" panel_id="ui_narrow_navigation_panel" icon="menu" text="%(UI_TXT_OPEN_NAVIGATION)" width="48" height="48"/>
           <navigationBar orientation="vertical" icon_type="icon_only" item_height="48" item_list="now_playing,play_queue,recently_played,folder,playlist,my_favourite,media_lib"/>
-          <button key="settings" width="48" height="48"/>
+          <button key="showSettingsPanel" width="48" height="48"/>
         </verticalLayout>
         <stackElement id="ui_narraw_nav_stack_element" related_stack_elements="ui_big_nav_stack_element">
           <!--正在播放-->
