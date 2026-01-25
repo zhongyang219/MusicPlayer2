@@ -350,13 +350,19 @@ bool CUserUi::LButtonUp(CPoint point)
 
         auto root_element = GetMouseEventResponseElement();
         //遍历所有元素
+        bool rtn = false;
         root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
             if (element != nullptr)
             {
-                element->LButtonUp(point);
+                if (element->LButtonUp(point))
+                {
+                    rtn = true;
+                    return true;
+                }
             }
             return false;
         }, true);
+        return rtn;
     }
     return false;
 }

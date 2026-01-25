@@ -101,13 +101,12 @@ public:
     CPlayerUIPanel* GetTopPanel() const;
 
     std::shared_ptr<UiElement::Element> GetCurrentTypeUi() const;
+    std::shared_ptr<UiElement::Element> GetMouseEventResponseElement();
 
 protected:
     std::shared_ptr<UiElement::Element> GetUiByUiSize(UiSize ui_size) const;
     static std::shared_ptr<CUserUi> FindUiByIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list, int ui_index, std::shared_ptr<CUserUi> except);
     static int GetMaxUiIndex(const std::vector<std::shared_ptr<CUserUi>>& ui_list);
-
-    std::shared_ptr<UiElement::Element> GetMouseEventResponseElement();
 
     void OnPanelShow(); //显示了面板后调用
     void OnPanelHide(); //关闭面板前调用

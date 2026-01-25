@@ -47,6 +47,21 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	use_standard_titlebar = m_root_element->FindElement<UiElement::ToggleSettingGroup>("showStandardTitlebar");
 	ConnectToggleTrigger(use_standard_titlebar, m_apperence_data.show_window_frame);
 
+	auto* titlabar_btn_settings = m_root_element->FindElement<UiElement::ToggleButton>("titlebarBtnSettings");
+	titlabar_btn_settings->BindBool(&theApp.m_app_setting_data.show_settings_btn_in_titlebar);
+	auto* titlabar_btn_skin = m_root_element->FindElement<UiElement::ToggleButton>("titlebarBtnSkin");
+	titlabar_btn_skin->BindBool(&theApp.m_app_setting_data.show_skin_btn_in_titlebar);
+	auto* titlabar_btn_dark_mode = m_root_element->FindElement<UiElement::ToggleButton>("titlebarBtnDarkMode");
+	titlabar_btn_dark_mode->BindBool(&theApp.m_app_setting_data.show_dark_light_btn_in_titlebar);
+	auto* titlabar_btn_mini_mode = m_root_element->FindElement<UiElement::ToggleButton>("titlebarBtnMiniMode");
+	titlabar_btn_mini_mode->BindBool(&theApp.m_app_setting_data.show_minimode_btn_in_titlebar);
+	auto* titlabar_btn_full_screen = m_root_element->FindElement<UiElement::ToggleButton>("titlebarBtnFullScreen");
+	titlabar_btn_full_screen->BindBool(&theApp.m_app_setting_data.show_fullscreen_btn_in_titlebar);
+	auto* titlabar_btn_minimize= m_root_element->FindElement<UiElement::ToggleButton>("titlebarBtnMinimize");
+	titlabar_btn_minimize->BindBool(&theApp.m_app_setting_data.show_minimize_btn_in_titlebar);
+	auto* titlabar_btn_maximize= m_root_element->FindElement<UiElement::ToggleButton>("titlebarBtnMaximize");
+	titlabar_btn_maximize->BindBool(&theApp.m_app_setting_data.show_maximize_btn_in_titlebar);
+
 	ui_refresh_interfal_value = m_root_element->FindElement<UiElement::Text>("uiRefreshIntervalValue");
 	UiElement::Button* interval_up_btn = m_root_element->FindElement<UiElement::Button>("intervalUpBtn");
 	interval_up_btn->SetClickedTrigger([&](UiElement::Button* sender) {
@@ -61,6 +76,16 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 		OnSettingsChanged();
 	});
 
+	//常规设置
+	config_file_dir_text = m_root_element->FindElement<UiElement::Text>("configFileDirPathText");
+	UiElement::Button* open_config_dir_btn = m_root_element->FindElement<UiElement::Button>("openConfigDirBtn");
+	open_config_dir_btn->SetClickedTrigger([&](UiElement::Button* sender) {
+		ShellExecute(NULL, _T("explore"), theApp.m_config_dir.c_str(), NULL, NULL, SW_SHOWNORMAL);
+	});
+	UiElement::ToggleSettingGroup* auto_downdoad_lyric_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("autoDownloadLyric");
+	auto_downdoad_lyric_btn->GetToggleBtn()->BindBool(&theApp.m_general_setting_data.auto_download_lyric);
+	UiElement::ToggleSettingGroup* auto_downdoad_album_cover_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("autoDownloadAlbumCover");
+	auto_downdoad_album_cover_btn->GetToggleBtn()->BindBool(&theApp.m_general_setting_data.auto_download_album_cover);
 
 	//更新控件的状态
 	SettingDataToUi();
@@ -106,6 +131,7 @@ void CSettingsPanel::SettingDataToUi()
 	show_statusbar_btn->GetToggleBtn()->SetChecked(m_apperence_data.always_show_statusbar);
 	use_standard_titlebar->GetToggleBtn()->SetChecked(m_apperence_data.show_window_frame);
 	ui_refresh_interfal_value->SetText(std::to_wstring(m_apperence_data.ui_refresh_interval));
+	config_file_dir_text->SetText(theApp.m_appdata_dir);
 }
 
 void CSettingsPanel::OnSettingsChanged() const

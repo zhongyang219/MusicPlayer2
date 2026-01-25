@@ -328,10 +328,14 @@ bool UiElement::Button::LButtonUp(CPoint point)
             CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
             if (user_ui != nullptr)
             {
-                Element* element = user_ui->FindElement<Element>(related_element_id);
-                if (element != nullptr)
+                Element* root_element = user_ui->GetMouseEventResponseElement().get();
+                if (root_element != nullptr)
                 {
-                    element->SetVisible(!element->IsVisible());
+                    Element* element = root_element->FindElement(related_element_id);
+                    if (element != nullptr)
+                    {
+                        element->SetVisible(!element->IsVisible());
+                    }
                 }
             }
         }

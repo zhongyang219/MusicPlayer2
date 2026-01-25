@@ -29,6 +29,7 @@ private:
     MediaLibSettingData m_media_lib_data;
     bool m_lyric_font_changed{};
 
+    //歌词设置控件
     UiElement::Text* lyric_font_sub_text;
 
     //外观设置控件
@@ -41,6 +42,9 @@ private:
     UiElement::ToggleSettingGroup* use_standard_titlebar;
     UiElement::ToggleSettingGroup* show_menubar_btn;
     UiElement::Text* ui_refresh_interfal_value;
+
+    //常规设置控件
+    UiElement::Text* config_file_dir_text;
 
 };
 

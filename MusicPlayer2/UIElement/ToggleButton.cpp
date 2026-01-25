@@ -111,7 +111,7 @@ bool UiElement::ToggleButton::LButtonUp(CPoint point)
     bool pressed = m_pressed;
     m_pressed = false;
 
-    if (pressed && rect.PtInRect(point) && IsEnable(ParentRect()))
+    if (pressed && rect.PtInRect(point) && IsEnable())
     {
         SetChecked(!Checked());
         if (m_clicked_trigger)

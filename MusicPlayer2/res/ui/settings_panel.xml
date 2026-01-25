@@ -10,6 +10,7 @@
           <navigationBar orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="36">
             <navigationItem icon="lyric" text="%(TITLE_OPT_LRC)"/>
             <navigationItem icon="skin" text="%(TITLE_OPT_APC)"/>
+            <navigationItem icon="setting" text="%(TITLE_OPT_DATA)"/>
           </navigationBar>
           <button key="settings" text="%(UI_TXT_MORE_SETTINGS)" show_text="true" height="32"/>
         </verticalLayout>
@@ -52,6 +53,56 @@
               <toggleSettingGroup id="showStatusbar" height="60" margin-top="4" icon="setting" mainText="%(TXT_OPT_APC_ALWAYS_SHOW_STATUS_BAR)" subText="%(TXT_OPT_DESC_SHOW_TASKBAR)"/>
               <!--显示系统标准标题栏-->
               <toggleSettingGroup id="showStandardTitlebar" height="60" margin-top="4" icon="setting" mainText="%(TXT_OPT_APC_USE_SYSTEM_TITLE_BAR)" subText="%(TXT_OPT_DESC_USE_STANDARD_TITLEBAR)"/>
+              <!--在标题栏中显示的按钮-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="setting" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_APC_TITLE_BAR_BTN_SEL)" height="20"/>
+                    <text text="%(TXT_OPT_DESC_BUTTONS_DISPLAYED_IN_TITLABAR)" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <!--<button id="buttonsInTitlebarBtn" key="showHideElement" related_element_id="buttonsInTitlebarOptionGroup" icon="dropDown" height="28" width="28" margin-right="16"/>-->
+                </horizontalLayout>
+              </rectangle>
+              <verticalLayout id="buttonsInTitlebarOptionGroup" height="252">
+                <horizontalLayout margin-left="52" margin-right="16">
+                  <icon icon="setting" width="42"/>
+                  <text text="%(TXT_OPT_APC_TITLE_BAR_BTN_SETTING)"/>
+                  <toggleButton id="titlebarBtnSettings" width="80"/>
+                </horizontalLayout>
+                <horizontalLayout margin-left="52" margin-right="16">
+                  <icon icon="skin" width="42"/>
+                  <text text="%(TXT_OPT_APC_TITLE_BAR_BTN_SKIN)"/>
+                  <toggleButton id="titlebarBtnSkin" width="80"/>
+                </horizontalLayout>
+                <horizontalLayout margin-left="52" margin-right="16">
+                  <icon icon="darkModeOn" width="42"/>
+                  <text text="%(TXT_OPT_APC_TITLE_BAR_BTN_DARK_KIGHT)"/>
+                  <toggleButton id="titlebarBtnDarkMode" width="80"/>
+                </horizontalLayout>
+                <horizontalLayout margin-left="52" margin-right="16">
+                  <icon icon="miniOn" width="42"/>
+                  <text text="%(TXT_OPT_APC_TITLE_BAR_BTN_MINI_MODE)"/>
+                  <toggleButton id="titlebarBtnMiniMode" width="80"/>
+                </horizontalLayout>
+                <horizontalLayout margin-left="52" margin-right="16">
+                  <icon icon="fullScreenOn" width="42"/>
+                  <text text="%(TXT_OPT_APC_TITLE_BAR_BTN_FULLSCREEN)"/>
+                  <toggleButton id="titlebarBtnFullScreen" width="80"/>
+                </horizontalLayout>
+                <horizontalLayout margin-left="52" margin-right="16">
+                  <icon icon="minimize" width="42"/>
+                  <text text="%(TXT_OPT_APC_TITLE_BAR_BTN_MINIMIZE)"/>
+                  <toggleButton id="titlebarBtnMinimize" width="80"/>
+                </horizontalLayout>
+                <horizontalLayout margin-left="52" margin-right="16">
+                  <icon icon="maxmizeOn" width="42"/>
+                  <text text="%(TXT_OPT_APC_TITLE_BAR_BTN_MAXIMIZE)"/>
+                  <toggleButton id="titlebarBtnMaximize" width="80"/>
+                </horizontalLayout>
+              </verticalLayout>
+
+
               <!--界面刷新时间间隔-->
               <rectangle height="60" margin-top="4">
                 <horizontalLayout>
@@ -70,8 +121,29 @@
             </verticalLayout>
           </scrollArea>
           
-        </stackElement>
+          <!--第3页 常规设置-->
+          <scrollArea>
+            <verticalLayout>
+              <!--数据和配置文件-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="fileRelate" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_DATA_DATA_FILE_CFG)" height="20"/>
+                    <text id="configFileDirPathText" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <button id="openConfigDirBtn" icon="shortcut" height="28" text="%(TXT_OPT_DATA_DATA_FILE_DIR_OPEN)" show_text="true" margin-right="16"/>
+                </horizontalLayout>
+              </rectangle>
+              <!--没有歌词时自动下载-->
+              <toggleSettingGroup id="autoDownloadLyric" height="60" margin-top="4" icon="lyric" mainText="%(TXT_OPT_DATA_AUTO_DL_LYRIC)"/>
+              <!--没有专辑封面时自动下载-->
+              <toggleSettingGroup id="autoDownloadAlbumCover" height="60" margin-top="4" icon="albumCover" mainText="%(TXT_OPT_DATA_AUTO_DL_COVER)"/>
+
+            </verticalLayout>
+          </scrollArea>
           
+        </stackElement>
       </horizontalLayout>
     </verticalLayout>
   </panel>
