@@ -7,6 +7,7 @@ namespace UiElement
     {
     public:
         virtual void Draw() override;
+        virtual void DrawScrollArea() = 0;
         CRect GetScrollAreaRect() const;
 
         virtual bool LButtonUp(CPoint point) override;
@@ -18,7 +19,7 @@ namespace UiElement
         virtual int GetScrollAreaHeight() = 0;
         void RestrictOffset();             //将滚动区域偏移量限制在正确的范围
 
-    private:
+    protected:
         CRect m_scroll_area_rect;       //滚动区域的矩形区域
 
         bool mouse_pressed{ };          //鼠标左键是否按下

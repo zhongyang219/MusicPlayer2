@@ -7,6 +7,7 @@ namespace UiElement
     {
     public:
         virtual int GetScrollAreaHeight() override;
+        void DrawScrollArea() override;
     };
 }
 

@@ -17,9 +17,7 @@ void UiElement::AbstractScrollArea::Draw()
     m_scroll_area_rect.bottom = m_scroll_area_rect.top + GetScrollAreaHeight();
     m_scroll_area_rect.MoveToY(m_scroll_area_rect.top - scroll_offset);
 
-    DrawAreaGuard guard(&ui->GetDrawer(), rect);
-    //ui->GetDrawer().FillRect(m_scroll_area_rect, CColorConvert::m_gray_color.dark2);
-    Element::Draw();
+    DrawScrollArea();
 
     //绘制滚动条
     scrollbar_rect = rect;

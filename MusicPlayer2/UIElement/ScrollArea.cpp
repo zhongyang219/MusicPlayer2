@@ -15,3 +15,10 @@ int UiElement::ScrollArea::GetScrollAreaHeight()
 
     return rect.Height();
 }
+
+void UiElement::ScrollArea::DrawScrollArea()
+{
+    DrawAreaGuard guard(&ui->GetDrawer(), rect);
+    //ui->GetDrawer().FillRect(m_scroll_area_rect, CColorConvert::m_gray_color.dark2);
+    Element::Draw();
+}

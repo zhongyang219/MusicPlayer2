@@ -1,12 +1,16 @@
 ﻿#pragma once
-#include "UIElement/UIElement.h"
+#include "UIElement/AbstractScrollArea.h"
 namespace UiElement
 {
     //列表元素
-    class ListElement : public Element
+    class ListElement : public AbstractScrollArea
     {
     public:
         friend class CPlayerUIBase;
+
+        // 通过 AbstractScrollArea 继承
+        void DrawScrollArea() override;
+        int GetScrollAreaHeight() override;
 
         virtual void Draw() override;
         virtual bool LButtonUp(CPoint point) override;
@@ -15,7 +19,6 @@ namespace UiElement
         virtual bool RButtonUp(CPoint point) override;
         virtual bool RButtonDown(CPoint point) override;
         virtual bool MouseWheel(int delta, CPoint point) override;
-        virtual bool MouseLeave() override;
         virtual bool DoubleClick(CPoint point) override;
         void ShowContextMenu(CMenu* menu, CWnd* cmd_reciver);
         virtual void ClearRect() override;
@@ -23,7 +26,6 @@ namespace UiElement
 
         void EnsureItemVisible(int index);  //确保指定项在播放列表中可见
         void EnsureHighlightItemVisible();  //确保高亮行可见
-        void RestrictOffset();             //将播放列表偏移量限制在正确的范围
         void CalculateItemRects();         //计算播放列表中每一项的矩形区域，保存在playlist_info.item_rects中
         int ItemHeight() const;
         void SetItemSelected(int index);    //设置单个项目选中
@@ -88,20 +90,9 @@ namespace UiElement
         int GetListIndexByPoint(CPoint point);
 
     protected:
-        bool mouse_pressed{ };          //鼠标左键是否按下
-        bool hover{};                   //指标指向播放列表区域
-        CPoint mouse_pos;               //鼠标指向的区域
-        CPoint mouse_pressed_pos;       //鼠标按下时的位置
-        int mouse_pressed_offset{};     //鼠标按下时播放列表的位移
-        int playlist_offset{};          //当前播放列表滚动的位移
         std::set<int> items_selected; //选中的序号
         CDrawCommon::ScrollInfo selected_item_scroll_info;  //绘制选中项滚动文本的结构体
         std::vector<CRect> item_rects;  //播放列表中每个项目的矩形区域
-        CRect scrollbar_rect{};         //滚动条的位置
-        CRect scrollbar_handle_rect;    //滚动条把手的位置
-        bool scrollbar_hover{};         //鼠标指向滚动条
-        bool scrollbar_handle_pressed{};    //滚动条把手被按下
-        int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
         std::map<int, IPlayerUI::UIButton> hover_buttons;   //鼠标指向时的按钮
         int last_row_count{};
         int last_row_selected{ -1 };

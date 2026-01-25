@@ -55,14 +55,14 @@ void UiElement::TrackList::SetListItem(const ListItem& list_item)
         }
     }
     m_ui_song_list->Update(song_list);
-    playlist_offset = 0;
+    scroll_offset = 0;
     EnsureHighlightItemVisible();
 }
 
 void UiElement::TrackList::ClearListItem()
 {
     m_ui_song_list->Update(std::vector<SongInfo>());
-    playlist_offset = 0;
+    scroll_offset = 0;
 }
 
 std::wstring UiElement::TrackList::GetEmptyString()
