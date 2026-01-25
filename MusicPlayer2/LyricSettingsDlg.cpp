@@ -322,9 +322,9 @@ BOOL CLyricSettingsDlg::OnInitDialog()
         theApp.m_str_table.LoadText(L"UI_LYRIC_MUSIC_SYMBOL")
     });
     m_tool_tip.AddTool(GetDlgItem(IDC_LYRIC_HIDE_BLANK_LINE_CHECK), tip_str.c_str());
-    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT_BUTTON), GetFontInfoString(m_data.lyric_font).c_str());
-    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT2), GetFontInfoString(m_data.desktop_lyric_data.lyric_font).c_str());
-    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT), GetFontInfoString(m_data.cortana_font).c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT_BUTTON), m_data.lyric_font.GetFontInfoString().c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT2), m_data.desktop_lyric_data.lyric_font.GetFontInfoString().c_str());
+    m_tool_tip.AddTool(GetDlgItem(IDC_SET_FONT), m_data.cortana_font.GetFontInfoString().c_str());
     tip_str = theApp.m_str_table.LoadTextFormat(L"TIP_OPT_LRC_SONG_INFO_IF_NO_LRC",
         { theApp.m_str_table.LoadText(L"UI_LYRIC_NONE") });
     m_tool_tip.AddTool(GetDlgItem(IDC_SHOW_SONG_INFO_IF_LYRIC_NOT_EXIST_CHECK), tip_str.c_str());
@@ -427,20 +427,6 @@ void CLyricSettingsDlg::SetSearchBoxTransparentInWhiteTheme(bool transparent)
 bool CLyricSettingsDlg::IsSearchBoxTransparentInWhiteTheme() const
 {
     return (m_data.cortana_transparent_color == LIGHT_MODE_SEARCH_BOX_BACKGROUND_COLOR);
-}
-
-wstring CLyricSettingsDlg::GetFontInfoString(const FontInfo& font_info)
-{
-    wstring str = font_info.name + L", " + std::to_wstring(font_info.size) + L"pt";
-    wstring font_style;
-    if (font_info.style.bold || font_info.style.italic)
-        str.push_back(L',');
-    if (font_info.style.bold)
-        str += L' ' + theApp.m_str_table.LoadText(L"TIP_OPT_LRC_FONT_INFO_BOLD");
-    if (font_info.style.italic)
-        str += L' ' + theApp.m_str_table.LoadText(L"TIP_OPT_LRC_FONT_INFO_ITALIC");
-
-    return str;
 }
 
 void CLyricSettingsDlg::GetDataFromUi()
@@ -556,7 +542,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont()
         m_data.cortana_font.style.underline = (fontDlg.IsUnderline() != FALSE);
         m_data.cortana_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
         m_search_box_font_changed = true;
-        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.cortana_font).c_str(), GetDlgItem(IDC_SET_FONT));
+        m_tool_tip.UpdateTipText(m_data.cortana_font.GetFontInfoString().c_str(), GetDlgItem(IDC_SET_FONT));
     }
 }
 
@@ -617,7 +603,7 @@ void CLyricSettingsDlg::OnBnClickedSetFont2()
         m_data.desktop_lyric_data.lyric_font.style.italic = (fontDlg.IsItalic() != FALSE);
         m_data.desktop_lyric_data.lyric_font.style.underline = (fontDlg.IsUnderline() != FALSE);
         m_data.desktop_lyric_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
-        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.desktop_lyric_data.lyric_font).c_str(), GetDlgItem(IDC_SET_FONT2));
+        m_tool_tip.UpdateTipText(m_data.desktop_lyric_data.lyric_font.GetFontInfoString().c_str(), GetDlgItem(IDC_SET_FONT2));
     }
 }
 
@@ -878,7 +864,7 @@ void CLyricSettingsDlg::OnBnClickedSetFontButton()
         m_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
         //将字体已更改flag置为true
         m_font_changed = true;
-        m_tool_tip.UpdateTipText(GetFontInfoString(m_data.lyric_font).c_str(), GetDlgItem(IDC_SET_FONT_BUTTON));
+        m_tool_tip.UpdateTipText(m_data.lyric_font.GetFontInfoString().c_str(), GetDlgItem(IDC_SET_FONT_BUTTON));
     }
 }
 

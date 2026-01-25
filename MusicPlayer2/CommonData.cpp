@@ -68,3 +68,17 @@ UIFont& FontSet::GetFontBySize(int font_size)
         return iter->second;
     return dlg;
 }
+
+std::wstring FontInfo::GetFontInfoString() const
+{
+    wstring str = name + L", " + std::to_wstring(size) + L"pt";
+    wstring font_style;
+    if (style.bold || style.italic)
+        str.push_back(L',');
+    if (style.bold)
+        str += L' ' + theApp.m_str_table.LoadText(L"TIP_OPT_LRC_FONT_INFO_BOLD");
+    if (style.italic)
+        str += L' ' + theApp.m_str_table.LoadText(L"TIP_OPT_LRC_FONT_INFO_ITALIC");
+
+    return str;
+}

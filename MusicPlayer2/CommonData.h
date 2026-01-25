@@ -53,6 +53,7 @@ struct FontInfo
     wstring name;	//字体名称
     int size;		//字体大小
     FontStyle style;	//字体样式
+    std::wstring GetFontInfoString() const;
 };
 
 

@@ -8,11 +8,34 @@
         <!--左侧导航栏-->
         <verticalLayout width="134">
           <navigationBar orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="36">
+            <navigationItem icon="lyric" text="%(TITLE_OPT_LRC)"/>
             <navigationItem icon="skin" text="%(TITLE_OPT_APC)"/>
           </navigationBar>
           <button key="settings" text="%(UI_TXT_MORE_SETTINGS)" show_text="true" height="32"/>
         </verticalLayout>
         <stackElement margin-left="8">
+          <!--第1页 歌词设置-->
+          <scrollArea>
+            <verticalLayout>
+              <!--歌词卡拉OK样式显示-->
+              <toggleSettingGroup id="lyricKaraokeStyle" height="60" icon="karaoke" mainText="%(TXT_OPT_LRC_KARAOKE_DISP)" subText="%(TXT_OPT_DESC_LYRIC_KARAOKE)"/>
+              <!--窗口歌词字体-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="lyric" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_LYRIC_FONT_SETTING)" height="20"/>
+                    <text id="lyricFontSettingSubText" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <button id="lyricFontSettingBtn" icon="shortcut" height="28" text="%(TXT_OPT_LRC_FONT_SEL)" show_text="true" margin-right="16"/>
+                </horizontalLayout>
+              </rectangle>
+              <!--显示桌面歌词-->
+              <toggleSettingGroup id="showDesktopLyric" height="60" margin-top="4" icon="lyric" mainText="%(TXT_OPT_LRC_DESKTOP_LRC_ENABLE)"/>
+            </verticalLayout>
+          </scrollArea>
+
+          <!--第2页 外观设置-->
           <scrollArea>
             <verticalLayout>
               <!--深色模式-->
@@ -29,7 +52,21 @@
               <toggleSettingGroup id="showStatusbar" height="60" margin-top="4" icon="setting" mainText="%(TXT_OPT_APC_ALWAYS_SHOW_STATUS_BAR)" subText="%(TXT_OPT_DESC_SHOW_TASKBAR)"/>
               <!--显示系统标准标题栏-->
               <toggleSettingGroup id="showStandardTitlebar" height="60" margin-top="4" icon="setting" mainText="%(TXT_OPT_APC_USE_SYSTEM_TITLE_BAR)" subText="%(TXT_OPT_DESC_USE_STANDARD_TITLEBAR)"/>
-              <placeHolder/>
+              <!--界面刷新时间间隔-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="internalLyric" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_APC_UI_REFRESH_INTERVAL)" height="20"/>
+                    <text text="%(TXT_OPT_DESC_UI_REFRESH_INTERVA)" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <text id="uiRefreshIntervalValue" font_size="10" width="50" alignment="right" margin-right="8"/>
+                  <verticalLayout width="26" margin-right="16">
+                    <button id="intervalUpBtn" height="22" icon="triangleUp"/>
+                    <button id="intervalDownBtn" height="22" icon="triangleDown"/>
+                  </verticalLayout>
+                </horizontalLayout>
+              </rectangle>
             </verticalLayout>
           </scrollArea>
           

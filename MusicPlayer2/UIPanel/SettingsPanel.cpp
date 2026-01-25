@@ -3,6 +3,7 @@
 #include "UserUi.h"
 #include "Player.h"
 #include "MusicPlayerDlg.h"
+#include "FontDialogEx.h"
 
 CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	: CPlayerUIPanel(ui, IDR_SETTINGS_PANEL)
@@ -10,6 +11,21 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	UpdateSettingsData();
 
 	//查找控件并添加触发事件
+	//歌词设置
+	UiElement::ToggleSettingGroup* lyric_karaoke_style_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("lyricKaraokeStyle");
+	lyric_karaoke_style_btn->GetToggleBtn()->BindBool(&theApp.m_lyric_setting_data.lyric_karaoke_disp);
+	lyric_font_sub_text = m_root_element->FindElement<UiElement::Text>("lyricFontSettingSubText");
+	UiElement::Button* lyric_font_btn = m_root_element->FindElement<UiElement::Button>("lyricFontSettingBtn");
+	lyric_font_btn->SetClickedTrigger([&](UiElement::Button* sender) {
+		UpdateSettingsData();
+		OnBnClickedSetFontButton();
+		OnSettingsChanged();
+	});
+
+	UiElement::ToggleSettingGroup* show_desktop_lyric_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("showDesktopLyric");
+	show_desktop_lyric_btn->GetToggleBtn()->BindBool(&theApp.m_lyric_setting_data.show_desktop_lyric);
+	
+	//外观设置
 	dard_mode_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("darkMode");
 	dard_mode_btn->GetToggleBtn()->BindBool(&theApp.m_app_setting_data.dark_mode);
 	dard_mode_btn->GetToggleBtn()->SetClickedTrigger([&](UiElement::ToggleButton* sender) {
@@ -30,6 +46,20 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	ConnectToggleTrigger(show_statusbar_btn, m_apperence_data.always_show_statusbar);
 	use_standard_titlebar = m_root_element->FindElement<UiElement::ToggleSettingGroup>("showStandardTitlebar");
 	ConnectToggleTrigger(use_standard_titlebar, m_apperence_data.show_window_frame);
+
+	ui_refresh_interfal_value = m_root_element->FindElement<UiElement::Text>("uiRefreshIntervalValue");
+	UiElement::Button* interval_up_btn = m_root_element->FindElement<UiElement::Button>("intervalUpBtn");
+	interval_up_btn->SetClickedTrigger([&](UiElement::Button* sender) {
+		UpdateSettingsData();
+		OnUiIntervalChanged(true);
+		OnSettingsChanged();
+	});
+	UiElement::Button* interval_down_btn = m_root_element->FindElement<UiElement::Button>("intervalDownBtn");
+	interval_down_btn->SetClickedTrigger([&](UiElement::Button* sender) {
+		UpdateSettingsData();
+		OnUiIntervalChanged(false);
+		OnSettingsChanged();
+	});
 
 
 	//更新控件的状态
@@ -67,6 +97,7 @@ void CSettingsPanel::UpdateSettingsData()
 
 void CSettingsPanel::SettingDataToUi()
 {
+	lyric_font_sub_text->SetText(m_lyrics_data.lyric_font.GetFontInfoString());
 	dard_mode_btn->GetToggleBtn()->SetChecked(m_apperence_data.dark_mode);
 	show_spectrum_btn->GetToggleBtn()->SetChecked(m_apperence_data.show_spectrum);
 	show_album_cover_btn->GetToggleBtn()->SetChecked(m_apperence_data.show_album_cover);
@@ -74,6 +105,7 @@ void CSettingsPanel::SettingDataToUi()
 	enable_bckground_btn->GetToggleBtn()->SetChecked(m_apperence_data.enable_background);
 	show_statusbar_btn->GetToggleBtn()->SetChecked(m_apperence_data.always_show_statusbar);
 	use_standard_titlebar->GetToggleBtn()->SetChecked(m_apperence_data.show_window_frame);
+	ui_refresh_interfal_value->SetText(std::to_wstring(m_apperence_data.ui_refresh_interval));
 }
 
 void CSettingsPanel::OnSettingsChanged() const
@@ -83,6 +115,40 @@ void CSettingsPanel::OnSettingsChanged() const
 		m_apperence_data,
 		m_general_data,
 		m_play_data,
-		m_media_lib_data
+		m_media_lib_data,
+		m_lyric_font_changed
 	);
+}
+
+void CSettingsPanel::OnBnClickedSetFontButton()
+{
+	LOGFONT lf{};             //LOGFONT变量
+	theApp.m_font_set.lyric.GetFont().GetLogFont(&lf);
+	CCommon::NormalizeFont(lf);
+	CFontDialogEx fontDlg(&lf, false);	//构造字体对话框，初始选择字体为之前字体
+	fontDlg.m_cf.Flags |= CF_NOVERTFONTS;   //仅列出水平方向的字体
+	if (IDOK == fontDlg.DoModal())     // 显示字体对话框
+	{
+		//获取字体信息
+		m_lyrics_data.lyric_font.name = fontDlg.GetFaceName();
+		m_lyrics_data.lyric_font.size = fontDlg.GetSize() / 10;
+		m_lyrics_data.lyric_font.style.bold = (fontDlg.IsBold() != FALSE);
+		m_lyrics_data.lyric_font.style.italic = (fontDlg.IsItalic() != FALSE);
+		m_lyrics_data.lyric_font.style.underline = (fontDlg.IsUnderline() != FALSE);
+		m_lyrics_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
+		//将字体已更改flag置为true
+		m_lyric_font_changed = true;
+		lyric_font_sub_text->text = m_lyrics_data.lyric_font.GetFontInfoString();
+	}
+}
+
+void CSettingsPanel::OnUiIntervalChanged(bool up)
+{
+	if (up)
+		m_apperence_data.ui_refresh_interval += UI_INTERVAL_STEP;
+	else
+		m_apperence_data.ui_refresh_interval -= UI_INTERVAL_STEP;
+	m_apperence_data.ui_refresh_interval = (m_apperence_data.ui_refresh_interval / UI_INTERVAL_STEP * UI_INTERVAL_STEP);
+	CCommon::SetNumRange(m_apperence_data.ui_refresh_interval, MIN_UI_INTERVAL, MAX_UI_INTERVAL);
+	ui_refresh_interfal_value->SetText(std::to_wstring(m_apperence_data.ui_refresh_interval));
 }

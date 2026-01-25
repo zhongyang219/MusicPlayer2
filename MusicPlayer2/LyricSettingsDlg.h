@@ -81,8 +81,6 @@ protected:
     void SetSearchBoxTransparentInWhiteTheme(bool transparent);
     bool IsSearchBoxTransparentInWhiteTheme() const;
 
-    static wstring GetFontInfoString(const FontInfo& font_info);
-
     virtual void GetDataFromUi() override;
 
     virtual bool InitializeControls() override;

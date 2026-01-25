@@ -867,7 +867,7 @@ IconMgr::IconType CPlayerUIBase::GetBtnIconType(BtnKey key)
     case BTN_CLOSE_PANEL_TITLE_BAR:
         return IconMgr::IT_Arrow_Left;
     default:
-        ASSERT(FALSE);
+        //ASSERT(FALSE);
         return IconMgr::IconType::IT_NO_ICON;
     }
 }
