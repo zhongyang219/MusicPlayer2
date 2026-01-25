@@ -11,6 +11,8 @@
             <navigationItem icon="skin" text="%(TITLE_OPT_APC)"/>
             <navigationItem icon="lyric" text="%(TITLE_OPT_LRC)"/>
             <navigationItem icon="setting" text="%(TITLE_OPT_DATA)"/>
+            <navigationItem icon="play" text="%(TITLE_OPT_PLAY)"/>
+            <navigationItem icon="mediaLib" text="%(TITLE_OPT_MEDIA_LIB)"/>
           </navigationBar>
           <button key="settings" text="%(UI_TXT_MORE_SETTINGS)" show_text="true" height="32"/>
         </verticalLayout>
@@ -80,8 +82,6 @@
                   <toggleButton id="titlebarBtnMaximize" width="80"/>
                 </horizontalLayout>
               </verticalLayout>
-
-
               <!--界面刷新时间间隔-->
               <rectangle height="60" margin-top="4">
                 <horizontalLayout>
@@ -125,7 +125,7 @@
           <scrollArea>
             <verticalLayout>
               <!--数据和配置文件-->
-              <rectangle height="60" margin-top="4">
+              <rectangle height="60">
                 <horizontalLayout>
                   <icon icon="fileRelate" width="52"/>
                   <verticalLayout>
@@ -139,7 +139,31 @@
               <toggleSettingGroup id="autoDownloadLyric" height="60" margin-top="4" icon="lyric" mainText="%(TXT_OPT_DATA_AUTO_DL_LYRIC)"/>
               <!--没有专辑封面时自动下载-->
               <toggleSettingGroup id="autoDownloadAlbumCover" height="60" margin-top="4" icon="albumCover" mainText="%(TXT_OPT_DATA_AUTO_DL_COVER)"/>
-
+            </verticalLayout>
+          </scrollArea>
+          
+          <!--第4页 播放设置-->
+          <scrollArea>
+            <verticalLayout>
+              <toggleSettingGroup id="stopWhenErrorBtn" height="60" icon="stop" mainText="%(TXT_OPT_PLAY_STOP_WHEN_ERROR)"/>
+              <toggleSettingGroup id="autoPlayWhenStartBtn" height="60" margin-top="4" icon="play" mainText="%(TXT_OPT_PLAY_AUTO_PLAY_WHEN_START)"/>
+            </verticalLayout>
+          </scrollArea>
+          
+          <!--第5页 媒体库设置-->
+          <scrollArea>
+            <verticalLayout>
+              <toggleSettingGroup id="updateMedialibWhenStart" height="60" icon="refresh" mainText="%(TXT_OPT_MEDIA_LIB_AUTO_UPDATE_WHEN_STARTUP)"/>
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="lyric" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_MEDIA_LIB_CLEAN_MEDIA_LIB)" height="20"/>
+                    <text id="clearMedialibText" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <button id="clearMedialibBtn" icon="shortcut" height="28" text="%(TXT_OPT_MEDIA_LIB_DATA_FILE_CLEAN)" show_text="true" margin-right="16"/>
+                </horizontalLayout>
+              </rectangle>
             </verticalLayout>
           </scrollArea>
           

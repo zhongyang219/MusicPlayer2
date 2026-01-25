@@ -46,5 +46,8 @@ private:
     //常规设置控件
     UiElement::Text* config_file_dir_text;
 
+    //媒体库设置控件
+    UiElement::Text* clear_medialib_text;
+
 };
 

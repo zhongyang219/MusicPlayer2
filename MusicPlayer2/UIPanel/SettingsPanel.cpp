@@ -87,6 +87,16 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	UiElement::ToggleSettingGroup* auto_downdoad_album_cover_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("autoDownloadAlbumCover");
 	auto_downdoad_album_cover_btn->GetToggleBtn()->BindBool(&theApp.m_general_setting_data.auto_download_album_cover);
 
+	//播放设置
+	UiElement::ToggleSettingGroup* stop_when_error_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("stopWhenErrorBtn");
+	stop_when_error_btn->GetToggleBtn()->BindBool(&theApp.m_play_setting_data.stop_when_error);
+	UiElement::ToggleSettingGroup* auto_play_when_start_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("autoPlayWhenStartBtn");
+	auto_play_when_start_btn->GetToggleBtn()->BindBool(&theApp.m_play_setting_data.auto_play_when_start);
+
+	//媒体库设置
+	UiElement::ToggleSettingGroup* update_medialib_when_start_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("updateMedialibWhenStart");
+	update_medialib_when_start_btn->GetToggleBtn()->BindBool(&theApp.m_media_lib_setting_data.update_media_lib_when_start_up);
+
 	//更新控件的状态
 	SettingDataToUi();
 }
@@ -132,6 +142,7 @@ void CSettingsPanel::SettingDataToUi()
 	use_standard_titlebar->GetToggleBtn()->SetChecked(m_apperence_data.show_window_frame);
 	ui_refresh_interfal_value->SetText(std::to_wstring(m_apperence_data.ui_refresh_interval));
 	config_file_dir_text->SetText(theApp.m_appdata_dir);
+	//clear_medialib_text->SetText()
 }
 
 void CSettingsPanel::OnSettingsChanged() const
