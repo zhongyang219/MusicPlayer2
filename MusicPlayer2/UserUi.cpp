@@ -1386,6 +1386,7 @@ void CUserUi::OnPanelShow()
             UpdateMouseToolTipPosition(CPlayerUIBase::BTN_VOLUME, CRect());
         //调用MouseLeave，以清除鼠标指向状态
         element->MouseLeave();
+        element->HideTooltip();
         return false;
     }, true);
 }
