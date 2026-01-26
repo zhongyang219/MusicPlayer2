@@ -112,7 +112,10 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	delete_media_lib_folder_btn->SetClickedTrigger([&](UiElement::Button* sender) {
 		OnDeleteMediaLibFolderClicked();
 	});
-
+	UiElement::ToggleSettingGroup* insert_playlist_front_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("insertToPlaylistFront");
+	insert_playlist_front_btn->GetToggleBtn()->BindBool(&theApp.m_media_lib_setting_data.insert_begin_of_playlist);
+	UiElement::ToggleSettingGroup* merge_songs_different_version_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("mergeSongsOfDifferentVersion");
+	merge_songs_different_version_btn->GetToggleBtn()->BindBool(&theApp.m_media_lib_setting_data.merge_song_different_versions);
 
 	//更新控件的状态
 	SettingDataToUi();

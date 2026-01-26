@@ -186,8 +186,10 @@
                   <placeHolder/>
                 </verticalLayout>
               </horizontalLayout>
-
-
+              <!--插入到播放列表开头-->
+              <toggleSettingGroup id="insertToPlaylistFront" height="60" margin-top="4" icon="add" mainText="%(TXT_OPT_UI_INSERT_PLAYLIST_FRONT)" subText="%(TXT_OPT_DESC_INSERT_PLAYLIST_FRONT)"/>
+              <!--合并同一曲目的不同版本-->
+              <toggleSettingGroup id="mergeSongsOfDifferentVersion" height="60" margin-top="4" icon="music" mainText="%(TXT_OPT_UI_MERGE_DEFFERENT_VERSIONS)" subText="%(TXT_OPT_DESC_MERGE_DEFFERENT_VERSIONS)"/>
             </verticalLayout>
           </scrollArea>
           
