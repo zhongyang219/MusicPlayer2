@@ -137,7 +137,7 @@ bool UiElement::TreeElement::LButtonUp(CPoint point)
         }
     }
 
-    return ListElement::LButtonUp(point);
+    return AbstractListElement::LButtonUp(point);
 }
 
 bool UiElement::TreeElement::MouseMove(CPoint point)
@@ -159,13 +159,13 @@ bool UiElement::TreeElement::MouseMove(CPoint point)
         }
     }
 
-    return ListElement::MouseMove(point);
+    return AbstractListElement::MouseMove(point);
 }
 
 bool UiElement::TreeElement::MouseLeave()
 {
     collaps_indicator_hover_row = -1;
-    return ListElement::MouseLeave();
+    return AbstractListElement::MouseLeave();
 }
 
 bool UiElement::TreeElement::DoubleClick(CPoint point)
@@ -176,7 +176,7 @@ bool UiElement::TreeElement::DoubleClick(CPoint point)
         if (rect.second.PtInRect(point))
             return false;
     }
-    return ListElement::DoubleClick(point);
+    return AbstractListElement::DoubleClick(point);
 }
 
 int UiElement::TreeElement::GetNodeIndex(const Node* node)

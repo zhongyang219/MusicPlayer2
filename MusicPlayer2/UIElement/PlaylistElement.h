@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "UIElement/ListElement.h"
+#include "UIElement/AbstractListElement.h"
 namespace UiElement
 {
     //播放列表
-    class Playlist : public ListElement
+    class Playlist : public AbstractListElement
     {
     public:
         enum Column
@@ -24,7 +24,7 @@ namespace UiElement
         //};
 
 
-        // 通过 ListElement 继承
+        // 通过 AbstractListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         int GetColumnCount() override;

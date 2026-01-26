@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "SearchBox.h"
 #include "UiSearchBox.h"
-#include "ListElement.h"
+#include "AbstractListElement.h"
 
 UiElement::SearchBox::SearchBox()
 {
@@ -128,7 +128,7 @@ void UiElement::SearchBox::FindListElement()
 {
     if (!find_list_element)
     {
-        list_element = FindRelatedElement<ListElement>(list_element_id);
+        list_element = FindRelatedElement<AbstractListElement>(list_element_id);
         if (list_element != nullptr)
             list_element->SetRelatedSearchBox(this);
         find_list_element = true;  //找过一次没找到就不找了

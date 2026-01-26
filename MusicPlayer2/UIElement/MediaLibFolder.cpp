@@ -9,7 +9,7 @@ CListCache UiElement::MediaLibFolder::m_list_cache(CListCache::SubsetType::ST_FO
 void UiElement::MediaLibFolder::Draw()
 {
     m_list_cache.reload();
-    ListElement::Draw();
+    AbstractListElement::Draw();
 }
 
 std::wstring UiElement::MediaLibFolder::GetItemText(int row, int col)

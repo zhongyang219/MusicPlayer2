@@ -258,7 +258,7 @@ IconMgr::IconType UiElement::Playlist::GetUnHoverIcon(int index, int row)
 
 void UiElement::Playlist::OnRowCountChanged()
 {
-    ListElement::OnRowCountChanged();
+    AbstractListElement::OnRowCountChanged();
     //播放列表行数改变时，通知主窗口取消播放列表选中项
     ::SendMessage(AfxGetMainWnd()->GetSafeHwnd(), WM_COMMAND, ID_PLAYLIST_SELECT_NONE, 0);
 }
@@ -368,7 +368,7 @@ void UiElement::Playlist::DrawHoverButton(int index, int row)
     }
     else
     {
-        UiElement::ListElement::DrawHoverButton(index, row);
+        UiElement::AbstractListElement::DrawHoverButton(index, row);
     }
 }
 
@@ -387,6 +387,6 @@ void UiElement::Playlist::DrawUnHoverButton(CRect rc_button, int index, int row)
     }
     else
     {
-        UiElement::ListElement::DrawUnHoverButton(rc_button, index, row);
+        UiElement::AbstractListElement::DrawUnHoverButton(rc_button, index, row);
     }
 }

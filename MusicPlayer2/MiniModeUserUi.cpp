@@ -4,7 +4,7 @@
 #include "UIElement/ElementFactory.h"
 #include "UIElement/Button.h"
 #include "UIElement/StackElement.h"
-#include "UIElement/ListElement.h"
+#include "UIElement/AbstractListElement.h"
 #include "UIElement/SearchBox.h"
 #include "ClosseMainWindowInqueryDlg.h"
 
@@ -122,7 +122,7 @@ bool CMiniModeUserUi::PointInControlArea(CPoint point) const
                 return true;
             }
 
-            UiElement::ListElement* list_emement = dynamic_cast<UiElement::ListElement*>(ele);
+            UiElement::AbstractListElement* list_emement = dynamic_cast<UiElement::AbstractListElement*>(ele);
             if (list_emement != nullptr && list_emement->GetRect().PtInRect(point))
             {
                 rtn = true;

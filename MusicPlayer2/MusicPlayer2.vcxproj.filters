@@ -978,7 +978,7 @@
     <ClInclude Include="UIElement\Layout.h">
       <Filter>UIElement</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement\ListElement.h">
+    <ClInclude Include="UIElement\AbstractListElement.h">
       <Filter>UIElement</Filter>
     </ClInclude>
     <ClInclude Include="UIElement\LyricsElement.h">
@@ -1640,7 +1640,7 @@
     <ClCompile Include="UIElement\Layout.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
-    <ClCompile Include="UIElement\ListElement.cpp">
+    <ClCompile Include="UIElement\AbstractListElement.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\LyricsElement.cpp">

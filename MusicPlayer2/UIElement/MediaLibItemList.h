@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "ListElement.h"
+#include "AbstractListElement.h"
 namespace UiElement
 {
     class TrackList;
     
     //媒体库项目列表
-    class MediaLibItemList : public ListElement
+    class MediaLibItemList : public AbstractListElement
     {
     public:
         ListItem::ClassificationType type{};
@@ -26,7 +26,7 @@ namespace UiElement
             BTN_MAX
         };
 
-        // 通过 ListElement 继承
+        // 通过 AbstractListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         int GetColumnCount() override;

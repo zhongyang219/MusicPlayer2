@@ -883,7 +883,7 @@ void CUIWindowCmdHelper::SetAddToPlaylistMenuState(CMenu* pMenu)
     //判断菜单的发送者
     UiElement::Playlist* playlist{ dynamic_cast<UiElement::Playlist*>(m_context_menu_sender) };
     UiElement::MyFavouriteList* my_favourite_list{ dynamic_cast<UiElement::MyFavouriteList*>(m_context_menu_sender) };
-    UiElement::ListElement* list_element{ dynamic_cast<UiElement::ListElement*>(m_context_menu_sender) };
+    UiElement::AbstractListElement* list_element{ dynamic_cast<UiElement::AbstractListElement*>(m_context_menu_sender) };
 
     //设置默认状态
     if (list_element != nullptr)

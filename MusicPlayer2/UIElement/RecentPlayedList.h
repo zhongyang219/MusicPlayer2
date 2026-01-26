@@ -1,9 +1,9 @@
 #pragma once
-#include "ListElement.h"
+#include "AbstractListElement.h"
 namespace UiElement
 {
     //最近播放
-    class RecentPlayedList : public ListElement
+    class RecentPlayedList : public AbstractListElement
     {
     public:
         enum Column
@@ -24,7 +24,7 @@ namespace UiElement
         static CListCache m_list_cache;     // 为RecentPlayedList的绘制缓存最近播放的ListItem，Draw之前调用reload
         virtual void Draw() override;
 
-        // 通过 ListElement 继承
+        // 通过 AbstractListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         int GetColumnCount() override;

@@ -1,10 +1,10 @@
 #pragma once
-#include "ListElement.h"
+#include "AbstractListElement.h"
 namespace UiElement
 {
     //树控件
     //派生类只需要继承GetRootNodes函数返回树的数据即可
-    class TreeElement : public ListElement
+    class TreeElement : public AbstractListElement
     {
     public:
         //树的一个节点
@@ -36,7 +36,7 @@ namespace UiElement
         virtual bool MouseLeave() override;
         virtual bool DoubleClick(CPoint point) override;
 
-        // 通过 ListElement 继承
+        // 通过 AbstractListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         //树控件不使用基类ListElement的搜索逻辑

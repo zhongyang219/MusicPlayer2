@@ -9,7 +9,7 @@ CListCache UiElement::MediaLibPlaylist::m_list_cache(CListCache::SubsetType::ST_
 void UiElement::MediaLibPlaylist::Draw()
 {
     m_list_cache.reload();
-    ListElement::Draw();
+    AbstractListElement::Draw();
 }
 
 std::wstring UiElement::MediaLibPlaylist::GetItemText(int row, int col)

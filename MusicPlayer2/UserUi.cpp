@@ -134,7 +134,7 @@ void CUserUi::ListLocateToCurrent()
     //遍历ListElement元素
     auto root_element = GetMouseEventResponseElement();
     root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-        UiElement::ListElement* playlist_element{ dynamic_cast<UiElement::ListElement*>(element) };
+        UiElement::AbstractListElement* playlist_element{ dynamic_cast<UiElement::AbstractListElement*>(element) };
         if (playlist_element != nullptr)
         {
             playlist_element->EnsureHighlightItemVisible();
@@ -688,7 +688,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             element->hide_height.FromString(str_hide_height);
 
         //设置ListElement的属性
-        UiElement::ListElement* list_element = dynamic_cast<UiElement::ListElement*>(element.get());
+        UiElement::AbstractListElement* list_element = dynamic_cast<UiElement::AbstractListElement*>(element.get());
         if (list_element != nullptr)
         {
             int item_height{};
@@ -1402,7 +1402,7 @@ void CUserUi::OnPanelHide()
             element->MouseLeave();
             element->HideTooltip();
             //清除列表的选择行
-            UiElement::ListElement* list_element = dynamic_cast<UiElement::ListElement*>(element);
+            UiElement::AbstractListElement* list_element = dynamic_cast<UiElement::AbstractListElement*>(element);
             if (list_element != nullptr)
                 list_element->SelectNone();
             return false;

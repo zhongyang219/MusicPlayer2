@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "ListElement.h"
+#include "AbstractListElement.h"
 #include "UiMediaLibItemMgr.h"
 
 namespace UiElement
 {
     //曲目列表
-    class AbstractTracksList : public ListElement
+    class AbstractTracksList : public AbstractListElement
     {
     public:
         enum Column
@@ -27,7 +27,7 @@ namespace UiElement
 
         virtual CUISongListMgr* GetSongListData() = 0;
 
-        // 通过 ListElement 继承
+        // 通过 AbstractListElement 继承
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         int GetColumnCount() override;

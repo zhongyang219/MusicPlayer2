@@ -3,7 +3,7 @@
 namespace UiElement
 {
     //列表元素
-    class ListElement : public AbstractScrollArea
+    class AbstractListElement : public AbstractScrollArea
     {
     public:
         friend class CPlayerUIBase;

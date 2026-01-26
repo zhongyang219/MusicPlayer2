@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "ListElement.h"
+#include "AbstractListElement.h"
 #include "UIWindowCmdHelper.h"
 #include "SearchBox.h"
 #include "PlaylistElement.h"
@@ -8,7 +8,7 @@
 #include "AbstractTracksList.h"
 #include "MyFavouriteList.h"
 
-void UiElement::ListElement::DrawScrollArea()
+void UiElement::AbstractListElement::DrawScrollArea()
 {
     DrawAreaGuard guard(&ui->GetDrawer(), rect);
 
@@ -233,12 +233,12 @@ void UiElement::ListElement::DrawScrollArea()
     }
 }
 
-int UiElement::ListElement::GetScrollAreaHeight()
+int UiElement::AbstractListElement::GetScrollAreaHeight()
 {
     return ItemHeight() * GetDisplayRowCount();
 }
 
-void UiElement::ListElement::Draw()
+void UiElement::AbstractListElement::Draw()
 {
     CalculateRect();
     RestrictOffset();
@@ -259,7 +259,7 @@ void UiElement::ListElement::Draw()
     AbstractScrollArea::Draw();
 }
 
-bool UiElement::ListElement::LButtonUp(CPoint point)
+bool UiElement::AbstractListElement::LButtonUp(CPoint point)
 {
     AbstractScrollArea::LButtonUp(point);
     if (rect.PtInRect(point))
@@ -281,7 +281,7 @@ bool UiElement::ListElement::LButtonUp(CPoint point)
     return false;
 }
 
-bool UiElement::ListElement::LButtonDown(CPoint point)
+bool UiElement::AbstractListElement::LButtonDown(CPoint point)
 {
     AbstractScrollArea::LButtonDown(point);
     //点击了列表区域
@@ -342,7 +342,7 @@ bool UiElement::ListElement::LButtonDown(CPoint point)
     return false;
 }
 
-bool UiElement::ListElement::MouseMove(CPoint point)
+bool UiElement::AbstractListElement::MouseMove(CPoint point)
 {
     if (rect.IsRectEmpty())
         return false;
@@ -403,7 +403,7 @@ bool UiElement::ListElement::MouseMove(CPoint point)
     return true;
 }
 
-bool UiElement::ListElement::RButtonUp(CPoint point)
+bool UiElement::AbstractListElement::RButtonUp(CPoint point)
 {
     if (rect.PtInRect(point))
     {
@@ -415,7 +415,7 @@ bool UiElement::ListElement::RButtonUp(CPoint point)
     return false;
 }
 
-void UiElement::ListElement::ShowContextMenu(CMenu* menu, CWnd* cmd_reciver)
+void UiElement::AbstractListElement::ShowContextMenu(CMenu* menu, CWnd* cmd_reciver)
 {
     if (menu != nullptr)
     {
@@ -439,7 +439,7 @@ void UiElement::ListElement::ShowContextMenu(CMenu* menu, CWnd* cmd_reciver)
 }
 
 
-bool UiElement::ListElement::RButtonDown(CPoint point)
+bool UiElement::AbstractListElement::RButtonDown(CPoint point)
 {
     mouse_pressed = false;
     if (rect.PtInRect(point))
@@ -463,7 +463,7 @@ bool UiElement::ListElement::RButtonDown(CPoint point)
     }
 }
 
-bool UiElement::ListElement::MouseWheel(int delta, CPoint point)
+bool UiElement::AbstractListElement::MouseWheel(int delta, CPoint point)
 {
     if (rect.PtInRect(point))
     {
@@ -479,7 +479,7 @@ bool UiElement::ListElement::MouseWheel(int delta, CPoint point)
     return false;
 }
 
-bool UiElement::ListElement::DoubleClick(CPoint point)
+bool UiElement::AbstractListElement::DoubleClick(CPoint point)
 {
     if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point) && GetItemSelected() >= 0)
     {
@@ -488,19 +488,19 @@ bool UiElement::ListElement::DoubleClick(CPoint point)
     return false;
 }
 
-void UiElement::ListElement::ClearRect()
+void UiElement::AbstractListElement::ClearRect()
 {
     Element::ClearRect();
     for (auto& btn : hover_buttons)
         btn.second.rect = CRect();
 }
 
-void UiElement::ListElement::HideTooltip()
+void UiElement::AbstractListElement::HideTooltip()
 {
     ui->UpdateMouseToolTipPosition(GetToolTipIndex(), CRect());
 }
 
-void UiElement::ListElement::EnsureItemVisible(int index)
+void UiElement::AbstractListElement::EnsureItemVisible(int index)
 {
     if (index <= 0)
     {
@@ -531,7 +531,7 @@ void UiElement::ListElement::EnsureItemVisible(int index)
     scroll_offset -= delta_offset;
 }
 
-void UiElement::ListElement::EnsureHighlightItemVisible()
+void UiElement::AbstractListElement::EnsureHighlightItemVisible()
 {
     //查找正在播放行
     int highlight_row = -1;
@@ -549,7 +549,7 @@ void UiElement::ListElement::EnsureHighlightItemVisible()
         EnsureItemVisible(highlight_row);
 }
 
-void UiElement::ListElement::CalculateItemRects()
+void UiElement::AbstractListElement::CalculateItemRects()
 {
     item_rects.resize(GetRowCount());
     for (size_t i{}; i < item_rects.size(); i++)
@@ -565,12 +565,12 @@ void UiElement::ListElement::CalculateItemRects()
     }
 }
 
-int UiElement::ListElement::ItemHeight() const
+int UiElement::AbstractListElement::ItemHeight() const
 {
     return ui->DPI(item_height);
 }
 
-void UiElement::ListElement::SetItemSelected(int index)
+void UiElement::AbstractListElement::SetItemSelected(int index)
 {
     std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     items_selected.clear();
@@ -581,7 +581,7 @@ void UiElement::ListElement::SetItemSelected(int index)
     }
 }
 
-int UiElement::ListElement::GetItemSelected() const
+int UiElement::AbstractListElement::GetItemSelected() const
 {
     std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     if (!items_selected.empty())
@@ -589,7 +589,7 @@ int UiElement::ListElement::GetItemSelected() const
     return -1;
 }
 
-void UiElement::ListElement::SetItemsSelected(const vector<int>& indexes)
+void UiElement::AbstractListElement::SetItemsSelected(const vector<int>& indexes)
 {
     std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     items_selected.clear();
@@ -597,7 +597,7 @@ void UiElement::ListElement::SetItemsSelected(const vector<int>& indexes)
         items_selected.insert(index);
 }
 
-void UiElement::ListElement::GetItemsSelected(vector<int>& indexes) const
+void UiElement::AbstractListElement::GetItemsSelected(vector<int>& indexes) const
 {
     std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     indexes.clear();
@@ -605,20 +605,20 @@ void UiElement::ListElement::GetItemsSelected(vector<int>& indexes) const
         indexes.push_back(index);
 }
 
-bool UiElement::ListElement::IsItemSelected(int index) const
+bool UiElement::AbstractListElement::IsItemSelected(int index) const
 {
     std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     auto iter = std::find(items_selected.begin(), items_selected.end(), index);
     return iter != items_selected.end();
 }
 
-bool UiElement::ListElement::IsMultipleSelected() const
+bool UiElement::AbstractListElement::IsMultipleSelected() const
 {
     std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     return items_selected.size() > 1;
 }
 
-void UiElement::ListElement::SelectAll()
+void UiElement::AbstractListElement::SelectAll()
 {
     if (IsMultipleSelectionEnable())
     {
@@ -629,13 +629,13 @@ void UiElement::ListElement::SelectAll()
     }
 }
 
-void UiElement::ListElement::SelectNone()
+void UiElement::AbstractListElement::SelectNone()
 {
     std::lock_guard<std::recursive_mutex> lock(m_selection_mutex);
     items_selected.clear();
 }
 
-void UiElement::ListElement::SelectReversed()
+void UiElement::AbstractListElement::SelectReversed()
 {
     if (IsMultipleSelectionEnable())
     {
@@ -650,23 +650,23 @@ void UiElement::ListElement::SelectReversed()
     }
 }
 
-void UiElement::ListElement::DrawHoverButton(int index, int row)
+void UiElement::AbstractListElement::DrawHoverButton(int index, int row)
 {
     CRect rc_button = GetHoverButtonState(index).rect;
     ui->DrawUIButton(rc_button, GetHoverButtonState(index), GetHoverButtonIcon(index, row));
 }
 
-IPlayerUI::UIButton& UiElement::ListElement::GetHoverButtonState(int btn_index)
+IPlayerUI::UIButton& UiElement::AbstractListElement::GetHoverButtonState(int btn_index)
 {
     return hover_buttons[btn_index];
 }
 
-void UiElement::ListElement::DrawUnHoverButton(CRect rc_button, int index, int row)
+void UiElement::AbstractListElement::DrawUnHoverButton(CRect rc_button, int index, int row)
 {
     ui->DrawUiIcon(rc_button, GetUnHoverIcon(index, row));
 }
 
-void UiElement::ListElement::OnRowCountChanged()
+void UiElement::AbstractListElement::OnRowCountChanged()
 {
     //如果列表的行数有变化，则清除选中
     SelectNone();
@@ -675,7 +675,7 @@ void UiElement::ListElement::OnRowCountChanged()
         related_search_box->Clear();
 }
 
-void UiElement::ListElement::QuickSearch(const std::wstring& key_word)
+void UiElement::AbstractListElement::QuickSearch(const std::wstring& key_word)
 {
     searched = !key_word.empty();
 
@@ -690,7 +690,7 @@ void UiElement::ListElement::QuickSearch(const std::wstring& key_word)
     }
 }
 
-bool UiElement::ListElement::IsItemMatchKeyWord(int row, const std::wstring& key_word)
+bool UiElement::AbstractListElement::IsItemMatchKeyWord(int row, const std::wstring& key_word)
 {
     bool rtn = false;
     //默认匹配每一列中的文本
@@ -703,7 +703,7 @@ bool UiElement::ListElement::IsItemMatchKeyWord(int row, const std::wstring& key
     return false;
 }
 
-int UiElement::ListElement::GetDisplayRowCount()
+int UiElement::AbstractListElement::GetDisplayRowCount()
 {
     if (searched)
         return search_result.size();
@@ -711,7 +711,7 @@ int UiElement::ListElement::GetDisplayRowCount()
         return GetRowCount();
 }
 
-bool UiElement::ListElement::IsRowDisplayed(int row)
+bool UiElement::AbstractListElement::IsRowDisplayed(int row)
 {
     if (row >= 0 && row < GetRowCount())
     {
@@ -729,7 +729,7 @@ bool UiElement::ListElement::IsRowDisplayed(int row)
     return false;
 }
 
-void UiElement::ListElement::DisplayRowToAbsoluteRow(int& row)
+void UiElement::AbstractListElement::DisplayRowToAbsoluteRow(int& row)
 {
     if (searched)       //查找状态下需要转换行号
     {
@@ -740,7 +740,7 @@ void UiElement::ListElement::DisplayRowToAbsoluteRow(int& row)
     }
 }
 
-void UiElement::ListElement::AbsoluteRowToDisplayRow(int& row)
+void UiElement::AbstractListElement::AbsoluteRowToDisplayRow(int& row)
 {
     if (searched)       //查找状态下需要转换行号
     {
@@ -759,14 +759,14 @@ void UiElement::ListElement::AbsoluteRowToDisplayRow(int& row)
     }
 }
 
-int UiElement::ListElement::GetListIndexByPoint(CPoint point)
+int UiElement::AbstractListElement::GetListIndexByPoint(CPoint point)
 {
     int index = GetDisplayedIndexByPoint(point);
     DisplayRowToAbsoluteRow(index);
     return index;
 }
 
-int UiElement::ListElement::GetDisplayedIndexByPoint(CPoint point)
+int UiElement::AbstractListElement::GetDisplayedIndexByPoint(CPoint point)
 {
     for (size_t i{}; i < item_rects.size(); i++)
     {

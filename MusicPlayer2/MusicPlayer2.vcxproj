@@ -313,7 +313,7 @@
     <ClInclude Include="UIElement\FolderExploreTree.h" />
     <ClInclude Include="UIElement\IconElement.h" />
     <ClInclude Include="UIElement\Layout.h" />
-    <ClInclude Include="UIElement\ListElement.h" />
+    <ClInclude Include="UIElement\AbstractListElement.h" />
     <ClInclude Include="UIElement\LyricsElement.h" />
     <ClInclude Include="UIElement\MediaLibFolder.h" />
     <ClInclude Include="UIElement\MediaLibItemList.h" />
@@ -541,7 +541,7 @@
     <ClCompile Include="UIElement\FolderExploreTree.cpp" />
     <ClCompile Include="UIElement\IconElement.cpp" />
     <ClCompile Include="UIElement\Layout.cpp" />
-    <ClCompile Include="UIElement\ListElement.cpp" />
+    <ClCompile Include="UIElement\AbstractListElement.cpp" />
     <ClCompile Include="UIElement\LyricsElement.cpp" />
     <ClCompile Include="UIElement\MediaLibFolder.cpp" />
     <ClCompile Include="UIElement\MediaLibItemList.cpp" />

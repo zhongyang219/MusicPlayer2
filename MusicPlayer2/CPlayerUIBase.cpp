@@ -6,7 +6,7 @@
 #include "UIElement/UIElement.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UIWindowCmdHelper.h"
-#include "UIElement/ListElement.h"
+#include "UIElement/AbstractListElement.h"
 #include "UIElement/TreeElement.h"
 #include "UIElement/PlaylistIndicator.h"
 #include "UIElement/NavigationBar.h"
@@ -2496,21 +2496,6 @@ void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_tex
     m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + DPI(27);      //设置单个音量调整按钮的宽度
     m_buttons[BTN_VOLUME_UP].rect = m_buttons[BTN_VOLUME_DOWN].rect;
     m_buttons[BTN_VOLUME_UP].rect.MoveToX(m_buttons[BTN_VOLUME_DOWN].rect.right);
-}
-
-void CPlayerUIBase::DrawABRepeatButton(CRect rect)
-{
-    CString info;
-    CPlayer::ABRepeatMode ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
-    if (ab_repeat_mode == CPlayer::AM_A_SELECTED)
-        info = _T("A-");
-    else
-        info = _T("A-B");
-    CFont* pOldFont = m_draw.GetFont();
-    m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
-    m_buttons[BTN_AB_REPEAT].enable = (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
-    DrawTextButton(rect, BTN_AB_REPEAT, info, ab_repeat_mode != CPlayer::AM_NONE);
-    m_draw.SetFont(pOldFont);
 }
 
 void CPlayerUIBase::DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background, bool show_song_info)

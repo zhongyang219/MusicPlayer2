@@ -8,7 +8,7 @@ CListCache UiElement::RecentPlayedList::m_list_cache(CListCache::SubsetType::ST_
 void UiElement::RecentPlayedList::Draw()
 {
     m_list_cache.reload();
-    ListElement::Draw();
+    AbstractListElement::Draw();
 }
 
 std::wstring UiElement::RecentPlayedList::GetItemText(int row, int col)
