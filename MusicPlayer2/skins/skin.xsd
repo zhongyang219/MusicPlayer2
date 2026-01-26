@@ -942,6 +942,16 @@
           关联和的stackElement的id，如果有多个使用半角逗号分隔。如果设置了此属性，则当stackElement切换显示时，与之关联的stackElement也会同步切换显示。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="follow_child_width" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>如果为true，且子元素指定了宽度时，宽度跟随当前显示的子元素。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="follow_child_height" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>如果为true，且子元素指定了高度时，高度跟随当前显示的子元素。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="rectangleType">

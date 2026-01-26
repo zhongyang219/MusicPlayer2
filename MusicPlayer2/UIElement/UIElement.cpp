@@ -121,6 +121,16 @@ void UiElement::Element::ClearRect()
 
 UiElement::Element* UiElement::Element::RootElement()
 {
+    Element* ele{ this };
+    while (ele != nullptr && ele->pParent != nullptr)
+    {
+        ele = ele->pParent;
+    }
+    return ele;
+}
+
+UiElement::Element* UiElement::Element::CurUiRootElement()
+{
     CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
     if (user_ui != nullptr)
     {
@@ -165,7 +175,7 @@ void UiElement::Element::CalculateRect(CRect rect_parent)
     CRect rect_root;
     UiElement::Element* root = RootElement();
     if (root != nullptr)
-        rect_root = RootElement()->GetRect();
+        rect_root = root->GetRect();
     rect = rect_parent;
     if (x.IsValid())
         rect.left = x.GetValue(rect_parent) + rect_root.left;

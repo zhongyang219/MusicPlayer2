@@ -59,7 +59,7 @@ int UiElement::StackElement::GetCurIndex() const
     return cur_index;
 }
 
-std::shared_ptr<UiElement::Element> UiElement::StackElement::CurrentElement()
+std::shared_ptr<UiElement::Element> UiElement::StackElement::CurrentElement() const
 {
     if ((hover_to_switch && mouse_hover) || CheckSizeChangeSwitchCondition())
     {
@@ -72,6 +72,50 @@ std::shared_ptr<UiElement::Element> UiElement::StackElement::CurrentElement()
     {
         return GetElement(cur_index);
     }
+}
+
+int UiElement::StackElement::GetWidth(CRect parent_rect) const
+{
+    if (follow_child_width)
+    {
+        UiElement::Element* child = CurrentElement().get();
+        if (child != nullptr && child->width.IsValid())
+            return child->GetWidth(parent_rect);
+    }
+    return Element::GetWidth(parent_rect);
+}
+
+int UiElement::StackElement::GetHeight(CRect parent_rect) const
+{
+    if (follow_child_height)
+    {
+        UiElement::Element* child = CurrentElement().get();
+        if (child != nullptr && child->height.IsValid())
+            return child->GetHeight(parent_rect);
+    }
+    return Element::GetHeight(parent_rect);
+}
+
+bool UiElement::StackElement::IsWidthValid() const
+{
+    if (follow_child_width)
+    {
+        UiElement::Element* child = CurrentElement().get();
+        if (child != nullptr && child->width.IsValid())
+            return true;
+    }
+    return Element::IsWidthValid();
+}
+
+bool UiElement::StackElement::IsHeightValid() const
+{
+    if (follow_child_height)
+    {
+        UiElement::Element* child = CurrentElement().get();
+        if (child != nullptr && child->height.IsValid())
+            return true;
+    }
+    return Element::IsHeightValid();
 }
 
 bool UiElement::StackElement::LButtonUp(CPoint point)
@@ -153,7 +197,7 @@ bool UiElement::StackElement::MouseWheel(int delta, CPoint point)
     return false;
 }
 
-std::shared_ptr<UiElement::Element> UiElement::StackElement::GetElement(int index)
+std::shared_ptr<UiElement::Element> UiElement::StackElement::GetElement(int index) const
 {
     if (childLst.empty())
         return nullptr;
@@ -163,22 +207,30 @@ std::shared_ptr<UiElement::Element> UiElement::StackElement::GetElement(int inde
         return childLst[0];
 }
 
-bool UiElement::StackElement::CheckSizeChangeSwitchCondition()
+bool UiElement::StackElement::CheckSizeChangeSwitchCondition() const
 {
     if (size_change_to_switch)
     {
         if (size_change_value > 0)
         {
+            int condition_width = rect.Width();
+            int condition_height = rect.Height();
+            //如果设置了跟随子元素宽度/高度，则尺寸变化时切换的宽度/高度应该父节点的宽度/高度
+            if (follow_child_width)
+                condition_width = ParentRect().Width();
+            if (follow_child_height)
+                condition_height = ParentRect().Height();
+
             switch (size_change_condition)
             {
             case SizeChangeSwitchCondition::WIDTH_GREATER_THAN:
-                return rect.Width() > size_change_value;
+                return condition_width > size_change_value;
             case SizeChangeSwitchCondition::WIDTH_LESS_THAN:
-                return rect.Width() < size_change_value;
+                return condition_width < size_change_value;
             case SizeChangeSwitchCondition::HEIGHT_GREATER_THAN:
-                return rect.Height() > size_change_value;
+                return condition_height > size_change_value;
             case SizeChangeSwitchCondition::HEIGHT_LESS_THAN:
-                return rect.Height() < size_change_value;
+                return condition_height < size_change_value;
             default:
                 return false;
             }

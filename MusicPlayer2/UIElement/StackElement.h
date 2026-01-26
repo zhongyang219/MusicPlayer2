@@ -32,11 +32,19 @@ namespace UiElement
         int size_change_value{};        //满足尺寸变化切换条件的值，仅当size_change_to_switch为true时有效
         std::set<std::string> related_stack_elements;
 
+        bool follow_child_width{};
+        bool follow_child_height{};
+
         CPlayerUIBase* GetUI() const { return ui; }
 
     public:
         int GetCurIndex() const;
-        std::shared_ptr<Element> CurrentElement();
+        std::shared_ptr<Element> CurrentElement() const;
+
+        virtual int GetWidth(CRect parent_rect) const;
+        virtual int GetHeight(CRect parent_rect) const;
+        virtual bool IsWidthValid() const;
+        virtual bool IsHeightValid() const;
 
         virtual bool LButtonUp(CPoint point) override;
         virtual bool LButtonDown(CPoint point) override;
@@ -45,8 +53,8 @@ namespace UiElement
         virtual bool MouseWheel(int delta, CPoint point) override;
 
     protected:
-        std::shared_ptr<Element> GetElement(int index);
-        bool CheckSizeChangeSwitchCondition();      //判断是否满足尺寸变化切换条件
+        std::shared_ptr<Element> GetElement(int index) const;
+        bool CheckSizeChangeSwitchCondition() const;      //判断是否满足尺寸变化切换条件
         void IndexChanged();
 
     protected:

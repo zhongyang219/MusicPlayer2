@@ -54,7 +54,7 @@ namespace UiElement
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         virtual void ClearRect();
-        Element* RootElement();       //获取根节点
+
         //遍历所有界面元素
         //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点
         void IterateAllElements(std::function<bool(UiElement::Element*)> func, bool visible_only = false);
@@ -99,6 +99,11 @@ namespace UiElement
         virtual void CalculateRect();           //计算此元素在界面中的矩形区域
         static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func, bool visible_only = false);
 
+    private:
+        Element* RootElement();       //获取根节点
+        Element* CurUiRootElement();
+
+    public:
         //查找一个关联的节点
         //返回值：查找结果
         template<class T>
@@ -137,20 +142,16 @@ namespace UiElement
         {
             UiElement::Element* root = RootElement();
             if (root != nullptr)
+                rtn_element = root->FindElement<T>(id);
+            if (rtn_element == nullptr)
             {
-                root->IterateAllElements([&](UiElement::Element* ele)->bool {
-                    T* _element = dynamic_cast<T*>(ele);
-                    if (_element != nullptr && ele->id == id)
-                    {
-                        rtn_element = _element;
-                        return true;
-                    }
-                    return false;
-                });
-                if (rtn_element != nullptr)
-                    return rtn_element;
+                root = CurUiRootElement();
+                if (root != nullptr)
+                    rtn_element = root->FindElement<T>(id);
             }
         }
+        if (rtn_element != nullptr)
+            return rtn_element;
 
         UiElement::Element* parent = pParent;
         while (parent != nullptr)

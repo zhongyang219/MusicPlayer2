@@ -920,6 +920,8 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 CCommon::StringSplit(str_related_stack_elements, ',', vec_related_stack_elements);
                 for (const auto& str : vec_related_stack_elements)
                     stack_element->related_stack_elements.insert(str);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "follow_child_width", stack_element->follow_child_width);
+                CTinyXml2Helper::GetElementAttributeBool(xml_node, "follow_child_height", stack_element->follow_child_height);
             }
         }
         //播放控制栏
