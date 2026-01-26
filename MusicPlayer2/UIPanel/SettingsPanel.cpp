@@ -246,8 +246,13 @@ void CSettingsPanel::OnDeleteMediaLibFolderClicked()
 	int index = media_lib_forder_list->GetItemSelected();
 	if (index >= 0 && index < static_cast<int>(m_media_lib_data.media_folders.size()))
 	{
-		m_media_lib_data.media_folders.erase(m_media_lib_data.media_folders.begin() + index);
-		media_lib_forder_list->DeleteRow(index);
-		OnSettingsChanged();
+		std::wstring str_selected_folder = media_lib_forder_list->GetItemText(index, 0);
+		std::wstring str_info = theApp.m_str_table.LoadTextFormat(L"MSG_DELETE_MEDIALIB_FOLDER_INQUIRY", { str_selected_folder });
+		if (theApp.m_pMainWnd->MessageBox(str_info.c_str(), NULL, MB_ICONQUESTION | MB_YESNO) == IDYES)
+		{
+			m_media_lib_data.media_folders.erase(m_media_lib_data.media_folders.begin() + index);
+			media_lib_forder_list->DeleteRow(index);
+			OnSettingsChanged();
+		}
 	}
 }
