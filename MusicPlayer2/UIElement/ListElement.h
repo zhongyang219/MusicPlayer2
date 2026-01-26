@@ -9,9 +9,11 @@ namespace UiElement
         void SetColumnCount(int column_count);
         void SetColumnWidth(int col, int width);
         void AddRow(const std::map<int, std::wstring>& row_data);
+        void AddRow(const std::wstring& str);
         bool DeleteRow(int row);
         bool SetColumnText(int row, int col, const wstring& text);
         void SetIcom(int row, IconMgr::IconType icon);
+        void ClearData();
 
         // 通过 AbstractListElement 继承
         virtual std::wstring GetItemText(int row, int col) override;
@@ -29,6 +31,8 @@ namespace UiElement
         int m_column_count{ 1 };
         std::map<int, int> m_col_width;
         std::map<int, IconMgr::IconType> m_icons;
+        std::mutex m_list_data_sync;
+        std::mutex m_list_icon_sync;
     };
 }
 

@@ -2,6 +2,7 @@
 #include "PlayerUIPanel.h"
 #include "UIElement/CombinedElement/ToggleSettingGroup.h"
 #include "UIElement/Text.h"
+#include "UIElement/ListElement.h"
 
 class CSettingsPanel : public CPlayerUIPanel
 {
@@ -20,6 +21,10 @@ private:
 
     void OnBnClickedSetFontButton();
     void OnUiIntervalChanged(bool up);
+
+    void OnClearSongDataBtnClicked();
+    void OnAddMediaLibFolderClicked();
+    void OnDeleteMediaLibFolderClicked();
 
 private:
     LyricSettingData m_lyrics_data;
@@ -48,6 +53,6 @@ private:
 
     //媒体库设置控件
     UiElement::Text* clear_medialib_text;
-
+    UiElement::ListElement* media_lib_forder_list;
 };
 

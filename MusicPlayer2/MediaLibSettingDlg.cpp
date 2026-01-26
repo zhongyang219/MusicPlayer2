@@ -25,23 +25,104 @@ CMediaLibSettingDlg::~CMediaLibSettingDlg()
 {
 }
 
-void CMediaLibSettingDlg::ShowDataSizeInfo()
+bool CMediaLibSettingDlg::OnCleanDataFile(MediaLibSettingData& setting_data, size_t& data_size)
+{
+    wstring osu_floder{};
+    for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
+        if (COSUPlayerHelper::IsOsuFolder(item))
+            osu_floder = item;
+    CCleanupRangeDlg dlg;
+    dlg.SetCleanFileNonMainInOsuEnable(!osu_floder.empty());
+    if (dlg.DoModal() == IDOK)
+    {
+        CWaitCursor wait_cursor;	//显示等待光标
+        data_size = CCommon::GetFileSize(theApp.m_song_data_path);
+        int clear_cnt{};
+        if (dlg.IsCleanFileNotExist())  // 0
+        {
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData();
+        }
+        if (dlg.IsCleanFileNotInMediaLibDir())  // 1
+        {
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
+                {
+                    for (const auto& dir : setting_data.media_folders)
+                    {
+                        if (song.file_path.find(dir) == 0)
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+        }
+        if (dlg.IsCleanFileWrong())     // 2
+        {
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
+                {
+                    bool length_is_zero = (song.length().isZero() && CFilePathHelper(song.file_path).GetFileExtension() != L"cue");
+                    bool path_invalid = (!CCommon::IsPath(song.file_path) || song.file_path.back() == L'/' || song.file_path.back() == L'\\');
+                    bool time_error = (song.length() == CPlayTime(25197, 8, 489));   // 这是个旧错误，我媒体库里有大量来自osu!的0时长的RIFF WAV被记录为这个时长
+                    return length_is_zero || path_invalid || time_error;
+                });
+        }
+        if (dlg.IsCleanFileTooShort())  // 3
+        {
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
+                {
+                    return song.length().toInt() < setting_data.file_too_short_sec * 1000;
+                });
+        }
+        if (dlg.IsCleanFileNonMainInOsu())  // 4
+        {
+            vector<wstring> osu_songs;
+            COSUPlayerHelper::GetOSUAudioFiles(osu_floder, osu_songs);
+            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
+                {
+                    if (song.file_path.find(osu_floder) == wstring::npos) return false; // 跳过不在osu!目录的条目
+                    return !CCommon::IsItemInVector(osu_songs, song.file_path);     // 清除非主要曲目的文件
+                });
+        }
+        if (clear_cnt > 0)
+        {
+            theApp.SaveSongData();		//清理后将数据写入文件
+            theApp.UpdateUiMeidaLibItems();     //更新UI中的媒体库显示
+        }
+
+        size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);	 //清理后数据文件的大小
+        int size_reduced = data_size - data_size;		//清理后数据文件减少的字节数
+        if (size_reduced < 0) size_reduced = 0;
+        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_MEDIA_LIB_DATA_FILE_CLEAR_COMPLETE", { clear_cnt, size_reduced });
+        AfxMessageBox(info.c_str(), MB_ICONINFORMATION);
+        data_size = data_size;
+        return true;
+    }
+    return false;
+}
+
+std::wstring CMediaLibSettingDlg::GetDataSizeString(size_t data_size)
 {
     wstring info;
-    if (m_data_size < 1024)
-        info = theApp.m_str_table.LoadTextFormat(L"TXT_OPT_MEDIA_LIB_CURRENT_DATA_FILE_SIZE_BYTE", { m_data_size });
-    else if (m_data_size < 1024 * 1024)
+    if (data_size < 1024)
+        info = theApp.m_str_table.LoadTextFormat(L"TXT_OPT_MEDIA_LIB_CURRENT_DATA_FILE_SIZE_BYTE", { data_size });
+    else if (data_size < 1024 * 1024)
     {
         std::wstringstream wss;
-        wss << std::fixed << std::setprecision(2) << static_cast<float>(m_data_size) / 1024.0f;
-        info = theApp.m_str_table.LoadTextFormat(L"TXT_OPT_MEDIA_LIB_CURRENT_DATA_FILE_SIZE_KB", { m_data_size, wss.str() });
+        wss << std::fixed << std::setprecision(2) << static_cast<float>(data_size) / 1024.0f;
+        info = theApp.m_str_table.LoadTextFormat(L"TXT_OPT_MEDIA_LIB_CURRENT_DATA_FILE_SIZE_KB", { data_size, wss.str() });
     }
     else
     {
         std::wstringstream wss;
-        wss << std::fixed << std::setprecision(2) << static_cast<float>(m_data_size) / 1024.0f / 1024.0f;
-        info = theApp.m_str_table.LoadTextFormat(L"TXT_OPT_MEDIA_LIB_CURRENT_DATA_FILE_SIZE_MB", { m_data_size, wss.str() });
+        wss << std::fixed << std::setprecision(2) << static_cast<float>(data_size) / 1024.0f / 1024.0f;
+        info = theApp.m_str_table.LoadTextFormat(L"TXT_OPT_MEDIA_LIB_CURRENT_DATA_FILE_SIZE_MB", { data_size, wss.str() });
     }
+    return info;
+}
+
+void CMediaLibSettingDlg::ShowDataSizeInfo()
+{
+    wstring info = GetDataSizeString(m_data_size);
     SetDlgItemText(IDC_SIZE_STATIC, info.c_str());
 }
 
@@ -421,77 +502,8 @@ void CMediaLibSettingDlg::OnBnClickedDeleteButton()
 
 void CMediaLibSettingDlg::OnBnClickedCleanDataFileButton()
 {
-    // TODO: 在此添加控件通知处理程序代码
-
-    wstring osu_floder{};
-    for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
-        if (COSUPlayerHelper::IsOsuFolder(item))
-            osu_floder = item;
-    CCleanupRangeDlg dlg;
-    dlg.SetCleanFileNonMainInOsuEnable(!osu_floder.empty());
-    if (dlg.DoModal() == IDOK)
-    {
-        CWaitCursor wait_cursor;	//显示等待光标
-        int clear_cnt{};
-        if (dlg.IsCleanFileNotExist())  // 0
-        {
-            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData();
-        }
-        if (dlg.IsCleanFileNotInMediaLibDir())  // 1
-        {
-            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
-                {
-                    for (const auto& dir : m_data.media_folders)
-                    {
-                        if (song.file_path.find(dir) == 0)
-                        {
-                            return false;
-                        }
-                    }
-                    return true;
-                });
-        }
-        if (dlg.IsCleanFileWrong())     // 2
-        {
-            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
-                {
-                    bool length_is_zero = (song.length().isZero() && CFilePathHelper(song.file_path).GetFileExtension() != L"cue");
-                    bool path_invalid = (!CCommon::IsPath(song.file_path) || song.file_path.back() == L'/' || song.file_path.back() == L'\\');
-                    bool time_error = (song.length() == CPlayTime(25197, 8, 489));   // 这是个旧错误，我媒体库里有大量来自osu!的0时长的RIFF WAV被记录为这个时长
-                    return length_is_zero || path_invalid || time_error;
-                });
-        }
-        if (dlg.IsCleanFileTooShort())  // 3
-        {
-            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
-                {
-                    return song.length().toInt() < m_data.file_too_short_sec * 1000;
-                });
-        }
-        if (dlg.IsCleanFileNonMainInOsu())  // 4
-        {
-            vector<wstring> osu_songs;
-            COSUPlayerHelper::GetOSUAudioFiles(osu_floder, osu_songs);
-            clear_cnt += CMusicPlayerCmdHelper::CleanUpSongData([&](const SongInfo& song)
-                {
-                    if (song.file_path.find(osu_floder) == wstring::npos) return false; // 跳过不在osu!目录的条目
-                    return !CCommon::IsItemInVector(osu_songs, song.file_path);     // 清除非主要曲目的文件
-                });
-        }
-        if (clear_cnt > 0)
-        {
-            theApp.SaveSongData();		//清理后将数据写入文件
-            theApp.UpdateUiMeidaLibItems();     //更新UI中的媒体库显示
-        }
-
-        size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);	 //清理后数据文件的大小
-        int size_reduced = m_data_size - data_size;		//清理后数据文件减少的字节数
-        if (size_reduced < 0) size_reduced = 0;
-        wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_MEDIA_LIB_DATA_FILE_CLEAR_COMPLETE", { clear_cnt, size_reduced });
-        MessageBox(info.c_str(), NULL, MB_ICONINFORMATION);
-        m_data_size = data_size;
-        ShowDataSizeInfo();
-    }
+    OnCleanDataFile(m_data, m_data_size);
+    ShowDataSizeInfo();
 }
 
 

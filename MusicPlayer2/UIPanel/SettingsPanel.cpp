@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "MusicPlayerDlg.h"
 #include "FontDialogEx.h"
+#include "MediaLibSettingDlg.h"
 
 CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	: CPlayerUIPanel(ui, IDR_SETTINGS_PANEL)
@@ -96,6 +97,22 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	//媒体库设置
 	UiElement::ToggleSettingGroup* update_medialib_when_start_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("updateMedialibWhenStart");
 	update_medialib_when_start_btn->GetToggleBtn()->BindBool(&theApp.m_media_lib_setting_data.update_media_lib_when_start_up);
+	clear_medialib_text = m_root_element->FindElement<UiElement::Text>("clearMedialibText");
+	UiElement::Button* clear_song_data_btn = m_root_element->FindElement<UiElement::Button>("clearMedialibBtn");
+	clear_song_data_btn->SetClickedTrigger([&](UiElement::Button* sender) {
+		OnClearSongDataBtnClicked();
+	});
+	media_lib_forder_list = m_root_element->FindElement<UiElement::ListElement>("mediaLibFolderList");
+	media_lib_forder_list->SetColumnCount(1);
+	UiElement::Button* add_media_lib_folder_btn = m_root_element->FindElement<UiElement::Button>("addMediaLibFolderBtn");
+	add_media_lib_folder_btn->SetClickedTrigger([&](UiElement::Button* sender) {
+		OnAddMediaLibFolderClicked();
+	});
+	UiElement::Button* delete_media_lib_folder_btn = m_root_element->FindElement<UiElement::Button>("deleteMediaLibFolderBtn");
+	delete_media_lib_folder_btn->SetClickedTrigger([&](UiElement::Button* sender) {
+		OnDeleteMediaLibFolderClicked();
+	});
+
 
 	//更新控件的状态
 	SettingDataToUi();
@@ -142,7 +159,14 @@ void CSettingsPanel::SettingDataToUi()
 	use_standard_titlebar->GetToggleBtn()->SetChecked(m_apperence_data.show_window_frame);
 	ui_refresh_interfal_value->SetText(std::to_wstring(m_apperence_data.ui_refresh_interval));
 	config_file_dir_text->SetText(theApp.m_appdata_dir);
-	//clear_medialib_text->SetText()
+	size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);
+	clear_medialib_text->SetText(CMediaLibSettingDlg::GetDataSizeString(data_size));
+
+	media_lib_forder_list->ClearData();
+	for (const auto& str_folder : m_media_lib_data.media_folders)
+	{
+		media_lib_forder_list->AddRow(str_folder);
+	}
 }
 
 void CSettingsPanel::OnSettingsChanged() const
@@ -188,4 +212,39 @@ void CSettingsPanel::OnUiIntervalChanged(bool up)
 	m_apperence_data.ui_refresh_interval = (m_apperence_data.ui_refresh_interval / UI_INTERVAL_STEP * UI_INTERVAL_STEP);
 	CCommon::SetNumRange(m_apperence_data.ui_refresh_interval, MIN_UI_INTERVAL, MAX_UI_INTERVAL);
 	ui_refresh_interfal_value->SetText(std::to_wstring(m_apperence_data.ui_refresh_interval));
+}
+
+void CSettingsPanel::OnClearSongDataBtnClicked()
+{
+	size_t data_size{};
+	if (CMediaLibSettingDlg::OnCleanDataFile(m_media_lib_data, data_size))
+	{
+		clear_medialib_text->SetText(CMediaLibSettingDlg::GetDataSizeString(data_size));
+	}
+}
+
+void CSettingsPanel::OnAddMediaLibFolderClicked()
+{
+	CFolderPickerDialog dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		std::wstring dir_str = dlg.GetPathName().GetString();
+		if (!CCommon::IsItemInVector(m_media_lib_data.media_folders, dir_str))
+		{
+			m_media_lib_data.media_folders.push_back(dir_str);
+			media_lib_forder_list->AddRow(dir_str);
+			OnSettingsChanged();
+		}
+	}
+}
+
+void CSettingsPanel::OnDeleteMediaLibFolderClicked()
+{
+	int index = media_lib_forder_list->GetItemSelected();
+	if (index >= 0 && index < static_cast<int>(m_media_lib_data.media_folders.size()))
+	{
+		m_media_lib_data.media_folders.erase(m_media_lib_data.media_folders.begin() + index);
+		media_lib_forder_list->DeleteRow(index);
+		OnSettingsChanged();
+	}
 }

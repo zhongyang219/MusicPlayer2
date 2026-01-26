@@ -153,7 +153,9 @@
           <!--第5页 媒体库设置-->
           <scrollArea>
             <verticalLayout>
+              <!--启动时自动更新媒体-->
               <toggleSettingGroup id="updateMedialibWhenStart" height="60" icon="refresh" mainText="%(TXT_OPT_MEDIA_LIB_AUTO_UPDATE_WHEN_STARTUP)"/>
+              <!--清理媒体库-->
               <rectangle height="60" margin-top="4">
                 <horizontalLayout>
                   <icon icon="lyric" width="52"/>
@@ -164,6 +166,28 @@
                   <button id="clearMedialibBtn" icon="shortcut" height="28" text="%(TXT_OPT_MEDIA_LIB_DATA_FILE_CLEAN)" show_text="true" margin-right="16"/>
                 </horizontalLayout>
               </rectangle>
+              <!--媒体库目录-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="folder" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_MEDIA_LIB_MEDIA_LIB_DIR)" height="20"/>
+                    <text text="%(TXT_OPT_DESC_MEDIA_LIB_DIR)" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                </horizontalLayout>
+              </rectangle>
+              <horizontalLayout margin-top="4" height="100">
+                <rectangle theme_color="false" margin-left="52">
+                  <listElement id="mediaLibFolderList"/>
+                </rectangle>
+                <verticalLayout width="90" margin-left="8">
+                  <button id="addMediaLibFolderBtn" height="30" icon="add" text="%(UI_TXT_PLAYLIST_TOOLBAR_ADD)" show_text="true"/>
+                  <button id="deleteMediaLibFolderBtn" height="30" margin-top="4" icon="close" text="%(UI_TXT_PLAYLIST_TOOLBAR_DELETE)" show_text="true"/>
+                  <placeHolder/>
+                </verticalLayout>
+              </horizontalLayout>
+
+
             </verticalLayout>
           </scrollArea>
           

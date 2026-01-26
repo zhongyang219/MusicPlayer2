@@ -22,6 +22,16 @@ public:
 
     MediaLibSettingData m_data;
 
+    /**
+     * 执行清理数据文件操作
+     * @param setting_data 媒体库设置数据
+     * @param data_size 清理后
+     */
+    static bool OnCleanDataFile(MediaLibSettingData& setting_data, size_t& data_size);
+    
+    //获取数据文件大小字符串
+    static std::wstring GetDataSizeString(size_t data_size);
+
 private:
     CListBoxEnhanced m_dir_list_ctrl;
     CMyComboBox m_playlist_display_mode_combo;

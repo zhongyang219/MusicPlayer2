@@ -13,6 +13,15 @@ void UiElement::ListElement::SetColumnWidth(int col, int width)
 
 void UiElement::ListElement::AddRow(const std::map<int, std::wstring>& row_data)
 {
+	std::lock_guard<std::mutex> guard(m_list_data_sync);
+	m_list_data.push_back(row_data);
+}
+
+void UiElement::ListElement::AddRow(const std::wstring& str)
+{
+	std::lock_guard<std::mutex> guard(m_list_data_sync);
+	std::map<int, std::wstring> row_data;
+	row_data[0] = str;
 	m_list_data.push_back(row_data);
 }
 
@@ -20,6 +29,7 @@ bool UiElement::ListElement::DeleteRow(int row)
 {
 	if (row >= 0 && row < GetRowCount())
 	{
+		std::lock_guard<std::mutex> guard(m_list_data_sync);
 		m_list_data.erase(m_list_data.begin() + row);
 		return true;
 	}
@@ -30,6 +40,7 @@ bool UiElement::ListElement::SetColumnText(int row, int col, const wstring& text
 {
 	if (row >= 0 && row < GetRowCount() && col >= 0 && col < GetColumnCount())
 	{
+		std::lock_guard<std::mutex> guard(m_list_data_sync);
 		m_list_data[row][col] = text;
 		return true;
 	}
@@ -38,13 +49,21 @@ bool UiElement::ListElement::SetColumnText(int row, int col, const wstring& text
 
 void UiElement::ListElement::SetIcom(int row, IconMgr::IconType icon)
 {
+	std::lock_guard<std::mutex> guard(m_list_icon_sync);
 	m_icons[row] = icon;
+}
+
+void UiElement::ListElement::ClearData()
+{
+	std::lock_guard<std::mutex> guard(m_list_data_sync);
+	m_list_data.clear();
 }
 
 std::wstring UiElement::ListElement::GetItemText(int row, int col)
 {
 	if (row >= 0 && row < GetRowCount() && col >= 0 && col < GetColumnCount())
 	{
+		std::lock_guard<std::mutex> guard(m_list_data_sync);
 		const auto& row_data = m_list_data[row];
 		auto iter = row_data.find(col);
 		if (iter != row_data.end())
@@ -55,6 +74,7 @@ std::wstring UiElement::ListElement::GetItemText(int row, int col)
 
 int UiElement::ListElement::GetRowCount()
 {
+	std::lock_guard<std::mutex> guard(m_list_data_sync);
 	return static_cast<int>(m_list_data.size());
 }
 
@@ -87,6 +107,7 @@ int UiElement::ListElement::GetColumnWidth(int col, int total_width)
 
 IconMgr::IconType UiElement::ListElement::GetIcon(int row)
 {
+	std::lock_guard<std::mutex> guard(m_list_icon_sync);
 	auto iter = m_icons.find(row);
 	if (iter != m_icons.end())
 		return iter->second;
@@ -95,6 +116,7 @@ IconMgr::IconType UiElement::ListElement::GetIcon(int row)
 
 bool UiElement::ListElement::HasIcon()
 {
+	std::lock_guard<std::mutex> guard(m_list_icon_sync);
 	return !m_icons.empty();
 }
 
