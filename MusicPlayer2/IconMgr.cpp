@@ -280,6 +280,8 @@ std::tuple<UINT, UINT, UINT, UINT> IconMgr::GetIconID(IconType type)
         return { IDI_ARROW_LEFT_D, IDI_ARROW_LEFT, NULL, NULL };
     case IconMgr::IconType::IT_CheckBox:
         return { NULL, IDI_CHECKBOX, NULL, NULL };
+    case IconMgr::IconType::IT_Delete:
+        return { IDI_DELETE_D, IDI_DELETE, NULL, NULL };
     case IconMgr::IconType::IT_Le_Tag_Insert:
         return { NULL, NULL, NULL, IDI_ADD_TAG };
     case IconMgr::IconType::IT_Le_Tag_Replace:

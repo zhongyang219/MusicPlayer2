@@ -170,7 +170,7 @@
               <!--清理媒体库-->
               <rectangle height="60" margin-top="4">
                 <horizontalLayout>
-                  <icon icon="lyric" width="52"/>
+                  <icon icon="delete" width="52"/>
                   <verticalLayout>
                     <text font_size="10" text="%(TXT_OPT_MEDIA_LIB_CLEAN_MEDIA_LIB)" height="20"/>
                     <text id="clearMedialibText" color_style="emphasis1" height="20"/>

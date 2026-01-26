@@ -440,7 +440,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
     case MenuMgr::MainPlaylistDelMenu:
         menu.CreateMenu(true, true);
         menu.AppendItem(EX_ID(ID_REMOVE_FROM_PLAYLIST), IconMgr::IconType::IT_Cancel);
-        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK));
+        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK), IconMgr::IconType::IT_Delete);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_EMPTY_PLAYLIST));
         menu.AppendItem(EX_ID(ID_REMOVE_SAME_SONGS));
@@ -706,7 +706,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_RELOAD_PLAYLIST), IconMgr::IconType::IT_Loop_Playlist);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_REMOVE_FROM_PLAYLIST), IconMgr::IconType::IT_Cancel);
-        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK));
+        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK), IconMgr::IconType::IT_Delete);
         menu.AppendSeparator();
         menu.AppendSubMenu(AddToPlaylistMenu, IconMgr::IconType::IT_Add);
         menu.AppendItem(EX_ID(ID_COPY_FILE_TO));
@@ -856,7 +856,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_FORMAT_CONVERT), IconMgr::IconType::IT_Convert);
         menu.AppendItem(EX_ID(ID_EXPLORE_TRACK), IconMgr::IconType::IT_Folder_Explore);
         menu.AppendItem(EX_ID(ID_REMOVE_FROM_PLAYLIST), IconMgr::IconType::IT_Cancel);
-        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK));
+        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK), IconMgr::IconType::IT_Delete);
         menu.AppendItem(EX_ID(ID_ITEM_PROPERTY), IconMgr::IconType::IT_Info);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
@@ -906,7 +906,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_FORMAT_CONVERT), IconMgr::IconType::IT_Convert);
         menu.AppendItem(EX_ID(ID_EXPLORE_TRACK), IconMgr::IconType::IT_Folder_Explore);
         menu.AppendItem(EX_ID(ID_REMOVE_FROM_PLAYLIST), IconMgr::IconType::IT_Cancel);
-        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK));
+        menu.AppendItem(EX_ID(ID_DELETE_FROM_DISK), IconMgr::IconType::IT_Delete);
         menu.AppendItem(EX_ID(ID_ITEM_PROPERTY), IconMgr::IconType::IT_Info);
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
