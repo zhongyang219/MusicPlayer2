@@ -17,6 +17,17 @@
             <toggleButton id="toggleBtn1" width="80" margin-right="16"/>
           </horizontalLayout>
         </rectangle>
+
+        <horizontalLayout margin-top="8">
+          <rectangle theme_color="false">
+            <listElement id="list1"/>
+          </rectangle>
+          <verticalLayout width="90" margin-left="8">
+            <button id="addBtn" height="30" icon="add" text="%(UI_TXT_PLAYLIST_TOOLBAR_ADD)" show_text="true"/>
+            <button id="deleteBtn" height="30" icon="close" text="%(UI_TXT_PLAYLIST_TOOLBAR_DELETE)" show_text="true"/>
+            <placeHolder/>
+          </verticalLayout>
+        </horizontalLayout>
         
         <placeHolder/>
         <text id="text1" type="userDefine" height="20"/>

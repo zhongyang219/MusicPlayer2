@@ -1128,6 +1128,9 @@
     <ClInclude Include="UIElement\AbstractScrollArea.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\ListElement.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1785,6 +1788,9 @@
       <Filter>UIElement</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\AbstractScrollArea.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\ListElement.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>

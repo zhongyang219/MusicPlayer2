@@ -23,6 +23,14 @@ CTestPanel::CTestPanel(CPlayerUIBase* ui)
 
 	m_text1 = m_root_element->FindElement<UiElement::Text>("text1");
 	m_text2 = m_root_element->FindElement<UiElement::Text>("text2");
+	m_list1 = m_root_element->FindElement<UiElement::ListElement>("list1");
+	m_list1->SetColumnCount(2);
+	m_list1->SetColumnWidth(0, ui->DPI(80));
+
+	auto* add_btn = m_root_element->FindElement<UiElement::Button>("addBtn");
+	add_btn->SetClickedTrigger([&](UiElement::Button* sender) { OnAddClicked(sender); });
+	auto* del_btn = m_root_element->FindElement<UiElement::Button>("deleteBtn");
+	del_btn->SetClickedTrigger([&](UiElement::Button* sender) { OnDeleteClicked(sender); });
 }
 
 void CTestPanel::OnOkClicked(UiElement::Button* sender)
@@ -52,5 +60,21 @@ void CTestPanel::OnToggleBtnClicked(UiElement::ToggleButton* sender)
 		m_text2->text = _T("开关已打开");
 	else
 		m_text2->text = _T("开关已关闭");
+}
+
+void CTestPanel::OnAddClicked(UiElement::Button* sender)
+{
+	std::map<int, std::wstring> row_data;
+	int row = m_list1->GetRowCount();
+	row_data[0] = std::to_wstring(row + 1);
+	row_data[1] = L"第" + std::to_wstring(row + 1) + L"行";
+	m_list1->AddRow(row_data);
+}
+
+void CTestPanel::OnDeleteClicked(UiElement::Button* sender)
+{
+	int row = m_list1->GetItemSelected();
+	if (row >= 0 && row < m_list1->GetRowCount())
+		m_list1->DeleteRow(row);
 }
 

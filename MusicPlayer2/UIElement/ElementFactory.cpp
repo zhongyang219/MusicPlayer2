@@ -88,6 +88,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::ToggleSettingGroup>();
     else if (name == "scrollArea")
         element = std::make_shared<UiElement::ScrollArea>();
+    else if (name == "listElement")
+        element = std::make_shared<UiElement::ListElement>();
 
     if (element != nullptr)
         element->SetUi(ui);

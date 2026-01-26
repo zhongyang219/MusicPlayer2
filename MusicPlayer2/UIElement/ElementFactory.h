@@ -36,6 +36,7 @@
 #include "UIElement/ToggleButton.h"
 #include "CombinedElement/ToggleSettingGroup.h"
 #include "UIElement/ScrollArea.h"
+#include "UIElement/ListElement.h"
 
 namespace UiElement
 {

@@ -4,6 +4,7 @@
 #include "UIElement/CheckBox.h"
 #include "UIElement/Text.h"
 #include "UIElement/ToggleButton.h"
+#include "UIElement/ListElement.h"
 class CTestPanel : public CPlayerUIPanel
 {
 public:
@@ -14,6 +15,8 @@ private:
 	void OnCancelClicked(UiElement::Button* sender);
 	void OnCheckBox1Clicked(UiElement::CheckBox* sender);
 	void OnToggleBtnClicked(UiElement::ToggleButton* sender);
+	void OnAddClicked(UiElement::Button* sender);
+	void OnDeleteClicked(UiElement::Button* sender);
 
 private:
 	UiElement::Button* m_ok_btn{};
@@ -22,5 +25,7 @@ private:
 	UiElement::ToggleButton* m_toggle_btn{};
 	UiElement::Text* m_text1{};
 	UiElement::Text* m_text2{};
+
+	UiElement::ListElement* m_list1{};
 };
 
