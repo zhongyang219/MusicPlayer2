@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "UIElement/ProgressBar.h"
 #include "UIElement/Button.h"
 #include "UIElement/StackElement.h"
@@ -9,10 +9,13 @@ namespace UiElement
     {
     public:
         ClassicalControlBar();
-        virtual void Draw() override;
 
     protected:
         virtual void InitComplete() override;
+
+        virtual int GetHeight(CRect parent_rect) const;
+        virtual bool IsHeightValid() const;
+
 
     public:
         bool show_switch_display_btn{};

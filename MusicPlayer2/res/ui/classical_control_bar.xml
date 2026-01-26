@@ -1,6 +1,6 @@
 <root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd">
   <element>
-    <stackElement id="classical_control_bar_stack_element" size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="350">
+    <stackElement id="classical_control_bar_stack_element" size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="350" follow_child_height="true">
       <!--进度条在中间的布局-->
       <horizontalLayout height="36">
         <button key="stop" bigIcon="true" width="36" height="36"/>
@@ -10,12 +10,12 @@
         <progressBar show_play_time="true" margin-left="4"/>
         <button key="favorite" width="24" height="24" margin-left="4"/>
         <button key="addToPlaylist" width="24" height="24" margin-left="2"/>
-        <button key="switchDisplay" text="%(UI_TIP_BTN_SWITCH_LYRIC_PLAYLIST)" width="24" height="24" margin-left="2"/>
+        <button id="switch_display_btn1" key="switchDisplay" text="%(UI_TIP_BTN_SWITCH_LYRIC_PLAYLIST)" width="24" height="24" margin-left="2"/>
         <button key="mediaLib" width="24" height="24" margin-left="2"/>
         <button key="showPlaylist" width="24" height="24" margin-left="2"/>
       </horizontalLayout>
       <!--进度条在上方的布局-->
-      <verticalLayout>
+      <verticalLayout height="56">
         <progressBar show_play_time="true"/>
         <horizontalLayout height="36">
           <button key="stop" bigIcon="true" width="36" height="36"/>
@@ -25,7 +25,7 @@
           <placeHolder/>
           <button key="favorite" width="24" height="24"/>
           <button key="addToPlaylist" width="24" height="24" margin-left="2"/>
-          <button key="switchDisplay" text="%(UI_TIP_BTN_SWITCH_LYRIC_PLAYLIST)" width="24" height="24" margin-left="2"/>
+          <button id="switch_display_btn2" key="switchDisplay" text="%(UI_TIP_BTN_SWITCH_LYRIC_PLAYLIST)" width="24" height="24" margin-left="2"/>
           <button key="mediaLib" width="24" height="24" margin-left="2"/>
           <button key="showPlaylist" width="24" height="24" margin-left="2"/>
         </horizontalLayout>

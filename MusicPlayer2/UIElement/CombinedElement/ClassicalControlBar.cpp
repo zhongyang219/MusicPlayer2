@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "ClassicalControlBar.h"
 #include "TinyXml2Helper.h"
 #include "UserUi.h"
@@ -6,49 +6,34 @@
 UiElement::ClassicalControlBar::ClassicalControlBar()
     : CombinedElement(IDR_CLASSICAL_CONTROL_BAR)
 {
-    height.FromString("56");
-}
-
-void UiElement::ClassicalControlBar::Draw()
-{
-    if (m_stack_element != nullptr)
-    {
-        //Èç¹ûstackElementµ±Ç°ÏÔÊ¾µÄÊÇ½ø¶ÈÌõÔÚÖÐ¼äµÄ²¼¾Ö£¬Ôò¸ß¶ÈÉèÖÃÎª36£¬Èç¹ûÊÇ½ø¶ÈÌõÔÚÉÏ·½µÄ²¼¾Ö£¬Ôò¸ß¶ÈÉèÖÃÎª56
-        if (!m_stack_element->childLst.empty() && m_stack_element->CurrentElement() == m_stack_element->childLst[0])
-            height.FromString("36");
-        else
-            height.FromString("56");
-    }
-    CalculateRect();
-
-    CombinedElement::Draw();
 }
 
 void UiElement::ClassicalControlBar::InitComplete()
 {
     CombinedElement::InitComplete();
 
-    //Èç¹ûshow_switch_display_btnÎªfalse£¬ÔòÕÒµ½keyÎªswitchDisplayµÄButtonÔªËØ£¬²¢½«ËüÒÆ³ý
-    IterateAllElements([&](UiElement::Element* element) ->bool {
-        Button* button = dynamic_cast<Button*>(element);
-        if (button != nullptr && button->key == CPlayerUIBase::BTN_SWITCH_DISPLAY)
-        {
-            if (!show_switch_display_btn)
-            {
-                if (button->pParent != nullptr)
-                {
-                    auto iter = std::find_if(button->pParent->childLst.begin(), button->pParent->childLst.end(), [&](const std::shared_ptr<Element>& cur_ele) {
-                        return cur_ele.get() == button;
-                    });
-                    if (iter != button->pParent->childLst.end())
-                        button->pParent->childLst.erase(iter);
-                }
-            }
-        }
-        //±£´æstackElement
-        if (element != nullptr && element->id == "classical_control_bar_stack_element")
-            m_stack_element = dynamic_cast<StackElement*>(element);
+    m_stack_element = FindElement<StackElement>("classical_control_bar_stack_element");
+    if (!show_switch_display_btn)
+    {
+        Button* switch_button1 = FindElement<Button>("switch_display_btn1");
+        if (switch_button1 != nullptr)
+            switch_button1->SetVisible(false);
+        Button* switch_button2 = FindElement<Button>("switch_display_btn2");
+        if (switch_button2 != nullptr)
+            switch_button2->SetVisible(false);
+    }
+}
 
-        return false;
-    });
+int UiElement::ClassicalControlBar::GetHeight(CRect parent_rect) const
+{
+    if (m_stack_element != nullptr)
+        return m_stack_element->GetHeight(parent_rect);
+    return CombinedElement::GetHeight(parent_rect);
+}
+
+bool UiElement::ClassicalControlBar::IsHeightValid() const
+{
+    if (m_stack_element != nullptr)
+        return m_stack_element->IsHeightValid();
+    return CombinedElement::IsHeightValid();
 }
