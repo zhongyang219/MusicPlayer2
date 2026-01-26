@@ -36,6 +36,8 @@ using namespace TagLib;
 #define STR_APE_COVER_TAG "COVER ART (FRONT)"
 
 #define STR_MP4_LYRICS_TAG "----:com.apple.iTunes:Lyrics"
+#define STR_MP4_LYRICS_TAG_ALT "----:com.apple.iTunes:unsynced lyrics"
+#define STR_MP4_LYRICS_TAG_STD "\xa9lyr"
 #define STR_ID3V2_LYRIC_TAG "USLT"
 #define STR_FLAC_LYRIC_TAG "LYRICS"
 #define STR_ASF_LYRIC_TAG "LYRICS"
@@ -1105,10 +1107,17 @@ std::wstring CTagLibHelper::GetM4aLyric(const std::wstring& file_path)
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        auto item_map = file.tag()->itemMap();
-        auto lyric_item = item_map[STR_MP4_LYRICS_TAG].toStringList();;
-        if (!lyric_item.isEmpty())
-            lyrics = lyric_item.front().toWString();
+        auto item_map = tag->itemMap();
+        const char* keys[] = { STR_MP4_LYRICS_TAG_STD, STR_MP4_LYRICS_TAG, STR_MP4_LYRICS_TAG_ALT };
+        for (const char* key : keys)
+        {
+            auto lyric_item = item_map[key].toStringList();
+            if (!lyric_item.isEmpty())
+            {
+                lyrics = lyric_item.front().toWString();
+                if (!lyrics.empty()) break; 
+            }
+        }
     }
     return lyrics;
 }
@@ -1196,19 +1205,18 @@ bool CTagLibHelper::WriteM4aLyric(const std::wstring& file_path, const std::wstr
     auto tag = file.tag();
     if (tag != nullptr)
     {
-        if (lyric_contents.empty())
-        {
-            tag->removeItem(STR_MP4_LYRICS_TAG);
-        }
-        else
+        tag->removeItem(STR_MP4_LYRICS_TAG);
+        tag->removeItem(STR_MP4_LYRICS_TAG_ALT);
+        tag->removeItem(STR_MP4_LYRICS_TAG_STD);
+
+        if (!lyric_contents.empty())
         {
             StringList lyric_list;
             lyric_list.append(lyric_contents);
             MP4::Item lyrics_item(lyric_list);
-            tag->setItem(STR_MP4_LYRICS_TAG, lyrics_item);
+            tag->setItem(STR_MP4_LYRICS_TAG_STD, lyrics_item);
         }
-        bool saved = file.save();
-        return saved;
+        return file.save();
     }
     return false;
 }
