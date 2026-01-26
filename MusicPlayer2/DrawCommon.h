@@ -71,7 +71,8 @@ public:
     //no_clip_area: 如果为true，则不在输出文字时限制绘图区域
     //multi_line: 是否多行显示
     //default_right_align: 如果文本的宽度大于矩形区域，是否右对齐
-    void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align = Alignment::LEFT, bool no_clip_area = true, bool multi_line = false, bool default_right_align = false);
+    //out_of_bounds[out] 绘制的文本是否会超出矩形区域
+    void DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align = Alignment::LEFT, bool no_clip_area = true, bool multi_line = false, bool default_right_align = false, bool* out_of_bounds = nullptr);
 
     //在指定的矩形区域内绘制分割颜色的文本
     //rect: 文本的矩形区域

@@ -6,7 +6,7 @@
       <!--<text type="userDefine" text="%(TITLE_OPT)" height="56" margin-left="16" font_size="12"/>-->
       <horizontalLayout>
         <!--左侧导航栏-->
-        <stackElement follow_child_width="true" size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="560">
+        <stackElement follow_child_width="true" size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="500">
           <verticalLayout width="134">
             <navigationBar orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="36" stack_element_id="settings_stack_element">
               <navigationItem icon="skin" text="%(TITLE_OPT_APC)"/>
@@ -18,7 +18,7 @@
             <button key="settings" text="%(UI_TXT_MORE_SETTINGS)" show_text="true" height="32"/>
           </verticalLayout>
           <verticalLayout width="36">
-            <navigationBar orientation="vertical" icon_type="icon_and_text" item_space="4" item_height="36" stack_element_id="settings_stack_element">
+            <navigationBar orientation="vertical" icon_type="icon_only" item_space="4" item_height="36" stack_element_id="settings_stack_element">
               <navigationItem icon="skin" text="%(TITLE_OPT_APC)"/>
               <navigationItem icon="lyric" text="%(TITLE_OPT_LRC)"/>
               <navigationItem icon="setting" text="%(TITLE_OPT_DATA)"/>

@@ -25,6 +25,7 @@ void UiElement::Text::Draw()
     else if (color_style == Emphasis2)
         text_color = colors.color_text_2;
 
+    out_of_bounds = false;
     int text_extent{ ui->m_draw.GetTextExtent(draw_text.c_str()).cx };  //文本的实际宽度
     if (rect.Width() >= text_extent)    //如果绘图区域的宽度大于文本的实际宽度，则文本不需要滚动显示
     {
@@ -35,7 +36,7 @@ void UiElement::Text::Draw()
         switch (style)
         {
         case UiElement::Text::Static:
-            ui->m_draw.DrawWindowText(rect, draw_text.c_str(), text_color, align);
+            ui->m_draw.DrawWindowText(rect, draw_text.c_str(), text_color, align, true, false, false, &out_of_bounds);
             break;
         case UiElement::Text::Scroll:
             ui->m_draw.DrawScrollText(rect, draw_text.c_str(), text_color, ui->GetScrollTextPixel(), false, scroll_info, false);
@@ -61,6 +62,28 @@ int UiElement::Text::GetMaxWidth(CRect parent_rect) const
         int width_max{ max_width.IsValid() ? max_width.GetValue(parent_rect) : INT_MAX };
         return min(width_text, width_max);
     }
+}
+
+bool UiElement::Text::MouseMove(CPoint point)
+{
+    if (out_of_bounds)
+    {
+        bool hover = (rect.PtInRect(point));
+        //鼠标进入按钮区域时
+        if (!last_hover && hover)
+        {
+            std::wstring tooltip_text = GetText();
+            ui->UpdateMouseToolTip(TooltipIndex::TEXT , tooltip_text.c_str());
+        }
+
+        if (hover)
+        {
+            ui->UpdateMouseToolTipPosition(TooltipIndex::TEXT, rect);
+        }
+        last_hover = hover;
+        return true;
+    }
+    return false;
 }
 
 std::wstring UiElement::Text::GetText() const

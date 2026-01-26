@@ -128,6 +128,7 @@ namespace UiElement
             SEARCHBOX_CLEAR_BTN,
             PROGRESS_BAR,
             ELEMENT_SWITCHER,
+            TEXT,
             INDEX_MAX,
         };
     }

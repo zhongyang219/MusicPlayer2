@@ -45,11 +45,14 @@ namespace UiElement
 
         virtual void Draw() override;
         virtual int GetMaxWidth(CRect parent_rect) const override;
+        virtual bool MouseMove(CPoint point) override;
         std::wstring GetText() const;
         void SetText(const std::wstring& str_text);
 
     private:
         mutable CDrawCommon::ScrollInfo scroll_info;
+        bool out_of_bounds = false;
+        bool last_hover = false;
     };
 }
 

@@ -63,7 +63,7 @@ void CDrawCommon::SetDC(CDC* pDC)
     m_auto_destory_graphics = true;
 }
 
-void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align, bool no_clip_area, bool multi_line, bool default_right_align)
+void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color, Alignment align, bool no_clip_area, bool multi_line, bool default_right_align, bool* out_of_bounds)
 {
     if (m_pDC->GetSafeHdc() == NULL)
         return;
@@ -88,6 +88,8 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
     {
         CRect text_rect{ rect };
         int height = m_pDC->DrawText(lpszString, text_rect, DT_CALCRECT | DT_CENTER | DT_EDITCONTROL | DT_WORDBREAK);
+        if (out_of_bounds != nullptr)
+            *out_of_bounds = text_rect.Height() > rect.Height();
         if (height < rect.Height())
             rect.top += (rect.Height() - height) / 2;
         rect.bottom = rect.top + height;
@@ -100,6 +102,8 @@ void CDrawCommon::DrawWindowText(CRect rect, LPCTSTR lpszString, COLORREF color,
             format = (default_right_align ? DT_RIGHT : 0);
         }
         m_pDC->DrawText(lpszString, rect, format | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX | DT_END_ELLIPSIS);
+        if (out_of_bounds != nullptr)
+            *out_of_bounds = (text_size.cx > rect.Width());
     }
 }
 
