@@ -2,9 +2,10 @@
 #include "UIElement/ProgressBar.h"
 #include "UIElement/Button.h"
 #include "UIElement/StackElement.h"
+#include "CombinedElement.h"
 namespace UiElement
 {
-    class ClassicalControlBar : public Element
+    class ClassicalControlBar : public CombinedElement
     {
     public:
         ClassicalControlBar();

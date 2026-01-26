@@ -11,7 +11,7 @@
 #include "UIElement/Spectrum.h"
 #include "UIElement/ProgressBar.h"
 #include "UIElement/Volume.h"
-#include "UIElement/ClassicalControlBar.h"
+#include "UIElement/CombinedElement/ClassicalControlBar.h"
 #include "UIElement/LyricsElement.h"
 #include "UIElement/MediaLibItemList.h"
 #include "UIElement/NavigationBar.h"

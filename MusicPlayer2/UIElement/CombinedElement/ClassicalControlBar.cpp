@@ -4,7 +4,7 @@
 #include "UserUi.h"
 
 UiElement::ClassicalControlBar::ClassicalControlBar()
-    : Element()
+    : CombinedElement(IDR_CLASSICAL_CONTROL_BAR)
 {
     height.FromString("56");
 }
@@ -21,28 +21,12 @@ void UiElement::ClassicalControlBar::Draw()
     }
     CalculateRect();
 
-    Element::Draw();
+    CombinedElement::Draw();
 }
 
 void UiElement::ClassicalControlBar::InitComplete()
 {
-    //从资源加载xml布局
-    string xml_contents = CCommon::GetTextResourceRawData(IDR_CLASSICAL_CONTROL_BAR);
-    if (!xml_contents.empty())
-    {
-        //读取xml
-        tinyxml2::XMLDocument doc;
-        auto rtn = doc.Parse(xml_contents.c_str(), xml_contents.size());
-        if (rtn == tinyxml2::XML_SUCCESS)
-        {
-            doc.RootElement();
-            auto root_element = CUserUi::BuildUiElementFromXmlNode(doc.RootElement(), ui);
-            for (auto& ele : root_element->childLst)
-            {
-                AddChild(ele);
-            }
-        }
-    }
+    CombinedElement::InitComplete();
 
     //如果show_switch_display_btn为false，则找到key为switchDisplay的Button元素，并将它移除
     IterateAllElements([&](UiElement::Element* element) ->bool {
@@ -62,7 +46,7 @@ void UiElement::ClassicalControlBar::InitComplete()
             }
         }
         //保存stackElement
-        if (element->id == "classical_control_bar_stack_element")
+        if (element != nullptr && element->id == "classical_control_bar_stack_element")
             m_stack_element = dynamic_cast<StackElement*>(element);
 
         return false;

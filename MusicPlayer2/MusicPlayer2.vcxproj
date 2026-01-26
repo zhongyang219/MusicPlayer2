@@ -305,7 +305,7 @@
     <ClInclude Include="UIElement\BeatIndicator.h" />
     <ClInclude Include="UIElement\Button.h" />
     <ClInclude Include="UIElement\CheckBox.h" />
-    <ClInclude Include="UIElement\ClassicalControlBar.h" />
+    <ClInclude Include="UIElement\CombinedElement\ClassicalControlBar.h" />
     <ClInclude Include="UIElement\CombinedElement\CombinedElement.h" />
     <ClInclude Include="UIElement\CombinedElement\ToggleSettingGroup.h" />
     <ClInclude Include="UIElement\ElementFactory.h" />
@@ -534,7 +534,7 @@
     <ClCompile Include="UIElement\BeatIndicator.cpp" />
     <ClCompile Include="UIElement\Button.cpp" />
     <ClCompile Include="UIElement\CheckBox.cpp" />
-    <ClCompile Include="UIElement\ClassicalControlBar.cpp" />
+    <ClCompile Include="UIElement\CombinedElement\ClassicalControlBar.cpp" />
     <ClCompile Include="UIElement\CombinedElement\CombinedElement.cpp" />
     <ClCompile Include="UIElement\CombinedElement\ToggleSettingGroup.cpp" />
     <ClCompile Include="UIElement\ElementFactory.cpp" />

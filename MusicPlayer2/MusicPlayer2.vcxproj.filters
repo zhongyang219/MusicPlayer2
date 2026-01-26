@@ -1017,9 +1017,6 @@
     <ClInclude Include="UIElement\PlaylistIndicator.h">
       <Filter>UIElement</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement\ClassicalControlBar.h">
-      <Filter>UIElement</Filter>
-    </ClInclude>
     <ClInclude Include="UIElement\NavigationBar.h">
       <Filter>UIElement</Filter>
     </ClInclude>
@@ -1130,6 +1127,9 @@
     </ClInclude>
     <ClInclude Include="UIElement\ListElement.h">
       <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\CombinedElement\ClassicalControlBar.h">
+      <Filter>UIElement\CombinedElement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1682,9 +1682,6 @@
     <ClCompile Include="UIElement\PlaylistIndicator.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
-    <ClCompile Include="UIElement\ClassicalControlBar.cpp">
-      <Filter>UIElement</Filter>
-    </ClCompile>
     <ClCompile Include="UIElement\NavigationBar.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
@@ -1792,6 +1789,9 @@
     </ClCompile>
     <ClCompile Include="UIElement\ListElement.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\CombinedElement\ClassicalControlBar.cpp">
+      <Filter>UIElement\CombinedElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
