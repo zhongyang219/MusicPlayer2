@@ -369,6 +369,8 @@ void CDrawCommon::DrawImage(const CImage& image, CPoint start_point, CSize size,
     ImageDrawAreaConvert(CSize(image.GetWidth(), image.GetHeight()), start_point, size, stretch_mode);
     Gdiplus::Bitmap bm(image, NULL);
     m_pGraphics->DrawImage(&bm, INT(start_point.x), INT(start_point.y), INT(size.cx), INT(size.cy));
+    //使用GDI+绘图后会导致GDI剪辑区域失效，这里重新设置一次剪辑区域
+    ValidateGdiClipArea();
 }
 
 void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
@@ -377,6 +379,8 @@ void CDrawCommon::DrawImage(Gdiplus::Image* pImage, CPoint start_point, CSize si
     DrawAreaGuard guard(this, CRect(start_point, size), false, !no_clip_area);
     ImageDrawAreaConvert(CSize(pImage->GetWidth(), pImage->GetHeight()), start_point, size, stretch_mode);
     m_pGraphics->DrawImage(pImage, INT(start_point.x), INT(start_point.y), INT(size.cx), INT(size.cy));
+    //使用GDI+绘图后会导致GDI剪辑区域失效，这里重新设置一次剪辑区域
+    ValidateGdiClipArea();
 }
 
 void CDrawCommon::DrawRoundImage(const CImage& image, int radius, CPoint start_point, CSize size, StretchMode stretch_mode, bool no_clip_area)
@@ -416,6 +420,9 @@ void CDrawCommon::DrawRoundImage(const CImage& image, int radius, CPoint start_p
     m_pGraphics->FillPath(&brush, &round_rect_path);
 
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
+
+    //使用GDI+绘图后会导致GDI剪辑区域失效，这里重新设置一次剪辑区域
+    ValidateGdiClipArea();
 }
 
 void CDrawCommon::DrawIcon(HICON hIcon, CPoint start_point, CSize size)
@@ -589,6 +596,9 @@ void CDrawCommon::DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int ra
     Gdiplus::SolidBrush brush(color);
     m_pGraphics->FillPath(&brush, &round_rect_path);          //填充路径
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
+
+    //使用GDI+绘图后会导致GDI剪辑区域失效，这里重新设置一次剪辑区域
+    ValidateGdiClipArea();
 }
 
 void CDrawCommon::DrawEllipse(CRect rect, COLORREF color, BYTE alpha /*= 255*/)
@@ -605,6 +615,9 @@ void CDrawCommon::DrawEllipse(Gdiplus::Rect rect, Gdiplus::Color color)
     Gdiplus::SolidBrush brush(color);
     m_pGraphics->FillPath(&brush, &ellipse_path);                  //填充路径
     m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
+    
+    //使用GDI+绘图后会导致GDI剪辑区域失效，这里重新设置一次剪辑区域
+    ValidateGdiClipArea();
 }
 
 CSize CDrawCommon::GetTextExtent(LPCTSTR str)
@@ -832,6 +845,16 @@ CRect CDrawCommon::CalculateCenterIconRect(CRect rect, int icon_size)
     return rc_icon;
 }
 
+void CDrawCommon::ValidateGdiClipArea()
+{
+    if (!m_clip_rect.IsRectEmpty())
+    {
+        CRgn rgn;
+        rgn.CreateRectRgnIndirect(m_clip_rect);
+        m_pDC->SelectClipRgn(&rgn);
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CRect DrawAreaGuard::SetDrawArea(CRect rect, bool gdi_only)
@@ -839,6 +862,8 @@ CRect DrawAreaGuard::SetDrawArea(CRect rect, bool gdi_only)
     //如果设置的绘图区域为空，则清除绘图区域
     if (rect.IsRectEmpty())
         ResetDrawArea(gdi_only);
+
+    m_drawer->m_clip_rect = rect;
 
     CRect old_rect{};
     //设置GDI绘图区域

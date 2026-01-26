@@ -152,10 +152,14 @@ public:
     static CRect CalculateCenterIconRect(CRect rect, int icon_size);
 
 protected:
+    void ValidateGdiClipArea();
+
+protected:
     CDC* m_pDC{};		//用于绘图的CDC类的指针
     CFont* m_pfont{};
     Gdiplus::Graphics* m_pGraphics{};
     bool m_auto_destory_graphics{};     //是否自动析构Graphics对象，如果Graphics对象是内部创建的，则为true，如果是从外面传过来的，则为false
+    CRect m_clip_rect;
 };
 
 
