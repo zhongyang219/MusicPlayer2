@@ -10,6 +10,10 @@ namespace UiElement
 
         // 通过 AbstractToggleButton 继承
         virtual COLORREF GetButtonBackColor() override;
+        virtual CRect GetClickTriggerRect() override;
+
+    private:
+        CRect m_click_trigger_rect;
     };
 }
 

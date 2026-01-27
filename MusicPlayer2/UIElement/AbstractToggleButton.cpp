@@ -7,7 +7,7 @@ bool UiElement::AbstractToggleButton::LButtonUp(CPoint point)
     bool pressed = m_pressed;
     m_pressed = false;
 
-    if (pressed && rect.PtInRect(point) && IsEnable() && IsShown())
+    if (pressed && GetClickTriggerRect().PtInRect(point) && IsEnable() && IsShown())
     {
         ButtonClicked();
         if (m_clicked_trigger)
@@ -21,7 +21,7 @@ bool UiElement::AbstractToggleButton::LButtonUp(CPoint point)
 
 bool UiElement::AbstractToggleButton::LButtonDown(CPoint point)
 {
-    if (IsEnable() && rect.PtInRect(point))
+    if (IsEnable() && GetClickTriggerRect().PtInRect(point))
     {
         m_pressed = true;
         return true;
@@ -31,7 +31,7 @@ bool UiElement::AbstractToggleButton::LButtonDown(CPoint point)
 
 bool UiElement::AbstractToggleButton::MouseMove(CPoint point)
 {
-    m_hover = (IsEnable() && rect.PtInRect(point));
+    m_hover = (IsEnable() && GetClickTriggerRect().PtInRect(point));
     return true;
 }
 
@@ -72,4 +72,9 @@ void UiElement::AbstractToggleButton::SetClickedTrigger(std::function<void(Abstr
 void UiElement::AbstractToggleButton::BindBool(bool* value)
 {
     m_value = value;
+}
+
+CRect UiElement::AbstractToggleButton::GetClickTriggerRect()
+{
+    return rect;
 }

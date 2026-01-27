@@ -14,6 +14,10 @@ void UiElement::ToggleButton::Draw()
     toggle_rect.top = rect.top + (rect.Height() - toggle_height) / 2;
     toggle_rect.bottom = toggle_rect.top + toggle_height;
 
+    //设置点击触发的区域
+    m_click_trigger_rect = rect;
+    m_click_trigger_rect.left = m_click_trigger_rect.right - toggle_width;
+
     //绘制背景
     COLORREF toggle_back_color = GetButtonBackColor();
     ui->GetDrawer().DrawRoundRect(toggle_rect, toggle_back_color, toggle_height / 2);
@@ -122,5 +126,10 @@ COLORREF UiElement::ToggleButton::GetButtonBackColor()
 
     }
     return toggle_back_color;
+}
+
+CRect UiElement::ToggleButton::GetClickTriggerRect()
+{
+    return m_click_trigger_rect;
 }
 

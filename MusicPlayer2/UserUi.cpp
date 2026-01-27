@@ -350,18 +350,7 @@ bool CUserUi::LButtonUp(CPoint point)
 
         auto root_element = GetMouseEventResponseElement();
         //遍历所有元素
-        bool rtn = false;
-        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-            if (element != nullptr)
-            {
-                if (element->LButtonUp(point))
-                {
-                    rtn = true;
-                    return true;
-                }
-            }
-            return false;
-        }, true);
+        bool rtn = root_element->LButtonUp(point);
         return rtn;
     }
     return false;
@@ -376,18 +365,7 @@ bool CUserUi::LButtonDown(CPoint point)
         if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
         {
             auto root_element = GetMouseEventResponseElement();
-            //遍历所有元素
-            root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-                if (element != nullptr)
-                {
-                    if (element->LButtonDown(point))
-                    {
-                        rtn = true;
-                        return true;
-                    }
-                }
-                return false;
-            }, true);
+            rtn = root_element->LButtonDown(point);
         }
         return rtn;
     }
@@ -397,20 +375,13 @@ bool CUserUi::LButtonDown(CPoint point)
 bool CUserUi::MouseMove(CPoint point)
 {
     bool mouse_leave = false;
+    auto root_element = GetMouseEventResponseElement();
     if (!CPlayerUIBase::MouseMove(point))
     {
         bool mouse_in_draw_area{ !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point) };
         if (mouse_in_draw_area)
         {
-            auto root_element = GetMouseEventResponseElement();
-            //遍历所有元素
-            root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-                if (element != nullptr)
-                {
-                    element->MouseMove(point);
-                }
-                return false;
-                }, true);
+            root_element->MouseMove(point);
         }
 
         //鼠标离开绘图区域后发送MouseLeave消息
@@ -427,11 +398,7 @@ bool CUserUi::MouseMove(CPoint point)
     }
     if (mouse_leave)
     {
-        IterateAllElements([point](UiElement::Element* element) ->bool {
-            if (element != nullptr)
-                element->MouseLeave();
-            return false;
-        });
+        root_element->MouseLeave();
     }
     return true;
 }
@@ -440,13 +407,7 @@ bool CUserUi::MouseLeave()
 {
     //遍历所有元素
     auto root_element = GetMouseEventResponseElement();
-    root_element->IterateAllElements([](UiElement::Element* element) ->bool {
-        if (element != nullptr)
-        {
-            element->MouseLeave();
-        }
-        return false;
-    });
+    root_element->MouseLeave();
 
     return CPlayerUIBase::MouseLeave();
 }
@@ -459,17 +420,7 @@ bool CUserUi::RButtonUp(CPoint point)
     if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         auto root_element = GetMouseEventResponseElement();
-        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-            if (element != nullptr)
-            {
-                if (element->RButtonUp(point))
-                {
-                    rtn = true;
-                    return true;
-                }
-            }
-            return false;
-        }, true);
+        rtn = root_element->RButtonUp(point);
     }
     if (!rtn)
         rtn = CPlayerUIBase::RButtonUp(point);
@@ -483,13 +434,7 @@ bool CUserUi::RButtonDown(CPoint point)
     if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         auto root_element = GetMouseEventResponseElement();
-        root_element->IterateAllElements([point](UiElement::Element* element) ->bool {
-            if (element != nullptr)
-            {
-                element->RButtonDown(point);
-            }
-            return false;
-        });
+        root_element->RButtonDown(point);
     }
     return CPlayerUIBase::RButtonDown(point);
 }
@@ -498,35 +443,7 @@ bool CUserUi::MouseWheel(int delta, CPoint point)
 {
     //遍历所有元素
     auto root_element = GetMouseEventResponseElement();
-    bool rtn = false;
-    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-        if (element != nullptr)
-        {
-            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
-            //非stackElement元素
-            if (stack_element == nullptr && element->MouseWheel(delta, point))
-            {
-                rtn = true;
-                return true;
-            }
-        }
-        return false;
-    }, true);
-
-    if (!rtn)
-    {
-        //遍历stackElement元素
-        root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-            UiElement::StackElement* stack_element{ dynamic_cast<UiElement::StackElement*>(element) };
-            if (stack_element != nullptr && stack_element->MouseWheel(delta, point))
-            {
-                rtn = true;
-                return true;
-            }
-            return false;
-        }, true);
-    }
-
+    bool rtn = root_element->MouseWheel(delta, point);
     if (rtn)
         return true;
     return CPlayerUIBase::MouseWheel(delta, point);
@@ -537,18 +454,7 @@ bool CUserUi::DoubleClick(CPoint point)
     //遍历所有元素
     bool rtn = false;
     auto root_element = GetMouseEventResponseElement();
-    root_element->IterateAllElements([&](UiElement::Element* element) ->bool {
-        if (element != nullptr)
-        {
-            if (element->DoubleClick(point))
-            {
-                rtn = true;
-                return true;
-            }
-        }
-        return false;
-    }, true);
-
+    rtn = root_element->DoubleClick(point);
     if (rtn)
         return true;
     return CPlayerUIBase::DoubleClick(point);

@@ -97,11 +97,15 @@ bool UiElement::AbstractScrollArea::LButtonUp(CPoint point)
 {
     mouse_pressed = false;
     scrollbar_handle_pressed = false;
-    return false;
+    if (rect.PtInRect(point))
+        return Element::LButtonUp(point);
+    else
+        return false;
 }
 
 bool UiElement::AbstractScrollArea::LButtonDown(CPoint point)
 {
+    bool rtn = false;
     //点击了控件区域
     if (rect.PtInRect(point))
     {
@@ -119,10 +123,11 @@ bool UiElement::AbstractScrollArea::LButtonDown(CPoint point)
                 mouse_pressed = false;
             }
         }
-        //点击了列表区域
+        //点击了滚动区域
         else
         {
             mouse_pressed = true;
+            rtn = Element::LButtonDown(point);
         }
         mouse_pressed_offset = scroll_offset;
         mouse_pressed_pos = point;
@@ -158,7 +163,16 @@ bool UiElement::AbstractScrollArea::MouseMove(CPoint point)
     {
         scroll_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
     }
-    return true;
+
+    bool rtn = false;
+    if (hover)
+        rtn = Element::MouseMove(point);
+    if (last_hover && !hover)
+    {
+        Element::MouseLeave();
+    }
+    last_hover = hover;
+    return rtn;
 }
 
 bool UiElement::AbstractScrollArea::MouseWheel(int delta, CPoint point)
@@ -177,7 +191,7 @@ bool UiElement::AbstractScrollArea::MouseLeave()
     mouse_pressed = false;
     scrollbar_hover = false;
     scrollbar_handle_pressed = false;
-    return true;
+    return Element::MouseLeave();
 }
 
 void UiElement::AbstractScrollArea::RestrictOffset()

@@ -123,6 +123,13 @@ bool UiElement::StackElement::LButtonUp(CPoint point)
     bool pressed = indicator.pressed;
     indicator.pressed = false;
 
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+    {
+        if (current_element->LButtonUp(point))
+            return true;
+    }
+
     if ((pressed && indicator.rect.PtInRect(point) && indicator.enable)
         || (click_to_switch && GetRect().PtInRect(point)))
     {
@@ -155,6 +162,13 @@ bool UiElement::StackElement::LButtonUp(CPoint point)
 bool UiElement::StackElement::LButtonDown(CPoint point)
 {
     mouse_pressed_point = point;
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+    {
+        if (current_element->LButtonDown(point))
+            return true;
+    }
+
     if (indicator.enable && indicator.rect.PtInRect(point) != FALSE)
     {
         indicator.pressed = true;
@@ -169,6 +183,10 @@ bool UiElement::StackElement::LButtonDown(CPoint point)
 
 bool UiElement::StackElement::MouseMove(CPoint point)
 {
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+        current_element->MouseMove(point);
+
     if (indicator.enable)
         indicator.hover = (indicator.rect.PtInRect(point) != FALSE);
     bool hover{ GetRect().PtInRect(point) != FALSE };
@@ -179,8 +197,25 @@ bool UiElement::StackElement::MouseMove(CPoint point)
     return true;
 }
 
+bool UiElement::StackElement::RButtonUp(CPoint point)
+{
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+        return current_element->RButtonUp(point);
+    return false;
+}
+
+bool UiElement::StackElement::RButtonDown(CPoint point)
+{
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+        current_element->RButtonDown(point);
+    return false;
+}
+
 bool UiElement::StackElement::MouseLeave()
 {
+    Element::MouseLeave();
     //清除StackElement中的mouse_hover状态
     mouse_hover = false;
     return true;
@@ -188,12 +223,28 @@ bool UiElement::StackElement::MouseLeave()
 
 bool UiElement::StackElement::MouseWheel(int delta, CPoint point)
 {
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+    {
+        if (current_element->MouseWheel(delta, point))
+            return true;
+    }
+
     //如果鼠标指向指示器，或者指定了scroll_to_switch属性时鼠标指向stackElement区域，通过鼠标滚轮切换显示
     if ((show_indicator && indicator.rect.PtInRect(point)) || (scroll_to_switch && GetRect().PtInRect(point)))
     {
         SwitchDisplay(delta > 0);
         return true;
     }
+
+    return false;
+}
+
+bool UiElement::StackElement::DoubleClick(CPoint point)
+{
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+        return current_element->DoubleClick(point);
     return false;
 }
 

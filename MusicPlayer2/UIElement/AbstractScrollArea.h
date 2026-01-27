@@ -34,6 +34,8 @@ namespace UiElement
         bool scrollbar_handle_pressed{};    //滚动条把手被按下
         int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
 
+    private:
+        bool last_hover{};
     };
 }
 

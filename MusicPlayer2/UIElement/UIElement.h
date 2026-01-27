@@ -72,14 +72,14 @@ namespace UiElement
 
         //鼠标消息虚函数。
         //即使鼠标的位置不在当前元素的矩形区域内，函数仍然会响应，因此在重写这些虚函数时需要先使用rect.PtInRect(point)判断鼠标位置是否在矩形区域内。
-        virtual bool LButtonUp(CPoint point) override { return false; }
-        virtual bool LButtonDown(CPoint point) override { return false; }
-        virtual bool MouseMove(CPoint point) override { return false; }
-        virtual bool RButtonUp(CPoint point) override { return false; }
-        virtual bool RButtonDown(CPoint point) override { return false; }
-        virtual bool MouseWheel(int delta, CPoint point) override { return false; }
-        virtual bool DoubleClick(CPoint point) override { return false; }
-        virtual bool MouseLeave() override { return false; }
+        virtual bool LButtonUp(CPoint point) override;
+        virtual bool LButtonDown(CPoint point) override;
+        virtual bool MouseMove(CPoint point)override ;
+        virtual bool RButtonUp(CPoint point) override;
+        virtual bool RButtonDown(CPoint point) override;
+        virtual bool MouseWheel(int delta, CPoint point) override;
+        virtual bool DoubleClick(CPoint point) override;
+        virtual bool MouseLeave() override;
 
         virtual void CalculateRect(CRect parent_rect);
 

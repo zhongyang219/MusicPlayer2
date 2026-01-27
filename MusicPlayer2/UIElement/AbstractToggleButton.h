@@ -20,6 +20,7 @@ namespace UiElement
         void BindBool(bool* value);
 
         virtual COLORREF GetButtonBackColor() = 0;
+        virtual CRect GetClickTriggerRect();
 
     protected:
         bool m_hover{};

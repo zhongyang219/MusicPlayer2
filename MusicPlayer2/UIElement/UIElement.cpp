@@ -294,3 +294,78 @@ void UiElement::Element::SetEnable(bool enable)
     for (auto& child : childLst)
         child->SetEnable(enable);
 }
+
+bool UiElement::Element::LButtonUp(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->LButtonUp(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::LButtonDown(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->LButtonDown(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::MouseMove(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        child->MouseMove(point);
+    }
+    return false;
+}
+
+bool UiElement::Element::RButtonUp(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->RButtonUp(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::RButtonDown(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        child->RButtonDown(point);
+    }
+    return false;
+}
+
+bool UiElement::Element::MouseWheel(int delta, CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->MouseWheel(delta, point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::DoubleClick(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->DoubleClick(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::MouseLeave()
+{
+    for (auto& child : childLst)
+        child->MouseLeave();
+    return false;
+}
