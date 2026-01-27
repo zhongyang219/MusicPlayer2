@@ -13,8 +13,8 @@ public:
 private:
 	void OnOkClicked(UiElement::Button* sender);
 	void OnCancelClicked(UiElement::Button* sender);
-	void OnCheckBox1Clicked(UiElement::CheckBox* sender);
-	void OnToggleBtnClicked(UiElement::ToggleButton* sender);
+	void OnCheckBox1Clicked(UiElement::AbstractToggleButton* sender);
+	void OnToggleBtnClicked(UiElement::AbstractToggleButton* sender);
 	void OnAddClicked(UiElement::Button* sender);
 	void OnDeleteClicked(UiElement::Button* sender);
 

@@ -99,7 +99,6 @@ namespace UiElement
         virtual void CalculateRect();           //计算此元素在界面中的矩形区域
         static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func, bool visible_only = false);
 
-    private:
         Element* RootElement();       //获取根节点
         Element* CurUiRootElement();
 

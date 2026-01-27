@@ -1131,6 +1131,15 @@
     <ClInclude Include="UIElement\CombinedElement\ClassicalControlBar.h">
       <Filter>UIElement\CombinedElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\AbstractToggleButton.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\AbstractCheckButton.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIElement\RadioButton.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1792,6 +1801,15 @@
     </ClCompile>
     <ClCompile Include="UIElement\CombinedElement\ClassicalControlBar.cpp">
       <Filter>UIElement\CombinedElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\AbstractToggleButton.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\AbstractCheckButton.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\RadioButton.cpp">
+      <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

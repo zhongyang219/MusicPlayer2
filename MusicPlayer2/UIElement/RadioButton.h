@@ -3,10 +3,15 @@
 namespace UiElement
 {
     //复选框
-    class CheckBox : public AbstractCheckButton
+    class RadioButton : public AbstractCheckButton
     {
     public:
         virtual void Draw() override;
+
+        virtual void ButtonClicked() override;
+
+    public:
+        std::string group;
     };
 }
 

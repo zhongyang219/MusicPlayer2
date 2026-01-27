@@ -15,11 +15,11 @@ CTestPanel::CTestPanel(CPlayerUIBase* ui)
 
 	m_check_box1 = m_root_element->FindElement<UiElement::CheckBox>("checkbox1");
 	if (m_check_box1 != nullptr)
-		m_check_box1->SetClickedTrigger([&](UiElement::CheckBox* sender) { OnCheckBox1Clicked(sender); });
+		m_check_box1->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) { OnCheckBox1Clicked(sender); });
 
 	m_toggle_btn = m_root_element->FindElement<UiElement::ToggleButton>("toggleBtn1");
 	if (m_toggle_btn != nullptr)
-		m_toggle_btn->SetClickedTrigger([&](UiElement::ToggleButton* sender) { OnToggleBtnClicked(sender); });
+		m_toggle_btn->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) { OnToggleBtnClicked(sender); });
 
 	m_text1 = m_root_element->FindElement<UiElement::Text>("text1");
 	m_text2 = m_root_element->FindElement<UiElement::Text>("text2");
@@ -44,7 +44,7 @@ void CTestPanel::OnCancelClicked(UiElement::Button* sender)
 	user_ui->ClosePanel();
 }
 
-void CTestPanel::OnCheckBox1Clicked(UiElement::CheckBox* sender)
+void CTestPanel::OnCheckBox1Clicked(UiElement::AbstractToggleButton* sender)
 {
 	bool checked = m_check_box1->Checked();
 	if (checked)
@@ -53,7 +53,7 @@ void CTestPanel::OnCheckBox1Clicked(UiElement::CheckBox* sender)
 		m_text1->text = _T("复选框取消勾选。");
 }
 
-void CTestPanel::OnToggleBtnClicked(UiElement::ToggleButton* sender)
+void CTestPanel::OnToggleBtnClicked(UiElement::AbstractToggleButton* sender)
 {
 	bool checked = sender->Checked();
 	if (checked)

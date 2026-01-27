@@ -29,7 +29,7 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	//外观设置
 	dard_mode_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("darkMode");
 	dard_mode_btn->GetToggleBtn()->BindBool(&theApp.m_app_setting_data.dark_mode);
-	dard_mode_btn->GetToggleBtn()->SetClickedTrigger([&](UiElement::ToggleButton* sender) {
+	dard_mode_btn->GetToggleBtn()->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) {
 		//点击深色模式时使用主窗口的ID_DARK_MODE命令，由于ID_DARK_MODE中也会对theApp.m_app_setting_data.dark_mode取非，因此这里再取一次非
 		theApp.m_app_setting_data.dark_mode = !theApp.m_app_setting_data.dark_mode;
 		theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_DARK_MODE);
@@ -123,7 +123,7 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 
 void CSettingsPanel::ConnectToggleTrigger(UiElement::ToggleSettingGroup* toggle, bool& value)
 {
-	toggle->GetToggleBtn()->SetClickedTrigger([&](UiElement::ToggleButton* sender) {
+	toggle->GetToggleBtn()->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) {
 		UpdateSettingsData();
 		value = sender->Checked();
 		OnSettingsChanged();

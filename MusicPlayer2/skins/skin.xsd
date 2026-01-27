@@ -751,6 +751,7 @@
         <xs:element name="icon" type="iconType"></xs:element>
         <xs:element name="rating" type="ratingType"></xs:element>
         <xs:element name="checkBox" type="checkBoxType"></xs:element>
+        <xs:element name="radioButton" type="radioButtonType"></xs:element>
         <xs:element name="toggleButton" type="toggleButtonType"></xs:element>
         <xs:element name="toggleSettingGroup" type="toggleSettingGroupType"></xs:element>
         <xs:element name="scrollArea" type="scrollAreaType"></xs:element>
@@ -1961,6 +1962,23 @@
     <xs:attribute name="text" type="xs:string">
       <xs:annotation>
         <xs:documentation>显示的文本。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="radioButtonType">
+    <xs:annotation>
+      <xs:documentation>单选框。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attribute name="text" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>显示的文本。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="group" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>单选按钮所在组，每组只会有一个单选按钮处于选中状态。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>

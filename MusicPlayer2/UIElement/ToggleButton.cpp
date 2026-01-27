@@ -13,52 +13,9 @@ void UiElement::ToggleButton::Draw()
     toggle_rect.left = toggle_rect.right - toggle_width;
     toggle_rect.top = rect.top + (rect.Height() - toggle_height) / 2;
     toggle_rect.bottom = toggle_rect.top + toggle_height;
-    COLORREF toggle_back_color;
-    if (Checked())
-    {
-        if (theApp.m_app_setting_data.dark_mode)
-        {
-            if (m_pressed)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.dark1;
-            else if (m_hover)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.dark0;
-            else
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light1;
-        }
-        else
-        {
-            if (m_pressed)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light1;
-            else if (m_hover)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light1_5;
-            else
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light2;
-        }
-    }
-    else
-    {
-        if (theApp.m_app_setting_data.dark_mode)
-        {
-            if (m_pressed)
-                toggle_back_color = CColorConvert::m_gray_color.dark2;
-            else if (m_hover)
-                toggle_back_color = CColorConvert::m_gray_color.dark2_5;
-            else
-                toggle_back_color = CColorConvert::m_gray_color.dark3;
-        }
-        else
-        {
-            if (m_pressed)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light2_5;
-            else if (m_hover)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light3;
-            else
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light4;
-
-        }
-    }
 
     //绘制背景
+    COLORREF toggle_back_color = GetButtonBackColor();
     ui->GetDrawer().DrawRoundRect(toggle_rect, toggle_back_color, toggle_height / 2);
 
     //绘制按钮中的圆
@@ -106,68 +63,52 @@ void UiElement::ToggleButton::Draw()
     Element::Draw();
 }
 
-bool UiElement::ToggleButton::LButtonUp(CPoint point)
+COLORREF UiElement::ToggleButton::GetButtonBackColor()
 {
-    bool pressed = m_pressed;
-    m_pressed = false;
-
-    if (pressed && rect.PtInRect(point) && IsEnable())
+    COLORREF toggle_back_color;
+    if (Checked())
     {
-        SetChecked(!Checked());
-        if (m_clicked_trigger)
+        if (theApp.m_app_setting_data.dark_mode)
         {
-            m_clicked_trigger(this);
+            if (m_pressed)
+                toggle_back_color = theApp.m_app_setting_data.theme_color.dark1;
+            else if (m_hover)
+                toggle_back_color = theApp.m_app_setting_data.theme_color.dark0;
+            else
+                toggle_back_color = theApp.m_app_setting_data.theme_color.light1;
         }
-        return true;
+        else
+        {
+            if (m_pressed)
+                toggle_back_color = theApp.m_app_setting_data.theme_color.light1;
+            else if (m_hover)
+                toggle_back_color = theApp.m_app_setting_data.theme_color.light1_5;
+            else
+                toggle_back_color = theApp.m_app_setting_data.theme_color.light2;
+        }
     }
-    return false;
-}
-
-bool UiElement::ToggleButton::LButtonDown(CPoint point)
-{
-    if (rect.PtInRect(point))
+    else
     {
-        m_pressed = true;
-        return true;
+        if (theApp.m_app_setting_data.dark_mode)
+        {
+            if (m_pressed)
+                toggle_back_color = CColorConvert::m_gray_color.dark2;
+            else if (m_hover)
+                toggle_back_color = CColorConvert::m_gray_color.dark2_5;
+            else
+                toggle_back_color = CColorConvert::m_gray_color.dark3;
+        }
+        else
+        {
+            if (m_pressed)
+                toggle_back_color = theApp.m_app_setting_data.theme_color.light2_5;
+            else if (m_hover)
+                toggle_back_color = theApp.m_app_setting_data.theme_color.light3;
+            else
+                toggle_back_color = theApp.m_app_setting_data.theme_color.light4;
+
+        }
     }
-    return false;
+    return toggle_back_color;
 }
 
-bool UiElement::ToggleButton::MouseMove(CPoint point)
-{
-    m_hover = (rect.PtInRect(point));
-    return true;
-}
-
-bool UiElement::ToggleButton::MouseLeave()
-{
-    m_hover = false;
-    m_pressed = false;
-    return true;
-}
-
-void UiElement::ToggleButton::SetChecked(bool checked)
-{
-    if (m_value != nullptr)
-        *m_value = checked;
-    else
-        m_checked = checked;
-}
-
-bool UiElement::ToggleButton::Checked() const
-{
-    if (m_value != nullptr)
-        return *m_value;
-    else
-        return m_checked;
-}
-
-void UiElement::ToggleButton::SetClickedTrigger(std::function<void(ToggleButton*)> func)
-{
-    m_clicked_trigger = func;
-}
-
-void UiElement::ToggleButton::BindBool(bool* value)
-{
-    m_value = value;
-}

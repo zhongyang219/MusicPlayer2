@@ -33,6 +33,7 @@
 #include "UIElement/RatingElement.h"
 #include "UIElement/TracksList.h"
 #include "UIElement/CheckBox.h"
+#include "UIElement/RadioButton.h"
 #include "UIElement/ToggleButton.h"
 #include "CombinedElement/ToggleSettingGroup.h"
 #include "UIElement/ScrollArea.h"

@@ -298,7 +298,9 @@
     <ClInclude Include="NeteaseLyricDownload.h" />
     <ClInclude Include="PlaylistPropertiesDlg.h" />
     <ClInclude Include="SimplePropertiesDlg.h" />
+    <ClInclude Include="UIElement\AbstractCheckButton.h" />
     <ClInclude Include="UIElement\AbstractScrollArea.h" />
+    <ClInclude Include="UIElement\AbstractToggleButton.h" />
     <ClInclude Include="UIElement\AbstractTracksList.h" />
     <ClInclude Include="UIElement\AlbumCover.h" />
     <ClInclude Include="UIElement\AllTracksList.h" />
@@ -327,6 +329,7 @@
     <ClInclude Include="UIElement\PlaylistElement.h" />
     <ClInclude Include="UIElement\PlaylistIndicator.h" />
     <ClInclude Include="UIElement\ProgressBar.h" />
+    <ClInclude Include="UIElement\RadioButton.h" />
     <ClInclude Include="UIElement\RatingElement.h" />
     <ClInclude Include="UIElement\RecentPlayedList.h" />
     <ClInclude Include="UIElement\Rectangle.h" />
@@ -527,7 +530,9 @@
     <ClCompile Include="NeteaseLyricDownload.cpp" />
     <ClCompile Include="PlaylistPropertiesDlg.cpp" />
     <ClCompile Include="SimplePropertiesDlg.cpp" />
+    <ClCompile Include="UIElement\AbstractCheckButton.cpp" />
     <ClCompile Include="UIElement\AbstractScrollArea.cpp" />
+    <ClCompile Include="UIElement\AbstractToggleButton.cpp" />
     <ClCompile Include="UIElement\AbstractTracksList.cpp" />
     <ClCompile Include="UIElement\AlbumCover.cpp" />
     <ClCompile Include="UIElement\AllTracksList.cpp" />
@@ -556,6 +561,7 @@
     <ClCompile Include="UIElement\PlaylistElement.cpp" />
     <ClCompile Include="UIElement\PlaylistIndicator.cpp" />
     <ClCompile Include="UIElement\ProgressBar.cpp" />
+    <ClCompile Include="UIElement\RadioButton.cpp" />
     <ClCompile Include="UIElement\RatingElement.cpp" />
     <ClCompile Include="UIElement\RecentPlayedList.cpp" />
     <ClCompile Include="UIElement\Rectangle.cpp" />

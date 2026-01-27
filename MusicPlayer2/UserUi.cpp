@@ -1225,6 +1225,16 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                 check_box->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
             }
         }
+        else if (item_name == "radioButton")
+        {
+            UiElement::RadioButton* radio_btn = dynamic_cast<UiElement::RadioButton*>(element.get());
+            if (radio_btn != nullptr)
+            {
+                std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
+                radio_btn->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+                radio_btn->group = CTinyXml2Helper::ElementAttribute(xml_node, "group");
+            }
+        }
         else if (item_name == "toggleSettingGroup")
         {
             UiElement::ToggleSettingGroup* ele = dynamic_cast<UiElement::ToggleSettingGroup*>(element.get());
