@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "StackElement.h"
 #include "../UserUi.h"
 
@@ -36,20 +36,20 @@ void UiElement::StackElement::Draw()
 
     if (cur_element != nullptr)
         cur_element->Draw();
-    //Ö»»æÖÆÒ»¸ö×ÓÔªËØ
-    //²»µ÷ÓÃ»ùÀàµÄDraw·½·¨¡£
+    //åªç»˜åˆ¶ä¸€ä¸ªå­å…ƒç´ 
+    //ä¸è°ƒç”¨åŸºç±»çš„Drawæ–¹æ³•ã€‚
 
-    //»æÖÆÖ¸Ê¾Æ÷
+    //ç»˜åˆ¶æŒ‡ç¤ºå™¨
     if (show_indicator)
     {
-        //¼ÆËãÖ¸Ê¾Æ÷µÄÎ»ÖÃ
+        //è®¡ç®—æŒ‡ç¤ºå™¨çš„ä½ç½®
         int indicator_width = ui->DPI(12) * childLst.size();
         indicator.rect.top = GetRect().bottom + ui->DPI(2) + ui->DPI(indicator_offset);
         indicator.rect.bottom = indicator.rect.top + ui->DPI(12);
         indicator.rect.left = GetRect().left + (GetRect().Width() - indicator_width) / 2;
         indicator.rect.right = indicator.rect.left + indicator_width;
         indicator.rect.InflateRect(ui->DPI(2), ui->DPI(2));
-        //»æÖÆÖ¸Ê¾Æ÷
+        //ç»˜åˆ¶æŒ‡ç¤ºå™¨
         ui->DrawStackIndicator(indicator, childLst.size(), cur_index);
     }
 }
@@ -138,12 +138,12 @@ bool UiElement::StackElement::LButtonUp(CPoint point)
         return true;
     }
     
-    //ÉèÖÃÁËsweep_to_switchÊ±
+    //è®¾ç½®äº†sweep_to_switchæ—¶
     if (sweep_to_switch && rect.PtInRect(point))
     {
         if (mouse_pressed)
         {
-            //Èç¹ûÊó±êÔÚ°´ÏÂÇé¿öÏÂÒÆ¶¯³¬¹ı100ÏñËØ£¬Ôò¸ù¾İÊó±êÒÆ¶¯·½ÏòÇĞ»»ÏÔÊ¾
+            //å¦‚æœé¼ æ ‡åœ¨æŒ‰ä¸‹æƒ…å†µä¸‹ç§»åŠ¨è¶…è¿‡100åƒç´ ï¼Œåˆ™æ ¹æ®é¼ æ ‡ç§»åŠ¨æ–¹å‘åˆ‡æ¢æ˜¾ç¤º
             if (point.x - mouse_pressed_point.x > ui->DPI(100))
             {
                 SwitchDisplay(true);
@@ -216,7 +216,7 @@ bool UiElement::StackElement::RButtonDown(CPoint point)
 bool UiElement::StackElement::MouseLeave()
 {
     Element::MouseLeave();
-    //Çå³ıStackElementÖĞµÄmouse_hover×´Ì¬
+    //æ¸…é™¤StackElementä¸­çš„mouse_hoverçŠ¶æ€
     mouse_hover = false;
     return true;
 }
@@ -230,7 +230,7 @@ bool UiElement::StackElement::MouseWheel(int delta, CPoint point)
             return true;
     }
 
-    //Èç¹ûÊó±êÖ¸ÏòÖ¸Ê¾Æ÷£¬»òÕßÖ¸¶¨ÁËscroll_to_switchÊôĞÔÊ±Êó±êÖ¸ÏòstackElementÇøÓò£¬Í¨¹ıÊó±ê¹öÂÖÇĞ»»ÏÔÊ¾
+    //å¦‚æœé¼ æ ‡æŒ‡å‘æŒ‡ç¤ºå™¨ï¼Œæˆ–è€…æŒ‡å®šäº†scroll_to_switchå±æ€§æ—¶é¼ æ ‡æŒ‡å‘stackElementåŒºåŸŸï¼Œé€šè¿‡é¼ æ ‡æ»šè½®åˆ‡æ¢æ˜¾ç¤º
     if ((show_indicator && indicator.rect.PtInRect(point)) || (scroll_to_switch && GetRect().PtInRect(point)))
     {
         SwitchDisplay(delta > 0);
@@ -266,7 +266,7 @@ bool UiElement::StackElement::CheckSizeChangeSwitchCondition() const
         {
             int condition_width = rect.Width();
             int condition_height = rect.Height();
-            //Èç¹ûÉèÖÃÁË¸úËæ×ÓÔªËØ¿í¶È/¸ß¶È£¬Ôò³ß´ç±ä»¯Ê±ÇĞ»»µÄ¿í¶È/¸ß¶ÈÓ¦¸Ã¸¸½ÚµãµÄ¿í¶È/¸ß¶È
+            //å¦‚æœè®¾ç½®äº†è·Ÿéšå­å…ƒç´ å®½åº¦/é«˜åº¦ï¼Œåˆ™å°ºå¯¸å˜åŒ–æ—¶åˆ‡æ¢çš„å®½åº¦/é«˜åº¦åº”è¯¥çˆ¶èŠ‚ç‚¹çš„å®½åº¦/é«˜åº¦
             if (follow_child_width)
                 condition_width = ParentRect().Width();
             if (follow_child_height)
@@ -292,7 +292,7 @@ bool UiElement::StackElement::CheckSizeChangeSwitchCondition() const
 
 void UiElement::StackElement::IndexChanged()
 {
-    //²éÕÒ¹ØÁªµÄstackElement
+    //æŸ¥æ‰¾å…³è”çš„stackElement
     if (!related_stack_elements.empty())
     {
         CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
@@ -304,7 +304,7 @@ void UiElement::StackElement::IndexChanged()
                 {
                     if (related_stack_elements.count(element->id) > 0)
                     {
-                        //ÉèÖÃ¹ØÁªstackElementµÄË÷Òı£¨ÕâÀï²»ÄÜÊ¹ÓÃstack_element->SetCurrentElement£¬·ñÔò»áµ¼ÖÂÎŞÏŞµ÷ÓÃ£©
+                        //è®¾ç½®å…³è”stackElementçš„ç´¢å¼•ï¼ˆè¿™é‡Œä¸èƒ½ä½¿ç”¨stack_element->SetCurrentElementï¼Œå¦åˆ™ä¼šå¯¼è‡´æ— é™è°ƒç”¨ï¼‰
                         if (cur_index >= 0 && cur_index < static_cast<int>(stack_element->childLst.size()))
                             stack_element->cur_index = cur_index;
                     }
@@ -313,8 +313,9 @@ void UiElement::StackElement::IndexChanged()
             });
         }
     }
-    //Çå¿Õ²»ÏÔÊ¾µÄ×ÓÔªËØµÄ¾ØĞÎÇøÓòºÍÊó±êÌáÊ¾
+    //æ¸…ç©ºä¸æ˜¾ç¤ºçš„å­å…ƒç´ çš„çŸ©å½¢åŒºåŸŸå’Œé¼ æ ‡æç¤º
     auto cur_element{ CurrentElement() };
+    cur_element->MouseLeave();
     for (size_t i{}; i < childLst.size(); i++)
     {
         if (cur_element != childLst[i])
@@ -323,7 +324,6 @@ void UiElement::StackElement::IndexChanged()
                 if (element != nullptr)
                 {
                     element->ClearRect();
-                    element->MouseLeave();
                     element->HideTooltip();
                 }
                 return false;
