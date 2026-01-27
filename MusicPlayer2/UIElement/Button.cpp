@@ -217,6 +217,7 @@ bool UiElement::Button::LButtonUp(CPoint point)
                     if (element != nullptr)
                     {
                         element->SetVisible(!element->IsVisible());
+                        ui->SkipNextFrame();
                     }
                 }
             }

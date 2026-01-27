@@ -344,6 +344,9 @@ public:
     //获取一个按钮或其他界面元素的鼠标提示（tooltip_index可以是按钮的key，或者Element::TooltipIndex中的枚举值）
     std::wstring GetItemTooltip(int tooltip_index);
 
+    //跳过一帧画面
+    void SkipNextFrame();
+
 private:
     void SetRepeatModeToolTipText();
     void SetSongInfoToolTipText();

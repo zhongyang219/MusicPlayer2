@@ -26,18 +26,18 @@ public:
     //拉伸模式
     enum class StretchMode
     {
-        STRETCH,		//拉伸，会改变比例
-        FILL,			//填充，不改变比例，会裁剪长边
-        FIT			//适应，不会改变比例，不裁剪
+        STRETCH,        //拉伸，会改变比例
+        FILL,           //填充，不改变比例，会裁剪长边
+        FIT         //适应，不会改变比例，不裁剪
     };
 
     //用于在DrawScrollText函数调用时使用的一些需要在函数调用完毕后继续存在的变量
     struct ScrollInfo
     {
-        int shift_cnt{};		//移动的次数
-        bool shift_dir{};		//移动的方向，右移为false，左移为true
-        int freez{};			//当该变量大于0时，文本不滚动，直到小于等于0为止
-        bool dir_changed{ false };	//如果方向发生了变化，则为true
+        int shift_cnt{};        //移动的次数
+        bool shift_dir{};       //移动的方向，右移为false，左移为true
+        int freez{};            //当该变量大于0时，文本不滚动，直到小于等于0为止
+        bool dir_changed{ false };  //如果方向发生了变化，则为true
         CString last_string;        //上一次绘制的文本
 
         void Reset();
@@ -52,7 +52,7 @@ public:
     void Create(CDC* pDC, Gdiplus::Graphics* pGraphics, CFont* pFont = nullptr);
     CFont* SetFont(CFont* pFont);       // 设置绘制文本的字体（返回原来的字体）
     CFont* GetFont() { return m_pfont; }
-    void SetDC(CDC* pDC);		//设置绘图的DC
+    void SetDC(CDC* pDC);       //设置绘图的DC
     CDC* GetDC()
     {
         return m_pDC;
@@ -114,12 +114,12 @@ public:
     void DrawIcon(HICON hIcon, CRect rect, int icon_size);
 
     void FillRect(CRect rect, COLORREF color, bool no_clip_area = true);
-    void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area = true);		//填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）
+    void FillAlphaRect(CRect rect, COLORREF color, BYTE alpha, bool no_clip_area = true);       //填充一个半透明的矩形（参照http://blog.csdn.net/lee353086/article/details/38311421）
 
     void DrawRectTopFrame(CRect rect, COLORREF color, int pilex = 1);
     void DrawRectOutLine(CRect rect, COLORREF color, int width, bool dot_line);
     void DrawRectFrame(CRect rect, COLORREF color, int width, BYTE alpha = 255);        //绘制一个矩形边框
-	void DrawLine(CPoint point1, CPoint point2, COLORREF color, int width, bool dot_line);
+    void DrawLine(CPoint point1, CPoint point2, COLORREF color, int width, bool dot_line);
 
     void DrawRoundRect(CRect rect, COLORREF color, int radius, BYTE alpha = 255);       //绘制圆角矩形（使用GDI+）
     void DrawRoundRect(Gdiplus::Rect rect, Gdiplus::Color color, int radius);       //绘制圆角矩形（使用GDI+）
@@ -156,7 +156,7 @@ protected:
     void ValidateGdiClipArea();
 
 protected:
-    CDC* m_pDC{};		//用于绘图的CDC类的指针
+    CDC* m_pDC{};       //用于绘图的CDC类的指针
     CFont* m_pfont{};
     Gdiplus::Graphics* m_pGraphics{};
     bool m_auto_destory_graphics{};     //是否自动析构Graphics对象，如果Graphics对象是内部创建的，则为true，如果是从外面传过来的，则为false
@@ -172,15 +172,21 @@ public:
         : m_pDC(pDC), m_rect(rect)
     {
         m_memDC.CreateCompatibleDC(NULL);
-        m_memBitmap.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());
-        m_pOldBit = m_memDC.SelectObject(&m_memBitmap);
+        if (m_pDC != nullptr)
+        {
+            m_memBitmap.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());
+            m_pOldBit = m_memDC.SelectObject(&m_memBitmap);
+        }
     }
 
     ~CDrawDoubleBuffer()
     {
-        m_pDC->BitBlt(m_rect.left, m_rect.top, m_rect.Width(), m_rect.Height(), &m_memDC, 0, 0, SRCCOPY);
-        m_memDC.SelectObject(m_pOldBit);
-        m_memBitmap.DeleteObject();
+        if (m_pDC != nullptr)
+        {
+            m_pDC->BitBlt(m_rect.left, m_rect.top, m_rect.Width(), m_rect.Height(), &m_memDC, 0, 0, SRCCOPY);
+            m_memDC.SelectObject(m_pOldBit);
+            m_memBitmap.DeleteObject();
+        }
         m_memDC.DeleteDC();
     }
 
@@ -193,7 +199,7 @@ private:
     CDC* m_pDC;
     CDC m_memDC;
     CBitmap m_memBitmap;
-    CBitmap* m_pOldBit;
+    CBitmap* m_pOldBit{};
     CRect m_rect;
 };
 

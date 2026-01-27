@@ -45,7 +45,12 @@ void CPlayerUIBase::DrawInfo(bool reset)
 
     //双缓冲绘图
     {
-        CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
+        CDC* pDC = m_pDC;
+        //如果要跳过下一帧，则将绘图DC设为空，阻止绘图
+        if (m_skip_next_frame)
+            pDC = nullptr;
+        m_skip_next_frame = false;
+        CDrawDoubleBuffer drawDoubleBuffer(pDC, m_draw_rect);
         m_draw.SetDC(drawDoubleBuffer.GetMemDC());  //将m_draw中的绘图DC设置为缓冲的DC
         m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(theApp.m_ui_data.full_screen));
 
@@ -3094,4 +3099,9 @@ void CPlayerUIBase::AddToolTips()
         std::wstring str_tooltip = GetItemTooltip(i);
         AddMouseToolTip(i, str_tooltip.c_str());
     }
+}
+
+void CPlayerUIBase::SkipNextFrame()
+{
+    m_skip_next_frame = true;
 }
