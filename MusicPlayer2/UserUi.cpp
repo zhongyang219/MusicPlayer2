@@ -2,6 +2,7 @@
 #include "UserUi.h"
 #include "UiSearchBox.h"
 #include "UIPanel/ListPreviewPanel.h"
+#include "UIElement/Helper/UiElementHelper.h"
 
 CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
     : CPlayerUIBase(theApp.m_ui_data, pMainWnd), m_xml_path(xml_path)
@@ -1030,7 +1031,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
                         navigation_item.text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
                         ReplaceUiStringRes(navigation_item.text);
                         std::string str_icon = CTinyXml2Helper::ElementAttribute(child_node, "icon");
-                        navigation_item.icon = UiElement::Button::NameToIconType(str_icon);
+                        navigation_item.icon = UiElementHelper::NameToIconType(str_icon);
                         tab_emelent->tab_list.push_back(navigation_item);
                     }
                 });
@@ -1129,6 +1130,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             {
                 std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
                 check_box->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+                ReplaceUiStringRes(check_box->text);
             }
         }
         else if (item_name == "radioButton")
@@ -1138,6 +1140,7 @@ std::shared_ptr<UiElement::Element> CUserUi::BuildUiElementFromXmlNode(tinyxml2:
             {
                 std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
                 radio_btn->text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+                ReplaceUiStringRes(radio_btn->text);
                 radio_btn->group = CTinyXml2Helper::ElementAttribute(xml_node, "group");
             }
         }

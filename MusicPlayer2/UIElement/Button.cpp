@@ -2,6 +2,7 @@
 #include "Button.h"
 #include "Player.h"
 #include "UserUI.h"
+#include "Helper/UiElementHelper.h"
 
 void UiElement::Button::Draw()
 {
@@ -144,128 +145,7 @@ void UiElement::Button::FromString(const std::string& key_type)
 
 void UiElement::Button::IconTypeFromString(const std::string& icon_name)
 {
-    icon_type = NameToIconType(icon_name);
-}
-
-IconMgr::IconType UiElement::Button::NameToIconType(const std::string& icon_name)
-{
-    IconMgr::IconType icon_type{ IconMgr::IT_NO_ICON };
-    if (icon_name == "app") icon_type = IconMgr::IT_App;
-    else if (icon_name == "appMonochrome") icon_type = IconMgr::IT_App_Monochrome;
-    else if (icon_name == "stop") icon_type = IconMgr::IT_Stop;
-    else if (icon_name == "play") icon_type = IconMgr::IT_Play;
-    else if (icon_name == "pause") icon_type = IconMgr::IT_Pause;
-    else if (icon_name == "playPause") icon_type = IconMgr::IT_Play_Pause;
-    else if (icon_name == "previous") icon_type = IconMgr::IT_Previous;
-    else if (icon_name == "next") icon_type = IconMgr::IT_Next;
-    else if (icon_name == "favoriteOn") icon_type = IconMgr::IT_Favorite_On;
-    else if (icon_name == "favoriteOff") icon_type = IconMgr::IT_Favorite_Off;
-    else if (icon_name == "mediaLib") icon_type = IconMgr::IT_Media_Lib;
-    else if (icon_name == "playlist") icon_type = IconMgr::IT_Playlist;
-    else if (icon_name == "menu") icon_type = IconMgr::IT_Menu;
-    else if (icon_name == "fullScreenOn") icon_type = IconMgr::IT_Full_Screen_On;
-    else if (icon_name == "fullScreenOff") icon_type = IconMgr::IT_Full_Screen_Off;
-    else if (icon_name == "minimize") icon_type = IconMgr::IT_Minimize;
-    else if (icon_name == "maxmizeOn") icon_type = IconMgr::IT_Maxmize_On;
-    else if (icon_name == "maxmizeOff") icon_type = IconMgr::IT_Maxmize_Off;
-    else if (icon_name == "close") icon_type = IconMgr::IT_Close;
-    else if (icon_name == "playOrder") icon_type = IconMgr::IT_Play_Order;
-    else if (icon_name == "loopPlaylist") icon_type = IconMgr::IT_Loop_Playlist;
-    else if (icon_name == "loopTrack") icon_type = IconMgr::IT_Loop_Track;
-    else if (icon_name == "playShuffle") icon_type = IconMgr::IT_Play_Shuffle;
-    else if (icon_name == "playRandom") icon_type = IconMgr::IT_Play_Random;
-    else if (icon_name == "playTrack") icon_type = IconMgr::IT_Play_Track;
-    else if (icon_name == "setting") icon_type = IconMgr::IT_Setting;
-    else if (icon_name == "equalizer") icon_type = IconMgr::IT_Equalizer;
-    else if (icon_name == "skin") icon_type = IconMgr::IT_Skin;
-    else if (icon_name == "miniOn") icon_type = IconMgr::IT_Mini_On;
-    else if (icon_name == "miniOff") icon_type = IconMgr::IT_Mini_Off;
-    else if (icon_name == "info") icon_type = IconMgr::IT_Info;
-    else if (icon_name == "find") icon_type = IconMgr::IT_Find;
-    else if (icon_name == "darkModeOn") icon_type = IconMgr::IT_Dark_Mode_On;
-    else if (icon_name == "darkModeOff") icon_type = IconMgr::IT_Dark_Mode_Off;
-    else if (icon_name == "volume0") icon_type = IconMgr::IT_Volume0;
-    else if (icon_name == "volume1") icon_type = IconMgr::IT_Volume1;
-    else if (icon_name == "volume2") icon_type = IconMgr::IT_Volume2;
-    else if (icon_name == "volume3") icon_type = IconMgr::IT_Volume3;
-    else if (icon_name == "switchDisplay") icon_type = IconMgr::IT_Switch_Display;
-    else if (icon_name == "folder") icon_type = IconMgr::IT_Folder;
-    else if (icon_name == "music") icon_type = IconMgr::IT_Music;
-    else if (icon_name == "link") icon_type = IconMgr::IT_Link;
-    else if (icon_name == "exit") icon_type = IconMgr::IT_Exit;
-    else if (icon_name == "rewind") icon_type = IconMgr::IT_Rewind;
-    else if (icon_name == "fastForward") icon_type = IconMgr::IT_Fast_Forward;
-    else if (icon_name == "speedUp") icon_type = IconMgr::IT_Speed_Up;
-    else if (icon_name == "slowDown") icon_type = IconMgr::IT_Slow_Down;
-    else if (icon_name == "add") icon_type = IconMgr::IT_Add;
-    else if (icon_name == "save") icon_type = IconMgr::IT_Save;
-    else if (icon_name == "saveAs") icon_type = IconMgr::IT_Save_As;
-    else if (icon_name == "sortMode") icon_type = IconMgr::IT_Sort_Mode;
-    else if (icon_name == "playlistDisplayMode") icon_type = IconMgr::IT_Playlist_Display_Mode;
-    else if (icon_name == "locate") icon_type = IconMgr::IT_Locate;
-    else if (icon_name == "lyric") icon_type = IconMgr::IT_Lyric;
-    else if (icon_name == "copy") icon_type = IconMgr::IT_Copy;
-    else if (icon_name == "edit") icon_type = IconMgr::IT_Edit;
-    else if (icon_name == "unlink") icon_type = IconMgr::IT_Unlink;
-    else if (icon_name == "folderExplore") icon_type = IconMgr::IT_Folder_Explore;
-    else if (icon_name == "internalLyric") icon_type = IconMgr::IT_Internal_Lyric;
-    else if (icon_name == "download") icon_type = IconMgr::IT_Download;
-    else if (icon_name == "downloadBatch") icon_type = IconMgr::IT_Download_Batch;
-    else if (icon_name == "playlistDock") icon_type = IconMgr::IT_Playlist_Dock;
-    else if (icon_name == "playlistFloat") icon_type = IconMgr::IT_Playlist_Float;
-    else if (icon_name == "pin") icon_type = IconMgr::IT_Pin;
-    else if (icon_name == "convert") icon_type = IconMgr::IT_Convert;
-    else if (icon_name == "online") icon_type = IconMgr::IT_Online;
-    else if (icon_name == "shortcut") icon_type = IconMgr::IT_Shortcut;
-    else if (icon_name == "albumCover") icon_type = IconMgr::IT_Album_Cover;
-    else if (icon_name == "statistics") icon_type = IconMgr::IT_Statistics;
-    else if (icon_name == "fileRelate") icon_type = IconMgr::IT_File_Relate;
-    else if (icon_name == "help") icon_type = IconMgr::IT_Help;
-    else if (icon_name == "fix") icon_type = IconMgr::IT_Fix;
-    else if (icon_name == "star") icon_type = IconMgr::IT_Star;
-    else if (icon_name == "starSelected") icon_type = IconMgr::IT_StarSelected;
-    else if (icon_name == "artist") icon_type = IconMgr::IT_Artist;
-    else if (icon_name == "album") icon_type = IconMgr::IT_Album;
-    else if (icon_name == "genre") icon_type = IconMgr::IT_Genre;
-    else if (icon_name == "year") icon_type = IconMgr::IT_Year;
-    else if (icon_name == "bitrate") icon_type = IconMgr::IT_Bitrate;
-    else if (icon_name == "history") icon_type = IconMgr::IT_History;
-    else if (icon_name == "keyBoard") icon_type = IconMgr::IT_Key_Board;
-    else if (icon_name == "reverb") icon_type = IconMgr::IT_Reverb;
-    else if (icon_name == "doubleLine") icon_type = IconMgr::IT_Double_Line;
-    else if (icon_name == "lock") icon_type = IconMgr::IT_Lock;
-    else if (icon_name == "playAsNext") icon_type = IconMgr::IT_Play_As_Next;
-    else if (icon_name == "rename") icon_type = IconMgr::IT_Rename;
-    else if (icon_name == "playInPlaylist") icon_type = IconMgr::IT_Play_In_Playlist;
-    else if (icon_name == "playInFolder") icon_type = IconMgr::IT_Play_In_Folder;
-    else if (icon_name == "tag") icon_type = IconMgr::IT_Tag;
-    else if (icon_name == "more") icon_type = IconMgr::IT_More;
-    else if (icon_name == "nowPlaying") icon_type = IconMgr::IT_NowPlaying;
-    else if (icon_name == "karaoke") icon_type = IconMgr::IT_Karaoke;
-    else if (icon_name == "refresh") icon_type = IconMgr::IT_Refresh;
-    else if (icon_name == "newFolder") icon_type = IconMgr::IT_NewFolder;
-    else if (icon_name == "background") icon_type = IconMgr::IT_Background;
-    else if (icon_name == "dropDown") icon_type = IconMgr::IT_DropDown;
-    else if (icon_name == "listPreview") icon_type = IconMgr::IT_ListPreview;
-    else if (icon_name == "arrowLeft") icon_type = IconMgr::IT_Arrow_Left;
-    else if (icon_name == "delete") icon_type = IconMgr::IT_Delete;
-    else if (icon_name == "leTagInsert") icon_type = IconMgr::IT_Le_Tag_Insert;
-    else if (icon_name == "leTagReplace") icon_type = IconMgr::IT_Le_Tag_Replace;
-    else if (icon_name == "leTagDelete") icon_type = IconMgr::IT_Le_Tag_Delete;
-    else if (icon_name == "leSave") icon_type = IconMgr::IT_Le_Save;
-    else if (icon_name == "leFind") icon_type = IconMgr::IT_Le_Find;
-    else if (icon_name == "leReplace") icon_type = IconMgr::IT_Le_Replace;
-    else if (icon_name == "triangleLeft") icon_type = IconMgr::IT_Triangle_Left;
-    else if (icon_name == "triangleUp") icon_type = IconMgr::IT_Triangle_Up;
-    else if (icon_name == "triangleRight") icon_type = IconMgr::IT_Triangle_Right;
-    else if (icon_name == "triangleDown") icon_type = IconMgr::IT_Triangle_Down;
-    else if (icon_name == "ok") icon_type = IconMgr::IT_Ok;
-    else if (icon_name == "cancel") icon_type = IconMgr::IT_Cancel;
-    else if (icon_name == "treeCollapsed") icon_type = IconMgr::IT_TreeCollapsed;
-    else if (icon_name == "treeExpanded") icon_type = IconMgr::IT_TreeExpanded;
-    else if (icon_name == "defaultCoverPlaying") icon_type = IconMgr::IT_Default_Cover_Playing;
-    else if (icon_name == "defaultCoverStopped") icon_type = IconMgr::IT_Default_Cover_Stopped;
-    return icon_type;
+    icon_type = UiElementHelper::NameToIconType(icon_name);
 }
 
 int UiElement::Button::GetMaxWidth(CRect parent_rect) const

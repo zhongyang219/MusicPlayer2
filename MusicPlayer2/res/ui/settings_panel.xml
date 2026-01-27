@@ -54,7 +54,7 @@
                     <text font_size="10" text="%(TXT_OPT_APC_TITLE_BAR_BTN_SEL)" height="20"/>
                     <text text="%(TXT_OPT_DESC_BUTTONS_DISPLAYED_IN_TITLABAR)" color_style="emphasis1" height="20"/>
                   </verticalLayout>
-                  <!--<button id="buttonsInTitlebarBtn" key="showHideElement" related_element_id="buttonsInTitlebarOptionGroup" icon="dropDown" height="28" width="28" margin-right="16"/>-->
+                  <button id="buttonsInTitlebarBtn" key="showHideElement" related_element_id="buttonsInTitlebarOptionGroup" icon="dropDown" height="28" width="28" margin-right="16"/>
                 </horizontalLayout>
               </rectangle>
               <verticalLayout id="buttonsInTitlebarOptionGroup" height="252">
@@ -159,6 +159,22 @@
             <verticalLayout>
               <toggleSettingGroup id="stopWhenErrorBtn" height="60" icon="stop" mainText="%(TXT_OPT_PLAY_STOP_WHEN_ERROR)"/>
               <toggleSettingGroup id="autoPlayWhenStartBtn" height="60" margin-top="4" icon="play" mainText="%(TXT_OPT_PLAY_AUTO_PLAY_WHEN_START)"/>
+              <!--播放内核-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="setting" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_PLAY_CORE)" height="20"/>
+                    <text text="%(TXT_OPT_DESC_PLAY_CORE)" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <button id="playCoreExpandBtn" key="showHideElement" related_element_id="playCoreOptionGroup" icon="dropDown" height="28" width="28" margin-right="16"/>
+                </horizontalLayout>
+              </rectangle>
+              <verticalLayout id="playCoreOptionGroup" margin-left="52" margin-right="16" height="108">
+                <radioButton id="playCoreBass" text="%(TXT_OPT_PLAY_CORE_BASS)" group="1"/>
+                <radioButton id="playCoreMCI" text="%(TXT_OPT_PLAY_CORE_MCI)" group="1"/>
+                <radioButton id="playCoreFFMPEG" text="%(TXT_OPT_PLAY_CORE_FFMPEG)" group="1"/>
+              </verticalLayout>
             </verticalLayout>
           </scrollArea>
           

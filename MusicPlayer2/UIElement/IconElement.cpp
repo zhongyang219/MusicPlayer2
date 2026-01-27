@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "IconElement.h"
-#include "Button.h"
+#include "Helper/UiElementHelper.h"
 
 void UiElement::Icon::Draw()
 {
@@ -11,7 +11,7 @@ void UiElement::Icon::Draw()
 
 void UiElement::Icon::IconTypeFromString(const std::string& icon_name)
 {
-    icon_type = Button::NameToIconType(icon_name);
+    icon_type = UiElementHelper::NameToIconType(icon_name);
 
 }
 

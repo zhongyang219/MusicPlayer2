@@ -4,6 +4,7 @@
 #include "UIElement/Text.h"
 #include "UIElement/Button.h"
 #include "UIElement/ListElement.h"
+#include "UIElement/RadioButton.h"
 
 class CSettingsPanel : public CPlayerUIPanel
 {
@@ -22,6 +23,8 @@ private:
 
     void OnBnClickedSetFontButton();
     void OnUiIntervalChanged(bool up);
+
+    void OnPlayCoreRadioBtnClicked(UiElement::AbstractToggleButton* sender);
 
     void OnClearSongDataBtnClicked();
     void OnAddMediaLibFolderClicked();
@@ -50,6 +53,11 @@ private:
     UiElement::ToggleSettingGroup* use_standard_titlebar;
     UiElement::ToggleSettingGroup* show_menubar_btn;
     UiElement::Text* ui_refresh_interfal_value;
+
+    //播放设置控件
+    UiElement::RadioButton* play_core_bass_btn;
+    UiElement::RadioButton* play_core_mci_btn;
+    UiElement::RadioButton* play_core_ffmpeg_btn;
 
     //常规设置控件
     UiElement::Text* config_file_dir_text;

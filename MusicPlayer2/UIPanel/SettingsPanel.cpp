@@ -94,6 +94,38 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	UiElement::ToggleSettingGroup* auto_play_when_start_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("autoPlayWhenStartBtn");
 	auto_play_when_start_btn->GetToggleBtn()->BindBool(&theApp.m_play_setting_data.auto_play_when_start);
 
+	play_core_bass_btn = m_root_element->FindElement<UiElement::RadioButton>("playCoreBass");
+	play_core_bass_btn->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) {
+		OnPlayCoreRadioBtnClicked(sender);
+	});
+	play_core_mci_btn = m_root_element->FindElement<UiElement::RadioButton>("playCoreMCI");
+	play_core_mci_btn->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) {
+		OnPlayCoreRadioBtnClicked(sender);
+	});
+	play_core_ffmpeg_btn = m_root_element->FindElement<UiElement::RadioButton>("playCoreFFMPEG");
+	//判断FFMPEG内核是否可用
+	bool enable_ffmpeg = false;
+	if (CPlayer::GetInstance().IsFfmpegCore()) {
+		enable_ffmpeg = true;
+	}
+	else {
+		auto h = LoadLibraryW(L"ffmpeg_core.dll");
+		if (h) {
+			enable_ffmpeg = true;
+			FreeLibrary(h);
+		}
+	}
+	if (enable_ffmpeg)
+	{
+		play_core_ffmpeg_btn->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) {
+			OnPlayCoreRadioBtnClicked(sender);
+		});
+	}
+	else
+	{
+		play_core_ffmpeg_btn->SetEnable(false);
+	}
+
 	//媒体库设置
 	UiElement::ToggleSettingGroup* update_medialib_when_start_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("updateMedialibWhenStart");
 	update_medialib_when_start_btn->GetToggleBtn()->BindBool(&theApp.m_media_lib_setting_data.update_media_lib_when_start_up);
@@ -165,6 +197,15 @@ void CSettingsPanel::SettingDataToUi()
 	show_statusbar_btn->GetToggleBtn()->SetChecked(m_apperence_data.always_show_statusbar);
 	use_standard_titlebar->GetToggleBtn()->SetChecked(m_apperence_data.show_window_frame);
 	ui_refresh_interfal_value->SetText(std::to_wstring(m_apperence_data.ui_refresh_interval));
+
+	if (m_play_data.use_ffmpeg)
+		play_core_ffmpeg_btn->SetChecked(true);
+	else if (m_play_data.use_mci)
+		play_core_mci_btn->SetChecked(true);
+	else
+		play_core_bass_btn->SetChecked(true);
+
+
 	config_file_dir_text->SetText(theApp.m_appdata_dir);
 	size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);
 	clear_medialib_text->SetText(CMediaLibSettingDlg::GetDataSizeString(data_size));
@@ -219,6 +260,28 @@ void CSettingsPanel::OnUiIntervalChanged(bool up)
 	m_apperence_data.ui_refresh_interval = (m_apperence_data.ui_refresh_interval / UI_INTERVAL_STEP * UI_INTERVAL_STEP);
 	CCommon::SetNumRange(m_apperence_data.ui_refresh_interval, MIN_UI_INTERVAL, MAX_UI_INTERVAL);
 	ui_refresh_interfal_value->SetText(std::to_wstring(m_apperence_data.ui_refresh_interval));
+}
+
+void CSettingsPanel::OnPlayCoreRadioBtnClicked(UiElement::AbstractToggleButton* sender)
+{
+	UpdateSettingsData();
+
+	if (sender == play_core_bass_btn)
+	{
+		m_play_data.use_mci = false;
+		m_play_data.use_ffmpeg = false;
+	}
+	else if (sender == play_core_mci_btn)
+	{
+		m_play_data.use_mci = true;
+		m_play_data.use_ffmpeg = false;
+	}
+	else if (sender == play_core_ffmpeg_btn)
+	{
+		m_play_data.use_mci = false;
+		m_play_data.use_ffmpeg = true;
+	}
+	OnSettingsChanged();
 }
 
 void CSettingsPanel::OnClearSongDataBtnClicked()

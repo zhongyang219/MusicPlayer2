@@ -313,6 +313,7 @@
     <ClInclude Include="UIElement\ElementFactory.h" />
     <ClInclude Include="UIElement\ElementSwitcher.h" />
     <ClInclude Include="UIElement\FolderExploreTree.h" />
+    <ClInclude Include="UIElement\Helper\UiElementHelper.h" />
     <ClInclude Include="UIElement\IconElement.h" />
     <ClInclude Include="UIElement\Layout.h" />
     <ClInclude Include="UIElement\AbstractListElement.h" />
@@ -545,6 +546,7 @@
     <ClCompile Include="UIElement\ElementFactory.cpp" />
     <ClCompile Include="UIElement\ElementSwitcher.cpp" />
     <ClCompile Include="UIElement\FolderExploreTree.cpp" />
+    <ClCompile Include="UIElement\Helper\UiElementHelper.cpp" />
     <ClCompile Include="UIElement\IconElement.cpp" />
     <ClCompile Include="UIElement\Layout.cpp" />
     <ClCompile Include="UIElement\AbstractListElement.cpp" />

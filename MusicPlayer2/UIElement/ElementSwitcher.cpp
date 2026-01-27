@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ElementSwitcher.h"
-#include "Button.h"
+#include "Helper/UiElementHelper.h"
 
 void UiElement::ElementSwitcher::Draw()
 {
@@ -95,5 +95,5 @@ bool UiElement::ElementSwitcher::hover() const
 void UiElement::ElementSwitcher::IconTypeFromString(const std::string& icon_name)
 {
     if (!icon_name.empty())
-        icon_type = Button::NameToIconType(icon_name);
+        icon_type = UiElementHelper::NameToIconType(icon_name);
 }

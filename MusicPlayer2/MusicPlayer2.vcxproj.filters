@@ -432,6 +432,9 @@
     <Filter Include="UIElement\CombinedElement">
       <UniqueIdentifier>{31c5ebf7-9cee-4c95-ac32-515975ac05d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UIElement\Helper">
+      <UniqueIdentifier>{6bf24b5b-a89f-494c-b783-230d59dd305d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1140,6 +1143,9 @@
     <ClInclude Include="UIElement\RadioButton.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\Helper\UiElementHelper.h">
+      <Filter>UIElement\Helper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1810,6 +1816,9 @@
     </ClCompile>
     <ClCompile Include="UIElement\RadioButton.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\Helper\UiElementHelper.cpp">
+      <Filter>UIElement\Helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -21,8 +21,6 @@ namespace UiElement
         void FromString(const std::string& key_type);
         void IconTypeFromString(const std::string& icon_name);
 
-        static IconMgr::IconType NameToIconType(const std::string& icon_name);
-
         virtual void Draw() override;
         virtual int GetMaxWidth(CRect parent_rect) const override;
         virtual void ClearRect() override;
