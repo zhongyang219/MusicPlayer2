@@ -74,8 +74,8 @@ void UiElement::AbstractListElement::DrawScrollArea()
                 {
                     CRect rect_cur_indicator{ rect_item };
                     rect_cur_indicator.right = rect_cur_indicator.left + ui->DPI(4);
-                    int indicator_hight = item_height * 6 / 10;
-                    rect_cur_indicator.top += (item_height - indicator_hight) / 2;
+                    int indicator_hight = ItemHeight() * 6 / 10;
+                    rect_cur_indicator.top += (ItemHeight() - indicator_hight) / 2;
                     rect_cur_indicator.bottom = rect_cur_indicator.top + indicator_hight;
                     if (theApp.m_app_setting_data.button_round_corners)
                         ui->GetDrawer().DrawRoundRect(rect_cur_indicator, ui->GetUIColors().color_text_heighlight, ui->DPI(2));
