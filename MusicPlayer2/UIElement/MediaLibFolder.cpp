@@ -75,7 +75,7 @@ int UiElement::MediaLibFolder::GetHoverButtonCount(int row)
 {
     FindTrackList();
     //如果有关联的TrackList，则不显示最后的“预览”按钮
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
         return BTN_MAX - 1;
     else
         return BTN_MAX;
@@ -141,7 +141,7 @@ void UiElement::MediaLibFolder::OnSelectionChanged()
 {
     //获取关联的trackList元素
     FindTrackList();
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
     {
         int row = GetItemSelected();
         if (row >= 0 && row < GetRowCount())

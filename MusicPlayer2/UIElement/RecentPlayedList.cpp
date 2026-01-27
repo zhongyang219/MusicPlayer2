@@ -141,7 +141,7 @@ void UiElement::RecentPlayedList::OnSelectionChanged()
     if (!track_list_element_id.empty())
     {
         TrackList* track_list = FindRelatedElement<TrackList>(track_list_element_id);
-        if (track_list != nullptr && track_list->IsEnable())
+        if (track_list != nullptr && track_list->IsShown())
         {
             int row = GetItemSelected();
             if (row >= 0 && row < GetRowCount())

@@ -16,7 +16,7 @@ void UiElement::Layout::CalculateChildrenRect()
         // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (!child->IsEnable(GetRect()))            // 设置为不显示时按尺寸为0的固定尺寸元素处理，并忽略此元素边距
+            if (!child->IsShown(GetRect()))            // 设置为不显示时按尺寸为0的固定尺寸元素处理，并忽略此元素边距
             {
                 size_list.push_back(0);
                 item_fixed_size_num++;
@@ -133,7 +133,7 @@ void UiElement::Layout::CalculateChildrenRect()
                 child_rect.top = GetRect().top + child->margin_top.GetValue(GetRect());
                 child_rect.bottom = GetRect().bottom - child->margin_bottom.GetValue(GetRect());
             }
-            if (child->IsEnable(GetRect()))
+            if (child->IsShown(GetRect()))
             {
                 if (first_child)
                 {
@@ -165,7 +165,7 @@ void UiElement::Layout::CalculateChildrenRect()
         // 第一次遍历，获取固定不变的尺寸数据
         for (const auto& child : childLst)
         {
-            if (!child->IsEnable(GetRect()))            // 设置为不显示时按尺寸为0的固定尺寸元素处理
+            if (!child->IsShown(GetRect()))            // 设置为不显示时按尺寸为0的固定尺寸元素处理
             {
                 size_list.push_back(0);
                 item_fixed_size_num++;
@@ -282,7 +282,7 @@ void UiElement::Layout::CalculateChildrenRect()
                 child_rect.left = GetRect().left + child->margin_left.GetValue(GetRect());
                 child_rect.right = GetRect().right - child->margin_right.GetValue(GetRect());
             }
-            if (child->IsEnable(GetRect()))
+            if (child->IsShown(GetRect()))
             {
                 if (first_child)
                 {

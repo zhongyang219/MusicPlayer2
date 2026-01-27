@@ -11,7 +11,7 @@ namespace UiElement
         Alignment align{ Alignment::LEFT };     //对齐方式
         CUIDrawer::SpectrumCol type{ CUIDrawer::SC_64 };     //频谱分析的类型
         virtual void Draw() override;
-        virtual bool IsEnable(CRect parent_rect) const override;
+        virtual bool IsShown(CRect parent_rect) const override;
     };
 }
 

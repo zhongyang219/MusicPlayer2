@@ -104,7 +104,7 @@ int UiElement::FolderExploreTree::GetHoverButtonCount(int row)
 {
     FindTrackList();
     //如果有关联的TrackList，则不显示最后的“预览”按钮
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
         return BTN_MAX - 1;
     else
         return BTN_MAX;
@@ -190,7 +190,7 @@ void UiElement::FolderExploreTree::OnSelectionChanged()
 {
     //获取关联的trackList元素
     FindTrackList();
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
     {
         auto selected_node = GetNodeByIndex(GetItemSelected());
         if (selected_node != nullptr)

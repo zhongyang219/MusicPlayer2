@@ -45,7 +45,7 @@ namespace UiElement
         std::string id;
 
         virtual void Draw();   //绘制此元素
-        virtual bool IsEnable(CRect parent_rect) const;
+        virtual bool IsShown(CRect parent_rect) const;
         virtual int GetMaxWidth(CRect parent_rect) const;
         virtual int GetWidth(CRect parent_rect) const;
         virtual int GetHeight(CRect parent_rect) const;
@@ -60,7 +60,7 @@ namespace UiElement
         void IterateAllElements(std::function<bool(UiElement::Element*)> func, bool visible_only = false);
         void SetUi(CPlayerUIBase* _ui);
         void AddChild(std::shared_ptr<Element> child);
-        bool IsEnable() const;
+        bool IsShown() const;
         //设置元素的显示/隐藏属性
         void SetVisible(bool visible) { this->visible = visible; }
         //获取元素的显示/隐藏属性

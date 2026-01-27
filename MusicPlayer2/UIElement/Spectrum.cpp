@@ -11,9 +11,9 @@ void UiElement::Spectrum::Draw()
     }
 }
 
-bool UiElement::Spectrum::IsEnable(CRect parent_rect) const
+bool UiElement::Spectrum::IsShown(CRect parent_rect) const
 {
     if (theApp.m_app_setting_data.show_spectrum)
-        return UiElement::Element::IsEnable(parent_rect);
+        return UiElement::Element::IsShown(parent_rect);
     return false;
 }

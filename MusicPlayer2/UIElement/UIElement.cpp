@@ -52,12 +52,12 @@ void UiElement::Element::Draw()
 {
     for (const auto& item : childLst)
     {
-        if (item != nullptr && item->IsEnable(GetRect()))
+        if (item != nullptr && item->IsShown(GetRect()))
             item->Draw();
     }
 }
 
-bool UiElement::Element::IsEnable(CRect parent_rect) const
+bool UiElement::Element::IsShown(CRect parent_rect) const
 {
     if (!visible)
         return false;
@@ -274,12 +274,12 @@ void UiElement::Element::AddChild(std::shared_ptr<Element> child)
     childLst.push_back(child);
 }
 
-bool UiElement::Element::IsEnable() const
+bool UiElement::Element::IsShown() const
 {
     if (pParent != nullptr)
     {
-        bool enable = IsEnable(pParent->GetRect());
-        return enable && pParent->IsEnable();
+        bool enable = IsShown(pParent->GetRect());
+        return enable && pParent->IsShown();
     }
     else
     {

@@ -7,7 +7,7 @@ bool UiElement::AbstractToggleButton::LButtonUp(CPoint point)
     bool pressed = m_pressed;
     m_pressed = false;
 
-    if (pressed && rect.PtInRect(point) && IsEnable())
+    if (pressed && rect.PtInRect(point) && IsShown())
     {
         ButtonClicked();
         if (m_clicked_trigger)
