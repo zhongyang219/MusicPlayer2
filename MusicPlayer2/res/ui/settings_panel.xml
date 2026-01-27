@@ -151,6 +151,21 @@
               <toggleSettingGroup id="autoDownloadLyric" height="60" margin-top="4" icon="lyric" mainText="%(TXT_OPT_DATA_AUTO_DL_LYRIC)"/>
               <!--没有专辑封面时自动下载-->
               <toggleSettingGroup id="autoDownloadAlbumCover" height="60" margin-top="4" icon="albumCover" mainText="%(TXT_OPT_DATA_AUTO_DL_COVER)"/>
+              <!--歌词和专辑封面下载服务-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="online" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_DATA_LYRICS_AND_COVER_DL_SERVICE)" height="20"/>
+                    <!--<text color_style="emphasis1" height="20"/>-->
+                  </verticalLayout>
+                </horizontalLayout>
+              </rectangle>
+              <verticalLayout id="onlineServiceOptionGroup" margin-left="52" margin-right="16" height="72">
+                <radioButton id="onlineServiceNetEaseBtn" text="%(TXT_OPT_DATA_NETEASE_CLOUD_MUSIC)" group="2"/>
+                <radioButton id="onlineServiceQQMusicBtn" text="%(TXT_OPT_DATA_QQ_MUSIC)" group="2"/>
+              </verticalLayout>
+
             </verticalLayout>
           </scrollArea>
           

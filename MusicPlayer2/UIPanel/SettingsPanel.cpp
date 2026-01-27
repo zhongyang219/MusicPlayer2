@@ -87,6 +87,14 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	auto_downdoad_lyric_btn->GetToggleBtn()->BindBool(&theApp.m_general_setting_data.auto_download_lyric);
 	UiElement::ToggleSettingGroup* auto_downdoad_album_cover_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("autoDownloadAlbumCover");
 	auto_downdoad_album_cover_btn->GetToggleBtn()->BindBool(&theApp.m_general_setting_data.auto_download_album_cover);
+	online_service_netease_btn = m_root_element->FindElement<UiElement::RadioButton>("onlineServiceNetEaseBtn");
+	online_service_netease_btn->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) {
+		OnOnlineServiceRadioBtnClicked(sender);
+	});
+	online_service_qqmusic_btn = m_root_element->FindElement<UiElement::RadioButton>("onlineServiceNetEaseBtn");
+	online_service_qqmusic_btn->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) {
+		OnOnlineServiceRadioBtnClicked(sender);
+	});
 
 	//播放设置
 	UiElement::ToggleSettingGroup* stop_when_error_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("stopWhenErrorBtn");
@@ -198,6 +206,11 @@ void CSettingsPanel::SettingDataToUi()
 	use_standard_titlebar->GetToggleBtn()->SetChecked(m_apperence_data.show_window_frame);
 	ui_refresh_interfal_value->SetText(std::to_wstring(m_apperence_data.ui_refresh_interval));
 
+	if (m_general_data.lyric_download_service == GeneralSettingData::LDS_NETEASE)
+		online_service_netease_btn->SetChecked(true);
+	else
+		online_service_qqmusic_btn->SetChecked(true);
+
 	if (m_play_data.use_ffmpeg)
 		play_core_ffmpeg_btn->SetChecked(true);
 	else if (m_play_data.use_mci)
@@ -280,6 +293,20 @@ void CSettingsPanel::OnPlayCoreRadioBtnClicked(UiElement::AbstractToggleButton* 
 	{
 		m_play_data.use_mci = false;
 		m_play_data.use_ffmpeg = true;
+	}
+	OnSettingsChanged();
+}
+
+void CSettingsPanel::OnOnlineServiceRadioBtnClicked(UiElement::AbstractToggleButton* sender)
+{
+	UpdateSettingsData();
+	if (sender == online_service_netease_btn)
+	{
+		m_general_data.lyric_download_service = GeneralSettingData::LDS_NETEASE;
+	}
+	else if (sender == online_service_qqmusic_btn)
+	{
+		m_general_data.lyric_download_service = GeneralSettingData::LDS_QQMUSIC;
 	}
 	OnSettingsChanged();
 }

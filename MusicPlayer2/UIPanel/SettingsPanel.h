@@ -25,6 +25,7 @@ private:
     void OnUiIntervalChanged(bool up);
 
     void OnPlayCoreRadioBtnClicked(UiElement::AbstractToggleButton* sender);
+    void OnOnlineServiceRadioBtnClicked(UiElement::AbstractToggleButton* sender);
 
     void OnClearSongDataBtnClicked();
     void OnAddMediaLibFolderClicked();
@@ -61,6 +62,8 @@ private:
 
     //常规设置控件
     UiElement::Text* config_file_dir_text;
+    UiElement::RadioButton* online_service_netease_btn;
+    UiElement::RadioButton* online_service_qqmusic_btn;
 
     //媒体库设置控件
     UiElement::Text* clear_medialib_text;
