@@ -11,7 +11,8 @@ void UiElement::RadioButton::Draw()
     CPoint pos_icon{ rect.left , rect.top + (rect.Height() - check_box_size) / 2 };
     CRect check_rect(pos_icon, CSize(check_box_size, check_box_size));
     COLORREF check_back_color = GetButtonBackColor();
-    ui->GetDrawer().DrawEllipse(check_rect, check_back_color);
+    BYTE alpha = ui->GetDefaultAlpha();
+    ui->GetDrawer().DrawEllipse(check_rect, check_back_color, alpha);
     //绘制选中状态
     if (m_checked)
     {

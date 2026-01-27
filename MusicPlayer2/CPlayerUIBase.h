@@ -289,6 +289,9 @@ public:
     void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked = false);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool checked = false);
 
+    //获取绘图的默认不透明度
+    BYTE GetDefaultAlpha() const;
+
 protected:
     virtual void AddMouseToolTip(int btn, LPCTSTR str);      //为一个按钮添加鼠标提示
     virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override;

@@ -1086,11 +1086,7 @@ void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius, bool
 
 void CPlayerUIBase::DrawRectangle(CRect rect, COLORREF color)
 {
-    BYTE alpha;
-    if (IsDrawBackgroundAlpha())
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-    else
-        alpha = 255;
+    BYTE alpha = GetDefaultAlpha();
     if (!theApp.m_app_setting_data.button_round_corners)
         m_draw.FillAlphaRect(rect, color, alpha, true);
     else
@@ -1281,6 +1277,16 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
         m_draw.DrawWindowText(rect, text, m_colors.color_text_disabled, Alignment::CENTER);
     }
     btn.rect = rect;
+}
+
+BYTE CPlayerUIBase::GetDefaultAlpha() const
+{
+    BYTE alpha;
+    if (IsDrawBackgroundAlpha())
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    else
+        alpha = 255;
+    return alpha;
 }
 
 void CPlayerUIBase::AddMouseToolTip(int btn, LPCTSTR str)
