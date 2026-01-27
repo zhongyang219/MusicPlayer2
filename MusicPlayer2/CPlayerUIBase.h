@@ -356,7 +356,7 @@ private:
 
 protected:
     CWnd* m_pMainWnd = nullptr;
-    CDC* m_pDC;
+    CDC* m_pDC = nullptr;
     UIColors m_colors;
     CUIDrawer m_draw{ m_colors };       //用于绘制文本的对象
     SLayoutData m_layout;
@@ -382,14 +382,14 @@ protected:
     bool m_first_draw{ true };
 
 private:
-    CBitmap m_mem_bitmap_static;
-
     enum { UI_TIP_INFO_TIMER_ID = 1728 };
 
     static bool m_show_ui_tip_info;
     wstring m_ui_tip_info;
     int m_top_right_buttons_width{};
     CRect m_app_icon_rect{};        //标题栏应用图标区域
+
+    bool m_skip_next_frame{};
 };
 
 //用于在UI中设置字体。
