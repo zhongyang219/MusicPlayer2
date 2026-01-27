@@ -7,7 +7,7 @@ bool UiElement::AbstractToggleButton::LButtonUp(CPoint point)
     bool pressed = m_pressed;
     m_pressed = false;
 
-    if (pressed && rect.PtInRect(point) && IsShown())
+    if (pressed && rect.PtInRect(point) && IsEnable() && IsShown())
     {
         ButtonClicked();
         if (m_clicked_trigger)
@@ -21,7 +21,7 @@ bool UiElement::AbstractToggleButton::LButtonUp(CPoint point)
 
 bool UiElement::AbstractToggleButton::LButtonDown(CPoint point)
 {
-    if (rect.PtInRect(point))
+    if (IsEnable() && rect.PtInRect(point))
     {
         m_pressed = true;
         return true;
@@ -31,7 +31,7 @@ bool UiElement::AbstractToggleButton::LButtonDown(CPoint point)
 
 bool UiElement::AbstractToggleButton::MouseMove(CPoint point)
 {
-    m_hover = (rect.PtInRect(point));
+    m_hover = (IsEnable() && rect.PtInRect(point));
     return true;
 }
 
@@ -44,7 +44,8 @@ bool UiElement::AbstractToggleButton::MouseLeave()
 
 void UiElement::AbstractToggleButton::ButtonClicked()
 {
-    SetChecked(!Checked());
+    if (IsEnable())
+        SetChecked(!Checked());
 }
 
 void UiElement::AbstractToggleButton::SetChecked(bool checked)

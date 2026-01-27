@@ -20,7 +20,9 @@ void UiElement::Text::Draw()
         colors = CPlayerUIHelper::GetUIColors(false, ui->IsDrawBackgroundAlpha());
 
     COLORREF text_color{ colors.color_text };
-    if (color_style == Emphasis1)
+    if (!IsEnable())
+        text_color = colors.color_text_disabled;
+    else if (color_style == Emphasis1)
         text_color = colors.color_text_heighlight;
     else if (color_style == Emphasis2)
         text_color = colors.color_text_2;

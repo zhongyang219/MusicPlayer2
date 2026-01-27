@@ -286,3 +286,11 @@ bool UiElement::Element::IsShown() const
         return true;
     }
 }
+
+void UiElement::Element::SetEnable(bool enable)
+{
+    this->enable = enable;
+    //同时设置子元素的状态
+    for (auto& child : childLst)
+        child->SetEnable(enable);
+}

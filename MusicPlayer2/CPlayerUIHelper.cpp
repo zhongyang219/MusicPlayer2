@@ -23,6 +23,7 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         colors.color_text_lable = theApp.m_app_setting_data.theme_color.light2;
         colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
         colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.light2;
+        colors.color_text_disabled = GRAY(180);
         if (draw_alpha)
             colors.color_back = GRAY(64);
         else
@@ -59,6 +60,7 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         colors.color_text_lable = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
         colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.dark1;
+        colors.color_text_disabled = GRAY(160);
         colors.color_back = ColorTable::WHITE;
         colors.color_lyric_back = theApp.m_app_setting_data.theme_color.light3;
         colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.light3;

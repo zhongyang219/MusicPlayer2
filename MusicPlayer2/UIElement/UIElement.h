@@ -66,7 +66,7 @@ namespace UiElement
         //获取元素的显示/隐藏属性
         bool IsVisible() const { return visible; }
         //设置元素的启用/禁用属性
-        void SetEnable(bool enable) { this->enable = enable; }
+        void SetEnable(bool enable);
         //获取元素的启用/禁用属性
         bool IsEnable() const { return enable; }
 

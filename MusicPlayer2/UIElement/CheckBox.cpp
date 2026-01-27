@@ -19,7 +19,7 @@ void UiElement::CheckBox::Draw()
     //绘制文本
     CRect text_rect = rect;
     text_rect.left = check_rect.right + ui->DPI(4);
-    ui->GetDrawer().DrawWindowText(text_rect, text.c_str(), ui->GetUIColors().color_text);
+    ui->GetDrawer().DrawWindowText(text_rect, text.c_str(), IsEnable() ? ui->GetUIColors().color_text : ui->GetUIColors().color_text_disabled);
 
     Element::Draw();
 }

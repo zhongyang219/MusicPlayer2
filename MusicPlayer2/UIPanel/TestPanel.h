@@ -2,9 +2,11 @@
 #include "PlayerUIPanel.h"
 #include "UIElement/Button.h"
 #include "UIElement/CheckBox.h"
+#include "UIElement/RadioButton.h"
 #include "UIElement/Text.h"
 #include "UIElement/ToggleButton.h"
 #include "UIElement/ListElement.h"
+#include "UIElement/CombinedElement/ToggleSettingGroup.h"
 class CTestPanel : public CPlayerUIPanel
 {
 public:
@@ -21,8 +23,11 @@ private:
 private:
 	UiElement::Button* m_ok_btn{};
 	UiElement::Button* m_cancel_btn{};
-	UiElement::CheckBox* m_check_box1{};
 	UiElement::ToggleButton* m_toggle_btn{};
+	UiElement::CheckBox* m_check_box1{};
+	UiElement::RadioButton* m_radio1{};
+	UiElement::RadioButton* m_radio2{};
+	UiElement::ToggleSettingGroup* m_toggle_group2{};
 	UiElement::Text* m_text1{};
 	UiElement::Text* m_text2{};
 

@@ -1244,7 +1244,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
         rect_text.right -= right_space;
         COLORREF text_color = m_colors.color_text;
         if (!btn.enable)
-            text_color = GRAY(200);
+            text_color = m_colors.color_text_disabled;
         m_draw.DrawWindowText(rect_text, text.c_str(), text_color, Alignment::LEFT, true);
 
     }
@@ -1317,7 +1317,7 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
     }
     else
     {
-        m_draw.DrawWindowText(rect, text, GRAY(200), Alignment::CENTER);
+        m_draw.DrawWindowText(rect, text, m_colors.color_text_disabled, Alignment::CENTER);
     }
     btn.rect = rect;
 }

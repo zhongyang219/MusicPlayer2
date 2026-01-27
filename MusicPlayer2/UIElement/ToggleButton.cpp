@@ -58,7 +58,8 @@ void UiElement::ToggleButton::Draw()
         text = theApp.m_str_table.LoadText(L"UI_TXT_ON");
     else
         text = theApp.m_str_table.LoadText(L"UI_TXT_OFF");
-    ui->GetDrawer().DrawWindowText(text_rect, text.c_str(), ui->GetUIColors().color_text, Alignment::RIGHT);
+    COLORREF color_text = IsEnable() ? ui->GetUIColors().color_text : ui->GetUIColors().color_text_disabled;
+    ui->GetDrawer().DrawWindowText(text_rect, text.c_str(), color_text, Alignment::RIGHT);
 
     Element::Draw();
 }
@@ -66,48 +67,59 @@ void UiElement::ToggleButton::Draw()
 COLORREF UiElement::ToggleButton::GetButtonBackColor()
 {
     COLORREF toggle_back_color;
-    if (Checked())
+    if (IsEnable())
     {
-        if (theApp.m_app_setting_data.dark_mode)
+        if (Checked())
         {
-            if (m_pressed)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.dark1;
-            else if (m_hover)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.dark0;
+            if (theApp.m_app_setting_data.dark_mode)
+            {
+                if (m_pressed)
+                    toggle_back_color = theApp.m_app_setting_data.theme_color.dark1;
+                else if (m_hover)
+                    toggle_back_color = theApp.m_app_setting_data.theme_color.dark0;
+                else
+                    toggle_back_color = theApp.m_app_setting_data.theme_color.light1;
+            }
             else
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light1;
+            {
+                if (m_pressed)
+                    toggle_back_color = theApp.m_app_setting_data.theme_color.light1;
+                else if (m_hover)
+                    toggle_back_color = theApp.m_app_setting_data.theme_color.light1_5;
+                else
+                    toggle_back_color = theApp.m_app_setting_data.theme_color.light2;
+            }
         }
         else
         {
-            if (m_pressed)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light1;
-            else if (m_hover)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light1_5;
+            if (theApp.m_app_setting_data.dark_mode)
+            {
+                if (m_pressed)
+                    toggle_back_color = CColorConvert::m_gray_color.dark2;
+                else if (m_hover)
+                    toggle_back_color = CColorConvert::m_gray_color.dark2_5;
+                else
+                    toggle_back_color = CColorConvert::m_gray_color.dark3;
+            }
             else
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light2;
+            {
+                if (m_pressed)
+                    toggle_back_color = theApp.m_app_setting_data.theme_color.light2_5;
+                else if (m_hover)
+                    toggle_back_color = theApp.m_app_setting_data.theme_color.light3;
+                else
+                    toggle_back_color = theApp.m_app_setting_data.theme_color.light4;
+
+            }
         }
     }
     else
     {
         if (theApp.m_app_setting_data.dark_mode)
-        {
-            if (m_pressed)
-                toggle_back_color = CColorConvert::m_gray_color.dark2;
-            else if (m_hover)
-                toggle_back_color = CColorConvert::m_gray_color.dark2_5;
-            else
-                toggle_back_color = CColorConvert::m_gray_color.dark3;
-        }
+            toggle_back_color = CColorConvert::m_gray_color.dark3;
         else
-        {
-            if (m_pressed)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light2_5;
-            else if (m_hover)
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light3;
-            else
-                toggle_back_color = theApp.m_app_setting_data.theme_color.light4;
+            toggle_back_color = CColorConvert::m_gray_color.light3;
 
-        }
     }
     return toggle_back_color;
 }

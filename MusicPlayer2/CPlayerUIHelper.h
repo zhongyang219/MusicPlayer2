@@ -7,6 +7,7 @@ struct UIColors		//界面颜色
     COLORREF color_text_lable;			//标签文本的颜色
     COLORREF color_text_2;				//歌词未播放文本的颜色
     COLORREF color_text_heighlight;		//鼠标指向时文本的颜色
+    COLORREF color_text_disabled;       //禁用时的文本颜色
     COLORREF color_back;				//背景颜色
     COLORREF color_lyric_back;			//歌词界面背景颜色
     COLORREF color_control_bar_back;	//控制条背景颜色

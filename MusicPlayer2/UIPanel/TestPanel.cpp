@@ -17,9 +17,14 @@ CTestPanel::CTestPanel(CPlayerUIBase* ui)
 	if (m_check_box1 != nullptr)
 		m_check_box1->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) { OnCheckBox1Clicked(sender); });
 
-	m_toggle_btn = m_root_element->FindElement<UiElement::ToggleButton>("toggleBtn1");
+	m_toggle_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("toggleBtn1")->GetToggleBtn();
 	if (m_toggle_btn != nullptr)
 		m_toggle_btn->SetClickedTrigger([&](UiElement::AbstractToggleButton* sender) { OnToggleBtnClicked(sender); });
+	m_toggle_btn->SetChecked(true);
+
+	m_radio1 = m_root_element->FindElement<UiElement::RadioButton>("radio1");
+	m_radio2 = m_root_element->FindElement<UiElement::RadioButton>("radio2");
+	m_toggle_group2 = m_root_element->FindElement<UiElement::ToggleSettingGroup>("toggleBtn2");
 
 	m_text1 = m_root_element->FindElement<UiElement::Text>("text1");
 	m_text2 = m_root_element->FindElement<UiElement::Text>("text2");
@@ -57,9 +62,15 @@ void CTestPanel::OnToggleBtnClicked(UiElement::AbstractToggleButton* sender)
 {
 	bool checked = sender->Checked();
 	if (checked)
-		m_text2->text = _T("开关已打开");
+		m_text2->text = _T("控件已启用");
 	else
-		m_text2->text = _T("开关已关闭");
+		m_text2->text = _T("控件已禁用");
+
+	//设置控件启用禁用状态
+	m_check_box1->SetEnable(checked);
+	m_radio1->SetEnable(checked);
+	m_radio2->SetEnable(checked);
+	m_toggle_group2->SetEnable(checked);
 }
 
 void CTestPanel::OnAddClicked(UiElement::Button* sender)
