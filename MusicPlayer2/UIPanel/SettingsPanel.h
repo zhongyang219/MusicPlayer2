@@ -2,6 +2,7 @@
 #include "PlayerUIPanel.h"
 #include "UIElement/CombinedElement/ToggleSettingGroup.h"
 #include "UIElement/Text.h"
+#include "UIElement/Button.h"
 #include "UIElement/ListElement.h"
 
 class CSettingsPanel : public CPlayerUIPanel
@@ -25,6 +26,8 @@ private:
     void OnClearSongDataBtnClicked();
     void OnAddMediaLibFolderClicked();
     void OnDeleteMediaLibFolderClicked();
+    void OnMediaLibFolderSelectionChanged();
+
 
 private:
     LyricSettingData m_lyrics_data;
@@ -53,6 +56,7 @@ private:
 
     //媒体库设置控件
     UiElement::Text* clear_medialib_text;
+    UiElement::Button* delete_media_lib_folder_btn;
     UiElement::ListElement* media_lib_forder_list;
 };
 

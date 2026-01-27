@@ -65,6 +65,10 @@ namespace UiElement
         void SetVisible(bool visible) { this->visible = visible; }
         //获取元素的显示/隐藏属性
         bool IsVisible() const { return visible; }
+        //设置元素的启用/禁用属性
+        void SetEnable(bool enable) { this->enable = enable; }
+        //获取元素的启用/禁用属性
+        bool IsEnable() const { return enable; }
 
         //鼠标消息虚函数。
         //即使鼠标的位置不在当前元素的矩形区域内，函数仍然会响应，因此在重写这些虚函数时需要先使用rect.PtInRect(point)判断鼠标位置是否在矩形区域内。
@@ -112,6 +116,7 @@ namespace UiElement
         CRect rect;     //用于保存计算得到的元素的矩形区域
         CPlayerUIBase* ui{};
         bool visible{ true };   //元素的显示/隐藏属性
+        bool enable{ true };    //元素的启用/禁用属性
     };
 
     //UI中除按钮外其他元素的鼠标提示id，必须大于按钮枚举（CPlayerUIBase::BtnKey）的最大值，且小于1000

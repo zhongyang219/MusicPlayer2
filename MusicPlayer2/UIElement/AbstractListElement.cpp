@@ -253,6 +253,8 @@ void UiElement::AbstractListElement::Draw()
     if (last_row_selected != GetItemSelected())
     {
         OnSelectionChanged();
+        if (m_selection_changed_trigger)
+            m_selection_changed_trigger(this);
         last_row_selected = GetItemSelected();
     }
 
@@ -727,6 +729,11 @@ bool UiElement::AbstractListElement::IsRowDisplayed(int row)
         }
     }
     return false;
+}
+
+void UiElement::AbstractListElement::SetSelectionChangedTrigger(std::function<void(AbstractListElement*)> func)
+{
+    m_selection_changed_trigger = func;
 }
 
 void UiElement::AbstractListElement::DisplayRowToAbsoluteRow(int& row)

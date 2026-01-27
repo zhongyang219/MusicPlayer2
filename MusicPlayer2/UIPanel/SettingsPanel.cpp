@@ -104,14 +104,18 @@ CSettingsPanel::CSettingsPanel(CPlayerUIBase* ui)
 	});
 	media_lib_forder_list = m_root_element->FindElement<UiElement::ListElement>("mediaLibFolderList");
 	media_lib_forder_list->SetColumnCount(1);
+	media_lib_forder_list->SetSelectionChangedTrigger([&](UiElement::AbstractListElement* sender) {
+		OnMediaLibFolderSelectionChanged();
+	});
 	UiElement::Button* add_media_lib_folder_btn = m_root_element->FindElement<UiElement::Button>("addMediaLibFolderBtn");
 	add_media_lib_folder_btn->SetClickedTrigger([&](UiElement::Button* sender) {
 		OnAddMediaLibFolderClicked();
 	});
-	UiElement::Button* delete_media_lib_folder_btn = m_root_element->FindElement<UiElement::Button>("deleteMediaLibFolderBtn");
+	delete_media_lib_folder_btn = m_root_element->FindElement<UiElement::Button>("deleteMediaLibFolderBtn");
 	delete_media_lib_folder_btn->SetClickedTrigger([&](UiElement::Button* sender) {
 		OnDeleteMediaLibFolderClicked();
 	});
+	delete_media_lib_folder_btn->SetEnable(false);		//删除按钮初始时禁用（列表未选中行）
 	UiElement::ToggleSettingGroup* insert_playlist_front_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("insertToPlaylistFront");
 	insert_playlist_front_btn->GetToggleBtn()->BindBool(&theApp.m_media_lib_setting_data.insert_begin_of_playlist);
 	UiElement::ToggleSettingGroup* merge_songs_different_version_btn = m_root_element->FindElement<UiElement::ToggleSettingGroup>("mergeSongsOfDifferentVersion");
@@ -255,4 +259,11 @@ void CSettingsPanel::OnDeleteMediaLibFolderClicked()
 			OnSettingsChanged();
 		}
 	}
+}
+
+void CSettingsPanel::OnMediaLibFolderSelectionChanged()
+{
+	int index = media_lib_forder_list->GetItemSelected();
+	bool selection_enable = (index >= 0 && index < static_cast<int>(m_media_lib_data.media_folders.size()));
+	delete_media_lib_folder_btn->SetEnable(selection_enable);
 }

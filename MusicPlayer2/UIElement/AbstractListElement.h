@@ -78,6 +78,8 @@ namespace UiElement
 
         void SetRelatedSearchBox(SearchBox* search_box) { related_search_box = search_box; }
 
+        void SetSelectionChangedTrigger(std::function<void(AbstractListElement*)> func);
+
         int item_height{ 28 };
         int font_size{ 9 };
 
@@ -101,6 +103,8 @@ namespace UiElement
         bool searched{};                //是否处于搜索状态
         SearchBox* related_search_box{};    //关联的键框
         mutable std::recursive_mutex m_selection_mutex;     //保护items_selected的互斥量
+
+        std::function<void(AbstractListElement*)> m_selection_changed_trigger;
     };
 }
 

@@ -1242,7 +1242,10 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
         rect_text.left = rect_icon.right;
         int right_space = (rc_tmp.Height() - DPI(16)) / 2;
         rect_text.right -= right_space;
-        m_draw.DrawWindowText(rect_text, text.c_str(), m_colors.color_text, Alignment::LEFT, true);
+        COLORREF text_color = m_colors.color_text;
+        if (!btn.enable)
+            text_color = GRAY(200);
+        m_draw.DrawWindowText(rect_text, text.c_str(), text_color, Alignment::LEFT, true);
 
     }
 }

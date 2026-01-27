@@ -6,6 +6,7 @@
 void UiElement::Button::Draw()
 {
     CalculateRect();
+    m_btn.enable = IsEnable();
     if (!empty_btn)
     {
         switch (key)
@@ -13,7 +14,7 @@ void UiElement::Button::Draw()
         case CPlayerUIBase::BTN_TRANSLATE:
         {
             static const wstring& btn_str = theApp.m_str_table.LoadText(L"UI_TXT_BTN_TRANSLATE");
-            m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
+            m_btn.enable &= !CPlayer::GetInstance().m_Lyrics.IsEmpty();
             ui->DrawTextButton(rect, m_btn, btn_str.c_str(), theApp.m_lyric_setting_data.show_translate);
         }
         break;
@@ -33,14 +34,14 @@ void UiElement::Button::Draw()
                 info = _T("A-B");
             CFont* pOldFont = ui->m_draw.GetFont();
             ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
-            m_btn.enable = (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
+            m_btn.enable &= (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
             ui->DrawTextButton(rect, m_btn, info, ab_repeat_mode != CPlayer::AM_NONE);
             ui->m_draw.SetFont(pOldFont);
         }
         break;
         case CPlayerUIBase::BTN_KARAOKE:
         {
-            m_btn.enable = !CPlayer::GetInstance().m_Lyrics.IsEmpty();
+            m_btn.enable &= !CPlayer::GetInstance().m_Lyrics.IsEmpty();
             //如果是卡拉OK样式显示歌词，则按钮显示为选中状态
             ui->DrawUIButton(rect, CPlayerUIBase::BTN_KARAOKE, m_btn, false, false, 9, theApp.m_lyric_setting_data.lyric_karaoke_disp);
         }
