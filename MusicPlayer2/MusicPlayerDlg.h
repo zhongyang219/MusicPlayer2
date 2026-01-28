@@ -57,6 +57,7 @@ public:
     CMiniModeDlg* GetMinimodeDlg();
     void UiForceRefresh();      //通知UI线程强制刷新一次
     int GetUiRefreshInterval() const { return m_ui_refresh_interval; }
+    void MouseWheelAdjustVolume(short zDelta);
 
     // 对话框数据
 #ifdef AFX_DESIGN_TIME

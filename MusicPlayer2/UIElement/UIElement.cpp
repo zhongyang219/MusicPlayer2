@@ -57,6 +57,15 @@ void UiElement::Element::Draw()
     }
 }
 
+void UiElement::Element::DrawTopMost()
+{
+    for (const auto& item : childLst)
+    {
+        if (item != nullptr && item->IsShown(GetRect()))
+            item->DrawTopMost();
+    }
+}
+
 bool UiElement::Element::IsShown(CRect parent_rect) const
 {
     if (!visible)
@@ -127,6 +136,12 @@ void UiElement::Element::SetRect(CRect _rect)
 void UiElement::Element::ClearRect()
 {
     //rect = CRect();
+}
+
+void UiElement::Element::TopMostClicked(CPoint point)
+{
+    for (auto& child : childLst)
+        child->TopMostClicked(point);
 }
 
 UiElement::Element* UiElement::Element::RootElement()

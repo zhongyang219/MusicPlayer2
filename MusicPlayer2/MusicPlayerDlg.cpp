@@ -121,6 +121,18 @@ void CMusicPlayerDlg::UiForceRefresh()
     m_ui_thread_para.ui_force_refresh = true;
 }
 
+void CMusicPlayerDlg::MouseWheelAdjustVolume(short zDelta)
+{
+    static int nogori = 0;
+    if (nogori * zDelta < 0)    // 换向时清零累计值使得滚轮总是能够及时响应
+        nogori = 0;
+    // 在触控板下有必要处理zDelta，触控板驱动会通过较小的zDelta连发模拟惯性
+    // 每120的zDelta（即滚轮一格）音量调整百分之mouse_volum_step
+    nogori += zDelta * theApp.m_nc_setting_data.mouse_volum_step;
+    AdjustVolume(nogori / 120);
+    nogori = nogori % 120;
+}
+
 void CMusicPlayerDlg::DoDataExchange(CDataExchange* pDX)
 {
     CMainDialogBase::DoDataExchange(pDX);
@@ -3265,25 +3277,10 @@ BOOL CMusicPlayerDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
     if (pMouseEvent->MouseWheel(zDelta, pt))
         return TRUE;
 
-    //获取音量图标的矩形区域
-    CRect volumn_rect;
-    CPlayerUIBase* pUI = GetCurrentUi();
-    if (pUI != nullptr)
-        volumn_rect = pUI->GetVolumeRect();
-
-    bool volumn_adj_enable{ (theApp.m_general_setting_data.global_mouse_wheel_volume_adjustment && draw_rect.PtInRect(pt))
-        || (!theApp.m_general_setting_data.global_mouse_wheel_volume_adjustment && volumn_rect.PtInRect(pt)) };
-
-    if (volumn_adj_enable || from_desktop_lyric)
+    //鼠标滚轮调整音量
+    if (theApp.m_general_setting_data.global_mouse_wheel_volume_adjustment || from_desktop_lyric)
     {
-        static int nogori = 0;
-        if (nogori * zDelta < 0)    // 换向时清零累计值使得滚轮总是能够及时响应
-            nogori = 0;
-        // 在触控板下有必要处理zDelta，触控板驱动会通过较小的zDelta连发模拟惯性
-        // 每120的zDelta（即滚轮一格）音量调整百分之mouse_volum_step
-        nogori += zDelta * theApp.m_nc_setting_data.mouse_volum_step;
-        AdjustVolume(nogori / 120);
-        nogori = nogori % 120;
+        MouseWheelAdjustVolume(zDelta);
     }
 
     return CMainDialogBase::OnMouseWheel(nFlags, zDelta, pt);

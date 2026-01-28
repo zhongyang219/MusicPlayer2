@@ -75,7 +75,6 @@ public:
     bool PointInTitlebarArea(CPoint point) const;
     bool PointInAppIconArea(CPoint point) const;
     bool PointInMenubarArea(CPoint point) const;
-    bool PointInVolumnAdjBtn(CPoint point) const;
 
     //获取界面的名称
     virtual wstring GetUIName() { return wstring(); }
@@ -93,7 +92,6 @@ public:
 
     static CString GetCmdShortcutKeyForTooltips(UINT id);      //获取用于显示在鼠标提示中的键盘快捷键
 
-    CRect GetVolumeRect() const;    //获取音量图标的矩形区域
     CRect GetDrawRect() const;
     CRect GetClientDrawRect() const;    //获取绘图客户区的矩形区域（不包含自绘标题栏、菜单栏、状态栏）
     CRect GetAppIconRect() const;       //获取应用程序图标矩形区域
@@ -111,8 +109,6 @@ public:
         BTN_INVALID,            //无效的按钮
         BTN_REPETEMODE,         //“循环模式”按钮
         BTN_VOLUME,             //音量按钮
-        BTN_VOLUME_UP,
-        BTN_VOLUME_DOWN,
         BTN_TRANSLATE,          //歌词翻译按钮
         BTN_SKIN,               //切换界面按钮
         BTN_SKIN_TITLEBAR,      //标题栏上的切换界面按钮
@@ -196,14 +192,12 @@ public:
     void DrawRectangle(const CRect& rect, bool no_corner_radius = false, bool theme_color = true, ColorMode color_mode = RCM_AUTO);       //绘制矩形。如果no_corner_radius为true，则总是绘制直角矩形，忽略“使用圆角风格按钮”的设置；theme_color：是否使用主题彦颜色
     void DrawRectangle(CRect rect, COLORREF color);
     void DrawBeatIndicator(CRect rect);
-    void DrawVolumnAdjBtn();
     CRect DrawProgressBar(CRect rect, bool play_time_both_side = false);               //绘制进度条（包含时间）。play_time_both_side如果为true，则播放时间显示的进度条的两侧，否则显示在进度条的右侧（返回进度条部分的矩形区域）
     CRect DrawProgess(CRect rect);                   //绘制进度条（返回进度条部分的矩形区域）
     void DrawTopRightIcons();           //绘制右上角的图标
     void DrawCurrentTime();             //在右上角绘制当前系统时间
     void DrawAlbumCover(CRect rect);                //绘制专辑封面
     void DrawAlbumCoverWithInfo(CRect rect);        //绘制专辑封面，并在上面绘制歌曲的标题和艺术家
-    void DrawVolumeButton(CRect rect, bool adj_btn_top = false, bool show_text = true);     //adj_btn_top：点击后弹出的音量调整按钮是否在上方；show_text：是否显示文本
     void DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background, bool show_song_info = false);        //绘制歌词 rect：歌曲区域；with_background是否绘制背景；show_song_info:是否总是在没有歌词时显示歌曲信息
     /**
      * @brief   绘制stackElement的指示器
@@ -312,8 +306,6 @@ protected:
 
     //UI 数据
     CRect m_draw_rect;                      //绘图区域
-    bool m_show_volume_adj{ false };        //显示音量调整按钮
-    bool m_show_volume_text{};        //是否显示音量文本
 
     //这个map只保存UI中的标题栏、菜单栏和音量按钮的信息，其他按钮信息应该保存在各自的UiElement::Button中，如果map出现了其他UI中的其他按钮应为异常情况
     std::map<BtnKey, UIButton> m_buttons;

@@ -56,6 +56,7 @@ namespace UiElement
 
     public:
         virtual void Draw();   //绘制此元素
+        virtual void DrawTopMost(); //绘制元素中需要在顶层显示的部分（例如音量调节按钮）
         virtual bool IsShown(CRect parent_rect) const;
         virtual int GetMaxWidth(CRect parent_rect) const;
         virtual int GetWidth(CRect parent_rect) const;
@@ -67,6 +68,7 @@ namespace UiElement
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         virtual void ClearRect();
+        virtual void TopMostClicked(CPoint point); //鼠标左键点击时响应，用于隐藏元素顶层的显示
 
         //遍历所有界面元素
         //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点

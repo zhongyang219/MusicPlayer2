@@ -80,8 +80,7 @@ void CMiniModeUserUi::_DrawInfo(CRect draw_rect, bool reset /*= false*/)
     {
         m_root_default->SetRect(draw_rect);
         m_root_default->Draw();
-        //绘制音量调整按钮
-        DrawVolumnAdjBtn();
+        m_root_default->DrawTopMost();
     }
 }
 
@@ -138,6 +137,13 @@ bool CMiniModeUserUi::PointInControlArea(CPoint point) const
 
             UiElement::ProgressBar* progress_bar = dynamic_cast<UiElement::ProgressBar*>(ele);
             if (progress_bar != nullptr && progress_bar->GetProgressRect().PtInRect(point))
+            {
+                rtn = true;
+                return true;
+            }
+
+            UiElement::Volume* volumn = dynamic_cast<UiElement::Volume*>(ele);
+            if (volumn != nullptr && volumn->GetRect().PtInRect(point))
             {
                 rtn = true;
                 return true;

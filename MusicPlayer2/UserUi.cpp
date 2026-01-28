@@ -272,8 +272,7 @@ void CUserUi::_DrawInfo(CRect draw_rect, bool reset)
         if (!m_panel_mgr.IsPanelFullFill())
         {
             draw_element->Draw();
-            //绘制音量调整按钮
-            DrawVolumnAdjBtn();
+            draw_element->DrawTopMost();
         }
     }
 
@@ -338,6 +337,8 @@ wstring CUserUi::GetUIName()
 
 bool CUserUi::LButtonUp(CPoint point)
 {
+    auto root_element = GetMouseEventResponseElement();
+    root_element->TopMostClicked(point);
     if (!CPlayerUIBase::LButtonUp(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         //显示了面板，且不是全屏面板的情况下，点击面板以外的地方关闭面板
@@ -349,7 +350,6 @@ bool CUserUi::LButtonUp(CPoint point)
             return true;
         }
 
-        auto root_element = GetMouseEventResponseElement();
         //遍历所有元素
         bool rtn = root_element->LButtonUp(point);
         return rtn;
@@ -422,6 +422,7 @@ bool CUserUi::RButtonUp(CPoint point)
     {
         auto root_element = GetMouseEventResponseElement();
         rtn = root_element->RButtonUp(point);
+        root_element->TopMostClicked(point);
     }
     if (!rtn)
         rtn = CPlayerUIBase::RButtonUp(point);
