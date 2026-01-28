@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "PlaylistIndicator.h"
 #include "TinyXml2Helper.h"
 
@@ -9,30 +9,30 @@ void UiElement::PlaylistIndicator::Draw()
     m_list_cache.reload();
     CalculateRect();
 
-    // ´Ëm_list_cacheÎªUIÏß³Ì»º´æµ±Ç°ÁÐ±í£¬Ö»ÓÐat(0)ÊÇÓÐÐ§µÄ
+    // æ­¤m_list_cacheä¸ºUIçº¿ç¨‹ç¼“å­˜å½“å‰åˆ—è¡¨ï¼Œåªæœ‰at(0)æ˜¯æœ‰æ•ˆçš„
     ASSERT(m_list_cache.size() == 1);
     const ListItem& list_item = m_list_cache.at(0);
 
     IconMgr::IconType icon_type = list_item.GetTypeIcon();
     wstring str = list_item.GetTypeDisplayName();
-    //»æÖÆÍ¼±ê
+    //ç»˜åˆ¶å›¾æ ‡
     CRect rect_icon{ rect };
     rect_icon.right = rect_icon.left + ui->DPI(26);
     ui->DrawUiIcon(rect_icon, icon_type);
-    //ÉèÖÃ×ÖÌå
+    //è®¾ç½®å­—ä½“
     UiFontGuard set_font(ui, font_size);
-    //»æÖÆÎÄ±¾
+    //ç»˜åˆ¶æ–‡æœ¬
     CRect rect_text{ rect };
     rect_text.left = rect_icon.right;
     rect_text.right = rect_text.left + ui->GetDrawer().GetTextExtent(str.c_str()).cx;
     ui->GetDrawer().DrawWindowText(rect_text, str.c_str(), ui->GetUIColors().color_text, Alignment::LEFT, true);
-    //»æÖÆ²Ëµ¥°´Å¥
+    //ç»˜åˆ¶èœå•æŒ‰é’®
     CRect menu_btn_rect{ rect };
     menu_btn_rect.left = rect.right - ui->DPI(26);
     const int icon_size{ (std::min)(ui->DPI(24), rect.Height()) };
     CRect menu_btn_icon_rect = CDrawCommon::CalculateCenterIconRect(menu_btn_rect, icon_size);
     ui->DrawUIButton(menu_btn_icon_rect, btn_menu, IconMgr::IconType::IT_Menu);
-    //»æÖÆµ±Ç°²¥·ÅÁÐ±íÃû³Æ
+    //ç»˜åˆ¶å½“å‰æ’­æ”¾åˆ—è¡¨åç§°
     CRect rect_name{ rect };
     rect_name.left = rect_text.right + ui->DPI(8);
     rect_name.right = menu_btn_rect.left - ui->DPI(4);
@@ -43,12 +43,12 @@ void UiElement::PlaylistIndicator::Draw()
         ui->GetDrawer().DrawRoundRect(rect_name, ui->GetUIColors().color_control_bar_back, ui->DPI(4), alpha);
     else
         ui->GetDrawer().FillAlphaRect(rect_name, ui->GetUIColors().color_control_bar_back, alpha);
-    rect_name = rect_name;
+    rect_label = rect_name;
     rect_name.left += ui->DPI(6);
     rect_name.right -= ui->DPI(30);
     static CDrawCommon::ScrollInfo name_scroll_info;
     ui->GetDrawer().DrawScrollText(rect_name, list_item.GetDisplayName().c_str(), ui->GetUIColors().color_text_heighlight, ui->GetScrollTextPixel(), false, name_scroll_info);
-    //»æÖÆÏÂÀ­°´Å¥
+    //ç»˜åˆ¶ä¸‹æ‹‰æŒ‰é’®
     CRect rect_drop_down{ rect };
     rect_drop_down.left = rect_name.right + ui->DPI(2);
     rect_drop_down.right = menu_btn_rect.left - ui->DPI(6);
@@ -66,7 +66,7 @@ bool UiElement::PlaylistIndicator::LButtonUp(CPoint point)
         if (btn_drop_down.rect.PtInRect(point))
         {
             btn_drop_down.hover = false;
-            CRect btn_rect = rect_name;
+            CRect btn_rect = rect_label;
             AfxGetMainWnd()->ClientToScreen(&btn_rect);
             theApp.m_menu_mgr.GetMenu(MenuMgr::RecentFolderPlaylistMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, btn_rect.left, btn_rect.bottom, AfxGetMainWnd());
         }
