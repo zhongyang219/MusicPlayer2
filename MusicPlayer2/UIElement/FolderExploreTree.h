@@ -46,7 +46,9 @@ namespace UiElement
 
         virtual std::vector<std::shared_ptr<Node>>& GetRootNodes() override;
 
-    public:
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+    protected:
         std::string track_list_element_id;
 
     private:

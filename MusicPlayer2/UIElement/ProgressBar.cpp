@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "ProgressBar.h"
 #include "Player.h"
+#include "TinyXml2Helper.h"
 
 void UiElement::ProgressBar::Draw()
 {
@@ -40,7 +41,7 @@ bool UiElement::ProgressBar::RButtonUp(CPoint point)
 
 bool UiElement::ProgressBar::MouseMove(CPoint point)
 {
-    btn.hover = btn.rect.PtInRect(point) && !(ui->m_show_volume_adj && (ui->m_buttons[CPlayerUIBase::BTN_VOLUME_UP].rect.PtInRect(point) || ui->m_buttons[CPlayerUIBase::BTN_VOLUME_DOWN].rect.PtInRect(point)));
+    btn.hover = btn.rect.PtInRect(point) && !ui->PointInVolumnAdjBtn(point);
 
     //鼠标指向进度条时显示定位到几分几秒
     if (btn.hover)
@@ -82,4 +83,13 @@ void UiElement::ProgressBar::HideTooltip()
 bool UiElement::ProgressBar::hover() const
 {
     return btn.hover;
+}
+
+void UiElement::ProgressBar::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    std::string str_show_play_time = CTinyXml2Helper::ElementAttribute(xml_node, "show_play_time");
+    show_play_time = CTinyXml2Helper::StringToBool(str_show_play_time.c_str());
+    std::string str_play_time_both_side = CTinyXml2Helper::ElementAttribute(xml_node, "play_time_both_side");
+    play_time_both_side = CTinyXml2Helper::StringToBool(str_play_time_both_side.c_str());
 }

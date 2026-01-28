@@ -6,7 +6,7 @@ namespace UiElement
     class PlaylistIndicator : public Element
     {
     public:
-        static CListCache m_list_cache;     // 为PlaylistIndicator的绘制缓存当前播放的ListItem，Draw之前调用reload
+        static CListCache& GetListCache() { return m_list_cache; }
         virtual void Draw() override;
         virtual bool LButtonUp(CPoint point) override;
         virtual bool LButtonDown(CPoint point) override;
@@ -15,6 +15,10 @@ namespace UiElement
         virtual void ClearRect() override;
         virtual void HideTooltip() override;
 
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+    protected:
+        static CListCache m_list_cache;     // 为PlaylistIndicator的绘制缓存当前播放的ListItem，Draw之前调用reload
         int font_size{ 9 };
 
         IPlayerUI::UIButton btn_drop_down;

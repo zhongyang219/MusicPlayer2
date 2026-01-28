@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AlbumCover.h"
+#include "TinyXml2Helper.h"
 void UiElement::AlbumCover::Draw()
 {
     CalculateRect();
@@ -30,4 +31,13 @@ void UiElement::AlbumCover::CalculateRect()
         }
         rect = cover_rect;
     }
+}
+
+void UiElement::AlbumCover::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    std::string str_square = CTinyXml2Helper::ElementAttribute(xml_node, "square");
+    square = CTinyXml2Helper::StringToBool(str_square.c_str());
+    std::string str_show_info = CTinyXml2Helper::ElementAttribute(xml_node, "show_info");
+    show_info = CTinyXml2Helper::StringToBool(str_show_info.c_str());
 }

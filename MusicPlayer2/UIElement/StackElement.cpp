@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "StackElement.h"
 #include "../UserUi.h"
+#include "TinyXml2Helper.h"
 
 void UiElement::StackElement::SetCurrentElement(int index)
 {
@@ -79,7 +80,7 @@ int UiElement::StackElement::GetWidth(CRect parent_rect) const
     if (follow_child_width)
     {
         UiElement::Element* child = CurrentElement().get();
-        if (child != nullptr && child->width.IsValid())
+        if (child != nullptr && child->IsWidthValid())
             return child->GetWidth(parent_rect);
     }
     return Element::GetWidth(parent_rect);
@@ -90,7 +91,7 @@ int UiElement::StackElement::GetHeight(CRect parent_rect) const
     if (follow_child_height)
     {
         UiElement::Element* child = CurrentElement().get();
-        if (child != nullptr && child->height.IsValid())
+        if (child != nullptr && child->IsHeightValid())
             return child->GetHeight(parent_rect);
     }
     return Element::GetHeight(parent_rect);
@@ -101,7 +102,7 @@ bool UiElement::StackElement::IsWidthValid() const
     if (follow_child_width)
     {
         UiElement::Element* child = CurrentElement().get();
-        if (child != nullptr && child->width.IsValid())
+        if (child != nullptr && child->IsWidthValid())
             return true;
     }
     return Element::IsWidthValid();
@@ -112,7 +113,7 @@ bool UiElement::StackElement::IsHeightValid() const
     if (follow_child_height)
     {
         UiElement::Element* child = CurrentElement().get();
-        if (child != nullptr && child->height.IsValid())
+        if (child != nullptr && child->IsHeightValid())
             return true;
     }
     return Element::IsHeightValid();
@@ -302,7 +303,7 @@ void UiElement::StackElement::IndexChanged()
                 StackElement* stack_element = dynamic_cast<StackElement*>(element);
                 if (stack_element != nullptr && stack_element != this)
                 {
-                    if (related_stack_elements.count(element->id) > 0)
+                    if (related_stack_elements.count(element->GetId()) > 0)
                     {
                         //设置关联stackElement的索引（这里不能使用stack_element->SetCurrentElement，否则会导致无限调用）
                         if (cur_index >= 0 && cur_index < static_cast<int>(stack_element->childLst.size()))
@@ -330,4 +331,35 @@ void UiElement::StackElement::IndexChanged()
             });
         }
     }
+}
+
+void UiElement::StackElement::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "click_to_switch", click_to_switch);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "hover_to_switch", hover_to_switch);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "scroll_to_switch", scroll_to_switch);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "sweep_to_switch", sweep_to_switch);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_indicator", show_indicator);
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "indicator_offset", indicator_offset);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "size_change_to_switch", size_change_to_switch);
+    std::string str_size_change_condition = CTinyXml2Helper::ElementAttribute(xml_node, "size_change_condition");
+    if (str_size_change_condition == "widthGreaterThan")
+        size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::WIDTH_GREATER_THAN;
+    else if (str_size_change_condition == "widthLessThan")
+        size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::WIDTH_LESS_THAN;
+    else if (str_size_change_condition == "heightGreaterThan")
+        size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::HEIGHT_GREATER_THAN;
+    else if (str_size_change_condition == "heightLessThan")
+        size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::HEIGHT_LESS_THAN;
+    std::string str_size_change_value = CTinyXml2Helper::ElementAttribute(xml_node, "size_change_value");
+    if (!str_size_change_value.empty())
+        size_change_value = GetUI()->DPI(atoi(str_size_change_value.c_str()));
+    std::string str_related_stack_elements = CTinyXml2Helper::ElementAttribute(xml_node, "related_stack_elements");
+    std::vector<std::string> vec_related_stack_elements;
+    CCommon::StringSplit(str_related_stack_elements, ',', vec_related_stack_elements);
+    for (const auto& str : vec_related_stack_elements)
+        related_stack_elements.insert(str);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "follow_child_width", follow_child_width);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "follow_child_height", follow_child_height);
 }

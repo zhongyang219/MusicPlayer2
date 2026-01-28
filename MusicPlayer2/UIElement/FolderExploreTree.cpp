@@ -4,6 +4,7 @@
 #include "UiMediaLibItemMgr.h"
 #include "UserUi.h"
 #include "TracksList.h"
+#include "TinyXml2Helper.h"
 
 std::shared_ptr<UiElement::TestTree::Node> UiElement::FolderExploreTree::CreateNode(std::wstring name, int song_num, std::shared_ptr<Node> parent)
 {
@@ -219,4 +220,10 @@ void UiElement::FolderExploreTree::FindTrackList()
         track_list = FindRelatedElement<TrackList>(track_list_element_id);
         find_track_list = true;  //找过一次没找到就不找了
     }
+}
+
+void UiElement::FolderExploreTree::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    TreeElement::FromXmlNode(xml_node);
+    track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
 }

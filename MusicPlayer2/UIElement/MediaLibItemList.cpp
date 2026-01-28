@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "UserUi.h"
 #include "TracksList.h"
+#include "TinyXml2Helper.h"
 
 std::wstring UiElement::MediaLibItemList::GetItemText(int row, int col)
 {
@@ -193,4 +194,25 @@ void UiElement::MediaLibItemList::FindTrackList()
         track_list = FindRelatedElement<TrackList>(track_list_element_id);
         find_track_list = true;  //找过一次没找到就不找了
     }
+}
+
+void UiElement::MediaLibItemList::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    AbstractListElement::FromXmlNode(xml_node);
+    std::string str_type = CTinyXml2Helper::ElementAttribute(xml_node, "type");
+    if (str_type == "artist")
+        type = ListItem::ClassificationType::CT_ARTIST;
+    else if (str_type == "album")
+        type = ListItem::ClassificationType::CT_ALBUM;
+    else if (str_type == "genre")
+        type = ListItem::ClassificationType::CT_GENRE;
+    else if (str_type == "year")
+        type = ListItem::ClassificationType::CT_YEAR;
+    else if (str_type == "file_type")
+        type = ListItem::ClassificationType::CT_TYPE;
+    else if (str_type == "bitrate")
+        type = ListItem::ClassificationType::CT_BITRATE;
+    else if (str_type == "rating")
+        type = ListItem::ClassificationType::CT_RATING;
+    track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
 }

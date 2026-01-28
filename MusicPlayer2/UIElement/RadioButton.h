@@ -7,10 +7,11 @@ namespace UiElement
     {
     public:
         virtual void Draw() override;
-
         virtual void ButtonClicked() override;
 
-    public:
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node) override;
+
+    protected:
         std::string group;
     };
 }

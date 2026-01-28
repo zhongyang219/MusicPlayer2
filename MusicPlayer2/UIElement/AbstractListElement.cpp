@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "AbstractTracksList.h"
 #include "MyFavouriteList.h"
+#include "TinyXml2Helper.h"
 
 void UiElement::AbstractListElement::DrawScrollArea()
 {
@@ -781,4 +782,14 @@ int UiElement::AbstractListElement::GetDisplayedIndexByPoint(CPoint point)
             return static_cast<int>(i);
     }
     return -1;
+}
+
+void UiElement::AbstractListElement::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    AbstractScrollArea::FromXmlNode(xml_node);
+    int item_height{};
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", item_height);
+    if (item_height > 0)
+        this->item_height = item_height;
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", this->font_size);
 }

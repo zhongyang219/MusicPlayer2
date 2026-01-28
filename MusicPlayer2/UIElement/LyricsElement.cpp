@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "LyricsElement.h"
 #include "Rectangle.h"
+#include "TinyXml2Helper.h"
 void UiElement::Lyrics::Draw()
 {
     CalculateRect();
 
-    bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
+
+    bool big_font{ ui->IsDrawLargeIcon() };
     CFont* lyric_font = &theApp.m_font_set.lyric.GetFont(big_font);
     CFont* lyric_tr_font = &theApp.m_font_set.lyric_translate.GetFont(big_font);
 
@@ -41,11 +43,20 @@ bool UiElement::Lyrics::RButtonUp(CPoint point)
 bool UiElement::Lyrics::IsParentRectangle() const
 {
     const Element* ele{ this };
-    while (ele != nullptr && ele->pParent != nullptr)
+    while (ele != nullptr && ele->GetParent() != nullptr)
     {
         if (dynamic_cast<const Rectangle*>(ele) != nullptr)
             return true;
-        ele = ele->pParent;
+        ele = ele->GetParent();
     }
     return false;
+}
+
+void UiElement::Lyrics::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "no_background", no_background);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "use_default_font", use_default_font);
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", font_size);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_song_info", show_song_info);
 }

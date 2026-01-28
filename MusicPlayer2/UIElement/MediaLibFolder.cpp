@@ -3,6 +3,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "UserUi.h"
 #include "TracksList.h"
+#include "TinyXml2Helper.h"
 
 CListCache UiElement::MediaLibFolder::m_list_cache(CListCache::SubsetType::ST_FOLDER);
 
@@ -163,4 +164,10 @@ void UiElement::MediaLibFolder::FindTrackList()
         track_list = FindRelatedElement<TrackList>(track_list_element_id);
         find_track_list = true;  //找过一次没找到就不找了
     }
+}
+
+void UiElement::MediaLibFolder::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    AbstractListElement::FromXmlNode(xml_node);
+    track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
 }

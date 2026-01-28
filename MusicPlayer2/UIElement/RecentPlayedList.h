@@ -21,7 +21,8 @@ namespace UiElement
             BTN_MAX
         };
 
-        static CListCache m_list_cache;     // 为RecentPlayedList的绘制缓存最近播放的ListItem，Draw之前调用reload
+        static const CListCache& GetListCache() { return m_list_cache; }
+
         virtual void Draw() override;
 
         // 通过 AbstractListElement 继承
@@ -41,7 +42,10 @@ namespace UiElement
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
         virtual void OnSelectionChanged() override;
 
-    public:
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+    protected:
+        static CListCache m_list_cache;     // 为RecentPlayedList的绘制缓存最近播放的ListItem，Draw之前调用reload
         std::string track_list_element_id;
     };
 }

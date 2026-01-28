@@ -16,7 +16,7 @@ void CListPreviewPanel::SetListData(const ListItem& list_item)
 	//设置标题文本
 	if (m_title_text != nullptr)
 	{
-		m_title_text->text = list_item.GetDisplayName();
+		m_title_text->SetText(list_item.GetDisplayName());
 	}
 	//设置图标
 	if (m_icon != nullptr)
@@ -36,6 +36,6 @@ void CListPreviewPanel::SetListData(const ListItem& list_item)
 		if (m_track_list != nullptr)
 			track_num = m_track_list->GetRowCount();
 		std::wstring str_track_num = theApp.m_str_table.LoadTextFormat(L"UI_TXT_TRACK_LIST_TOTLA_NUM", { track_num });
-		m_track_num_text->text = str_track_num;
+		m_track_num_text->SetText(str_track_num);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "AbstractCheckButton.h"
+#include "TinyXml2Helper.h"
 
 int UiElement::AbstractCheckButton::GetMaxWidth(CRect parent_rect) const
 {
@@ -69,4 +70,12 @@ COLORREF UiElement::AbstractCheckButton::GetButtonBackColor()
         }
     }
     return check_back_color;
+}
+
+void UiElement::AbstractCheckButton::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    AbstractToggleButton::FromXmlNode(xml_node);
+    std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
+    text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+    CPlayerUIBase::ReplaceUiStringRes(text);
 }

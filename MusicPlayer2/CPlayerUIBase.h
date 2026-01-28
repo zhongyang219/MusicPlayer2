@@ -8,38 +8,6 @@
 
 #define WM_MAIN_MENU_POPEDUP (WM_USER+117)      //显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
 
-namespace UiElement
-{
-    class Element;
-    class Rectangle;
-    class Button;
-    class Text;
-    class AlbumCover;
-    class Spectrum;
-    class TrackInfo;
-    class ProgressBar;
-    class Lyrics;
-    class Volume;
-    class BeatIndicator;
-    class StackElement;
-    class AbstractListElement;
-    class Playlist;
-    class PlaylistIndicator;
-    class ClassicalControlBar;
-    class MediaLibItemList;
-    class MediaLibPlaylist;
-    class MediaLibFolder;
-    class RecentPlayedList;
-    class NavigationBar;
-    class MyFavouriteList;
-    class AllTracksList;
-    class MiniSpectrum;
-    class FolderExploreTree;
-    class SearchBox;
-    class ElementSwitcher;
-    class Icon;
-}
-
 struct SLayoutData
 {
     const int margin = theApp.DPI(4);                           //边缘的余量
@@ -65,35 +33,6 @@ public:
     ~CPlayerUIBase();
 
     virtual CToolTipCtrl& GetToolTipCtrl() override { return m_tool_tip; }
-
-    friend class UiElement::Element;
-    friend class UiElement::Rectangle;
-    friend class UiElement::Button;
-    friend class UiElement::Text;
-    friend class UiElement::AlbumCover;
-    friend class UiElement::Spectrum;
-    friend class UiElement::TrackInfo;
-    friend class UiElement::ProgressBar;
-    friend class UiElement::Lyrics;
-    friend class UiElement::Volume;
-    friend class UiElement::BeatIndicator;
-    friend class UiElement::StackElement;
-    friend class UiElement::AbstractListElement;
-    friend class UiElement::Playlist;
-    friend class UiElement::PlaylistIndicator;
-    friend class UiElement::ClassicalControlBar;
-    friend class UiElement::MediaLibItemList;
-    friend class UiElement::MediaLibPlaylist;
-    friend class UiElement::MediaLibFolder;
-    friend class UiElement::RecentPlayedList;
-    friend class UiElement::NavigationBar;
-    friend class UiElement::MyFavouriteList;
-    friend class UiElement::AllTracksList;
-    friend class UiElement::MiniSpectrum;
-    friend class UiElement::FolderExploreTree;
-    friend class UiElement::SearchBox;
-    friend class UiElement::ElementSwitcher;
-    friend class UiElement::Icon;
 
     friend class UiFontGuard;
 
@@ -136,6 +75,7 @@ public:
     bool PointInTitlebarArea(CPoint point) const;
     bool PointInAppIconArea(CPoint point) const;
     bool PointInMenubarArea(CPoint point) const;
+    bool PointInVolumnAdjBtn(CPoint point) const;
 
     //获取界面的名称
     virtual wstring GetUIName() { return wstring(); }
@@ -162,7 +102,6 @@ public:
     const UIColors& GetUIColors() const { return m_colors; }
     CWnd* GetOwner() const { return m_pMainWnd; }
 
-protected:
     // 将字符串形如“%(KEY_STR)”格式的字符替换成当前<language>.ini中对应id的字符串
     static void ReplaceUiStringRes(wstring& str);
 
@@ -266,7 +205,6 @@ public:
     void DrawAlbumCoverWithInfo(CRect rect);        //绘制专辑封面，并在上面绘制歌曲的标题和艺术家
     void DrawVolumeButton(CRect rect, bool adj_btn_top = false, bool show_text = true);     //adj_btn_top：点击后弹出的音量调整按钮是否在上方；show_text：是否显示文本
     void DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background, bool show_song_info = false);        //绘制歌词 rect：歌曲区域；with_background是否绘制背景；show_song_info:是否总是在没有歌词时显示歌曲信息
-    void DrawCurrentPlaylistIndicator(CRect rect, UiElement::PlaylistIndicator* playlist_indicator);      //绘制当前播放列表指示
     /**
      * @brief   绘制stackElement的指示器
      * @param   UIButton indicator 指示器信息
@@ -275,9 +213,7 @@ public:
      */
     void DrawStackIndicator(UIButton indicator, int num, int index);
     void DrawUiMenuBar(CRect rect);
-    void DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element);
     void DrawMiniSpectrum(CRect rect);      //绘制图标大小的迷你频谱
-    void DrawSearchBox(CRect rect, UiElement::SearchBox* search_box);
 
     // 实际绘制一个图标
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
@@ -292,7 +228,6 @@ public:
     //获取绘图的默认不透明度
     BYTE GetDefaultAlpha() const;
 
-protected:
     virtual void AddMouseToolTip(int btn, LPCTSTR str);      //为一个按钮添加鼠标提示
     virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override;
     virtual void UpdateMouseToolTipPosition(int btn, CRect rect);
@@ -304,7 +239,6 @@ protected:
     //响应一个按钮右键点击
     virtual bool ButtonRClicked(BtnKey btn_type, const UIButton& btn);
 
-public:
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
     virtual bool IsDrawStatusBar() const;       //是否需要绘制状态栏
     virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
@@ -320,8 +254,6 @@ public:
     int DPI(double pixel) const;
     double DPIDouble(double pixel);
     int CalculateRoundRectRadius(const CRect& rect);        //计算绘制圆角矩形的半径
-
-protected:
     double GetScrollTextPixel(bool slower = false);       //计算滚动文本一次滚动的像素值，如果slower为true，则滚动得稍微慢一点
 
     virtual bool IsDrawLargeIcon() const;        //是否绘制大图标
@@ -336,6 +268,7 @@ protected:
      */
     virtual void SwitchStackElement(std::string id, int index) {}
 
+protected:
     bool IsMiniMode() const;
     virtual bool IsDrawTitlebarLeftBtn() const { return false; }  //是否显示标题栏左侧图标
 

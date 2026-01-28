@@ -6,8 +6,6 @@ namespace UiElement
     class ProgressBar : public Element
     {
     public:
-        bool show_play_time{};
-        bool play_time_both_side{};
         virtual void Draw() override;
 
         virtual bool LButtonUp(CPoint point) override;
@@ -15,9 +13,14 @@ namespace UiElement
         virtual bool MouseMove(CPoint point) override;
         virtual bool SetCursor() override;
         virtual void HideTooltip() override;
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
         bool hover() const;
+        CRect GetProgressRect() const { return btn.rect; }
 
+    protected:
+        bool show_play_time{};
+        bool play_time_both_side{};
         CPlayerUIBase::UIButton btn;
     };
 }

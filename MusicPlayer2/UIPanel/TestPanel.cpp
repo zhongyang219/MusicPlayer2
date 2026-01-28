@@ -53,18 +53,18 @@ void CTestPanel::OnCheckBox1Clicked(UiElement::AbstractToggleButton* sender)
 {
 	bool checked = m_check_box1->Checked();
 	if (checked)
-		m_text1->text = _T("复选框已勾选。");
+		m_text1->SetText(_T("复选框已勾选。"));
 	else
-		m_text1->text = _T("复选框取消勾选。");
+		m_text1->SetText(_T("复选框取消勾选。"));
 }
 
 void CTestPanel::OnToggleBtnClicked(UiElement::AbstractToggleButton* sender)
 {
 	bool checked = sender->Checked();
 	if (checked)
-		m_text2->text = _T("控件已启用");
+		m_text2->SetText(_T("控件已启用"));
 	else
-		m_text2->text = _T("控件已禁用");
+		m_text2->SetText(_T("控件已禁用"));
 
 	//设置控件启用禁用状态
 	m_check_box1->SetEnable(checked);

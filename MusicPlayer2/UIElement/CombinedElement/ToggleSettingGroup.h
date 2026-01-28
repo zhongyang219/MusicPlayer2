@@ -8,11 +8,12 @@ namespace UiElement
     public:
         ToggleSettingGroup();
         ToggleButton* GetToggleBtn() const;
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node) override;
 
     protected:
         virtual void InitComplete() override;
 
-    public:
+    protected:
         std::string icon_name;
         std::wstring main_text;
         std::wstring sub_text;

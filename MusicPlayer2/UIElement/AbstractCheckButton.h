@@ -7,11 +7,12 @@ namespace UiElement
     {
     public:
         virtual int GetMaxWidth(CRect parent_rect) const override;
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
         // 通过 AbstractToggleButton 继承
         virtual COLORREF GetButtonBackColor() override;
 
-    public:
+    protected:
         std::wstring text;
     };
 }

@@ -2,6 +2,7 @@
 #include "UIElement/AbstractScrollArea.h"
 namespace UiElement
 {
+    class SearchBox;
     //列表元素
     class AbstractListElement : public AbstractScrollArea
     {
@@ -80,8 +81,7 @@ namespace UiElement
 
         void SetSelectionChangedTrigger(std::function<void(AbstractListElement*)> func);
 
-        int item_height{ 28 };
-        int font_size{ 9 };
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
     private:
         void DisplayRowToAbsoluteRow(int& row); //将显示的行号转换为绝对行号
@@ -92,6 +92,9 @@ namespace UiElement
         int GetListIndexByPoint(CPoint point);
 
     protected:
+        int item_height{ 28 };
+        int font_size{ 9 };
+
         std::set<int> items_selected; //选中的序号
         CDrawCommon::ScrollInfo selected_item_scroll_info;  //绘制选中项滚动文本的结构体
         std::vector<CRect> item_rects;  //播放列表中每个项目的矩形区域

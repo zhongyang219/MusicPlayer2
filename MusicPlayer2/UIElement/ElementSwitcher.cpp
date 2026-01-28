@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ElementSwitcher.h"
 #include "Helper/UiElementHelper.h"
+#include "TinyXml2Helper.h"
 
 void UiElement::ElementSwitcher::Draw()
 {
@@ -96,4 +97,25 @@ void UiElement::ElementSwitcher::IconTypeFromString(const std::string& icon_name
 {
     if (!icon_name.empty())
         icon_type = UiElementHelper::NameToIconType(icon_name);
+}
+
+void UiElement::ElementSwitcher::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    std::string str_style = CTinyXml2Helper::ElementAttribute(xml_node, "style");
+    if (str_style == "empty")
+        style = UiElement::ElementSwitcher::Style::Empty;
+    else if (str_style == "album_cover")
+        style = UiElement::ElementSwitcher::Style::AlbumCover;
+    else if (str_style == "button")
+        style = UiElement::ElementSwitcher::Style::Button;
+
+    stack_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "stack_element_id");
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "stack_element_index", stack_element_index);
+
+    std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
+    text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+    CPlayerUIBase::ReplaceUiStringRes(text);
+    std::string str_icon = CTinyXml2Helper::ElementAttribute(xml_node, "icon");
+    IconTypeFromString(str_icon);
 }

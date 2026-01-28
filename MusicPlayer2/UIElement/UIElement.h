@@ -2,6 +2,7 @@
 #include "CPlayerUIBase.h"
 #include "ListCache.h"
 #include "IMouseEvent.h"
+#include "tinyxml2/tinyxml2.h"
 
 //定义界面元素
 namespace UiElement
@@ -10,10 +11,12 @@ namespace UiElement
     class Element : public IMouseEvent
     {
     public:
+        friend class Layout;
+
         struct Value        //一个布局的数值
         {
             Value(bool _is_vertical, Element* _owner);
-            void FromString(const std::string str);
+            void FromString(const std::string& str);
             int GetValue(CRect parent_rect) const;   // 获取实际显示的数值
             bool IsValid() const;           // 返回true说明设置过数值
         private:
@@ -23,6 +26,13 @@ namespace UiElement
             bool is_vertical{ false };      // 数值是否为垂直方向的
             Element* owner;
         };
+
+        std::string GetId() const { return id; }
+        Element* GetParent() const { return pParent; }
+        std::string GetName() const { return name; }
+        const std::vector<std::shared_ptr<Element>>& GetChildList() const { return childLst; }
+
+    protected:
         Value margin_left{ false, this };
         Value margin_right{ false, this };
         Value margin_top{ true, this };
@@ -44,6 +54,7 @@ namespace UiElement
         std::string name;
         std::string id;
 
+    public:
         virtual void Draw();   //绘制此元素
         virtual bool IsShown(CRect parent_rect) const;
         virtual int GetMaxWidth(CRect parent_rect) const;
@@ -51,6 +62,8 @@ namespace UiElement
         virtual int GetHeight(CRect parent_rect) const;
         virtual bool IsWidthValid() const;
         virtual bool IsHeightValid() const;
+        void SetWidth(const std::string& str);
+        void SetHeight(const std::string& str);
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         virtual void ClearRect();
@@ -86,6 +99,8 @@ namespace UiElement
         virtual bool SetCursor() { return false; }
         virtual void InitComplete() {}
         virtual void HideTooltip() {}
+
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
         //根据id查找一个子节点
         Element* FindElement(const std::string& id);

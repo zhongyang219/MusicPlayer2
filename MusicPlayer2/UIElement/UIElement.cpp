@@ -12,7 +12,7 @@ UiElement::Element::Value::Value(bool _is_vertical, Element* _owner)
 {
 }
 
-void UiElement::Element::Value::FromString(const std::string str)
+void UiElement::Element::Value::FromString(const std::string& str)
 {
     size_t index = str.find('%');
     if (index != std::wstring::npos)   //如果包含百分号
@@ -102,6 +102,16 @@ bool UiElement::Element::IsWidthValid() const
 bool UiElement::Element::IsHeightValid() const
 {
     return height.IsValid();
+}
+
+void UiElement::Element::SetWidth(const std::string& str)
+{
+    width.FromString(str);
+}
+
+void UiElement::Element::SetHeight(const std::string& str)
+{
+    height.FromString(str);
 }
 
 CRect UiElement::Element::GetRect() const
@@ -368,4 +378,69 @@ bool UiElement::Element::MouseLeave()
     for (auto& child : childLst)
         child->MouseLeave();
     return false;
+}
+
+void UiElement::Element::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    name = CTinyXml2Helper::ElementName(xml_node);
+    id = CTinyXml2Helper::ElementAttribute(xml_node, "id");
+    bool visible{ true };
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "visible", visible);
+    SetVisible(visible);
+    std::string str_x = CTinyXml2Helper::ElementAttribute(xml_node, "x");
+    std::string str_y = CTinyXml2Helper::ElementAttribute(xml_node, "y");
+    std::string str_proportion = CTinyXml2Helper::ElementAttribute(xml_node, "proportion");
+    std::string str_width = CTinyXml2Helper::ElementAttribute(xml_node, "width");
+    std::string str_height = CTinyXml2Helper::ElementAttribute(xml_node, "height");
+    std::string str_max_width = CTinyXml2Helper::ElementAttribute(xml_node, "max-width");
+    std::string str_max_height = CTinyXml2Helper::ElementAttribute(xml_node, "max-height");
+    std::string str_min_width = CTinyXml2Helper::ElementAttribute(xml_node, "min-width");
+    std::string str_min_height = CTinyXml2Helper::ElementAttribute(xml_node, "min-height");
+    std::string str_margin = CTinyXml2Helper::ElementAttribute(xml_node, "margin");
+    std::string str_margin_left = CTinyXml2Helper::ElementAttribute(xml_node, "margin-left");
+    std::string str_margin_right = CTinyXml2Helper::ElementAttribute(xml_node, "margin-right");
+    std::string str_margin_top = CTinyXml2Helper::ElementAttribute(xml_node, "margin-top");
+    std::string str_margin_bottom = CTinyXml2Helper::ElementAttribute(xml_node, "margin-bottom");
+    std::string str_hide_width = CTinyXml2Helper::ElementAttribute(xml_node, "hide-width");
+    std::string str_hide_height = CTinyXml2Helper::ElementAttribute(xml_node, "hide-height");
+    if (!str_x.empty())
+        x.FromString(str_x);
+    if (!str_y.empty())
+        y.FromString(str_y);
+    if (!str_proportion.empty())
+        proportion = max(atoi(str_proportion.c_str()), 1);
+    if (!str_width.empty())
+        width.FromString(str_width);
+    if (!str_height.empty())
+        height.FromString(str_height);
+    if (!str_max_width.empty())
+        max_width.FromString(str_max_width);
+    if (!str_max_height.empty())
+        max_height.FromString(str_max_height);
+    if (!str_min_width.empty())
+        min_width.FromString(str_min_width);
+    if (!str_min_height.empty())
+        min_height.FromString(str_min_height);
+
+    if (!str_margin.empty())
+    {
+        margin_left.FromString(str_margin);
+        margin_right.FromString(str_margin);
+        margin_top.FromString(str_margin);
+        margin_bottom.FromString(str_margin);
+    }
+    if (!str_margin_left.empty())
+        margin_left.FromString(str_margin_left);
+    if (!str_margin_right.empty())
+        margin_right.FromString(str_margin_right);
+    if (!str_margin_top.empty())
+        margin_top.FromString(str_margin_top);
+    if (!str_margin_bottom.empty())
+        margin_bottom.FromString(str_margin_bottom);
+
+    if (!str_hide_width.empty())
+        hide_width.FromString(str_hide_width);
+    if (!str_hide_height.empty())
+        hide_height.FromString(str_hide_height);
+
 }

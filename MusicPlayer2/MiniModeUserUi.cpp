@@ -45,7 +45,7 @@ void CMiniModeUserUi::InitUiPlaylist()
             vertical_layout->AddChild(m_ui_element);
             //添加一个搜索框
             std::shared_ptr<UiElement::Element> search_box = factory.CreateElement("searchBox", this);
-            search_box->height.FromString("26");
+            search_box->SetHeight("26");
             vertical_layout->AddChild(search_box);
             //添加一个播放列表
             m_playlist_emelment = factory.CreateElement("playlist", this);
@@ -61,8 +61,8 @@ bool CMiniModeUserUi::GetUiSize(int& width, int& height, int& height_with_playli
     if (m_ui_element != nullptr)
     {
         //设置绘图区域
-        width = m_ui_element->width.GetValue(CRect());
-        height = m_ui_element->height.GetValue(CRect());
+        width = m_ui_element->GetWidth(CRect());
+        height = m_ui_element->GetHeight(CRect());
         height_with_playlist = height + theApp.DPI(292);
         return true;
     }
@@ -116,7 +116,7 @@ bool CMiniModeUserUi::PointInControlArea(CPoint point) const
             }
 
             UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(ele);
-            if (stack_element != nullptr && stack_element->indicator.rect.PtInRect(point))
+            if (stack_element != nullptr && stack_element->GetIndicatorRect().PtInRect(point))
             {
                 rtn = true;
                 return true;
@@ -137,7 +137,7 @@ bool CMiniModeUserUi::PointInControlArea(CPoint point) const
             }
 
             UiElement::ProgressBar* progress_bar = dynamic_cast<UiElement::ProgressBar*>(ele);
-            if (progress_bar != nullptr && progress_bar->btn.rect.PtInRect(point))
+            if (progress_bar != nullptr && progress_bar->GetProgressRect().PtInRect(point))
             {
                 rtn = true;
                 return true;

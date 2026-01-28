@@ -6,15 +6,12 @@ namespace UiElement
     class Text : public Element
     {
     public:
-        std::wstring text;
-        Alignment align{};    //对齐方式
         enum Style       //文本的样式
         {
             Static,     //静止的文本
             Scroll,     //滚动的文本
             Scroll2     //另一种滚动的文本（只朝一个方向滚动）
         };
-        Style style;
 
         enum Type       //文本的类型
         {
@@ -36,6 +33,11 @@ namespace UiElement
             Emphasis2
         };
 
+    protected:
+        std::wstring text;
+        Alignment align{};    //对齐方式
+        Style style;
+
         Type type;
         int font_size{ 9 };
         bool width_follow_text{};
@@ -43,11 +45,16 @@ namespace UiElement
         bool show_volume{};     //当type为PlayTimeAndVolume时有效，如果为true，则显示为音量
         ColorStyle color_style{};
 
+    public:
         virtual void Draw() override;
         virtual int GetMaxWidth(CRect parent_rect) const override;
         virtual bool MouseMove(CPoint point) override;
+
+        void SetShowVolumn(bool val) { show_volume = val; }
         std::wstring GetText() const;
         void SetText(const std::wstring& str_text);
+
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
     private:
         mutable CDrawCommon::ScrollInfo scroll_info;

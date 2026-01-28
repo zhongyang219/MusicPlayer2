@@ -33,11 +33,11 @@ void UiElement::Button::Draw()
                 info = _T("A-");
             else
                 info = _T("A-B");
-            CFont* pOldFont = ui->m_draw.GetFont();
-            ui->m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
+            CFont* pOldFont = ui->GetDrawer().GetFont();
+            ui->GetDrawer().SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
             m_btn.enable &= (!CPlayer::GetInstance().IsError() && !CPlayer::GetInstance().IsPlaylistEmpty());
             ui->DrawTextButton(rect, m_btn, info, ab_repeat_mode != CPlayer::AM_NONE);
-            ui->m_draw.SetFont(pOldFont);
+            ui->GetDrawer().SetFont(pOldFont);
         }
         break;
         case CPlayerUIBase::BTN_KARAOKE:
@@ -163,7 +163,7 @@ int UiElement::Button::GetMaxWidth(CRect parent_rect) const
         //计算文本宽度前先设置一下字体
         UiFontGuard set_font(ui, font_size);
 
-        int width_text{ ui->m_draw.GetTextExtent(text.c_str()).cx + right_space + btn_height };
+        int width_text{ ui->GetDrawer().GetTextExtent(text.c_str()).cx + right_space + btn_height };
 
         int width_max{ max_width.IsValid() ? max_width.GetValue(parent_rect) : INT_MAX };
         return min(width_text, width_max);
@@ -317,6 +317,28 @@ bool UiElement::Button::SetCursor()
 void UiElement::Button::SetClickedTrigger(std::function<void(Button*)> func)
 {
     m_clicked_trigger = func;
+}
+
+void UiElement::Button::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+
+    std::string str_key = CTinyXml2Helper::ElementAttribute(xml_node, "key");   //按钮的类型
+    FromString(str_key);
+    std::string str_big_icon = CTinyXml2Helper::ElementAttribute(xml_node, "bigIcon");
+    big_icon = CTinyXml2Helper::StringToBool(str_big_icon.c_str());
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_text", show_text);
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", font_size);
+    std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
+    text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+    ui->ReplaceUiStringRes(text);
+    std::string str_icon = CTinyXml2Helper::ElementAttribute(xml_node, "icon");
+    IconTypeFromString(str_icon);
+    panel_file_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_file_name"), CodeType::UTF8_NO_BOM);
+    panel_id = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "panel_id"), CodeType::UTF8_NO_BOM);
+    related_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "related_element_id");
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "hand_cursor", hand_cursor);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "empty_btn", empty_btn);
 }
 
 std::wstring UiElement::Button::GetDisplayText() const

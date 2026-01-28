@@ -1475,6 +1475,20 @@ bool CPlayerUIBase::PointInMenubarArea(CPoint point) const
 
 }
 
+bool CPlayerUIBase::PointInVolumnAdjBtn(CPoint point) const
+{
+    CRect volumn_up_rect;
+    auto iter = m_buttons.find(BTN_VOLUME_UP);
+    if (iter != m_buttons.end())
+        volumn_up_rect = iter->second.rect;
+    CRect volumn_down_rect;
+    iter = m_buttons.find(BTN_VOLUME_UP);
+    if (iter != m_buttons.end())
+        volumn_down_rect = iter->second.rect;
+
+    return m_show_volume_adj && (volumn_up_rect.PtInRect(point) || volumn_down_rect.PtInRect(point));
+}
+
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 {
     return theApp.m_app_setting_data.enable_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
@@ -2498,55 +2512,6 @@ void CPlayerUIBase::DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_fo
     m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align, show_song_info);
 }
 
-void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::PlaylistIndicator* playlist_indicator)
-{
-    // 此m_list_cache为UI线程缓存当前列表，只有at(0)是有效的
-    ASSERT(playlist_indicator->m_list_cache.size() == 1);
-    const ListItem& list_item = playlist_indicator->m_list_cache.at(0);
-
-    IconMgr::IconType icon_type = list_item.GetTypeIcon();
-    wstring str = list_item.GetTypeDisplayName();
-    //绘制图标
-    CRect rect_icon{ rect };
-    rect_icon.right = rect_icon.left + DPI(26);
-    DrawUiIcon(rect_icon, icon_type);
-    //设置字体
-    UiFontGuard set_font(this, playlist_indicator->font_size);
-    //绘制文本
-    CRect rect_text{ rect };
-    rect_text.left = rect_icon.right;
-    rect_text.right = rect_text.left + m_draw.GetTextExtent(str.c_str()).cx;
-    m_draw.DrawWindowText(rect_text, str.c_str(), m_colors.color_text, Alignment::LEFT, true);
-    //绘制菜单按钮
-    CRect menu_btn_rect{ rect };
-    menu_btn_rect.left = rect.right - DPI(26);
-    const int icon_size{ (std::min)(DPI(24), rect.Height()) };
-    CRect menu_btn_icon_rect = CDrawCommon::CalculateCenterIconRect(menu_btn_rect, icon_size);
-    DrawUIButton(menu_btn_icon_rect, playlist_indicator->btn_menu, IconMgr::IconType::IT_Menu);
-    //绘制当前播放列表名称
-    CRect rect_name{ rect };
-    rect_name.left = rect_text.right + DPI(8);
-    rect_name.right = menu_btn_rect.left - DPI(4);
-    BYTE alpha{ 255 };
-    if (IsDrawBackgroundAlpha())
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
-    if (theApp.m_app_setting_data.button_round_corners)
-        m_draw.DrawRoundRect(rect_name, m_colors.color_control_bar_back, DPI(4), alpha);
-    else
-        m_draw.FillAlphaRect(rect_name, m_colors.color_control_bar_back, alpha);
-    playlist_indicator->rect_name = rect_name;
-    rect_name.left += DPI(6);
-    rect_name.right -= DPI(30);
-    static CDrawCommon::ScrollInfo name_scroll_info;
-    m_draw.DrawScrollText(rect_name, list_item.GetDisplayName().c_str(), m_colors.color_text_heighlight, GetScrollTextPixel(), false, name_scroll_info);
-    //绘制下拉按钮
-    CRect rect_drop_down{ rect };
-    rect_drop_down.left = rect_name.right + DPI(2);
-    rect_drop_down.right = menu_btn_rect.left - DPI(6);
-    CRect rect_drop_down_btn = CDrawCommon::CalculateCenterIconRect(rect_drop_down, icon_size);
-    DrawUIButton(rect_drop_down_btn, playlist_indicator->btn_drop_down, IconMgr::IconType::IT_DropDown);
-}
-
 void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
 {
     //绘制背景
@@ -2678,136 +2643,6 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
     drawMenuItem(MENU_HELP, menu_name_help.c_str());                           //帮助
 }
 
-void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element)
-{
-    DrawAreaGuard guard(&m_draw, rect);
-    bool draw_icon{ tab_element->icon_type == UiElement::NavigationBar::ICON_AND_TEXT || tab_element->icon_type == UiElement::NavigationBar::ICON_ONLY };
-    bool draw_text{ tab_element->icon_type == UiElement::NavigationBar::ICON_AND_TEXT || tab_element->icon_type == UiElement::NavigationBar::TEXT_ONLY };
-    int x_pos{ rect.left };
-    int y_pos{ rect.top };
-    int index{};
-    tab_element->item_rects.resize(tab_element->tab_list.size());
-    for (const auto& navigation_item : tab_element->tab_list)
-    {
-        //计算矩形区域
-        int icon_width{};
-        int text_width{};
-        if (draw_icon)
-        {
-            int item_height{ tab_element->orientation == UiElement::NavigationBar::Horizontal ? rect.Height() : DPI(tab_element->item_height) };
-            icon_width = (std::max)(DPI(24), item_height - DPI(4));
-        }
-        if (draw_text)
-            text_width = m_draw.GetTextExtent(navigation_item.text.c_str()).cx;
-        CRect item_rect{ rect };
-        if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
-        {
-            item_rect.left = x_pos;
-            item_rect.right = item_rect.left + icon_width + text_width + DPI(4);
-            if (tab_element->icon_type == UiElement::NavigationBar::TEXT_ONLY)
-                item_rect.right += DPI(4);
-            else if (tab_element->icon_type == UiElement::NavigationBar::ICON_AND_TEXT && tab_element->item_height > 20)
-                item_rect.right += DPI(tab_element->item_height - 20) / 2;      //基于高度值增加一些右侧的边距
-        }
-        else
-        {
-            item_rect.top = y_pos;
-            item_rect.bottom = item_rect.top + DPI(tab_element->item_height);
-        }
-        tab_element->item_rects[index] = item_rect;
-
-        if ((rect & item_rect).IsRectEmpty())
-            continue;
-
-        //绘制背景
-        if (tab_element->hover_index == index)
-        {
-            DrawAreaGuard guard(&m_draw, rect);
-            DrawRectangle(item_rect, tab_element->pressed ? m_colors.color_button_pressed : m_colors.color_button_hover);
-        }
-
-        //绘制图标
-        CRect icon_rect{ item_rect };
-        if (draw_icon)
-        {
-            DrawAreaGuard guard(&m_draw, rect);
-            if (tab_element->icon_type != UiElement::NavigationBar::ICON_ONLY)
-            {
-                icon_rect.right = icon_rect.left + icon_width;
-                if (tab_element->orientation == UiElement::NavigationBar::Vertical)
-                    icon_rect.MoveToX(icon_rect.left + DPI(tab_element->item_left_space));
-            }
-            //使用跳动的频谱代替正在播放图标
-            if (navigation_item.icon == IconMgr::IT_NowPlaying && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED && !CPlayer::GetInstance().IsMciCore())
-            {
-                DrawMiniSpectrum(icon_rect);
-            }
-            else
-            {
-                DrawUiIcon(icon_rect, navigation_item.icon);
-            }
-        }
-        else
-        {
-            icon_rect.right = icon_rect.left;
-        }
-
-        //绘制文本
-        if (draw_text)
-        {
-            DrawAreaGuard guard(&m_draw, rect);
-            CRect text_rect{ item_rect };
-            if (tab_element->icon_type != UiElement::NavigationBar::TEXT_ONLY)
-            {
-                text_rect.left = icon_rect.right;
-            }
-            else
-            {
-                text_rect.MoveToX(text_rect.left + DPI(4));
-                if (tab_element->orientation == UiElement::NavigationBar::Vertical)
-                    text_rect.left += DPI(8);
-            }
-            CFont* old_font{};  //原先的字体
-            bool big_font{ m_ui_data.full_screen && IsDrawLargeIcon() };
-            old_font = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(tab_element->font_size).GetFont(big_font));
-            m_draw.DrawWindowText(text_rect, navigation_item.text.c_str(), m_colors.color_text, Alignment::LEFT, true);
-            m_draw.SetFont(old_font);
-        }
-
-        //绘制选中指示
-        if (tab_element->SelectedIndex() == index)
-        {
-            DrawAreaGuard guard(&m_draw, rect);
-            CRect selected_indicator_rect{ item_rect };
-            //水平排列时选中指示在底部
-            if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
-            {
-                selected_indicator_rect.left += DPI(4);
-                selected_indicator_rect.right -= DPI(4);
-                selected_indicator_rect.top = selected_indicator_rect.bottom - DPI(4);
-            }
-            //垂直排列时选中指示在左侧
-            else
-            {
-                selected_indicator_rect.top += DPI(4);
-                selected_indicator_rect.bottom -= DPI(4);
-                selected_indicator_rect.right = selected_indicator_rect.left + DPI(4);
-            }
-            if (theApp.m_app_setting_data.button_round_corners)
-                m_draw.DrawRoundRect(selected_indicator_rect, m_colors.color_text_heighlight, DPI(2));
-            else
-                m_draw.FillRect(selected_indicator_rect, m_colors.color_text_heighlight, true);
-
-        }
-
-        if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
-            x_pos = item_rect.right + DPI(tab_element->item_space);
-        else
-            y_pos = item_rect.bottom + DPI(tab_element->item_space);
-        index++;
-    }
-}
-
 void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
 {
     COLORREF icon_color{ theApp.m_app_setting_data.dark_mode ? RGB(255, 255, 255) : RGB(110, 110, 110) };
@@ -2856,53 +2691,6 @@ void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
             col_index++;
             spetral_data = 0;
         }
-    }
-}
-
-void CPlayerUIBase::DrawSearchBox(CRect rect, UiElement::SearchBox* search_box)
-{
-    //绘制背景
-    COLORREF back_color;
-    if (search_box->hover)
-        back_color = m_colors.color_button_hover;
-    else
-        back_color = m_colors.color_control_bar_back;
-    bool draw_background{ IsDrawBackgroundAlpha() };
-    BYTE alpha;
-    if (!draw_background)
-        alpha = 255;
-    else if (theApp.m_app_setting_data.dark_mode || search_box->hover)
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-    else
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
-    if (!theApp.m_app_setting_data.button_round_corners)
-        m_draw.FillAlphaRect(rect, back_color, alpha);
-    else
-        m_draw.DrawRoundRect(rect, back_color, CalculateRoundRectRadius(rect), alpha);
-    //绘制文本
-    CRect rect_text{ rect };
-    rect_text.left += DPI(4);
-    rect_text.right -= rect.Height();
-    std::wstring text = search_box->key_word;
-    COLORREF text_color = m_colors.color_text;
-    if (text.empty())
-    {
-        text = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT");
-        text_color = m_colors.color_text_heighlight;
-    }
-    m_draw.DrawWindowText(rect_text, text.c_str(), text_color, Alignment::LEFT, true);
-    //绘制图标
-    search_box->icon_rect = rect;;
-    search_box->icon_rect.left = rect_text.right;
-    if (search_box->key_word.empty())
-    {
-        DrawUiIcon(search_box->icon_rect, IconMgr::IT_Find);
-    }
-    else
-    {
-        CRect btn_rect{ search_box->icon_rect };
-        btn_rect.DeflateRect(DPI(2), DPI(2));
-        DrawUIButton(btn_rect, search_box->clear_btn, IconMgr::IT_Close);
     }
 }
 

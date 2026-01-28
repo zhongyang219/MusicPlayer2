@@ -133,13 +133,13 @@ std::wstring CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable variabl
         return CPlayer::GetInstance().GetPlayingState();
     case PlayerVariable::PlayModeName:
     {
-        UiElement::PlaylistIndicator::m_list_cache.reload();
-        return UiElement::PlaylistIndicator::m_list_cache.at(0).GetTypeDisplayName();
+        UiElement::PlaylistIndicator::GetListCache().reload();
+        return UiElement::PlaylistIndicator::GetListCache().at(0).GetTypeDisplayName();
     }
     case PlayerVariable::PlayListName:
     {
-        UiElement::PlaylistIndicator::m_list_cache.reload();
-        return UiElement::PlaylistIndicator::m_list_cache.at(0).GetDisplayName();
+        UiElement::PlaylistIndicator::GetListCache().reload();
+        return UiElement::PlaylistIndicator::GetListCache().at(0).GetDisplayName();
     }
     case PlayerVariable::CurrentPosition:
     {

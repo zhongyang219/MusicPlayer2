@@ -260,7 +260,7 @@ void CSettingsPanel::OnBnClickedSetFontButton()
 		m_lyrics_data.lyric_font.style.strike_out = (fontDlg.IsStrikeOut() != FALSE);
 		//将字体已更改flag置为true
 		m_lyric_font_changed = true;
-		lyric_font_sub_text->text = m_lyrics_data.lyric_font.GetFontInfoString();
+		lyric_font_sub_text->SetText(m_lyrics_data.lyric_font.GetFontInfoString());
 	}
 }
 

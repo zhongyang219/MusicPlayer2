@@ -2,6 +2,7 @@
 #include "ClassicalControlBar.h"
 #include "TinyXml2Helper.h"
 #include "UserUi.h"
+#include "TinyXml2Helper.h"
 
 UiElement::ClassicalControlBar::ClassicalControlBar()
     : CombinedElement(IDR_CLASSICAL_CONTROL_BAR)
@@ -36,4 +37,10 @@ bool UiElement::ClassicalControlBar::IsHeightValid() const
     if (m_stack_element != nullptr)
         return m_stack_element->IsHeightValid();
     return CombinedElement::IsHeightValid();
+}
+
+void UiElement::ClassicalControlBar::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    CombinedElement::FromXmlNode(xml_node);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_switch_display_btn", show_switch_display_btn);
 }

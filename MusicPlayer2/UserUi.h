@@ -141,7 +141,7 @@ inline T* CUserUi::FindElement(const std::string& id)
         T* ele = dynamic_cast<T*>(element);
         if (ele != nullptr)
         {
-            if (id.empty() || id == element->id)
+            if (id.empty() || id == element->GetId())
             {
                 element_found = ele;
                 return true;
@@ -161,7 +161,7 @@ inline T* CUserUi::FindElementInAllUi(const std::string& id)
         T* ele = dynamic_cast<T*>(element);
         if (ele != nullptr)
         {
-            if (id.empty() || id == element->id)
+            if (id.empty() || id == element->GetId())
             {
                 element_found = ele;
                 return true;

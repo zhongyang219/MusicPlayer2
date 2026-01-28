@@ -2,6 +2,7 @@
 #include "SearchBox.h"
 #include "UiSearchBox.h"
 #include "AbstractListElement.h"
+#include "TinyXml2Helper.h"
 
 UiElement::SearchBox::SearchBox()
 {
@@ -38,7 +39,51 @@ void UiElement::SearchBox::Clear()
 void UiElement::SearchBox::Draw()
 {
     CalculateRect();
-    ui->DrawSearchBox(rect, this);
+
+    //绘制背景
+    COLORREF back_color;
+    if (hover)
+        back_color = ui->GetUIColors().color_button_hover;
+    else
+        back_color = ui->GetUIColors().color_control_bar_back;
+    bool draw_background{ ui->IsDrawBackgroundAlpha() };
+    BYTE alpha;
+    if (!draw_background)
+        alpha = 255;
+    else if (theApp.m_app_setting_data.dark_mode || hover)
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    else
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
+    if (!theApp.m_app_setting_data.button_round_corners)
+        ui->GetDrawer().FillAlphaRect(rect, back_color, alpha);
+    else
+        ui->GetDrawer().DrawRoundRect(rect, back_color, ui->CalculateRoundRectRadius(rect), alpha);
+    //绘制文本
+    CRect rect_text{ rect };
+    rect_text.left += ui->DPI(4);
+    rect_text.right -= rect.Height();
+    std::wstring text = key_word;
+    COLORREF text_color = ui->GetUIColors().color_text;
+    if (text.empty())
+    {
+        text = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT");
+        text_color = ui->GetUIColors().color_text_heighlight;
+    }
+    ui->GetDrawer().DrawWindowText(rect_text, text.c_str(), text_color, Alignment::LEFT, true);
+    //绘制图标
+    icon_rect = rect;;
+    icon_rect.left = rect_text.right;
+    if (key_word.empty())
+    {
+        ui->DrawUiIcon(icon_rect, IconMgr::IT_Find);
+    }
+    else
+    {
+        CRect btn_rect{ icon_rect };
+        btn_rect.DeflateRect(ui->DPI(2), ui->DPI(2));
+        ui->DrawUIButton(btn_rect, clear_btn, IconMgr::IT_Close);
+    }
+
     Element::Draw();
 }
 
@@ -85,7 +130,7 @@ bool UiElement::SearchBox::LButtonUp(CPoint point)
         //点击搜索框区域时显示搜索框控件
         else if (rect.PtInRect(point))
         {
-            bool big_font{ ui->m_ui_data.full_screen && ui->IsDrawLargeIcon() };
+            bool big_font{ ui->IsDrawLargeIcon() };
             CWnd* pWnd = ui->GetOwner();
             InitSearchBoxControl(pWnd);
             if (search_box_ctrl != nullptr)
@@ -133,4 +178,10 @@ void UiElement::SearchBox::FindListElement()
             list_element->SetRelatedSearchBox(this);
         find_list_element = true;  //找过一次没找到就不找了
     }
+}
+
+void UiElement::SearchBox::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "list_element_id");
 }

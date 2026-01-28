@@ -2,6 +2,7 @@
 #include "RecentPlayedList.h"
 #include "MusicPlayerCmdHelper.h"
 #include "UserUi.h"
+#include "TinyXml2Helper.h"
 
 CListCache UiElement::RecentPlayedList::m_list_cache(CListCache::SubsetType::ST_RECENT);
 
@@ -155,4 +156,10 @@ void UiElement::RecentPlayedList::OnSelectionChanged()
             }
         }
     }
+}
+
+void UiElement::RecentPlayedList::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    AbstractListElement::FromXmlNode(xml_node);
+    track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
 }

@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "RadioButton.h"
+#include "TinyXml2Helper.h"
 
 void UiElement::RadioButton::Draw()
 {
@@ -48,5 +49,11 @@ void UiElement::RadioButton::ButtonClicked()
             return false;
         });
     }
+}
+
+void UiElement::RadioButton::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    AbstractCheckButton::FromXmlNode(xml_node);
+    group = CTinyXml2Helper::ElementAttribute(xml_node, "group");
 }
 

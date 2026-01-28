@@ -5,7 +5,7 @@ namespace UiElement
     //按钮
     class Button : public Element
     {
-    public:
+    protected:
         CPlayerUIBase::BtnKey key;      //按钮的类型
         bool big_icon{};                //如果为false，则图标尺寸为16x16，否则为20x20
         bool show_text{};               //是否在图标右侧显示文本
@@ -17,6 +17,10 @@ namespace UiElement
         std::string related_element_id;    //关联元素的id
         bool hand_cursor{};             //是否显示为手形光标
         bool empty_btn{};               //是否为空白按钮（不绘制任何东西）
+
+    public:
+        CPlayerUIBase::BtnKey GetKey() const { return key; }
+        std::string GetRelatedElementId() const { return related_element_id; }
 
         void FromString(const std::string& key_type);
         void IconTypeFromString(const std::string& icon_name);
@@ -33,6 +37,8 @@ namespace UiElement
         virtual bool SetCursor() override;
 
         void SetClickedTrigger(std::function<void(Button*)> func);
+
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
     private:
         std::wstring GetDisplayText() const;
