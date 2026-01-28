@@ -4,8 +4,10 @@
       <scrollArea>
         <verticalLayout>
           <toggleSettingGroup id="toggleBtn1" height="60" icon="setting" mainText="启用控件" subText="测试文本" />
+          
+          <comboBox id="combobox1" margin-top="4" height="28"/>
         
-          <horizontalLayout height="24">
+          <horizontalLayout height="24" margin-top="4">
             <checkBox id="checkbox1" text="测试复选框"/>
             <placeHolder/>
           </horizontalLayout>
@@ -17,7 +19,6 @@
 
           <toggleSettingGroup id="toggleBtn2" margin-top="4" height="60" icon="setting" mainText="主要文本" subText="次要文本" />
 
-          <comboBox id="combobox1" margin-top="4" height="28"/>
           
           <horizontalLayout margin-top="4" height="100">
             <rectangle theme_color="false">
@@ -31,12 +32,10 @@
           </horizontalLayout>
         
           <placeHolder/>
-          <text id="text1" type="userDefine" height="20"/>
-          <text id="text2" type="userDefine" height="20"/>
         </verticalLayout>
       </scrollArea>
       <horizontalLayout height="28" margin-top="8">
-        <placeHolder/>
+        <text id="tipInfoText" type="userDefine" height="20"/>
         <button id="okBtn" icon="ok" text="%(TXT_APPLY)" height="28" show_text="true"/>
         <button id="cancelBtn" icon="cancel" text="%(TXT_CLOSE)" show_text="true"/>
       </horizontalLayout>

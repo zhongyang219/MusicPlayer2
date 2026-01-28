@@ -13,26 +13,25 @@ namespace UiElement
         virtual bool LButtonDown(CPoint point) override;
         virtual bool MouseMove(CPoint point) override;
         virtual bool MouseLeave() override;
+        virtual void TopMostClicked(CPoint point) override;
 
         void AddString(const std::wstring& str);
         void SetCurSel(int index);
         int GetCurSel();
         std::wstring GetCurString();
-        void SetSelectionChangedTrigger(std::function<void(AbstractListElement*)> func);
-
-    protected:
-        void OnSelChanged();
+        void SetSelectionChangedTrigger(std::function<void(ComboBox*)> func);
 
     protected:
         bool show_drop_list{ false };
         std::shared_ptr<ListElement> drop_list;
-        std::function<void(AbstractListElement*)> m_selection_changed_trigger;
+        std::function<void(ComboBox*)> m_selection_changed_trigger;
 
     private:
         bool hover{};
         bool pressed{};
         CRect rect_drop_list;
-        bool selection_changed{};
+        //bool selection_changed{};
+        bool last_drop_list_hover{};
     };
 }
 

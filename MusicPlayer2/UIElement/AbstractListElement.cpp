@@ -54,7 +54,8 @@ void UiElement::AbstractListElement::DrawScrollArea()
                 bool is_selected_item = false;
                 if (draw_hover_row_background)
                 {
-                    is_selected_item = GetDisplayedIndexByPoint(m_mouse_pos) == i;
+                    if (rect.PtInRect(m_mouse_pos))
+                        is_selected_item = GetDisplayedIndexByPoint(m_mouse_pos) == i;
                 }
                 else
                 {
@@ -491,6 +492,13 @@ bool UiElement::AbstractListElement::MouseWheel(int delta, CPoint point)
         return true;
     }
     return false;
+}
+
+bool UiElement::AbstractListElement::MouseLeave()
+{
+    bool rtn = AbstractScrollArea::MouseLeave();
+    m_mouse_pos = CPoint(-1, -1);
+    return rtn;
 }
 
 bool UiElement::AbstractListElement::DoubleClick(CPoint point)

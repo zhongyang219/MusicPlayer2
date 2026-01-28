@@ -165,8 +165,7 @@ bool UiElement::AbstractScrollArea::MouseMove(CPoint point)
     }
 
     bool rtn = false;
-    if (hover)
-        rtn = Element::MouseMove(point);
+    rtn = Element::MouseMove(point);
     if (last_hover && !hover)
     {
         Element::MouseLeave();

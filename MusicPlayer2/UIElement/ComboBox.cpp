@@ -24,7 +24,7 @@ void UiElement::ComboBox::Draw()
     text_rect.right = icon_rect.left;
     text_rect.left += ui->DPI(4);
     std::wstring cur_text = GetCurString();
-    ui->GetDrawer().DrawWindowText(text_rect, cur_text.c_str(), ui->GetUIColors().color_text);
+    ui->GetDrawer().DrawWindowText(text_rect, cur_text.c_str(), IsEnable() ? ui->GetUIColors().color_text : ui->GetUIColors().color_text_disabled);
 
     Element::Draw();
 }
@@ -36,19 +36,20 @@ void UiElement::ComboBox::DrawTopMost()
         //计算下拉列表的位置
         rect_drop_list = rect;
         rect_drop_list.top = rect.bottom;
+        const int drop_list_margin = ui->DPI(4);
         //下拉列表的高度
-        int list_height = drop_list->GetRowCount() * drop_list->ItemHeight() + 1;
-        CCommon::SetNumRange(list_height, ui->DPI(30), ui->DPI(200));
+        int list_height = drop_list->GetRowCount() * drop_list->ItemHeight() + 2 * drop_list_margin + ui->DPI(1);
         rect_drop_list.bottom = rect_drop_list.top + list_height;
-        //限制下拉列表中绘图区域内
-        CRect draw_rect = ui->GetClientDrawRect();
-        rect_drop_list = draw_rect & rect_drop_list;
+        ////限制下拉列表中绘图区域内
+        //CRect draw_rect = ui->GetClientDrawRect();
+        //rect_drop_list = draw_rect & rect_drop_list;
 
-        drop_list->SetRect(rect_drop_list);
         if (theApp.m_app_setting_data.button_round_corners)
-            ui->GetDrawer().DrawRoundRect(rect_drop_list, ui->GetUIColors().color_back, ui->CalculateRoundRectRadius(rect_drop_list), 255);
+            ui->GetDrawer().DrawRoundRect(rect_drop_list, ui->GetUIColors().color_panel_back, ui->CalculateRoundRectRadius(rect_drop_list), 255);
         else
-            ui->GetDrawer().FillRect(rect_drop_list, ui->GetUIColors().color_back);
+            ui->GetDrawer().FillRect(rect_drop_list, ui->GetUIColors().color_panel_back);
+        rect_drop_list.DeflateRect(drop_list_margin, drop_list_margin);
+        drop_list->SetRect(rect_drop_list);
         drop_list->Draw();
     }
 }
@@ -57,9 +58,6 @@ void UiElement::ComboBox::InitComplete()
 {
     CElementFactory factory;
     drop_list = std::dynamic_pointer_cast<ListElement>(factory.CreateElement("listElement", ui));
-    drop_list->SetSelectionChangedTrigger([&](AbstractListElement* list_element) {
-        selection_changed = true;
-    });
     drop_list->SetDrawAlternateBackground(false);
     drop_list->SetDrawHoverRowBackground(true);
 }
@@ -77,11 +75,6 @@ bool UiElement::ComboBox::LButtonUp(CPoint point)
     if (show_drop_list && rect_drop_list.PtInRect(point))
     {
         drop_list->LButtonUp(point);
-        if (selection_changed)
-        {
-            OnSelChanged();
-            selection_changed = false;
-        }
         return true;
     }
 
@@ -106,8 +99,12 @@ bool UiElement::ComboBox::LButtonDown(CPoint point)
 
 bool UiElement::ComboBox::MouseMove(CPoint point)
 {
-    hover = (rect.PtInRect(point));
-    if (show_drop_list && rect_drop_list.PtInRect(point))
+    hover = (rect.PtInRect(point) && IsEnable());
+    bool drop_list_hover = show_drop_list && rect_drop_list.PtInRect(point);
+    if (last_drop_list_hover && !drop_list_hover)
+        drop_list->MouseLeave();
+    last_drop_list_hover = drop_list_hover;
+    if (drop_list_hover)
     {
         drop_list->MouseMove(point);
         return true;
@@ -122,6 +119,27 @@ bool UiElement::ComboBox::MouseLeave()
     if (show_drop_list)
         drop_list->MouseLeave();
     return false;
+}
+
+void UiElement::ComboBox::TopMostClicked(CPoint point)
+{
+    if (!rect.PtInRect(point) && IsShown() && IsEnable())
+    {
+        if (show_drop_list && rect_drop_list.PtInRect(point))
+        {
+            int selected_row = drop_list->GetDisplayedIndexByPoint(point);
+            drop_list->LButtonUp(point);
+            int cur_sel = GetCurSel();
+            SetCurSel(selected_row);
+            if (selected_row != cur_sel)
+            {
+                if (m_selection_changed_trigger)
+                    m_selection_changed_trigger(this);
+            }
+        }
+        show_drop_list = false;
+
+    }
 }
 
 void UiElement::ComboBox::AddString(const std::wstring& str)
@@ -149,19 +167,7 @@ std::wstring UiElement::ComboBox::GetCurString()
     return drop_list->GetItemText(selected_row, 0);
 }
 
-void UiElement::ComboBox::SetSelectionChangedTrigger(std::function<void(AbstractListElement*)> func)
+void UiElement::ComboBox::SetSelectionChangedTrigger(std::function<void(ComboBox*)> func)
 {
     m_selection_changed_trigger = func;
-}
-
-void UiElement::ComboBox::OnSelChanged()
-{
-    //同步选中行和Highlight行
-    int selected_row = drop_list->GetItemSelected();
-    drop_list->SetHighlightRow(selected_row);
-
-    if (m_selection_changed_trigger)
-        m_selection_changed_trigger(drop_list.get());
-
-    show_drop_list = false;
 }

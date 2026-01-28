@@ -23,11 +23,17 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         colors.color_text_lable = theApp.m_app_setting_data.theme_color.light2;
         colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
         colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.light2;
-        colors.color_text_disabled = GRAY(180);
+        colors.color_text_disabled = GRAY(200);
         if (draw_alpha)
+        {
             colors.color_back = GRAY(64);
+            colors.color_panel_back = GRAY(72);
+        }
         else
+        {
             colors.color_back = GRAY(48);
+            colors.color_panel_back = GRAY(56);
+        }
 
         colors.color_lyric_back = theApp.m_app_setting_data.theme_color.dark3;
         if (draw_alpha)
@@ -62,6 +68,10 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.dark1;
         colors.color_text_disabled = GRAY(160);
         colors.color_back = ColorTable::WHITE;
+        if (draw_alpha)
+            colors.color_panel_back = ColorTable::WHITE;
+        else
+            colors.color_panel_back = GRAY(240);
         colors.color_lyric_back = theApp.m_app_setting_data.theme_color.light3;
         colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.light3;
         colors.color_spectrum = theApp.m_app_setting_data.theme_color.original_color;
@@ -95,7 +105,7 @@ bool CPlayerUIHelper::IsMidiLyric()
 bool CPlayerUIHelper::IsDrawStatusBar()
 {
     return theApp.m_app_setting_data.always_show_statusbar || CPlayer::GetInstance().m_loading || (theApp.IsMeidaLibUpdating() && theApp.m_media_update_para.num_added > 0)
-		/*|| CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE*/;
+        /*|| CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE*/;
 
 }
 

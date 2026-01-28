@@ -20,6 +20,7 @@ namespace UiElement
         virtual bool RButtonUp(CPoint point) override;
         virtual bool RButtonDown(CPoint point) override;
         virtual bool MouseWheel(int delta, CPoint point) override;
+        virtual bool MouseLeave() override;
         virtual bool DoubleClick(CPoint point) override;
         void ShowContextMenu(CMenu* menu, CWnd* cmd_reciver);
         virtual void ClearRect() override;
@@ -86,10 +87,11 @@ namespace UiElement
 
         virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
+        int GetDisplayedIndexByPoint(CPoint point);     //获取一个坐标所在的行号
+
     private:
         void DisplayRowToAbsoluteRow(int& row); //将显示的行号转换为绝对行号
         void AbsoluteRowToDisplayRow(int& row); //将绝对行号转换为显示的行号
-        int GetDisplayedIndexByPoint(CPoint point);
 
     protected:
         int GetListIndexByPoint(CPoint point);
