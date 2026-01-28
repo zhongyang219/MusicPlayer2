@@ -104,7 +104,7 @@ bool UiElement::PlaylistIndicator::MouseMove(CPoint point)
         ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_DROP_DOWN_BTN, btn_drop_down.rect);
     if (btn_menu.hover)
         ui->UpdateMouseToolTipPosition(TooltipIndex::PLAYLIST_MENU_BTN, btn_menu.rect);
-    return true;
+    return false;
 }
 
 bool UiElement::PlaylistIndicator::MouseLeave()

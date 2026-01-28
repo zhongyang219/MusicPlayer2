@@ -106,7 +106,7 @@ bool UiElement::SearchBox::MouseMove(CPoint point)
     {
         hover = true;
     }
-    return true;
+    return false;
 }
 
 bool UiElement::SearchBox::MouseLeave()

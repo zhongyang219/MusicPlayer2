@@ -63,7 +63,7 @@ bool UiElement::ElementSwitcher::MouseMove(CPoint point)
         ui->UpdateMouseToolTipPosition(TooltipIndex::ELEMENT_SWITCHER, rect);
     }
     last_hover = btn.hover;
-    return true;
+    return false;
 }
 
 bool UiElement::ElementSwitcher::MouseLeave()

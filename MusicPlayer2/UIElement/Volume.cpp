@@ -199,7 +199,9 @@ bool UiElement::Volume::MouseMove(CPoint point)
         ui->UpdateMouseToolTipPosition(CPlayerUIBase::BTN_VOLUME, rect);
     volumn_up_btn.hover = volumn_up_btn.rect.PtInRect(point);
     volumn_down_btn.hover = volumn_down_btn.rect.PtInRect(point);
-    return true;
+    if (volumn_btn.hover || volumn_up_btn.hover || volumn_down_btn.hover)
+        return true;
+    return false;
 }
 
 bool UiElement::Volume::MouseWheel(int delta, CPoint point)

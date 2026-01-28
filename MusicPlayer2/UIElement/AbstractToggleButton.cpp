@@ -32,7 +32,7 @@ bool UiElement::AbstractToggleButton::LButtonDown(CPoint point)
 bool UiElement::AbstractToggleButton::MouseMove(CPoint point)
 {
     m_hover = (IsEnable() && GetClickTriggerRect().PtInRect(point));
-    return true;
+    return false;
 }
 
 bool UiElement::AbstractToggleButton::MouseLeave()

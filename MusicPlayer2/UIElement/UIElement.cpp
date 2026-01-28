@@ -344,7 +344,8 @@ bool UiElement::Element::MouseMove(CPoint point)
 {
     for (auto& child : childLst)
     {
-        child->MouseMove(point);
+        if (child->MouseMove(point))
+            return true;
     }
     return false;
 }

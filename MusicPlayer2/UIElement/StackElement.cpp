@@ -195,7 +195,7 @@ bool UiElement::StackElement::MouseMove(CPoint point)
     //    ui->UpdateToolTipPositionLater();
 
     mouse_hover = hover;
-    return true;
+    return false;
 }
 
 bool UiElement::StackElement::RButtonUp(CPoint point)

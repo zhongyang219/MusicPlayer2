@@ -217,7 +217,7 @@ bool UiElement::NavigationBar::MouseMove(CPoint point)
             }
         }
     }
-    return true;
+    return false;
 }
 
 bool UiElement::NavigationBar::RButtonUp(CPoint point)

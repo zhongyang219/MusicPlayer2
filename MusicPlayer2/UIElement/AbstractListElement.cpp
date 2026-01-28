@@ -403,7 +403,7 @@ bool UiElement::AbstractListElement::MouseMove(CPoint point)
             }
         }
     }
-    return true;
+    return false;
 }
 
 bool UiElement::AbstractListElement::RButtonUp(CPoint point)

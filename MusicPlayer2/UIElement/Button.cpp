@@ -276,7 +276,6 @@ bool UiElement::Button::MouseMove(CPoint point)
             ui->UpdateMouseToolTipPosition(key, m_btn.rect);
         }
         last_hover = m_btn.hover;
-        return true;
     }
     return false;
 }

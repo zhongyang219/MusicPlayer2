@@ -84,7 +84,6 @@ bool UiElement::Text::MouseMove(CPoint point)
             ui->UpdateMouseToolTipPosition(TooltipIndex::TEXT, rect);
         }
         last_hover = hover;
-        return true;
     }
     return false;
 }
