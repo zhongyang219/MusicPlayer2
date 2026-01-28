@@ -310,6 +310,7 @@
     <ClInclude Include="UIElement\CombinedElement\ClassicalControlBar.h" />
     <ClInclude Include="UIElement\CombinedElement\CombinedElement.h" />
     <ClInclude Include="UIElement\CombinedElement\ToggleSettingGroup.h" />
+    <ClInclude Include="UIElement\ComboBox.h" />
     <ClInclude Include="UIElement\ElementFactory.h" />
     <ClInclude Include="UIElement\ElementSwitcher.h" />
     <ClInclude Include="UIElement\FolderExploreTree.h" />
@@ -543,6 +544,7 @@
     <ClCompile Include="UIElement\CombinedElement\ClassicalControlBar.cpp" />
     <ClCompile Include="UIElement\CombinedElement\CombinedElement.cpp" />
     <ClCompile Include="UIElement\CombinedElement\ToggleSettingGroup.cpp" />
+    <ClCompile Include="UIElement\ComboBox.cpp" />
     <ClCompile Include="UIElement\ElementFactory.cpp" />
     <ClCompile Include="UIElement\ElementSwitcher.cpp" />
     <ClCompile Include="UIElement\FolderExploreTree.cpp" />

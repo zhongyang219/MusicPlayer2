@@ -92,6 +92,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::ScrollArea>();
     else if (name == "listElement")
         element = std::make_shared<UiElement::ListElement>();
+    else if (name == "comboBox")
+        element = std::make_shared<UiElement::ComboBox>();
 
     if (element != nullptr)
         element->SetUi(ui);

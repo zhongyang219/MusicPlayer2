@@ -756,6 +756,7 @@
         <xs:element name="toggleSettingGroup" type="toggleSettingGroupType"></xs:element>
         <xs:element name="scrollArea" type="scrollAreaType"></xs:element>
         <xs:element name="listElement" type="listElementType"></xs:element>
+        <xs:element name="comboBox" type="comboBoxType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -2020,6 +2021,13 @@
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="listElementType">
+    <xs:annotation>
+      <xs:documentation>通用列表控件。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="comboBoxType">
     <xs:annotation>
       <xs:documentation>通用列表控件。</xs:documentation>
     </xs:annotation>

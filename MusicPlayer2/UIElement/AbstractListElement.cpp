@@ -51,14 +51,24 @@ void UiElement::AbstractListElement::DrawScrollArea()
             {
                 COLORREF back_color{};
                 //选中项目的背景
-                if (IsItemSelected(i))
+                bool is_selected_item = false;
+                if (draw_hover_row_background)
+                {
+                    is_selected_item = GetDisplayedIndexByPoint(m_mouse_pos) == i;
+                }
+                else
+                {
+                    is_selected_item = IsItemSelected(i);
+                }
+                if (is_selected_item)
                 {
                     back_color = ui->GetUIColors().color_list_selected;
                 }
                 //偶数行的背景
                 else if (displayed_row_index % 2 == 0)
                 {
-                    back_color = ui->GetUIColors().color_control_bar_back;
+                    if (draw_alternate_background)
+                        back_color = ui->GetUIColors().color_control_bar_back;
                 }
                 //绘制背景
                 if (back_color != 0)
@@ -347,6 +357,7 @@ bool UiElement::AbstractListElement::LButtonDown(CPoint point)
 
 bool UiElement::AbstractListElement::MouseMove(CPoint point)
 {
+    m_mouse_pos = point;
     if (rect.IsRectEmpty())
         return false;
 

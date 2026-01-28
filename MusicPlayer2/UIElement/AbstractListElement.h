@@ -81,6 +81,9 @@ namespace UiElement
 
         void SetSelectionChangedTrigger(std::function<void(AbstractListElement*)> func);
 
+        void SetDrawAlternateBackground(bool val) { draw_alternate_background = val; }
+        void SetDrawHoverRowBackground(bool val) { draw_hover_row_background = val; }
+
         virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
     private:
@@ -104,8 +107,11 @@ namespace UiElement
     private:
         std::vector<int> search_result; //保存搜索结果的序号
         bool searched{};                //是否处于搜索状态
+        bool draw_alternate_background{ true }; //是否为奇偶行交替绘制不同颜色的背景
+        bool draw_hover_row_background{ false };    //是否绘制鼠标指向时的背景
         SearchBox* related_search_box{};    //关联的键框
         mutable std::recursive_mutex m_selection_mutex;     //保护items_selected的互斥量
+        CPoint m_mouse_pos;
 
         std::function<void(AbstractListElement*)> m_selection_changed_trigger;
     };

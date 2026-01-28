@@ -6,7 +6,9 @@
 #include "UIElement/Text.h"
 #include "UIElement/ToggleButton.h"
 #include "UIElement/ListElement.h"
+#include "UIElement/ComboBox.h"
 #include "UIElement/CombinedElement/ToggleSettingGroup.h"
+
 class CTestPanel : public CPlayerUIPanel
 {
 public:
@@ -30,6 +32,7 @@ private:
 	UiElement::ToggleSettingGroup* m_toggle_group2{};
 	UiElement::Text* m_text1{};
 	UiElement::Text* m_text2{};
+	UiElement::ComboBox* m_combobox1{};
 
 	UiElement::ListElement* m_list1{};
 };

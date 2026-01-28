@@ -167,7 +167,6 @@ void UiElement::Volume::DrawTopMost()
 
 bool UiElement::Volume::LButtonUp(CPoint point)
 {
-    TRACE("volumn button up.\n");
     volumn_btn.pressed = false;
     volumn_up_btn.pressed = false;
     volumn_down_btn.pressed = false;
@@ -182,7 +181,6 @@ bool UiElement::Volume::LButtonUp(CPoint point)
 
 bool UiElement::Volume::LButtonDown(CPoint point)
 {
-    TRACE("volumn button down.\n");
     if (rect.PtInRect(point))
         volumn_btn.pressed = true;
     if (volumn_up_btn.rect.PtInRect(point))

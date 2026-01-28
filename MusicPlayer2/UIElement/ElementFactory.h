@@ -38,6 +38,7 @@
 #include "CombinedElement/ToggleSettingGroup.h"
 #include "UIElement/ScrollArea.h"
 #include "UIElement/ListElement.h"
+#include "UIElement/ComboBox.h"
 
 namespace UiElement
 {

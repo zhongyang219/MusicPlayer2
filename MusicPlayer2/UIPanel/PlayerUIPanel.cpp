@@ -93,6 +93,7 @@ void CPlayerUIPanel::Draw()
 
 		//绘制面板
 		m_root_element->Draw();
+		m_root_element->DrawTopMost();
 	}
 }
 

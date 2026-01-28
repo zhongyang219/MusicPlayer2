@@ -26,6 +26,12 @@ CTestPanel::CTestPanel(CPlayerUIBase* ui)
 	m_radio2 = m_root_element->FindElement<UiElement::RadioButton>("radio2");
 	m_toggle_group2 = m_root_element->FindElement<UiElement::ToggleSettingGroup>("toggleBtn2");
 
+	m_combobox1 = m_root_element->FindElement<UiElement::ComboBox>("combobox1");
+	m_combobox1->AddString(L"测试下拉项1");
+	m_combobox1->AddString(L"测试下拉项2");
+	m_combobox1->AddString(L"测试下拉项3");
+	m_combobox1->SetCurSel(0);
+
 	m_text1 = m_root_element->FindElement<UiElement::Text>("text1");
 	m_text2 = m_root_element->FindElement<UiElement::Text>("text2");
 	m_list1 = m_root_element->FindElement<UiElement::ListElement>("list1");

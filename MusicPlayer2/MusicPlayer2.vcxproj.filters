@@ -1146,6 +1146,9 @@
     <ClInclude Include="UIElement\Helper\UiElementHelper.h">
       <Filter>UIElement\Helper</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\ComboBox.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1819,6 +1822,9 @@
     </ClCompile>
     <ClCompile Include="UIElement\Helper\UiElementHelper.cpp">
       <Filter>UIElement\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\ComboBox.cpp">
+      <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
