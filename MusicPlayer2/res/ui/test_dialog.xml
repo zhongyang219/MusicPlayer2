@@ -1,0 +1,47 @@
+<root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd"
+      name="测试对话框">
+  <ui>
+    <verticalLayout margin="8">
+      <scrollArea>
+        <verticalLayout>
+          <toggleSettingGroup id="toggleBtn1" height="60" icon="setting" mainText="启用控件" subText="测试文本" />
+        
+          <horizontalLayout height="24" margin-top="4">
+            <checkBox id="checkbox1" text="测试复选框"/>
+            <checkBox id="checkbox2" text="测试复选框2"/>
+            <placeHolder/>
+          </horizontalLayout>
+          <horizontalLayout height="24">
+            <radioButton id="radio1" text="测试单选框1"/>
+            <radioButton id="radio2" text="测试单选框2"/>
+            <placeHolder/>
+          </horizontalLayout>
+
+          <toggleSettingGroup id="toggleBtn2" margin-top="4" height="60" icon="setting" mainText="主要文本" subText="次要文本" />
+          
+          <comboBox id="combobox1" margin-top="4" height="28"/>
+
+          
+          <horizontalLayout margin-top="4" height="100">
+            <rectangle theme_color="false">
+              <listElement id="list1"/>
+            </rectangle>
+            <verticalLayout width="90" margin-left="8">
+              <button id="addBtn" height="30" icon="add" text="%(UI_TXT_PLAYLIST_TOOLBAR_ADD)" show_text="true"/>
+              <button id="deleteBtn" height="30" icon="close" text="%(UI_TXT_PLAYLIST_TOOLBAR_DELETE)" show_text="true"/>
+              <placeHolder/>
+            </verticalLayout>
+          </horizontalLayout>
+        
+          <placeHolder/>
+        </verticalLayout>
+      </scrollArea>
+      <horizontalLayout height="28" margin-top="8">
+        <button key="settings" show_text="true"/>
+        <text id="tipInfoText" type="userDefine" height="20"/>
+        <button id="okBtn" icon="ok" text="%(TXT_APPLY)" height="28" show_text="true"/>
+        <button id="cancelBtn" icon="cancel" text="%(TXT_CLOSE)" show_text="true"/>
+      </horizontalLayout>
+    </verticalLayout>
+  </ui>
+</root>

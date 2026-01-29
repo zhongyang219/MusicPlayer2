@@ -95,6 +95,13 @@ BEGIN
     CONTROL         "No longer ask",IDC_NO_LONGER_ASK_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,72,10
 END
 
+IDD_UI_DIALOG DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Dialog"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -123,6 +130,14 @@ BEGIN
         VERTGUIDE, 15
         TOPMARGIN, 7
         BOTTOMMARGIN, 72
+    END
+
+    IDD_UI_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 169
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -153,6 +168,11 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 100, 0,
     0, 100, 100, 0
+END
+
+IDD_UI_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 
@@ -187,6 +207,8 @@ IDR_TEST_PANEL          TEXT                    "res\\ui\\test_panel.xml"
 IDR_SETTINGS_PANEL      TEXT                    "res\\ui\\settings_panel.xml"
 
 IDR_TOGGLE_SETTING_GROUP TEXT                    "res\\ui\\toggle_setting_group.xml"
+
+IDR_TEST_DIALOG         TEXT                    "res\\ui\\test_dialog.xml"
 
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////

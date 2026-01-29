@@ -298,6 +298,8 @@
     <ClInclude Include="NeteaseLyricDownload.h" />
     <ClInclude Include="PlaylistPropertiesDlg.h" />
     <ClInclude Include="SimplePropertiesDlg.h" />
+    <ClInclude Include="UIDialog\UIDialog.h" />
+    <ClInclude Include="UIDialog\UITestDialog.h" />
     <ClInclude Include="UIElement\AbstractCheckButton.h" />
     <ClInclude Include="UIElement\AbstractScrollArea.h" />
     <ClInclude Include="UIElement\AbstractToggleButton.h" />
@@ -532,6 +534,8 @@
     <ClCompile Include="NeteaseLyricDownload.cpp" />
     <ClCompile Include="PlaylistPropertiesDlg.cpp" />
     <ClCompile Include="SimplePropertiesDlg.cpp" />
+    <ClCompile Include="UIDialog\UIDialog.cpp" />
+    <ClCompile Include="UIDialog\UITestDialog.cpp" />
     <ClCompile Include="UIElement\AbstractCheckButton.cpp" />
     <ClCompile Include="UIElement\AbstractScrollArea.cpp" />
     <ClCompile Include="UIElement\AbstractToggleButton.cpp" />
@@ -735,6 +739,7 @@
     <Image Include="res\bitrate.ico" />
     <Image Include="res\bitrate_d.ico" />
     <Image Include="res\checkbox.ico" />
+    <Image Include="res\checkbox_d.ico" />
     <Image Include="res\close.ico" />
     <Image Include="res\close_d.ico" />
     <Image Include="res\convert.ico" />
@@ -748,7 +753,9 @@
     <Image Include="res\default_cover.bmp" />
     <Image Include="res\default_cover_new.ico" />
     <Image Include="res\default_cover_new_not_played.ico" />
+    <Image Include="res\delete.ico" />
     <Image Include="res\DeleteTag.ico" />
+    <Image Include="res\delete_d.ico" />
     <Image Include="res\display_mode.ico" />
     <Image Include="res\display_mode_d.ico" />
     <Image Include="res\donate.bmp" />
@@ -965,6 +972,7 @@
     <Xml Include="res\ui\list_preview_panel.xml" />
     <Xml Include="res\ui\play_queue_panel.xml" />
     <Xml Include="res\ui\settings_panel.xml" />
+    <Xml Include="res\ui\test_dialog.xml" />
     <Xml Include="res\ui\test_panel.xml" />
     <Xml Include="res\ui\toggle_setting_group.xml" />
   </ItemGroup>

@@ -34,6 +34,7 @@
 #include "UIElement/PlaylistElement.h"
 #include "ClosseMainWindowInqueryDlg.h"
 #include "UIPanel/SettingsPanel.h"
+#include "UIDialog/UITestDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -3470,6 +3471,12 @@ BOOL CMusicPlayerDlg::OnCommand(WPARAM wParam, LPARAM lParam)
     case ID_TEST_DIALOG:
     {
         CTestDlg dlg;
+        dlg.DoModal();
+        break;
+    }
+    case ID_TEST_UI_DIALOG:
+    {
+        CUITestDialog dlg;
         dlg.DoModal();
         break;
     }

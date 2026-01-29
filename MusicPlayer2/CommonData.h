@@ -441,6 +441,9 @@ struct UIData
     bool show_playlist{ true };
     bool show_menu_bar{ true };
     bool full_screen{ false };
+    bool enable_background{ true };
+    bool enable_titlebar{ true };
+    bool enable_statusbar{ true };
 
     int draw_area_width;                //绘图区的宽度
     int draw_area_height;               //绘图区的高度

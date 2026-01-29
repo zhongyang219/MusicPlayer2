@@ -20,6 +20,13 @@ CUserUi::CUserUi(CWnd* pMainWnd, UINT id)
     LoadFromContents(xml);
 }
 
+CUserUi::CUserUi(CWnd* pMainWnd, UINT id, UIData& ui_data)
+    : CPlayerUIBase(ui_data, pMainWnd)
+{
+    string xml = CCommon::GetTextResourceRawData(id);
+    LoadFromContents(xml);
+}
+
 
 CUserUi::~CUserUi()
 {

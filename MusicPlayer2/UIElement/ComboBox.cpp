@@ -204,6 +204,7 @@ IconMgr::IconType UiElement::ComboBox::GetCurIcon()
         int selected_row = GetCurSel();
         return drop_list->GetIcon(selected_row);
     }
+    return IconMgr::IT_NO_ICON;
 }
 
 void UiElement::ComboBox::SetIcon(int index, IconMgr::IconType icon)

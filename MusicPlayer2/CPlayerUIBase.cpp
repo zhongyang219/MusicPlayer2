@@ -878,7 +878,7 @@ void CPlayerUIBase::DrawBackground()
     draw_rect.MoveToXY(0, 0);
 
     //绘制背景
-    if (theApp.m_app_setting_data.enable_background)
+    if (theApp.m_app_setting_data.enable_background && m_ui_data.enable_background)
     {
         if (CPlayer::GetInstance().AlbumCoverExist() && theApp.m_app_setting_data.album_cover_as_background)
         {
@@ -1453,17 +1453,17 @@ bool CPlayerUIBase::PointInMenubarArea(CPoint point) const
 
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 {
-    return theApp.m_app_setting_data.enable_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
+    return theApp.m_app_setting_data.enable_background && m_ui_data.enable_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
 }
 
 bool CPlayerUIBase::IsDrawStatusBar() const
 {
-    return CPlayerUIHelper::IsDrawStatusBar();
+    return m_ui_data.enable_statusbar && CPlayerUIHelper::IsDrawStatusBar();
 }
 
 bool CPlayerUIBase::IsDrawTitleBar() const
 {
-    return !theApp.m_app_setting_data.show_window_frame && !m_ui_data.full_screen;
+    return m_ui_data.enable_titlebar && !theApp.m_app_setting_data.show_window_frame && !m_ui_data.full_screen;
 }
 
 bool CPlayerUIBase::IsDrawMenuBar() const

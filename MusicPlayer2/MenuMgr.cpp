@@ -356,6 +356,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendSeparator();
         menu.AppendItem(EX_ID(ID_TEST));
         menu.AppendItem(EX_ID(ID_TEST_DIALOG));
+        menu.AppendItem(EX_ID(ID_TEST_UI_DIALOG));
         menu.AppendItem(EX_ID(ID_TEST_PANEL));
 #endif
         break;

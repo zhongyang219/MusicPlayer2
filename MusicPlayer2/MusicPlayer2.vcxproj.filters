@@ -435,6 +435,12 @@
     <Filter Include="UIElement\Helper">
       <UniqueIdentifier>{6bf24b5b-a89f-494c-b783-230d59dd305d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI对话框">
+      <UniqueIdentifier>{4bddc104-ff3e-4d16-a3da-cc9f623fdb51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI对话框\UITestDlg">
+      <UniqueIdentifier>{f724de13-68b9-46b9-845f-a0f05c80306c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1149,6 +1155,12 @@
     <ClInclude Include="UIElement\ComboBox.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIDialog\UIDialog.h">
+      <Filter>UI对话框</Filter>
+    </ClInclude>
+    <ClInclude Include="UIDialog\UITestDialog.h">
+      <Filter>UI对话框\UITestDlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1825,6 +1837,12 @@
     </ClCompile>
     <ClCompile Include="UIElement\ComboBox.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIDialog\UIDialog.cpp">
+      <Filter>UI对话框</Filter>
+    </ClCompile>
+    <ClCompile Include="UIDialog\UITestDialog.cpp">
+      <Filter>UI对话框\UITestDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2577,6 +2595,15 @@
     <Image Include="res\checkbox.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\checkbox_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\delete.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\delete_d.ico">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="res\ui\classical_control_bar.xml">
@@ -2591,5 +2618,6 @@
     <Xml Include="res\ui\test_panel.xml" />
     <Xml Include="res\ui\settings_panel.xml" />
     <Xml Include="res\ui\toggle_setting_group.xml" />
+    <Xml Include="res\ui\test_dialog.xml" />
   </ItemGroup>
 </Project>
