@@ -163,14 +163,15 @@ void UiElement::AbstractListElement::DrawScrollArea()
                 }
 
                 //绘制图标
-                if (HasIcon())
+                IconMgr::IconType cur_icon = GetIcon(i);
+                if (cur_icon != IconMgr::IT_NO_ICON)
                 {
                     CRect rect_icon{ rect_item };
                     rect_icon.left = col_x;
                     rect_icon.right = rect_icon.left + ui->DPI(20);
                     col_x = rect_icon.right;
                     rect_icon.MoveToX(rect_icon.left + indent_space);
-                    ui->DrawUiIcon(rect_icon, GetIcon(i));
+                    ui->DrawUiIcon(rect_icon, cur_icon);
                 }
 
                 //绘制列

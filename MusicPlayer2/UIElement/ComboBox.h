@@ -22,6 +22,7 @@ namespace UiElement
         void SetCurSel(int index);
         int GetCurSel();
         std::wstring GetCurString();
+        IconMgr::IconType GetCurIcon();
         void SetIcon(int index, IconMgr::IconType icon);
         void SetSelectionChangedTrigger(std::function<void(ComboBox*)> func);
 

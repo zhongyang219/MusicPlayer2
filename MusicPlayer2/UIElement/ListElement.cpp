@@ -121,7 +121,7 @@ IconMgr::IconType UiElement::ListElement::GetIcon(int row)
 	auto iter = m_icons.find(row);
 	if (iter != m_icons.end())
 		return iter->second;
-	return IconMgr::IconType();
+	return IconMgr::IT_NO_ICON;
 }
 
 bool UiElement::ListElement::HasIcon()

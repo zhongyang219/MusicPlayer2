@@ -16,13 +16,27 @@ void UiElement::ComboBox::Draw()
         back_color =  ui->GetUIColors().color_control_bar_back;
     ui->DrawRectangle(rect, back_color);
     //绘制右侧下拉图标
-    CRect icon_rect = rect;
-    icon_rect.left = icon_rect.right - ui->DPI(28);
-    ui->DrawUiIcon(icon_rect, IconMgr::IT_DropDown);
+    CRect drop_down_rect = rect;
+    drop_down_rect.left = drop_down_rect.right - ui->DPI(28);
+    ui->DrawUiIcon(drop_down_rect, IconMgr::IT_DropDown);
+    //绘制左侧图标
+    CRect icon_rect{};
+    IconMgr::IconType icon = GetCurIcon();
+    if (icon != IconMgr::IT_NO_ICON)
+    {
+        icon_rect = rect;
+        icon_rect.right = icon_rect.left + ui->DPI(28);
+        ui->DrawUiIcon(icon_rect, icon);
+    }
+
     //绘制文本
     CRect text_rect = rect;
-    text_rect.right = icon_rect.left;
-    text_rect.left += ui->DPI(4);
+    text_rect.right = drop_down_rect.left;
+    if (icon_rect.IsRectEmpty())
+        text_rect.left += ui->DPI(4);
+    else
+        text_rect.left += icon_rect.Width();
+
     std::wstring cur_text = GetCurString();
     ui->GetDrawer().DrawWindowText(text_rect, cur_text.c_str(), IsEnable() ? ui->GetUIColors().color_text : ui->GetUIColors().color_text_disabled);
 
@@ -181,6 +195,15 @@ std::wstring UiElement::ComboBox::GetCurString()
 {
     int selected_row = GetCurSel();
     return drop_list->GetItemText(selected_row, 0);
+}
+
+IconMgr::IconType UiElement::ComboBox::GetCurIcon()
+{
+    if (drop_list->HasIcon())
+    {
+        int selected_row = GetCurSel();
+        return drop_list->GetIcon(selected_row);
+    }
 }
 
 void UiElement::ComboBox::SetIcon(int index, IconMgr::IconType icon)
