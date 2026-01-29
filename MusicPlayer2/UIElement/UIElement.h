@@ -156,6 +156,14 @@ namespace UiElement
         };
     }
 
+    enum Orientation
+    {
+        Vertical,
+        Horizontal,
+    };
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class T>
     inline T* Element::FindRelatedElement(std::string id)
     {

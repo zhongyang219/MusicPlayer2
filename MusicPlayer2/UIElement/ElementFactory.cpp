@@ -9,13 +9,13 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
     if (name == "verticalLayout")
     {
         auto layout = std::make_shared<UiElement::Layout>();
-        layout->type = UiElement::Layout::Vertical;
+        layout->type = UiElement::Vertical;
         element = layout;
     }
     else if (name == "horizontalLayout")
     {
         auto layout = std::make_shared<UiElement::Layout>();
-        layout->type = UiElement::Layout::Horizontal;
+        layout->type = UiElement::Horizontal;
         element = layout;
     }
     else if (name == "stackElement")

@@ -7,7 +7,7 @@ int UiElement::ScrollArea::GetScrollAreaHeight()
     if (!childLst.empty())
     {
         Layout* layout = dynamic_cast<Layout*>(childLst.front().get());
-        if (layout != nullptr && layout->type == Layout::Vertical)
+        if (layout != nullptr && layout->type == Vertical)
         {
             return layout->GetChildredTotalSize();
         }
