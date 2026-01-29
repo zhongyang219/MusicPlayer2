@@ -303,7 +303,7 @@ void UiElement::StackElement::IndexChanged()
                 StackElement* stack_element = dynamic_cast<StackElement*>(element);
                 if (stack_element != nullptr && stack_element != this)
                 {
-                    if (related_stack_elements.count(element->GetId()) > 0)
+                    if (related_stack_elements.count(element->Id()) > 0)
                     {
                         //设置关联stackElement的索引（这里不能使用stack_element->SetCurrentElement，否则会导致无限调用）
                         if (cur_index >= 0 && cur_index < static_cast<int>(stack_element->childLst.size()))

@@ -7,19 +7,21 @@
 #include <dwmapi.h>
 #include "WinVersionHelper.h"
 
+#define UI_DIALOG_TIMER_ID 1365
+
 // CUIDialog 对话框
 
 IMPLEMENT_DYNAMIC(CUIDialog, CDialog)
 
 CUIDialog::CUIDialog(UINT ui_res_id, CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_UI_DIALOG, pParent),
-	m_ui(this, ui_res_id, m_ui_data)
+    : CDialog(IDD_UI_DIALOG, pParent),
+    m_ui(this, ui_res_id, m_ui_data)
 {
-	m_ui_data.enable_background = false;
-	m_ui_data.show_playlist = false;
-	m_ui_data.show_menu_bar = false;
-	m_ui_data.enable_titlebar = false;
-	m_ui_data.enable_statusbar = false;
+    m_ui_data.enable_background = false;
+    m_ui_data.show_playlist = false;
+    m_ui_data.show_menu_bar = false;
+    m_ui_data.enable_titlebar = false;
+    m_ui_data.enable_statusbar = false;
 }
 
 CUIDialog::~CUIDialog()
@@ -28,23 +30,25 @@ CUIDialog::~CUIDialog()
 
 void CUIDialog::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CDialog::DoDataExchange(pDX);
 }
 
 
 BEGIN_MESSAGE_MAP(CUIDialog, CDialog)
-	ON_WM_PAINT()
-	ON_WM_LBUTTONUP()
-	ON_WM_LBUTTONDOWN()
-	ON_WM_LBUTTONDBLCLK()
-	ON_WM_RBUTTONUP()
-	ON_WM_MOUSEMOVE()
-	ON_WM_MOUSEHWHEEL()
-	ON_WM_MOUSELEAVE()
-	ON_WM_SIZE()
-	ON_WM_RBUTTONDOWN()
-	ON_WM_DESTROY()
-	ON_WM_MOUSEWHEEL()
+    ON_WM_PAINT()
+    ON_WM_LBUTTONUP()
+    ON_WM_LBUTTONDOWN()
+    ON_WM_LBUTTONDBLCLK()
+    ON_WM_RBUTTONUP()
+    ON_WM_MOUSEMOVE()
+    ON_WM_MOUSEHWHEEL()
+    ON_WM_MOUSELEAVE()
+    ON_WM_SIZE()
+    ON_WM_RBUTTONDOWN()
+    ON_WM_DESTROY()
+    ON_WM_MOUSEWHEEL()
+    ON_WM_GETMINMAXINFO()
+    ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -53,119 +57,153 @@ END_MESSAGE_MAP()
 
 BOOL CUIDialog::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+    CDialog::OnInitDialog();
 
-	//深色模式下，为对话框启用深色标题栏
-	if (theApp.m_app_setting_data.dark_mode && CWinVersionHelper::IsWindows10Version1809OrLater())
-	{
-		BOOL darkMode = TRUE;
-		DwmSetWindowAttribute(m_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &darkMode, sizeof(darkMode));
-	}
+    //深色模式下，为对话框启用深色标题栏
+    if (theApp.m_app_setting_data.dark_mode && CWinVersionHelper::IsWindows10Version1809OrLater())
+    {
+        BOOL darkMode = TRUE;
+        DwmSetWindowAttribute(m_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &darkMode, sizeof(darkMode));
+    }
 
-	m_pDC = GetDC();
-	m_ui.Init(m_pDC);
+    //初始化UI
+    m_pDC = GetDC();
+    m_ui.Init(m_pDC);
 
-	SetWindowText(m_ui.GetUIName().c_str());
-	SetIcon(theApp.m_icon_mgr.GetHICON(IconMgr::IT_App, IconMgr::IS_Auto, IconMgr::IS_DPI_16), FALSE);
+    //设置窗口标题和图标
+    SetWindowText(m_ui.GetUIName().c_str());
+    SetIcon(theApp.m_icon_mgr.GetHICON(IconMgr::IT_App, IconMgr::IS_Auto, IconMgr::IS_DPI_16), FALSE);
+    
+    //初始化对话框大小
+    int width = m_ui.GetCurrentTypeUi()->GetWidth(CRect());
+    int height = m_ui.GetCurrentTypeUi()->GetHeight(CRect());
+    if (width > 0 && height > 0)
+        SetWindowPos(nullptr, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER);
+        Invalidate(FALSE);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+    m_min_size.cx = m_ui.GetCurrentTypeUi()->MinWidth().GetValue(CRect());
+    m_min_size.cy = m_ui.GetCurrentTypeUi()->MinHeight().GetValue(CRect());
+
+    SetTimer(UI_DIALOG_TIMER_ID, 20, NULL);
+
+    return TRUE;  // return TRUE unless you set the focus to a control
+    // 异常: OCX 属性页应返回 FALSE
 }
 
 
 BOOL CUIDialog::PreTranslateMessage(MSG* pMsg)
 {
-	if (pMsg->message == WM_MOUSEMOVE)
-	{
-		m_ui.GetToolTipCtrl().RelayEvent(pMsg);
-	}
+    if (pMsg->message == WM_MOUSEMOVE)
+    {
+        m_ui.GetToolTipCtrl().RelayEvent(pMsg);
+    }
 
-	return CDialog::PreTranslateMessage(pMsg);
+    return CDialog::PreTranslateMessage(pMsg);
 }
 
 
 void CUIDialog::OnPaint()
 {
-	CPaintDC dc(this); // device context for painting
-	m_ui.DrawInfo();
+    CPaintDC dc(this); // device context for painting
+    m_ui.DrawInfo();
 }
 
 
 void CUIDialog::OnLButtonUp(UINT nFlags, CPoint point)
 {
-	m_ui.LButtonUp(point);
-	Invalidate(FALSE);
-	CDialog::OnLButtonUp(nFlags, point);
+    m_ui.LButtonUp(point);
+    Invalidate(FALSE);
+    CDialog::OnLButtonUp(nFlags, point);
 }
 
 
 void CUIDialog::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	m_ui.LButtonDown(point);
-	Invalidate(FALSE);
-	CDialog::OnLButtonDown(nFlags, point);
+    m_ui.LButtonDown(point);
+    Invalidate(FALSE);
+    CDialog::OnLButtonDown(nFlags, point);
 }
 
 
 void CUIDialog::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	m_ui.DoubleClick(point);
-	CDialog::OnLButtonDblClk(nFlags, point);
+    m_ui.DoubleClick(point);
+    CDialog::OnLButtonDblClk(nFlags, point);
 }
 
 
 void CUIDialog::OnRButtonUp(UINT nFlags, CPoint point)
 {
-	m_ui.RButtonUp(point);
-	CDialog::OnRButtonUp(nFlags, point);
+    m_ui.RButtonUp(point);
+    CDialog::OnRButtonUp(nFlags, point);
 }
 
 
 void CUIDialog::OnRButtonDown(UINT nFlags, CPoint point)
 {
-	m_ui.RButtonDown(point);
-	CDialog::OnRButtonDown(nFlags, point);
+    m_ui.RButtonDown(point);
+    CDialog::OnRButtonDown(nFlags, point);
 }
 
 
 void CUIDialog::OnMouseMove(UINT nFlags, CPoint point)
 {
-	m_ui.MouseMove(point);
-	Invalidate(FALSE);
-	CDialog::OnMouseMove(nFlags, point);
+    m_ui.MouseMove(point);
+    Invalidate(FALSE);
+    CDialog::OnMouseMove(nFlags, point);
 }
 
 
 BOOL CUIDialog::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	CPoint point = pt;
-	ScreenToClient(&point);
-	m_ui.MouseWheel(zDelta, point);
-	Invalidate(FALSE);
-	return CDialog::OnMouseWheel(nFlags, zDelta, pt);
+    CPoint point = pt;
+    ScreenToClient(&point);
+    m_ui.MouseWheel(zDelta, point);
+    Invalidate(FALSE);
+    return CDialog::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 
 void CUIDialog::OnMouseLeave()
 {
-	m_ui.MouseLeave();
-	Invalidate(FALSE);
-	CDialog::OnMouseLeave();
+    m_ui.MouseLeave();
+    Invalidate(FALSE);
+    CDialog::OnMouseLeave();
 }
 
 
 void CUIDialog::OnSize(UINT nType, int cx, int cy)
 {
-	CDialog::OnSize(nType, cx, cy);
+    CDialog::OnSize(nType, cx, cy);
 
-	m_ui_data.draw_area_width = cx;
-	m_ui_data.draw_area_height = cy;
-	Invalidate();
+    m_ui_data.draw_area_width = cx;
+    m_ui_data.draw_area_height = cy;
+    Invalidate();
 }
 
 
 void CUIDialog::OnDestroy()
 {
-	CDialog::OnDestroy();
-	ReleaseDC(m_pDC);
+    CDialog::OnDestroy();
+    ReleaseDC(m_pDC);
+}
+
+void CUIDialog::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
+{
+    //限制窗口最小大小
+    lpMMI->ptMinTrackSize.x = m_min_size.cx;
+    lpMMI->ptMinTrackSize.y = m_min_size.cy;
+
+    CDialog::OnGetMinMaxInfo(lpMMI);
+}
+
+void CUIDialog::OnTimer(UINT_PTR nIDEvent)
+{
+    if (nIDEvent == UI_DIALOG_TIMER_ID)
+    {
+        //窗口打开时刷新一次界面
+        Invalidate(FALSE);
+        KillTimer(UI_DIALOG_TIMER_ID);
+    }
+    CDialog::OnTimer(nIDEvent);
 }

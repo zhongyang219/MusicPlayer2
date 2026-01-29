@@ -43,11 +43,11 @@ bool UiElement::Lyrics::RButtonUp(CPoint point)
 bool UiElement::Lyrics::IsParentRectangle() const
 {
     const Element* ele{ this };
-    while (ele != nullptr && ele->GetParent() != nullptr)
+    while (ele != nullptr && ele->Parent() != nullptr)
     {
         if (dynamic_cast<const Rectangle*>(ele) != nullptr)
             return true;
-        ele = ele->GetParent();
+        ele = ele->Parent();
     }
     return false;
 }

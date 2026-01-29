@@ -21,7 +21,7 @@ void UiElement::CombinedElement::InitComplete()
         {
             doc.RootElement();
             auto root_element = CUserUi::BuildUiElementFromXmlNode(doc.RootElement(), ui);
-            for (auto& ele : root_element->GetChildList())
+            for (auto& ele : root_element->ChildList())
             {
                 AddChild(ele);
             }

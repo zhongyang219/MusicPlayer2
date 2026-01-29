@@ -27,10 +27,12 @@ namespace UiElement
             Element* owner;
         };
 
-        std::string GetId() const { return id; }
-        Element* GetParent() const { return pParent; }
-        std::string GetName() const { return name; }
-        const std::vector<std::shared_ptr<Element>>& GetChildList() const { return childLst; }
+        std::string Id() const { return id; }
+        Element* Parent() const { return pParent; }
+        std::string Name() const { return name; }
+        const std::vector<std::shared_ptr<Element>>& ChildList() const { return childLst; }
+        const Value& MinWidth() const { return min_width; }
+        const Value& MinHeight() const { return min_height; }
 
     protected:
         Value margin_left{ false, this };

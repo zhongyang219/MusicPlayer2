@@ -13,12 +13,12 @@ void UiElement::AbstractListElement::DrawScrollArea()
 {
     //设置绘图剪辑区域。如果父节点有ScrollArea元素，则需要将绘图区域限制在ScrallArea中
     CRect clip_rect = rect;
-    Element* ele = GetParent();
+    Element* ele = Parent();
     while (ele != nullptr)
     {
         if (dynamic_cast<AbstractScrollArea*>(ele) != nullptr)
             clip_rect &= ele->GetRect();
-        ele = ele->GetParent();
+        ele = ele->Parent();
     }
 
     DrawAreaGuard guard(&ui->GetDrawer(), clip_rect);

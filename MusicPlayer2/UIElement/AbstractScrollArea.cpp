@@ -13,7 +13,7 @@ void UiElement::AbstractScrollArea::Draw()
     //计算滚动区域的矩形区域
     RestrictOffset();
     int scroll_area_height = GetScrollAreaHeight();
-    bool show_scroll_bar = m_scroll_area_rect.Height() > rect.Height();
+    bool show_scroll_bar = scroll_area_height > rect.Height();
     m_scroll_area_rect = rect;
     if (show_scroll_bar)
         m_scroll_area_rect.right -= SCROLLBAR_WIDTH;

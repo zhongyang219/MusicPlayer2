@@ -265,13 +265,13 @@ bool UiElement::NavigationBar::CheckNavigationBarInPanel()
     Element* panel = nullptr;
     while (ele != nullptr)
     {
-        if (ele->GetName() == "panel")
+        if (ele->Name() == "panel")
         {
             is_in_panel = true;
             panel = ele;
             break;
         }
-        ele = ele->GetParent();
+        ele = ele->Parent();
     }
 
     if (is_in_panel && stack_element != nullptr)

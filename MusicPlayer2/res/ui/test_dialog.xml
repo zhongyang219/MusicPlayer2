@@ -1,6 +1,6 @@
 <root xmlns="https://github.com/zhongyang219/MusicPlayer2/skin" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://github.com/zhongyang219/MusicPlayer2/skin ../../skins/skin.xsd"
       name="测试对话框">
-  <ui>
+  <ui width="350" height="300" min-width="250" min-height="200">
     <verticalLayout margin="8">
       <scrollArea>
         <verticalLayout>
