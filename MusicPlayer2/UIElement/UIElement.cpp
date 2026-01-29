@@ -158,6 +158,16 @@ bool UiElement::Element::GlobalLButtonDown(CPoint point)
     return false;
 }
 
+bool UiElement::Element::GlobalMouseMove(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->GlobalMouseMove(point))
+            return true;
+    }
+    return false;
+}
+
 UiElement::Element* UiElement::Element::RootElement()
 {
     Element* ele{ this };

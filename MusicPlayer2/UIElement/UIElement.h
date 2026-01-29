@@ -70,6 +70,7 @@ namespace UiElement
         virtual void ClearRect();
         virtual bool GlobalLButtonUp(CPoint point); //响应全局鼠标左键抬起事件
         virtual bool GlobalLButtonDown(CPoint point);   //响应全局鼠标左键按下事件
+        virtual bool GlobalMouseMove(CPoint point);     //响应全局鼠标移动事件
 
         //遍历所有界面元素
         //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点

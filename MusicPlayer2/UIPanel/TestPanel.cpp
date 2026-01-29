@@ -33,6 +33,9 @@ CTestPanel::CTestPanel(CPlayerUIBase* ui)
     m_combobox1->AddString(L"测试下拉项1");
     m_combobox1->AddString(L"测试下拉项2");
     m_combobox1->AddString(L"测试下拉项3");
+    m_combobox1->AddString(L"测试下拉项4");
+    m_combobox1->AddString(L"测试下拉项5");
+    m_combobox1->AddString(L"测试下拉项6");
     m_combobox1->SetCurSel(0);
 
     m_tip_info_text = m_root_element->FindElement<UiElement::Text>("tipInfoText");

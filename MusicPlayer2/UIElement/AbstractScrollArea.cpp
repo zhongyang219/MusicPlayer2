@@ -14,6 +14,7 @@ void UiElement::AbstractScrollArea::Draw()
     RestrictOffset();
     m_scroll_area_rect = rect;
     m_scroll_area_rect.right -= SCROLLBAR_WIDTH;
+    m_client_area_rect = m_scroll_area_rect;
     m_scroll_area_rect.bottom = m_scroll_area_rect.top + GetScrollAreaHeight();
     m_scroll_area_rect.MoveToY(m_scroll_area_rect.top - scroll_offset);
 

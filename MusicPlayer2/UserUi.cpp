@@ -380,6 +380,8 @@ bool CUserUi::MouseMove(CPoint point)
 {
     bool mouse_leave = false;
     auto root_element = GetMouseEventResponseElement();
+    if (root_element->GlobalMouseMove(point))
+        return true;
     if (!CPlayerUIBase::MouseMove(point))
     {
         bool mouse_in_draw_area{ !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point) };

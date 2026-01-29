@@ -64,7 +64,7 @@ void UiElement::AbstractListElement::DrawScrollArea()
                 bool is_selected_item = false;
                 if (draw_hover_row_background)
                 {
-                    if (rect.PtInRect(m_mouse_pos))
+                    if (m_client_area_rect.PtInRect(m_mouse_pos))
                         is_selected_item = GetDisplayedIndexByPoint(m_mouse_pos) == i;
                 }
                 else

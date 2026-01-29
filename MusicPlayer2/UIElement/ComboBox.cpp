@@ -40,9 +40,9 @@ void UiElement::ComboBox::DrawTopMost()
         //下拉列表的高度
         int list_height = drop_list->GetRowCount() * drop_list->ItemHeight() + 2 * drop_list_margin + ui->DPI(1);
         rect_drop_list.bottom = rect_drop_list.top + list_height;
-        ////限制下拉列表中绘图区域内
-        //CRect draw_rect = ui->GetClientDrawRect();
-        //rect_drop_list = draw_rect & rect_drop_list;
+        //限制下拉列表中绘图区域内
+        CRect draw_rect = ui->GetClientDrawRect();
+        rect_drop_list = draw_rect & rect_drop_list;
 
         if (theApp.m_app_setting_data.button_round_corners)
             ui->GetDrawer().DrawRoundRect(rect_drop_list, ui->GetUIColors().color_panel_back, ui->CalculateRoundRectRadius(rect_drop_list), 255);
@@ -94,16 +94,6 @@ bool UiElement::ComboBox::LButtonDown(CPoint point)
 
 bool UiElement::ComboBox::MouseMove(CPoint point)
 {
-    hover = (rect.PtInRect(point) && IsEnable());
-    bool drop_list_hover = show_drop_list && rect_drop_list.PtInRect(point);
-    if (last_drop_list_hover && !drop_list_hover)
-        drop_list->MouseLeave();
-    last_drop_list_hover = drop_list_hover;
-    if (drop_list_hover)
-    {
-        drop_list->MouseMove(point);
-        return true;
-    }
     return false;
 }
 
@@ -123,18 +113,25 @@ bool UiElement::ComboBox::GlobalLButtonUp(CPoint point)
     {
         if (show_drop_list && rect_drop_list.PtInRect(point))
         {
-            int selected_row = drop_list->GetDisplayedIndexByPoint(point);
             drop_list->LButtonUp(point);
-            int cur_sel = GetCurSel();
-            SetCurSel(selected_row);
-            if (selected_row != cur_sel)
+            if (drop_list->GetScrollAreaRect().PtInRect(point))
             {
-                if (m_selection_changed_trigger)
-                    m_selection_changed_trigger(this);
+                int selected_row = drop_list->GetDisplayedIndexByPoint(point);
+                int cur_sel = GetCurSel();
+                SetCurSel(selected_row);
+                if (selected_row != cur_sel)
+                {
+                    if (m_selection_changed_trigger)
+                        m_selection_changed_trigger(this);
+                }
+                show_drop_list = false;
             }
             rtn = true;
         }
-        show_drop_list = false;
+        else
+        {
+            show_drop_list = false;
+        }
     }
     return rtn;
 }
@@ -144,6 +141,21 @@ bool UiElement::ComboBox::GlobalLButtonDown(CPoint point)
     if (IsShown() && IsEnable() && show_drop_list && rect_drop_list.PtInRect(point))
     {
         drop_list->LButtonDown(point);
+        return true;
+    }
+    return false;
+}
+
+bool UiElement::ComboBox::GlobalMouseMove(CPoint point)
+{
+    hover = (rect.PtInRect(point) && IsEnable());
+    bool drop_list_hover = show_drop_list && rect_drop_list.PtInRect(point);
+    if (last_drop_list_hover && !drop_list_hover)
+        drop_list->MouseLeave();
+    last_drop_list_hover = drop_list_hover;
+    if (drop_list_hover)
+    {
+        drop_list->MouseMove(point);
         return true;
     }
     return false;
