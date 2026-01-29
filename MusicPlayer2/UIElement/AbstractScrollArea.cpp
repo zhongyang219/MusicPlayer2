@@ -12,10 +12,13 @@ void UiElement::AbstractScrollArea::Draw()
 
     //计算滚动区域的矩形区域
     RestrictOffset();
+    int scroll_area_height = GetScrollAreaHeight();
+    bool show_scroll_bar = m_scroll_area_rect.Height() > rect.Height();
     m_scroll_area_rect = rect;
-    m_scroll_area_rect.right -= SCROLLBAR_WIDTH;
+    if (show_scroll_bar)
+        m_scroll_area_rect.right -= SCROLLBAR_WIDTH;
     m_client_area_rect = m_scroll_area_rect;
-    m_scroll_area_rect.bottom = m_scroll_area_rect.top + GetScrollAreaHeight();
+    m_scroll_area_rect.bottom = m_scroll_area_rect.top + scroll_area_height;
     m_scroll_area_rect.MoveToY(m_scroll_area_rect.top - scroll_offset);
 
     DrawScrollArea();
@@ -40,7 +43,7 @@ void UiElement::AbstractScrollArea::Draw()
         };
 
         //开始绘制滚动条
-        if (m_scroll_area_rect.Height() > rect.Height())
+        if (show_scroll_bar)
         {
             //填充滚动条背景
             BYTE background_alpha;

@@ -94,6 +94,7 @@ void CUIDialog::OnPaint()
 void CUIDialog::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	m_ui.LButtonUp(point);
+	Invalidate(FALSE);
 	CDialog::OnLButtonUp(nFlags, point);
 }
 
@@ -101,6 +102,7 @@ void CUIDialog::OnLButtonUp(UINT nFlags, CPoint point)
 void CUIDialog::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	m_ui.LButtonDown(point);
+	Invalidate(FALSE);
 	CDialog::OnLButtonDown(nFlags, point);
 }
 

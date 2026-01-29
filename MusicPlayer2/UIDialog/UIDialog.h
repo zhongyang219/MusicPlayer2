@@ -17,7 +17,7 @@ public:
 	enum { IDD = IDD_UI_DIALOG };
 #endif
 
-private:
+protected:
 	CUserUi m_ui;
 	UIData m_ui_data;
 	CDC* m_pDC{};
