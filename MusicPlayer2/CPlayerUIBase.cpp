@@ -52,7 +52,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
         m_skip_next_frame = false;
         CDrawDoubleBuffer drawDoubleBuffer(pDC, m_draw_rect);
         m_draw.SetDC(drawDoubleBuffer.GetMemDC());  //将m_draw中的绘图DC设置为缓冲的DC
-        m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(theApp.m_ui_data.full_screen));
+        m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(IsDrawLargeIcon()));
 
         //绘制背景
         DrawBackground();
@@ -204,7 +204,8 @@ bool CPlayerUIBase::RButtonUp(CPoint point)
     GetCursorPos(&point1);
 
     // 其他区域显示主界面区域右键菜单
-    theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+    if (m_ui_data.show_default_context_menu)
+        theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
     return true;
 }
 
@@ -1558,7 +1559,7 @@ int CPlayerUIBase::CalculateRoundRectRadius(const CRect& rect)
 
 bool CPlayerUIBase::IsDrawLargeIcon() const
 {
-    return theApp.m_ui_data.full_screen;
+    return m_ui_data.full_screen;
 }
 
 bool CPlayerUIBase::IsMiniMode() const
@@ -1640,7 +1641,7 @@ CRect CPlayerUIBase::DrawProgess(CRect rect)
     {
         CFont* pOldFont = m_draw.GetFont();
         //设置字体
-        m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
+        m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(IsDrawLargeIcon()));      //AB重复使用小一号字体，即播放时间的字体
 
         double a_point_progres = static_cast<double>(CPlayer::GetInstance().GetARepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
         double b_point_progres = static_cast<double>(CPlayer::GetInstance().GetBRepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
@@ -1786,7 +1787,7 @@ void CPlayerUIBase::DrawCurrentTime()
     rc_tmp.left = rc_tmp.right - size.cx;
     m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(m_ui_data.full_screen));
     m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
-    m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(theApp.m_ui_data.full_screen));
+    m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(IsDrawLargeIcon()));
 }
 
 void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
@@ -1810,7 +1811,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         CRect rc_fps{ rect };
         rc_fps.right = rect.right - DPI(4);
         rc_fps.left = rc_fps.right - DPI(40);
-        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));
+        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(IsDrawLargeIcon()));
         CString str_info;
         str_info.Format(_T("%dFPS"), theApp.m_fps);
         m_draw.DrawWindowText(rc_fps, str_info, m_colors.color_text, Alignment::RIGHT);
@@ -1832,7 +1833,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         //绘制进度右侧的进度百分比
         CRect rc_percent{ rect };
         rc_percent.left = rc_percent.right - DPI(32);
-        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));
+        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(IsDrawLargeIcon()));
         CString str_info;
         str_info.Format(_T("%d%%"), progress_percent);
         m_draw.DrawWindowText(rc_percent, str_info, m_colors.color_text);
@@ -2251,7 +2252,7 @@ void CPlayerUIBase::DrawAlbumCoverWithInfo(CRect rect)
         str_title = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetFileName();
     else
         str_title = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetTitle();
-    CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(12).GetFont(theApp.m_ui_data.full_screen));
+    CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(12).GetFont(IsDrawLargeIcon()));
     static CDrawCommon::ScrollInfo scroll_info_title;
     m_draw.DrawScrollText(rect_title, str_title.c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_title);
     m_draw.SetFont(pOldFont);

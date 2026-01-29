@@ -22,6 +22,7 @@ CUIDialog::CUIDialog(UINT ui_res_id, CWnd* pParent /*=nullptr*/)
     m_ui_data.show_menu_bar = false;
     m_ui_data.enable_titlebar = false;
     m_ui_data.enable_statusbar = false;
+    m_ui_data.show_default_context_menu = false;
 }
 
 CUIDialog::~CUIDialog()
