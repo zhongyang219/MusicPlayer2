@@ -11,7 +11,17 @@
 
 void UiElement::AbstractListElement::DrawScrollArea()
 {
-    DrawAreaGuard guard(&ui->GetDrawer(), rect);
+    //设置绘图剪辑区域。如果父节点有ScrollArea元素，则需要将绘图区域限制在ScrallArea中
+    CRect clip_rect = rect;
+    Element* ele = GetParent();
+    while (ele != nullptr)
+    {
+        if (dynamic_cast<AbstractScrollArea*>(ele) != nullptr)
+            clip_rect &= ele->GetRect();
+        ele = ele->GetParent();
+    }
+
+    DrawAreaGuard guard(&ui->GetDrawer(), clip_rect);
 
     if (GetRowCount() <= 0)
     {
@@ -231,7 +241,7 @@ void UiElement::AbstractListElement::DrawScrollArea()
                     //绘制文本
                     if (!draw_mini_spectrum || j > 0)//如果第1列绘制了迷你频谱，则不再绘制文本
                     {
-                        DrawAreaGuard guard(&ui->GetDrawer(), rect & rect_text);
+                        DrawAreaGuard guard(&ui->GetDrawer(), clip_rect & rect_text);
                         if (!IsMultipleSelected() && i == GetItemSelected() && j == GetColumnScrollTextWhenSelected())
                             ui->GetDrawer().DrawScrollText(rect_text, display_name.c_str(), ui->GetUIColors().color_text, ui->GetScrollTextPixel(), false, selected_item_scroll_info, false, true);
                         else

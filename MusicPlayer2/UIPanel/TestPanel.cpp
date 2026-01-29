@@ -36,6 +36,7 @@ CTestPanel::CTestPanel(CPlayerUIBase* ui)
     m_combobox1->SetCurSel(0);
 
     m_tip_info_text = m_root_element->FindElement<UiElement::Text>("tipInfoText");
+    m_list1 = m_root_element->FindElement<UiElement::ListElement>("list1");
     if (m_list1 != nullptr)
     {
         m_list1 = m_root_element->FindElement<UiElement::ListElement>("list1");
