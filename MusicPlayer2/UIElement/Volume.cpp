@@ -212,8 +212,11 @@ bool UiElement::Volume::MouseWheel(int delta, CPoint point)
     return false;
 }
 
-void UiElement::Volume::TopMostClicked(CPoint point)
+bool UiElement::Volume::GlobalLButtonUp(CPoint point)
 {
+    bool rtn = false;
+    volumn_up_btn.pressed = false;
+    volumn_down_btn.pressed = false;
     if (!rect.PtInRect(point) && IsShown())
     {
         //如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
@@ -221,13 +224,13 @@ void UiElement::Volume::TopMostClicked(CPoint point)
         {
             if (volumn_up_btn.rect.PtInRect(point))
             {
-                m_show_volume_adj = true;
                 CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, theApp.m_nc_setting_data.volum_step);
+                rtn = true;
             }
             else if (volumn_down_btn.rect.PtInRect(point))
             {
-                m_show_volume_adj = true;
                 CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, -theApp.m_nc_setting_data.volum_step);
+                rtn = true;
             }
             else
             {
@@ -235,6 +238,24 @@ void UiElement::Volume::TopMostClicked(CPoint point)
             }
         }
     }
+    return rtn;
+}
+
+bool UiElement::Volume::GlobalLButtonDown(CPoint point)
+{
+    bool rtn = false;
+    if (IsShown() && IsEnable() && m_show_volume_adj)
+    {
+        if (volumn_up_btn.rect.PtInRect(point))
+        {
+            volumn_up_btn.pressed = true;
+        }
+        else if (volumn_down_btn.rect.PtInRect(point))
+        {
+            volumn_down_btn.pressed = true;
+        }
+    }
+    return false;
 }
 
 void UiElement::Volume::FromXmlNode(tinyxml2::XMLElement* xml_node)

@@ -14,7 +14,8 @@ namespace UiElement
         virtual bool MouseMove(CPoint point) override;
         virtual bool MouseWheel(int delta, CPoint point) override;
 
-        virtual void TopMostClicked(CPoint point) override;
+        virtual bool GlobalLButtonUp(CPoint point) override;
+        virtual bool GlobalLButtonDown(CPoint point) override;
         virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
     protected:

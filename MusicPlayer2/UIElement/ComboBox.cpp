@@ -72,11 +72,6 @@ bool UiElement::ComboBox::LButtonUp(CPoint point)
         show_drop_list = !show_drop_list;
         return true;
     }
-    if (show_drop_list && rect_drop_list.PtInRect(point))
-    {
-        drop_list->LButtonUp(point);
-        return true;
-    }
 
     return false;
 }
@@ -121,8 +116,9 @@ bool UiElement::ComboBox::MouseLeave()
     return false;
 }
 
-void UiElement::ComboBox::TopMostClicked(CPoint point)
+bool UiElement::ComboBox::GlobalLButtonUp(CPoint point)
 {
+    bool rtn = false;
     if (!rect.PtInRect(point) && IsShown() && IsEnable())
     {
         if (show_drop_list && rect_drop_list.PtInRect(point))
@@ -136,10 +132,21 @@ void UiElement::ComboBox::TopMostClicked(CPoint point)
                 if (m_selection_changed_trigger)
                     m_selection_changed_trigger(this);
             }
+            rtn = true;
         }
         show_drop_list = false;
-
     }
+    return rtn;
+}
+
+bool UiElement::ComboBox::GlobalLButtonDown(CPoint point)
+{
+    if (IsShown() && IsEnable() && show_drop_list && rect_drop_list.PtInRect(point))
+    {
+        drop_list->LButtonDown(point);
+        return true;
+    }
+    return false;
 }
 
 void UiElement::ComboBox::AddString(const std::wstring& str)

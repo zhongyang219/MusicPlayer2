@@ -68,7 +68,8 @@ namespace UiElement
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         virtual void ClearRect();
-        virtual void TopMostClicked(CPoint point); //鼠标左键点击时响应，用于隐藏元素顶层的显示
+        virtual bool GlobalLButtonUp(CPoint point); //响应全局鼠标左键抬起事件
+        virtual bool GlobalLButtonDown(CPoint point);   //响应全局鼠标左键按下事件
 
         //遍历所有界面元素
         //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点

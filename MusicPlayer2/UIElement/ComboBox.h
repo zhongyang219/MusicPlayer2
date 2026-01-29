@@ -13,7 +13,8 @@ namespace UiElement
         virtual bool LButtonDown(CPoint point) override;
         virtual bool MouseMove(CPoint point) override;
         virtual bool MouseLeave() override;
-        virtual void TopMostClicked(CPoint point) override;
+        virtual bool GlobalLButtonUp(CPoint point) override;
+        virtual bool GlobalLButtonDown(CPoint point) override;
 
         void AddString(const std::wstring& str);
         void SetCurSel(int index);

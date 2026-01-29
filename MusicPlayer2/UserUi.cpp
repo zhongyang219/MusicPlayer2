@@ -338,7 +338,8 @@ wstring CUserUi::GetUIName()
 bool CUserUi::LButtonUp(CPoint point)
 {
     auto root_element = GetMouseEventResponseElement();
-    root_element->TopMostClicked(point);
+    if (root_element->GlobalLButtonUp(point))
+        return true;
     if (!CPlayerUIBase::LButtonUp(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
         //显示了面板，且不是全屏面板的情况下，点击面板以外的地方关闭面板
@@ -360,12 +361,14 @@ bool CUserUi::LButtonUp(CPoint point)
 bool CUserUi::LButtonDown(CPoint point)
 {
     m_mouse_clicked_point = point;
+    auto root_element = GetMouseEventResponseElement();
+    if (root_element->GlobalLButtonDown(point))
+        return true;
     if (!CPlayerUIBase::LButtonDown(point))
     {
         bool rtn = false;
         if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
         {
-            auto root_element = GetMouseEventResponseElement();
             rtn = root_element->LButtonDown(point);
         }
         return rtn;
@@ -422,7 +425,7 @@ bool CUserUi::RButtonUp(CPoint point)
     {
         auto root_element = GetMouseEventResponseElement();
         rtn = root_element->RButtonUp(point);
-        root_element->TopMostClicked(point);
+        root_element->GlobalLButtonUp(point);
     }
     if (!rtn)
         rtn = CPlayerUIBase::RButtonUp(point);

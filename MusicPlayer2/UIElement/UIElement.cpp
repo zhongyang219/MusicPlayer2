@@ -138,10 +138,24 @@ void UiElement::Element::ClearRect()
     //rect = CRect();
 }
 
-void UiElement::Element::TopMostClicked(CPoint point)
+bool UiElement::Element::GlobalLButtonUp(CPoint point)
 {
     for (auto& child : childLst)
-        child->TopMostClicked(point);
+    {
+        if (child->GlobalLButtonUp(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::GlobalLButtonDown(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->GlobalLButtonDown(point))
+            return true;
+    }
+    return false;
 }
 
 UiElement::Element* UiElement::Element::RootElement()
