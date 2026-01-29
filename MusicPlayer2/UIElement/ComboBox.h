@@ -34,8 +34,7 @@ namespace UiElement
         bool hover{};
         bool pressed{};
         CRect rect_drop_list;
-        //bool selection_changed{};
-        bool last_drop_list_hover{};
+        CPoint mouse_pressed_point;
     };
 }
 

@@ -4,8 +4,6 @@
       <scrollArea>
         <verticalLayout>
           <toggleSettingGroup id="toggleBtn1" height="60" icon="setting" mainText="启用控件" subText="测试文本" />
-          
-          <comboBox id="combobox1" margin-top="4" height="28"/>
         
           <horizontalLayout height="24" margin-top="4">
             <checkBox id="checkbox1" text="测试复选框"/>
@@ -18,6 +16,8 @@
           </horizontalLayout>
 
           <toggleSettingGroup id="toggleBtn2" margin-top="4" height="60" icon="setting" mainText="主要文本" subText="次要文本" />
+          
+          <comboBox id="combobox1" margin-top="4" height="28"/>
 
           
           <horizontalLayout margin-top="4" height="100">

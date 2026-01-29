@@ -31,7 +31,7 @@ void UiElement::ComboBox::Draw()
 
 void UiElement::ComboBox::DrawTopMost()
 {
-    if (show_drop_list)
+    if (show_drop_list && IsEnable())
     {
         //计算下拉列表的位置
         rect_drop_list = rect;
@@ -83,17 +83,13 @@ bool UiElement::ComboBox::LButtonDown(CPoint point)
         pressed = true;
         return true;
     }
-    if (show_drop_list && rect_drop_list.PtInRect(point))
-    {
-        drop_list->LButtonDown(point);
-        return true;
-    }
 
     return false;
 }
 
 bool UiElement::ComboBox::MouseMove(CPoint point)
 {
+    hover = (rect.PtInRect(point) && IsEnable());
     return false;
 }
 
@@ -101,8 +97,6 @@ bool UiElement::ComboBox::MouseLeave()
 {
     hover = false;
     pressed = false;
-    if (show_drop_list)
-        drop_list->MouseLeave();
     return false;
 }
 
@@ -111,7 +105,7 @@ bool UiElement::ComboBox::GlobalLButtonUp(CPoint point)
     bool rtn = false;
     if (!rect.PtInRect(point) && IsShown() && IsEnable())
     {
-        if (show_drop_list && rect_drop_list.PtInRect(point))
+        if (show_drop_list && rect_drop_list.PtInRect(mouse_pressed_point))
         {
             drop_list->LButtonUp(point);
             if (drop_list->GetScrollAreaRect().PtInRect(point))
@@ -132,12 +126,16 @@ bool UiElement::ComboBox::GlobalLButtonUp(CPoint point)
         {
             show_drop_list = false;
         }
+
+        if (!rect_drop_list.PtInRect(point))
+            drop_list->MouseLeave();
     }
     return rtn;
 }
 
 bool UiElement::ComboBox::GlobalLButtonDown(CPoint point)
 {
+    mouse_pressed_point = point;
     if (IsShown() && IsEnable() && show_drop_list && rect_drop_list.PtInRect(point))
     {
         drop_list->LButtonDown(point);
@@ -148,17 +146,9 @@ bool UiElement::ComboBox::GlobalLButtonDown(CPoint point)
 
 bool UiElement::ComboBox::GlobalMouseMove(CPoint point)
 {
-    hover = (rect.PtInRect(point) && IsEnable());
     bool drop_list_hover = show_drop_list && rect_drop_list.PtInRect(point);
-    if (last_drop_list_hover && !drop_list_hover)
-        drop_list->MouseLeave();
-    last_drop_list_hover = drop_list_hover;
-    if (drop_list_hover)
-    {
-        drop_list->MouseMove(point);
-        return true;
-    }
-    return false;
+    drop_list->MouseMove(point);
+    return drop_list_hover;
 }
 
 void UiElement::ComboBox::AddString(const std::wstring& str)
