@@ -18,9 +18,11 @@ namespace UiElement
         virtual bool GlobalMouseMove(CPoint point) override;
 
         void AddString(const std::wstring& str);
+        void AddString(const std::wstring& str, IconMgr::IconType icon);
         void SetCurSel(int index);
         int GetCurSel();
         std::wstring GetCurString();
+        void SetIcon(int index, IconMgr::IconType icon);
         void SetSelectionChangedTrigger(std::function<void(ComboBox*)> func);
 
     protected:

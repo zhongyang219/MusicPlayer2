@@ -166,6 +166,13 @@ void UiElement::ComboBox::AddString(const std::wstring& str)
     drop_list->AddRow(str);
 }
 
+void UiElement::ComboBox::AddString(const std::wstring& str, IconMgr::IconType icon)
+{
+    int index = drop_list->GetRowCount();
+    drop_list->AddRow(str);
+    drop_list->SetIcom(index, icon);
+}
+
 void UiElement::ComboBox::SetCurSel(int index)
 {
     if (index >= 0 && index < drop_list->GetRowCount())
@@ -184,6 +191,11 @@ std::wstring UiElement::ComboBox::GetCurString()
 {
     int selected_row = GetCurSel();
     return drop_list->GetItemText(selected_row, 0);
+}
+
+void UiElement::ComboBox::SetIcon(int index, IconMgr::IconType icon)
+{
+    drop_list->SetIcom(index, icon);
 }
 
 void UiElement::ComboBox::SetSelectionChangedTrigger(std::function<void(ComboBox*)> func)

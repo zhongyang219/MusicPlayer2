@@ -30,12 +30,12 @@ CTestPanel::CTestPanel(CPlayerUIBase* ui)
     m_combobox1->SetSelectionChangedTrigger([&](UiElement::ComboBox* sender) {
         OnComboboxSelChanged(sender);
     });
-    m_combobox1->AddString(L"测试下拉项1");
-    m_combobox1->AddString(L"测试下拉项2");
-    m_combobox1->AddString(L"测试下拉项3");
-    m_combobox1->AddString(L"测试下拉项4");
-    m_combobox1->AddString(L"测试下拉项5");
-    m_combobox1->AddString(L"测试下拉项6");
+    m_combobox1->AddString(L"测试下拉项1", IconMgr::IT_Album);
+    m_combobox1->AddString(L"测试下拉项2", IconMgr::IT_Artist);
+    m_combobox1->AddString(L"测试下拉项3", IconMgr::IT_Bitrate);
+    m_combobox1->AddString(L"测试下拉项4", IconMgr::IT_Copy);
+    m_combobox1->AddString(L"测试下拉项5", IconMgr::IT_Download);
+    m_combobox1->AddString(L"测试下拉项6", IconMgr::IT_Statistics);
     m_combobox1->SetCurSel(0);
 
     m_tip_info_text = m_root_element->FindElement<UiElement::Text>("tipInfoText");
