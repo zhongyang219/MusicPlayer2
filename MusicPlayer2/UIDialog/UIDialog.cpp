@@ -44,6 +44,7 @@ BEGIN_MESSAGE_MAP(CUIDialog, CDialog)
 	ON_WM_SIZE()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_DESTROY()
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 
@@ -133,16 +134,20 @@ void CUIDialog::OnMouseMove(UINT nFlags, CPoint point)
 }
 
 
-void CUIDialog::OnMouseHWheel(UINT nFlags, short zDelta, CPoint pt)
+BOOL CUIDialog::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-	m_ui.MouseWheel(zDelta, pt);
-	CDialog::OnMouseHWheel(nFlags, zDelta, pt);
+	CPoint point = pt;
+	ScreenToClient(&point);
+	m_ui.MouseWheel(zDelta, point);
+	Invalidate(FALSE);
+	return CDialog::OnMouseWheel(nFlags, zDelta, pt);
 }
 
 
 void CUIDialog::OnMouseLeave()
 {
 	m_ui.MouseLeave();
+	Invalidate(FALSE);
 	CDialog::OnMouseLeave();
 }
 

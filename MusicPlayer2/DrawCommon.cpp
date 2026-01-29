@@ -863,9 +863,9 @@ void CDrawCommon::ValidateGdiClipArea()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 CRect DrawAreaGuard::SetDrawArea(CRect rect, bool gdi_only)
 {
-    //如果设置的绘图区域为空，则清除绘图区域
-    if (rect.IsRectEmpty())
-        ResetDrawArea(gdi_only);
+    ////如果设置的绘图区域为空，则清除绘图区域
+    //if (rect.IsRectEmpty())
+    //    ResetDrawArea(gdi_only);
 
     m_drawer->m_clip_rect = rect;
 
