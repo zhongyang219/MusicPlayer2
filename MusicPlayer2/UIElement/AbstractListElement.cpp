@@ -52,6 +52,7 @@ void UiElement::AbstractListElement::DrawScrollArea()
             if (!IsRowDisplayed(i))
                 continue;
             CRect rect_item{ item_rects[displayed_row_index] };
+            rect_item &= m_scroll_area_rect;
             //如果绘制的行在播放列表区域之外，则不绘制该行
             if (!(rect_item & rect).IsRectEmpty())
             {
@@ -585,7 +586,7 @@ void UiElement::AbstractListElement::CalculateItemRects()
     {
         //计算每一行的矩形区域
         int start_y = -scroll_offset + rect.top + i * ItemHeight();
-        CRect rect_item{ m_scroll_area_rect };
+        CRect rect_item{ rect };
         rect_item.top = start_y;
         rect_item.bottom = rect_item.top + ItemHeight();
 
