@@ -4,7 +4,8 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "UIDialog.h"
-
+#include <dwmapi.h>
+#include "WinVersionHelper.h"
 
 // CUIDialog 对话框
 
@@ -53,13 +54,18 @@ BOOL CUIDialog::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
+	//深色模式下，为对话框启用深色标题栏
+	if (theApp.m_app_setting_data.dark_mode && CWinVersionHelper::IsWindows10Version1809OrLater())
+	{
+		BOOL darkMode = TRUE;
+		DwmSetWindowAttribute(m_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &darkMode, sizeof(darkMode));
+	}
+
 	m_pDC = GetDC();
 	m_ui.Init(m_pDC);
 
 	SetWindowText(m_ui.GetUIName().c_str());
 	SetIcon(theApp.m_icon_mgr.GetHICON(IconMgr::IT_App, IconMgr::IS_Auto, IconMgr::IS_DPI_16), FALSE);
-
-	//m_uiThread = AfxBeginThread(UiThreadFunc, (LPVOID)this);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
