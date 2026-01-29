@@ -147,6 +147,15 @@ bool UiElement::AbstractScrollArea::MouseMove(CPoint point)
 
     mouse_pos = point;
     hover = rect.PtInRect(point);
+    if (last_hover && !hover)
+    {
+        Element::MouseLeave();
+    }
+    last_hover = hover;
+
+    if (Element::MouseMove(point))
+        return true;
+
     scrollbar_hover = scrollbar_rect.PtInRect(point);
     if (scrollbar_handle_pressed)
     {
@@ -158,20 +167,15 @@ bool UiElement::AbstractScrollArea::MouseMove(CPoint point)
             int delta_playlist_offset = delta_scrollbar_offset * m_scroll_area_rect.Height() / scroll_area_height;
             scroll_offset = mouse_pressed_offset - delta_playlist_offset;
         }
+        return true;
     }
     else if (mouse_pressed)
     {
         scroll_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
+        return true;
     }
 
-    bool rtn = false;
-    rtn = Element::MouseMove(point);
-    if (last_hover && !hover)
-    {
-        Element::MouseLeave();
-    }
-    last_hover = hover;
-    return rtn;
+    return false;
 }
 
 bool UiElement::AbstractScrollArea::MouseWheel(int delta, CPoint point)

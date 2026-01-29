@@ -372,7 +372,7 @@ bool UiElement::AbstractListElement::MouseMove(CPoint point)
     if (rect.IsRectEmpty())
         return false;
 
-    AbstractScrollArea::MouseMove(point);
+    bool rtn = AbstractScrollArea::MouseMove(point);
 
     //查找鼠标指向的行
     int row = GetListIndexByPoint(point);
@@ -425,7 +425,7 @@ bool UiElement::AbstractListElement::MouseMove(CPoint point)
             }
         }
     }
-    return false;
+    return rtn;
 }
 
 bool UiElement::AbstractListElement::RButtonUp(CPoint point)
