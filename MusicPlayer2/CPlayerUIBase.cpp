@@ -1164,7 +1164,12 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
 
     CRect rect_icon{ rc_tmp };
     if (!text.empty())
-        rect_icon.right = rect_icon.left + rect_icon.Height();      //如果要显示文本，则图标显示矩形左侧的正方形区域
+    {
+        //如果要显示文本，则图标和文本一起居中显示
+        int content_width = DPI(32) + m_draw.GetTextExtent(text.c_str()).cx;    //图标和文本的宽度（左侧4px+图标宽度16px+图标和文本间距8px+右侧4px+文本宽度）
+        rect_icon.left += (rc_tmp.Width() - content_width) / 2;
+        rect_icon.right = rect_icon.left + DPI(24);
+    }
 
     IconMgr::IconStyle icon_style = (is_close_btn && (btn.pressed || btn.hover)) ? IconMgr::IconStyle::IS_OutlinedLight : IconMgr::IconStyle::IS_Auto;
     IconMgr::IconSize icon_size = big_icon ? IconMgr::IconSize::IS_DPI_20 : IconMgr::IconSize::IS_DPI_16;
@@ -1177,8 +1182,6 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
 
         CRect rect_text{ rc_tmp };
         rect_text.left = rect_icon.right;
-        int right_space = (rc_tmp.Height() - DPI(16)) / 2;
-        rect_text.right -= right_space;
         COLORREF text_color = m_colors.color_text;
         if (!btn.enable)
             text_color = m_colors.color_text_disabled;

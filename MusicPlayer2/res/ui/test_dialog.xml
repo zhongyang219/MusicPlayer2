@@ -42,8 +42,8 @@
       <horizontalLayout height="28" margin-top="8">
         <button key="settings" show_text="true"/>
         <text id="tipInfoText" type="userDefine" height="20"/>
-        <button id="okBtn" icon="ok" text="%(TXT_OK)" height="28" show_text="true"/>
-        <button id="cancelBtn" icon="cancel" text="%(TXT_CANCEL)" show_text="true"/>
+        <button id="okBtn" icon="ok" text="%(TXT_OK)" height="28" show_text="true" min-width="72"/>
+        <button id="cancelBtn" icon="cancel" text="%(TXT_CANCEL)" show_text="true" min-width="72"/>
       </horizontalLayout>
     </verticalLayout>
   </ui>
