@@ -1550,6 +1550,11 @@
         <xs:documentation>设置为true时总是在没有歌词时显示歌曲信息</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="context_menu_enable" type="xs:boolean" default="true">
+      <xs:annotation>
+        <xs:documentation>鼠标右击歌词区域时是否弹出歌词右键菜单</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="volumeType">

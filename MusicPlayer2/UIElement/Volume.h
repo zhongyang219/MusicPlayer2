@@ -16,6 +16,7 @@ namespace UiElement
 
         virtual bool GlobalLButtonUp(CPoint point) override;
         virtual bool GlobalLButtonDown(CPoint point) override;
+        virtual bool GlobalMouseMove(CPoint point) override;
         virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
     protected:

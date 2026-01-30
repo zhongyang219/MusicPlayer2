@@ -305,7 +305,7 @@ bool UiElement::AbstractListElement::LButtonUp(CPoint point)
 
 bool UiElement::AbstractListElement::LButtonDown(CPoint point)
 {
-    AbstractScrollArea::LButtonDown(point);
+    bool rtn = AbstractScrollArea::LButtonDown(point);
     //点击了列表区域
     if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point))
     {
@@ -361,7 +361,7 @@ bool UiElement::AbstractListElement::LButtonDown(CPoint point)
         selected_item_scroll_info.Reset();
         return true;
     }
-    return false;
+    return rtn;
 }
 
 bool UiElement::AbstractListElement::MouseMove(CPoint point)

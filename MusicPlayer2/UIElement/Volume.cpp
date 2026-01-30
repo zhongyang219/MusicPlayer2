@@ -187,7 +187,7 @@ bool UiElement::Volume::LButtonDown(CPoint point)
         volumn_up_btn.pressed = true;
     if (volumn_down_btn.rect.PtInRect(point))
         volumn_down_btn.pressed = true;
-    return false;
+    return  volumn_btn.pressed || volumn_up_btn.pressed || volumn_down_btn.pressed;
 }
 
 bool UiElement::Volume::MouseMove(CPoint point)
@@ -195,10 +195,6 @@ bool UiElement::Volume::MouseMove(CPoint point)
     volumn_btn.hover = (rect.PtInRect(point));
     if (volumn_btn.hover)
         ui->UpdateMouseToolTipPosition(CPlayerUIBase::BTN_VOLUME, rect);
-    volumn_up_btn.hover = volumn_up_btn.rect.PtInRect(point);
-    volumn_down_btn.hover = volumn_down_btn.rect.PtInRect(point);
-    if (volumn_btn.hover || volumn_up_btn.hover || volumn_down_btn.hover)
-        return true;
     return false;
 }
 
@@ -243,7 +239,6 @@ bool UiElement::Volume::GlobalLButtonUp(CPoint point)
 
 bool UiElement::Volume::GlobalLButtonDown(CPoint point)
 {
-    bool rtn = false;
     if (IsShown() && IsEnable() && m_show_volume_adj)
     {
         if (volumn_up_btn.rect.PtInRect(point))
@@ -254,6 +249,18 @@ bool UiElement::Volume::GlobalLButtonDown(CPoint point)
         {
             volumn_down_btn.pressed = true;
         }
+        return true;
+    }
+    return false;
+}
+
+bool UiElement::Volume::GlobalMouseMove(CPoint point)
+{
+    if (m_show_volume_adj)
+    {
+        volumn_up_btn.hover = volumn_up_btn.rect.PtInRect(point);
+        volumn_down_btn.hover = volumn_down_btn.rect.PtInRect(point);
+        return true;
     }
     return false;
 }

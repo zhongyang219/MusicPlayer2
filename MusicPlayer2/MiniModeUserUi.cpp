@@ -8,14 +8,14 @@
 #include "UIElement/SearchBox.h"
 #include "ClosseMainWindowInqueryDlg.h"
 
-CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
-    : CUserUi(pMainWnd, xml_path)
+CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path, UIData& ui_data)
+    : CUserUi(pMainWnd, xml_path, ui_data)
 {
     InitUiPlaylist();
 }
 
-CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, UINT id)
-    : CUserUi(pMainWnd, id)
+CMiniModeUserUi::CMiniModeUserUi(CWnd* pMainWnd, UINT id, UIData& ui_data)
+    : CUserUi(pMainWnd, id, ui_data)
 {
     InitUiPlaylist();
 }
@@ -99,86 +99,6 @@ void CMiniModeUserUi::PreDrawInfo()
         window_size = CSize(width, height);
 
     m_draw_rect = CRect(CPoint(0, 0), window_size);
-}
-
-bool CMiniModeUserUi::PointInControlArea(CPoint point) const
-{
-    if (!__super::PointInControlArea(point))
-    {
-        bool rtn = false;
-        m_root_default->IterateAllElements([&](UiElement::Element* ele) -> bool {
-            UiElement::Button* button = dynamic_cast<UiElement::Button*>(ele);
-            if (button != nullptr && button->GetRect().PtInRect(point))
-            {
-                rtn = true;
-                return true;
-            }
-
-            UiElement::StackElement* stack_element = dynamic_cast<UiElement::StackElement*>(ele);
-            if (stack_element != nullptr && stack_element->GetIndicatorRect().PtInRect(point))
-            {
-                rtn = true;
-                return true;
-            }
-
-            UiElement::AbstractListElement* list_emement = dynamic_cast<UiElement::AbstractListElement*>(ele);
-            if (list_emement != nullptr && list_emement->GetRect().PtInRect(point))
-            {
-                rtn = true;
-                return true;
-            }
-
-            UiElement::SearchBox* search_box = dynamic_cast<UiElement::SearchBox*>(ele);
-            if (search_box != nullptr && search_box->GetRect().PtInRect(point))
-            {
-                rtn = true;
-                return true;
-            }
-
-            UiElement::ProgressBar* progress_bar = dynamic_cast<UiElement::ProgressBar*>(ele);
-            if (progress_bar != nullptr && progress_bar->GetProgressRect().PtInRect(point))
-            {
-                rtn = true;
-                return true;
-            }
-
-            UiElement::Volume* volumn = dynamic_cast<UiElement::Volume*>(ele);
-            if (volumn != nullptr && volumn->GetRect().PtInRect(point))
-            {
-                rtn = true;
-                return true;
-            }
-            return false;
-        });
-
-        return rtn;
-    }
-    else
-    {
-        return true;
-    }
-}
-
-bool CMiniModeUserUi::RButtonUp(CPoint point)
-{
-    //遍历所有元素
-    bool rtn = false;
-    IterateAllElements([&](UiElement::Element* element) ->bool {
-        if (element != nullptr)
-        {
-            //迷你模式下，歌词界面不弹出歌词右键菜单，仍然使用默认的迷你模式右键菜单
-            UiElement::Lyrics* lyrics_emelent = dynamic_cast<UiElement::Lyrics*>(element);
-            if (lyrics_emelent != nullptr)
-                return false;
-            if (element->RButtonUp(point))
-            {
-                rtn = true;
-                return true;
-            }
-        }
-        return false;
-    }, true);
-    return rtn;
 }
 
 bool CMiniModeUserUi::ButtonClicked(BtnKey btn_type, const UIButton& btn)

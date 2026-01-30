@@ -33,6 +33,11 @@ bool UiElement::ProgressBar::LButtonUp(CPoint point)
     return false;
 }
 
+bool UiElement::ProgressBar::LButtonDown(CPoint point)
+{
+    return btn.hover;
+}
+
 bool UiElement::ProgressBar::RButtonUp(CPoint point)
 {
     //进度条不弹出右键菜单

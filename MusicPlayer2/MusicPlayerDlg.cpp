@@ -57,8 +57,8 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
 
     //初始化UI
     //加载内置界面
-    m_ui_list.push_back(std::make_shared<CUserUi>(&m_ui_static_ctrl, IDR_UI1));
-    m_ui_list.push_back(std::make_shared<CUserUi>(&m_ui_static_ctrl, IDR_UI2));
+    m_ui_list.push_back(std::make_shared<CUserUi>(&m_ui_static_ctrl, IDR_UI1, theApp.m_ui_data));
+    m_ui_list.push_back(std::make_shared<CUserUi>(&m_ui_static_ctrl, IDR_UI2, theApp.m_ui_data));
 
     //加载skins目录下的用户自定义界面
     std::vector<std::shared_ptr<CUserUi>> user_ui_list_with_index;      //指定了序号的用户自定义界面
@@ -68,7 +68,7 @@ CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     for (const auto& file_name : skin_files)
     {
         std::wstring file_path = theApp.m_local_dir + L"skins\\" + file_name;
-        auto ui = std::make_shared<CUserUi>(&m_ui_static_ctrl, file_path);
+        auto ui = std::make_shared<CUserUi>(&m_ui_static_ctrl, file_path, theApp.m_ui_data);
         if (ui->IsIndexValid())
             user_ui_list_with_index.push_back(ui);
         else

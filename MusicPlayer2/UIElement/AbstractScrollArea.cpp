@@ -126,6 +126,7 @@ bool UiElement::AbstractScrollArea::LButtonDown(CPoint point)
             {
                 mouse_pressed = false;
             }
+            rtn = true;
         }
         //点击了滚动区域
         else
@@ -141,7 +142,7 @@ bool UiElement::AbstractScrollArea::LButtonDown(CPoint point)
     {
         mouse_pressed = false;
     }
-    return false;
+    return rtn;
 }
 
 bool UiElement::AbstractScrollArea::MouseMove(CPoint point)

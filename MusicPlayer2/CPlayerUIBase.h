@@ -234,9 +234,10 @@ public:
     virtual bool ButtonRClicked(BtnKey btn_type, const UIButton& btn);
 
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
-    virtual bool IsDrawStatusBar() const;       //是否需要绘制状态栏
-    virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
-    virtual bool IsDrawMenuBar() const;         //是否需要绘制菜单栏
+    bool IsDrawStatusBar() const;       //是否需要绘制状态栏
+    bool IsDrawTitleBar() const;        //是否需要绘制标题栏
+    bool IsDrawMenuBar() const;         //是否需要绘制菜单栏
+    bool IsDrawLargeIcon() const;        //是否绘制大图标
 
     static wstring GetDisplayFormatString();       //获取显示格式的字符串
 
@@ -250,7 +251,6 @@ public:
     int CalculateRoundRectRadius(const CRect& rect);        //计算绘制圆角矩形的半径
     double GetScrollTextPixel(bool slower = false);       //计算滚动文本一次滚动的像素值，如果slower为true，则滚动得稍微慢一点
 
-    virtual bool IsDrawLargeIcon() const;        //是否绘制大图标
 
     //切换堆叠元素（查找当前界面中第一个堆叠元素，并执行一次切换）
     virtual void SwitchStackElement() {}

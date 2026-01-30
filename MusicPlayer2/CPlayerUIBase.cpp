@@ -205,8 +205,11 @@ bool CPlayerUIBase::RButtonUp(CPoint point)
 
     // 其他区域显示主界面区域右键菜单
     if (m_ui_data.show_default_context_menu)
+    {
         theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-    return true;
+        return true;
+    }
+    return false;
 }
 
 bool CPlayerUIBase::MouseMove(CPoint point)
@@ -1364,7 +1367,7 @@ void CPlayerUIBase::SetSongInfoToolTipText()
 int CPlayerUIBase::Margin() const
 {
     int margin = m_layout.margin;
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
         margin = static_cast<int>(margin * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR * 1.5);
 
     return margin;
@@ -1377,7 +1380,7 @@ int CPlayerUIBase::EdgeMargin(bool x) const
     此计算方法可以确保边距占屏幕宽度的比例与屏幕宽度的英寸值成正比，即界面看起来越空旷，外侧边距就越大
     最后取以上值和theApp.DPI(40)两者中较大的值。
     */
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
     {
         int draw_size = (x ? m_draw_rect.Width() : m_draw_rect.Height());
         int margin = draw_size * draw_size / theApp.GetDPI() / 300;
@@ -1509,7 +1512,7 @@ CString CPlayerUIBase::GetVolumeTooltipString()
 
 int CPlayerUIBase::DPI(int pixel) const
 {
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     else
         return theApp.DPI(pixel);
@@ -1517,7 +1520,7 @@ int CPlayerUIBase::DPI(int pixel) const
 
 int CPlayerUIBase::DPI(double pixel) const
 {
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     else
         return theApp.DPI(pixel);
@@ -1526,7 +1529,7 @@ int CPlayerUIBase::DPI(double pixel) const
 double CPlayerUIBase::DPIDouble(double pixel)
 {
     double rtn_val = static_cast<double>(theApp.GetDPI()) * pixel / 96;
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
         rtn_val *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
     return rtn_val;
 }

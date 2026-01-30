@@ -17,6 +17,13 @@ IMPLEMENT_DYNAMIC(CMiniModeDlg, CDialogEx)
 CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CWnd* pParent /*=NULL*/)
     : CDialogEx(IDD_MINI_DIALOG, pParent), m_item_selected{ item_selected }, m_items_selected{ items_selected }
 {
+    //设置UI参数
+    m_ui_data.show_playlist = false;
+    m_ui_data.show_menu_bar = false;
+    m_ui_data.enable_titlebar = false;
+    m_ui_data.enable_statusbar = false;
+    m_ui_data.show_default_context_menu = false;
+
     //更改窗口的类名
     WNDCLASS wc;
     ::GetClassInfo(AfxGetInstanceHandle(), _T("#32770"), &wc);
@@ -24,12 +31,12 @@ CMiniModeDlg::CMiniModeDlg(int& item_selected, vector<int>& items_selected, CWnd
     AfxRegisterClass(&wc);
 
     //初始化界面类
-    m_ui_list.push_back(std::make_shared<CMiniModeUserUi>(this, IDR_MINI_UI0)); // 默认界面
+    m_ui_list.push_back(std::make_shared<CMiniModeUserUi>(this, IDR_MINI_UI0, m_ui_data)); // 默认界面
     std::vector<std::wstring> skin_files;
     CCommon::GetFiles(theApp.m_local_dir + L"skins\\miniMode\\*.xml", skin_files);
     for (const auto& file_name : skin_files)
     {
-        m_ui_list.push_back(std::make_shared<CMiniModeUserUi>(this, theApp.m_local_dir + L"skins\\miniMode\\" + file_name));
+        m_ui_list.push_back(std::make_shared<CMiniModeUserUi>(this, theApp.m_local_dir + L"skins\\miniMode\\" + file_name, m_ui_data));
     }
 
 }
@@ -287,10 +294,8 @@ void CMiniModeDlg::OnLButtonDown(UINT nFlags, CPoint point)
     CPlayerUIBase* cur_ui{ GetCurUi() };
     if (cur_ui != nullptr)
     {
-        if (!cur_ui->PointInControlArea(point))
+        if (!cur_ui->LButtonDown(point))
             PostMessage(WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(point.x, point.y));
-
-        cur_ui->LButtonDown(point);
     }
     CDialogEx::OnLButtonDown(nFlags, point);
 }

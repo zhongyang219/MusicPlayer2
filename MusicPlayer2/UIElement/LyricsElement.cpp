@@ -30,7 +30,7 @@ void UiElement::Lyrics::ClearRect()
 
 bool UiElement::Lyrics::RButtonUp(CPoint point)
 {
-    if (rect.PtInRect(point))
+    if (context_menu_enable && rect.PtInRect(point))
     {
         CPoint point1;
         GetCursorPos(&point1);
@@ -59,4 +59,5 @@ void UiElement::Lyrics::FromXmlNode(tinyxml2::XMLElement* xml_node)
     CTinyXml2Helper::GetElementAttributeBool(xml_node, "use_default_font", use_default_font);
     CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", font_size);
     CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_song_info", show_song_info);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "context_menu_enable", context_menu_enable);
 }

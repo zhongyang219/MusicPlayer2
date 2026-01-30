@@ -150,9 +150,10 @@ bool UiElement::ComboBox::GlobalLButtonUp(CPoint point)
 bool UiElement::ComboBox::GlobalLButtonDown(CPoint point)
 {
     mouse_pressed_point = point;
-    if (IsShown() && IsEnable() && show_drop_list && rect_drop_list.PtInRect(point))
+    if (IsShown() && IsEnable() && show_drop_list)
     {
-        drop_list->LButtonDown(point);
+        if (rect_drop_list.PtInRect(point))
+            drop_list->LButtonDown(point);
         return true;
     }
     return false;
@@ -160,9 +161,9 @@ bool UiElement::ComboBox::GlobalLButtonDown(CPoint point)
 
 bool UiElement::ComboBox::GlobalMouseMove(CPoint point)
 {
-    bool drop_list_hover = show_drop_list && rect_drop_list.PtInRect(point);
+    bool rtn = IsShown() && IsEnable() && show_drop_list;
     drop_list->MouseMove(point);
-    return drop_list_hover;
+    return rtn;
 }
 
 void UiElement::ComboBox::AddString(const std::wstring& str)

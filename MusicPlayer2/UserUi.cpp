@@ -4,20 +4,13 @@
 #include "UIPanel/ListPreviewPanel.h"
 #include "UIElement/Helper/UiElementHelper.h"
 
-CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path)
-    : CPlayerUIBase(theApp.m_ui_data, pMainWnd), m_xml_path(xml_path)
+CUserUi::CUserUi(CWnd* pMainWnd, const std::wstring& xml_path, UIData& ui_data)
+    : CPlayerUIBase(ui_data, pMainWnd), m_xml_path(xml_path)
 {
     size_t length;
     const char* xml_contents = CCommon::GetFileContent(m_xml_path.c_str(), length);
     LoadFromContents(std::string(xml_contents, length));
     delete[] xml_contents;
-}
-
-CUserUi::CUserUi(CWnd* pMainWnd, UINT id)
-    : CPlayerUIBase(theApp.m_ui_data, pMainWnd)
-{
-    string xml = CCommon::GetTextResourceRawData(id);
-    LoadFromContents(xml);
 }
 
 CUserUi::CUserUi(CWnd* pMainWnd, UINT id, UIData& ui_data)
