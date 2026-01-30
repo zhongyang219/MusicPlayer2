@@ -17,11 +17,14 @@ public:
     enum { IDD = IDD_UI_DIALOG };
 #endif
 
+    void RePaintUi();
+
 protected:
     CUserUi m_ui;
     UIData m_ui_data;
     CDC* m_pDC{};
     CSize m_min_size{};
+    CEdit m_ui_edit;
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -43,4 +46,6 @@ public:
     afx_msg void OnDestroy();
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
     afx_msg void OnTimer(UINT_PTR nIDEvent);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+    afx_msg void OnEnChangeUiEdit();
 };

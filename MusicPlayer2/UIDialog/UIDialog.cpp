@@ -29,9 +29,15 @@ CUIDialog::~CUIDialog()
 {
 }
 
+void CUIDialog::RePaintUi()
+{
+    Invalidate(TRUE);
+}
+
 void CUIDialog::DoDataExchange(CDataExchange* pDX)
 {
     CDialog::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_UI_EDIT, m_ui_edit);
 }
 
 
@@ -50,6 +56,8 @@ BEGIN_MESSAGE_MAP(CUIDialog, CDialog)
     ON_WM_MOUSEWHEEL()
     ON_WM_GETMINMAXINFO()
     ON_WM_TIMER()
+    ON_WM_ERASEBKGND()
+    ON_EN_CHANGE(IDC_UI_EDIT, &CUIDialog::OnEnChangeUiEdit)
 END_MESSAGE_MAP()
 
 
@@ -80,10 +88,12 @@ BOOL CUIDialog::OnInitDialog()
     int height = m_ui.GetCurrentTypeUi()->GetHeight(CRect());
     if (width > 0 && height > 0)
         SetWindowPos(nullptr, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER);
-        Invalidate(FALSE);
 
     m_min_size.cx = m_ui.GetCurrentTypeUi()->MinWidth().GetValue(CRect());
     m_min_size.cy = m_ui.GetCurrentTypeUi()->MinHeight().GetValue(CRect());
+
+    //隐藏文本编辑框
+    m_ui_edit.ShowWindow(SW_HIDE);
 
     SetTimer(UI_DIALOG_TIMER_ID, 20, NULL);
 
@@ -105,15 +115,15 @@ BOOL CUIDialog::PreTranslateMessage(MSG* pMsg)
 
 void CUIDialog::OnPaint()
 {
-    CPaintDC dc(this); // device context for painting
-    m_ui.DrawInfo();
+    //CPaintDC dc(this); // device context for painting
+    //m_ui.DrawInfo();
 }
 
 
 void CUIDialog::OnLButtonUp(UINT nFlags, CPoint point)
 {
     m_ui.LButtonUp(point);
-    Invalidate(FALSE);
+    RePaintUi();
     CDialog::OnLButtonUp(nFlags, point);
 }
 
@@ -121,7 +131,7 @@ void CUIDialog::OnLButtonUp(UINT nFlags, CPoint point)
 void CUIDialog::OnLButtonDown(UINT nFlags, CPoint point)
 {
     m_ui.LButtonDown(point);
-    Invalidate(FALSE);
+    RePaintUi();
     CDialog::OnLButtonDown(nFlags, point);
 }
 
@@ -150,7 +160,7 @@ void CUIDialog::OnRButtonDown(UINT nFlags, CPoint point)
 void CUIDialog::OnMouseMove(UINT nFlags, CPoint point)
 {
     m_ui.MouseMove(point);
-    Invalidate(FALSE);
+    RePaintUi();
     CDialog::OnMouseMove(nFlags, point);
 }
 
@@ -160,7 +170,7 @@ BOOL CUIDialog::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
     CPoint point = pt;
     ScreenToClient(&point);
     m_ui.MouseWheel(zDelta, point);
-    Invalidate(FALSE);
+    RePaintUi();
     return CDialog::OnMouseWheel(nFlags, zDelta, pt);
 }
 
@@ -168,7 +178,7 @@ BOOL CUIDialog::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CUIDialog::OnMouseLeave()
 {
     m_ui.MouseLeave();
-    Invalidate(FALSE);
+    RePaintUi();
     CDialog::OnMouseLeave();
 }
 
@@ -179,7 +189,7 @@ void CUIDialog::OnSize(UINT nType, int cx, int cy)
 
     m_ui_data.draw_area_width = cx;
     m_ui_data.draw_area_height = cy;
-    Invalidate();
+    RePaintUi();
 }
 
 
@@ -203,8 +213,23 @@ void CUIDialog::OnTimer(UINT_PTR nIDEvent)
     if (nIDEvent == UI_DIALOG_TIMER_ID)
     {
         //窗口打开时刷新一次界面
-        Invalidate(FALSE);
+        RePaintUi();
         KillTimer(UI_DIALOG_TIMER_ID);
     }
     CDialog::OnTimer(nIDEvent);
+}
+
+
+BOOL CUIDialog::OnEraseBkgnd(CDC* pDC)
+{
+    m_ui.DrawInfo();
+
+    //return CDialog::OnEraseBkgnd(pDC);
+    return TRUE;
+}
+
+
+void CUIDialog::OnEnChangeUiEdit()
+{
+
 }

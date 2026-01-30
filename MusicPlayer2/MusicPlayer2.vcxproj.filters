@@ -1164,6 +1164,9 @@
     <ClInclude Include="UIElement\Slider.h">
       <Filter>UIElement</Filter>
     </ClInclude>
+    <ClInclude Include="UIElement\TextBlock.h">
+      <Filter>UIElement</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1848,6 +1851,9 @@
       <Filter>UI对话框\UITestDlg</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\Slider.cpp">
+      <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIElement\TextBlock.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>

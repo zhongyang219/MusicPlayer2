@@ -835,6 +835,7 @@
 #define IDC_DISABLE_SCREEN_SLEEP_CHECK  1381
 #define IDC_NO_LONGER_ASK_CHECK         1382
 #define IDC_CLOSE_MAIN_WINDOW_INQUERY_INFO_STATIC 1383
+#define IDC_UI_EDIT                     1384
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -1089,7 +1090,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        692
 #define _APS_NEXT_COMMAND_VALUE         33513
-#define _APS_NEXT_CONTROL_VALUE         1384
+#define _APS_NEXT_CONTROL_VALUE         1385
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
