@@ -10,6 +10,7 @@
             <checkBox id="checkbox1" text="测试复选框"/>
             <checkBox id="checkbox2" text="测试复选框2"/>
             <placeHolder/>
+            <miniSpectrum width="24"/>
           </horizontalLayout>
           <horizontalLayout height="24">
             <radioButton id="radio1" text="测试单选框1"/>
