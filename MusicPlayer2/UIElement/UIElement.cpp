@@ -256,6 +256,16 @@ void UiElement::Element::CalculateRect(CRect rect_parent)
     }
 }
 
+bool UiElement::Element::SetCursor()
+{
+    for (auto& child : childLst)
+    {
+        if (child->SetCursor())
+            return true;
+    }
+    return false;
+}
+
 void UiElement::Element::CalculateRect()
 {
     if (pParent == nullptr)     //根节点的矩形不需要计算

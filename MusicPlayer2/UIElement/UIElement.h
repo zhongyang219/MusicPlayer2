@@ -102,7 +102,7 @@ namespace UiElement
 
         virtual void CalculateRect(CRect parent_rect);
 
-        virtual bool SetCursor() { return false; }
+        virtual bool SetCursor();
         virtual void InitComplete() {}
         virtual void HideTooltip() {}
 

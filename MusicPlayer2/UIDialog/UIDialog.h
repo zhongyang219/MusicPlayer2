@@ -28,6 +28,7 @@ protected:
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
+    virtual void UiTextChanged() {}
 
     DECLARE_MESSAGE_MAP()
 public:
@@ -48,4 +49,6 @@ public:
     afx_msg void OnTimer(UINT_PTR nIDEvent);
     afx_msg BOOL OnEraseBkgnd(CDC* pDC);
     afx_msg void OnEnChangeUiEdit();
+    afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+    afx_msg void OnKillFocus(CWnd* pNewWnd);
 };

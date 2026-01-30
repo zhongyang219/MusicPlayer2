@@ -7,7 +7,7 @@
 #include <dwmapi.h>
 #include "WinVersionHelper.h"
 
-#define UI_DIALOG_TIMER_ID 1365
+//#define UI_DIALOG_TIMER_ID 1365
 
 // CUIDialog 对话框
 
@@ -58,6 +58,8 @@ BEGIN_MESSAGE_MAP(CUIDialog, CDialog)
     ON_WM_TIMER()
     ON_WM_ERASEBKGND()
     ON_EN_CHANGE(IDC_UI_EDIT, &CUIDialog::OnEnChangeUiEdit)
+    ON_WM_SETCURSOR()
+    ON_WM_KILLFOCUS()
 END_MESSAGE_MAP()
 
 
@@ -95,7 +97,7 @@ BOOL CUIDialog::OnInitDialog()
     //隐藏文本编辑框
     m_ui_edit.ShowWindow(SW_HIDE);
 
-    SetTimer(UI_DIALOG_TIMER_ID, 20, NULL);
+    //SetTimer(UI_DIALOG_TIMER_ID, 20, NULL);
 
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常: OCX 属性页应返回 FALSE
@@ -116,7 +118,7 @@ BOOL CUIDialog::PreTranslateMessage(MSG* pMsg)
 void CUIDialog::OnPaint()
 {
     //CPaintDC dc(this); // device context for painting
-    //m_ui.DrawInfo();
+    m_ui.DrawInfo();
 }
 
 
@@ -210,19 +212,19 @@ void CUIDialog::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 
 void CUIDialog::OnTimer(UINT_PTR nIDEvent)
 {
-    if (nIDEvent == UI_DIALOG_TIMER_ID)
-    {
-        //窗口打开时刷新一次界面
-        RePaintUi();
-        KillTimer(UI_DIALOG_TIMER_ID);
-    }
+    //if (nIDEvent == UI_DIALOG_TIMER_ID)
+    //{
+    //    //窗口打开时刷新一次界面
+    //    RePaintUi();
+    //    KillTimer(UI_DIALOG_TIMER_ID);
+    //}
     CDialog::OnTimer(nIDEvent);
 }
 
 
 BOOL CUIDialog::OnEraseBkgnd(CDC* pDC)
 {
-    m_ui.DrawInfo();
+    //m_ui.DrawInfo();
 
     //return CDialog::OnEraseBkgnd(pDC);
     return TRUE;
@@ -231,5 +233,20 @@ BOOL CUIDialog::OnEraseBkgnd(CDC* pDC)
 
 void CUIDialog::OnEnChangeUiEdit()
 {
+    UiTextChanged();
+}
 
+BOOL CUIDialog::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+    if (m_ui.SetCursor())
+        return TRUE;
+
+    return CDialog::OnSetCursor(pWnd, nHitTest, message);
+}
+
+void CUIDialog::OnKillFocus(CWnd* pNewWnd)
+{
+    CDialog::OnKillFocus(pNewWnd);
+
+    m_ui_edit.ShowWindow(SW_HIDE);
 }

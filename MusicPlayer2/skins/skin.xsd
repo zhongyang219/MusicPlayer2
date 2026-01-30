@@ -758,6 +758,7 @@
         <xs:element name="listElement" type="listElementType"></xs:element>
         <xs:element name="comboBox" type="comboBoxType"></xs:element>
         <xs:element name="slider" type="sliderType"></xs:element>
+        <xs:element name="textBlock" type="textBlockType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -2074,6 +2075,13 @@
         <xs:documentation>滑动条的最大值。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="textBlockType">
+    <xs:annotation>
+      <xs:documentation>文本编辑控件。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

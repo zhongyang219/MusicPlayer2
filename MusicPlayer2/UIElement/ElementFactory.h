@@ -40,6 +40,7 @@
 #include "UIElement/ListElement.h"
 #include "UIElement/ComboBox.h"
 #include "UIElement/Slider.h"
+#include "UIElement/TextBlock.h"
 
 namespace UiElement
 {
