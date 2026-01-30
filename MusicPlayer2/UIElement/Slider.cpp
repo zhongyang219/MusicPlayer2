@@ -1,10 +1,12 @@
 ﻿#include "stdafx.h"
 #include "Slider.h"
+#include "TinyXml2Helper.h"
 
 void UiElement::Slider::SetRange(int min_val, int max_val)
 {
     this->min_val = min_val;
     this->max_val = max_val;
+    CCommon::SetNumRange(cur_pos, min_val, max_val);
 }
 
 void UiElement::Slider::SetCurPos(int pos)
@@ -17,18 +19,36 @@ const int UiElement::Slider::GetCurPos() const
     return cur_pos;
 }
 
+void UiElement::Slider::SetPosChangedTrigger(std::function<void(Slider*)> func)
+{
+    pos_changed_trigger = func;
+}
+
+//根据中心和宽度创建一个正方形
+static CRect CreateScqureByPosAndSize(CPoint point, int size)
+{
+    CRect rect;
+    rect.left = point.x - (size / 2);
+    rect.right = rect.left + size;
+    rect.top = point.y - (size / 2);
+    rect.bottom = rect.top + size;
+    return rect;
+}
+
 void UiElement::Slider::Draw()
 {
     CalculateRect();
 
     int slider_width = ui->DPI(4);
     int handle_size = ui->DPI(20);
-    int circel_size = ui->DPI(12);
-    int circel_hover_size = ui->DPI(14);
-    int circel_pressed_size = ui->DPI(8);
+    int circel_size = ui->DPI(10);
+    if (pressed)
+        circel_size = ui->DPI(8);
+    else if (hover)
+        circel_size = ui->DPI(12);
 
     //绘制背景
-    CRect rect_back = rect;
+    rect_back = rect;
     if (orientation == Horizontal)
     {
         rect_back.top = rect.top + (rect.Height() - slider_width) / 2;
@@ -43,22 +63,120 @@ void UiElement::Slider::Draw()
         rect_back.top += handle_size / 2;
         rect_back.bottom -= handle_size / 2;
     }
-    
+    COLORREF back_color;
+    if (theApp.m_app_setting_data.dark_mode)
+    {
+        back_color = CColorConvert::m_gray_color.dark2;
+    }
+    else
+    {
+        back_color = theApp.m_app_setting_data.theme_color.light2_5;
+    }
+    ui->DrawRectangle(rect_back, back_color);
+
+    //计算当前位置
+    CPoint cur_point = rect.CenterPoint();
+    if (max_val - min_val > 0)
+    {
+        if (orientation == Horizontal)
+            cur_point.x = rect_back.left + (rect_back.Width() * (cur_pos - min_val) / (max_val - min_val));
+        else
+            cur_point.y = rect_back.top + (rect_back.Height() * (cur_pos - min_val) / (max_val - min_val));
+    }
+
+    //绘制handle
+    COLORREF handle_color;
+    if (theApp.m_app_setting_data.dark_mode)
+        handle_color = CColorConvert::m_gray_color.dark2_5;
+    else
+        handle_color = theApp.m_app_setting_data.theme_color.light2;
+    rect_handle = CreateScqureByPosAndSize(cur_point, handle_size);
+    ui->GetDrawer().DrawEllipse(rect_handle, handle_color);
+
+    //绘制中间的圆
+    COLORREF circle_color;
+    if (theApp.m_app_setting_data.dark_mode)
+        circle_color = theApp.m_app_setting_data.theme_color.light1;
+    else
+        circle_color = theApp.m_app_setting_data.theme_color.dark1;
+    CRect rect_circle = CreateScqureByPosAndSize(cur_point, circel_size);
+    ui->GetDrawer().DrawEllipse(rect_circle, circle_color);
 
     Element::Draw();
 }
 
 bool UiElement::Slider::LButtonUp(CPoint point)
 {
-    return false;
+    bool rtn = false;
+    if (pressed && IsEnable() && IsShown())
+    {
+        rtn = true;
+    }
+    pressed = false;
+    return rtn;
 }
 
 bool UiElement::Slider::LButtonDown(CPoint point)
 {
+    if (hover && IsEnable() && IsShown())
+    {
+        pressed = true;
+        return true;
+    }
     return false;
 }
 
 bool UiElement::Slider::MouseMove(CPoint point)
 {
+    hover = rect_handle.PtInRect(point);
+    if (pressed && IsRectValid())
+    {
+        //计算鼠标滑动的位置
+        int pos = min_val;
+        if (orientation == Horizontal)
+        {
+            pos = min_val + (max_val - min_val) * (point.x - rect_back.left) / rect_back.Width();
+        }
+        else
+        {
+            pos = min_val + (max_val - min_val) * (point.y - rect_back.top) / rect_back.Height();
+        }
+        CCommon::SetNumRange(pos, min_val, max_val);
+        if (cur_pos != pos)
+        {
+            cur_pos = pos;
+            if (pos_changed_trigger)
+                pos_changed_trigger(this);
+        }
+        return true;
+    }
     return false;
+}
+
+bool UiElement::Slider::MouseLeave()
+{
+    hover = false;
+    pressed = false;
+    return false;
+}
+
+void UiElement::Slider::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    std::string str_orientation = CTinyXml2Helper::ElementAttribute(xml_node, "orientation");
+    if (str_orientation == "vertical")
+        orientation = Vertical;
+    else
+        orientation = Horizontal;
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "min_value", min_val);
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "max_value", max_val);
+    CCommon::SetNumRange(cur_pos, min_val, max_val);
+}
+
+bool UiElement::Slider::IsRectValid() const
+{
+    if (orientation == Horizontal)
+        return rect_back.Width() > 0;
+    else
+        return rect_back.Height() > 0;
 }

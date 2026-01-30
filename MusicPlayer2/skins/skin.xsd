@@ -757,6 +757,7 @@
         <xs:element name="scrollArea" type="scrollAreaType"></xs:element>
         <xs:element name="listElement" type="listElementType"></xs:element>
         <xs:element name="comboBox" type="comboBoxType"></xs:element>
+        <xs:element name="slider" type="sliderType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -2034,9 +2035,45 @@
   </xs:complexType>
   <xs:complexType name="comboBoxType">
     <xs:annotation>
-      <xs:documentation>通用列表控件。</xs:documentation>
+      <xs:documentation>下拉列表控件。</xs:documentation>
     </xs:annotation>
     <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="sliderType">
+    <xs:annotation>
+      <xs:documentation>滑动条控件。</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="elements"></xs:group>
+    <xs:attribute name="orientation" default="horizontal">
+      <xs:annotation>
+        <xs:documentation>滑动条的方向。</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="horizontal">
+            <xs:annotation>
+              <xs:documentation>水平</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="vertical">
+            <xs:annotation>
+              <xs:documentation>垂直</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="min_value" type="xs:int" default="0">
+      <xs:annotation>
+        <xs:documentation>滑动条的最小值。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="max_value" type="xs:int" default="0">
+      <xs:annotation>
+        <xs:documentation>滑动条的最大值。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

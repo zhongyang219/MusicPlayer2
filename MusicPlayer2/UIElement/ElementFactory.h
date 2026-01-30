@@ -39,6 +39,7 @@
 #include "UIElement/ScrollArea.h"
 #include "UIElement/ListElement.h"
 #include "UIElement/ComboBox.h"
+#include "UIElement/Slider.h"
 
 namespace UiElement
 {

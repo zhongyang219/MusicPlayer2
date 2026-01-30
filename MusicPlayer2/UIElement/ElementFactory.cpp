@@ -94,6 +94,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::ListElement>();
     else if (name == "comboBox")
         element = std::make_shared<UiElement::ComboBox>();
+    else if (name == "slider")
+        element = std::make_shared<UiElement::Slider>();
 
     if (element != nullptr)
         element->SetUi(ui);

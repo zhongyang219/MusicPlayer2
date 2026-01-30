@@ -20,12 +20,14 @@
           <toggleSettingGroup id="toggleBtn2" margin-top="4" height="60" icon="setting" mainText="主要文本" subText="次要文本" />
 
           <horizontalLayout margin-top="4" height="28">
-            <comboBox id="combobox1" height="28" max-width="120" proportion="100"/>
-            <placeHolder proportion="1"/>
+            <comboBox id="combobox1" height="28" max-width="120"/>
+            <slider id="horizontalSlider1" orientation="horizontal" min_value="20" max_value="80"/>
           </horizontalLayout>
 
           
           <horizontalLayout margin-top="4" height="100">
+            <slider width="24" id="verticalSlider1" orientation="vertical"/>
+            
             <rectangle theme_color="false">
               <listElement id="list1"/>
             </rectangle>
