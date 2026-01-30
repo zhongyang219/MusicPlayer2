@@ -84,6 +84,8 @@ bool UiElement::ComboBox::LButtonUp(CPoint point)
     if (cur_pressed && rect.PtInRect(point) && IsEnable() && IsShown(ParentRect()))
     {
         show_drop_list = !show_drop_list;
+        if (show_drop_list)
+            hover = false;
         return true;
     }
 
@@ -117,7 +119,7 @@ bool UiElement::ComboBox::MouseLeave()
 bool UiElement::ComboBox::GlobalLButtonUp(CPoint point)
 {
     bool rtn = false;
-    if (!rect.PtInRect(point) && IsShown() && IsEnable())
+    if (IsShown() && IsEnable())
     {
         if (show_drop_list && rect_drop_list.PtInRect(mouse_pressed_point))
         {

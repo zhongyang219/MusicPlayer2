@@ -337,11 +337,11 @@ wstring CUserUi::GetUIName()
 
 bool CUserUi::LButtonUp(CPoint point)
 {
-    auto root_element = GetMouseEventResponseElement();
-    if (root_element->GlobalLButtonUp(point))
-        return true;
     if (!CPlayerUIBase::LButtonUp(point) && !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
     {
+        auto root_element = GetMouseEventResponseElement();
+        if (root_element->GlobalLButtonUp(point))
+            return true;
         //显示了面板，且不是全屏面板的情况下，点击面板以外的地方关闭面板
         auto* panel = m_panel_mgr.GetTopPanel();
         if (panel != nullptr && !panel->IsFullFill() && !panel->GetPanelRect().PtInRect(point) && !panel->GetPanelRect().PtInRect(m_mouse_clicked_point))
@@ -361,11 +361,11 @@ bool CUserUi::LButtonUp(CPoint point)
 bool CUserUi::LButtonDown(CPoint point)
 {
     m_mouse_clicked_point = point;
-    auto root_element = GetMouseEventResponseElement();
-    if (root_element->GlobalLButtonDown(point))
-        return true;
     if (!CPlayerUIBase::LButtonDown(point))
     {
+        auto root_element = GetMouseEventResponseElement();
+        if (root_element->GlobalLButtonDown(point))
+            return true;
         bool rtn = false;
         if (!CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point))
         {
@@ -380,10 +380,10 @@ bool CUserUi::MouseMove(CPoint point)
 {
     bool mouse_leave = false;
     auto root_element = GetMouseEventResponseElement();
-    if (root_element->GlobalMouseMove(point))
-        return true;
     if (!CPlayerUIBase::MouseMove(point))
     {
+        if (root_element->GlobalMouseMove(point))
+            return true;
         bool mouse_in_draw_area{ !CPlayerUIBase::PointInMenubarArea(point) && !CPlayerUIBase::PointInTitlebarArea(point) };
         if (mouse_in_draw_area)
         {
@@ -427,7 +427,6 @@ bool CUserUi::RButtonUp(CPoint point)
     {
         auto root_element = GetMouseEventResponseElement();
         rtn = root_element->RButtonUp(point);
-        root_element->GlobalLButtonUp(point);
     }
     if (!rtn)
         rtn = CPlayerUIBase::RButtonUp(point);
