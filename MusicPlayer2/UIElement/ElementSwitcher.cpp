@@ -28,6 +28,8 @@ bool UiElement::ElementSwitcher::LButtonUp(CPoint point)
         if (rect.PtInRect(point))
         {
             ui->SwitchStackElement(stack_element_id, stack_element_index);
+            ::SetCursor(::LoadCursor(NULL, IDC_ARROW));
+            btn.hover = false;
         }
         return true;
     }
