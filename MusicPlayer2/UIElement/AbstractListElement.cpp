@@ -366,6 +366,12 @@ bool UiElement::AbstractListElement::LButtonDown(CPoint point)
 
 bool UiElement::AbstractListElement::MouseMove(CPoint point)
 {
+    //鼠标离开时隐藏鼠标提示
+    bool hover = rect.PtInRect(point);
+    if (last_hover && !hover)
+        HideTooltip();
+    last_hover = hover;
+
     m_mouse_pos = point;
     if (rect.IsRectEmpty())
         return false;
@@ -506,6 +512,7 @@ bool UiElement::AbstractListElement::MouseLeave()
 {
     bool rtn = AbstractScrollArea::MouseLeave();
     m_mouse_pos = CPoint(-1, -1);
+    HideTooltip();
     return rtn;
 }
 

@@ -1,8 +1,8 @@
-#pragma once
+Ôªø#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
-    //Ω¯∂»Ãı
+    //ËøõÂ∫¶Êù°
     class ProgressBar : public Element
     {
     public:
@@ -12,6 +12,7 @@ namespace UiElement
         virtual bool LButtonDown(CPoint point) override;
         virtual bool RButtonUp(CPoint point) override;
         virtual bool MouseMove(CPoint point) override;
+        virtual bool MouseLeave() override;
         virtual bool SetCursor() override;
         virtual void HideTooltip() override;
         virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
@@ -23,6 +24,9 @@ namespace UiElement
         bool show_play_time{};
         bool play_time_both_side{};
         CPlayerUIBase::UIButton btn;
+
+    private:
+        bool last_hover{};
     };
 }
 

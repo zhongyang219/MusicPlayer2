@@ -47,7 +47,7 @@ void UiElement::Slider::Draw()
     else if (hover)
         circel_size = ui->DPI(12);
 
-    //绘制背景
+    //计算背景矩形区域
     rect_back = rect;
     if (orientation == Horizontal)
     {
@@ -63,16 +63,19 @@ void UiElement::Slider::Draw()
         rect_back.top += handle_size / 2;
         rect_back.bottom -= handle_size / 2;
     }
-    COLORREF back_color;
+    //当前位置前后的颜色
+    COLORREF back_color_before_curent;
+    COLORREF back_color_after_curent;
     if (theApp.m_app_setting_data.dark_mode)
     {
-        back_color = CColorConvert::m_gray_color.dark2;
+        back_color_before_curent = theApp.m_app_setting_data.theme_color.light1_5;
+        back_color_after_curent = CColorConvert::m_gray_color.dark2;
     }
     else
     {
-        back_color = theApp.m_app_setting_data.theme_color.light2_5;
+        back_color_before_curent = theApp.m_app_setting_data.theme_color.dark1;
+        back_color_after_curent = theApp.m_app_setting_data.theme_color.light2_5;
     }
-    ui->DrawRectangle(rect_back, back_color);
 
     //计算当前位置
     CPoint cur_point = rect.CenterPoint();
@@ -83,6 +86,23 @@ void UiElement::Slider::Draw()
         else
             cur_point.y = rect_back.top + (rect_back.Height() * (cur_pos - min_val) / (max_val - min_val));
     }
+
+    //计算当前位置前后两部分的矩形区域
+    CRect rect_back_before_current = rect_back;
+    CRect rect_back_after_current = rect_back;
+    if (orientation == Horizontal)
+    {
+        rect_back_before_current.right = cur_point.x;
+        rect_back_after_current.left = cur_point.x;
+    }
+    else
+    {
+        rect_back_before_current.bottom = cur_point.y;
+        rect_back_after_current.top = cur_point.y;
+    }
+    //分别绘制两部分背景
+    ui->DrawRectangle(rect_back_before_current, back_color_before_curent, 255);
+    ui->DrawRectangle(rect_back_after_current, back_color_after_curent, 255);
 
     //绘制handle
     COLORREF handle_color;

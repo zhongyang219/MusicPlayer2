@@ -37,6 +37,7 @@ namespace UiElement
         bool hover{ false };
         bool pressed{ false };
         CPoint mouse_pressed_point;
+        bool volume_text_displayed{};
     };
 }
 

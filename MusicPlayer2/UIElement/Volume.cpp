@@ -21,8 +21,10 @@ void UiElement::Volume::Draw()
     ui->DrawUiIcon(rect_icon, ui->GetBtnIconType(CPlayerUIBase::BTN_VOLUME));
 
     //绘制文本
+    volume_text_displayed = false;
     if (show_text && rect_icon.right < rect.right)
     {
+        volume_text_displayed = true;
         CRect rect_text{ rect };
         rect_text.left = rect_icon.right;
         CString str;
@@ -65,7 +67,7 @@ void UiElement::Volume::DrawTopMost()
         rect_slider.DeflateRect(ui->DPI(8), ui->DPI(8));
 
         //如果不显示音量文本，则在滑动条旁边显示音量
-        if (!show_text)
+        if (!volume_text_displayed)
         {
             const std::wstring str_mute = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE");
             //计算音量文本的宽度（取“静音”和“100%”中的较大值）

@@ -47,6 +47,9 @@ bool UiElement::ProgressBar::RButtonUp(CPoint point)
 bool UiElement::ProgressBar::MouseMove(CPoint point)
 {
     btn.hover = btn.rect.PtInRect(point);
+    if (last_hover && !btn.hover)
+        HideTooltip();
+    last_hover = btn.hover;
 
     //鼠标指向进度条时显示定位到几分几秒
     if (btn.hover)
@@ -66,6 +69,12 @@ bool UiElement::ProgressBar::MouseMove(CPoint point)
             last_sec = song_pos_time.sec;
         }
     }
+    return false;
+}
+
+bool UiElement::ProgressBar::MouseLeave()
+{
+    HideTooltip();
     return false;
 }
 
