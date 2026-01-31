@@ -61,6 +61,7 @@ bool UiElement::SliderProgressBar::MouseMove(CPoint point)
 
 bool UiElement::SliderProgressBar::MouseLeave()
 {
+    Slider::MouseLeave();
     HideTooltip();
     return false;
 }

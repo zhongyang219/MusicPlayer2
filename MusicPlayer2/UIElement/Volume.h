@@ -16,6 +16,7 @@ namespace UiElement
         virtual bool LButtonUp(CPoint point) override;
         virtual bool LButtonDown(CPoint point) override;
         virtual bool MouseMove(CPoint point) override;
+        virtual bool MouseLeave() override;
         virtual bool MouseWheel(int delta, CPoint point) override;
 
         virtual bool GlobalLButtonUp(CPoint point) override;

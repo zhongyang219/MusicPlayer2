@@ -138,6 +138,13 @@ bool UiElement::Volume::MouseMove(CPoint point)
     return false;
 }
 
+bool UiElement::Volume::MouseLeave()
+{
+    Element::MouseLeave();
+    volume_slider->MouseLeave();
+    return false;
+}
+
 bool UiElement::Volume::MouseWheel(int delta, CPoint point)
 {
     if (rect.PtInRect(point) || rect_volume_adj.PtInRect(point))
