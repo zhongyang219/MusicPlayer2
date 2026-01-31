@@ -71,9 +71,12 @@ void UiElement::Volume::DrawTopMost()
         {
             const std::wstring str_mute = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE");
             //计算音量文本的宽度（取“静音”和“100%”中的较大值）
-            int width{ (std::max)(ui->GetDrawer().GetTextExtent(str_mute.c_str()).cx, ui->GetDrawer().GetTextExtent(L"100%").cx)};
+            int text_width{ (std::max)(ui->GetDrawer().GetTextExtent(str_mute.c_str()).cx, ui->GetDrawer().GetTextExtent(L"100%").cx)};
+            //文本宽度不超过整个音量调节控件宽度的一半
+            if (text_width > vol_adj_ctrl_size.cx / 2)
+                text_width = vol_adj_ctrl_size.cx / 2;
             CRect rect_text = rect_slider;
-            rect_text.left = rect_text.right - width;
+            rect_text.left = rect_text.right - text_width;
             //绘制音量文本
             CString volume_str{};
             if (CPlayer::GetInstance().GetVolume() <= 0)
