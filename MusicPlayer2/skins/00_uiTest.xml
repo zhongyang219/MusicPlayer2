@@ -44,7 +44,11 @@
               <button key="next" width="36" height="36" bigIcon="true" margin="2"/>
               <button key="desktopLyric" width="24" height="24" margin="2"/>
             </horizontalLayout>
-            <progressBar show_play_time="true" play_time_both_side="true" margin-left="4" margin-right="4"/>
+            <horizontalLayout>
+              <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+              <sliderProgressBar margin-left="8" margin-right="8"/>
+              <text text="%(SongLength)" font_size="8" width="32"/>
+            </horizontalLayout>
           </verticalLayout>
           <horizontalLayout>
             <placeHolder/>
@@ -80,7 +84,11 @@
       <spectrum height="48" width="280" draw_reflex="true" alignment="center"/>
       <rectangle height="74">
         <verticalLayout margin="4">
-          <progressBar show_play_time="true" play_time_both_side="true" margin-left="4" margin-right="4"/>
+          <horizontalLayout>
+            <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+            <sliderProgressBar margin-left="8" margin-right="8"/>
+            <text text="%(SongLength)" font_size="8" width="32"/>
+          </horizontalLayout>
           <horizontalLayout height="46">
             <button key="repeatMode" width="24" height="24" margin="2"/>
             <button key="favorite" width="24" height="24" margin="2"/>
@@ -112,7 +120,11 @@
       </horizontalLayout>
       <rectangle height="74">
         <verticalLayout margin="4">
-          <progressBar show_play_time="true" play_time_both_side="true" margin-left="4" margin-right="4"/>
+          <horizontalLayout>
+            <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+            <sliderProgressBar margin-left="8" margin-right="8"/>
+            <text text="%(SongLength)" font_size="8" width="32"/>
+          </horizontalLayout>
           <horizontalLayout height="46">
             <button key="repeatMode" width="24" height="24" margin="2"/>
             <button key="favorite" width="24" height="24" margin="2"/>

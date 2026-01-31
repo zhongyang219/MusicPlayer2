@@ -121,8 +121,12 @@
         </horizontalLayout>
         <!--播放控制栏-->
         <rectangle height="100" no_corner_radius="true">
-          <verticalLayout margin="6">
-            <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
+          <verticalLayout margin="6" margin-top="0">
+            <horizontalLayout>
+              <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+              <sliderProgressBar margin-left="8" margin-right="8"/>
+              <text text="%(SongLength)" font_size="8" width="32"/>
+            </horizontalLayout>
             <horizontalLayout height="68">
               <horizontalLayout>
                 <!--显示为专辑封面界面切换器，点击后切换到播放界面-->
@@ -181,8 +185,12 @@
           </element>
           <!--播放控制栏-->
           <rectangle height="100" no_corner_radius="true">
-            <verticalLayout margin="6">
-              <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
+            <verticalLayout margin="6" margin-top="0">
+              <horizontalLayout>
+                <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+                <sliderProgressBar margin-left="8" margin-right="8"/>
+                <text text="%(SongLength)" font_size="8" width="32"/>
+              </horizontalLayout>
               <horizontalLayout height="68">
                 <element>
                   <verticalLayout margin="4">
@@ -344,8 +352,12 @@
           </stackElement>
         </horizontalLayout>
         <rectangle height="88" no_corner_radius="true">
-          <verticalLayout margin="4">
-            <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
+          <verticalLayout margin="4" margin-top="0">
+            <horizontalLayout>
+              <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+              <sliderProgressBar margin-left="8" margin-right="8"/>
+              <text text="%(SongLength)" font_size="8" width="32"/>
+            </horizontalLayout>
             <horizontalLayout height="60">
               <!--显示为专辑封面界面切换器，点击后切换到播放界面-->
               <elementSwitcher style="album_cover" text="%(UI_TIP_SHOW_PLAY_DETAIL_PAGE)" stack_element_id="main_stack_element_narrow" stack_element_index="1" width="60"/>
@@ -385,8 +397,12 @@
           </verticalLayout>
           <!--底部控制栏-->
           <rectangle height="88" no_corner_radius="true">
-            <verticalLayout margin="4">
-              <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
+            <verticalLayout margin="4" margin-top="0">
+              <horizontalLayout>
+                <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+                <sliderProgressBar margin-left="8" margin-right="8"/>
+                <text text="%(SongLength)" font_size="8" width="32"/>
+              </horizontalLayout>
               <horizontalLayout height="60">
                 <verticalLayout margin="4">
                   <text type="title" style="scroll" height="24" font_size="10"/>
@@ -423,7 +439,11 @@
       </horizontalLayout>
       <rectangle height="68" no_corner_radius="true">
         <verticalLayout margin="4">
-          <progressBar show_play_time="true" play_time_both_side="true" margin-left="4" margin-right="4"/>
+          <horizontalLayout>
+            <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+            <sliderProgressBar margin-left="8" margin-right="8"/>
+            <text text="%(SongLength)" font_size="8" width="32"/>
+          </horizontalLayout>
           <horizontalLayout height="44">
             <button key="repeatMode" width="26" height="26" margin="2"/>
             <button key="favorite" width="26" height="26" margin="2"/>

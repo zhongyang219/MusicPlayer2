@@ -102,11 +102,23 @@ void UiElement::Slider::Draw()
     //绘制handle
     COLORREF handle_color;
     if (theApp.m_app_setting_data.dark_mode)
-        handle_color = CColorConvert::m_gray_color.dark2_5;
+    {
+        if (ui->IsDrawBackgroundAlpha())
+            handle_color = theApp.m_app_setting_data.theme_color.dark3;
+        else
+            handle_color = CColorConvert::m_gray_color.dark2_5;
+    }
     else
+    {
         handle_color = theApp.m_app_setting_data.theme_color.light2;
+    }
     rect_handle = CreateScqureByPosAndSize(cur_point, handle_size);
-    ui->GetDrawer().DrawEllipse(rect_handle, handle_color);
+    BYTE handle_alpha;
+    if (theApp.m_app_setting_data.dark_mode)
+        handle_alpha = ui->GetDefaultAlpha();
+    else
+        handle_alpha = 255;
+    ui->GetDrawer().DrawEllipse(rect_handle, handle_color, handle_alpha);
 
     //绘制中间的圆
     COLORREF circle_color;

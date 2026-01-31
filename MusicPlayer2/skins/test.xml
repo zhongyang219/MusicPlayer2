@@ -799,7 +799,7 @@
           <horizontalLayout>
             <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
             <sliderProgressBar margin-left="8" margin-right="8"/>
-            <text text="%(SongLength)" font_size="8" width="32" alignment="left"/>
+            <text text="%(SongLength)" font_size="8" width="32"/>
           </horizontalLayout>
           <stackElement height="62" size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="550">
             <horizontalLayout>
