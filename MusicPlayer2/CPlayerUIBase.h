@@ -195,6 +195,7 @@ public:
     void DrawBeatIndicator(CRect rect);
     CRect DrawProgressBar(CRect rect, bool play_time_both_side = false);               //绘制进度条（包含时间）。play_time_both_side如果为true，则播放时间显示的进度条的两侧，否则显示在进度条的右侧（返回进度条部分的矩形区域）
     CRect DrawProgess(CRect rect);                   //绘制进度条（返回进度条部分的矩形区域）
+    void DrawABRepeat(CRect rect);      //绘制进度条上的AB重复标记
     void DrawTopRightIcons();           //绘制右上角的图标
     void DrawCurrentTime();             //在右上角绘制当前系统时间
     void DrawAlbumCover(CRect rect);                //绘制专辑封面

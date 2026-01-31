@@ -340,6 +340,7 @@
     <ClInclude Include="UIElement\ScrollArea.h" />
     <ClInclude Include="UIElement\SearchBox.h" />
     <ClInclude Include="UIElement\Slider.h" />
+    <ClInclude Include="UIElement\SliderProgressBar.h" />
     <ClInclude Include="UIElement\Spectrum.h" />
     <ClInclude Include="UIElement\StackElement.h" />
     <ClInclude Include="UIElement\Text.h" />
@@ -578,6 +579,7 @@
     <ClCompile Include="UIElement\ScrollArea.cpp" />
     <ClCompile Include="UIElement\SearchBox.cpp" />
     <ClCompile Include="UIElement\Slider.cpp" />
+    <ClCompile Include="UIElement\SliderProgressBar.cpp" />
     <ClCompile Include="UIElement\Spectrum.cpp" />
     <ClCompile Include="UIElement\StackElement.cpp" />
     <ClCompile Include="UIElement\Text.cpp" />

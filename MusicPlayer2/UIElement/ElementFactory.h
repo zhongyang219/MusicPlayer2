@@ -41,6 +41,7 @@
 #include "UIElement/ComboBox.h"
 #include "UIElement/Slider.h"
 #include "UIElement/TextBlock.h"
+#include "UIElement/SliderProgressBar.h"
 
 namespace UiElement
 {

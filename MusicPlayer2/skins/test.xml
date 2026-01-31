@@ -795,7 +795,12 @@
       <!--底部控制栏-->
       <rectangle height="88" no_corner_radius="true">
         <verticalLayout margin="6" margin-top="4">
-          <progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>
+          <!--<progressBar show_play_time="true" play_time_both_side="true" margin-left="8" margin-right="8"/>-->
+          <horizontalLayout>
+            <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+            <sliderProgressBar margin-left="8" margin-right="8"/>
+            <text text="%(SongLength)" font_size="8" width="32" alignment="left"/>
+          </horizontalLayout>
           <stackElement height="62" size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="550">
             <horizontalLayout>
               <horizontalLayout>

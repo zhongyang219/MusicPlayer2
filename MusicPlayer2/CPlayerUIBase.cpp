@@ -1646,6 +1646,16 @@ CRect CPlayerUIBase::DrawProgess(CRect rect)
     m_draw.FillAlphaRect(played_rect, m_colors.color_spectrum, alpha);
 
     //绘制AB重复的标记
+    DrawABRepeat(rect);
+
+    //进度条能响应鼠标消息的区域（上下各增加3像素）
+    CRect progress_rect = rect;
+    progress_rect.InflateRect(0, DPI(3));
+    return progress_rect;
+}
+
+void CPlayerUIBase::DrawABRepeat(CRect rect)
+{
     auto ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
     if (ab_repeat_mode == CPlayer::AM_A_SELECTED || ab_repeat_mode == CPlayer::AM_AB_REPEAT)
     {
@@ -1681,11 +1691,6 @@ CRect CPlayerUIBase::DrawProgess(CRect rect)
         //恢复字体
         m_draw.SetFont(pOldFont);
     }
-
-    //进度条能响应鼠标消息的区域（上下各增加3像素）
-    CRect progress_rect = rect;
-    progress_rect.InflateRect(0, DPI(3));
-    return progress_rect;
 }
 
 void CPlayerUIBase::DrawTopRightIcons()

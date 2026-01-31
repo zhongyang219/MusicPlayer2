@@ -35,6 +35,11 @@ static CRect CreateScqureByPosAndSize(CPoint point, int size)
     return rect;
 }
 
+void UiElement::Slider::SetDragFinishTrigger(std::function<void(Slider*)> func)
+{
+    drag_finish_trigger = func;
+}
+
 void UiElement::Slider::Draw()
 {
     CalculateRect();
@@ -64,18 +69,8 @@ void UiElement::Slider::Draw()
         rect_back.bottom -= handle_size / 2;
     }
     //当前位置前后的颜色
-    COLORREF back_color_before_curent;
-    COLORREF back_color_after_curent;
-    if (theApp.m_app_setting_data.dark_mode)
-    {
-        back_color_before_curent = theApp.m_app_setting_data.theme_color.light1_5;
-        back_color_after_curent = CColorConvert::m_gray_color.dark2;
-    }
-    else
-    {
-        back_color_before_curent = theApp.m_app_setting_data.theme_color.dark1;
-        back_color_after_curent = theApp.m_app_setting_data.theme_color.light2_5;
-    }
+    COLORREF back_color_before_curent = GetBackColor(true);
+    COLORREF back_color_after_curent = GetBackColor(false);
 
     //计算当前位置
     CPoint cur_point = rect.CenterPoint();
@@ -101,8 +96,8 @@ void UiElement::Slider::Draw()
         rect_back_after_current.top = cur_point.y;
     }
     //分别绘制两部分背景
-    ui->DrawRectangle(rect_back_before_current, back_color_before_curent, 255);
-    ui->DrawRectangle(rect_back_after_current, back_color_after_curent, 255);
+    ui->DrawRectangle(rect_back_before_current, back_color_before_curent, GetBackAlpha(true));
+    ui->DrawRectangle(rect_back_after_current, back_color_after_curent, GetBackAlpha(false));
 
     //绘制handle
     COLORREF handle_color;
@@ -131,6 +126,12 @@ bool UiElement::Slider::LButtonUp(CPoint point)
     if (pressed && IsEnable() && IsShown())
     {
         rtn = true;
+        //如果鼠标抬起时进行了拖动，则响应鼠标拖动结束事件
+        if (pos_mouse_pressed != cur_pos)
+        {
+            if (drag_finish_trigger)
+                drag_finish_trigger(this);
+        }
     }
     pressed = false;
     return rtn;
@@ -141,6 +142,7 @@ bool UiElement::Slider::LButtonDown(CPoint point)
     if (hover && IsEnable() && IsShown())
     {
         pressed = true;
+        pos_mouse_pressed = cur_pos;
         return true;
     }
     return false;
@@ -199,4 +201,27 @@ bool UiElement::Slider::IsRectValid() const
         return rect_back.Width() > 0;
     else
         return rect_back.Height() > 0;
+}
+
+COLORREF UiElement::Slider::GetBackColor(bool highlight_color)
+{
+    if (theApp.m_app_setting_data.dark_mode)
+    {
+        if (highlight_color)
+            return theApp.m_app_setting_data.theme_color.light1_5;
+        else
+            return CColorConvert::m_gray_color.dark2;
+    }
+    else
+    {
+        if (highlight_color)
+            return theApp.m_app_setting_data.theme_color.dark1;
+        else
+        return theApp.m_app_setting_data.theme_color.light2_5;
+    }
+}
+
+BYTE UiElement::Slider::GetBackAlpha(bool highlight_color)
+{
+    return 255;
 }

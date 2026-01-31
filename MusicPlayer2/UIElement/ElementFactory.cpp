@@ -98,6 +98,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::Slider>();
     else if (name == "textBlock")
         element = std::make_shared<UiElement::TextBlock>();
+    else if (name == "sliderProgressBar")
+        element = std::make_shared<UiElement::SliderProgressBar>();
 
     if (element != nullptr)
         element->SetUi(ui);
