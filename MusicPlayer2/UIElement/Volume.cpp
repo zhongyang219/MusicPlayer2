@@ -1,24 +1,26 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Volume.h"
 #include "TinyXml2Helper.h"
 #include "Player.h"
 #include "MusicPlayerDlg.h"
+#include "Slider.h"
+#include "ElementFactory.h"
 
 void UiElement::Volume::Draw()
 {
     CalculateRect();
 
-    if (volumn_btn.pressed)
+    if (pressed)
         rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
 
     DrawAreaGuard guard(&ui->GetDrawer(), rect);
 
-    //»æÖÆÍ¼±ê
+    //ç»˜åˆ¶å›¾æ ‡
     CRect rect_icon{ rect };
     rect_icon.right = rect_icon.left + rect_icon.Height();
     ui->DrawUiIcon(rect_icon, ui->GetBtnIconType(CPlayerUIBase::BTN_VOLUME));
 
-    //»æÖÆÎÄ±¾
+    //ç»˜åˆ¶æ–‡æœ¬
     if (show_text && rect_icon.right < rect.right)
     {
         CRect rect_text{ rect };
@@ -28,152 +30,89 @@ void UiElement::Volume::Draw()
             str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE").c_str();
         else
             str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
-        if (volumn_btn.hover)        //Êó±êÖ¸ÏòÒôÁ¿ÇøÓòÊ±£¬ÒÔÁíÍâÒ»ÖÖÑÕÉ«ÏÔÊ¾
+        if (hover)        //é¼ æ ‡æŒ‡å‘éŸ³é‡åŒºåŸŸæ—¶ï¼Œä»¥å¦å¤–ä¸€ç§é¢œè‰²æ˜¾ç¤º
             ui->GetDrawer().DrawWindowText(rect_text, str, ui->GetUIColors().color_text_heighlight);
         else
             ui->GetDrawer().DrawWindowText(rect_text, str, ui->GetUIColors().color_text);
     }
-    //ÉèÖÃÒôÁ¿µ÷Õû°´Å¥µÄÎ»ÖÃ
-    CRect rc_tmp = rect;
-    rc_tmp.bottom = rc_tmp.top + ui->DPI(24);
-    volumn_btn.rect = rc_tmp;
-    volumn_btn.rect.DeflateRect(0, ui->DPI(4));
-    volumn_down_btn.rect = volumn_btn.rect;
-    volumn_down_btn.rect.bottom += ui->DPI(4);
-    if (adj_btn_on_top)
-    {
-        volumn_down_btn.rect.MoveToY(volumn_btn.rect.top - volumn_down_btn.rect.Height());
-    }
-    else
-    {
-        volumn_down_btn.rect.MoveToY(volumn_btn.rect.bottom);
-    }
-    volumn_down_btn.rect.right = volumn_btn.rect.left + ui->DPI(27);      //ÉèÖÃµ¥¸öÒôÁ¿µ÷Õû°´Å¥µÄ¿í¶È
-    volumn_up_btn.rect = volumn_down_btn.rect;
-    volumn_up_btn.rect.MoveToX(volumn_down_btn.rect.right);
 
     Element::Draw();
 }
 
 void UiElement::Volume::DrawTopMost()
 {
-    //»æÖÆÒôÁ¿µ÷½Ú°´Å¥
-    if (m_show_volume_adj)
+    //ç»˜åˆ¶éŸ³é‡è°ƒèŠ‚æŒ‰é’®
+    if (m_show_volume_adj && IsEnable())
     {
-        CRect& volume_down_rect = volumn_down_btn.rect;
-        CRect& volume_up_rect = volumn_up_btn.rect;
-
-        //ÅĞ¶ÏÒôÁ¿µ÷Õû°´Å¥ÊÇ·ñ»á³¬³ö½çÃæÖ®Íâ£¬Èç¹ûÊÇ£¬Ôò½«ÆäÒÆ¶¯ÖÁ½çÃæÄÚ
-        int x_offset{}, y_offset{};     //ÒÆ¶¯µÄxºÍyÆ«ÒÆÁ¿
-        CRect rect_text;                //ÒôÁ¿ÎÄ±¾µÄÇøÓò
-        CString volume_str{};
+        //è®¡ç®—éŸ³é‡è°ƒèŠ‚æ§ä»¶çš„ä½ç½®
+        const CSize vol_adj_ctrl_size(ui->DPI(160), ui->DPI(32));
+        if (adj_btn_on_top)
+            rect_volume_adj.top = rect.top - ui->DPI(4) - vol_adj_ctrl_size.cy;
+        else
+            rect_volume_adj.top = rect.bottom + ui->DPI(4);
+        rect_volume_adj.left = rect.left - (vol_adj_ctrl_size.cx - rect.Width()) / 2;
+        rect_volume_adj.right = rect_volume_adj.left + vol_adj_ctrl_size.cx;
+        rect_volume_adj.bottom = rect_volume_adj.top + vol_adj_ctrl_size.cy;
         CRect draw_rect = ui->GetClientDrawRect();
+        CCommon::RestrictRectRange(rect_volume_adj, draw_rect);
+
+        //ç»˜åˆ¶èƒŒæ™¯
+        COLORREF ctrl_back = ui->GetUIColors().color_panel_back;
+        ui->DrawRectangle(rect_volume_adj, ctrl_back);
+
+        //æ»‘åŠ¨æ¡çš„ä½ç½®
+        CRect rect_slider = rect_volume_adj;
+        rect_slider.DeflateRect(ui->DPI(8), ui->DPI(8));
+
+        //å¦‚æœä¸æ˜¾ç¤ºéŸ³é‡æ–‡æœ¬ï¼Œåˆ™åœ¨æ»‘åŠ¨æ¡æ—è¾¹æ˜¾ç¤ºéŸ³é‡
         if (!show_text)
         {
-            //Èç¹û²»ÏÔÊ¾ÒôÁ¿ÎÄ±¾£¬ÔòÔÚÒôÁ¿µ÷Õû°´Å¥ÅÔ±ßÏÔÊ¾ÒôÁ¿¡£ÔÚÕâÀï¼ÆËãÎÄ±¾µÄÎ»ÖÃ
-            rect_text = volumn_up_btn.rect;
+            const std::wstring str_mute = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE");
+            //è®¡ç®—éŸ³é‡æ–‡æœ¬çš„å®½åº¦ï¼ˆå–â€œé™éŸ³â€å’Œâ€œ100%â€ä¸­çš„è¾ƒå¤§å€¼ï¼‰
+            int width{ (std::max)(ui->GetDrawer().GetTextExtent(str_mute.c_str()).cx, ui->GetDrawer().GetTextExtent(L"100%").cx)};
+            CRect rect_text = rect_slider;
+            rect_text.left = rect_text.right - width;
+            //ç»˜åˆ¶éŸ³é‡æ–‡æœ¬
+            CString volume_str{};
             if (CPlayer::GetInstance().GetVolume() <= 0)
-                volume_str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE").c_str();
+                volume_str = str_mute.c_str();
             else
                 volume_str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
-            int width{ ui->GetDrawer().GetTextExtent(volume_str).cx };
-            rect_text.left = rect_text.right + ui->DPI(2);
-            rect_text.right = rect_text.left + width;
 
-            if (rect_text.right > draw_rect.right)
-                x_offset = draw_rect.right - rect_text.right;
-            if (rect_text.bottom > draw_rect.bottom)
-                y_offset = draw_rect.bottom - rect_text.bottom;
-        }
-        else
-        {
-            if (volume_up_rect.right > draw_rect.right)
-                x_offset = draw_rect.right - volume_up_rect.right;
-            if (volume_up_rect.bottom > draw_rect.bottom)
-                y_offset = draw_rect.bottom - volume_up_rect.bottom;
-        }
-
-        if (x_offset != 0)
-        {
-            volume_up_rect.MoveToX(volume_up_rect.left + x_offset);
-            volume_down_rect.MoveToX(volume_down_rect.left + x_offset);
-            rect_text.MoveToX(rect_text.left + x_offset);
-        }
-        if (y_offset != 0)
-        {
-            volume_up_rect.MoveToY(volume_up_rect.top + y_offset);
-            volume_down_rect.MoveToY(volume_down_rect.top + y_offset);
-            rect_text.MoveToY(rect_text.top + y_offset);
-        }
-
-        BYTE alpha;
-        if (ui->IsDrawBackgroundAlpha())
-            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
-        else
-            alpha = 255;
-
-        COLORREF btn_up_back_color, btn_down_back_color;
-
-        if (volumn_up_btn.pressed && volumn_up_btn.hover)
-            btn_up_back_color = ui->GetUIColors().color_button_pressed;
-        else if (volumn_up_btn.hover)
-            btn_up_back_color = ui->GetUIColors().color_button_hover;
-        else
-            btn_up_back_color = ui->GetUIColors().color_text_2;
-
-        if (volumn_down_btn.pressed && volumn_down_btn.hover)
-            btn_down_back_color = ui->GetUIColors().color_button_pressed;
-        else if (volumn_down_btn.hover)
-            btn_down_back_color = ui->GetUIColors().color_button_hover;
-        else
-            btn_down_back_color = ui->GetUIColors().color_text_2;
-
-        if (!theApp.m_app_setting_data.button_round_corners)
-        {
-            ui->GetDrawer().FillAlphaRect(volume_up_rect, btn_up_back_color, alpha);
-            ui->GetDrawer().FillAlphaRect(volume_down_rect, btn_down_back_color, alpha);
-        }
-        else
-        {
-            CRect rc_buttons{ volume_up_rect | volume_down_rect };
-            DrawAreaGuard guard(&ui->GetDrawer(), rc_buttons);
-            ui->GetDrawer().DrawRoundRect(rc_buttons, ui->GetUIColors().color_text_2, ui->CalculateRoundRectRadius(rc_buttons), alpha);
-            if (volumn_up_btn.pressed || volumn_up_btn.hover)
-                ui->GetDrawer().DrawRoundRect(volume_up_rect, btn_up_back_color, ui->CalculateRoundRectRadius(volume_up_rect), alpha);
-            if (volumn_down_btn.pressed || volumn_down_btn.hover)
-                ui->GetDrawer().DrawRoundRect(volume_down_rect, btn_down_back_color, ui->CalculateRoundRectRadius(volume_down_rect), alpha);
-        }
-
-        if (volumn_down_btn.pressed)
-            volume_down_rect.MoveToXY(volume_down_rect.left + theApp.DPI(1), volume_down_rect.top + theApp.DPI(1));
-        if (volumn_up_btn.pressed)
-            volume_up_rect.MoveToXY(volume_up_rect.left + theApp.DPI(1), volume_up_rect.top + theApp.DPI(1));
-
-        ui->GetDrawer().DrawWindowText(volume_down_rect, L"-", ColorTable::WHITE, Alignment::CENTER);
-        ui->GetDrawer().DrawWindowText(volume_up_rect, L"+", ColorTable::WHITE, Alignment::CENTER);
-
-        //Èç¹û²»ÏÔÊ¾ÒôÁ¿ÎÄ±¾ÇÒÏÔÊ¾ÁËÒôÁ¿µ÷Õû°´Å¥£¬ÔòÔÚ°´Å¥ÅÔ±ßÏÔÊ¾ÒôÁ¿
-        if (!show_text)
-        {
             ui->GetDrawer().DrawWindowText(rect_text, volume_str, ui->GetUIColors().color_text);
+            rect_slider.right = rect_text.left - ui->DPI(8);
         }
+
+        //ç»˜åˆ¶æ»‘åŠ¨æ¡
+        volume_slider->SetRect(rect_slider);
+        volume_slider->Draw();
     }
-    else
-    {
-        volumn_up_btn.rect = CRect();
-        volumn_down_btn.rect = CRect();
-    }
+}
+
+void UiElement::Volume::InitComplete()
+{
+    CElementFactory factory;
+    volume_slider = std::dynamic_pointer_cast<Slider>(factory.CreateElement("slider", ui));
+    volume_slider->SetRange(0, 100);
+    volume_slider->SetPosChangedTrigger([&](UiElement::Slider* sender){
+        //æ»šåŠ¨æ¡å˜åŒ–æ—¶è®¾ç½®éŸ³é‡
+        CPlayer::GetInstance().SetVolume(sender->GetCurPos());
+    });
 }
 
 bool UiElement::Volume::LButtonUp(CPoint point)
 {
-    volumn_btn.pressed = false;
-    volumn_up_btn.pressed = false;
-    volumn_down_btn.pressed = false;
-    //µã»÷ÒôÁ¿°´Å¥ÇøÓòÏÔÊ¾/Òş²ØÒôÁ¿°´Å¥
-    if (rect.PtInRect(point) && IsShown())
+    bool cur_pressed = pressed;
+    pressed = false;
+    //ç‚¹å‡»éŸ³é‡æŒ‰é’®åŒºåŸŸæ˜¾ç¤º/éšè—éŸ³é‡æŒ‰é’®
+    if (cur_pressed && rect.PtInRect(point) && IsEnable() && IsShown())
     {
         m_show_volume_adj = !m_show_volume_adj;
+        if (m_show_volume_adj)
+        {
+            UpdateSliderValue();
+            hover = false;
+        }
         return true;
     }
     return false;
@@ -181,28 +120,25 @@ bool UiElement::Volume::LButtonUp(CPoint point)
 
 bool UiElement::Volume::LButtonDown(CPoint point)
 {
-    if (rect.PtInRect(point))
-        volumn_btn.pressed = true;
-    if (volumn_up_btn.rect.PtInRect(point))
-        volumn_up_btn.pressed = true;
-    if (volumn_down_btn.rect.PtInRect(point))
-        volumn_down_btn.pressed = true;
-    return  volumn_btn.pressed || volumn_up_btn.pressed || volumn_down_btn.pressed;
+    if (rect.PtInRect(point) && IsEnable() && IsShown())
+        pressed = true;
+    return  pressed;
 }
 
 bool UiElement::Volume::MouseMove(CPoint point)
 {
-    volumn_btn.hover = (rect.PtInRect(point));
-    if (volumn_btn.hover)
+    hover = (rect.PtInRect(point));
+    if (hover)
         ui->UpdateMouseToolTipPosition(CPlayerUIBase::BTN_VOLUME, rect);
     return false;
 }
 
 bool UiElement::Volume::MouseWheel(int delta, CPoint point)
 {
-    if (rect.PtInRect(point) || volumn_up_btn.rect.PtInRect(point) || volumn_down_btn.rect.PtInRect(point))
+    if (rect.PtInRect(point) || rect_volume_adj.PtInRect(point))
     {
         CMusicPlayerDlg::GetInstance()->MouseWheelAdjustVolume(static_cast<short>(delta));
+        UpdateSliderValue();
         return true;
     }
     return false;
@@ -211,44 +147,31 @@ bool UiElement::Volume::MouseWheel(int delta, CPoint point)
 bool UiElement::Volume::GlobalLButtonUp(CPoint point)
 {
     bool rtn = false;
-    volumn_up_btn.pressed = false;
-    volumn_down_btn.pressed = false;
-    if (!rect.PtInRect(point) && IsShown())
+    if (IsShown() && IsEnable())
     {
-        //Èç¹ûÒÑ¾­ÏÔÊ¾ÁËÒôÁ¿µ÷Õû°´Å¥£¬Ôòµã»÷ÒôÁ¿µ÷ÕûÊ±±£³ÖÒôÁ¿µ÷Õû°´Å¥µÄÏÔÊ¾
-        if (m_show_volume_adj)
+        if (m_show_volume_adj && rect_volume_adj.PtInRect(mouse_pressed_point))
         {
-            if (volumn_up_btn.rect.PtInRect(point))
-            {
-                CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, theApp.m_nc_setting_data.volum_step);
-                rtn = true;
-            }
-            else if (volumn_down_btn.rect.PtInRect(point))
-            {
-                CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, -theApp.m_nc_setting_data.volum_step);
-                rtn = true;
-            }
-            else
-            {
-                m_show_volume_adj = false;
-            }
+            volume_slider->LButtonUp(point);
+            rtn = true;
         }
+        else
+        {
+            m_show_volume_adj = false;
+        }
+
+        if (!rect_volume_adj.PtInRect(point))
+            volume_slider->MouseLeave();
     }
     return rtn;
 }
 
 bool UiElement::Volume::GlobalLButtonDown(CPoint point)
 {
+    mouse_pressed_point = point;
     if (IsShown() && IsEnable() && m_show_volume_adj)
     {
-        if (volumn_up_btn.rect.PtInRect(point))
-        {
-            volumn_up_btn.pressed = true;
-        }
-        else if (volumn_down_btn.rect.PtInRect(point))
-        {
-            volumn_down_btn.pressed = true;
-        }
+        if (rect_volume_adj.PtInRect(point))
+            volume_slider->LButtonDown(point);
         return true;
     }
     return false;
@@ -256,20 +179,20 @@ bool UiElement::Volume::GlobalLButtonDown(CPoint point)
 
 bool UiElement::Volume::GlobalMouseMove(CPoint point)
 {
-    if (m_show_volume_adj)
-    {
-        volumn_up_btn.hover = volumn_up_btn.rect.PtInRect(point);
-        volumn_down_btn.hover = volumn_down_btn.rect.PtInRect(point);
-        return true;
-    }
-    return false;
+    bool rtn = IsShown() && IsEnable() && m_show_volume_adj;
+    volume_slider->MouseMove(point);
+    return rtn;
 }
 
 void UiElement::Volume::FromXmlNode(tinyxml2::XMLElement* xml_node)
 {
     Element::FromXmlNode(xml_node);
-    std::string str_show_text = CTinyXml2Helper::ElementAttribute(xml_node, "show_text");
-    show_text = CTinyXml2Helper::StringToBool(str_show_text.c_str());
-    std::string str_adj_btn_on_top = CTinyXml2Helper::ElementAttribute(xml_node, "adj_btn_on_top");
-    adj_btn_on_top = CTinyXml2Helper::StringToBool(str_adj_btn_on_top.c_str());
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_text", show_text);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "adj_btn_on_top", adj_btn_on_top);
+}
+
+void UiElement::Volume::UpdateSliderValue()
+{
+    int volume = CPlayer::GetInstance().GetVolume();
+    volume_slider->SetCurPos(volume);
 }

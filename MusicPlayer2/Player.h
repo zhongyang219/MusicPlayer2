@@ -273,6 +273,7 @@ public:
     void GetPlayerCoreCurrentPosition();
     //用m_volume的值设置音量
     void SetVolume();
+    void SetVolume(int volume);
 
     //计算频谱分析
     void CalculateSpectralData();

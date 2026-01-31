@@ -13,8 +13,8 @@ enum class Command
     PAUSE,
     STOP,
     PLAY_PAUSE,
-    FF,	//快进
-    REW,		//快倒
+    FF, //快进
+    REW,        //快倒
     VOLUME_ADJ,
     SEEK
 };
@@ -268,12 +268,12 @@ public:
     lpszLnkFileDir  指定目录，不能为NULL。
     lpszFileName    指定文件，为NULL表示当前进程的EXE文件。
     lpszLnkFileName 快捷方式名称，为NULL表示EXE文件名。
-    lpszWorkDir		快捷方式工作目录，为NULL表示快捷方式目标所在位置
+    lpszWorkDir     快捷方式工作目录，为NULL表示快捷方式目标所在位置
     wHotkey         为0表示不设置快捷键
     pszDescription  备注
     iShowCmd        运行方式，默认为常规窗口
-    lpszArguments	命令行参数
-    nIconOffset		使用的图标为应用程序中第几个图标
+    lpszArguments   命令行参数
+    nIconOffset     使用的图标为应用程序中第几个图标
     */
     static bool CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName = NULL, LPCTSTR lpszLnkFileName = NULL, LPCTSTR lpszWorkDir = NULL, WORD wHotkey = 0, LPCTSTR lpszDescription = NULL, int iShowCmd = SW_SHOWNORMAL, LPCTSTR lpszArguments = NULL, int nIconOffset = 0);
 
@@ -448,6 +448,8 @@ public:
     //返回使窗口显示在一个监视器内所需移动距离最小的偏移量 (当check_rect在某方向上大于screen_rects时向左或向上对齐)
     static POINT CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& screen_rects);
 
+    static void RestrictRectRange(CRect& rect, const CRect& rect_range);
+
     //从资源文件读取上次编译时间
     static void GetLastCompileTime(wstring& time_str, wstring& hash_str);
 
@@ -479,17 +481,17 @@ inline bool CCommon::StringNormalize(T& str)
 {
     if (str.empty()) return false;
 
-    int size = str.size();	//字符串的长度
+    int size = str.size();  //字符串的长度
     if (size < 0) return false;
-    int index1 = 0;		//字符串中第1个不是空格或控制字符的位置
-    int index2 = size - 1;	//字符串中最后一个不是空格或控制字符的位置
+    int index1 = 0;     //字符串中第1个不是空格或控制字符的位置
+    int index2 = size - 1;  //字符串中最后一个不是空格或控制字符的位置
     while (index1 < size && ((str[index1] >= 0 && str[index1] <= 32) || str[index1] == 0x3000u || str[index1] == 0xfffdu))
         index1++;
     while (index2 >= 0 && ((str[index2] >= 0 && str[index2] <= 32) || str[index1] == 0x3000u || str[index2] == 0xfffdu))
         index2--;
-    if (index1 > index2)	//如果index1 > index2，说明字符串全是空格或控制字符
+    if (index1 > index2)    //如果index1 > index2，说明字符串全是空格或控制字符
         str.clear();
-    else if (index1 == 0 && index2 == size - 1)	//如果index1和index2的值分别为0和size - 1，说明字符串前后没有空格或控制字符，直接返回
+    else if (index1 == 0 && index2 == size - 1) //如果index1和index2的值分别为0和size - 1，说明字符串前后没有空格或控制字符，直接返回
         return true;
     else
         str = str.substr(index1, index2 - index1 + 1);
@@ -510,9 +512,9 @@ inline bool CCommon::StringTransform(T& str, bool upper)
 {
     if (str.empty()) return false;
     //if (upper)
-    //	std::transform(str.begin(), str.end(), str.begin(), toupper);
+    //  std::transform(str.begin(), str.end(), str.begin(), toupper);
     //else
-    //	std::transform(str.begin(), str.end(), str.begin(), tolower);
+    //  std::transform(str.begin(), str.end(), str.begin(), tolower);
     if (upper)
     {
         for (auto& ch : str)
@@ -566,7 +568,7 @@ inline size_t CCommon::StringNatchWholeWord(const T& str, const T& find_str)
     //StringTransform(str, false);
     //StringTransform(find_str, false);
     int index{ -1 };
-    int find_str_front_pos, find_str_back_pos;		//找到的字符串在原字符串中前面和后面一个字符的位置
+    int find_str_front_pos, find_str_back_pos;      //找到的字符串在原字符串中前面和后面一个字符的位置
     int size = str.size();
     int find_str_size = find_str.size();
     while (true)

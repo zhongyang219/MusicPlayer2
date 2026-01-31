@@ -431,8 +431,8 @@ void CPlayer::SearchLyrics(bool refresh)
 void CPlayer::IniLyrics()
 {
     //尝试获取内嵌歌词
-    CLyrics inner_lyrics;		//音频文件内嵌歌词
-    wstring lyric_str;			//内嵌歌词的原始文本
+    CLyrics inner_lyrics;       //音频文件内嵌歌词
+    wstring lyric_str;          //内嵌歌词的原始文本
     if (theApp.m_lyric_setting_data.use_inner_lyric_first)
     {
         SongInfo song;
@@ -443,7 +443,7 @@ void CPlayer::IniLyrics()
     }
 
     //获取关联歌词文件的歌词
-    CLyrics file_lyrics;		//来自歌词文件
+    CLyrics file_lyrics;        //来自歌词文件
     if (!m_playlist.empty() && !GetCurrentSongInfo().lyric_file.empty())
     {
         file_lyrics = CLyrics{ GetCurrentSongInfo().lyric_file };
@@ -529,7 +529,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         if (std::fabs(m_speed - 1) > 0.01)
             SetSpeed(m_speed);
         SetPitch(m_pitch);
-        memset(m_spectral_data, 0, sizeof(m_spectral_data));		//打开文件时清除频谱分析的数据
+        memset(m_spectral_data, 0, sizeof(m_spectral_data));        //打开文件时清除频谱分析的数据
         //SetFXHandle();
         if (m_equ_enable)
             SetAllEqualizer();
@@ -580,22 +580,22 @@ void CPlayer::MusicControl(Command command, int volume_step)
         }
         m_playing = PS_STOPED;
         m_current_position = CPlayTime();
-        memset(m_spectral_data, 0, sizeof(m_spectral_data));		//停止时清除频谱分析的数据
+        memset(m_spectral_data, 0, sizeof(m_spectral_data));        //停止时清除频谱分析的数据
         m_controls.UpdateControls(PlaybackStatus::Stopped);
         MediaTransControlsLoadThumbnailDefaultImage();
         break;
-    case Command::FF:		//快进
-        GetPlayerCoreCurrentPosition();		//获取当前位置（毫秒）
-        m_current_position += 5000;		//每次快进5000毫秒
+    case Command::FF:       //快进
+        GetPlayerCoreCurrentPosition();     //获取当前位置（毫秒）
+        m_current_position += 5000;     //每次快进5000毫秒
         if (m_current_position > m_song_length) m_current_position -= 5000;
         SeekTo(m_current_position.toInt());
         break;
-    case Command::REW:		//快退
+    case Command::REW:      //快退
     {
-        GetPlayerCoreCurrentPosition();		//获取当前位置（毫秒）
+        GetPlayerCoreCurrentPosition();     //获取当前位置（毫秒）
         int current_position = m_current_position.toInt();
-        current_position -= 5000;		//每次快退5000毫秒
-        if (current_position < 0) current_position = 0;		//防止快退到负的位置
+        current_position -= 5000;       //每次快退5000毫秒
+        if (current_position < 0) current_position = 0;     //防止快退到负的位置
         SeekTo(current_position);
     }
     break;
@@ -622,7 +622,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         if (m_volume < 0) m_volume = 0;
         SetVolume();
         break;
-    case Command::SEEK:		//定位到m_current_position的位置
+    case Command::SEEK:     //定位到m_current_position的位置
         if (m_current_position > m_song_length)
         {
             m_current_position = CPlayTime();
@@ -672,6 +672,12 @@ void CPlayer::SetVolume()
     }
 }
 
+void CPlayer::SetVolume(int volume)
+{
+    m_volume = volume;
+    CCommon::SetNumRange(m_volume, 0, 100);
+    SetVolume();
+}
 
 void CPlayer::CalculateSpectralData()
 {
@@ -706,7 +712,7 @@ void CPlayer::CalculateSpectralDataPeak()
         {
             if (m_spectral_data[i] > m_spectral_peak[i])
             {
-                m_spectral_peak[i] = m_spectral_data[i];		//如果当前的频谱比上一次的频谱高，则频谱顶端高度则为当前频谱的高度
+                m_spectral_peak[i] = m_spectral_data[i];        //如果当前的频谱比上一次的频谱高，则频谱顶端高度则为当前频谱的高度
                 fall_count[i] = 0;
             }
             else if (m_spectral_data[i] < m_spectral_peak[i])
@@ -715,7 +721,7 @@ void CPlayer::CalculateSpectralDataPeak()
                 float fall_distance = fall_count[i] * (7.002355f / theApp.m_fps - 0.042824f);
                 if (fall_distance < 0)
                     fall_distance = 0;
-                m_spectral_peak[i] -= fall_distance;		//如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
+                m_spectral_peak[i] -= fall_distance;        //如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
             }
         }
     }
@@ -740,9 +746,9 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
     bool stop{};    // 根据循环模式和参数song_track判断应当停止时设置为true
     switch (m_repeat_mode)
     {
-    case RM_PLAY_ORDER:		//顺序播放
+    case RM_PLAY_ORDER:     //顺序播放
 
-        if (song_track == NEXT)		//播放下一曲
+        if (song_track == NEXT)     //播放下一曲
         {
             if (!m_next_tracks.empty()) {
                 song_track = m_next_tracks.front();
@@ -753,13 +759,13 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
                 song_track = m_index + 1;
             }
         }
-        else if (song_track == PREVIOUS)		//播放上一曲
+        else if (song_track == PREVIOUS)        //播放上一曲
         {
             song_track = m_index - 1;
         }
         break;
 
-    case RM_PLAY_SHUFFLE:		//无序播放
+    case RM_PLAY_SHUFFLE:       //无序播放
         if (m_shuffle_list.size() != m_playlist.size())
             InitShuffleList();
         if (!m_shuffle_list.empty())
@@ -799,7 +805,7 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
         }
         break;
 
-    case RM_PLAY_RANDOM:		//随机播放
+    case RM_PLAY_RANDOM:        //随机播放
         if (song_track == NEXT)
         {
             if (!m_next_tracks.empty()) {
@@ -817,9 +823,9 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
                     song_track = 0;      //只有一首歌
                 }
             }
-            m_random_list.push_back(song_track);	//保存随机播放过的曲目
+            m_random_list.push_back(song_track);    //保存随机播放过的曲目
         }
-        else if (song_track == PREVIOUS)		//回溯上一个随机播放曲目
+        else if (song_track == PREVIOUS)        //回溯上一个随机播放曲目
         {
             if (m_random_list.size() >= 2)
             {
@@ -832,11 +838,11 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
         }
         else if (song_track >= 0 && song_track < GetSongNum() && song_track != m_index)     //手动指定歌曲时
         {
-            m_random_list.push_back(song_track);	//保存随机播放过的曲目
+            m_random_list.push_back(song_track);    //保存随机播放过的曲目
         }
         break;
 
-    case RM_LOOP_TRACK:		//单曲循环
+    case RM_LOOP_TRACK:     //单曲循环
         if (auto_next)
         {
             if (song_track == NEXT)
@@ -858,7 +864,7 @@ bool CPlayer::PlayTrack(int song_track, bool auto_next)
         }
         break;
 
-    case RM_LOOP_PLAYLIST:		//列表循环
+    case RM_LOOP_PLAYLIST:      //列表循环
         if (!m_next_tracks.empty()) {
             song_track = m_next_tracks.front();
             m_next_tracks.pop_front();
@@ -941,13 +947,13 @@ bool CPlayer::PlayAfterCurrentTrack(const std::vector<SongInfo>& tracks_to_play)
 
 void CPlayer::LoopPlaylist(int& song_track)
 {
-    if (song_track == NEXT)		//播放下一曲
+    if (song_track == NEXT)     //播放下一曲
     {
         song_track = m_index + 1;
         if (song_track >= GetSongNum()) song_track = 0;
         if (song_track < 0) song_track = GetSongNum() - 1;
     }
-    if (song_track == PREVIOUS)		//播放上一曲
+    if (song_track == PREVIOUS)     //播放上一曲
     {
         song_track = m_index - 1;
         if (song_track >= GetSongNum()) song_track = 0;
@@ -1439,7 +1445,7 @@ bool CPlayer::GetPlayerCoreError(const wchar_t* function_name)
 
 bool CPlayer::IsError() const
 {
-    if (m_loading || !m_player_core_inited)		//如果播放列表正在加载，则不检测错误
+    if (m_loading || !m_player_core_inited)     //如果播放列表正在加载，则不检测错误
         return false;
     else
         return (m_error_state != ES_NO_ERROR || m_error_code != 0 || m_pCore == nullptr || (m_file_opend && m_pCore->GetCoreType() == PT_BASS && GetBassHandle() == 0));
@@ -1489,12 +1495,12 @@ void CPlayer::SaveConfig() const
     //保存每个均衡器通道的增益
     //if (m_equ_style == 9)
     //{
-    //	wchar_t buff[16];
-    //	for (int i{}; i < EQU_CH_NUM; i++)
-    //	{
-    //		swprintf_s(buff, L"channel%d", i + 1);
-    //		ini.WriteInt(L"equalizer", buff, m_equalizer_gain[i]);
-    //	}
+    //  wchar_t buff[16];
+    //  for (int i{}; i < EQU_CH_NUM; i++)
+    //  {
+    //      swprintf_s(buff, L"channel%d", i + 1);
+    //      ini.WriteInt(L"equalizer", buff, m_equalizer_gain[i]);
+    //  }
     //}
     //保存混响设定
     ini.WriteInt(L"reverb", L"reverb_enable", m_reverb_enable);
@@ -1542,8 +1548,8 @@ void CPlayer::LoadConfig()
 
     //读取均衡器设定
     m_equ_enable = ini.GetBool(L"equalizer", L"equalizer_enable", false);
-    m_equ_style = ini.GetInt(L"equalizer", L"equalizer_style", 0);	//读取均衡器预设
-    if (m_equ_style == 9)		//如果均衡器预设为“自定义”
+    m_equ_style = ini.GetInt(L"equalizer", L"equalizer_style", 0);  //读取均衡器预设
+    if (m_equ_style == 9)       //如果均衡器预设为“自定义”
     {
         //读取每个均衡器通道的增益
         for (int i{}; i < EQU_CH_NUM; i++)
@@ -1553,7 +1559,7 @@ void CPlayer::LoadConfig()
             m_equalizer_gain[i] = ini.GetInt(L"equalizer", buff, 0);
         }
     }
-    else if (m_equ_style >= 0 && m_equ_style < 9)		//否则，根据均衡器预设设置每个通道的增益
+    else if (m_equ_style >= 0 && m_equ_style < 9)       //否则，根据均衡器预设设置每个通道的增益
     {
         for (int i{}; i < EQU_CH_NUM; i++)
         {
@@ -1562,8 +1568,8 @@ void CPlayer::LoadConfig()
     }
     //读取混响设定
     m_reverb_enable = ini.GetBool(L"reverb", L"reverb_enable", 0);
-    m_reverb_mix = ini.GetInt(L"reverb", L"reverb_mix", 45);		//混响强度默认为50
-    m_reverb_time = ini.GetInt(L"reverb", L"reverb_time", 100);	//混响时间默认为1s
+    m_reverb_mix = ini.GetInt(L"reverb", L"reverb_mix", 45);        //混响强度默认为50
+    m_reverb_time = ini.GetInt(L"reverb", L"reverb_time", 100); //混响时间默认为1s
 }
 
 void CPlayer::ExplorePath(int track) const
@@ -1571,11 +1577,11 @@ void CPlayer::ExplorePath(int track) const
     if (GetSongNum() > 0)
     {
         CString str;
-        if (track < 0)		//track小于0，打开资源管理器后选中当前播放的文件
+        if (track < 0)      //track小于0，打开资源管理器后选中当前播放的文件
             str.Format(_T("/select,\"%s\""), GetCurrentFilePath().c_str());
-        else if (track < GetSongNum())		//track为播放列表中的一个序号，打开资源管理器后选中指定的文件
+        else if (track < GetSongNum())      //track为播放列表中的一个序号，打开资源管理器后选中指定的文件
             str.Format(_T("/select,\"%s\""), m_playlist[track].file_path.c_str());
-        else								//track超过播放列表中文件的数量，打开资源管理器后不选中任何文件
+        else                                //track超过播放列表中文件的数量，打开资源管理器后不选中任何文件
             str = m_path.c_str();
         ShellExecute(NULL, _T("open"), _T("explorer"), str, NULL, SW_SHOWNORMAL);
     }
@@ -2368,7 +2374,7 @@ bool CPlayer::SetBRepeatPoint()
     if (m_ab_repeat_mode != AM_NONE)
     {
         CPlayTime time_span = m_current_position - m_a_repeat;
-        if (time_span > 200 && time_span < m_song_length)		//B点位置必须至少超过A点200毫秒
+        if (time_span > 200 && time_span < m_song_length)       //B点位置必须至少超过A点200毫秒
         {
             m_b_repeat = m_current_position;
             m_ab_repeat_mode = AM_AB_REPEAT;
@@ -2380,7 +2386,7 @@ bool CPlayer::SetBRepeatPoint()
 
 bool CPlayer::ContinueABRepeat()
 {
-    if (m_ab_repeat_mode == AM_AB_REPEAT)		//在AB重复状态下，将当前重复B点设置为下一次的重复A点
+    if (m_ab_repeat_mode == AM_AB_REPEAT)       //在AB重复状态下，将当前重复B点设置为下一次的重复A点
     {
         m_a_repeat = m_b_repeat;
         m_ab_repeat_mode = AM_A_SELECTED;
@@ -2428,7 +2434,7 @@ void CPlayer::SearchAlbumCover()
 {
     CSingleLock sync(&m_album_cover_sync, TRUE);
     //static wstring last_file_path;
-    //if (last_file_path != GetCurrentFilePath())		//防止同一个文件多次获取专辑封面
+    //if (last_file_path != GetCurrentFilePath())       //防止同一个文件多次获取专辑封面
     //{
     m_album_cover.Destroy();
     SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(GetCurrentSongInfo()) };
@@ -2484,15 +2490,15 @@ void CPlayer::AlbumCoverGaussBlur()
         CImage image_tmp;
         CSize image_size(m_album_cover.GetWidth(), m_album_cover.GetHeight());
         //将图片缩小以减小高斯模糊的计算量
-        CCommon::SizeZoom(image_size, 300);		//图片大小按比例缩放，使长边等于300
-        CDrawCommon::ImageResize(m_album_cover, image_tmp, image_size);		//拉伸图片
+        CCommon::SizeZoom(image_size, 300);     //图片大小按比例缩放，使长边等于300
+        CDrawCommon::ImageResize(m_album_cover, image_tmp, image_size);     //拉伸图片
 #ifdef _DEBUG
         image_tmp.Save(_T("..\\Debug\\image_tmp.bmp"), Gdiplus::ImageFormatBMP);
 #endif // _DEBUG
 
         //执行高斯模糊
         CGaussBlur gauss_blur;
-        gauss_blur.SetSigma(static_cast<double>(theApp.m_app_setting_data.gauss_blur_radius) / 10);		//设置高斯模糊半径
+        gauss_blur.SetSigma(static_cast<double>(theApp.m_app_setting_data.gauss_blur_radius) / 10);     //设置高斯模糊半径
         gauss_blur.DoGaussBlur(image_tmp, m_album_cover_blur);
     }
 }

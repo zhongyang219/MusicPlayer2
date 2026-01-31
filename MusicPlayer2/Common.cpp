@@ -18,24 +18,24 @@ CCommon::~CCommon()
 
 //void CCommon::GetAllFormatFiles(wstring path, vector<wstring>& files, const vector<wstring>& format, size_t max_file)
 //{
-//	//文件句柄
-//	int hFile = 0;
-//	//文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
-//	_wfinddata_t fileinfo;
-//	wstring file_path;
-//	for (auto a_format : format)
-//	{
-//		if ((hFile = _wfindfirst(file_path.assign(path).append(L"\\*.").append(a_format).c_str(), &fileinfo)) != -1)
-//		{
-//			do
-//			{
-//				if (files.size() >= max_file) break;
-//				files.push_back(file_path.assign(fileinfo.name));  //将文件名保存
-//			} while (_wfindnext(hFile, &fileinfo) == 0);
-//		}
-//		_findclose(hFile);
-//	}
-//	std::sort(files.begin(), files.end());		//对容器里的文件按名称排序
+//  //文件句柄
+//  int hFile = 0;
+//  //文件信息（用Unicode保存使用_wfinddata_t，多字节字符集使用_finddata_t）
+//  _wfinddata_t fileinfo;
+//  wstring file_path;
+//  for (auto a_format : format)
+//  {
+//      if ((hFile = _wfindfirst(file_path.assign(path).append(L"\\*.").append(a_format).c_str(), &fileinfo)) != -1)
+//      {
+//          do
+//          {
+//              if (files.size() >= max_file) break;
+//              files.push_back(file_path.assign(fileinfo.name));  //将文件名保存
+//          } while (_wfindnext(hFile, &fileinfo) == 0);
+//      }
+//      _findclose(hFile);
+//  }
+//  std::sort(files.begin(), files.end());      //对容器里的文件按名称排序
 //}
 
 bool CCommon::FileExist(const wstring& file, bool is_case_sensitive)
@@ -166,10 +166,10 @@ bool CCommon::StringCsvNormalize(CString& str)
 
 //bool CCommon::FileIsMidi(const wstring & file_name)
 //{
-//	wstring type;
-//	type = file_name.substr(file_name.size() - 4, 4);			//获取扩展名
-//	std::transform(type.begin(), type.end(), type.begin(), tolower);		//将扩展名转换成小写
-//	return (type == L".mid");
+//  wstring type;
+//  type = file_name.substr(file_name.size() - 4, 4);           //获取扩展名
+//  std::transform(type.begin(), type.end(), type.begin(), tolower);        //将扩展名转换成小写
+//  return (type == L".mid");
 //}
 
 void CCommon::StringCopy(char* dest, int size, string source)
@@ -188,18 +188,18 @@ void CCommon::StringCopy(char* dest, int size, string source)
 
 //bool CCommon::StringCompareNoCase(const wstring & str1, const wstring & str2)
 //{
-//	wstring _str1{ str1 }, _str2{ str2 };
-//	StringTransform(_str1, false);
-//	StringTransform(_str2, false);
-//	return (_str1 == _str2);
+//  wstring _str1{ str1 }, _str2{ str2 };
+//  StringTransform(_str1, false);
+//  StringTransform(_str2, false);
+//  return (_str1 == _str2);
 //}
 
 //size_t CCommon::StringFindNoCase(const wstring & str, const wstring & find_str)
 //{
-//	wstring _str{ str }, _find_str{ find_str };
-//	StringTransform(_str, false);
-//	StringTransform(_find_str, false);
-//	return _str.find(_find_str);
+//  wstring _str{ str }, _find_str{ find_str };
+//  StringTransform(_str, false);
+//  StringTransform(_find_str, false);
+//  return _str.find(_find_str);
 //}
 
 bool CCommon::IsDivideChar(wchar_t ch)
@@ -537,7 +537,7 @@ wstring CCommon::StrToUnicode(const string& str, CodeType code_type, bool auto_u
     // auto_utf8有可能将过短的ANSI误认为是UTF8导致乱码
     if (str.empty()) return wstring();
     // code_type为AUTO时从这里开始
-    if (code_type == CodeType::AUTO)	// 先根据BOM判断编码类型
+    if (code_type == CodeType::AUTO)    // 先根据BOM判断编码类型
     {
         code_type = JudgeCodeType(str, CodeType::ANSI, auto_utf8);
     }
@@ -641,7 +641,7 @@ string CCommon::UnicodeToStr(const wstring& wstr, CodeType code_type, bool* char
     else if (code_type == CodeType::UTF16LE)
     {
         result.clear();
-        result.push_back(-1);	//在前面加上UTF16LE的BOM
+        result.push_back(-1);   //在前面加上UTF16LE的BOM
         result.push_back(-2);
         result.append((const char*)wstr.c_str(), (const char*)wstr.c_str() + wstr.size() * 2);
         result.push_back('\0');
@@ -649,7 +649,7 @@ string CCommon::UnicodeToStr(const wstring& wstr, CodeType code_type, bool* char
     else if (code_type == CodeType::UTF16BE)
     {
         result.clear();
-        result.push_back(-2);	//在前面加上UTF16BE的BOM
+        result.push_back(-2);   //在前面加上UTF16BE的BOM
         result.push_back(-1);
         wchar_t* p = (wchar_t*)wstr.c_str();
         convertBE_LE(p, wstr.size());
@@ -720,7 +720,7 @@ bool CCommon::IsUTF8Bytes(const char* data)
             charByteCounter--;
         }
     }
-    if (ascii) return false;		//如果全是ASCII字符，返回false
+    if (ascii) return false;        //如果全是ASCII字符，返回false
     else return true;
 }
 
@@ -847,9 +847,9 @@ wstring CCommon::GetTemplatePath()
 {
     wstring result;
     wchar_t buff[MAX_PATH];
-    GetTempPath(MAX_PATH, buff);		//获取临时文件夹的路径
+    GetTempPath(MAX_PATH, buff);        //获取临时文件夹的路径
     result = buff;
-    if (!result.empty() && result.back() != L'\\' && result.back() != L'/')		//确保路径后面有斜杠
+    if (!result.empty() && result.back() != L'\\' && result.back() != L'/')     //确保路径后面有斜杠
         result.push_back(L'\\');
     return result;
 }
@@ -1015,18 +1015,18 @@ void CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& file
     if (cmd_line.empty()) return;
     wstring path;
     //先找出字符串中的文件夹路径，从命令行参数传递过来的文件肯定都是同一个文件夹下的
-    if (cmd_line[0] == L'\"')		//如果第一个文件用双引号包含起来
+    if (cmd_line[0] == L'\"')       //如果第一个文件用双引号包含起来
     {
-        int index1 = cmd_line.find(L'\"', 1);		//查找和第1个双引号匹配的双引号
-        int index2 = cmd_line.rfind(L'\\', index1);		//往前查找反斜杠
-        path = cmd_line.substr(1, index2);		//获取文件夹路径（包含最后一个反斜杠）
+        int index1 = cmd_line.find(L'\"', 1);       //查找和第1个双引号匹配的双引号
+        int index2 = cmd_line.rfind(L'\\', index1);     //往前查找反斜杠
+        path = cmd_line.substr(1, index2);      //获取文件夹路径（包含最后一个反斜杠）
         files.push_back(cmd_line.substr(1, index1 - 1));
     }
-    else		//如果第一个文件没有用双引号包含起来，则说明路径中不包含空格，
+    else        //如果第一个文件没有用双引号包含起来，则说明路径中不包含空格，
     {
-        int index1 = cmd_line.find(L' ');		//查找和第1空格
-        int index2 = cmd_line.rfind(L'\\', index1);		//往前查找反斜杠
-        path = cmd_line.substr(0, index2 + 1);		//获取文件夹路径（包含最后一个反斜杠）
+        int index1 = cmd_line.find(L' ');       //查找和第1空格
+        int index2 = cmd_line.rfind(L'\\', index1);     //往前查找反斜杠
+        path = cmd_line.substr(0, index2 + 1);      //获取文件夹路径（包含最后一个反斜杠）
         files.push_back(cmd_line.substr(0, index1));
     }
     int path_size = path.size();
@@ -1034,9 +1034,9 @@ void CCommon::DisposeCmdLineFiles(const wstring& cmd_line, vector<wstring>& file
     int index{};
     while (true)
     {
-        index = cmd_line.find(path, index + path_size);		//从第2个开始查找路径出现的位置
+        index = cmd_line.find(path, index + path_size);     //从第2个开始查找路径出现的位置
         if (index == string::npos) break;
-        if (index > 0 && cmd_line[index - 1] == L'\"')		//如果路径前面一个字符是双引号
+        if (index > 0 && cmd_line[index - 1] == L'\"')      //如果路径前面一个字符是双引号
         {
             int index1 = cmd_line.find(L'\"', index);
             files.push_back(cmd_line.substr(index, index1 - index));
@@ -1103,9 +1103,9 @@ bool CCommon::CreateFileShortcut(LPCTSTR lpszLnkFileDir, LPCTSTR lpszFileName, L
         return false;
     }
 
-    TCHAR file_path[MAX_PATH];		//当前进程exe文件路径
+    TCHAR file_path[MAX_PATH];      //当前进程exe文件路径
     GetModuleFileName(NULL, file_path, MAX_PATH);
-    LPCTSTR pFilePath;				//快捷方式目标
+    LPCTSTR pFilePath;              //快捷方式目标
 
     //目标
     if (lpszFileName == NULL)
@@ -1274,8 +1274,8 @@ bool CCommon::FileIsImage(const wstring& file_name)
     index = file_name.find_last_of(L'.');
     wstring type;
     if (index != string::npos)
-        type = file_name.substr(index);			//获取扩展名
-    std::transform(type.begin(), type.end(), type.begin(), tolower);		//将扩展名转换成小写
+        type = file_name.substr(index);         //获取扩展名
+    std::transform(type.begin(), type.end(), type.begin(), tolower);        //将扩展名转换成小写
     return (type == L".jpg" || type == L".jpeg" || type == L".png" || type == L".gif" || type == L".bmp");
 }
 
@@ -1283,12 +1283,12 @@ wstring CCommon::GetRandomString(int length)
 {
     wstring result;
     SYSTEMTIME current_time;
-    GetLocalTime(&current_time);			//获取当前时间
-    srand(current_time.wMilliseconds);		//用当前时间的毫秒数设置产生随机数的种子
-    int char_type;		//当前要生成的字符类型 0：数字；1：小写字母；2：大写字母
+    GetLocalTime(&current_time);            //获取当前时间
+    srand(current_time.wMilliseconds);      //用当前时间的毫秒数设置产生随机数的种子
+    int char_type;      //当前要生成的字符类型 0：数字；1：小写字母；2：大写字母
     for (int i{}; i < length; i++)
     {
-        char_type = rand() % 3;		//随机确定要生成的字符类型
+        char_type = rand() % 3;     //随机确定要生成的字符类型
         wchar_t current_char;
         switch (char_type)
         {
@@ -1315,11 +1315,11 @@ bool CCommon::IsFileNameNumbered(const wstring& file_name, int& number, size_t& 
         return false;
     size_t size{ file_name.size() };
     //size_t index;
-    index = file_name.rfind(L'(');		//往前查找右括号
-    if (index == wstring::npos || index == 0)		//左括号不能在字符串开头
+    index = file_name.rfind(L'(');      //往前查找右括号
+    if (index == wstring::npos || index == 0)       //左括号不能在字符串开头
         return false;
-    wstring number_str{ file_name.substr(index + 1, size - index - 2) };		//获取两个括号之间的文本
-    if (StrIsNumber(number_str))				//判断文本是否是数字
+    wstring number_str{ file_name.substr(index + 1, size - index - 2) };        //获取两个括号之间的文本
+    if (StrIsNumber(number_str))                //判断文本是否是数字
     {
         number = _wtoi(number_str.c_str());
         return true;
@@ -1332,8 +1332,8 @@ bool CCommon::IsFileNameNumbered(const wstring& file_name, int& number, size_t& 
 
 void CCommon::SizeZoom(CSize& size, int side)
 {
-    float width_height_ratio{ static_cast<float>(size.cx) / size.cy };	//长宽比
-    if (width_height_ratio > 1)		//长宽比大于1：1
+    float width_height_ratio{ static_cast<float>(size.cx) / size.cy };  //长宽比
+    if (width_height_ratio > 1)     //长宽比大于1：1
     {
         size.cx = side;
         size.cy = static_cast<int>(side / width_height_ratio);
@@ -1746,18 +1746,18 @@ void CCommon::FileAutoRename(wstring& file_path)
     while (CCommon::FileExist(file_path))
     {
         //判断文件名的末尾是否符合“(数字)”的形式
-        wstring file_name;		//文件名（不含扩展名）
+        wstring file_name;      //文件名（不含扩展名）
         CFilePathHelper c_file_path(file_path);
         file_name = c_file_path.GetFileNameWithoutExtension();
         wstring ext{ c_file_path.GetFileExtension() };
         int num;
         size_t index;
-        bool is_numbered{ CCommon::IsFileNameNumbered(file_name, num, index) };		//文件名的末尾是否符合“(数字)”的形式
-        if (!is_numbered)		//如果文件名末尾没有“(数字)”，则在末尾添加“ (1)”
+        bool is_numbered{ CCommon::IsFileNameNumbered(file_name, num, index) };     //文件名的末尾是否符合“(数字)”的形式
+        if (!is_numbered)       //如果文件名末尾没有“(数字)”，则在末尾添加“ (1)”
         {
             file_name += L" (1)";
         }
-        else		//否则，将原来的数字加1
+        else        //否则，将原来的数字加1
         {
             file_name = file_name.substr(0, index);
             CString num_str;
@@ -1938,6 +1938,30 @@ POINT CCommon::CalculateWindowMoveOffset(CRect& check_rect, vector<CRect>& scree
         }
     }
     return mov;
+}
+
+void CCommon::RestrictRectRange(CRect& rect, const CRect& rect_range)
+{
+    //如果矩形的宽高超过了范围
+    if (rect.Width() > rect_range.Width())
+    {
+        rect.left = rect_range.left;
+        rect.right = rect_range.right;
+    }
+    if (rect.Height() > rect_range.Height())
+    {
+        rect.top = rect_range.top;
+        rect.bottom = rect_range.bottom;
+    }
+    //限制矩形的范围
+    if (rect.left < rect_range.left)
+        rect.MoveToX(rect_range.left);
+    if (rect.right > rect_range.right)
+        rect.MoveToX(rect_range.right - rect.Width());
+    if (rect.top < rect_range.top)
+        rect.MoveToY(rect_range.top);
+    if (rect.bottom > rect_range.bottom)
+        rect.MoveToY(rect_range.bottom - rect.Height());
 }
 
 void CCommon::GetLastCompileTime(wstring& time_str, wstring& hash_str)

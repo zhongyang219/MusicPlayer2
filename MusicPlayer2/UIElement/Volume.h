@@ -1,14 +1,18 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 
 namespace UiElement
 {
-    //ÒôÁ¿
+    class Slider;
+
+    //éŸ³é‡
     class Volume : public Element
     {
     public:
         virtual void Draw() override;
         virtual void DrawTopMost() override;
+        virtual void InitComplete() override;
+
         virtual bool LButtonUp(CPoint point) override;
         virtual bool LButtonDown(CPoint point) override;
         virtual bool MouseMove(CPoint point) override;
@@ -20,13 +24,19 @@ namespace UiElement
         virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
     protected:
-        bool show_text{ true };     //ÊÇ·ñÔÚÒôÁ¿Í¼±êÅÔ±ßÏÔÊ¾ÎÄ±¾
-        bool adj_btn_on_top{ false };   //ÒôÁ¿µ÷½Ú°´Å¥ÊÇ·ñÏÔÊ¾ÔÚÒôÁ¿Í¼±êµÄÉÏ·½
-        bool m_show_volume_adj{ false };    //ÊÇ·ñÏÔÊ¾ÒôÁ¿µ÷½Ú°´Å¥
+        void UpdateSliderValue();
 
-        CPlayerUIBase::UIButton volumn_btn;
-        CPlayerUIBase::UIButton volumn_up_btn;
-        CPlayerUIBase::UIButton volumn_down_btn;
+    protected:
+        bool show_text{ true };     //æ˜¯å¦åœ¨éŸ³é‡å›¾æ ‡æ—è¾¹æ˜¾ç¤ºæ–‡æœ¬
+        bool adj_btn_on_top{ true };   //éŸ³é‡è°ƒèŠ‚æŒ‰é’®æ˜¯å¦æ˜¾ç¤ºåœ¨éŸ³é‡å›¾æ ‡çš„ä¸Šæ–¹
+        bool m_show_volume_adj{ false };    //æ˜¯å¦æ˜¾ç¤ºéŸ³é‡è°ƒèŠ‚æŒ‰é’®
+        CRect rect_volume_adj;
+        std::shared_ptr<Slider> volume_slider{};
+
+    private:
+        bool hover{ false };
+        bool pressed{ false };
+        CPoint mouse_pressed_point;
     };
 }
 
