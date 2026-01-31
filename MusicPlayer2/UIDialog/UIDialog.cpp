@@ -31,7 +31,7 @@ CUIDialog::~CUIDialog()
 
 void CUIDialog::RePaintUi()
 {
-    Invalidate(TRUE);
+    Invalidate(FALSE);
 }
 
 void CUIDialog::DoDataExchange(CDataExchange* pDX)
@@ -231,7 +231,7 @@ BOOL CUIDialog::OnEraseBkgnd(CDC* pDC)
 {
     //m_ui.DrawInfo();
 
-    //return CDialog::OnEraseBkgnd(pDC);
+    return CDialog::OnEraseBkgnd(pDC);
     return TRUE;
 }
 

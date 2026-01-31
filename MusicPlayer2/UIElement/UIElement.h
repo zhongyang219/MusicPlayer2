@@ -154,6 +154,7 @@ namespace UiElement
             PROGRESS_BAR,
             ELEMENT_SWITCHER,
             TEXT,
+            TEXT_BLOCK,
             INDEX_MAX,
         };
     }

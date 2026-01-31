@@ -46,13 +46,17 @@ void UiElement::TextBlock::Draw()
         CPoint point1;
         point1.x = rect_text.left + end_width;
         point1.y = rect.top + (rect.Height() - text_height) / 2;
-        CPoint point2 = point1;
-        point2.y += text_height;
-        ui->GetDrawer().DrawLine(point1, point2, ui->GetUIColors().color_text, ui->DPI(1), false);
+        if (rect.PtInRect(point1))
+        {
+            CPoint point2 = point1;
+            point2.y += text_height;
+            ui->GetDrawer().DrawLine(point1, point2, ui->GetUIColors().color_text, ui->DPI(1), false);
+        }
     }
     //绘制文本
     COLORREF text_color = ui->GetUIColors().color_text;
-    ui->GetDrawer().DrawWindowText(rect_text, text.c_str(), text_color, Alignment::LEFT, true);
+    out_of_bounds = false;
+    ui->GetDrawer().DrawWindowText(rect_text, text.c_str(), text_color, Alignment::LEFT, true, false, false, &out_of_bounds);
 
     Element::Draw();
 }
@@ -109,6 +113,25 @@ bool UiElement::TextBlock::LButtonDown(CPoint point)
 bool UiElement::TextBlock::MouseMove(CPoint point)
 {
     hover = rect.PtInRect(point);
+    if (out_of_bounds)
+    {
+        if (!last_hover && hover)
+        {
+            std::wstring tooltip_text = GetText();
+            ui->UpdateMouseToolTip(TooltipIndex::TEXT_BLOCK, tooltip_text.c_str());
+        }
+
+        if (hover)
+        {
+            ui->UpdateMouseToolTipPosition(TooltipIndex::TEXT_BLOCK, rect);
+        }
+        last_hover = hover;
+    }
+    else
+    {
+        ui->UpdateMouseToolTipPosition(TooltipIndex::TEXT_BLOCK, CRect());
+    }
+
     return false;
 }
 
@@ -120,7 +143,7 @@ bool UiElement::TextBlock::MouseLeave()
 
 bool UiElement::TextBlock::SetCursor()
 {
-    if (hover)
+    if (hover && m_edit_ctrl != nullptr)
     {
         ::SetCursor(::LoadCursor(NULL, IDC_IBEAM));
         return true;

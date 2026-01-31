@@ -29,6 +29,8 @@ namespace UiElement
         std::wstring text;
         bool show_cursor{};
         bool is_edit{};     //是否处于编辑状态
+        bool last_hover{};
+        bool out_of_bounds{};
     };
 }
 
