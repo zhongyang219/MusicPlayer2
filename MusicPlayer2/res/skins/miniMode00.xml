@@ -8,9 +8,10 @@
           <button key="playPause" width="28" height="24" margin-right="2"/>
           <button key="next" width="28" height="24" margin-right="4"/>
           <miniSpectrum margin-right="4" height="16" width="22" margin-bottom="-2"/>
-          <text type="play_time_and_volume" alignment="center" style="scroll" font_size="8" margin-right="4">
-            <progressBar margin-bottom="0" height="2"/>
-          </text>
+          <verticalLayout margin-right="4">
+            <text type="play_time_and_volume" alignment="center" style="scroll" font_size="8"/>
+            <progressBar height="2"/>
+          </verticalLayout>
           <button key="showPlaylist" width="20" margin-right="3"/>
           <button key="miniMode" width="20" margin-right="3"/>
           <button key="miniModeClose" width="20"/>
