@@ -143,8 +143,9 @@ void UiElement::NavigationBar::Draw()
 
 bool UiElement::NavigationBar::LButtonUp(CPoint point)
 {
+    int pressed_tmp = pressed;
     pressed = false;
-    if (rect.PtInRect(point))
+    if (pressed_tmp && rect.PtInRect(point))
     {
         FindStackElement();
         if (stack_element != nullptr)

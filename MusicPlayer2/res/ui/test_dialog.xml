@@ -38,8 +38,8 @@
               <listElement id="list1"/>
             </rectangle>
             <verticalLayout width="90" margin-left="8">
-              <button id="addBtn" height="30" icon="add" text="%(UI_TXT_PLAYLIST_TOOLBAR_ADD)" show_text="true"/>
-              <button id="deleteBtn" height="30" icon="close" text="%(UI_TXT_PLAYLIST_TOOLBAR_DELETE)" show_text="true"/>
+              <button id="addBtn" height="30" icon="add" text="%(UI_TXT_PLAYLIST_TOOLBAR_ADD)" show_text="true" alignment="center"/>
+              <button id="deleteBtn" height="30" icon="close" text="%(UI_TXT_PLAYLIST_TOOLBAR_DELETE)" show_text="true" alignment="center"/>
               <placeHolder/>
             </verticalLayout>
           </horizontalLayout>
@@ -50,8 +50,8 @@
       <horizontalLayout height="28" margin-top="8">
         <button key="settings" show_text="true"/>
         <text id="tipInfoText" type="userDefine" height="20"/>
-        <button id="okBtn" icon="ok" text="%(TXT_OK)" height="28" show_text="true" min-width="72"/>
-        <button id="cancelBtn" icon="cancel" text="%(TXT_CANCEL)" show_text="true" min-width="72"/>
+        <button id="okBtn" icon="ok" text="%(TXT_OK)" height="28" show_text="true" min-width="72" alignment="center"/>
+        <button id="cancelBtn" icon="cancel" text="%(TXT_CANCEL)" show_text="true" min-width="72" alignment="center"/>
       </horizontalLayout>
     </verticalLayout>
   </ui>

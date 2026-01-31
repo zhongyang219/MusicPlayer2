@@ -118,6 +118,7 @@ namespace UiElement
         std::function<void(AbstractListElement*)> m_selection_changed_trigger;
 
         bool last_hover{};
+        bool pressed{};
     };
 }
 

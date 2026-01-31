@@ -284,7 +284,9 @@ void UiElement::AbstractListElement::Draw()
 bool UiElement::AbstractListElement::LButtonUp(CPoint point)
 {
     AbstractScrollArea::LButtonUp(point);
-    if (rect.PtInRect(point))
+    bool pressed_tmp = pressed;
+    pressed = false;
+    if (pressed_tmp && rect.PtInRect(point))
     {
         int row{ GetListIndexByPoint(point) };        //点击的行
         //设置按钮的按下状态
@@ -305,6 +307,7 @@ bool UiElement::AbstractListElement::LButtonUp(CPoint point)
 
 bool UiElement::AbstractListElement::LButtonDown(CPoint point)
 {
+    pressed = rect.PtInRect(point);
     bool rtn = AbstractScrollArea::LButtonDown(point);
     //点击了列表区域
     if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point))

@@ -216,7 +216,7 @@ public:
     // 绘制一个UI按钮 (使用GetBtnIconType取得的图标)
     void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
     void DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& btn, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
-    void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9, bool checked = false);
+    void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9, bool checked = false, Alignment align = Alignment::LEFT);
     // 绘制一个UI按钮，以text文本作为图标
     void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked = false);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool checked = false);

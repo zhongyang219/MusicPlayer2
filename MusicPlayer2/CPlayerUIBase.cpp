@@ -1121,7 +1121,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& b
     DrawUIButton(rect, btn, GetBtnIconType(key_type), big_icon, text, font_size, checked);
 }
 
-void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon, const std::wstring& text, int font_size, bool checked)
+void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon, const std::wstring& text, int font_size, bool checked, Alignment align)
 {
     btn.rect = rect;
 
@@ -1171,7 +1171,12 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
     {
         //如果要显示文本，则图标和文本一起居中显示
         int content_width = DPI(32) + m_draw.GetTextExtent(text.c_str()).cx;    //图标和文本的宽度（左侧4px+图标宽度16px+图标和文本间距8px+右侧4px+文本宽度）
-        rect_icon.left += (rc_tmp.Width() - content_width) / 2;
+        if (align == Alignment::CENTER)
+            rect_icon.left += (rc_tmp.Width() - content_width) / 2;
+        else if (align == Alignment::RIGHT)
+            rect_icon.left += (rc_tmp.Width() - content_width);
+        else
+            rect_icon.left += (rc_tmp.Height() - DPI(24)) / 2;
         rect_icon.right = rect_icon.left + DPI(24);
     }
 

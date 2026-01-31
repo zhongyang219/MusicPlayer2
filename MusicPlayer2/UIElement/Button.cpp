@@ -52,8 +52,7 @@ void UiElement::Button::Draw()
             std::wstring text;
             if (show_text)
                 text = GetDisplayText();
-            ui->DrawUIButton(rect, m_btn, GetBtnIconType(), big_icon, text, font_size, false);
-
+            ui->DrawUIButton(rect, m_btn, GetBtnIconType(), big_icon, text, font_size, false, align);
         }
         break;
         }
@@ -338,6 +337,14 @@ void UiElement::Button::FromXmlNode(tinyxml2::XMLElement* xml_node)
     related_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "related_element_id");
     CTinyXml2Helper::GetElementAttributeBool(xml_node, "hand_cursor", hand_cursor);
     CTinyXml2Helper::GetElementAttributeBool(xml_node, "empty_btn", empty_btn);
+    //alignment
+    std::string str_alignment = CTinyXml2Helper::ElementAttribute(xml_node, "alignment");
+    if (str_alignment == "left")
+        align = Alignment::LEFT;
+    else if (str_alignment == "right")
+        align = Alignment::RIGHT;
+    else if (str_alignment == "center")
+        align = Alignment::CENTER;
 }
 
 std::wstring UiElement::Button::GetDisplayText() const

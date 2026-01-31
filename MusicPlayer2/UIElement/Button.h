@@ -17,6 +17,7 @@ namespace UiElement
         std::string related_element_id;    //关联元素的id
         bool hand_cursor{};             //是否显示为手形光标
         bool empty_btn{};               //是否为空白按钮（不绘制任何东西）
+        Alignment align{ Alignment::LEFT };    //对齐方式
 
     public:
         CPlayerUIBase::BtnKey GetKey() const { return key; }
