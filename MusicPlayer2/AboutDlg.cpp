@@ -213,7 +213,7 @@ void CAboutDlg::OnPaint()
 
     //画背景图
     CSize img_size{ m_about_pic.GetWidth(), m_about_pic.GetHeight() };
-    draw.DrawImage(m_about_pic, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FILL);
+    draw.DrawImage(m_about_pic, m_rc_pic.TopLeft(), m_rc_pic.Size(), CDrawCommon::StretchMode::FILL, false);
 }
 
 
