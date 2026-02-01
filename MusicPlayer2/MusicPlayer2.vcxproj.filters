@@ -1164,10 +1164,10 @@
     <ClInclude Include="UIElement\Slider.h">
       <Filter>UIElement</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement\TextBlock.h">
+    <ClInclude Include="UIElement\SliderProgressBar.h">
       <Filter>UIElement</Filter>
     </ClInclude>
-    <ClInclude Include="UIElement\SliderProgressBar.h">
+    <ClInclude Include="UIElement\EditControl.h">
       <Filter>UIElement</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1856,10 +1856,10 @@
     <ClCompile Include="UIElement\Slider.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
-    <ClCompile Include="UIElement\TextBlock.cpp">
+    <ClCompile Include="UIElement\SliderProgressBar.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
-    <ClCompile Include="UIElement\SliderProgressBar.cpp">
+    <ClCompile Include="UIElement\EditControl.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
   </ItemGroup>

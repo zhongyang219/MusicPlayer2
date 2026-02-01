@@ -96,8 +96,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::ComboBox>();
     else if (name == "slider")
         element = std::make_shared<UiElement::Slider>();
-    else if (name == "textBlock")
-        element = std::make_shared<UiElement::TextBlock>();
+    else if (name == "editControl")
+        element = std::make_shared<UiElement::EditControl>();
     else if (name == "sliderProgressBar")
         element = std::make_shared<UiElement::SliderProgressBar>();
 

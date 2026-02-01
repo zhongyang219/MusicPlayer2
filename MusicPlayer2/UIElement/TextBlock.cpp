@@ -87,7 +87,7 @@ bool UiElement::TextBlock::LButtonUp(CPoint point)
             {
                 m_edit_ctrl->SetWindowText(text.c_str());
                 m_edit_ctrl->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER);
-                //m_edit_ctrl->ShowWindow(SW_SHOW);
+                m_edit_ctrl->ShowWindow(SW_SHOW);
                 is_edit = true;
             }
         }
@@ -97,7 +97,7 @@ bool UiElement::TextBlock::LButtonUp(CPoint point)
     {
         if (m_edit_ctrl != nullptr)
         {
-            //m_edit_ctrl->ShowWindow(SW_HIDE);
+            m_edit_ctrl->ShowWindow(SW_HIDE);
             is_edit = false;
         }
 

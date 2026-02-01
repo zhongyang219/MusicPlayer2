@@ -168,8 +168,8 @@ protected:
 class CDrawDoubleBuffer
 {
 public:
-    CDrawDoubleBuffer(CDC* pDC, CRect rect)
-        : m_pDC(pDC), m_rect(rect)
+    CDrawDoubleBuffer(CDC* pDC, CRect rect, CRgn* draw_rgn = nullptr)
+        : m_pDC(pDC), m_rect(rect), m_draw_rgn(draw_rgn)
     {
         m_memDC.CreateCompatibleDC(NULL);
         if (m_pDC != nullptr)
@@ -183,6 +183,8 @@ public:
     {
         if (m_pDC != nullptr)
         {
+            if (m_draw_rgn != nullptr)
+                m_pDC->SelectClipRgn(m_draw_rgn);
             m_pDC->BitBlt(m_rect.left, m_rect.top, m_rect.Width(), m_rect.Height(), &m_memDC, 0, 0, SRCCOPY);
             m_memDC.SelectObject(m_pOldBit);
             m_memBitmap.DeleteObject();
@@ -201,6 +203,7 @@ private:
     CBitmap m_memBitmap;
     CBitmap* m_pOldBit{};
     CRect m_rect;
+    CRgn* m_draw_rgn{};
 };
 
 

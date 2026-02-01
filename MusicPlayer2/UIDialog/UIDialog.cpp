@@ -37,7 +37,6 @@ void CUIDialog::RePaintUi()
 void CUIDialog::DoDataExchange(CDataExchange* pDX)
 {
     CDialog::DoDataExchange(pDX);
-    DDX_Control(pDX, IDC_UI_EDIT, m_ui_edit);
 }
 
 
@@ -56,8 +55,6 @@ BEGIN_MESSAGE_MAP(CUIDialog, CDialog)
     ON_WM_MOUSEWHEEL()
     ON_WM_GETMINMAXINFO()
     ON_WM_TIMER()
-    ON_WM_ERASEBKGND()
-    ON_EN_CHANGE(IDC_UI_EDIT, &CUIDialog::OnEnChangeUiEdit)
     ON_WM_SETCURSOR()
     ON_WM_KILLFOCUS()
 END_MESSAGE_MAP()
@@ -95,7 +92,7 @@ BOOL CUIDialog::OnInitDialog()
     m_min_size.cy = m_ui.GetCurrentTypeUi()->MinHeight().GetValue(CRect());
 
     //隐藏文本编辑框
-    m_ui_edit.ShowWindow(SW_HIDE);
+    //m_ui_edit.ShowWindow(SW_HIDE);
 
     SetTimer(UI_DIALOG_TIMER_ID, 20, NULL);
 
@@ -121,9 +118,32 @@ BOOL CUIDialog::PreTranslateMessage(MSG* pMsg)
 
 void CUIDialog::OnPaint()
 {
-    //去掉下面这行界面会一直刷新
     CPaintDC dc(this); // device context for painting
-    m_ui.DrawInfo();
+
+    // 只绘制非控件区域
+    CRect rect;
+    GetClientRect(&rect);
+    CRgn rgn;
+    rgn.CreateRectRgnIndirect(&rect);
+
+    CWnd* pChild = GetWindow(GW_CHILD);
+    while (pChild)
+    {
+        if (pChild->IsWindowVisible())
+        {
+            CRect childRect;
+            pChild->GetWindowRect(&childRect);
+            ScreenToClient(&childRect);
+
+            CRgn childRgn;
+            childRgn.CreateRectRgnIndirect(&childRect);
+            rgn.CombineRgn(&rgn, &childRgn, RGN_DIFF);
+        }
+
+        pChild = pChild->GetNextWindow();
+    }
+
+    m_ui.DrawInfo(false, &rgn);
 }
 
 
@@ -226,32 +246,10 @@ void CUIDialog::OnTimer(UINT_PTR nIDEvent)
     CDialog::OnTimer(nIDEvent);
 }
 
-
-BOOL CUIDialog::OnEraseBkgnd(CDC* pDC)
-{
-    //m_ui.DrawInfo();
-
-    return CDialog::OnEraseBkgnd(pDC);
-    return TRUE;
-}
-
-
-void CUIDialog::OnEnChangeUiEdit()
-{
-    UiTextChanged();
-}
-
 BOOL CUIDialog::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
     if (m_ui.SetCursor())
         return TRUE;
 
     return CDialog::OnSetCursor(pWnd, nHitTest, message);
-}
-
-void CUIDialog::OnKillFocus(CWnd* pNewWnd)
-{
-    CDialog::OnKillFocus(pNewWnd);
-
-    m_ui_edit.ShowWindow(SW_HIDE);
 }

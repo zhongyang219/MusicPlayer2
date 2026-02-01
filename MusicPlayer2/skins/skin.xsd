@@ -758,8 +758,9 @@
         <xs:element name="listElement" type="listElementType"></xs:element>
         <xs:element name="comboBox" type="comboBoxType"></xs:element>
         <xs:element name="slider" type="sliderType"></xs:element>
-        <xs:element name="textBlock" type="textBlockType"></xs:element>
+        <xs:element name="editControl" type="editControlType"></xs:element>
         <xs:element name="sliderProgressBar" type="sliderProgressBarType"></xs:element>
+        <xs:element name="systemControl" type="systemControlType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -2071,7 +2072,7 @@
     </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
-  <xs:complexType name="textBlockType">
+  <xs:complexType name="editControlType">
     <xs:annotation>
       <xs:documentation>文本编辑控件。</xs:documentation>
     </xs:annotation>
@@ -2080,6 +2081,12 @@
   <xs:complexType name="sliderProgressBarType">
     <xs:annotation>
       <xs:documentation>滑动条样式的进度条。</xs:documentation>
+    </xs:annotation>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="systemControlType">
+    <xs:annotation>
+      <xs:documentation>系统原生控件的占位符。</xs:documentation>
     </xs:annotation>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>

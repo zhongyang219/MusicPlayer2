@@ -24,13 +24,19 @@ CUITestDialog::CUITestDialog(CWnd* pParent)
         m_info_text->SetText(str);
     });
 
-    m_text_block1 = m_ui.GetCurrentTypeUi()->FindElement<UiElement::TextBlock>("textBlock1");
-    if (m_text_block1 != nullptr)
-        m_text_block1->SetEditCtrl(&m_ui_edit);
+    m_edit1 = m_ui.GetCurrentTypeUi()->FindElement<UiElement::EditControl>("textBlock1");
 }
 
 void CUITestDialog::UiTextChanged()
 {
-    if (m_text_block1 != nullptr)
-        m_text_block1->UpdateText();
+}
+
+BOOL CUITestDialog::OnInitDialog()
+{
+    CUIDialog::OnInitDialog();
+
+    m_edit1->Create(this);
+
+    return TRUE;  // return TRUE unless you set the focus to a control
+    // 异常: OCX 属性页应返回 FALSE
 }

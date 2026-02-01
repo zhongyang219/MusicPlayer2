@@ -138,6 +138,7 @@ namespace UiElement
         CPlayerUIBase* ui{};
         bool visible{ true };   //元素的显示/隐藏属性
         bool enable{ true };    //元素的启用/禁用属性
+        static UINT system_ctrl_id;
     };
 
     //UI中除按钮外其他元素的鼠标提示id，必须大于按钮枚举（CPlayerUIBase::BtnKey）的最大值，且小于1000

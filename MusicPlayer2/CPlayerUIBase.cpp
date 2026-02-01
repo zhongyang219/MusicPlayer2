@@ -39,7 +39,7 @@ void CPlayerUIBase::Init(CDC* pDC)
     m_first_draw = true;
 }
 
-void CPlayerUIBase::DrawInfo(bool reset)
+void CPlayerUIBase::DrawInfo(bool reset, CRgn* draw_rgn)
 {
     PreDrawInfo();
 
@@ -50,7 +50,7 @@ void CPlayerUIBase::DrawInfo(bool reset)
         if (m_skip_next_frame)
             pDC = nullptr;
         m_skip_next_frame = false;
-        CDrawDoubleBuffer drawDoubleBuffer(pDC, m_draw_rect);
+        CDrawDoubleBuffer drawDoubleBuffer(pDC, m_draw_rect, draw_rgn);
         m_draw.SetDC(drawDoubleBuffer.GetMemDC());  //将m_draw中的绘图DC设置为缓冲的DC
         m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(IsDrawLargeIcon()));
 
