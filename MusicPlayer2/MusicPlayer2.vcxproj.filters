@@ -420,9 +420,6 @@
     <Filter Include="功能逻辑类\PlayerCore\BASS">
       <UniqueIdentifier>{a0161ac4-f695-4502-b91a-24a4ce9ebf38}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PlayerUI\UIPanel">
-      <UniqueIdentifier>{c140813d-f87e-4468-9e37-5e7c1dbd14cf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="功能逻辑类\PlayerFormulaHelper">
       <UniqueIdentifier>{e142b7dc-494a-46c1-acdd-dbf7b3fcff6e}</UniqueIdentifier>
     </Filter>
@@ -440,6 +437,27 @@
     </Filter>
     <Filter Include="UI对话框\UITestDlg">
       <UniqueIdentifier>{f724de13-68b9-46b9-845f-a0f05c80306c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI面板">
+      <UniqueIdentifier>{504c1611-e936-4dd5-826c-45b500a3f87f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI面板\设置面板">
+      <UniqueIdentifier>{80358cc9-7745-4af1-aa59-b45b1bd8303c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI面板\ListPreviewPanel">
+      <UniqueIdentifier>{cce80a02-515c-492b-a798-3349942ff155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI面板\PanelManager">
+      <UniqueIdentifier>{51f6e21a-752c-4d93-8c52-a38853f23815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI面板\PlayerUIPanel">
+      <UniqueIdentifier>{311d8f54-b873-4c27-9f86-4ba3693b550c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI面板\PlayQueuePanel">
+      <UniqueIdentifier>{3bb8e7a8-e8a5-4034-a1a8-8608fd95bd27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI面板\TestPanel">
+      <UniqueIdentifier>{fb26df9a-e959-4da7-94ac-1047d8435650}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1071,12 +1089,6 @@
     <ClInclude Include="UIElement\ElementSwitcher.h">
       <Filter>UIElement</Filter>
     </ClInclude>
-    <ClInclude Include="UIPanel\PlayerUIPanel.h">
-      <Filter>PlayerUI\UIPanel</Filter>
-    </ClInclude>
-    <ClInclude Include="UIPanel\PlayQueuePanel.h">
-      <Filter>PlayerUI\UIPanel</Filter>
-    </ClInclude>
     <ClInclude Include="IMouseEvent.h">
       <Filter>PlayerUI</Filter>
     </ClInclude>
@@ -1101,26 +1113,14 @@
     <ClInclude Include="UIElement\RatingElement.h">
       <Filter>UIElement</Filter>
     </ClInclude>
-    <ClInclude Include="UIPanel\ListPreviewPanel.h">
-      <Filter>PlayerUI\UIPanel</Filter>
-    </ClInclude>
     <ClInclude Include="UIElement\AbstractTracksList.h">
       <Filter>UIElement</Filter>
-    </ClInclude>
-    <ClInclude Include="UIPanel\PanelManager.h">
-      <Filter>PlayerUI\UIPanel</Filter>
-    </ClInclude>
-    <ClInclude Include="UIPanel\TestPanel.h">
-      <Filter>PlayerUI\UIPanel</Filter>
     </ClInclude>
     <ClInclude Include="UIElement\CheckBox.h">
       <Filter>UIElement</Filter>
     </ClInclude>
     <ClInclude Include="UIElement\ToggleButton.h">
       <Filter>UIElement</Filter>
-    </ClInclude>
-    <ClInclude Include="UIPanel\SettingsPanel.h">
-      <Filter>PlayerUI\UIPanel</Filter>
     </ClInclude>
     <ClInclude Include="UIElement\CombinedElement\ToggleSettingGroup.h">
       <Filter>UIElement\CombinedElement</Filter>
@@ -1169,6 +1169,42 @@
     </ClInclude>
     <ClInclude Include="UIElement\EditControl.h">
       <Filter>UIElement</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\SettingsPanel.h">
+      <Filter>UI面板\设置面板</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelApperance.h">
+      <Filter>UI面板\设置面板</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelGeneral.h">
+      <Filter>UI面板\设置面板</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelLyrics.h">
+      <Filter>UI面板\设置面板</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelMediaLib.h">
+      <Filter>UI面板\设置面板</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelPlay.h">
+      <Filter>UI面板\设置面板</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelTab.h">
+      <Filter>UI面板\设置面板</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\ListPreviewPanel.h">
+      <Filter>UI面板\ListPreviewPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\PanelManager.h">
+      <Filter>UI面板\PanelManager</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\PlayerUIPanel.h">
+      <Filter>UI面板\PlayerUIPanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\PlayQueuePanel.h">
+      <Filter>UI面板\PlayQueuePanel</Filter>
+    </ClInclude>
+    <ClInclude Include="UIPanel\TestPanel.h">
+      <Filter>UI面板\TestPanel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1766,12 +1802,6 @@
     <ClCompile Include="UIElement\ElementSwitcher.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
-    <ClCompile Include="UIPanel\PlayQueuePanel.cpp">
-      <Filter>PlayerUI\UIPanel</Filter>
-    </ClCompile>
-    <ClCompile Include="UIPanel\PlayerUIPanel.cpp">
-      <Filter>PlayerUI\UIPanel</Filter>
-    </ClCompile>
     <ClCompile Include="UIElement\PanelElement.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
@@ -1793,26 +1823,14 @@
     <ClCompile Include="UIElement\RatingElement.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
-    <ClCompile Include="UIPanel\ListPreviewPanel.cpp">
-      <Filter>PlayerUI\UIPanel</Filter>
-    </ClCompile>
     <ClCompile Include="UIElement\AbstractTracksList.cpp">
       <Filter>UIElement</Filter>
-    </ClCompile>
-    <ClCompile Include="UIPanel\PanelManager.cpp">
-      <Filter>PlayerUI\UIPanel</Filter>
-    </ClCompile>
-    <ClCompile Include="UIPanel\TestPanel.cpp">
-      <Filter>PlayerUI\UIPanel</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\CheckBox.cpp">
       <Filter>UIElement</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\ToggleButton.cpp">
       <Filter>UIElement</Filter>
-    </ClCompile>
-    <ClCompile Include="UIPanel\SettingsPanel.cpp">
-      <Filter>PlayerUI\UIPanel</Filter>
     </ClCompile>
     <ClCompile Include="UIElement\CombinedElement\ToggleSettingGroup.cpp">
       <Filter>UIElement\CombinedElement</Filter>
@@ -1861,6 +1879,42 @@
     </ClCompile>
     <ClCompile Include="UIElement\EditControl.cpp">
       <Filter>UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\SettingsPanel.cpp">
+      <Filter>UI面板\设置面板</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelApperance.cpp">
+      <Filter>UI面板\设置面板</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelGeneral.cpp">
+      <Filter>UI面板\设置面板</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelLyrics.cpp">
+      <Filter>UI面板\设置面板</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelMediaLib.cpp">
+      <Filter>UI面板\设置面板</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelPlay.cpp">
+      <Filter>UI面板\设置面板</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelTab.cpp">
+      <Filter>UI面板\设置面板</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\ListPreviewPanel.cpp">
+      <Filter>UI面板\ListPreviewPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\PanelManager.cpp">
+      <Filter>UI面板\PanelManager</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\PlayerUIPanel.cpp">
+      <Filter>UI面板\PlayerUIPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\PlayQueuePanel.cpp">
+      <Filter>UI面板\PlayQueuePanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIPanel\TestPanel.cpp">
+      <Filter>UI面板\TestPanel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

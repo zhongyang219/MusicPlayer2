@@ -382,6 +382,12 @@
     <ClInclude Include="UIPanel\PlayerUIPanel.h" />
     <ClInclude Include="UIPanel\PlayQueuePanel.h" />
     <ClInclude Include="UIPanel\SettingsPanel.h" />
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelApperance.h" />
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelGeneral.h" />
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelLyrics.h" />
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelMediaLib.h" />
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelPlay.h" />
+    <ClInclude Include="UIPanel\SettingsPanel\SettingsPanelTab.h" />
     <ClInclude Include="UIPanel\TestPanel.h" />
     <ClInclude Include="UiSearchBox.h" />
     <ClInclude Include="UIWindow.h" />
@@ -627,6 +633,12 @@
     <ClCompile Include="UIPanel\PlayerUIPanel.cpp" />
     <ClCompile Include="UIPanel\PlayQueuePanel.cpp" />
     <ClCompile Include="UIPanel\SettingsPanel.cpp" />
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelApperance.cpp" />
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelGeneral.cpp" />
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelLyrics.cpp" />
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelMediaLib.cpp" />
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelPlay.cpp" />
+    <ClCompile Include="UIPanel\SettingsPanel\SettingsPanelTab.cpp" />
     <ClCompile Include="UIPanel\TestPanel.cpp" />
     <ClCompile Include="UiSearchBox.cpp" />
     <ClCompile Include="UIWindow.cpp" />
