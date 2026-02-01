@@ -136,8 +136,19 @@
           <!--第3页 常规设置-->
           <scrollArea>
             <verticalLayout>
-              <!--数据和配置文件-->
+              <!--语言-->
               <rectangle height="60">
+                <horizontalLayout>
+                  <icon icon="setting" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_DATA_LANGUAGE_SEL)" height="20"/>
+                    <text text="%(MSG_OPT_DATA_LANGUAGE_CHANGE_INFO)" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <comboBox id="languageCombo" height="28" margin-right="16"/>
+                </horizontalLayout>
+              </rectangle>
+              <!--数据和配置文件-->
+              <rectangle height="60" margin-top="4">
                 <horizontalLayout>
                   <icon icon="fileRelate" width="52"/>
                   <verticalLayout>

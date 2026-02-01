@@ -194,6 +194,11 @@ int UiElement::ComboBox::GetCurSel()
     return drop_list->GetHighlightRow();
 }
 
+void UiElement::ComboBox::Clear()
+{
+    drop_list->ClearData();
+}
+
 std::wstring UiElement::ComboBox::GetCurString()
 {
     int selected_row = GetCurSel();

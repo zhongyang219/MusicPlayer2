@@ -21,6 +21,7 @@ namespace UiElement
         void AddString(const std::wstring& str, IconMgr::IconType icon);
         void SetCurSel(int index);
         int GetCurSel();
+        void Clear();
         std::wstring GetCurString();
         IconMgr::IconType GetCurIcon();
         void SetIcon(int index, IconMgr::IconType icon);

@@ -5,6 +5,7 @@ namespace UiElement
     class Text;
     class RadioButton;
     class AbstractToggleButton;
+    class ComboBox;
 }
 
 class CSettingsPanelGeneral : public CSettingsPanelTab
@@ -26,6 +27,6 @@ private:
     UiElement::Text* config_file_dir_text{};
     UiElement::RadioButton* online_service_netease_btn{};
     UiElement::RadioButton* online_service_qqmusic_btn{};
-
+    UiElement::ComboBox* language_combobox{};
 };
 
