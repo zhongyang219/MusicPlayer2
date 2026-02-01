@@ -144,7 +144,7 @@
                     <text font_size="10" text="%(TXT_OPT_DATA_LANGUAGE_SEL)" height="20"/>
                     <text text="%(MSG_OPT_DATA_LANGUAGE_CHANGE_INFO)" color_style="emphasis1" height="20"/>
                   </verticalLayout>
-                  <comboBox id="languageCombo" height="28" margin-right="16"/>
+                  <comboBox id="languageCombo" width="140" height="28" margin-right="16"/>
                 </horizontalLayout>
               </rectangle>
               <!--数据和配置文件-->

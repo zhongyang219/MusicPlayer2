@@ -16,8 +16,16 @@
           </horizontalLayout>
 
           <toggleSettingGroup id="toggleBtn2" margin-top="4" height="60" icon="setting" mainText="主要文本" subText="次要文本" />
-          
-          <comboBox id="combobox1" margin-top="4" height="28"/>
+
+          <rectangle margin-top="4" height="60">
+            <horizontalLayout>
+              <icon icon="setting" width="52"/>
+              <verticalLayout>
+                <text font_size="10" text="测试下拉框" height="20"/>
+              </verticalLayout>
+              <comboBox id="combobox1" height="28" width="180" margin-right="16"/>
+            </horizontalLayout>
+          </rectangle>
 
           
           <horizontalLayout margin-top="4" height="100">
