@@ -3,10 +3,7 @@
     <horizontalLayout margin="4">
       <albumCover width="46" margin-right="4"/>
       <stackElement hover_to_switch="true" margin-left="4" margin-right="4">
-        <verticalLayout>
-          <text type="artist_title" style="scroll" font_size="10" height="24"/>
-          <lyrics no_background="true" use_default_font="true" context_menu_enable="false" font_size="10" margin-top="-2" margin-bottom="-2"/>
-        </verticalLayout>
+        <lyrics no_background="true" use_default_font="true" context_menu_enable="false" show_song_info="true" font_size="10" margin-top="-2" margin-bottom="-2"/>
         <horizontalLayout>
           <button key="previous" width="34" height="34" bigIcon="true"/>
           <button key="playPause" width="34" height="34" bigIcon="true"/>
