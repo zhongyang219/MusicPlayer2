@@ -95,9 +95,9 @@ void CMiniModeDlg::SetTitle()
 void CMiniModeDlg::SetAlwaysOnTop()
 {
     if (m_always_on_top)
-        SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);			//设置置顶
+        SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);         //设置置顶
     else
-        SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);		//取消置顶
+        SetWindowPos(&wndNoTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);       //取消置顶
 }
 
 void CMiniModeDlg::AdjustWindowSize()
@@ -263,8 +263,8 @@ BOOL CMiniModeDlg::OnInitDialog()
     AdjustWindowSize();
 
     //设置定时器
-    SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);	//设置主定时器
-    SetTimer(TIMER_ID_MINI2, TIMER_ELAPSE, NULL);		//设置用于界面刷新的定时器
+    SetTimer(TIMER_ID_MINI, TIMER_ELAPSE_MINI, NULL);   //设置主定时器
+    SetTimer(TIMER_ID_MINI2, TIMER_ELAPSE, NULL);       //设置用于界面刷新的定时器
 
     //显示播放列表
     ShowPlaylist();
@@ -356,7 +356,7 @@ void CMiniModeDlg::GetPlaylistItemSelected()
 
 void CMiniModeDlg::DrawInfo()
 {
-    if (!IsIconic() && IsWindowVisible())		//窗口最小化或隐藏时不绘制，以降低CPU利用率
+    if (!IsIconic() && IsWindowVisible())       //窗口最小化或隐藏时不绘制，以降低CPU利用率
     {
         CPlayerUIBase* cur_ui{ GetCurUi() };
         if (cur_ui != nullptr)
@@ -375,7 +375,7 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
     {
         if (pMsg->wParam == VK_ESCAPE)
         {
-            OnOK();		//按ESC键返回主窗口
+            OnOK();     //按ESC键返回主窗口
             return TRUE;
         }
         if (pMsg->wParam == VK_RETURN) return TRUE;
@@ -426,7 +426,7 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
             }
         }
 
-        if (pMsg->wParam == VK_APPS)		//按菜单键弹出主菜单
+        if (pMsg->wParam == VK_APPS)        //按菜单键弹出主菜单
         {
             CRect rect;
             GetWindowRect(rect);
@@ -455,7 +455,6 @@ BOOL CMiniModeDlg::PreTranslateMessage(MSG* pMsg)
                 POINT pt = { INT16_MAX, INT16_MAX };                // 修改pt参数为一个特殊值
                 LPARAM lParam = MAKELPARAM(pt.x, pt.y);
                 pMainWnd->SendMessage(WM_MOUSEWHEEL, pMsg->wParam, lParam);
-                return TRUE;
             }
         }
     }
@@ -501,9 +500,9 @@ void CMiniModeDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     //设置点击鼠标右键弹出菜单
-    CPoint point1;	//定义一个用于确定光标位置的位置
-    GetCursorPos(&point1);	//获取当前光标的位置，以便使得菜单可以跟随光标
-    if (nFlags == MK_SHIFT)		//按住Shift键点击鼠标右键时，弹出系统菜单
+    CPoint point1;  //定义一个用于确定光标位置的位置
+    GetCursorPos(&point1);  //获取当前光标的位置，以便使得菜单可以跟随光标
+    if (nFlags == MK_SHIFT)     //按住Shift键点击鼠标右键时，弹出系统菜单
     {
         theApp.m_menu_mgr.GetMenu(MenuMgr::MainPopupMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, this);
     }
@@ -558,7 +557,7 @@ void CMiniModeDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
     // TODO: 在此添加消息处理程序代码和/或调用默认值
     //if(!m_ui.PointInControlArea(point))
-    //	OnOK();
+    //  OnOK();
 
     CPlayerUIBase* cur_ui{ GetCurUi() };
     if (cur_ui != nullptr)
@@ -585,7 +584,7 @@ void CMiniModeDlg::OnNMRClickList2(NMHDR *pNMHDR, LRESULT *pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
     // TODO: 在此添加控件通知处理程序代码
-    m_item_selected = pNMItemActivate->iItem;	//获取鼠标选中的项目
+    m_item_selected = pNMItemActivate->iItem;   //获取鼠标选中的项目
     m_playlist_ctrl.GetItemSelected(m_items_selected);
 
     CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::PlaylistMenu);
@@ -731,7 +730,7 @@ void CMiniModeDlg::OnMiniModeAlwaysOnTop()
 //afx_msg LRESULT CMiniModeDlg::OnTimerIntervalChanged(WPARAM wParam, LPARAM lParam)
 //{
 //    KillTimer(TIMER_ID_MINI2);
-//    SetTimer(TIMER_ID_MINI2, theApp.m_app_setting_data.ui_refresh_interval, NULL);		//设置用于界面刷新的定时器
+//    SetTimer(TIMER_ID_MINI2, theApp.m_app_setting_data.ui_refresh_interval, NULL);        //设置用于界面刷新的定时器
 //    return 0;
 //}
 
@@ -754,8 +753,6 @@ afx_msg LRESULT CMiniModeDlg::OnTabletQuerysystemgesturestatus(WPARAM wParam, LP
 
 BOOL CMiniModeDlg::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
-    //仅自绘播放列表区域的鼠标滚轮事件会在这里响应，自绘播放列表以外的迷你模式区域的滚动事件在PreTranslateMessage中被转发给了主窗口用于调节音量
-
     ScreenToClient(&pt);
     CPlayerUIBase* cur_ui{ GetCurUi() };
     if (cur_ui != nullptr)

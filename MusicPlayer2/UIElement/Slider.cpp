@@ -7,16 +7,24 @@ void UiElement::Slider::SetRange(int min_val, int max_val)
     this->min_val = min_val;
     this->max_val = max_val;
     CCommon::SetNumRange(cur_pos, min_val, max_val);
+    if (binded_value != nullptr)
+        CCommon::SetNumRange(*binded_value, min_val, max_val);
 }
 
 void UiElement::Slider::SetCurPos(int pos)
 {
-    cur_pos = pos;
+    if (binded_value != nullptr)
+        *binded_value = pos;
+    else
+        cur_pos = pos;
 }
 
 const int UiElement::Slider::GetCurPos() const
 {
-    return cur_pos;
+    if (binded_value != nullptr)
+        return *binded_value;
+    else
+        return cur_pos;
 }
 
 void UiElement::Slider::SetPosChangedTrigger(std::function<void(Slider*)> func)
@@ -38,6 +46,11 @@ static CRect CreateScqureByPosAndSize(CPoint point, int size)
 void UiElement::Slider::SetDragFinishTrigger(std::function<void(Slider*)> func)
 {
     drag_finish_trigger = func;
+}
+
+void UiElement::Slider::BindIntValue(int* value)
+{
+    binded_value = value;
 }
 
 void UiElement::Slider::Draw()
@@ -77,9 +90,9 @@ void UiElement::Slider::Draw()
     if (max_val - min_val > 0)
     {
         if (orientation == Horizontal)
-            cur_point.x = rect_back.left + (rect_back.Width() * (cur_pos - min_val) / (max_val - min_val));
+            cur_point.x = rect_back.left + (rect_back.Width() * (GetCurPos() - min_val) / (max_val - min_val));
         else
-            cur_point.y = rect_back.top + (rect_back.Height() * (cur_pos - min_val) / (max_val - min_val));
+            cur_point.y = rect_back.top + (rect_back.Height() * (GetCurPos() - min_val) / (max_val - min_val));
     }
 
     //计算当前位置前后两部分的矩形区域
@@ -139,7 +152,7 @@ bool UiElement::Slider::LButtonUp(CPoint point)
     {
         rtn = true;
         //如果鼠标抬起时进行了拖动，则响应鼠标拖动结束事件
-        if (pos_mouse_pressed != cur_pos)
+        if (pos_mouse_pressed != GetCurPos())
         {
             if (drag_finish_trigger)
                 drag_finish_trigger(this);
@@ -154,7 +167,7 @@ bool UiElement::Slider::LButtonDown(CPoint point)
     if (hover && IsEnable() && IsShown())
     {
         pressed = true;
-        pos_mouse_pressed = cur_pos;
+        pos_mouse_pressed = GetCurPos();
         return true;
     }
     return false;
@@ -176,9 +189,9 @@ bool UiElement::Slider::MouseMove(CPoint point)
             pos = min_val + (max_val - min_val) * (point.y - rect_back.top) / rect_back.Height();
         }
         CCommon::SetNumRange(pos, min_val, max_val);
-        if (cur_pos != pos)
+        if (GetCurPos() != pos)
         {
-            cur_pos = pos;
+            SetCurPos(pos);
             if (pos_changed_trigger)
                 pos_changed_trigger(this);
         }

@@ -147,13 +147,14 @@ bool UiElement::Volume::MouseLeave()
 
 bool UiElement::Volume::MouseWheel(int delta, CPoint point)
 {
+    bool rtn = false;
     if (rect.PtInRect(point) || rect_volume_adj.PtInRect(point))
     {
         CMusicPlayerDlg::GetInstance()->MouseWheelAdjustVolume(static_cast<short>(delta));
-        UpdateSliderValue();
-        return true;
+        rtn = true;
     }
-    return false;
+    UpdateSliderValue();
+    return rtn;
 }
 
 bool UiElement::Volume::GlobalLButtonUp(CPoint point)
