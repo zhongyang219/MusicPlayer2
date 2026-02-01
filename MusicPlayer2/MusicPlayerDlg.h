@@ -32,7 +32,7 @@
 #include "CHotkeyManager.h"
 #include "ListCache.h"
 
-#define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)		//自动下载专辑封面和歌词完成时发出的消息
+#define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)      //自动下载专辑封面和歌词完成时发出的消息
 
 // CMusicPlayerDlg 对话框
 class CMusicPlayerDlg : public CMainDialogBase
@@ -40,7 +40,7 @@ class CMusicPlayerDlg : public CMainDialogBase
 
     // 构造
 public:
-    CMusicPlayerDlg(wstring cmdLine = wstring(), CWnd* pParent = NULL);	// 标准构造函数
+    CMusicPlayerDlg(wstring cmdLine = wstring(), CWnd* pParent = NULL); // 标准构造函数
     ~CMusicPlayerDlg();
 
     static CMusicPlayerDlg* GetInstance();
@@ -65,7 +65,7 @@ public:
 #endif
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 public:
     CMenu* m_pCurMenu{};       //当前弹出的菜单
@@ -101,55 +101,55 @@ protected:
 #endif
 
     CHotkeyManager m_hot_key;
-    CFindContainerDlg m_findDlg;		//查找对话框
+    CFindContainerDlg m_findDlg;        //查找对话框
     HACCEL m_hAccel{};
 
-    wstring m_cmdLine;	//命令行参数
+    wstring m_cmdLine;  //命令行参数
     std::mutex m_cmd_open_files_mutx;   // 保护m_cmd_open_files的线程同步对象
     vector<wstring> m_cmd_open_files;   // 来自命令行/copy_data的待打开文件队列
 
-    CDC* m_pUiDC;				//当前窗口的DC
+    CDC* m_pUiDC;               //当前窗口的DC
     std::vector<std::shared_ptr<CPlayerUIBase>> m_ui_list;      //保存每个界面类的指针
     IPlayerUI* m_pUI = nullptr; //指向当前显示的界面类
 
-    bool m_first_start{ true };		//初始时为true，在定时器第一次启动后置为flase
+    bool m_first_start{ true };     //初始时为true，在定时器第一次启动后置为flase
 
-    int m_window_width;		//窗口的宽度
-    int m_window_height;	//窗口的高度
+    int m_window_width;     //窗口的宽度
+    int m_window_height;    //窗口的高度
     CPoint m_desktop_lyric_pos{ -1, -1 };     //桌面歌词窗口的位置
     CSize m_desktop_lyric_size{ 0, 0 };
     int m_part_static_width{ theApp.DPI(32) };              // 这里的值是最小宽度，窗口init时会根据文字变大
     int m_medialib_btn_width{ theApp.DPI(64) };             // 这里的值是最小宽度，窗口init时会根据文字变大
 
-    SLayoutData m_layout;		//窗口布局的固定数据
+    SLayoutData m_layout;       //窗口布局的固定数据
 
-    bool m_searched;		//播放列表是否处于搜索状态
+    bool m_searched;        //播放列表是否处于搜索状态
 
     unsigned int m_timer_count{};
     unsigned int m_one_sec_timer_counter{};
 
-    int m_item_selected{ -1 };		//播放列表中鼠标选中的项目
+    int m_item_selected{ -1 };      //播放列表中鼠标选中的项目
     vector<int> m_items_selected;
-    int m_tab_selected{};		//选项设置中选择的标签
+    int m_tab_selected{};       //选项设置中选择的标签
 
-    CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected };		//迷你模式对话框
+    CMiniModeDlg m_miniModeDlg{ m_item_selected, m_items_selected };        //迷你模式对话框
 
-    CCortanaLyric m_cortana_lyric;		//用于显示Cortana歌词
-    CDesktopLyric m_desktop_lyric;		//桌面歌词
+    CCortanaLyric m_cortana_lyric;      //用于显示Cortana歌词
+    CDesktopLyric m_desktop_lyric;      //桌面歌词
 
-    CLyricEditDlg* m_pLyricEdit;		//歌词编辑对话框（非模态对话框）
-    CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;	//歌词批量下载对话框（非模态对话框）
-    CMediaLibDlg* m_pMediaLibDlg;		//媒体库对话框（非模态对话框）
-    CSoundEffectDlg* m_pSoundEffecDlg;		//音效设定对话框（非模态对话框）
-    CFormatConvertDlg* m_pFormatConvertDlg;		//格式转换对话框（非模态对话框）
-    CFloatPlaylistDlg* m_pFloatPlaylistDlg;		//浮动播放列表对话框
-    CPoint m_float_playlist_pos{ INT_MAX, INT_MAX };				//浮动播放列表的位置
+    CLyricEditDlg* m_pLyricEdit;        //歌词编辑对话框（非模态对话框）
+    CLyricBatchDownloadDlg* m_pLyricBatchDownDlg;   //歌词批量下载对话框（非模态对话框）
+    CMediaLibDlg* m_pMediaLibDlg;       //媒体库对话框（非模态对话框）
+    CSoundEffectDlg* m_pSoundEffecDlg;      //音效设定对话框（非模态对话框）
+    CFormatConvertDlg* m_pFormatConvertDlg;     //格式转换对话框（非模态对话框）
+    CFloatPlaylistDlg* m_pFloatPlaylistDlg;     //浮动播放列表对话框
+    CPoint m_float_playlist_pos{ INT_MAX, INT_MAX };                //浮动播放列表的位置
 
-    CWinThread* m_pThread;		//执行在线查看的线程
-    static UINT ViewOnlineThreadFunc(LPVOID lpParam);	//执行在线查看的线程函数
+    CWinThread* m_pThread;      //执行在线查看的线程
+    static UINT ViewOnlineThreadFunc(LPVOID lpParam);   //执行在线查看的线程函数
 
-    CWinThread* m_pDownloadThread;		//执行自动下载歌词和专辑封面的线程
-    static UINT DownloadLyricAndCoverThreadFunc(LPVOID lpParam);	//执行自动下载歌词和专辑封面的线程函数
+    CWinThread* m_pDownloadThread;      //执行自动下载歌词和专辑封面的线程
+    static UINT DownloadLyricAndCoverThreadFunc(LPVOID lpParam);    //执行自动下载歌词和专辑封面的线程函数
 
     CWinThread* m_uiThread;         //主界面绘图的线程
     static UINT UiThreadFunc(LPVOID lpParam);   //主界面绘图的线程函数
@@ -165,7 +165,7 @@ protected:
     };
     UIThreadPara m_ui_thread_para{};
 
-    int m_play_error_cnt{};		//统计播放出错的次数
+    int m_play_error_cnt{};     //统计播放出错的次数
     int m_fps_cnt{};            //用于统计当前帧率
 
     CNotifyIcon m_notify_icon;
@@ -201,12 +201,12 @@ protected:
     };
 
 private:
-    void SaveConfig();		//保存设置到ini文件
-    void LoadConfig();		//从ini文件读取设置
-    void SetTransparency();			//根据m_transparency的值设置窗口透明度
+    void SaveConfig();      //保存设置到ini文件
+    void LoadConfig();      //从ini文件读取设置
+    void SetTransparency();         //根据m_transparency的值设置窗口透明度
     void SetDesptopLyricTransparency();
-    void DrawInfo(bool reset = false);		//绘制信息
-    void SetPlaylistSize(int cx, int cy, int playlist_width);		//设置播放列表的大小
+    void DrawInfo(bool reset = false);      //绘制信息
+    void SetPlaylistSize(int cx, int cy, int playlist_width);       //设置播放列表的大小
     void SetDrawAreaSize(int cx, int cy, int playlist_width);
     void SetAlwaysOnTop();
     void AdjustVolume(int step);
@@ -227,7 +227,7 @@ public:
 
 protected:
     void SetPlayListColor(bool highlight_visible = true);
-    void SwitchTrack();		//当切换正在播放的歌曲时的处理
+    void SwitchTrack();     //当切换正在播放的歌曲时的处理
     void UpdateSongInfoToolTip();
     void SetPlaylistVisible();
     void SetMenubarVisible();
@@ -242,27 +242,28 @@ protected:
     // 设置任务栏缩略图的区域
     void TaskBarSetClipArea(CRect rect);
 
-    void EnablePlaylist(bool enable);		//设置启用或禁用播放列表控件
+    void EnablePlaylist(bool enable);       //设置启用或禁用播放列表控件
 
     void FirstRunCreateShortcut();            // 如果是首次运行那么提示用户是否创建桌面快捷方式
 
-    void ApplySettings(const COptionsDlg& optionDlg);		//从选项设置对话框获取设置
+    void ApplySettings(const COptionsDlg& optionDlg);       //从选项设置对话框获取设置
 
 public:
-    //应用选项设置
-    void ApplySettings(const LyricSettingData& lyrics_data,
-        const ApperanceSettingData& apperence_data,
-        const GeneralSettingData& general_data,
-        const PlaySettingData& play_data,
-        const MediaLibSettingData& media_lib_data,
-        bool lyrics_font_changed = false,
-        bool search_box_font_changed = false,
-        bool auto_run_changed = false,
-        bool auto_run = false
-    );
+    void SettingsChanged();     //当选项设置更改时调用
+
+    //应用歌词设置
+    void ApplyLyricsSettings(const LyricSettingData& lyrics_data, bool lyrics_font_changed = false, bool search_box_font_changed = false);
+    //应用外观设置
+    void ApplyApperanceSettings(const ApperanceSettingData& apperence_data);
+    //启用常规设置
+    void ApplyGeneralSettings(const GeneralSettingData& general_data, bool auto_run_changed = false, bool auto_run = false);
+    //应用播放设置
+    void ApplyPlaySettings(const PlaySettingData& play_data);
+    //应用媒体库设置
+    void ApplyMediaLibSettings(const MediaLibSettingData& media_lib_data);
 
 protected:
-    void ApplyThemeColor();			//应用主题颜色设置
+    void ApplyThemeColor();         //应用主题颜色设置
 
     void ThemeColorChanged();
 
@@ -282,7 +283,7 @@ protected:
 
     void _OnOptionSettings(CWnd* pParent);
 
-    void DoLyricsAutoSave(bool no_inquiry = false);		//保存未修改的歌词，如果no_inquiry为true，则不弹出提示信息
+    void DoLyricsAutoSave(bool no_inquiry = false);     //保存未修改的歌词，如果no_inquiry为true，则不弹出提示信息
     void UpdateABRepeatToolTip();
 
     void LoadDefaultBackground();
@@ -348,7 +349,7 @@ protected:
     afx_msg void OnPlayItem();
     afx_msg void OnItemProperty();
     //afx_msg void OnRemoveFromPlaylist();
-//	afx_msg void OnClearPlaylist();
+//  afx_msg void OnClearPlaylist();
     afx_msg void OnExploreTrack();
     virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
     afx_msg void OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2);

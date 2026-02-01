@@ -1207,18 +1207,15 @@ void CMusicPlayerDlg::FirstRunCreateShortcut()
 void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
 {
     //获取选项设置对话框中的设置数据
-    ApplySettings(optionDlg.m_tab1_dlg.m_data,
-        optionDlg.m_tab2_dlg.m_data,
-        optionDlg.m_tab3_dlg.m_data,
-        optionDlg.m_tab4_dlg.m_data,
-        optionDlg.m_media_lib_dlg.m_data,
-        optionDlg.m_tab1_dlg.FontChanged(),
-        optionDlg.m_tab1_dlg.SearchBoxFontChanged(),
-        optionDlg.m_tab3_dlg.IsAutoRunModified(),
-        optionDlg.m_tab3_dlg.m_auto_run
-    );
+    ApplyLyricsSettings(optionDlg.m_tab1_dlg.m_data, optionDlg.m_tab1_dlg.FontChanged(), optionDlg.m_tab1_dlg.SearchBoxFontChanged());
+    ApplyApperanceSettings(optionDlg.m_tab2_dlg.m_data);
+    ApplyGeneralSettings(optionDlg.m_tab3_dlg.m_data, optionDlg.m_tab3_dlg.IsAutoRunModified(), optionDlg.m_tab3_dlg.m_auto_run);
+    ApplyPlaySettings(optionDlg.m_tab4_dlg.m_data);
+    ApplyMediaLibSettings(optionDlg.m_media_lib_dlg.m_data);
     m_hot_key.FromHotkeyGroup(optionDlg.m_tab5_dlg.m_hotkey_group);
     theApp.m_hot_key_setting_data = optionDlg.m_tab5_dlg.m_data;
+
+    SettingsChanged();
 
     //如果显示了设置面板，则更新设置面板中控件的状态
     CUserUi* user_ui = dynamic_cast<CUserUi*>(GetCurrentUi());
@@ -1230,59 +1227,136 @@ void CMusicPlayerDlg::ApplySettings(const COptionsDlg& optionDlg)
     }
 }
 
-void CMusicPlayerDlg::ApplySettings(const LyricSettingData& lyrics_data,
-    const ApperanceSettingData& apperence_data,
-    const GeneralSettingData& general_data,
-    const PlaySettingData& play_data,
-    const MediaLibSettingData& media_lib_data,
-    bool lyrics_font_changed,
-    bool search_box_font_changed,
-    bool auto_run_changed,
-    bool auto_run
-)
+void CMusicPlayerDlg::SettingsChanged()
+{
+    UpdatePlayPauseButton();
+    SaveConfig();       //将设置写入到ini文件
+    theApp.SaveConfig();
+    CPlayer::GetInstance().SaveConfig();
+    auto pCurUi = GetCurrentUi();
+    if (pCurUi != nullptr)
+        pCurUi->ClearBtnRect();
+    DrawInfo(true);
+    if (pCurUi != nullptr)
+        pCurUi->HideTooltip();
+}
+
+void CMusicPlayerDlg::ApplyLyricsSettings(const LyricSettingData& lyrics_data, bool lyrics_font_changed, bool search_box_font_changed)
 {
     if (theApp.m_lyric_setting_data.cortana_info_enable == true && lyrics_data.cortana_info_enable == false)    //如果在选项中关闭了“在Cortana搜索框中显示歌词”的选项，则重置Cortana搜索框的文本
         m_cortana_lyric.ResetCortanaText();
     m_cortana_lyric.SetEnable(lyrics_data.cortana_info_enable);
-
-    bool reload_sf2{ theApp.m_play_setting_data.sf2_path != play_data.sf2_path };
-    bool gauss_blur_changed{ theApp.m_app_setting_data.background_gauss_blur != apperence_data.background_gauss_blur
-                             || theApp.m_app_setting_data.gauss_blur_radius != apperence_data.gauss_blur_radius
-                             || theApp.m_app_setting_data.album_cover_as_background != apperence_data.album_cover_as_background
-                             || theApp.m_app_setting_data.enable_background != apperence_data.enable_background };
-    bool output_device_changed{ theApp.m_play_setting_data.device_selected != play_data.device_selected };
-    bool player_core_changed{ theApp.m_play_setting_data.use_mci != play_data.use_mci || theApp.m_play_setting_data.use_ffmpeg != play_data.use_ffmpeg };
-    bool media_lib_folder_changed{ theApp.m_media_lib_setting_data.media_folders != media_lib_data.media_folders };
-    bool media_lib_setting_changed{ theApp.m_media_lib_setting_data.hide_only_one_classification != media_lib_data.hide_only_one_classification
-                                    || theApp.m_media_lib_setting_data.media_folders != media_lib_data.media_folders
-                                    || theApp.m_media_lib_setting_data.recent_played_range != media_lib_data.recent_played_range
-                                    || theApp.m_media_lib_setting_data.artist_split_ext != media_lib_data.artist_split_ext
-    };
     bool use_inner_lyric_changed{ theApp.m_lyric_setting_data.use_inner_lyric_first != lyrics_data.use_inner_lyric_first };
-    bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != apperence_data.ui_refresh_interval };
-    bool notify_icon_changed{ theApp.m_app_setting_data.notify_icon_selected != apperence_data.notify_icon_selected };
-    bool media_lib_display_item_changed{ theApp.m_media_lib_setting_data.display_item != media_lib_data.display_item };
-    bool default_background_changed{ theApp.m_app_setting_data.default_background != apperence_data.default_background
-                                     || theApp.m_app_setting_data.use_desktop_background != apperence_data.use_desktop_background };
     bool search_box_background_transparent_changed{ theApp.m_lyric_setting_data.cortana_transparent_color != lyrics_data.cortana_transparent_color };
-    bool float_playlist_follow_main_wnd_changed{ theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd != media_lib_data.float_playlist_follow_main_wnd };
-    bool show_window_frame_changed{ theApp.m_app_setting_data.show_window_frame != apperence_data.show_window_frame
-                                    || theApp.m_app_setting_data.remove_titlebar_top_frame != apperence_data.remove_titlebar_top_frame };
-    bool playlist_item_height_changed{ theApp.m_media_lib_setting_data.playlist_item_height != media_lib_data.playlist_item_height };
-    bool need_restart_player{ theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI != play_data.ffmpeg_core_enable_WASAPI
-    || (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI && (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode != play_data.ffmpeg_core_enable_WASAPI_exclusive_mode)) };
-    bool SMTC_enable_changed{ theApp.m_play_setting_data.use_media_trans_control != play_data.use_media_trans_control };
-    bool playlist_btn_changed{ theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist != media_lib_data.playlist_btn_for_float_playlist };
-    bool lyric_download_service_changed{ theApp.m_general_setting_data.lyric_download_service != general_data.lyric_download_service };
-    bool disable_screen_sleep_changed{ theApp.m_play_setting_data.disable_screen_sleep_when_fullscreen_play != play_data.disable_screen_sleep_when_fullscreen_play };
 
     theApp.m_lyric_setting_data = lyrics_data;
-    theApp.m_app_setting_data = apperence_data;
-    theApp.m_general_setting_data = general_data;
-    theApp.m_play_setting_data = play_data;
-    theApp.m_media_lib_setting_data = media_lib_data;
 
-    CTagLibHelper::SetWriteId3V2_3(theApp.m_media_lib_setting_data.write_id3_v2_3);
+    if (lyrics_font_changed)
+    {
+        theApp.m_font_set.lyric.SetFont(theApp.m_lyric_setting_data.lyric_font);
+        FontInfo translate_font = theApp.m_lyric_setting_data.lyric_font;
+        translate_font.size--;
+        theApp.m_font_set.lyric_translate.SetFont(translate_font);
+    }
+    if (search_box_font_changed)
+    {
+        CCortanaLyric::InitFont();
+    }
+
+    m_desktop_lyric.ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
+
+    if (use_inner_lyric_changed)
+    {
+        OnReloadLyric();
+    }
+
+    if (search_box_background_transparent_changed)
+        m_cortana_lyric.ApplySearchBoxTransparentChanged();
+
+}
+
+void CMusicPlayerDlg::ApplyApperanceSettings(const ApperanceSettingData& apperence_data)
+{
+    bool gauss_blur_changed{ theApp.m_app_setting_data.background_gauss_blur != apperence_data.background_gauss_blur
+                         || theApp.m_app_setting_data.gauss_blur_radius != apperence_data.gauss_blur_radius
+                         || theApp.m_app_setting_data.album_cover_as_background != apperence_data.album_cover_as_background
+                         || theApp.m_app_setting_data.enable_background != apperence_data.enable_background };
+    bool timer_interval_changed{ theApp.m_app_setting_data.ui_refresh_interval != apperence_data.ui_refresh_interval };
+    bool notify_icon_changed{ theApp.m_app_setting_data.notify_icon_selected != apperence_data.notify_icon_selected };
+    bool default_background_changed{ theApp.m_app_setting_data.default_background != apperence_data.default_background
+                                 || theApp.m_app_setting_data.use_desktop_background != apperence_data.use_desktop_background };
+    bool show_window_frame_changed{ theApp.m_app_setting_data.show_window_frame != apperence_data.show_window_frame
+                                || theApp.m_app_setting_data.remove_titlebar_top_frame != apperence_data.remove_titlebar_top_frame };
+
+    theApp.m_app_setting_data = apperence_data;
+
+    if (gauss_blur_changed)
+        CPlayer::GetInstance().AlbumCoverGaussBlur();
+
+    if (notify_icon_changed)
+    {
+        if (theApp.m_app_setting_data.notify_icon_auto_adapt)
+        {
+            theApp.AutoSelectNotifyIcon();
+        }
+        if (theApp.m_app_setting_data.notify_icon_selected < 0 || theApp.m_app_setting_data.notify_icon_selected >= MAX_NOTIFY_ICON)
+            theApp.m_app_setting_data.notify_icon_selected = 0;
+        m_notify_icon.SetIcon(theApp.GetNotifyIncon(theApp.m_app_setting_data.notify_icon_selected));
+        m_notify_icon.DeleteNotifyIcon();
+        m_notify_icon.AddNotifyIcon();
+    }
+
+    if (default_background_changed)
+        LoadDefaultBackground();
+
+    if (show_window_frame_changed)
+    {
+        ApplyShowStandardTitlebar();
+    }
+
+    if (timer_interval_changed)
+    {
+        m_ui_refresh_interval = theApp.m_app_setting_data.ui_refresh_interval;
+    }
+
+    //根据当前选择的深色/浅色模式，将当前“背景不透明度”设置更新到对应的深色/浅色“背景不透明度”设置中
+    if (theApp.m_app_setting_data.dark_mode)
+        theApp.m_nc_setting_data.dark_mode_default_transparency = theApp.m_app_setting_data.background_transparency;
+    else
+        theApp.m_nc_setting_data.light_mode_default_transparency = theApp.m_app_setting_data.background_transparency;
+    
+    ThemeColorChanged();
+    ApplyThemeColor();
+
+}
+
+void CMusicPlayerDlg::ApplyGeneralSettings(const GeneralSettingData& general_data, bool auto_run_changed, bool auto_run)
+{
+    bool lyric_download_service_changed{ theApp.m_general_setting_data.lyric_download_service != general_data.lyric_download_service };
+
+    theApp.m_general_setting_data = general_data;
+
+    if (lyric_download_service_changed)
+    {
+        theApp.InitLyricDownload();
+    }
+
+    if (auto_run_changed)
+        theApp.SetAutoRun(auto_run);
+
+}
+
+void CMusicPlayerDlg::ApplyPlaySettings(const PlaySettingData& play_data)
+{
+    bool reload_sf2{ theApp.m_play_setting_data.sf2_path != play_data.sf2_path };
+    bool output_device_changed{ theApp.m_play_setting_data.device_selected != play_data.device_selected };
+    bool player_core_changed{ theApp.m_play_setting_data.use_mci != play_data.use_mci || theApp.m_play_setting_data.use_ffmpeg != play_data.use_ffmpeg };
+    bool need_restart_player{ theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI != play_data.ffmpeg_core_enable_WASAPI
+        || (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI && (theApp.m_play_setting_data.ffmpeg_core_enable_WASAPI_exclusive_mode != play_data.ffmpeg_core_enable_WASAPI_exclusive_mode)) };
+    bool SMTC_enable_changed{ theApp.m_play_setting_data.use_media_trans_control != play_data.use_media_trans_control };
+    bool disable_screen_sleep_changed{ theApp.m_play_setting_data.disable_screen_sleep_when_fullscreen_play != play_data.disable_screen_sleep_when_fullscreen_play };
+
+    theApp.m_play_setting_data = play_data;
 
     if (reload_sf2 || output_device_changed || player_core_changed || need_restart_player)
     {
@@ -1295,8 +1369,47 @@ void CMusicPlayerDlg::ApplySettings(const LyricSettingData& lyrics_data,
             core->UpdateSettings();
         }
     }
-    if (gauss_blur_changed)
-        CPlayer::GetInstance().AlbumCoverGaussBlur();
+
+    if (SMTC_enable_changed)
+    {
+        CPlayer::GetInstance().m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
+        if (theApp.m_play_setting_data.use_media_trans_control) // 如果设置从禁用更改为启用那么更新一次状态
+        {
+            PlaybackStatus status{};
+            switch (CPlayer::GetInstance().GetPlayingState2())
+            {
+            case 0: status = PlaybackStatus::Stopped; break;
+            case 1: status = PlaybackStatus::Paused; break;
+            case 2: status = PlaybackStatus::Playing; break;
+            }
+            CPlayer::GetInstance().m_controls.UpdateControls(status);
+            CPlayer::GetInstance().m_controls.UpdateControlsMetadata(CPlayer::GetInstance().GetCurrentSongInfo());
+            CPlayer::GetInstance().m_controls.UpdatePosition(CPlayer::GetInstance().GetCurrentPosition(), true);
+            CPlayer::GetInstance().m_controls.UpdateSpeed(CPlayer::GetInstance().GetSpeed());
+            CPlayer::GetInstance().MediaTransControlsLoadThumbnail();
+        }
+    }
+
+    if (disable_screen_sleep_changed)
+    {
+        SetDisableScreenSleep();
+    }
+}
+
+void CMusicPlayerDlg::ApplyMediaLibSettings(const MediaLibSettingData& media_lib_data)
+{
+    bool media_lib_folder_changed{ theApp.m_media_lib_setting_data.media_folders != media_lib_data.media_folders };
+    bool media_lib_setting_changed{ theApp.m_media_lib_setting_data.hide_only_one_classification != media_lib_data.hide_only_one_classification
+                                    || theApp.m_media_lib_setting_data.media_folders != media_lib_data.media_folders
+                                    || theApp.m_media_lib_setting_data.recent_played_range != media_lib_data.recent_played_range
+                                    || theApp.m_media_lib_setting_data.artist_split_ext != media_lib_data.artist_split_ext
+    };
+    bool media_lib_display_item_changed{ theApp.m_media_lib_setting_data.display_item != media_lib_data.display_item };
+    bool float_playlist_follow_main_wnd_changed{ theApp.m_media_lib_setting_data.float_playlist_follow_main_wnd != media_lib_data.float_playlist_follow_main_wnd };
+    bool playlist_item_height_changed{ theApp.m_media_lib_setting_data.playlist_item_height != media_lib_data.playlist_item_height };
+    bool playlist_btn_changed{ theApp.m_media_lib_setting_data.playlist_btn_for_float_playlist != media_lib_data.playlist_btn_for_float_playlist };
+
+    theApp.m_media_lib_setting_data = media_lib_data;
 
     if (m_pMediaLibDlg != nullptr && IsWindow(m_pMediaLibDlg->m_hWnd))
     {
@@ -1325,74 +1438,10 @@ void CMusicPlayerDlg::ApplySettings(const LyricSettingData& lyrics_data,
         CUiFolderExploreMgr::Instance().UpdateFolders();
     }
 
-    UpdatePlayPauseButton();
-
-    ThemeColorChanged();
-    ApplyThemeColor();
-
-    if (lyrics_font_changed)
-    {
-        theApp.m_font_set.lyric.SetFont(theApp.m_lyric_setting_data.lyric_font);
-        FontInfo translate_font = theApp.m_lyric_setting_data.lyric_font;
-        translate_font.size--;
-        theApp.m_font_set.lyric_translate.SetFont(translate_font);
-    }
-    if (search_box_font_changed)
-    {
-        CCortanaLyric::InitFont();
-    }
-
-    m_desktop_lyric.ApplySettings(theApp.m_lyric_setting_data.desktop_lyric_data);
-
     SetPlaylistDragEnable();
     ShowPlayList();
 
-    if (use_inner_lyric_changed)
-    {
-        OnReloadLyric();
-    }
-
-    if (SMTC_enable_changed)
-    {
-        CPlayer::GetInstance().m_controls.InitSMTC(theApp.m_play_setting_data.use_media_trans_control);
-        if (theApp.m_play_setting_data.use_media_trans_control) // 如果设置从禁用更改为启用那么更新一次状态
-        {
-            PlaybackStatus status{};
-            switch (CPlayer::GetInstance().GetPlayingState2())
-            {
-            case 0: status = PlaybackStatus::Stopped; break;
-            case 1: status = PlaybackStatus::Paused; break;
-            case 2: status = PlaybackStatus::Playing; break;
-            }
-            CPlayer::GetInstance().m_controls.UpdateControls(status);
-            CPlayer::GetInstance().m_controls.UpdateControlsMetadata(CPlayer::GetInstance().GetCurrentSongInfo());
-            CPlayer::GetInstance().m_controls.UpdatePosition(CPlayer::GetInstance().GetCurrentPosition(), true);
-            CPlayer::GetInstance().m_controls.UpdateSpeed(CPlayer::GetInstance().GetSpeed());
-            CPlayer::GetInstance().MediaTransControlsLoadThumbnail();
-        }
-    }
-
-    if (notify_icon_changed)
-    {
-        if (theApp.m_app_setting_data.notify_icon_auto_adapt)
-        {
-            theApp.AutoSelectNotifyIcon();
-        }
-        if (theApp.m_app_setting_data.notify_icon_selected < 0 || theApp.m_app_setting_data.notify_icon_selected >= MAX_NOTIFY_ICON)
-            theApp.m_app_setting_data.notify_icon_selected = 0;
-        m_notify_icon.SetIcon(theApp.GetNotifyIncon(theApp.m_app_setting_data.notify_icon_selected));
-        m_notify_icon.DeleteNotifyIcon();
-        m_notify_icon.AddNotifyIcon();
-    }
-
-    if (default_background_changed)
-        LoadDefaultBackground();
-
-    if (search_box_background_transparent_changed)
-        m_cortana_lyric.ApplySearchBoxTransparentChanged();
-
-    if (auto_run_changed)
-        theApp.SetAutoRun(auto_run);
+    CTagLibHelper::SetWriteId3V2_3(theApp.m_media_lib_setting_data.write_id3_v2_3);
 
     if (float_playlist_follow_main_wnd_changed && IsFloatPlaylistExist())
     {
@@ -1406,11 +1455,6 @@ void CMusicPlayerDlg::ApplySettings(const LyricSettingData& lyrics_data,
         ShowFloatPlaylist();
     }
 
-    if (show_window_frame_changed)
-    {
-        ApplyShowStandardTitlebar();
-    }
-
     if (playlist_item_height_changed)
     {
         int row_height{ theApp.DPI(theApp.m_media_lib_setting_data.playlist_item_height) };
@@ -1421,36 +1465,7 @@ void CMusicPlayerDlg::ApplySettings(const LyricSettingData& lyrics_data,
             m_miniModeDlg.GetPlaylistCtrl().SetRowHeight(row_height);
     }
 
-    if (lyric_download_service_changed)
-    {
-        theApp.InitLyricDownload();
-    }
-
-    if (disable_screen_sleep_changed)
-    {
-        SetDisableScreenSleep();
-    }
-
-    if (timer_interval_changed)
-    {
-        m_ui_refresh_interval = theApp.m_app_setting_data.ui_refresh_interval;
-    }
-
-    //根据当前选择的深色/浅色模式，将当前“背景不透明度”设置更新到对应的深色/浅色“背景不透明度”设置中
-    if (theApp.m_app_setting_data.dark_mode)
-        theApp.m_nc_setting_data.dark_mode_default_transparency = theApp.m_app_setting_data.background_transparency;
-    else
-        theApp.m_nc_setting_data.light_mode_default_transparency = theApp.m_app_setting_data.background_transparency;
-
-    SaveConfig();       //将设置写入到ini文件
-    theApp.SaveConfig();
-    CPlayer::GetInstance().SaveConfig();
     auto pCurUi = GetCurrentUi();
-    if (pCurUi != nullptr)
-        pCurUi->ClearBtnRect();
-    DrawInfo(true);
-    if (pCurUi != nullptr)
-        pCurUi->HideTooltip();
     if (pCurUi != nullptr && playlist_btn_changed)
         pCurUi->UpdatePlaylistBtnToolTip();
 
@@ -4477,7 +4492,7 @@ UINT CMusicPlayerDlg::DownloadLyricAndCoverThreadFunc(LPVOID lpParam)
         //保存歌词
         CFilePathHelper lyric_path;
         wstring file_name;
-        bool save_to_lyric_folder = (!theApp.m_general_setting_data.save_lyric_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()));	//是否保存到歌曲所在文件夹
+        bool save_to_lyric_folder = (!theApp.m_general_setting_data.save_lyric_to_song_folder && CCommon::FolderExist(theApp.m_lyric_setting_data.AbsoluteLyricPath()));    //是否保存到歌曲所在文件夹
         if (song_info_ori.is_cue || is_osu || save_to_lyric_folder)   // cue、osu文件使，或保存到歌词文件夹时用与cue同样的“艺术家 - 标题”保存自动下载歌词
         {
             file_name = CSongInfoHelper::GetDisplayStr(song_info_ori, DF_ARTIST_TITLE);
