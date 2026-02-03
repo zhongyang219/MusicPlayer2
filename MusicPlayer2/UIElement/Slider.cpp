@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Slider.h"
 #include "TinyXml2Helper.h"
+#include "../GdiPlusTool.h"
 
 void UiElement::Slider::SetRange(int min_val, int max_val)
 {
@@ -40,6 +41,16 @@ static CRect CreateScqureByPosAndSize(CPoint point, int size)
     rect.right = rect.left + size;
     rect.top = point.y - (size / 2);
     rect.bottom = rect.top + size;
+    return rect;
+}
+
+static Gdiplus::RectF CreateScqureByPosAndSize(Gdiplus::PointF point, float size)
+{
+    Gdiplus::RectF rect;
+    rect.X = point.X - (size / 2);
+    rect.Width = size;
+    rect.Y = point.Y - (size / 2);
+    rect.Height = size;
     return rect;
 }
 
@@ -86,13 +97,24 @@ void UiElement::Slider::Draw()
     COLORREF back_color_after_curent = GetBackColor(false);
 
     //计算当前位置
-    CPoint cur_point = rect.CenterPoint();
+    Gdiplus::PointF cur_point;
+    if (orientation == Horizontal)
+    {
+        cur_point.X = rect.left;
+        cur_point.Y = rect.CenterPoint().y;
+    }
+    else
+    {
+        cur_point.X = rect.CenterPoint().x;
+        cur_point.Y = rect.top;
+    }
+
     if (max_val - min_val > 0)
     {
         if (orientation == Horizontal)
-            cur_point.x = rect_back.left + (rect_back.Width() * (GetCurPos() - min_val) / (max_val - min_val));
+            cur_point.X = rect_back.left + static_cast<double>(rect_back.Width() * (GetCurPos() - min_val) / static_cast<double>(max_val - min_val));
         else
-            cur_point.y = rect_back.top + (rect_back.Height() * (GetCurPos() - min_val) / (max_val - min_val));
+            cur_point.Y = rect_back.top + static_cast<double>(rect_back.Height() * (GetCurPos() - min_val) / static_cast<double>(max_val - min_val));
     }
 
     //计算当前位置前后两部分的矩形区域
@@ -100,13 +122,13 @@ void UiElement::Slider::Draw()
     CRect rect_back_after_current = rect_back;
     if (orientation == Horizontal)
     {
-        rect_back_before_current.right = cur_point.x;
-        rect_back_after_current.left = cur_point.x;
+        rect_back_before_current.right = static_cast<int>(cur_point.X);
+        rect_back_after_current.left = static_cast<int>(cur_point.X);
     }
     else
     {
-        rect_back_before_current.bottom = cur_point.y;
-        rect_back_after_current.top = cur_point.y;
+        rect_back_before_current.bottom = static_cast<int>(cur_point.Y);
+        rect_back_after_current.top = static_cast<int>(cur_point.Y);
     }
     //分别绘制两部分背景
     ui->DrawRectangle(rect_back_before_current, back_color_before_curent, GetBackAlpha(true));
@@ -125,13 +147,14 @@ void UiElement::Slider::Draw()
     {
         handle_color = theApp.m_app_setting_data.theme_color.light2;
     }
-    rect_handle = CreateScqureByPosAndSize(cur_point, handle_size);
+    Gdiplus::RectF rect_handle_f = CreateScqureByPosAndSize(cur_point, handle_size);
+    rect_handle = CGdiPlusTool::GdiplusRectToCRect(rect_handle_f);
     BYTE handle_alpha;
     if (theApp.m_app_setting_data.dark_mode)
         handle_alpha = ui->GetDefaultAlpha();
     else
         handle_alpha = 255;
-    ui->GetDrawer().DrawEllipse(rect_handle, handle_color, handle_alpha);
+    ui->GetDrawer().DrawEllipse(rect_handle_f, CGdiPlusTool::COLORREFToGdiplusColor(handle_color, handle_alpha));
 
     //绘制中间的圆
     COLORREF circle_color;
@@ -139,8 +162,8 @@ void UiElement::Slider::Draw()
         circle_color = theApp.m_app_setting_data.theme_color.light1;
     else
         circle_color = theApp.m_app_setting_data.theme_color.dark1;
-    CRect rect_circle = CreateScqureByPosAndSize(cur_point, circel_size);
-    ui->GetDrawer().DrawEllipse(rect_circle, circle_color);
+    Gdiplus::RectF rect_circle = CreateScqureByPosAndSize(cur_point, circel_size);
+    ui->GetDrawer().DrawEllipse(rect_circle, CGdiPlusTool::COLORREFToGdiplusColor(circle_color));
 
     Element::Draw();
 }

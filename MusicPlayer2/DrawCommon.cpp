@@ -624,6 +624,20 @@ void CDrawCommon::DrawEllipse(Gdiplus::Rect rect, Gdiplus::Color color)
     ValidateGdiClipArea();
 }
 
+void CDrawCommon::DrawEllipse(Gdiplus::RectF rect, Gdiplus::Color color)
+{
+    //生成椭圆路径
+    Gdiplus::GraphicsPath ellipse_path;
+    ellipse_path.AddEllipse(rect);
+    m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias);      //设置抗锯齿
+    Gdiplus::SolidBrush brush(color);
+    m_pGraphics->FillPath(&brush, &ellipse_path);                  //填充路径
+    m_pGraphics->SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeNone);
+
+    //使用GDI+绘图后会导致GDI剪辑区域失效，这里重新设置一次剪辑区域
+    ValidateGdiClipArea();
+}
+
 CSize CDrawCommon::GetTextExtent(LPCTSTR str)
 {
     if (m_pDC->GetSafeHdc() == NULL)

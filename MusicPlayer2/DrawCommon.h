@@ -126,6 +126,7 @@ public:
 
     void DrawEllipse(CRect rect, COLORREF color, BYTE alpha = 255);     //绘制椭圆（使用GDI+）
     void DrawEllipse(Gdiplus::Rect rect, Gdiplus::Color color);         //绘制椭圆（使用GDI+）
+    void DrawEllipse(Gdiplus::RectF rect, Gdiplus::Color color);         //绘制椭圆（使用GDI+）
 
     CSize GetTextExtent(LPCTSTR str);
 
