@@ -1,10 +1,13 @@
 ﻿#pragma once
 #include "UIElement/UIElement.h"
+class CUIEdit;
 namespace UiElement
 {
     class EditControl : public Element
     {
     public:
+        friend class CUIEdit;
+
         void Create(CWnd* parent);
 
         virtual void Draw() override;
@@ -13,6 +16,8 @@ namespace UiElement
         virtual bool MouseMove(CPoint point) override;
         virtual bool MouseLeave() override;
         virtual bool SetCursor() override;
+
+        void SetEditTrigger(std::function<void(EditControl*)> edit_trigger);
 
     protected:
         void DrawTextCtrl();
@@ -25,6 +30,7 @@ namespace UiElement
         bool is_edit{};
         bool out_of_bounds{};
         bool last_hover{};
+        std::function<void(EditControl*)> m_edit_trigger;
     };
 }
 

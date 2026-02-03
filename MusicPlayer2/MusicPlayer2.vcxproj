@@ -300,6 +300,7 @@
     <ClInclude Include="SimplePropertiesDlg.h" />
     <ClInclude Include="UIDialog\UIDialog.h" />
     <ClInclude Include="UIDialog\UITestDialog.h" />
+    <ClInclude Include="UIEdit.h" />
     <ClInclude Include="UIElement\AbstractCheckButton.h" />
     <ClInclude Include="UIElement\AbstractScrollArea.h" />
     <ClInclude Include="UIElement\AbstractToggleButton.h" />
@@ -545,6 +546,7 @@
     <ClCompile Include="SimplePropertiesDlg.cpp" />
     <ClCompile Include="UIDialog\UIDialog.cpp" />
     <ClCompile Include="UIDialog\UITestDialog.cpp" />
+    <ClCompile Include="UIEdit.cpp" />
     <ClCompile Include="UIElement\AbstractCheckButton.cpp" />
     <ClCompile Include="UIElement\AbstractScrollArea.cpp" />
     <ClCompile Include="UIElement\AbstractToggleButton.cpp" />

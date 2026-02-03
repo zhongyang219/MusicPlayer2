@@ -1,11 +1,12 @@
 ﻿#include "stdafx.h"
 #include "EditControl.h"
-
+#include "../UIEdit.h"
+#include "../EditEx.h"
 
 void UiElement::EditControl::Create(CWnd* parent)
 {
-    m_edit_ctrl = std::make_unique<CEdit>();
-    m_edit_ctrl->Create(WS_CHILDWINDOW | WS_BORDER | WS_VISIBLE | WS_CLIPCHILDREN | ES_AUTOHSCROLL, GetRect(), parent, system_ctrl_id);
+    m_edit_ctrl = std::make_unique<CUIEdit>(this);
+    m_edit_ctrl->Create(WS_CHILDWINDOW /*| WS_BORDER*/ | WS_VISIBLE | WS_CLIPCHILDREN | ES_AUTOHSCROLL, GetRect(), parent, system_ctrl_id);
     system_ctrl_id++;
     m_edit_ctrl->SetFont(parent->GetFont());
     m_edit_ctrl->ShowWindow(SW_SHOW);
@@ -15,11 +16,24 @@ void UiElement::EditControl::Draw()
 {
     CalculateRect();
     
+    COLORREF back_color{};
+    if (theApp.m_app_setting_data.dark_mode)
+        back_color = GRAY(64);
+    else
+        back_color = theApp.m_app_setting_data.theme_color.light3;
+    ui->DrawRectangle(GetRect(), back_color);
     //DrawTextCtrl();
 
     if (IsEditControlValid())
     {
-        m_edit_ctrl->SetWindowPos(nullptr, GetRect().left, GetRect().top, GetRect().Width(), GetRect().Height(), SWP_NOZORDER);
+        CRect edit_rect = GetRect();
+        //水平方向缩进4像素
+        edit_rect.DeflateRect(ui->DPI(4), 0);
+        //垂直方向居中
+        int edit_height = ui->DPI(16);
+        edit_rect.top += (edit_rect.Height() - edit_height) / 2;
+        edit_rect.bottom = edit_rect.top + edit_height;
+        m_edit_ctrl->SetWindowPos(nullptr, edit_rect.left, edit_rect.top, edit_rect.Width(), edit_rect.Height(), SWP_NOZORDER);
     }
 }
 
@@ -156,6 +170,11 @@ bool UiElement::EditControl::SetCursor()
         return true;
     }
     return false;
+}
+
+void UiElement::EditControl::SetEditTrigger(std::function<void(EditControl*)> edit_trigger)
+{
+    m_edit_trigger = edit_trigger;
 }
 
 bool UiElement::EditControl::IsEditControlValid()

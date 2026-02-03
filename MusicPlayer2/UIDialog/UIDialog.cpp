@@ -57,6 +57,7 @@ BEGIN_MESSAGE_MAP(CUIDialog, CDialog)
     ON_WM_TIMER()
     ON_WM_SETCURSOR()
     ON_WM_KILLFOCUS()
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -252,4 +253,11 @@ BOOL CUIDialog::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
         return TRUE;
 
     return CDialog::OnSetCursor(pWnd, nHitTest, message);
+}
+
+
+BOOL CUIDialog::OnEraseBkgnd(CDC* pDC)
+{
+    //return CDialog::OnEraseBkgnd(pDC);
+    return TRUE;
 }

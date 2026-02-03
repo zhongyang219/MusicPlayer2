@@ -46,4 +46,5 @@ public:
     afx_msg void OnGetMinMaxInfo(MINMAXINFO* lpMMI);
     afx_msg void OnTimer(UINT_PTR nIDEvent);
     afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };

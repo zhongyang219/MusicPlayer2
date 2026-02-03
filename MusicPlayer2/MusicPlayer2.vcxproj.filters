@@ -459,6 +459,9 @@
     <Filter Include="UI面板\TestPanel">
       <UniqueIdentifier>{fb26df9a-e959-4da7-94ac-1047d8435650}</UniqueIdentifier>
     </Filter>
+    <Filter Include="派生的控件类\UIEdit">
+      <UniqueIdentifier>{a5342291-83e1-4bdf-ac26-74574f00fad5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1206,6 +1209,9 @@
     <ClInclude Include="UIPanel\TestPanel.h">
       <Filter>UI面板\TestPanel</Filter>
     </ClInclude>
+    <ClInclude Include="UIEdit.h">
+      <Filter>派生的控件类\UIEdit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1915,6 +1921,9 @@
     </ClCompile>
     <ClCompile Include="UIPanel\TestPanel.cpp">
       <Filter>UI面板\TestPanel</Filter>
+    </ClCompile>
+    <ClCompile Include="UIEdit.cpp">
+      <Filter>派生的控件类\UIEdit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
