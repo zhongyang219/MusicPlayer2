@@ -4,7 +4,6 @@
 #include "stdafx.h"
 #include "MusicPlayer2.h"
 #include "UIDialog.h"
-#include <dwmapi.h>
 #include "WinVersionHelper.h"
 
 #define UI_DIALOG_TIMER_ID 1365
@@ -27,6 +26,11 @@ CUIDialog::CUIDialog(UINT ui_res_id, CWnd* pParent /*=nullptr*/)
 
 CUIDialog::~CUIDialog()
 {
+}
+
+BOOL CUIDialog::Create(CWnd* pParent)
+{
+    return CDialog::Create(IDD_UI_DIALOG, pParent);
 }
 
 void CUIDialog::RePaintUi()
@@ -69,8 +73,10 @@ BOOL CUIDialog::OnInitDialog()
     CDialog::OnInitDialog();
 
     //深色模式下，为对话框启用深色标题栏
+    bool dark_mode = false;
     if (theApp.m_app_setting_data.dark_mode && CWinVersionHelper::IsWindows10Version1809OrLater())
     {
+        dark_mode = true;
         BOOL darkMode = TRUE;
         DwmSetWindowAttribute(m_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &darkMode, sizeof(darkMode));
     }
@@ -81,7 +87,8 @@ BOOL CUIDialog::OnInitDialog()
 
     //设置窗口标题和图标
     SetWindowText(m_ui.GetUIName().c_str());
-    SetIcon(theApp.m_icon_mgr.GetHICON(IconMgr::IT_App, IconMgr::IS_Auto, IconMgr::IS_DPI_16), FALSE);
+    IconMgr::IconStyle icon_style = dark_mode ? IconMgr::IconStyle::IS_OutlinedLight : IconMgr::IconStyle::IS_OutlinedDark;
+    SetIcon(theApp.m_icon_mgr.GetHICON(m_ui.GetUiIcon(), icon_style, IconMgr::IS_DPI_16), FALSE);
     
     //初始化对话框大小
     int width = m_ui.GetCurrentTypeUi()->GetWidth(CRect());

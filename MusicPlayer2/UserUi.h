@@ -48,6 +48,8 @@ public:
     template<class T>
     void IterateAllElements(std::function<bool(T*)> func, bool visible_only = false);
 
+    IconMgr::IconType GetUiIcon() const { return m_icon; }
+
     enum { SHOW_VOLUME_TIMER_ID = 1635 };
 
     // 通过 CPlayerUIBase 继承
@@ -74,6 +76,7 @@ protected:
     std::shared_ptr<UiElement::Element> m_root_ui_narrow;
     std::shared_ptr<UiElement::Element> m_root_ui_small;
     std::wstring m_ui_name;
+    IconMgr::IconType m_icon{ IconMgr::IT_NO_ICON };
     bool m_last_mouse_in_draw_area{};
     CPanelManager m_panel_mgr{ this };
     CPoint m_mouse_clicked_point;

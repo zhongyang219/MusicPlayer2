@@ -106,7 +106,7 @@ void UiElement::Slider::Draw()
     else
     {
         cur_point.X = rect.CenterPoint().x;
-        cur_point.Y = rect.top;
+        cur_point.Y = rect.bottom;
     }
 
     if (max_val - min_val > 0)
@@ -114,7 +114,7 @@ void UiElement::Slider::Draw()
         if (orientation == Horizontal)
             cur_point.X = rect_back.left + static_cast<double>(rect_back.Width() * (GetCurPos() - min_val) / static_cast<double>(max_val - min_val));
         else
-            cur_point.Y = rect_back.top + static_cast<double>(rect_back.Height() * (GetCurPos() - min_val) / static_cast<double>(max_val - min_val));
+            cur_point.Y = rect_back.bottom - static_cast<double>(rect_back.Height() * (GetCurPos() - min_val) / static_cast<double>(max_val - min_val));
     }
 
     //计算当前位置前后两部分的矩形区域
@@ -127,8 +127,8 @@ void UiElement::Slider::Draw()
     }
     else
     {
-        rect_back_before_current.bottom = static_cast<int>(cur_point.Y);
-        rect_back_after_current.top = static_cast<int>(cur_point.Y);
+        rect_back_after_current.bottom = static_cast<int>(cur_point.Y);
+        rect_back_before_current.top = static_cast<int>(cur_point.Y);
     }
     //分别绘制两部分背景
     ui->DrawRectangle(rect_back_before_current, back_color_before_curent, GetBackAlpha(true));
@@ -209,7 +209,7 @@ bool UiElement::Slider::MouseMove(CPoint point)
         }
         else
         {
-            pos = min_val + (max_val - min_val) * (point.y - rect_back.top) / rect_back.Height();
+            pos = min_val + (max_val - min_val) * (rect_back.bottom - point.y) / rect_back.Height();
         }
         CCommon::SetNumRange(pos, min_val, max_val);
         if (GetCurPos() != pos)

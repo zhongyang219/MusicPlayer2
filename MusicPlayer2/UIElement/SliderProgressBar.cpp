@@ -45,7 +45,7 @@ bool UiElement::SliderProgressBar::MouseMove(CPoint point)
             ui->UpdateMouseToolTip(UiElement::TooltipIndex::PROGRESS_BAR, str.c_str());
             ui->UpdateMouseToolTipPosition(UiElement::TooltipIndex::PROGRESS_BAR, GetRect());
             last_sec = song_pos_time.sec;
-            TRACE("Progressbar mouse move\n");
+            //TRACE("Progressbar mouse move\n");
         }
 
         return true;

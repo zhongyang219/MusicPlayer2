@@ -813,6 +813,11 @@
           <xs:documentation> 界面的序号，至少为3。序号不能与其他界面重复。未定义此属性的界面总是排在后面。 </xs:documentation>
         </xs:annotation>
       </xs:attribute>
+      <xs:attribute name="icon" type="icon_type">
+        <xs:annotation>
+          <xs:documentation>图标。仅用于UI对话框。</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
       <!--引用属性组sharedattr-->
     </xs:complexType>

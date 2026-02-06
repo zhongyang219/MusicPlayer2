@@ -20,7 +20,12 @@ CUITestDialog::CUITestDialog(CWnd* pParent)
 
     UiElement::Slider* horizentol_slider = m_ui.GetCurrentTypeUi()->FindElement<UiElement::Slider>("horizontalSlider1");
     horizentol_slider->SetPosChangedTrigger([&](UiElement::Slider* sender) {
-        std::wstring str = L"滑动条当前值：" + std::to_wstring(sender->GetCurPos());
+        std::wstring str = L"水平滑动条当前值：" + std::to_wstring(sender->GetCurPos());
+        m_info_text->SetText(str);
+    });
+    UiElement::Slider* vertical_slider = m_ui.GetCurrentTypeUi()->FindElement<UiElement::Slider>("verticalSlider1");
+    vertical_slider->SetPosChangedTrigger([&](UiElement::Slider* sender) {
+        std::wstring str = L"垂直滑动条当前值：" + std::to_wstring(sender->GetCurPos());
         m_info_text->SetText(str);
     });
 

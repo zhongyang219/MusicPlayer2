@@ -17,6 +17,7 @@ CUserUi::CUserUi(CWnd* pMainWnd, UINT id, UIData& ui_data)
     : CPlayerUIBase(ui_data, pMainWnd)
 {
     string xml = CCommon::GetTextResourceRawData(id);
+    ASSERT(!xml.empty());
     LoadFromContents(xml);
 }
 
@@ -31,6 +32,7 @@ void CUserUi::LoadFromContents(const std::string& xml_contents)
     xml_doc.Parse(xml_contents.c_str());
     tinyxml2::XMLElement* root = xml_doc.RootElement();
     m_ui_name = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(root, "name"), CodeType::UTF8_NO_BOM);
+    m_icon = UiElementHelper::NameToIconType(CTinyXml2Helper::ElementAttribute(root, "icon"), IconMgr::IT_App);
     ReplaceUiStringRes(m_ui_name);
     std::string ui_index = CTinyXml2Helper::ElementAttribute(root, "index");
     if (!ui_index.empty())

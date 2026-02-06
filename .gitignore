@@ -291,3 +291,4 @@ __pycache__/
 *.sf2
 /MusicPlayer2/compile_time.txt
 !/MusicPlayer2/language/*.ini
+/enc_temp_folder

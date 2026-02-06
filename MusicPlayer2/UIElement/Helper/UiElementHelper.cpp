@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "UiElementHelper.h"
 
-IconMgr::IconType UiElementHelper::NameToIconType(const std::string& icon_name)
+IconMgr::IconType UiElementHelper::NameToIconType(const std::string& icon_name, IconMgr::IconType default_icon)
 {
-    IconMgr::IconType icon_type{ IconMgr::IT_NO_ICON };
+    IconMgr::IconType icon_type{ default_icon };
     if (icon_name == "app") icon_type = IconMgr::IT_App;
     else if (icon_name == "appMonochrome") icon_type = IconMgr::IT_App_Monochrome;
     else if (icon_name == "stop") icon_type = IconMgr::IT_Stop;

@@ -131,8 +131,9 @@ bool UiElement::AbstractScrollArea::LButtonDown(CPoint point)
         //点击了滚动区域
         else
         {
+            if (Element::LButtonDown(point))
+                return true;
             mouse_pressed = true;
-            rtn = Element::LButtonDown(point);
         }
         mouse_pressed_offset = scroll_offset;
         mouse_pressed_pos = point;

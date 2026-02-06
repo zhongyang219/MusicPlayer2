@@ -316,19 +316,22 @@ void UiElement::StackElement::IndexChanged()
     }
     //清空不显示的子元素的矩形区域和鼠标提示
     auto cur_element{ CurrentElement() };
-    cur_element->MouseLeave();
-    for (size_t i{}; i < childLst.size(); i++)
+    if (cur_element != nullptr)
     {
-        if (cur_element != childLst[i])
+        cur_element->MouseLeave();
+        for (size_t i{}; i < childLst.size(); i++)
         {
-            childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
-                if (element != nullptr)
-                {
-                    element->ClearRect();
-                    element->HideTooltip();
-                }
-                return false;
-            });
+            if (cur_element != childLst[i])
+            {
+                childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
+                    if (element != nullptr)
+                    {
+                        element->ClearRect();
+                        element->HideTooltip();
+                    }
+                    return false;
+                });
+            }
         }
     }
 }

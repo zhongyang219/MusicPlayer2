@@ -11,6 +11,7 @@ class CUIDialog : public CDialog
 public:
     CUIDialog(UINT ui_res_id, CWnd* pParent = nullptr);   // 标准构造函数
     virtual ~CUIDialog();
+    BOOL Create(CWnd* pParent = nullptr);
 
 // 对话框数据
 #ifdef AFX_DESIGN_TIME
