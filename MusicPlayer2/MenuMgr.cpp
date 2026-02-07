@@ -804,7 +804,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_PLAY_PLAYLIST), IconMgr::IconType::IT_Play);
         menu.SetDefaultItem();
         menu.AppendItem(EX_ID(ID_RENAME_PLAYLIST), IconMgr::IconType::IT_Rename);
-        menu.AppendItem(EX_ID(ID_DELETE_PLAYLIST), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_DELETE_PLAYLIST), IconMgr::IconType::IT_Delete);
         menu.AppendItem(EX_ID(ID_SAVE_AS_NEW_PLAYLIST), IconMgr::IconType::IT_Save);
         menu.AppendItem(EX_ID(ID_PLAYLIST_SAVE_AS), IconMgr::IconType::IT_Save_As);
         menu.AppendSeparator();
@@ -931,7 +931,7 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_PLAY_PLAYLIST), IconMgr::IconType::IT_Play);
         menu.SetDefaultItem();
         menu.AppendItem(EX_ID(ID_RENAME_PLAYLIST), IconMgr::IconType::IT_Rename);
-        menu.AppendItem(EX_ID(ID_DELETE_PLAYLIST), IconMgr::IconType::IT_Cancel);
+        menu.AppendItem(EX_ID(ID_DELETE_PLAYLIST), IconMgr::IconType::IT_Delete);
         menu.AppendItem(EX_ID(ID_SAVE_AS_NEW_PLAYLIST), IconMgr::IconType::IT_Save);
         menu.AppendItem(EX_ID(ID_PLAYLIST_SAVE_AS), IconMgr::IconType::IT_Save_As);
         menu.AppendSeparator();
