@@ -25,7 +25,7 @@ CMediaLibSettingDlg::~CMediaLibSettingDlg()
 {
 }
 
-bool CMediaLibSettingDlg::OnCleanDataFile(MediaLibSettingData& setting_data, size_t& data_size)
+bool CMediaLibSettingDlg::OnCleanDataFile(MediaLibSettingData& setting_data, size_t& data_size_after)
 {
     wstring osu_floder{};
     for (const auto& item : theApp.m_media_lib_setting_data.media_folders)
@@ -35,8 +35,8 @@ bool CMediaLibSettingDlg::OnCleanDataFile(MediaLibSettingData& setting_data, siz
     dlg.SetCleanFileNonMainInOsuEnable(!osu_floder.empty());
     if (dlg.DoModal() == IDOK)
     {
-        CWaitCursor wait_cursor;	//显示等待光标
-        data_size = CCommon::GetFileSize(theApp.m_song_data_path);
+        CWaitCursor wait_cursor;    //显示等待光标
+        size_t data_size_before = CCommon::GetFileSize(theApp.m_song_data_path);
         int clear_cnt{};
         if (dlg.IsCleanFileNotExist())  // 0
         {
@@ -85,16 +85,15 @@ bool CMediaLibSettingDlg::OnCleanDataFile(MediaLibSettingData& setting_data, siz
         }
         if (clear_cnt > 0)
         {
-            theApp.SaveSongData();		//清理后将数据写入文件
+            theApp.SaveSongData();      //清理后将数据写入文件
             theApp.UpdateUiMeidaLibItems();     //更新UI中的媒体库显示
         }
 
-        size_t data_size = CCommon::GetFileSize(theApp.m_song_data_path);	 //清理后数据文件的大小
-        int size_reduced = data_size - data_size;		//清理后数据文件减少的字节数
+        data_size_after = CCommon::GetFileSize(theApp.m_song_data_path);    //清理后数据文件的大小
+        int size_reduced = data_size_before - data_size_after;       //清理后数据文件减少的字节数
         if (size_reduced < 0) size_reduced = 0;
         wstring info = theApp.m_str_table.LoadTextFormat(L"MSG_OPT_MEDIA_LIB_DATA_FILE_CLEAR_COMPLETE", { clear_cnt, size_reduced });
         AfxMessageBox(info.c_str(), MB_ICONINFORMATION);
-        data_size = data_size;
         return true;
     }
     return false;
