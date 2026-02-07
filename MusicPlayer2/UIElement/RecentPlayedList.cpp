@@ -139,22 +139,28 @@ void UiElement::RecentPlayedList::OnHoverButtonClicked(int btn_index, int row)
 void UiElement::RecentPlayedList::OnSelectionChanged()
 {
     //获取关联的trackList元素
-    if (!track_list_element_id.empty())
+    FindTrackList();
+    if (track_list != nullptr && track_list->IsShown())
     {
-        TrackList* track_list = FindRelatedElement<TrackList>(track_list_element_id);
-        if (track_list != nullptr && track_list->IsShown())
+        int row = GetItemSelected();
+        if (row >= 0 && row < GetRowCount())
         {
-            int row = GetItemSelected();
-            if (row >= 0 && row < GetRowCount())
-            {
-                ListItem list_item = m_list_cache.GetItem(row);
-                track_list->SetListItem(list_item);
-            }
-            else
-            {
-                track_list->ClearListItem();
-            }
+            ListItem list_item = m_list_cache.GetItem(row);
+            track_list->SetListItem(list_item);
         }
+        else
+        {
+            track_list->ClearListItem();
+        }
+    }
+}
+
+void UiElement::RecentPlayedList::FindTrackList()
+{
+    if (!find_track_list)
+    {
+        track_list = FindRelatedElement<TrackList>(track_list_element_id);
+        find_track_list = true;  //找过一次没找到就不找了
     }
 }
 

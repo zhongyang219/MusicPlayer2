@@ -1,8 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #include "AbstractListElement.h"
 namespace UiElement
 {
-    //×î½ü²¥·Å
+    class TrackList;
+
+    //æœ€è¿‘æ’­æ”¾
     class RecentPlayedList : public AbstractListElement
     {
     public:
@@ -13,7 +15,7 @@ namespace UiElement
             COL_MAX
         };
 
-        //Êó±êÖ¸ÏòÒ»ĞĞÊ±ÏÔÊ¾µÄ°´Å¥
+        //é¼ æ ‡æŒ‡å‘ä¸€è¡Œæ—¶æ˜¾ç¤ºçš„æŒ‰é’®
         enum BtnKey
         {
             BTN_PLAY,
@@ -25,7 +27,7 @@ namespace UiElement
 
         virtual void Draw() override;
 
-        // Í¨¹ı AbstractListElement ¼Ì³Ğ
+        // é€šè¿‡ AbstractListElement ç»§æ‰¿
         std::wstring GetItemText(int row, int col) override;
         int GetRowCount() override;
         int GetColumnCount() override;
@@ -44,9 +46,15 @@ namespace UiElement
 
         virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
+    private:
+        void FindTrackList();        //æŸ¥æ‰¾TrackList
+
     protected:
-        static CListCache m_list_cache;     // ÎªRecentPlayedListµÄ»æÖÆ»º´æ×î½ü²¥·ÅµÄListItem£¬DrawÖ®Ç°µ÷ÓÃreload
+        static CListCache m_list_cache;     // ä¸ºRecentPlayedListçš„ç»˜åˆ¶ç¼“å­˜æœ€è¿‘æ’­æ”¾çš„ListItemï¼ŒDrawä¹‹å‰è°ƒç”¨reload
         std::string track_list_element_id;
+
+        TrackList* track_list;
+        bool find_track_list{};      //å¦‚æœå·²ç»æŸ¥æ‰¾è¿‡TrackListï¼Œåˆ™ä¸ºtrue
     };
 }
 
