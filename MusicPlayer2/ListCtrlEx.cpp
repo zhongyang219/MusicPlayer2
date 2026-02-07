@@ -266,6 +266,21 @@ wstring CListCtrlEx::GetAllText(const wchar_t* sperator /*= L"\t"*/)
     return str_result;
 }
 
+bool CListCtrlEx::IsRowSelected(int row)
+{
+    DWORD ex_style = GetExtendedStyle();
+    //如果列表控件有复选框，则判断复选框是否勾选
+    if (ex_style & LVS_EX_CHECKBOXES)
+    {
+        return GetCheck(row) != FALSE;
+    }
+    //否则判断该行是否选中
+    else
+    {
+        return GetItemState(row, LVIS_SELECTED) == LVIS_SELECTED;
+    }
+}
+
 BEGIN_MESSAGE_MAP(CListCtrlEx, CListCtrl)
     ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, &CListCtrlEx::OnNMCustomdraw)
     ON_WM_LBUTTONDOWN()
@@ -299,7 +314,7 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
         if (IsWindowEnabled())
         {
             //当选中行又是高亮行时设置颜色
-            if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED && nmcd.dwItemSpec == m_highlight_item)
+            if (IsRowSelected(nmcd.dwItemSpec) && nmcd.dwItemSpec == m_highlight_item)
             {
                 this_item_select = true;
                 //SetItemState(nmcd.dwItemSpec, 0, LVIS_SELECTED);
@@ -307,7 +322,7 @@ void CListCtrlEx::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult)
                 lplvdr->clrTextBk = m_theme_color.dark1;
             }
             //设置选中行的颜色
-            else if (GetItemState(nmcd.dwItemSpec, LVIS_SELECTED) == LVIS_SELECTED)
+            else if (IsRowSelected(nmcd.dwItemSpec))
             {
                 this_item_select = true;
                 //注：当使用虚拟列表时，如果取消下面一行的注释，会导致当列表选中行处理可见状态时，窗口刷新不正常，甚至主窗口OnTimer也无法响应，原因暂时不明
