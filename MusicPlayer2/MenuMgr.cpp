@@ -295,7 +295,7 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
         return L"LIB_LEFT";
     case MenuMgr::LibRightMenu: case MenuMgr::UiMyFavouriteMenu: case MenuMgr::LibPlaylistRightMenu:
         return L"LIB_RIGHT";
-    case MenuMgr::UiRecentPlayedMenu: case MenuMgr::FindListMenu:
+    case MenuMgr::UiRecentPlayedMenu: case MenuMgr::FindListMenu: case MenuMgr::RecentPlayedMenu:
         return L"UI_RECENT_PLAYED";
     case MenuMgr::LibPlaylistSortMenu:
         return L"LIB_PLAYLIST_SORT";
@@ -893,6 +893,16 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendItem(EX_ID(ID_VIEW_IN_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
         menu.AppendItem(EX_ID(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES), IconMgr::IconType::IT_Info);
         menu.AppendItem(EX_ID(ID_LIST_ITEM_PREVIEW), IconMgr::IconType::IT_ListPreview);
+        break;
+    case MenuMgr::RecentPlayedMenu:
+        menu.CreateMenu(true, false);
+        menu.AppendItem(EX_ID(ID_PLAY_ITEM), IconMgr::IconType::IT_Play);
+        menu.SetDefaultItem();
+        menu.AppendItem(EX_ID(ID_RECENT_PLAYED_REMOVE), IconMgr::IconType::IT_Close);
+        menu.AppendItem(EX_ID(ID_COPY_TEXT), IconMgr::IconType::IT_Copy);
+        menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_VIEW_IN_MEDIA_LIB), IconMgr::IconType::IT_Media_Lib);
+        menu.AppendItem(EX_ID(ID_LIB_RECENT_PLAYED_ITEM_PROPERTIES), IconMgr::IconType::IT_Info);
         break;
     case MenuMgr::UiMyFavouriteMenu:
         menu.CreateMenu(true, false);

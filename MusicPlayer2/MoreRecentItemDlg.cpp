@@ -139,7 +139,7 @@ void CMoreRecentItemDlg::OnNMRClickList1(NMHDR* pNMHDR, LRESULT* pResult)
     m_selected_item = pNMItemActivate->iItem;
     
     //弹出右键菜单
-    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::UiRecentPlayedMenu);
+    CMenu* pContextMenu = theApp.m_menu_mgr.GetMenu(MenuMgr::RecentPlayedMenu);
     m_list_ctrl.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
     
     *pResult = 0;
