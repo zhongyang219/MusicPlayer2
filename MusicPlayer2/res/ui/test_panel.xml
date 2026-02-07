@@ -29,7 +29,7 @@
           </rectangle>
 
           <horizontalLayout height="28" margin-top="4">
-            <button icon="info" show_text="true" btn_background="true" width="72" text="测试" alignment="center"/>
+            <button show_text="true" btn_background="true" width="72" text="测试" alignment="center"/>
             <placeHolder/>
           </horizontalLayout>
           
