@@ -412,6 +412,14 @@ void CListCtrlEx::PreSubclassWindow()
     SetBkColor(m_background_color);
     //SetHightItem(-1);
     SetRowHeight(theApp.DPI(22));
+
+    //为鼠标提示设置总是置顶和鼠标穿透，防止当主窗口具有总是置顶属性时，鼠标提示会置于主窗口下方导致不可见的问题
+    auto* tool_tips = GetToolTips();
+    if (tool_tips != nullptr)
+    {
+        tool_tips->SetWindowPos(&wndTopMost, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+        SetWindowLong(tool_tips->GetSafeHwnd(), GWL_EXSTYLE, GetWindowLong(tool_tips->GetSafeHwnd(), GWL_EXSTYLE) | WS_EX_TRANSPARENT);
+    }
 }
 
 
