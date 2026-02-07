@@ -23,10 +23,15 @@
               <verticalLayout>
                 <text font_size="10" text="测试下拉框" height="20"/>
               </verticalLayout>
+              <button icon="info" show_text="true" btn_background="true" width="72" height="28" text="测试" alignment="center"/>
               <comboBox id="combobox1" height="28" width="180" margin-right="16"/>
             </horizontalLayout>
           </rectangle>
 
+          <horizontalLayout height="28" margin-top="4">
+            <button icon="info" show_text="true" btn_background="true" width="72" text="测试" alignment="center"/>
+            <placeHolder/>
+          </horizontalLayout>
           
           <horizontalLayout margin-top="4" height="100">
             <rectangle theme_color="false">

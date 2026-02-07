@@ -1121,7 +1121,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& b
     DrawUIButton(rect, btn, GetBtnIconType(key_type), big_icon, text, font_size, checked);
 }
 
-void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon, const std::wstring& text, int font_size, bool checked, Alignment align)
+void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon, const std::wstring& text, int font_size, bool checked, Alignment align, bool btn_background)
 {
     btn.rect = rect;
 
@@ -1136,7 +1136,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
     bool is_close_btn = (&btn == &m_buttons[BTN_CLOSE] || &btn == &m_buttons[BTN_APP_CLOSE]);
 
     //绘制背景
-    if (btn.enable && (btn.pressed || btn.hover || checked))
+    if (btn.enable && (btn.pressed || btn.hover || checked || btn_background))
     {
         BYTE alpha;
         if (!is_close_btn && IsDrawBackgroundAlpha())
@@ -1159,6 +1159,8 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
                 back_color = m_colors.color_button_hover;
             else if (checked)
                 back_color = m_colors.color_button_checked;
+            else
+                back_color = m_colors.color_button_back;
         }
         if (!theApp.m_app_setting_data.button_round_corners)
             m_draw.FillAlphaRect(rc_tmp, back_color, alpha, true);

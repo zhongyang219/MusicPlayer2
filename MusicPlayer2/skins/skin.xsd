@@ -1011,6 +1011,7 @@
     </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
+  <!--按钮元素-->
   <xs:complexType name="buttonType">
     <xs:annotation>
       <xs:documentation>按钮</xs:documentation>
@@ -1280,8 +1281,14 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
+    <xs:attribute name="btn_background" type="xs:boolean" default="false">
+      <xs:annotation>
+        <xs:documentation>按钮是否有背景。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
+  
   <xs:complexType name="textType">
     <xs:annotation>
       <xs:documentation>文本</xs:documentation>

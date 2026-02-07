@@ -8,36 +8,12 @@ void UiElement::ComboBox::Draw()
     
     //绘制矩形
     COLORREF back_color;
-    if (theApp.m_app_setting_data.dark_mode)
-    {
-        if (ui->IsDrawBackgroundAlpha())
-        {
-            if (pressed)
-                back_color = theApp.m_app_setting_data.theme_color.light2;
-            else if (hover)
-                back_color = theApp.m_app_setting_data.theme_color.light1;
-            else
-                back_color = theApp.m_app_setting_data.theme_color.dark1_5;
-        }
-        else
-        {
-            if (pressed)
-                back_color = theApp.m_app_setting_data.theme_color.dark1;
-            else if (hover)
-                back_color = theApp.m_app_setting_data.theme_color.dark1_5;
-            else
-                back_color = GRAY(76);
-        }
-    }
+    if (pressed)
+        back_color = ui->GetUIColors().color_button_pressed;
+    else if (hover)
+        back_color = ui->GetUIColors().color_button_hover;
     else
-    {
-        if (pressed)
-            back_color = theApp.m_app_setting_data.theme_color.light1_5;
-        else if (hover)
-            back_color = theApp.m_app_setting_data.theme_color.light2;
-        else
-            back_color = theApp.m_app_setting_data.theme_color.light2_5;
-    }
+        back_color = ui->GetUIColors().color_button_back;
     ui->DrawRectangle(rect, back_color);
     //绘制右侧下拉图标
     CRect drop_down_rect = rect;

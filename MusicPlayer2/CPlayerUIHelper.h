@@ -15,6 +15,7 @@ struct UIColors     //界面颜色
     COLORREF color_spectrum;            //频谱分析柱形的颜色
     COLORREF color_spectrum_cover;      //有专辑封面时的频谱分析柱形的颜色
     COLORREF color_progress_back;       //进度条的背景颜色
+    COLORREF color_button_back;         //按钮选的背景色
     COLORREF color_button_checked;      //按钮选中状态的背景色
     COLORREF color_button_pressed;      //按钮按下的颜色
     COLORREF color_button_hover;        //按钮指向时的颜色
