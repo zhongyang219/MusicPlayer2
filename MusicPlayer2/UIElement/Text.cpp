@@ -88,6 +88,11 @@ bool UiElement::Text::MouseMove(CPoint point)
     return false;
 }
 
+void UiElement::Text::HideTooltip()
+{
+    ui->UpdateMouseToolTipPosition(TooltipIndex::TEXT, CRect());
+}
+
 std::wstring UiElement::Text::GetText() const
 {
     std::wstring draw_text{};

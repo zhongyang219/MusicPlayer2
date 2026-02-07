@@ -49,6 +49,7 @@ namespace UiElement
         virtual void Draw() override;
         virtual int GetMaxWidth(CRect parent_rect) const override;
         virtual bool MouseMove(CPoint point) override;
+        virtual void HideTooltip() override;
 
         void SetShowVolumn(bool val) { show_volume = val; }
         std::wstring GetText() const;
