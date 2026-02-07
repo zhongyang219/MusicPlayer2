@@ -2,6 +2,7 @@
 #include "Slider.h"
 #include "TinyXml2Helper.h"
 #include "../GdiPlusTool.h"
+#include "WinVersionHelper.h"
 
 void UiElement::Slider::SetRange(int min_val, int max_val)
 {
@@ -154,7 +155,10 @@ void UiElement::Slider::Draw()
         handle_alpha = ui->GetDefaultAlpha();
     else
         handle_alpha = 255;
-    ui->GetDrawer().DrawEllipse(rect_handle_f, CGdiPlusTool::COLORREFToGdiplusColor(handle_color, handle_alpha));
+    if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+        ui->DrawRectangle(rect_handle, handle_color, handle_alpha);     //Wine环境下绘制圆有锯齿，因此Wine环境下如果没有勾选使用圆角风格，则绘制矩形
+    else
+        ui->GetDrawer().DrawEllipse(rect_handle_f, CGdiPlusTool::COLORREFToGdiplusColor(handle_color, handle_alpha));
 
     //绘制中间的圆
     COLORREF circle_color;
@@ -163,7 +167,10 @@ void UiElement::Slider::Draw()
     else
         circle_color = theApp.m_app_setting_data.theme_color.dark1;
     Gdiplus::RectF rect_circle = CreateScqureByPosAndSize(cur_point, circel_size);
-    ui->GetDrawer().DrawEllipse(rect_circle, CGdiPlusTool::COLORREFToGdiplusColor(circle_color));
+    if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+        ui->GetDrawer().FillRect(CGdiPlusTool::GdiplusRectToCRect(rect_circle), circle_color);
+    else
+        ui->GetDrawer().DrawEllipse(rect_circle, CGdiPlusTool::COLORREFToGdiplusColor(circle_color));
 
     Element::Draw();
 }

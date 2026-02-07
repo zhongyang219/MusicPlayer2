@@ -12,6 +12,7 @@
 #include "UIElement/NavigationBar.h"
 #include "UIElement/SearchBox.h"
 #include "PlayerFormulaHelper.h"
+#include "WinVersionHelper.h"
 
 bool CPlayerUIBase::m_show_ui_tip_info = false;
 
@@ -2335,7 +2336,10 @@ void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
         //if (!theApp.m_app_setting_data.button_round_corners)
         //    m_draw.FillAlphaRect(indicator.rect, back_color, alpha);
         //else
-        m_draw.DrawRoundRect(indicator.rect, back_color, indicator.rect.Height() / 2, alpha);
+        if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+            m_draw.FillAlphaRect(indicator.rect, back_color, alpha);
+        else
+            m_draw.DrawRoundRect(indicator.rect, back_color, indicator.rect.Height() / 2, alpha);
     }
 
     //绘制圆
@@ -2362,7 +2366,10 @@ void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
             dot_color = m_colors.color_stack_indicator;
             alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
         }
-        m_draw.DrawEllipse(rect_dot, dot_color, alpha);
+        if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+            m_draw.FillAlphaRect(rect_dot, dot_color, alpha);
+        else
+            m_draw.DrawEllipse(rect_dot, dot_color, alpha);
     }
 }
 

@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "RadioButton.h"
 #include "TinyXml2Helper.h"
+#include "WinVersionHelper.h"
 
 void UiElement::RadioButton::Draw()
 {
@@ -13,13 +14,19 @@ void UiElement::RadioButton::Draw()
     CRect check_rect(pos_icon, CSize(check_box_size, check_box_size));
     COLORREF check_back_color = GetButtonBackColor();
     BYTE alpha = ui->GetDefaultAlpha();
-    ui->GetDrawer().DrawEllipse(check_rect, check_back_color, alpha);
+    if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+        ui->GetDrawer().FillAlphaRect(check_rect, check_back_color, alpha);
+    else
+        ui->GetDrawer().DrawEllipse(check_rect, check_back_color, alpha);
     //绘制选中状态
     if (m_checked)
     {
         CRect indicator_rect = check_rect;
         indicator_rect.DeflateRect(ui->DPI(4), ui->DPI(4));
-        ui->GetDrawer().DrawEllipse(indicator_rect, GRAY(255));
+        if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+            ui->GetDrawer().FillRect(indicator_rect, GRAY(255));
+        else
+            ui->GetDrawer().DrawEllipse(indicator_rect, GRAY(255));
     }
 
     //绘制文本

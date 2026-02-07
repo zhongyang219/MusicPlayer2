@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "ToggleButton.h"
+#include "WinVersionHelper.h"
 
 void UiElement::ToggleButton::Draw()
 {
@@ -20,7 +21,10 @@ void UiElement::ToggleButton::Draw()
 
     //绘制背景
     COLORREF toggle_back_color = GetButtonBackColor();
-    ui->GetDrawer().DrawRoundRect(toggle_rect, toggle_back_color, toggle_height / 2);
+    if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+        ui->GetDrawer().FillRect(toggle_rect, toggle_back_color);
+    else
+        ui->GetDrawer().DrawRoundRect(toggle_rect, toggle_back_color, toggle_height / 2);
 
     //绘制按钮中的圆
     CRect handle_rect = toggle_rect;
@@ -52,7 +56,10 @@ void UiElement::ToggleButton::Draw()
             handle_color = CColorConvert::m_gray_color.dark0;
         }
     }
-    ui->GetDrawer().DrawEllipse(handle_rect, handle_color);
+    if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+        ui->GetDrawer().FillRect(handle_rect, handle_color);
+    else
+        ui->GetDrawer().DrawEllipse(handle_rect, handle_color);
 
     //绘制文本
     CRect text_rect = rect;
