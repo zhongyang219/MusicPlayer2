@@ -33,7 +33,7 @@ void UiElement::ComboBox::Draw()
     CRect text_rect = rect;
     text_rect.right = drop_down_rect.left;
     if (icon_rect.IsRectEmpty())
-        text_rect.left += ui->DPI(4);
+        text_rect.left += ui->DPI(6);
     else
         text_rect.left += icon_rect.Width();
 
