@@ -5563,8 +5563,13 @@ void CMusicPlayerDlg::OnPlaylistAddFolder()
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
     folderPickerDlg.SetInfo(title.c_str());
 #else
-    CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
-    CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
+    std::wstring cur_dir;
+    if (!CCommon::IsURL(CPlayer::GetInstance().GetCurrentDir()))
+    {
+        CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
+        cur_dir = current_path.GetParentDir();
+    }
+    CFolderPickerDialog folderPickerDlg(cur_dir.c_str());
     folderPickerDlg.m_ofn.lpstrTitle = title.c_str();
     folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, include_sub_dir_str, include_sub_dir);     //在打开对话框中添加一个复选框
 #endif
