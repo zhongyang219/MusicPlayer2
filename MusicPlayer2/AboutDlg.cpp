@@ -69,8 +69,8 @@ bool CAboutDlg::InitializeControls()
         { CtrlTextInfo::L2, IDC_GITHUB_SYSLINK, CtrlTextInfo::W_50 },
         { CtrlTextInfo::L1, IDC_GITEE_SYSLINK, CtrlTextInfo::W_50 },
         { CtrlTextInfo::L4, IDC_LICENSE_SYSLINK, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L3, IDC_DONATE_SYSLINK, CtrlTextInfo::W_50 },
-        { CtrlTextInfo::L2, IDC_ACKNOWLEDGEMENT_SYSLINK, CtrlTextInfo::W_50 }
+        { CtrlTextInfo::L3, IDC_ACKNOWLEDGEMENT_SYSLINK, CtrlTextInfo::W_50 },
+        { CtrlTextInfo::L2, IDC_DONATE_SYSLINK, CtrlTextInfo::W_50 }
         });
 
     return true;
@@ -119,6 +119,12 @@ BOOL CAboutDlg::OnInitDialog()
     m_tool_tip.AddTool(GetDlgItem(IDC_SYSLINK_SIMPLENOTEPAD), (theApp.m_str_table.LoadText(L"TIP_ABOUTBOX_SIMPLENOTEPAD_DESCRIPTION") + L"\r\nhttps://github.com/zhongyang219/SimpleNotePad").c_str());
     m_tool_tip.SetDelayTime(300);   //设置延迟
     m_tool_tip.SetMaxTipWidth(theApp.DPI(400));
+
+    //非简体中文语言不显示捐赠
+    if (!theApp.m_str_table.IsSimplifiedChinese())
+    {
+        ShowDlgCtrl(IDC_DONATE_SYSLINK, false);
+    }
 
     //设置图片的位置
     CRect rect;

@@ -102,6 +102,15 @@ FONT 9, "微软雅黑", 400, 0, 0x0
 BEGIN
 END
 
+IDD_DONATE_DIALOG DIALOGEX 0, 0, 256, 139
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "捐助"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+    LTEXT           "如果你觉得这个软件对你有帮助，你可以扫描下方的二维码通过支付宝或微信捐助作者，以帮助作者把这个软件做得更好。金额请随意。",IDC_DONATE_STATIC,7,7,242,21
+    DEFPUSHBUTTON   "关闭",IDCANCEL,199,118,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -139,6 +148,14 @@ BEGIN
         TOPMARGIN, 6
         BOTTOMMARGIN, 169
     END
+
+    IDD_DONATE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 249
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 132
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -171,6 +188,11 @@ BEGIN
 END
 
 IDD_UI_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DONATE_DIALOG AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
@@ -311,9 +333,9 @@ BEGIN
     CONTROL         "<a>Check for update</a>",IDC_SYSLINK2,"SysLink",WS_TABSTOP,59,119,39,8
     CONTROL         "<a>GitHub</a>",IDC_GITHUB_SYSLINK,"SysLink",WS_TABSTOP,103,119,35,8
     CONTROL         "<a>License</a>",IDC_LICENSE_SYSLINK,"SysLink",WS_TABSTOP,14,129,40,8
-    CONTROL         "<a>Donate</a>",IDC_DONATE_SYSLINK,"SysLink",WS_TABSTOP,59,129,39,8
+    CONTROL         "<a>Donate</a>",IDC_DONATE_SYSLINK,"SysLink",WS_TABSTOP,103,129,37,8
     CONTROL         "<a>Acknowledgement</a>",IDC_ACKNOWLEDGEMENT_SYSLINK,
-                    "SysLink",WS_TABSTOP,103,129,57,8
+                    "SysLink",WS_TABSTOP,59,129,40,8
     DEFPUSHBUTTON   "OK",IDOK,165,148,50,14,WS_GROUP
     CONTROL         "<a>Gitee</a>",IDC_GITEE_SYSLINK,"SysLink",WS_TABSTOP,143,119,32,8
 END
@@ -1014,15 +1036,6 @@ BEGIN
     DEFPUSHBUTTON   "Close",IDCANCEL,283,151,50,14
 END
 
-IDD_DONATE_DIALOG DIALOGEX 0, 0, 256, 139
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Donate"
-FONT 9, "微软雅黑", 400, 0, 0x0
-BEGIN
-    LTEXT           "If you think this software is helpful to you, you can scan the following QR code through Alipay or WeChart Pay to donate the author to help the author to make this software better. Please feel free for the amount.",IDC_DONATE_STATIC,7,7,242,40
-    DEFPUSHBUTTON   "Close",IDCANCEL,199,118,50,14
-END
-
 IDD_MEDIA_LIB_DIALOG DIALOGEX 0, 0, 345, 212
 STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 EXSTYLE WS_EX_APPWINDOW
@@ -1644,14 +1657,6 @@ BEGIN
         RIGHTMARGIN, 333
         TOPMARGIN, 7
         BOTTOMMARGIN, 165
-    END
-
-    IDD_DONATE_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 249
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 132
     END
 
     IDD_MEDIA_LIB_DIALOG, DIALOG
@@ -2346,11 +2351,6 @@ BEGIN
     0, 100, 0, 0,
     0, 100, 0, 0,
     100, 100, 0, 0
-END
-
-IDD_DONATE_DIALOG AFX_DIALOG_LAYOUT
-BEGIN
-    0
 END
 
 IDD_MEDIA_LIB_DIALOG AFX_DIALOG_LAYOUT
