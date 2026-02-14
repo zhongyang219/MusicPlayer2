@@ -530,6 +530,15 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
                     file_name = theApp.m_app_setting_data.AbsoluteAlbumCoverPath() + album_name + L".*";
                     CCommon::GetImageFiles(file_name, files);
                 }
+                if (files.empty() && CCommon::IsURL(song.file_path) && !song.title.empty())
+                {
+                    //如果播放的是url，查找文件名为“标题”的文件
+                    wstring title_name{ song.title };
+                    CCommon::FileNameNormalize(title_name);
+                    file_name = theApp.m_app_setting_data.AbsoluteAlbumCoverPath() + title_name + L".*";
+                    CCommon::GetImageFiles(file_name, files);
+                }
+
                 if (!files.empty())
                     album_cover_path = theApp.m_app_setting_data.AbsoluteAlbumCoverPath() + files[0];
             }
