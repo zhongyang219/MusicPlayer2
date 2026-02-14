@@ -68,7 +68,7 @@ void CPlaylistFile::SavePlaylistToFile(const vector<SongInfo>& song_list, const 
         {
             if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             stream << CCommon::UnicodeToStr(item.file_path, CodeType::UTF8_NO_BOM);
-            if (item.is_cue)
+            if (item.is_cue || CCommon::IsURL(item.file_path))
             {
                 // 出于向后兼容考虑必要这行代码，当song_list来自LoadFromFile加载的不记录cue_file_path的播放列表时item需要从媒体库加载cue_file_path
                 SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(item); // 从媒体库载入数据，媒体库不存在的话会原样返回item
@@ -197,50 +197,45 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
         size_t index = current_line_wcs.find(L'|');
         item.file_path = current_line_wcs.substr(0, index);
 
-        //如果是URL，则直接添加
-        if (CCommon::IsURL(item.file_path))
-        {
-            m_playlist.push_back(item);
-        }
-        else
-        {
-            //如果是相对路径，则转换成绝对路径
+        //是否为URL
+        bool is_url = CCommon::IsURL(item.file_path);
+        //如果是相对路径，则转换成绝对路径
+        if (!is_url)
             item.file_path = CCommon::RelativePathToAbsolutePath(item.file_path, CFilePathHelper(m_path).GetDir());
 
-            if (index < current_line_wcs.size() - 1)
-            {
-                vector<wstring> result;
-                CCommon::StringSplit(current_line_wcs, L'|', result, false);
-                if (result.size() >= 2)
-                    item.is_cue = (_wtoi(result[1].c_str()) != 0);
-                if (result.size() >= 3)
-                    item.start_pos.fromInt(_wtoi(result[2].c_str()));
-                if (result.size() >= 4)
-                    item.end_pos.fromInt(_wtoi(result[3].c_str()));
-                //item.lengh = item.end_pos - item.start_pos;
-                if (result.size() >= 5)
-                    item.title = result[4];
-                if (result.size() >= 6)
-                    item.artist = result[5];
-                if (result.size() >= 7)
-                    item.album = result[6];
-                if (result.size() >= 8)
-                    item.track = _wtoi(result[7].c_str());
-                if (result.size() >= 9)
-                    item.bitrate = _wtoi(result[8].c_str());
-                if (result.size() >= 10)
-                    item.genre = result[9];
-                if (result.size() >= 11)
-                    item.SetYear(result[10].c_str());
-                if (result.size() >= 12)
-                    item.comment = result[11];
-                if (result.size() >= 13)
-                    item.cue_file_path = result[12];
-            }
-            if (CCommon::IsPath(item.file_path)) // 绝对路径的语法检查
-            {
-                m_playlist.push_back(item);
-            }
+        if (index < current_line_wcs.size() - 1)
+        {
+            vector<wstring> result;
+            CCommon::StringSplit(current_line_wcs, L'|', result, false);
+            if (result.size() >= 2)
+                item.is_cue = (_wtoi(result[1].c_str()) != 0);
+            if (result.size() >= 3)
+                item.start_pos.fromInt(_wtoi(result[2].c_str()));
+            if (result.size() >= 4)
+                item.end_pos.fromInt(_wtoi(result[3].c_str()));
+            //item.lengh = item.end_pos - item.start_pos;
+            if (result.size() >= 5)
+                item.title = result[4];
+            if (result.size() >= 6)
+                item.artist = result[5];
+            if (result.size() >= 7)
+                item.album = result[6];
+            if (result.size() >= 8)
+                item.track = _wtoi(result[7].c_str());
+            if (result.size() >= 9)
+                item.bitrate = _wtoi(result[8].c_str());
+            if (result.size() >= 10)
+                item.genre = result[9];
+            if (result.size() >= 11)
+                item.SetYear(result[10].c_str());
+            if (result.size() >= 12)
+                item.comment = result[11];
+            if (result.size() >= 13)
+                item.cue_file_path = result[12];
+        }
+        if (is_url || CCommon::IsPath(item.file_path)) // 绝对路径的语法检查
+        {
+            m_playlist.push_back(item);
         }
     }
 }

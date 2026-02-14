@@ -101,7 +101,7 @@ public:
     CWnd* GetOwner() const { return m_pMainWnd; }
 
     // 将字符串形如“%(KEY_STR)”格式的字符替换成当前<language>.ini中对应id的字符串
-    static void ReplaceUiStringRes(wstring& str);
+    static bool ReplaceUiStringRes(wstring& str);
 
 public:
     enum BtnKey     //标识按钮的类型

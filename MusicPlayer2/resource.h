@@ -322,6 +322,7 @@
 #define IDD_UI_DIALOG                   689
 #define IDR_TEXT3                       691
 #define IDR_TEST_DIALOG                 691
+#define IDD_OPEN_URL_DLG                692
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -836,6 +837,9 @@
 #define IDC_NO_LONGER_ASK_CHECK         1382
 #define IDC_CLOSE_MAIN_WINDOW_INQUERY_INFO_STATIC 1383
 #define IDC_UI_EDIT                     1384
+#define IDC_INPUT_NAME_EDIT             1385
+#define IDC_INPUT_NAME_EDIT2            1386
+#define IDC_INPUT_URL_EDIT              1386
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -1088,9 +1092,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        692
+#define _APS_NEXT_RESOURCE_VALUE        694
 #define _APS_NEXT_COMMAND_VALUE         33513
-#define _APS_NEXT_CONTROL_VALUE         1385
+#define _APS_NEXT_CONTROL_VALUE         1386
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

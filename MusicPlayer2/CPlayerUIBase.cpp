@@ -2165,9 +2165,10 @@ CRect CPlayerUIBase::GetAppIconRect() const
     return m_app_icon_rect;
 }
 
-void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
+bool CPlayerUIBase::ReplaceUiStringRes(wstring& str)
 {
     size_t index{};
+    bool replaced{ false };
     while ((index = str.find(L"%(", index)) != wstring::npos)
     {
         size_t right_bracket_index = str.find(L')', index + 2);
@@ -2181,9 +2182,11 @@ void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
             if (value_str == StrTable::error_str)   // LoadText内部已记录错误日志
                 break;
             str.replace(index, right_bracket_index - index + 1, value_str);
+            replaced = true;
         }
         index = right_bracket_index + 1;
     }
+    return replaced;
 }
 
 void CPlayerUIBase::DrawAlbumCover(CRect rect)

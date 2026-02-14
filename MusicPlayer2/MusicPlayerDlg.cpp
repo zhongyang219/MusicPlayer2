@@ -35,6 +35,7 @@
 #include "ClosseMainWindowInqueryDlg.h"
 #include "UIPanel/SettingsPanel.h"
 #include "UIDialog/UITestDialog.h"
+#include "OpenUrlDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -5654,12 +5655,10 @@ void CMusicPlayerDlg::OnAddRemoveFromFavourite()
 void CMusicPlayerDlg::OnFileOpenUrl()
 {
     // TODO: 在此添加命令处理程序代码
-    CInputDlg input_dlg;
-    input_dlg.SetTitle(theApp.m_str_table.LoadText(L"TITLE_INPUT_URL_OPEN_URL").c_str());
-    input_dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_INPUT_URL_INPUT_URL").c_str());
+    COpenUrlDlg input_dlg;
     if (input_dlg.DoModal() == IDOK)
     {
-        wstring strUrl = input_dlg.GetEditText().GetString();
+        wstring strUrl = input_dlg.GetUrl().GetString();
         //如果输入的是文件夹，则在文件夹模式中打开
         if (CCommon::FolderExist(strUrl))
         {
@@ -5677,9 +5676,15 @@ void CMusicPlayerDlg::OnFileOpenUrl()
             return;
         }
         //本地文件或URL将被添加到默认的播放列表播放
-        vector<wstring> vecUrl;
-        vecUrl.push_back(strUrl);
-        if (!CPlayer::GetInstance().OpenFilesInDefaultPlaylist(vecUrl))
+        SongInfo song_info;
+        song_info.file_path = strUrl;
+        if (CCommon::IsURL(strUrl))
+        {
+            song_info.title = input_dlg.GetName().GetString();
+        }
+        vector<SongInfo> vecUrl;
+        vecUrl.push_back(song_info);
+        if (!CPlayer::GetInstance().OpenSongsInDefaultPlaylist(vecUrl))
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
             MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
@@ -5694,13 +5699,11 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
     if (!CPlayer::GetInstance().IsPlaylistMode())
         return;
 
-    CInputDlg input_dlg;
-    input_dlg.SetTitle(theApp.m_str_table.LoadText(L"TITLE_INPUT_URL_ADD_URL").c_str());
-    input_dlg.SetInfoText(theApp.m_str_table.LoadText(L"TXT_INPUT_URL_INPUT_URL").c_str());
+    COpenUrlDlg input_dlg;
     if (input_dlg.DoModal() == IDOK)
     {
-        wstring strUrl = input_dlg.GetEditText().GetString();
-        vector<wstring> vecUrl;
+        wstring strUrl = input_dlg.GetUrl().GetString();
+        vector<SongInfo> vecUrl;
         //如果输入的是文件夹路径，则将文件夹内的音频文件添加到播放列表
         if (CCommon::FolderExist(strUrl))
         {
@@ -5714,9 +5717,15 @@ void CMusicPlayerDlg::OnPlaylistAddUrl()
                 MessageBox(info.c_str(), NULL, MB_ICONWARNING | MB_OK);
                 return;
             }
-            vecUrl.push_back(strUrl);
+            SongInfo song_info;
+            song_info.file_path = strUrl;
+            if (CCommon::IsURL(strUrl))
+            {
+                song_info.title = input_dlg.GetName().GetString();
+            }
+            vecUrl.push_back(song_info);
         }
-        int rtn = CPlayer::GetInstance().AddFilesToPlaylist(vecUrl);
+        int rtn = CPlayer::GetInstance().AddSongsToPlaylist(vecUrl);
         if (rtn == 0)
         {
             const wstring& info = theApp.m_str_table.LoadText(L"MSG_FILE_EXIST_IN_PLAYLIST");
