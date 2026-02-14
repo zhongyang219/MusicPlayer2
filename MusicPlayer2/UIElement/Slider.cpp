@@ -101,13 +101,13 @@ void UiElement::Slider::Draw()
     Gdiplus::PointF cur_point;
     if (orientation == Horizontal)
     {
-        cur_point.X = rect.left;
-        cur_point.Y = rect.CenterPoint().y;
+        cur_point.X = rect_back.left;
+        cur_point.Y = rect_back.CenterPoint().y;
     }
     else
     {
-        cur_point.X = rect.CenterPoint().x;
-        cur_point.Y = rect.bottom;
+        cur_point.X = rect_back.CenterPoint().x;
+        cur_point.Y = rect_back.bottom;
     }
 
     if (max_val - min_val > 0)
