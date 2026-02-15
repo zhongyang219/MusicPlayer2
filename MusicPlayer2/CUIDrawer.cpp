@@ -2,6 +2,7 @@
 #include "CUIDrawer.h"
 #include "MusicPlayer2.h"
 #include "Player.h"
+#include "SongInfoHelper.h"
 
 CUIDrawer::CUIDrawer(UIColors& colors)
     : m_colors(colors)
@@ -235,11 +236,10 @@ void CUIDrawer::DrawLyricTextSingleLine(CRect rect, int& flag, bool double_line,
         //没有歌词时显示歌曲信息
         if (theApp.m_lyric_setting_data.show_song_info_if_lyric_not_exist || show_song_info)
         {
-            CString song_info_str;
             const SongInfo& cur_song{ CPlayer::GetInstance().GetSafeCurrentSongInfo() };
-            song_info_str.Format(_T("%s - %s"), cur_song.GetArtist().c_str(), cur_song.GetTitle().c_str());
+            std::wstring song_info_str = CSongInfoHelper::GetDisplayStr(cur_song, DF_ARTIST_TITLE);
             static CDrawCommon::ScrollInfo lyric_scroll_info;
-            DrawScrollText(rect, song_info_str, m_colors.color_text, CPlayerUIHelper::GetScrollTextPixel(), theApp.m_lyric_setting_data.lyric_align != Alignment::LEFT, lyric_scroll_info);
+            DrawScrollText(rect, song_info_str.c_str(), m_colors.color_text, CPlayerUIHelper::GetScrollTextPixel(), theApp.m_lyric_setting_data.lyric_align != Alignment::LEFT, lyric_scroll_info);
         }
         //显示“当前歌曲没有歌词”
         else

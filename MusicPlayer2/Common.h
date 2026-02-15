@@ -519,10 +519,8 @@ inline bool CCommon::StringTransform(T& str, bool upper)
     {
         for (auto& ch : str)
         {
-            {
-                if (ch >= 'a' && ch <= 'z')
-                    ch -= 32;
-            }
+            if (ch >= 'a' && ch <= 'z')
+                ch -= 32;
         }
     }
     else
