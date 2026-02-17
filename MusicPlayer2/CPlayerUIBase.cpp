@@ -1502,15 +1502,13 @@ bool CPlayerUIBase::IsDrawMenuBar() const
 wstring CPlayerUIBase::GetDisplayFormatString()
 {
     wstring result;
-    int chans = CPlayer::GetInstance().GetChannels();
-    int freq = CPlayer::GetInstance().GetFreq();
-    int bitrate = CPlayer::GetInstance().GetBitrate();
-    wstring chans_str = CSongInfoHelper::GetChannelsString(static_cast<BYTE>(chans));
+    const SongInfo& cur_song{ CPlayer::GetInstance().GetSafeCurrentSongInfo() };
+    wstring chans_str = CSongInfoHelper::GetChannelsString(static_cast<BYTE>(cur_song.channels));
     wchar_t buff[64];
     if (!CPlayer::GetInstance().IsMidi())
-        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, bitrate, chans_str.c_str());
+        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), cur_song.freq / 1000.0f, cur_song.bitrate, chans_str.c_str());
     else
-        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.c_str());
+        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), cur_song.freq / 1000.0f, chans_str.c_str());
     result = buff;
     if (CPlayer::GetInstance().IsMidi())
     {

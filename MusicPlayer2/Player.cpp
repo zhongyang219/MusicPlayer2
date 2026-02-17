@@ -524,7 +524,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
             SearchLyrics();
             IniLyrics();
         }
-        m_song_length = cur_song.length();
+        m_song_length = m_pCore->GetSongLength();
+        cur_song.bitrate = m_pCore->GetBitrate();
+        cur_song.freq = m_pCore->GetFReq();
+        cur_song.channels = m_pCore->GetChannels();
         SetVolume();
         if (std::fabs(m_speed - 1) > 0.01)
             SetSpeed(m_speed);
@@ -2206,30 +2209,6 @@ void CPlayer::AddListenTime(int sec)
             theApp.LastFMScrobble();
         }
     }
-}
-
-int CPlayer::GetChannels()
-{
-    if (m_player_core_inited && m_pCore != nullptr)
-        return m_pCore->GetChannels();
-    else
-        return 0;
-}
-
-int CPlayer::GetFreq()
-{
-    if (m_player_core_inited && m_pCore != nullptr)
-        return m_pCore->GetFReq();
-    else
-        return 0;
-}
-
-int CPlayer::GetBitrate()
-{
-    if (m_player_core_inited && m_pCore != nullptr)
-        return m_pCore->GetBitrate();
-    else
-        return 0;
 }
 
 unsigned int CPlayer::GetBassHandle() const
