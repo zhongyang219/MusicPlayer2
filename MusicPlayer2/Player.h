@@ -503,6 +503,7 @@ public:
 
     int GetChannels();
     int GetFreq();
+    int GetBitrate();
     unsigned int GetBassHandle() const;
 
     //重新初始化BASS。当replay为true时，如果原来正在播放，则重新初始化后继续播放

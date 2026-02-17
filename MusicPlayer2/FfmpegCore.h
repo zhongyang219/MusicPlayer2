@@ -81,6 +81,7 @@ public:
     virtual std::wstring GetAudioType() override;
     virtual int GetChannels() override;
     virtual int GetFReq() override;
+    virtual int GetBitrate() override;
     virtual std::wstring GetSoundFontName() override;
     virtual void Open(const wchar_t* file_path) override;
     virtual void Close() override;

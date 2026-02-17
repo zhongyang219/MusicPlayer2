@@ -2210,12 +2210,26 @@ void CPlayer::AddListenTime(int sec)
 
 int CPlayer::GetChannels()
 {
-    return m_pCore == nullptr ? 0 : m_pCore->GetChannels();
+    if (m_player_core_inited && m_pCore != nullptr)
+        return m_pCore->GetChannels();
+    else
+        return 0;
 }
 
 int CPlayer::GetFreq()
 {
-    return m_pCore == nullptr ? 0 : m_pCore->GetFReq();
+    if (m_player_core_inited && m_pCore != nullptr)
+        return m_pCore->GetFReq();
+    else
+        return 0;
+}
+
+int CPlayer::GetBitrate()
+{
+    if (m_player_core_inited && m_pCore != nullptr)
+        return m_pCore->GetBitrate();
+    else
+        return 0;
 }
 
 unsigned int CPlayer::GetBassHandle() const

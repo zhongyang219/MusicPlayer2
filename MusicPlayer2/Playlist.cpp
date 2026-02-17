@@ -71,6 +71,9 @@ void CPlaylistFile::SavePlaylistToFile(const vector<SongInfo>& song_list, const 
             {
                 // 出于向后兼容考虑必要这行代码，当song_list来自LoadFromFile加载的不记录cue_file_path的播放列表时item需要从媒体库加载cue_file_path
                 SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(item); // 从媒体库载入数据，媒体库不存在的话会原样返回item
+                //如果从媒体库中查询到的曲目的标签信息是空的，则使用原始的标签信息
+                if (song.IsTagEmpty())
+                    song.CopyAudioTag(item);
                 CString buff;
                 buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d|%s|%s|%s|%s", song.is_cue, song.start_pos.toInt(), song.end_pos.toInt(),
                     DeleteInvalidCh(song.title).c_str(), DeleteInvalidCh(song.artist).c_str(), DeleteInvalidCh(song.album).c_str(),
@@ -96,6 +99,9 @@ void CPlaylistFile::SavePlaylistToFile(const vector<SongInfo>& song_list, const 
             if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             // song_list可能来自LoadFromFile含有信息不足，此处先从媒体库载入最新数据，媒体库不存在的话会原样返回item
             SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(item);
+            //如果从媒体库中查询到的曲目的标签信息是空的，则使用原始的标签信息
+            if (song.IsTagEmpty())
+                song.CopyAudioTag(item);
             if (song.is_cue)
             {
                 //如果播放列表中的项目是cue，且该cue文件没有保存过，则将其保存

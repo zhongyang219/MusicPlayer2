@@ -81,11 +81,11 @@ class IPlayerCore
 public:
     struct AudioInfo
     {
-        int length{};
-        int bitrate{};
-        int freq{};
-        int bits{};
-        int channels{};
+        int length{};       //时长，单位为毫秒
+        int bitrate{};      //比特率，单位为kbps
+        int freq{};         //采样频率，单位为Hz
+        int bits{};         //位深度
+        int channels{};     //声道数
     };
 
     struct AudioTag
@@ -107,6 +107,7 @@ public:
     virtual std::wstring GetAudioType() = 0;    //获取音频格式的类型，如果返回空字符串，则会显示为文件的扩展名
     virtual int GetChannels() = 0;      //获取声道数
     virtual int GetFReq() = 0;          //获取采样频率，单位为Hz
+    virtual int GetBitrate() = 0;       //获取比特率，单位为kbps
     virtual std::wstring GetSoundFontName() = 0;    //播放midi音乐时，获取midi音色库的名称
 
     virtual void Open(const wchar_t* file_path) = 0;
