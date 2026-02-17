@@ -1676,6 +1676,13 @@ wstring CPlayer::GetDisplayName() const
         return song.artist + L" - " + song.title;
     if (IsOsuFile() && !song.comment.empty())
         return song.comment;
+    if (CCommon::IsURL(song.file_path))
+    {
+        if (!song.title.empty())
+            return song.title;
+        else
+            return song.file_path;
+    }
     wstring file_name = song.GetFileName();
     if (!file_name.empty())
         return file_name;
