@@ -3,8 +3,9 @@
 #include "Common.h"
 #include "FilePathHelper.h"
 #include "SongDataManager.h"
+#include "TinyXml2Helper.h"
 
-const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8" };
+const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8", L"wpl"};
 
 /*
 播放列表文件格式说明
@@ -43,11 +44,18 @@ void CPlaylistFile::LoadFromFile(const wstring & file_path)
     std::string file_content;
     if (CCommon::GetFileContent(file_path.c_str(), file_content))
     {
-        std::wstring file_content_wcs = CCommon::StrToUnicode(file_content, utf8 ? CodeType::UTF8 : CodeType::ANSI);
-        if (file_extension == L"m3u" || file_extension == L"m3u8")
-            ParseM3uFile(file_content_wcs);
+        if (file_extension == L"wpl")
+        {
+            ParseWplFile(file_content);
+        }
         else
-            ParsePlaylistFile(file_content_wcs);
+        {
+            std::wstring file_content_wcs = CCommon::StrToUnicode(file_content, utf8 ? CodeType::UTF8 : CodeType::ANSI);
+            if (file_extension == L"m3u" || file_extension == L"m3u8")
+                ParseM3uFile(file_content_wcs);
+            else
+                ParsePlaylistFile(file_content_wcs);
+        }
     }
 }
 
@@ -280,6 +288,42 @@ void CPlaylistFile::ParseM3uFile(const std::wstring& file_contents)
                 m_playlist.push_back(item);
 
             track_name.clear();
+        }
+    }
+}
+
+void CPlaylistFile::ParseWplFile(const std::string& file_contents)
+{
+    tinyxml2::XMLDocument doc;
+    doc.Parse(file_contents.c_str(), file_contents.size());
+    auto* root = doc.RootElement();
+    if (root != nullptr)
+    {
+        for (tinyxml2::XMLElement* child = root->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
+        {
+            std::string name = CTinyXml2Helper::ElementName(child);
+            if (name == "body")
+            {
+                tinyxml2::XMLElement* seq_element = child->FirstChildElement();
+                if (seq_element != nullptr)
+                {
+                    for (tinyxml2::XMLElement* media_element = seq_element->FirstChildElement(); media_element != nullptr; media_element = media_element->NextSiblingElement())
+                    {
+                        std::wstring file_path = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(media_element, "src"), CodeType::UTF8);
+                        bool is_url = CCommon::IsURL(file_path);
+                        //如果是相对路径，则转换成绝对路径
+                        if (!is_url)
+                            file_path = CCommon::RelativePathToAbsolutePath(file_path, CFilePathHelper(m_path).GetDir());
+                        //绝对路径的语法检查
+                        if (is_url || CCommon::IsPath(file_path))
+                        {
+                            SongInfo item;
+                            item.file_path = file_path;
+                            m_playlist.push_back(item);
+                        }
+                    }
+                }
+            }
         }
     }
 }

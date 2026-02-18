@@ -33,6 +33,7 @@ public:
 protected:
     void ParsePlaylistFile(const std::wstring& file_contents);
     void ParseM3uFile(const std::wstring& file_contents);
+    void ParseWplFile(const std::string& file_contents);
 
 private:
     vector<SongInfo> m_playlist;
