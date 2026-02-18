@@ -1504,12 +1504,23 @@ wstring CPlayerUIBase::GetDisplayFormatString()
     wstring result;
     const SongInfo& cur_song{ CPlayer::GetInstance().GetSafeCurrentSongInfo() };
     wstring chans_str = CSongInfoHelper::GetChannelsString(static_cast<BYTE>(cur_song.channels));
-    wchar_t buff[64];
-    if (!CPlayer::GetInstance().IsMidi())
-        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), cur_song.freq / 1000.0f, cur_song.bitrate, chans_str.c_str());
-    else
-        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), cur_song.freq / 1000.0f, chans_str.c_str());
-    result = buff;
+    result += CPlayer::GetInstance().GetCurrentFileType().c_str();
+    wchar_t buff[64]{};
+    if (cur_song.freq != 0)
+    {
+        swprintf_s(buff, L" %.1fkHz", cur_song.freq / 1000.0f);
+        result += buff;
+    }
+    if (cur_song.bitrate != 0)
+    {
+        swprintf_s(buff, L" %dkbps", cur_song.bitrate);
+        result += buff;
+    }
+    if (cur_song.channels != 0)
+    {
+        result += L' ';
+        result += chans_str;
+    }
     if (CPlayer::GetInstance().IsMidi())
     {
         const MidiInfo& midi_info{ CPlayer::GetInstance().GetMidiInfo() };
