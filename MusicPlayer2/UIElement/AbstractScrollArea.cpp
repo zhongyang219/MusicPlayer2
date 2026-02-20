@@ -159,9 +159,6 @@ bool UiElement::AbstractScrollArea::MouseMove(CPoint point)
     }
     last_hover = hover;
 
-    if (Element::MouseMove(point))
-        return true;
-
     scrollbar_hover = scrollbar_rect.PtInRect(point);
     if (scrollbar_handle_pressed)
     {
@@ -179,6 +176,11 @@ bool UiElement::AbstractScrollArea::MouseMove(CPoint point)
     {
         scroll_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
         return true;
+    }
+    else
+    {
+        if (Element::MouseMove(point))
+            return true;
     }
 
     return false;
