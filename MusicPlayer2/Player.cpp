@@ -720,11 +720,13 @@ void CPlayer::CalculateSpectralDataPeak()
             }
             else if (m_spectral_data[i] < m_spectral_peak[i])
             {
-                fall_count[i]++;
-                float fall_distance = fall_count[i] * (7.002355f / theApp.m_fps - 0.042824f);
+                float fall_distance = 0;
+                if (theApp.m_fps > 0)
+                    fall_distance = fall_count[i] * (7.002355f / theApp.m_fps - 0.042824f);
                 if (fall_distance < 0)
                     fall_distance = 0;
                 m_spectral_peak[i] -= fall_distance;        //如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
+                fall_count[i]++;
             }
         }
     }
