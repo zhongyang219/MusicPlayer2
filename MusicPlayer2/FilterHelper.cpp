@@ -49,6 +49,7 @@ wstring FilterHelper::GetPlaylistSelectFilter()
     filter += theApp.m_str_table.LoadText(L"TXT_FILTER_M3U_FILE") + L"|*.m3u|";
     filter += theApp.m_str_table.LoadText(L"TXT_FILTER_M3U8_FILE") + L"|*.m3u8|";
     filter += theApp.m_str_table.LoadText(L"TXT_FILTER_WPL_FILE") + L"|*.wpl|";
+    filter += theApp.m_str_table.LoadText(L"TXT_FILTER_TTPL_FILE") + L"|*.ttpl|";
     filter += theApp.m_str_table.LoadText(L"TXT_FILTER_ALL_FILES") + L"|*.*||";
     return filter;
 }

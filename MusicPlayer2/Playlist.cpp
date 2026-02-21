@@ -5,7 +5,7 @@
 #include "SongDataManager.h"
 #include "TinyXml2Helper.h"
 
-const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8", L"wpl"};
+const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8", L"wpl", L"ttpl"};
 
 /*
 播放列表文件格式说明
@@ -47,6 +47,10 @@ void CPlaylistFile::LoadFromFile(const wstring & file_path)
         if (file_extension == L"wpl")
         {
             ParseWplFile(file_content);
+        }
+        else if (file_extension == L"ttpl")
+        {
+            ParseTtplFile(file_content);
         }
         else
         {
@@ -319,6 +323,44 @@ void CPlaylistFile::ParseWplFile(const std::string& file_contents)
                         {
                             SongInfo item;
                             item.file_path = file_path;
+                            m_playlist.push_back(item);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void CPlaylistFile::ParseTtplFile(const std::string& file_contents)
+{
+    tinyxml2::XMLDocument doc;
+    doc.Parse(file_contents.c_str(), file_contents.size());
+    auto* root = doc.RootElement();
+    if (root != nullptr)
+    {
+        for (tinyxml2::XMLElement* child = root->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
+        {
+            std::string name = CTinyXml2Helper::ElementName(child);
+            if (name == "items")
+            {
+                for (tinyxml2::XMLElement* item_element = child->FirstChildElement(); item_element != nullptr; item_element = item_element->NextSiblingElement())
+                {
+                    name = CTinyXml2Helper::ElementName(item_element);
+                    if (name == "item")
+                    {
+                        std::wstring file_path = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(item_element, "file"), CodeType::UTF8);
+                        std::wstring title = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(item_element, "title"), CodeType::UTF8);
+                        bool is_url = CCommon::IsURL(file_path);
+                        //如果是相对路径，则转换成绝对路径
+                        if (!is_url)
+                            file_path = CCommon::RelativePathToAbsolutePath(file_path, CFilePathHelper(m_path).GetDir());
+                        //绝对路径的语法检查
+                        if (is_url || CCommon::IsPath(file_path))
+                        {
+                            SongInfo item;
+                            item.file_path = file_path;
+                            item.title = title;
                             m_playlist.push_back(item);
                         }
                     }
