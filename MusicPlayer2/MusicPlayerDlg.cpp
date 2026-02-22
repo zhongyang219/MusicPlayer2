@@ -2994,6 +2994,47 @@ BOOL CMusicPlayerDlg::PreTranslateMessage(MSG* pMsg)
         search_box = &m_pFloatPlaylistDlg->GetSearchBox();
     else
         search_box = &m_search_edit;
+    // 播放列表添加回车键播放选中的歌曲
+    if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN)
+    {
+        // 检查焦点是否在播放列表上
+        CWnd* pFocusWnd = GetFocus();
+        
+        // 主窗口播放列表获得焦点
+        if (pFocusWnd != nullptr && pFocusWnd->GetSafeHwnd() == m_playlist_list.GetSafeHwnd())
+        {
+            // 当前选中的项
+            int song_index = -1;
+            
+            // 获取当前选中的行
+            POSITION pos = m_playlist_list.GetFirstSelectedItemPosition();
+            if (pos != NULL)
+            {
+                int selectedRow = m_playlist_list.GetNextSelectedItem(pos);
+                
+                if (!m_searched)    // 如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
+                {
+                    song_index = selectedRow;
+                }
+                else        // 如果播放列表处理搜索状态，则曲目的索引是选中行第一列的数字-1
+                {
+                    CString str;
+                    str = m_playlist_list.GetItemText(selectedRow, 0);
+                    song_index = _ttoi(str) - 1;
+                }
+            }
+
+            if (song_index >= 0 && song_index < CPlayer::GetInstance().GetSongNum())
+            {
+                if (!CPlayer::GetInstance().PlayTrack(song_index))
+                {
+                    const wstring& info = theApp.m_str_table.LoadText(L"MSG_WAIT_AND_RETRY");
+                    MessageBox(info.c_str(), NULL, MB_ICONINFORMATION | MB_OK);
+                }
+            }
+            return TRUE;  // 已处理回车键，不再传递给其他处理
+        }
+    }
     if (pMsg->hwnd != search_box->GetSafeHwnd())  //如果焦点在搜索框上，则不响应快捷键
     {
         if (WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST)
@@ -5025,11 +5066,93 @@ void CMusicPlayerDlg::OnSwitchUi()
 
 void CMusicPlayerDlg::OnVolumeUp()
 {
+    // 检查焦点是否在播放列表上
+    CWnd* pFocusWnd = GetFocus();
+    
+    // 主窗口播放列表获得焦点
+    if (pFocusWnd != nullptr && pFocusWnd->GetSafeHwnd() == m_playlist_list.GetSafeHwnd())
+    {
+        // 获取当前选中的项
+        int curSel = m_playlist_list.GetNextItem(-1, LVNI_SELECTED);
+        if (curSel < 0)
+            curSel = m_playlist_list.GetNextItem(-1, LVNI_FOCUSED);
+            
+        if (curSel > 0)
+        {
+            // 清除当前选择
+            m_playlist_list.SetItemState(curSel, 0, LVIS_SELECTED | LVIS_FOCUSED);
+            
+            // 设置新的选择
+            int newSel = curSel - 1;
+            m_playlist_list.SetItemState(newSel, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+            m_playlist_list.EnsureVisible(newSel, FALSE);
+            
+            // 更新选中的项目信息
+            GetPlaylistItemSelected(newSel);
+            SetUiPlaylistSelected(newSel);
+        }
+        else if (curSel < 0)
+        {
+            // 如果没有选中的项，选择第一项
+            int itemCount = m_playlist_list.GetItemCount();
+            if (itemCount > 0)
+            {
+                m_playlist_list.SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+                m_playlist_list.EnsureVisible(0, FALSE);
+                
+                // 更新选中的项目信息
+                GetPlaylistItemSelected(0);
+                SetUiPlaylistSelected(0);
+            }
+        }
+        return;
+    }
+    // 焦点不在播放列表上，调节音量
     AdjustVolume(theApp.m_nc_setting_data.volum_step);
 }
 
 void CMusicPlayerDlg::OnVolumeDown()
 {
+    // 检查焦点是否在播放列表上
+    CWnd* pFocusWnd = GetFocus();
+    
+    // 主窗口播放列表获得焦点
+    if (pFocusWnd != nullptr && pFocusWnd->GetSafeHwnd() == m_playlist_list.GetSafeHwnd())
+    {
+        // 获取当前选中的项
+        int curSel = m_playlist_list.GetNextItem(-1, LVNI_SELECTED);
+        if (curSel < 0)
+            curSel = m_playlist_list.GetNextItem(-1, LVNI_FOCUSED);
+            
+        int itemCount = m_playlist_list.GetItemCount();
+        
+        if (curSel >= 0 && curSel < itemCount - 1)
+        {
+            // 清除当前选择
+            m_playlist_list.SetItemState(curSel, 0, LVIS_SELECTED | LVIS_FOCUSED);
+            
+            // 设置新的选择
+            int newSel = curSel + 1;
+            m_playlist_list.SetItemState(newSel, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+            m_playlist_list.EnsureVisible(newSel, FALSE);
+            
+            // 更新选中的项目信息
+            GetPlaylistItemSelected(newSel);
+            SetUiPlaylistSelected(newSel);
+        }
+        else if (curSel < 0 && itemCount > 0)
+        {
+            // 如果没有选中的项，选择第一项
+            m_playlist_list.SetItemState(0, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+            m_playlist_list.EnsureVisible(0, FALSE);
+            
+            // 更新选中的项目信息
+            GetPlaylistItemSelected(0);
+            SetUiPlaylistSelected(0);
+        }
+        return;
+    }
+    // 焦点不在播放列表上，调节音量
     AdjustVolume(-theApp.m_nc_setting_data.volum_step);
 }
 
