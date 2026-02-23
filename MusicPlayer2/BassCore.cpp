@@ -279,44 +279,6 @@ void CBassCore::RemoveFXHandle()
     m_replaygain_handle = 0;
 }
 
-void CBassCore::GetBASSAudioInfo(HSTREAM hStream, SongInfo & song_info, int flag)
-{
-    //获取长度
-    if (flag&AF_LENGTH)
-        song_info.end_pos = CBassCore::GetBASSSongLength(hStream);
-    //获取比特率
-    if(flag&AF_BITRATE)
-    {
-        float bitrate{};
-        BASS_ChannelGetAttribute(hStream, BASS_ATTRIB_BITRATE, &bitrate);
-        song_info.bitrate = static_cast<int>(bitrate + 0.5f);
-    }
-    //获取采样频率、通道数、位深度
-    if (flag & AF_CHANNEL_INFO)
-    {
-        BASS_CHANNELINFO info{};
-        BASS_ChannelGetInfo(hStream, &info);
-        song_info.freq = info.freq;
-        song_info.bits = static_cast<BYTE>(info.origres);
-        song_info.channels = static_cast<BYTE>(info.chans);
-    }
-    if(flag&AF_TAG_INFO)
-    {
-        CAudioTag audio_tag(song_info, hStream);
-        audio_tag.GetAudioTag();
-        audio_tag.GetAudioRating();
-        //获取midi音乐的标题
-        if (CBassCore::m_bass_midi_lib.IsSucceed() && audio_tag.GetAudioType() == AU_MIDI)
-        {
-            BASS_MIDI_MARK mark;
-            if (CBassCore::m_bass_midi_lib.BASS_MIDI_StreamGetMark(hStream, BASS_MIDI_MARK_TRACK, 0, &mark) && !mark.track)
-            {
-                song_info.title = CCommon::StrToUnicode(mark.text);
-            }
-        }
-    }
-}
-
 int CBassCore::GetChannels()
 {
     return m_channel_info.chans;
@@ -372,11 +334,9 @@ void CBassCore::Open(const wchar_t * file_path)
         m_midi_lyric.midi_no_lyric = true;
     }
     SetFXHandle();
-    if (m_bass_fx_lib.IsSucceed()) {
+    if (m_bass_fx_lib.IsSucceed())
         m_musicStream = m_bass_fx_lib.BASS_FX_TempoCreate(m_musicStream, BASS_FX_FREESOURCE);
-        if (theApp.m_play_setting_data.replay_gain)
-            ApplyReplayGain(CAudioTag::GetAudioReplayGain(file_path));  // 在这里就需要用响度均衡了
-    } else
+    else
         BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_FREQ, &m_freq);
 }
 
