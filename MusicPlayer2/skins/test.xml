@@ -517,6 +517,14 @@
                   <text text="默认颜色" color_style="default"/>
                   <text text="强调色1" color_style="emphasis1"/>
                   <text text="强调色2" color_style="emphasis2"/>
+                  <navigationBar stack_element_id="test_1" icon_type="text_only" item_space="4">
+                    <navigationItem text="标签1"/>
+                    <navigationItem text="标签2"/>
+                  </navigationBar>
+                  <stackElement width="1" id="text_1">
+                    <element/>
+                    <element/>
+                  </stackElement>
                 </horizontalLayout>
               </verticalLayout>
             </stackElement>
@@ -804,10 +812,11 @@
           <stackElement height="62" size_change_to_switch="true" size_change_condition="widthLessThan" size_change_value="550">
             <horizontalLayout>
               <horizontalLayout>
-                <!--用一个空白按钮包裹专辑封面，实现点击封面时显示播放详情面板的效果-->
-                <button width="62" key="showPanel" panel_id="full_panel_test" empty_btn="true" hand_cursor="true" text="%(UI_TIP_SHOW_PLAY_DETAIL_PAGE)">
+                <!--空白按钮和专辑封面组合，实现点击封面时显示播放详情面板的效果-->
+                <element width="62">
+                  <button key="showPanel" panel_id="full_panel_test" empty_btn="true" hand_cursor="true" text="%(UI_TIP_SHOW_PLAY_DETAIL_PAGE)"/>
                   <albumCover/>
-                </button>
+                </element>
                 <verticalLayout margin="4">
                   <text type="title" style="scroll" height="24" font_size="10"/>
                   <text type="artist" style="scroll" height="24"/>

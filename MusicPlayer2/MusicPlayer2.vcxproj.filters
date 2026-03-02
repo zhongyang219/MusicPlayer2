@@ -1212,6 +1212,9 @@
     <ClInclude Include="UIEdit.h">
       <Filter>派生的控件类\UIEdit</Filter>
     </ClInclude>
+    <ClInclude Include="OpenUrlDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1925,6 +1928,7 @@
     <ClCompile Include="UIEdit.cpp">
       <Filter>派生的控件类\UIEdit</Filter>
     </ClCompile>
+    <ClCompile Include="OpenUrlDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">

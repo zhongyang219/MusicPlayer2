@@ -747,7 +747,9 @@ CodeType CCommon::JudgeCodeType(const string& str, CodeType default_code, bool a
 
 bool CCommon::IsURL(const wstring& str)
 {
-    return (str.substr(0, 7) == L"http://" || str.substr(0, 8) == L"https://" || str.substr(0, 6) == L"ftp://" || str.substr(0, 6) == L"mms://");
+    std::wstring str_url{ str };
+    StringTransform(str_url, false);
+    return (str_url.substr(0, 7) == L"http://" || str_url.substr(0, 8) == L"https://" || str_url.substr(0, 6) == L"ftp://" || str_url.substr(0, 6) == L"mms://");
 }
 
 bool CCommon::IsWindowsPath(const wstring& str)

@@ -87,12 +87,12 @@ std::wstring CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable variabl
         return std::to_wstring(CPlayer::GetInstance().GetSafeCurrentSongInfo().bitrate);
     case PlayerVariable::Channels:
     {
-        int chans = CPlayer::GetInstance().GetChannels();
+        int chans = CPlayer::GetInstance().GetSafeCurrentSongInfo().channels;
         return CSongInfoHelper::GetChannelsString(static_cast<BYTE>(chans));
     }
     case PlayerVariable::SampleFreq:
     {
-        int freq = CPlayer::GetInstance().GetFreq();
+        int freq = CPlayer::GetInstance().GetSafeCurrentSongInfo().freq;
         wchar_t buff[64]{};
         swprintf_s(buff, L"%.1f", freq / 1000.0f);
         return std::wstring(buff);

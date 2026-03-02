@@ -524,7 +524,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
             SearchLyrics();
             IniLyrics();
         }
-        m_song_length = cur_song.length();
+        m_song_length = m_pCore->GetSongLength();
+        cur_song.bitrate = m_pCore->GetBitrate();
+        cur_song.freq = m_pCore->GetFReq();
+        cur_song.channels = m_pCore->GetChannels();
         SetVolume();
         if (std::fabs(m_speed - 1) > 0.01)
             SetSpeed(m_speed);
@@ -717,11 +720,13 @@ void CPlayer::CalculateSpectralDataPeak()
             }
             else if (m_spectral_data[i] < m_spectral_peak[i])
             {
-                fall_count[i]++;
-                float fall_distance = fall_count[i] * (7.002355f / theApp.m_fps - 0.042824f);
+                float fall_distance = 0;
+                if (theApp.m_fps > 0)
+                    fall_distance = fall_count[i] * (7.002355f / theApp.m_fps - 0.042824f);
                 if (fall_distance < 0)
                     fall_distance = 0;
                 m_spectral_peak[i] -= fall_distance;        //如果当前频谱比上一次的频谱主低，则频谱顶端的高度逐渐下降
+                fall_count[i]++;
             }
         }
     }
@@ -1676,6 +1681,13 @@ wstring CPlayer::GetDisplayName() const
         return song.artist + L" - " + song.title;
     if (IsOsuFile() && !song.comment.empty())
         return song.comment;
+    if (CCommon::IsURL(song.file_path))
+    {
+        if (!song.title.empty())
+            return song.title;
+        else
+            return song.file_path;
+    }
     wstring file_name = song.GetFileName();
     if (!file_name.empty())
         return file_name;
@@ -2199,16 +2211,6 @@ void CPlayer::AddListenTime(int sec)
             theApp.LastFMScrobble();
         }
     }
-}
-
-int CPlayer::GetChannels()
-{
-    return m_pCore == nullptr ? 0 : m_pCore->GetChannels();
-}
-
-int CPlayer::GetFreq()
-{
-    return m_pCore == nullptr ? 0 : m_pCore->GetFReq();
 }
 
 unsigned int CPlayer::GetBassHandle() const

@@ -24,6 +24,7 @@ public:
     virtual std::wstring GetAudioType() override;
     virtual int GetChannels() override;
     virtual int GetFReq() override;
+    virtual int GetBitrate() override;
     virtual wstring GetSoundFontName() override;
 
     virtual void Open(const wchar_t* file_path) override;
@@ -100,6 +101,7 @@ private:
     wstring m_sfont_name;		//MIDI音色库的名称
     static MidiLyricInfo m_midi_lyric;
     BASS_CHANNELINFO m_channel_info{};	//音频通道的信息
+    int m_bitrate{};
     bool m_is_midi{};
     MidiInfo m_midi_info{};
     int m_error_code{};

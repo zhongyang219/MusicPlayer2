@@ -1502,15 +1502,25 @@ bool CPlayerUIBase::IsDrawMenuBar() const
 wstring CPlayerUIBase::GetDisplayFormatString()
 {
     wstring result;
-    int chans = CPlayer::GetInstance().GetChannels();
-    int freq = CPlayer::GetInstance().GetFreq();
-    wstring chans_str = CSongInfoHelper::GetChannelsString(static_cast<BYTE>(chans));
-    wchar_t buff[64];
-    if (!CPlayer::GetInstance().IsMidi())
-        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, CPlayer::GetInstance().GetSafeCurrentSongInfo().bitrate, chans_str.c_str());
-    else
-        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.c_str());
-    result = buff;
+    const SongInfo& cur_song{ CPlayer::GetInstance().GetSafeCurrentSongInfo() };
+    wstring chans_str = CSongInfoHelper::GetChannelsString(static_cast<BYTE>(cur_song.channels));
+    result += CPlayer::GetInstance().GetCurrentFileType().c_str();
+    wchar_t buff[64]{};
+    if (cur_song.freq != 0)
+    {
+        swprintf_s(buff, L" %.1fkHz", cur_song.freq / 1000.0f);
+        result += buff;
+    }
+    if (cur_song.bitrate != 0)
+    {
+        swprintf_s(buff, L" %dkbps", cur_song.bitrate);
+        result += buff;
+    }
+    if (cur_song.channels != 0)
+    {
+        result += L' ';
+        result += chans_str;
+    }
     if (CPlayer::GetInstance().IsMidi())
     {
         const MidiInfo& midi_info{ CPlayer::GetInstance().GetMidiInfo() };
@@ -2165,9 +2175,10 @@ CRect CPlayerUIBase::GetAppIconRect() const
     return m_app_icon_rect;
 }
 
-void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
+bool CPlayerUIBase::ReplaceUiStringRes(wstring& str)
 {
     size_t index{};
+    bool replaced{ false };
     while ((index = str.find(L"%(", index)) != wstring::npos)
     {
         size_t right_bracket_index = str.find(L')', index + 2);
@@ -2181,9 +2192,11 @@ void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
             if (value_str == StrTable::error_str)   // LoadText内部已记录错误日志
                 break;
             str.replace(index, right_bracket_index - index + 1, value_str);
+            replaced = true;
         }
         index = right_bracket_index + 1;
     }
+    return replaced;
 }
 
 void CPlayerUIBase::DrawAlbumCover(CRect rect)

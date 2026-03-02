@@ -92,14 +92,28 @@ std::wstring CSongInfoHelper::GetDisplayStr(const SongInfo& song_info, DisplayFo
             return song_info.title;
     case DF_ARTIST_TITLE:	//显示为艺术家 - 标题
         if (song_info.IsTitleEmpty() && song_info.IsArtistEmpty())		//如果标题和艺术家都获取不到，就显示文件名
+        {
             return song_info.GetFileName();
+        }
         else
-            return (song_info.GetArtist() + _T(" - ") + song_info.GetTitle());
+        {
+            if (CCommon::IsURL(song_info.file_path) && song_info.IsArtistEmpty())
+                return song_info.GetTitle();
+            else
+                return (song_info.GetArtist() + _T(" - ") + song_info.GetTitle());
+        }
     case DF_TITLE_ARTIST:	//显示为标题 - 艺术家
         if (song_info.IsTitleEmpty() && song_info.IsArtistEmpty())		//如果标题和艺术家都获取不到，就显示文件名
+        {
             return song_info.GetFileName();
+        }
         else
-            return (song_info.GetTitle() + _T(" - ") + song_info.GetArtist());
+        {
+            if (CCommon::IsURL(song_info.file_path) && song_info.IsArtistEmpty())
+                return song_info.GetTitle();
+            else
+                return (song_info.GetTitle() + _T(" - ") + song_info.GetArtist());
+        }
     default:
         return song_info.GetFileName();
     }

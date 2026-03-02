@@ -154,7 +154,7 @@ bool CPropertyDlgHelper::IsMultiWritable()
 {
     wstring writable_str = GetMultiValue([](const SongInfo& song)
     {
-        if (song.is_cue || (!COSUPlayerHelper::IsOsuFile(song.file_path) && CAudioTag::IsFileTypeTagWriteSupport(CFilePathHelper(song.file_path).GetFileExtension())))
+        if (IsSongTagWriteEnable(song))
             return L"true";
         else
             return L"false";
@@ -166,7 +166,7 @@ bool CPropertyDlgHelper::IsMultiCoverWritable()
 {
     wstring writable_str = GetMultiValue([](const SongInfo& song)
     {
-        if (!song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path) && CAudioTag::IsFileTypeCoverWriteSupport(CFilePathHelper(song.file_path).GetFileExtension()))
+        if (IsSongAlbumCoverWriteEnable(song))
             return L"true";
         else
             return L"false";
@@ -228,6 +228,16 @@ bool CPropertyDlgHelper::IsCommentModified(const vector<SongInfo>& list_ori)
     {
         return song.comment;
     }, list_ori);
+}
+
+bool CPropertyDlgHelper::IsSongTagWriteEnable(const SongInfo& song)
+{
+    return song.is_cue || (!COSUPlayerHelper::IsOsuFile(song.file_path) && !CCommon::IsURL(song.file_path) && CAudioTag::IsFileTypeTagWriteSupport(CFilePathHelper(song.file_path).GetFileExtension()));
+}
+
+bool CPropertyDlgHelper::IsSongAlbumCoverWriteEnable(const SongInfo& song)
+{
+    return !song.is_cue && !COSUPlayerHelper::IsOsuFile(song.file_path) && !CCommon::IsURL(song.file_path) && CAudioTag::IsFileTypeCoverWriteSupport(CFilePathHelper(song.file_path).GetFileExtension());
 }
 
 wstring CPropertyDlgHelper::GetMultiValue(std::function<wstring(const SongInfo&)> fun_get_value, const vector<SongInfo>& song_list)

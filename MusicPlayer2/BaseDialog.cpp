@@ -5,6 +5,7 @@
 #include "BaseDialog.h"
 #include "IniHelper.h"
 #include "MusicPlayer2.h"
+#include "CPlayerUIBase.h"
 
 // CBaseDialog 对话框
 std::map<CString, HWND> CBaseDialog::m_unique_hwnd;
@@ -264,6 +265,33 @@ void CBaseDialog::SetDlgControlText(int id, const wchar_t* key)
         SetDlgItemTextW(id, temp.c_str());
 }
 
+static void IterateControls(CWnd* pParent, std::function<void(CWnd*)> func)
+{
+    if (pParent == nullptr)
+        return;
+
+    // 获取第一个子控件
+    CWnd* pChild = pParent->GetWindow(GW_CHILD);
+
+    // 遍历所有子控件
+    while (pChild != nullptr)
+    {
+        func(pChild);
+
+        // 递归遍历子控件的子控件（处理嵌套控件）
+        IterateControls(pChild, func);
+
+        // 获取下一个兄弟控件
+        pChild = pChild->GetWindow(GW_HWNDNEXT);
+    }
+}
+
+void CBaseDialog::IterateControls(std::function<void(CWnd*)> func)
+{
+    func(this);
+    ::IterateControls(this, func);
+}
+
 void CBaseDialog::DoDataExchange(CDataExchange* pDX)
 {
     CDialog::DoDataExchange(pDX);
@@ -312,12 +340,32 @@ BOOL CBaseDialog::OnInitDialog()
     //为按钮添加图标
     SetButtonIcon(IDCANCEL, IconMgr::IconType::IT_Cancel);
     SetButtonIcon(IDOK, IconMgr::IconType::IT_Ok);
-    // 设置按钮文本
-    wstring temp;
-    temp = theApp.m_str_table.LoadText(L"TXT_OK");
-    SetDlgItemTextW(IDOK, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_CANCEL");
-    SetDlgItemTextW(IDCANCEL, temp.c_str());
+
+    //处理对话框中的文本翻译 
+    IterateControls([&](CWnd* pWnd) {
+        //获取控件文本
+        CString str;
+        pWnd->GetWindowText(str);
+        UINT id = pWnd->GetDlgCtrlID();
+        std::wstring str_translated = str.GetString();
+        //替换翻译文本
+        if (CPlayerUIBase::ReplaceUiStringRes(str_translated))
+        {
+            //设置控件文本
+            if (!str_translated.empty())
+                pWnd->SetWindowTextW(str_translated.c_str());
+        }
+        //处理标准按钮
+        else
+        {
+            if (id == IDOK)
+                pWnd->SetWindowTextW(theApp.m_str_table.LoadText(L"TXT_OK").c_str());
+            else if (id == IDCANCEL)
+                pWnd->SetWindowTextW(theApp.m_str_table.LoadText(L"TXT_CANCEL").c_str());
+            else if (id == IDCLOSE)
+                pWnd->SetWindowTextW(theApp.m_str_table.LoadText(L"TXT_CLOSE").c_str());
+        }
+    });
 
     // 在还原窗口大小之前（当前窗口状态与资源一致），派生类执行控件文本初始化及调整控件排布
     // 与实际窗口大小相关的初始化（比如表格列宽）应在派生类的OnInitDialog进行

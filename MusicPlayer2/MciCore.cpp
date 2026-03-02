@@ -76,6 +76,11 @@ int CMciCore::GetFReq()
     return 0;
 }
 
+int CMciCore::GetBitrate()
+{
+    return 0;
+}
+
 wstring CMciCore::GetSoundFontName()
 {
     return wstring();

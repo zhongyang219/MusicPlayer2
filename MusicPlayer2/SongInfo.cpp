@@ -60,6 +60,12 @@ void SongInfo::CopyAudioTag(const SongInfo& song_info)
     tag_type = song_info.tag_type;
 }
 
+bool SongInfo::IsTagEmpty() const
+{
+    return IsTitleEmpty() && IsArtistEmpty() && IsAlbumEmpty() && IsYearEmpty() && IsGenreEmpty()
+        && comment.empty() && track <= 0 && album_artist.empty() && total_tracks == 0 && disc_num == 0 && total_discs == 0;
+}
+
 bool SongInfo::IsTitleEmpty() const
 {
     static const wstring& default_title = theApp.m_str_table.LoadText(L"TXT_EMPTY_TITLE");

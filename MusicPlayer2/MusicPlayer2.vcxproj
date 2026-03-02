@@ -265,6 +265,7 @@
     <ClInclude Include="CommonDialogMgr.h" />
     <ClInclude Include="CoverPreviewDlg.h" />
     <ClInclude Include="IMouseEvent.h" />
+    <ClInclude Include="OpenUrlDlg.h" />
     <ClInclude Include="PlayerFormulaHelper.h" />
     <ClInclude Include="SongMultiVersion.h" />
     <ClInclude Include="QQMusicLyricDownload.h" />
@@ -512,6 +513,7 @@
     <ClCompile Include="CommonData.cpp" />
     <ClCompile Include="CommonDialogMgr.cpp" />
     <ClCompile Include="CoverPreviewDlg.cpp" />
+    <ClCompile Include="OpenUrlDlg.cpp" />
     <ClCompile Include="PlayerFormulaHelper.cpp" />
     <ClCompile Include="SongMultiVersion.cpp" />
     <ClCompile Include="QQMusicLyricDownload.cpp" />
