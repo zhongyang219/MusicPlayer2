@@ -113,9 +113,9 @@ void UiElement::Slider::Draw()
     if (max_val - min_val > 0)
     {
         if (orientation == Horizontal)
-            cur_point.X = rect_back.left + static_cast<double>(rect_back.Width() * (GetCurPos() - min_val) / static_cast<double>(max_val - min_val));
+            cur_point.X = rect_back.left + static_cast<double>(rect_back.Width()) * (GetCurPos() - min_val) / static_cast<double>(max_val - min_val);
         else
-            cur_point.Y = rect_back.bottom - static_cast<double>(rect_back.Height() * (GetCurPos() - min_val) / static_cast<double>(max_val - min_val));
+            cur_point.Y = rect_back.bottom - static_cast<double>(rect_back.Height()) * (GetCurPos() - min_val) / static_cast<double>(max_val - min_val);
     }
 
     //计算当前位置前后两部分的矩形区域
@@ -210,13 +210,14 @@ bool UiElement::Slider::MouseMove(CPoint point)
     {
         //计算鼠标滑动的位置
         int pos = min_val;
+        __int64 progress_length = static_cast<__int64>(max_val) - min_val;
         if (orientation == Horizontal)
         {
-            pos = min_val + (max_val - min_val) * (point.x - rect_back.left) / rect_back.Width();
+            pos = min_val + progress_length * (point.x - rect_back.left) / rect_back.Width();
         }
         else
         {
-            pos = min_val + (max_val - min_val) * (rect_back.bottom - point.y) / rect_back.Height();
+            pos = min_val + progress_length * (rect_back.bottom - point.y) / rect_back.Height();
         }
         CCommon::SetNumRange(pos, min_val, max_val);
         if (GetCurPos() != pos)
