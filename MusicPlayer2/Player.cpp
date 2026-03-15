@@ -524,7 +524,10 @@ void CPlayer::MusicControl(Command command, int volume_step)
             SearchLyrics();
             IniLyrics();
         }
-        m_song_length = m_pCore->GetSongLength();
+        if (cur_song.is_cue)
+            m_song_length = cur_song.length();
+        else
+            m_song_length = m_pCore->GetSongLength();
         cur_song.bitrate = m_pCore->GetBitrate();
         cur_song.freq = m_pCore->GetFReq();
         cur_song.channels = m_pCore->GetChannels();
