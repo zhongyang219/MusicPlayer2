@@ -280,8 +280,8 @@ struct ApperanceSettingData
     bool show_dark_light_btn_in_titlebar{ false };  //是否在标题栏显示“深色模式/浅色模式”按钮
     int TitleDisplayItem() const;
 
-    //如果为true时，当系统为Windows10/11时，如果使用的是自绘标题栏，则去掉标题栏顶部的白边
-    bool remove_titlebar_top_frame{ false };
+    bool remove_titlebar_top_frame{ false };        //如果为true时，当系统为Windows10/11时，如果使用的是自绘标题栏，则去掉标题栏顶部的白边
+    bool show_titlebar_background{ true };          //是否显示标题栏背景（仅在使用自绘标题栏时有效）
 };
 
 struct GeneralSettingData

@@ -431,7 +431,9 @@ BEGIN
     CONTROL         "Switch to dark/light mode",IDC_SHOW_DARK_LIGHT_BTN_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,458,126,8
     CONTROL         "Remove titlebar top frame",IDC_REMOVE_TITLE_BAR_TOP_FRAME_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,424,316,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,424,126,10
+    CONTROL         "Show title bar background",IDC_SHOW_TITLE_BAR_BACKGROUND_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,424,180,10
 END
 
 IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 340, 239
@@ -1952,7 +1954,8 @@ BEGIN
     80, 0, 20, 0,
     0, 0, 100, 0,
     0, 0, 40, 0,
-    0, 0, 100, 0
+    0, 0, 100, 0,
+    40, 0, 60, 0
 END
 
 IDD_OPTIONS_DIALOG AFX_DIALOG_LAYOUT

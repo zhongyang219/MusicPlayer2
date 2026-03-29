@@ -1997,19 +1997,22 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
 
 void CPlayerUIBase::DrawTitleBar(CRect rect)
 {
-    //填充标题栏背景
-    bool draw_background{ IsDrawBackgroundAlpha() };
-    //绘制背景
-    BYTE alpha;
-    if (theApp.m_app_setting_data.dark_mode)
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
-    else
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    if (theApp.m_app_setting_data.show_titlebar_background)
+    {
+        //填充标题栏背景
+        bool draw_background{ IsDrawBackgroundAlpha() };
+        //绘制背景
+        BYTE alpha;
+        if (theApp.m_app_setting_data.dark_mode)
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+        else
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 
-    if (draw_background)
-        m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
-    else
-        m_draw.FillRect(rect, m_colors.color_control_bar_back);
+        if (draw_background)
+            m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
+        else
+            m_draw.FillRect(rect, m_colors.color_control_bar_back);
+    }
 
     CRect rect_temp = rect;
     //绘制左侧图标
@@ -2388,20 +2391,21 @@ void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
 
 void CPlayerUIBase::DrawUiMenuBar(CRect rect)
 {
-    //m_draw.DrawWindowText(rect, L"menu bar", m_colors.color_text);
-
     //绘制背景
     bool draw_background{ IsDrawBackgroundAlpha() };
-    BYTE alpha;
-    if (theApp.m_app_setting_data.dark_mode)
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
-    else
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    if (theApp.m_app_setting_data.show_titlebar_background)
+    {
+        BYTE alpha;
+        if (theApp.m_app_setting_data.dark_mode)
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+        else
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 
-    if (draw_background)
-        m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
-    else
-        m_draw.FillRect(rect, m_colors.color_control_bar_back);
+        if (draw_background)
+            m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
+        else
+            m_draw.FillRect(rect, m_colors.color_control_bar_back);
+    }
 
     CRect rc_item{ rect };
     rc_item.bottom = rc_item.top + DPI(20);

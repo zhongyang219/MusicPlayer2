@@ -840,6 +840,8 @@
 #define IDC_INPUT_NAME_EDIT             1385
 #define IDC_INPUT_NAME_EDIT2            1386
 #define IDC_INPUT_URL_EDIT              1386
+#define IDC_CHECK1                      1386
+#define IDC_SHOW_TITLE_BAR_BACKGROUND_CHECK 1386
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -1094,7 +1096,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        694
 #define _APS_NEXT_COMMAND_VALUE         33513
-#define _APS_NEXT_CONTROL_VALUE         1386
+#define _APS_NEXT_CONTROL_VALUE         1387
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

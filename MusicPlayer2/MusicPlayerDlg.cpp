@@ -467,6 +467,7 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteBool(L"config", L"show_dark_light_btn_in_titlebar", theApp.m_app_setting_data.show_dark_light_btn_in_titlebar);
 
     ini.WriteBool(L"config", L"remove_titlebar_top_frame", theApp.m_app_setting_data.remove_titlebar_top_frame);
+    ini.WriteBool(L"config", L"show_titlebar_background", theApp.m_app_setting_data.show_titlebar_background);
 
     ini.WriteInt(L"config", L"volum_step", theApp.m_nc_setting_data.volum_step);
     ini.WriteInt(L"config", L"mouse_volum_step", theApp.m_nc_setting_data.mouse_volum_step);
@@ -674,6 +675,7 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.show_settings_btn_in_titlebar = ini.GetBool(L"config", L"show_settings_btn_in_titlebar", false);
     theApp.m_app_setting_data.show_dark_light_btn_in_titlebar = ini.GetBool(L"config", L"show_dark_light_btn_in_titlebar", false);
     theApp.m_app_setting_data.remove_titlebar_top_frame = ini.GetBool(L"config", L"remove_titlebar_top_frame", true);
+    theApp.m_app_setting_data.show_titlebar_background = ini.GetBool(L"config", L"show_titlebar_background", true);
 
     theApp.m_nc_setting_data.volum_step = ini.GetInt(L"config", L"volum_step", 3);
     theApp.m_nc_setting_data.mouse_volum_step = ini.GetInt(L"config", L"mouse_volum_step", 2);
