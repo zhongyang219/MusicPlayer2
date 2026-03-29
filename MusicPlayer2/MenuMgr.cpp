@@ -255,10 +255,8 @@ const wchar_t* MenuMgr::GetMenuNameStr(MenuMgr::MenuType menu_type)
         return L"MAIN_TOOL_DEL_CUR_PLAYING";
     case MenuMgr::MainHelpMenu:
         return L"MAIN_HELP";
-    case MenuMgr::PlaylistToolBarMenu:
+    case MenuMgr::PlaylistToolBarMenu: case MenuMgr::PlaylistToolBarListMenu:
         return L"PLAYLIST_TOOLBAR";
-    case MenuMgr::PlaylistToolBarListMenu:
-        return L"PLAYLIST_TOOLBAR_LIST";
     case MenuMgr::PlaylistToolBarEditMenu:
         return L"PLAYLIST_TOOLBAR_EDIT";
     case MenuMgr::PlaylistToolBarFolderMenu:
@@ -574,11 +572,17 @@ void MenuMgr::CreateMenu(MenuBase& menu)
         menu.AppendSubMenu(MainPlaylistAddMenu, IconMgr::IconType::IT_Add);
         menu.AppendSubMenu(MainPlaylistDelMenu, IconMgr::IconType::IT_Cancel);
         menu.AppendSubMenu(MainPlaylistSortMenu, IconMgr::IconType::IT_Sort_Mode);
-        menu.AppendSubMenu(PlaylistToolBarListMenu, IconMgr::IconType::IT_Playlist);
         menu.AppendSubMenu(PlaylistToolBarEditMenu, IconMgr::IconType::IT_Edit);
         menu.AppendSubMenu(PlaylistToolBarFolderMenu, IconMgr::IconType::IT_Folder);
         menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_RELOAD_PLAYLIST), IconMgr::IconType::IT_Loop_Playlist);
+        menu.AppendItem(EX_ID(ID_SAVE_AS_NEW_PLAYLIST), IconMgr::IconType::IT_Save);
+        menu.AppendItem(EX_ID(ID_SAVE_CURRENT_PLAYLIST_AS), IconMgr::IconType::IT_Save_As);
+        menu.AppendItem(EX_ID(ID_PLAYLIST_FIX_PATH_ERROR), IconMgr::IconType::IT_Fix);
+        menu.AppendSubMenu(MainPlaylistDispModeMenu, IconMgr::IconType::IT_Playlist_Display_Mode);
         menu.AppendItem(EX_ID(ID_LOCATE_TO_CURRENT), IconMgr::IconType::IT_Locate);
+        menu.AppendSeparator();
+        menu.AppendItem(EX_ID(ID_PLAYLIST_OPTIONS), IconMgr::IconType::IT_Setting);
         break;
     case MenuMgr::PlaylistToolBarListMenu:
         menu.CreateMenu(true, true);
