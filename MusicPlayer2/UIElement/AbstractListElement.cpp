@@ -35,9 +35,9 @@ void UiElement::AbstractListElement::DrawScrollArea()
         if (!ui->IsDrawBackgroundAlpha())
             background_alpha = 255;
         else if (theApp.m_app_setting_data.dark_mode)
-            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 3;
         else
-            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
 
         //设置字体
         UiFontGuard set_font(ui, font_size);
