@@ -10,10 +10,12 @@
 #include "SongDataManager.h"
 #include "SongInfoHelper.h"
 #include <random>
+#include <cmath>
 #include "IniHelper.h"
 #include "CRecentList.h"
 #include "MediaLibHelper.h"
 #include "SongMultiVersion.h"
+#include <unordered_set>
 
 CPlayer CPlayer::m_instance;
 
@@ -1806,8 +1808,9 @@ void CPlayer::RemoveSongs(vector<int> indexes, bool skip_locking)
     if (m_loading) return;                                  // 播放列表载入中返回
     int list_size{ GetSongNum() };
     vector<int> indexes_;   // 存储检查过的未越界待移除index
+    std::unordered_set<int> unique_indexes;
     for (const auto& index : indexes)
-        if (index >= 0 && index < list_size)
+        if (index >= 0 && index < list_size && unique_indexes.insert(index).second)
             indexes_.push_back(index);
     if (indexes_.empty()) return;                           // 没有有效的移除index返回
     if (!skip_locking)
@@ -1843,7 +1846,7 @@ int CPlayer::RemoveSameSongs()
             {
                 if (j == m_index)
                     m_index = i;
-                else if (j > m_index)
+                else if (j < m_index)
                     --m_index;
                 m_playlist.erase(m_playlist.begin() + j);
                 ++removed;
@@ -2024,6 +2027,10 @@ int CPlayer::MoveItems(std::vector<int> indexes, int dest)
 
 void CPlayer::SeekTo(int position)
 {
+    if (m_pCore == nullptr || m_index < 0 || m_index >= GetSongNum())
+        return;
+    if (position < 0)
+        position = 0;
     if (position > m_song_length.toInt())
         position = m_song_length.toInt();
     m_current_position.fromInt(position);
@@ -2037,6 +2044,13 @@ void CPlayer::SeekTo(int position)
 
 void CPlayer::SeekTo(double position)
 {
+    // 统一约束百分比输入，避免 NaN/无穷或越界带来的无效跳转。
+    if (!std::isfinite(position))
+        return;
+    if (position < 0)
+        position = 0;
+    else if (position > 1)
+        position = 1;
     int pos = static_cast<int>(m_song_length.toInt() * position);
     SeekTo(pos);
 }
@@ -2571,6 +2585,11 @@ void CPlayer::SearchOutAlbumCover()
     m_album_cover_path = helper.SearchAlbumCover(GetCurrentSongInfo());
     if (!m_album_cover.IsNull())
         m_album_cover.Destroy();
+    if (m_album_cover_path.empty())
+    {
+        MediaTransControlsLoadThumbnailDefaultImage();
+        return;
+    }
     m_album_cover.Load(m_album_cover_path.c_str());
     AlbumCoverResize();
     MediaTransControlsLoadThumbnail();
