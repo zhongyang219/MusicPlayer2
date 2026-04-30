@@ -2239,6 +2239,12 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     wstring prompt_str = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT") + L"(F)";
     m_search_edit.SetCueBanner(prompt_str.c_str(), TRUE);
+    m_playlist_list.SetDisplayColumns({
+        PlaylistColumnId::Index,
+        PlaylistColumnId::Track,
+        PlaylistColumnId::Album,
+        PlaylistColumnId::Duration,
+    });
 
     //CoInitialize(0);  //初始化COM组件，用于支持任务栏显示进度和缩略图按钮
 #ifndef COMPILE_IN_WIN_XP

@@ -255,6 +255,12 @@ BOOL CFloatPlaylistDlg::OnInitDialog()
 
     wstring prompt_str = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT") + L"(F)";
     m_search_edit.SetCueBanner(prompt_str.c_str(), TRUE);
+    m_playlist_ctrl.SetDisplayColumns({
+        PlaylistColumnId::Index,
+        PlaylistColumnId::Track,
+        PlaylistColumnId::Album,
+        PlaylistColumnId::Duration,
+    });
     ListItem list_item = CRecentList::Instance().GetCurrentList();
     m_path_static.SetWindowText(list_item.GetTypeDisplayName().c_str());
     m_path_static.SetIcon(list_item.GetTypeIcon());
