@@ -39,15 +39,42 @@ void CPlayListCtrl::UpdateCachedColumnLayout(const PlaylistColumnLayout& layout)
     m_column_widths = normalized_layout.column_widths;
 }
 
+vector<PlaylistColumnId> CPlayListCtrl::GetOrderedDisplayColumns() const
+{
+    const int column_count = static_cast<int>(m_display_columns.size());
+    if (GetSafeHwnd() == NULL || column_count <= 0)
+        return m_display_columns;
+
+    auto pHeader = GetHeaderCtrl();
+    if (pHeader == nullptr || pHeader->GetItemCount() != column_count)
+        return m_display_columns;
+
+    vector<int> order(column_count);
+    if (!GetColumnOrderArray(order.data(), column_count))
+        return m_display_columns;
+
+    vector<PlaylistColumnId> ordered_columns;
+    ordered_columns.reserve(column_count);
+    for (int index : order)
+    {
+        if (index >= 0 && index < column_count)
+            ordered_columns.push_back(m_display_columns[index]);
+    }
+    if (ordered_columns.size() != m_display_columns.size())
+        return m_display_columns;
+    return ordered_columns;
+}
+
 void CPlayListCtrl::GetColumnLayout(PlaylistColumnLayout& layout) const
 {
-    layout.columns = m_display_columns;
+    const vector<PlaylistColumnId> ordered_columns{ GetOrderedDisplayColumns() };
+    layout.columns = ordered_columns;
     layout.column_widths = m_column_widths;
     if (GetSafeHwnd() == NULL)
         return;
-    const int column_count = static_cast<int>(m_display_columns.size());
+    const int column_count = static_cast<int>(ordered_columns.size());
     for (int i{}; i < column_count; ++i)
-        layout.column_widths[m_display_columns[i]] = GetColumnWidth(i);
+        layout.column_widths[ordered_columns[i]] = GetColumnWidth(i);
 }
 
 bool CPlayListCtrl::ShowHeaderContextMenu(CWnd* pWnd, PlaylistColumnLayout& layout) const
@@ -538,7 +565,7 @@ void CPlayListCtrl::PreSubclassWindow()
 
     //初始化播放列表
     DWORD style = GetExtendedStyle();
-    style = (style | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_DOUBLEBUFFER);
+    style = (style | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_DOUBLEBUFFER | LVS_EX_HEADERDRAGDROP);
     style &= ~LVS_EX_LABELTIP;      //播放列表控件使用自己的鼠标提示，因此不需要LVS_EX_LABELTIP样式
     SetExtendedStyle(style);
     RebuildColumns();

@@ -462,6 +462,7 @@ public:
     afx_msg void OnMovePlaylistItemDown();
     afx_msg void OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnNMRClickPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnHdnEnddragPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnHdnEndtrackPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnRemoveSameSongs();
     afx_msg void OnAddToNewPlaylist();
@@ -469,6 +470,7 @@ public:
     afx_msg void OnPlaylistAddFolder();
     afx_msg void OnRemoveInvalidItems();
 protected:
+    afx_msg LRESULT OnPlaylistHeaderDragged(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnListItemDragged(WPARAM wParam, LPARAM lParam);
 public:
     afx_msg void OnAddRemoveFromFavourite();

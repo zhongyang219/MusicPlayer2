@@ -200,7 +200,9 @@ BEGIN_MESSAGE_MAP(CFloatPlaylistDlg, CBaseDialog)
     ON_WM_SIZE()
     ON_NOTIFY(NM_RCLICK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMRClickPlaylistList)
     ON_NOTIFY(NM_RCLICK, 0, &CFloatPlaylistDlg::OnNMRClickPlaylistHeader)
+    ON_NOTIFY(HDN_ENDDRAG, 0, &CFloatPlaylistDlg::OnHdnEnddragPlaylistHeader)
     ON_NOTIFY(HDN_ENDTRACK, 0, &CFloatPlaylistDlg::OnHdnEndtrackPlaylistHeader)
+    ON_MESSAGE(WM_PLAYLIST_HEADER_DRAGGED, &CFloatPlaylistDlg::OnPlaylistHeaderDragged)
     ON_NOTIFY(NM_DBLCLK, IDC_PLAYLIST_LIST, &CFloatPlaylistDlg::OnNMDblclkPlaylistList)
     ON_EN_CHANGE(IDC_SEARCH_EDIT, &CFloatPlaylistDlg::OnEnChangeSearchEdit)
     ON_WM_CLOSE()
@@ -347,6 +349,15 @@ void CFloatPlaylistDlg::OnNMRClickPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult
     }
 }
 
+void CFloatPlaylistDlg::OnHdnEnddragPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    *pResult = 0;
+    if (m_playlist_ctrl.IsHeaderCtrl(pNMHDR->hwndFrom))
+    {
+        PostMessage(WM_PLAYLIST_HEADER_DRAGGED);
+    }
+}
+
 void CFloatPlaylistDlg::OnHdnEndtrackPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult)
 {
     *pResult = 0;
@@ -356,6 +367,16 @@ void CFloatPlaylistDlg::OnHdnEndtrackPlaylistHeader(NMHDR* pNMHDR, LRESULT* pRes
         if (main_wnd != nullptr)
             main_wnd->SavePlaylistColumnLayoutFromCtrl(m_playlist_ctrl);
     }
+}
+
+LRESULT CFloatPlaylistDlg::OnPlaylistHeaderDragged(WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(wParam);
+    UNREFERENCED_PARAMETER(lParam);
+    CMusicPlayerDlg* main_wnd = CMusicPlayerDlg::GetInstance();
+    if (main_wnd != nullptr)
+        main_wnd->SavePlaylistColumnLayoutFromCtrl(m_playlist_ctrl);
+    return 0;
 }
 
 void CFloatPlaylistDlg::OnEnChangeSearchEdit()
