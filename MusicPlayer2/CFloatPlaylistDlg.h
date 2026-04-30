@@ -67,6 +67,9 @@ public:
     virtual BOOL OnInitDialog();
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnNMRClickPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnHdnEnddragPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnHdnEndtrackPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnEnChangeSearchEdit();
     virtual void OnCancel();
@@ -75,6 +78,7 @@ public:
     afx_msg void OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     virtual BOOL PreTranslateMessage(MSG* pMsg);
 protected:
+    afx_msg LRESULT OnPlaylistHeaderDragged(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnInitmenu(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnListItemDragged(WPARAM wParam, LPARAM lParam);
     afx_msg LRESULT OnSearchEditBtnClicked(WPARAM wParam, LPARAM lParam);
