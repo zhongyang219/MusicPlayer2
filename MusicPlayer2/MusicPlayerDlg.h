@@ -220,6 +220,8 @@ public:
     void SetMenuState(CMenu* pMenu);
     void SetPlaylistSelected(const vector<int>& indexes);
     void SetUiPlaylistSelected(int index);
+    void SetPlaylistColumnLayout(const PlaylistColumnLayout& layout);
+    void SavePlaylistColumnLayoutFromCtrl(CPlayListCtrl& ctrl);
 
     static bool IsPointValid(CPoint);
     int UpdatePlaylistCtrlPosition(CWnd* pParent, CWnd* pStatic, CWnd* pEdit);     //更新播放列表上方的CStatic和CEdit控件的大小和位置，返回CStatic的宽度
@@ -459,6 +461,8 @@ public:
     afx_msg void OnMovePlaylistItemUp();
     afx_msg void OnMovePlaylistItemDown();
     afx_msg void OnNMClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnNMRClickPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnHdnEndtrackPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnRemoveSameSongs();
     afx_msg void OnAddToNewPlaylist();
     afx_msg void OnToolFileRelate();

@@ -47,6 +47,61 @@
 
 const UINT WM_TASKBARCREATED{ ::RegisterWindowMessage(_T("TaskbarCreated")) };  //注册任务栏建立的消息
 
+namespace
+{
+vector<wstring> SerializePlaylistColumns(const PlaylistColumnLayout& layout)
+{
+    vector<wstring> columns;
+    columns.reserve(layout.columns.size());
+    for (PlaylistColumnId column_id : layout.columns)
+        columns.push_back(PlaylistColumnIdToString(column_id));
+    return columns;
+}
+
+vector<wstring> SerializePlaylistColumnWidths(const PlaylistColumnLayout& layout)
+{
+    vector<wstring> widths;
+    for (const auto& item : layout.column_widths)
+    {
+        if (item.second > 0)
+            widths.push_back(PlaylistColumnIdToString(item.first) + L":" + std::to_wstring(item.second));
+    }
+    return widths;
+}
+
+PlaylistColumnLayout DeserializePlaylistColumnLayout(const vector<wstring>& column_values, const vector<wstring>& width_values)
+{
+    PlaylistColumnLayout layout;
+    layout.columns.clear();
+    for (const auto& value : column_values)
+    {
+        PlaylistColumnId column_id;
+        if (PlaylistColumnIdFromString(value, column_id)
+            && std::find(layout.columns.begin(), layout.columns.end(), column_id) == layout.columns.end())
+        {
+            layout.columns.push_back(column_id);
+        }
+    }
+    if (layout.columns.empty())
+        layout.columns = GetDefaultPlaylistColumnIds();
+
+    for (const auto& value : width_values)
+    {
+        size_t separator = value.find(L':');
+        if (separator == wstring::npos)
+            continue;
+        PlaylistColumnId column_id;
+        if (!PlaylistColumnIdFromString(value.substr(0, separator), column_id))
+            continue;
+        int width = _wtoi(value.substr(separator + 1).c_str());
+        if (width > 0)
+            layout.column_widths[column_id] = width;
+    }
+    NormalizePlaylistColumnLayout(layout);
+    return layout;
+}
+}
+
 CMusicPlayerDlg::CMusicPlayerDlg(wstring cmdLine, CWnd* pParent /*=NULL*/)
     : m_cmdLine{ cmdLine }, CMainDialogBase(IDD_MUSICPLAYER2_DIALOG, pParent)
     , m_current_cache(CListCache::SubsetType::ST_CURRENT)
@@ -183,6 +238,8 @@ BEGIN_MESSAGE_MAP(CMusicPlayerDlg, CMainDialogBase)
     ON_COMMAND(ID_OPTION_SETTINGS, &CMusicPlayerDlg::OnOptionSettings)
     ON_COMMAND(ID_RELOAD_PLAYLIST, &CMusicPlayerDlg::OnReloadPlaylist)
     ON_NOTIFY(NM_RCLICK, IDC_PLAYLIST_LIST, &CMusicPlayerDlg::OnNMRClickPlaylistList)
+    ON_NOTIFY(NM_RCLICK, 0, &CMusicPlayerDlg::OnNMRClickPlaylistHeader)
+    ON_NOTIFY(HDN_ENDTRACK, 0, &CMusicPlayerDlg::OnHdnEndtrackPlaylistHeader)
     ON_COMMAND(ID_PLAY_ITEM, &CMusicPlayerDlg::OnPlayItem)
     ON_COMMAND(ID_ITEM_PROPERTY, &CMusicPlayerDlg::OnItemProperty)
     ON_COMMAND(ID_EXPLORE_TRACK, &CMusicPlayerDlg::OnExploreTrack)
@@ -389,6 +446,8 @@ void CMusicPlayerDlg::SaveConfig()
     ini.WriteInt(L"config", L"theme_color", theApp.m_app_setting_data.theme_color.original_color);
     ini.WriteBool(L"config", L"theme_color_follow_system", theApp.m_app_setting_data.theme_color_follow_system);
     ini.WriteInt(L"config", L"playlist_display_format", static_cast<int>(theApp.m_media_lib_setting_data.display_format));
+    ini.WriteStringList(L"config", L"playlist_columns", SerializePlaylistColumns(theApp.m_media_lib_setting_data.playlist_column_layout));
+    ini.WriteStringList(L"config", L"playlist_column_widths", SerializePlaylistColumnWidths(theApp.m_media_lib_setting_data.playlist_column_layout));
     ini.WriteBool(L"config", L"show_lyric_in_cortana", theApp.m_lyric_setting_data.cortana_info_enable);
     ini.WriteBool(L"config", L"cortana_show_lyric", theApp.m_lyric_setting_data.cortana_show_lyric);
     // ini.WriteBool(L"config", L"save_lyric_in_offset", theApp.m_lyric_setting_data.save_lyric_in_offset);
@@ -593,6 +652,13 @@ void CMusicPlayerDlg::LoadConfig()
     theApp.m_app_setting_data.theme_color.original_color = ini.GetInt(L"config", L"theme_color", 16760187);
     theApp.m_app_setting_data.theme_color_follow_system = ini.GetBool(L"config", L"theme_color_follow_system", true);
     theApp.m_media_lib_setting_data.display_format = static_cast<DisplayFormat>(ini.GetInt(L"config", L"playlist_display_format", 2));
+    {
+        vector<wstring> playlist_columns;
+        vector<wstring> playlist_column_widths;
+        ini.GetStringList(L"config", L"playlist_columns", playlist_columns, SerializePlaylistColumns(PlaylistColumnLayout{}));
+        ini.GetStringList(L"config", L"playlist_column_widths", playlist_column_widths, vector<wstring>{});
+        theApp.m_media_lib_setting_data.playlist_column_layout = DeserializePlaylistColumnLayout(playlist_columns, playlist_column_widths);
+    }
     theApp.m_lyric_setting_data.cortana_show_lyric = ini.GetBool(L"config", L"cortana_show_lyric", true);
     //if (CWinVersionHelper::IsWindows11OrLater())        //Windows11没有搜索框，禁用搜索框显示播放信息
     //    theApp.m_lyric_setting_data.cortana_info_enable = false;
@@ -1825,6 +1891,25 @@ void CMusicPlayerDlg::SetPlaylistSelected(const vector<int>& indexes)
         m_pFloatPlaylistDlg->GetListCtrl().SetCurSel(indexes);
 }
 
+void CMusicPlayerDlg::SetPlaylistColumnLayout(const PlaylistColumnLayout& layout)
+{
+    PlaylistColumnLayout normalized_layout{ layout };
+    NormalizePlaylistColumnLayout(normalized_layout);
+    theApp.m_media_lib_setting_data.playlist_column_layout = normalized_layout;
+    m_playlist_list.SetColumnLayout(normalized_layout);
+    if (m_pFloatPlaylistDlg->GetSafeHwnd() != NULL)
+        m_pFloatPlaylistDlg->GetListCtrl().SetColumnLayout(normalized_layout);
+    if (m_miniModeDlg.GetSafeHwnd() != NULL)
+        m_miniModeDlg.GetPlaylistCtrl().SetColumnLayout(normalized_layout);
+}
+
+void CMusicPlayerDlg::SavePlaylistColumnLayoutFromCtrl(CPlayListCtrl& ctrl)
+{
+    PlaylistColumnLayout layout;
+    ctrl.GetColumnLayout(layout);
+    SetPlaylistColumnLayout(layout);
+}
+
 void CMusicPlayerDlg::SetUiPlaylistSelected(int index)
 {
     CUserUi* user_ui{ dynamic_cast<CUserUi*>(GetCurrentUi()) };
@@ -1910,19 +1995,8 @@ void CMusicPlayerDlg::ShowHideFloatPlaylist()
 
 void CMusicPlayerDlg::GetPlaylistItemSelected(int cur_index)
 {
-    if (!m_searched)
-    {
-        m_item_selected = cur_index;  //获取鼠标选中的项目
-        m_playlist_list.GetItemSelected(m_items_selected);      //获取多个选中的项目
-    }
-    else
-    {
-        CString str;
-        str = m_playlist_list.GetItemText(cur_index, 0);
-        m_item_selected = _ttoi(str) - 1;
-        m_playlist_list.GetItemSelectedSearched(m_items_selected);
-    }
-
+    m_item_selected = m_playlist_list.GetSongIndexByItem(cur_index);
+    m_playlist_list.GetItemSelectedSongIndexes(m_items_selected);
 }
 
 void CMusicPlayerDlg::GetPlaylistItemSelected()
@@ -2239,12 +2313,7 @@ BOOL CMusicPlayerDlg::OnInitDialog()
 
     wstring prompt_str = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT") + L"(F)";
     m_search_edit.SetCueBanner(prompt_str.c_str(), TRUE);
-    m_playlist_list.SetDisplayColumns({
-        PlaylistColumnId::Index,
-        PlaylistColumnId::Track,
-        PlaylistColumnId::Album,
-        PlaylistColumnId::Duration,
-    });
+    m_playlist_list.SetColumnLayout(theApp.m_media_lib_setting_data.playlist_column_layout);
 
     //CoInitialize(0);  //初始化COM组件，用于支持任务栏显示进度和缩略图按钮
 #ifndef COMPILE_IN_WIN_XP
@@ -3326,18 +3395,8 @@ void CMusicPlayerDlg::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 void CMusicPlayerDlg::OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    SetUiPlaylistSelected(pNMItemActivate->iItem);
-    int song_index{};
-    if (!m_searched)    //如果播放列表不在搜索状态，则当前选中项的行号就是曲目的索引
-    {
-        song_index = pNMItemActivate->iItem;
-    }
-    else        //如果播放列表处理选中状态，则曲目的索引是选中行第一列的数字-1
-    {
-        CString str;
-        str = m_playlist_list.GetItemText(pNMItemActivate->iItem, 0);
-        song_index = _ttoi(str) - 1;
-    }
+    int song_index = m_playlist_list.GetSongIndexByItem(pNMItemActivate->iItem);
+    SetUiPlaylistSelected(song_index);
 
     if (song_index < 0) return;
     if (!CPlayer::GetInstance().PlayTrack(song_index))
@@ -3378,19 +3437,8 @@ void CMusicPlayerDlg::OnReloadPlaylist()
 void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
 {
     LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-    SetUiPlaylistSelected(pNMItemActivate->iItem);
-    if (!m_searched)
-    {
-        m_item_selected = pNMItemActivate->iItem;   //获取鼠标选中的项目
-        m_playlist_list.GetItemSelected(m_items_selected);      //获取多个选中的项目
-    }
-    else
-    {
-        CString str;
-        str = m_playlist_list.GetItemText(pNMItemActivate->iItem, 0);
-        m_item_selected = _ttoi(str) - 1;
-        m_playlist_list.GetItemSelectedSearched(m_items_selected);
-    }
+    SetUiPlaylistSelected(m_playlist_list.GetSongIndexByItem(pNMItemActivate->iItem));
+    GetPlaylistItemSelected(pNMItemActivate->iItem);
 
     CMenu* pContextMenu{};
     if (m_item_selected >= 0)
@@ -3400,6 +3448,26 @@ void CMusicPlayerDlg::OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult)
     m_playlist_list.ShowPopupMenu(pContextMenu, pNMItemActivate->iItem, this);
 
     *pResult = 0;
+}
+
+void CMusicPlayerDlg::OnNMRClickPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    *pResult = 0;
+    if (m_playlist_list.IsHeaderCtrl(pNMHDR->hwndFrom))
+    {
+        PlaylistColumnLayout layout;
+        if (m_playlist_list.ShowHeaderContextMenu(this, layout))
+            SetPlaylistColumnLayout(layout);
+    }
+}
+
+void CMusicPlayerDlg::OnHdnEndtrackPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult)
+{
+    *pResult = 0;
+    if (m_playlist_list.IsHeaderCtrl(pNMHDR->hwndFrom))
+    {
+        SavePlaylistColumnLayoutFromCtrl(m_playlist_list);
+    }
 }
 
 

@@ -67,6 +67,8 @@ public:
     virtual BOOL OnInitDialog();
     afx_msg void OnSize(UINT nType, int cx, int cy);
     afx_msg void OnNMRClickPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnNMRClickPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
+    afx_msg void OnHdnEndtrackPlaylistHeader(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnNMDblclkPlaylistList(NMHDR* pNMHDR, LRESULT* pResult);
     afx_msg void OnEnChangeSearchEdit();
     virtual void OnCancel();
