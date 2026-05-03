@@ -52,6 +52,8 @@ void CMediaLibStatisticsDlg::InitData()
     std::set<std::wstring, StringComparerNoCase> album_set;
     std::set<std::wstring, StringComparerNoCase> genre_set;
     int played_num{};
+    int total_play_count{};
+    __int64 total_listen_time{};
     size_t total_size{};
     CSongDataManager::GetInstance().GetSongData([&](const CSongDataManager::SongDataMap& song_data_map) {
         for (const auto& item : song_data_map)
@@ -66,6 +68,8 @@ void CMediaLibStatisticsDlg::InitData()
             genre_set.emplace(item.second.genre);
             if (item.second.last_played_time > 0)
                 played_num++;
+            total_play_count += item.second.play_count;
+            total_listen_time += item.second.listen_time;
         }
         total_size = song_data_map.size();
     });
@@ -75,4 +79,20 @@ void CMediaLibStatisticsDlg::InitData()
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_GENRE"), std::to_wstring(genre_set.size()));     //流派
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_STATISTICS_TOTAL_NUM_OF_TRACK"), std::to_wstring(total_size));       //曲目总数
     m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_STATISTICS_NUM_OF_TRACK_PLAYED"), std::to_wstring(played_num));      //播放过的曲目数
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_STATISTICS_TOTAL_PLAY_COUNT"), std::to_wstring(total_play_count));    //总播放次数
+
+    //格式化累计播放时间
+    wstring listen_time_str;
+    int days = static_cast<int>(total_listen_time / (24 * 3600));
+    int hours = static_cast<int>((total_listen_time % (24 * 3600)) / 3600);
+    int minutes = static_cast<int>((total_listen_time % 3600) / 60);
+    int seconds = static_cast<int>(total_listen_time % 60);
+    if (days > 0)
+        listen_time_str += std::to_wstring(days) + L"天 ";
+    if (hours > 0 || days > 0)
+        listen_time_str += std::to_wstring(hours) + L"时 ";
+    if (minutes > 0 || hours > 0 || days > 0)
+        listen_time_str += std::to_wstring(minutes) + L"分 ";
+    listen_time_str += std::to_wstring(seconds) + L"秒";
+    m_items.emplace_back(theApp.m_str_table.LoadText(L"TXT_LIB_STATISTICS_TOTAL_LISTEN_TIME"), listen_time_str);    //累计播放时间
 }
