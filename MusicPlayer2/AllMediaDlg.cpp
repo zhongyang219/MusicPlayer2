@@ -433,14 +433,14 @@ void CAllMediaDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
             switch (phdr->iItem)
             {
             case COL_TITLE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_ARTIST: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_ALBUM: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_TRACK: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_GENRE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_BITRATE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_YEAR: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_PATH: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_LAST_PLAYED_TIME: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_ARTIST: sort_mode = ascending ? SM_U_ARTIST : SM_D_ARTIST; break;
+            case COL_ALBUM: sort_mode = ascending ? SM_U_ALBUM : SM_D_ALBUM; break;
+            case COL_TRACK: sort_mode = ascending ? SM_U_TRACK : SM_D_TRACK; break;
+            case COL_GENRE: sort_mode = ascending ? SM_U_GENRE : SM_D_GENRE; break;
+            case COL_BITRATE: sort_mode = ascending ? SM_U_BITRATE : SM_D_BITRATE; break;
+            case COL_YEAR: sort_mode = ascending ? SM_U_YEAR : SM_D_YEAR; break;
+            case COL_PATH: sort_mode = ascending ? SM_U_PATH : SM_D_PATH; break;
+            case COL_LAST_PLAYED_TIME: sort_mode = ascending ? SM_U_LAST_PLAYED_TIME : SM_D_LAST_PLAYED_TIME; break;
             default: break;
             }
             auto so = CCommon::sort_permutation(list_songs, SongInfo::GetSortFunc(sort_mode));
