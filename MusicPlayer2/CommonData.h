@@ -365,7 +365,9 @@ enum MediaLibDisplayItem
     MLDI_RATING = (1 << 6),
     MLDI_ALL = (1 << 7),
     MLDI_RECENT = (1 << 8),
-    MLDI_FOLDER_EXPLORE = (1 << 9)
+    MLDI_FOLDER_EXPLORE = (1 << 9),
+    MLDI_MOST_PLAYED = (1 << 10),
+    MLDI_FREQUENTLY_PLAYED = (1 << 11)
 };
 
 struct MediaLibSettingData
