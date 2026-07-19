@@ -755,6 +755,41 @@ int CLyrics::GetLyricProgress(CPlayTime time, bool ignore_blank, bool blank2mark
     return min(progress, 1000);
 }
 
+int CLyrics::GetLyricLrcProgress(CPlayTime time)
+{
+    if (m_lyrics.empty())
+        return 0;
+
+    int lyric_last_time{ 1 };           // time时间所在的歌词持续的时间
+    int lyric_current_time{ 0 };        // 当前歌词在time时间时已经持续的时间
+    int progress{};
+    for (size_t i{ 0 }; i < m_lyrics.size(); i++)
+    {
+        if (CPlayTime(m_lyrics[i].time_start_raw) > time)
+        {
+            if (i == 0)
+            {
+                lyric_current_time = time.toInt();
+                lyric_last_time = m_lyrics[i].time_start_raw;
+            }
+            else
+            {
+                lyric_last_time = m_lyrics[i].time_start_raw - m_lyrics[i - 1].time_start_raw;
+                lyric_current_time = time - m_lyrics[i - 1].time_start_raw;
+            }
+            if (lyric_last_time == 0) lyric_last_time = 1;
+            progress = lyric_current_time * 1000 / lyric_last_time;
+            return progress;
+        }
+    }
+    // 如果最后一句歌词之后已经没有时间标签，该句歌词默认显示20秒
+    lyric_current_time = time - m_lyrics[m_lyrics.size() - 1].time_start_raw;
+    lyric_last_time = 20000;
+    progress = lyric_current_time * 1000 / lyric_last_time;
+    if (progress > 1000) progress = 1000;
+    return progress;
+}
+
 CodeType CLyrics::GetCodeType() const
 {
     return m_code_type;

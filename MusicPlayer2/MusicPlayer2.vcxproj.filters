@@ -462,6 +462,9 @@
     <Filter Include="派生的控件类\UIEdit">
       <UniqueIdentifier>{a5342291-83e1-4bdf-ac26-74574f00fad5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="功能逻辑类\ProcessMessage">
+      <UniqueIdentifier>{0e243445-cf5f-4426-8799-b047885b7a27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1215,6 +1218,9 @@
     <ClInclude Include="OpenUrlDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ProcessMsgHelper.h">
+      <Filter>功能逻辑类\ProcessMessage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FindDlg.cpp">
@@ -1929,6 +1935,9 @@
       <Filter>派生的控件类\UIEdit</Filter>
     </ClCompile>
     <ClCompile Include="OpenUrlDlg.cpp" />
+    <ClCompile Include="ProcessMsgHelper.cpp">
+      <Filter>功能逻辑类\ProcessMessage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MusicPlayer2.rc">

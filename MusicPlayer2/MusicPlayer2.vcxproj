@@ -267,6 +267,7 @@
     <ClInclude Include="IMouseEvent.h" />
     <ClInclude Include="OpenUrlDlg.h" />
     <ClInclude Include="PlayerFormulaHelper.h" />
+    <ClInclude Include="ProcessMsgHelper.h" />
     <ClInclude Include="SongMultiVersion.h" />
     <ClInclude Include="QQMusicLyricDownload.h" />
     <ClInclude Include="CRecentList.h" />
@@ -515,6 +516,7 @@
     <ClCompile Include="CoverPreviewDlg.cpp" />
     <ClCompile Include="OpenUrlDlg.cpp" />
     <ClCompile Include="PlayerFormulaHelper.cpp" />
+    <ClCompile Include="ProcessMsgHelper.cpp" />
     <ClCompile Include="SongMultiVersion.cpp" />
     <ClCompile Include="QQMusicLyricDownload.cpp" />
     <ClCompile Include="CRecentList.cpp" />
