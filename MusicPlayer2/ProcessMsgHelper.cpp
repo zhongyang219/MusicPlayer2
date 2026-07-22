@@ -39,7 +39,7 @@ void CProcessMsgHelper::SendFilePath()
 {
     if (m_hwnd == nullptr)
         return;
-    std::wstring msg_data = CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable::FilePath);
+    std::wstring msg_data = CPlayer::GetInstance().GetCurrentSongInfo().file_path;
     SendStringMessage(m_hwnd, MusicPlayer2SentMsg::FilePath, msg_data);
 }
 
@@ -47,7 +47,7 @@ void CProcessMsgHelper::SendTitle()
 {
     if (m_hwnd == nullptr)
         return;
-    std::wstring msg_data = CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable::Title);
+    std::wstring msg_data = CPlayer::GetInstance().GetCurrentSongInfo().GetTitle();
     SendStringMessage(m_hwnd, MusicPlayer2SentMsg::Title, msg_data);
 }
 
@@ -55,7 +55,7 @@ void CProcessMsgHelper::SendArtist()
 {
     if (m_hwnd == nullptr)
         return;
-    std::wstring msg_data = CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable::Artist);
+    std::wstring msg_data = CPlayer::GetInstance().GetCurrentSongInfo().GetArtist();
     SendStringMessage(m_hwnd, MusicPlayer2SentMsg::Artist, msg_data);
 }
 
@@ -63,7 +63,7 @@ void CProcessMsgHelper::SendAlbum()
 {
     if (m_hwnd == nullptr)
         return;
-    std::wstring msg_data = CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable::Album);
+    std::wstring msg_data = CPlayer::GetInstance().GetCurrentSongInfo().GetAlbum();
     SendStringMessage(m_hwnd, MusicPlayer2SentMsg::Album, msg_data);
 }
 
@@ -137,12 +137,23 @@ void CProcessMsgHelper::PositionChanged()
 
 void CProcessMsgHelper::ReciveProcessMessage(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 {
-    //保存发送者的窗口句柄
-    if (IsWindow(pWnd->GetSafeHwnd()))
-        m_hwnd = pWnd->GetSafeHwnd();
-
     MusicPlayer2RecivedMsg msg_type = (MusicPlayer2RecivedMsg)pCopyDataStruct->dwData;
-    if (msg_type == MusicPlayer2RecivedMsg::SendCommand)
+    if (msg_type == MusicPlayer2RecivedMsg::PlayerInfoRequired)
+    {
+        //保存发送者的窗口句柄
+        HWND hWnd = (HWND)GetIntMessage(pCopyDataStruct);
+        if (IsWindow(hWnd))
+        {
+            if (m_hwnd != hWnd)
+            {
+                m_hwnd = hWnd;
+                //首次收到PlayerInfoRequired消息时发送歌曲信息
+                TrackChanged();
+                PositionChanged();
+            }
+        }
+    }
+    else if (msg_type == MusicPlayer2RecivedMsg::SendCommand)
     {
         int command = GetIntMessage(pCopyDataStruct);
         theApp.GetMainWnd()->PostMessage(WM_COMMAND, command);
