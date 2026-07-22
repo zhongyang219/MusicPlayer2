@@ -347,6 +347,16 @@ static bool ByListenTimeDecending(const SongInfo& a, const SongInfo& b)
     return a.listen_time > b.listen_time;
 }
 
+static bool ByPlayCount(const SongInfo& a, const SongInfo& b)
+{
+    return a.play_count < b.play_count;
+}
+
+static bool ByPlayCountDecending(const SongInfo& a, const SongInfo& b)
+{
+    return a.play_count > b.play_count;
+}
+
 static bool ByModifiedTime(const SongInfo& a, const SongInfo& b)
 {
     return a.modified_time < b.modified_time;
@@ -387,6 +397,16 @@ static bool ByBitrateDecending(const SongInfo& a, const SongInfo& b)
     return a.bitrate > b.bitrate;
 }
 
+static bool ByLastPlayedTime(const SongInfo& a, const SongInfo& b)
+{
+    return a.last_played_time < b.last_played_time;
+}
+
+static bool ByLastPlayedTimeDecending(const SongInfo& a, const SongInfo& b)
+{
+    return a.last_played_time > b.last_played_time;
+}
+
 std::function<bool(const SongInfo& a, const SongInfo& b)> SongInfo::GetSortFunc(SortMode sort_mode)
 {
     switch (sort_mode)
@@ -405,6 +425,8 @@ std::function<bool(const SongInfo& a, const SongInfo& b)> SongInfo::GetSortFunc(
     case SM_D_TRACK: return ByTrackDecending;
     case SM_U_LISTEN: return ByListenTime;
     case SM_D_LISTEN: return ByListenTimeDecending;
+    case SM_U_PLAY_COUNT: return ByPlayCount;
+    case SM_D_PLAY_COUNT: return ByPlayCountDecending;
     case SM_U_TIME: return ByModifiedTime;
     case SM_D_TIME: return ByModifiedTimeDecending;
     case SM_U_GENRE: return ByGenre;
@@ -413,6 +435,8 @@ std::function<bool(const SongInfo& a, const SongInfo& b)> SongInfo::GetSortFunc(
     case SM_D_YEAR: return ByYearDecending;
     case SM_U_BITRATE: return ByBitrate;
     case SM_D_BITRATE: return ByBitrateDecending;
+    case SM_U_LAST_PLAYED_TIME: return ByLastPlayedTime;
+    case SM_D_LAST_PLAYED_TIME: return ByLastPlayedTimeDecending;
     default: return [](const SongInfo& a, const SongInfo& b) { return true; };
     }
 }
@@ -436,8 +460,18 @@ wstring SongInfo::GetSortModeDisplayName(SortMode sort_mode)
     case SM_D_TRACK: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TRACK"); break;
     case SM_U_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_LISTEN"); break;
     case SM_D_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_LISTEN"); break;
+    case SM_U_PLAY_COUNT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_PLAY_COUNT"); break;
+    case SM_D_PLAY_COUNT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_PLAY_COUNT"); break;
     case SM_U_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TIME"); break;
     case SM_D_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TIME"); break;
+    case SM_U_GENRE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_GENRE"); break;
+    case SM_D_GENRE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_GENRE"); break;
+    case SM_U_YEAR: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_YEAR"); break;
+    case SM_D_YEAR: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_YEAR"); break;
+    case SM_U_BITRATE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_BITRATE"); break;
+    case SM_D_BITRATE: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_BITRATE"); break;
+    case SM_U_LAST_PLAYED_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_LAST_PLAYED_TIME"); break;
+    case SM_D_LAST_PLAYED_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_LAST_PLAYED_TIME"); break;
     case SM_UNSORT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_UNSORT"); break;
     }
     return str_sort_mode;
