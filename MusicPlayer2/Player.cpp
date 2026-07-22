@@ -2479,6 +2479,8 @@ void CPlayer::SearchAlbumCover()
     //        m_album_cover = img_temp;
     //    }
     //}
+
+    SendMessage(theApp.m_pMainWnd->GetSafeHwnd(), WM_CURRENT_FILE_ALBUM_COVER_CHANGED, 0, 0);
 }
 
 void CPlayer::AlbumCoverGaussBlur()

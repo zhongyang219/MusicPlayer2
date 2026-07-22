@@ -1,11 +1,12 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
+#include "MusicPlayer2.h"
 #include "ProcessMsgHelper.h"
 #include "Player.h"
 #include "PlayerFormulaHelper.h"
 
 void CProcessMsgHelper::SendStringMessage(HWND hwnd, MusicPlayer2SentMsg msg_id, const std::wstring& msg_data)
 {
-    //Í¨¹ıWM_COPYDATAÏûÏ¢ÏòÒÑÓĞ½ø³Ì´«µİÏûÏ¢
+    //é€šè¿‡WM_COPYDATAæ¶ˆæ¯å‘å·²æœ‰è¿›ç¨‹ä¼ é€’æ¶ˆæ¯
     COPYDATASTRUCT copy_data;
     copy_data.dwData = static_cast<UINT>(msg_id);
     copy_data.cbData = msg_data.size() * sizeof(wchar_t);
@@ -15,7 +16,7 @@ void CProcessMsgHelper::SendStringMessage(HWND hwnd, MusicPlayer2SentMsg msg_id,
 
 void CProcessMsgHelper::SendIntMessage(HWND hwnd, MusicPlayer2SentMsg msg_id, int msg_data)
 {
-    //Í¨¹ıWM_COPYDATAÏûÏ¢ÏòÒÑÓĞ½ø³Ì´«µİÏûÏ¢
+    //é€šè¿‡WM_COPYDATAæ¶ˆæ¯å‘å·²æœ‰è¿›ç¨‹ä¼ é€’æ¶ˆæ¯
     COPYDATASTRUCT copy_data;
     copy_data.dwData = static_cast<UINT>(msg_id);
     copy_data.cbData = sizeof(int);
@@ -23,63 +24,133 @@ void CProcessMsgHelper::SendIntMessage(HWND hwnd, MusicPlayer2SentMsg msg_id, in
     ::SendMessage(hwnd, WM_COPYDATA, 0, (LPARAM)&copy_data);
 }
 
-void CProcessMsgHelper::SendFilePath(HWND hwnd)
+static int GetIntMessage(COPYDATASTRUCT* pData)
 {
+    if (pData != nullptr && pData->cbData >= sizeof(int))
+    {
+        int data = *((int*)pData->lpData);
+        return data;
+    }
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void CProcessMsgHelper::SendFilePath()
+{
+    if (m_hwnd == nullptr)
+        return;
     std::wstring msg_data = CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable::FilePath);
-    SendStringMessage(hwnd, MusicPlayer2SentMsg::FilePath, msg_data);
+    SendStringMessage(m_hwnd, MusicPlayer2SentMsg::FilePath, msg_data);
 }
 
-void CProcessMsgHelper::SendTitle(HWND hwnd)
+void CProcessMsgHelper::SendTitle()
 {
+    if (m_hwnd == nullptr)
+        return;
     std::wstring msg_data = CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable::Title);
-    SendStringMessage(hwnd, MusicPlayer2SentMsg::Title, msg_data);
+    SendStringMessage(m_hwnd, MusicPlayer2SentMsg::Title, msg_data);
 }
 
-void CProcessMsgHelper::SendArtist(HWND hwnd)
+void CProcessMsgHelper::SendArtist()
 {
+    if (m_hwnd == nullptr)
+        return;
     std::wstring msg_data = CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable::Artist);
-    SendStringMessage(hwnd, MusicPlayer2SentMsg::Artist, msg_data);
+    SendStringMessage(m_hwnd, MusicPlayer2SentMsg::Artist, msg_data);
 }
 
-void CProcessMsgHelper::SendAlbum(HWND hwnd)
+void CProcessMsgHelper::SendAlbum()
 {
+    if (m_hwnd == nullptr)
+        return;
     std::wstring msg_data = CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable::Album);
-    SendStringMessage(hwnd, MusicPlayer2SentMsg::Album, msg_data);
+    SendStringMessage(m_hwnd, MusicPlayer2SentMsg::Album, msg_data);
 }
 
-void CProcessMsgHelper::SendAlbumCover(HWND hwnd)
+void CProcessMsgHelper::SendAlbumCover()
 {
+    if (m_hwnd == nullptr)
+        return;
     std::wstring album_cover_path = CPlayer::GetInstance().GetAlbumCoverPath();
-    SendStringMessage(hwnd, MusicPlayer2SentMsg::AlbumCover, album_cover_path);
+    SendStringMessage(m_hwnd, MusicPlayer2SentMsg::AlbumCover, album_cover_path);
 }
 
-void CProcessMsgHelper::SendCurrentLyric(HWND hwnd)
+void CProcessMsgHelper::SendCurrentLyric()
 {
+    if (m_hwnd == nullptr)
+        return;
     std::wstring current_lyric = CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable::CurrentLyric);
-    SendStringMessage(hwnd, MusicPlayer2SentMsg::CurrentLyric, current_lyric);
+    if (last_lyric != current_lyric)
+        SendStringMessage(m_hwnd, MusicPlayer2SentMsg::CurrentLyric, current_lyric);
+    last_lyric = current_lyric;
 }
 
-void CProcessMsgHelper::SendCurrentLyricPosition(HWND hwnd)
+void CProcessMsgHelper::SendCurrentLyricPosition()
 {
-    CPlayTime time{ CPlayer::GetInstance().GetCurrentPosition() };		//µ±Ç°²¥·ÅÊ±¼ä
-    int lyric_index = CPlayer::GetInstance().m_Lyrics.GetLyricIndex(time);		            // µ±Ç°¸è´ÊµÄĞòºÅ
+    if (m_hwnd == nullptr)
+        return;
+    CPlayTime time{ CPlayer::GetInstance().GetCurrentPosition() };		//å½“å‰æ’­æ”¾æ—¶é—´
     int progress{ CPlayer::GetInstance().m_Lyrics.GetLyricLrcProgress(time) };
-    SendIntMessage(hwnd, MusicPlayer2SentMsg::CurrentLyricPosition, progress);
+    if (last_lyric_position != progress)
+        SendIntMessage(m_hwnd, MusicPlayer2SentMsg::CurrentLyricPosition, progress);
+    last_lyric_position = progress;
 }
 
-void CProcessMsgHelper::SendCurrentPosition(HWND hwnd)
+void CProcessMsgHelper::SendCurrentPosition()
 {
+    if (m_hwnd == nullptr)
+        return;
     int current_position = CPlayer::GetInstance().GetCurrentPosition();
-    SendIntMessage(hwnd, MusicPlayer2SentMsg::CurrentPosition, current_position);
+    if (last_position != current_position)
+        SendIntMessage(m_hwnd, MusicPlayer2SentMsg::CurrentPosition, current_position);
+    last_position = current_position;
 }
 
-void CProcessMsgHelper::SendCurrentSongLenght(HWND hwnd)
+void CProcessMsgHelper::SendCurrentSongLenght()
 {
+    if (m_hwnd == nullptr)
+        return;
     int song_length = CPlayer::GetInstance().GetSongLength();
-    SendIntMessage(hwnd, MusicPlayer2SentMsg::CurrentSongLenght, song_length);
+    SendIntMessage(m_hwnd, MusicPlayer2SentMsg::CurrentSongLenght, song_length);
+}
+
+void CProcessMsgHelper::TrackChanged()
+{
+    if (m_hwnd == nullptr)
+        return;
+    SendFilePath();
+    SendTitle();
+    SendArtist();
+    SendAlbum();
+    SendCurrentPosition();
+    SendCurrentSongLenght();
+}
+
+void CProcessMsgHelper::PositionChanged()
+{
+    if (m_hwnd == nullptr)
+        return;
+    SendCurrentLyric();
+    SendCurrentLyricPosition();
+    SendCurrentPosition();
 }
 
 void CProcessMsgHelper::ReciveProcessMessage(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
 {
+    //ä¿å­˜å‘é€è€…çš„çª—å£å¥æŸ„
+    if (IsWindow(pWnd->GetSafeHwnd()))
+        m_hwnd = pWnd->GetSafeHwnd();
+
+    MusicPlayer2RecivedMsg msg_type = (MusicPlayer2RecivedMsg)pCopyDataStruct->dwData;
+    if (msg_type == MusicPlayer2RecivedMsg::SendCommand)
+    {
+        int command = GetIntMessage(pCopyDataStruct);
+        theApp.GetMainWnd()->PostMessage(WM_COMMAND, command);
+    }
+    else if (msg_type == MusicPlayer2RecivedMsg::SeekTo)
+    {
+        int position = GetIntMessage(pCopyDataStruct);
+        CPlayer::GetInstance().SeekTo(position);
+    }
 }
 

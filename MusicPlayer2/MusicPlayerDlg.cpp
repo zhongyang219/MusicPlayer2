@@ -1023,6 +1023,8 @@ void CMusicPlayerDlg::SwitchTrack()
     DrawInfo(true);
 
     UpdateSongInfoToolTip();
+
+    m_process_msg_helper.TrackChanged();
 }
 
 void CMusicPlayerDlg::UpdateSongInfoToolTip()
@@ -2621,6 +2623,7 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         //获取频谱分析数据
         CPlayer::GetInstance().CalculateSpectralData();
 
+        m_process_msg_helper.PositionChanged();
 
         // 这里在更改播放状态，需要先取得锁，没有成功取得锁的话下次再试
         if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock())
@@ -6264,6 +6267,10 @@ BOOL CMusicPlayerDlg::OnCopyData(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
             m_cmd_open_files.insert(m_cmd_open_files.end(), files.begin(), files.end());     // 将来自其他实例的cmd追加到末尾
             SetTimer(TIMER_CMD_OPEN_FILES_DELAY, 1000, nullptr);
         }
+        if (pCopyDataStruct->dwData >= static_cast<int>(MusicPlayer2RecivedMsg::RecivedMsgStart) && pCopyDataStruct->dwData <= static_cast<int>(MusicPlayer2RecivedMsg::RecivedMsgEnd))
+        {
+            m_process_msg_helper.ReciveProcessMessage(pWnd, pCopyDataStruct);
+        }
     }
 
     return CMainDialogBase::OnCopyData(pWnd, pCopyDataStruct);
@@ -6335,7 +6342,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnGetMusicCurrentPosition(WPARAM wParam, LPARAM
 
 afx_msg LRESULT CMusicPlayerDlg::OnCurrentFileAlbumCoverChanged(WPARAM wParam, LPARAM lParam)
 {
-
+    m_process_msg_helper.SendAlbumCover();
     return 0;
 }
 

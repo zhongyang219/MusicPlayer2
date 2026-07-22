@@ -31,6 +31,7 @@
 #include "powrprof.h"
 #include "CHotkeyManager.h"
 #include "ListCache.h"
+#include "ProcessMsgHelper.h"
 
 #define WM_ALBUM_COVER_DOWNLOAD_COMPLETE (WM_USER+114)      //自动下载专辑封面和歌词完成时发出的消息
 
@@ -199,6 +200,8 @@ protected:
             EnumDisplayMonitors(0, 0, MonitorEnum, (LPARAM)this);
         }
     };
+
+    CProcessMsgHelper m_process_msg_helper;
 
 private:
     void SaveConfig();      //保存设置到ini文件
