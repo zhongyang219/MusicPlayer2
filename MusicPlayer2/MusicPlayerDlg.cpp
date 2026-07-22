@@ -3117,6 +3117,8 @@ void CMusicPlayerDlg::OnDestroy()
 
     m_ui_static_ctrl.ReleaseDC(m_pUiDC);
 
+    m_process_msg_helper.SendExitMsg();
+
 }
 
 

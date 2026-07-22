@@ -20,7 +20,9 @@ enum class MusicPlayer2SentMsg
     CurrentLyric,       //正在播放的歌词
     CurrentLyricPosition,    //正在播放歌词的进度（0~1000）
     CurrentPosition,    //当前播放进度（毫秒）
-    CurrentSongLenght,  //当前播放曲目的长度（毫秒）
+    CurrentSongLength,  //当前播放曲目的长度（毫秒）
+    PlayingStatus,      //播放状态（0：已停止，1：已暂停，2：正在播放）
+    PlayerExit,         //MusicPlayer2退出
     SentMsgEnd
 };
 
@@ -40,6 +42,8 @@ public:
     void SendCurrentLyricPosition();
     void SendCurrentPosition();
     void SendCurrentSongLenght();
+    void SendPlayingStatus();
+    void SendExitMsg();
 
     void TrackChanged();
     void PositionChanged();
@@ -52,5 +56,6 @@ private:
     int last_position{ -1 };
     int last_lyric_position{ -1 };
     std::wstring last_lyric{};
+    int last_playing_status{ -1 };
 };
 

@@ -111,7 +111,24 @@ void CProcessMsgHelper::SendCurrentSongLenght()
     if (m_hwnd == nullptr)
         return;
     int song_length = CPlayer::GetInstance().GetSongLength();
-    SendIntMessage(m_hwnd, MusicPlayer2SentMsg::CurrentSongLenght, song_length);
+    SendIntMessage(m_hwnd, MusicPlayer2SentMsg::CurrentSongLength, song_length);
+}
+
+void CProcessMsgHelper::SendPlayingStatus()
+{
+    if (m_hwnd == nullptr)
+        return;
+    int playing_status = CPlayer::GetInstance().GetPlayingState2();
+    if (last_playing_status != playing_status)
+        SendIntMessage(m_hwnd, MusicPlayer2SentMsg::PlayingStatus, playing_status);
+    last_playing_status = playing_status;
+}
+
+void CProcessMsgHelper::SendExitMsg()
+{
+    if (m_hwnd == nullptr)
+        return;
+    SendIntMessage(m_hwnd, MusicPlayer2SentMsg::PlayerExit, 0);
 }
 
 void CProcessMsgHelper::TrackChanged()
@@ -133,6 +150,7 @@ void CProcessMsgHelper::PositionChanged()
     SendCurrentLyric();
     SendCurrentLyricPosition();
     SendCurrentPosition();
+    SendPlayingStatus();
 }
 
 void CProcessMsgHelper::ReciveProcessMessage(CWnd* pWnd, COPYDATASTRUCT* pCopyDataStruct)
@@ -150,6 +168,7 @@ void CProcessMsgHelper::ReciveProcessMessage(CWnd* pWnd, COPYDATASTRUCT* pCopyDa
                 //首次收到PlayerInfoRequired消息时发送歌曲信息
                 TrackChanged();
                 PositionChanged();
+                SendAlbumCover();
             }
         }
     }
