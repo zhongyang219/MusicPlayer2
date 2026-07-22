@@ -1,7 +1,12 @@
 name: CI
 # Controls when the action will run.
 # Events list: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
-on: [push, pull_request, workflow_dispatch]
+# on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
 jobs:
   build-x64:
     runs-on: windows-latest
