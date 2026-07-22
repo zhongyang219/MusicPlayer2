@@ -465,6 +465,9 @@
     <Filter Include="功能逻辑类\ProcessMessage">
       <UniqueIdentifier>{0e243445-cf5f-4426-8799-b047885b7a27}</UniqueIdentifier>
     </Filter>
+    <Filter Include="对话框类\OpenUrlDlg">
+      <UniqueIdentifier>{9f59b209-a016-424f-ab17-6c732b5c5bd6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1215,11 +1218,11 @@
     <ClInclude Include="UIEdit.h">
       <Filter>派生的控件类\UIEdit</Filter>
     </ClInclude>
-    <ClInclude Include="OpenUrlDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="ProcessMsgHelper.h">
       <Filter>功能逻辑类\ProcessMessage</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenUrlDlg.h">
+      <Filter>对话框类\OpenUrlDlg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1934,9 +1937,11 @@
     <ClCompile Include="UIEdit.cpp">
       <Filter>派生的控件类\UIEdit</Filter>
     </ClCompile>
-    <ClCompile Include="OpenUrlDlg.cpp" />
     <ClCompile Include="ProcessMsgHelper.cpp">
       <Filter>功能逻辑类\ProcessMessage</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenUrlDlg.cpp">
+      <Filter>对话框类\OpenUrlDlg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
