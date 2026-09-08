@@ -172,7 +172,8 @@ const int EQU_STYLE_TABLE[9][EQU_CH_NUM]		//均衡器预设
 #define UI_LIST_TYPE_FOLDER 1
 #define UI_LIST_TYPE_PLAYLIST 2
 
-#define WM_NEXT_USER_MSG (WM_USER+143)
+#define WM_PLAYLIST_HEADER_DRAGGED (WM_USER+143)
+#define WM_NEXT_USER_MSG (WM_USER+144)
 
 #ifdef _DEBUG
 #define ADD_TO_PLAYLIST_MAX_SIZE 10         //“添加到播放列表”子菜单中项目的最大数量（不能超过40）

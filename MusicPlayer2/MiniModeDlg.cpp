@@ -239,6 +239,7 @@ BOOL CMiniModeDlg::OnInitDialog()
     SetWindowLongW(m_hWnd, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
 
     m_playlist_ctrl.SetFont(&theApp.m_font_set.dlg.GetFont());
+    m_playlist_ctrl.SetColumnLayout(theApp.m_media_lib_setting_data.playlist_column_layout);
 
     //如果使用UI播放列表，则隐藏播放列表控件
     if (m_use_ui_playlist)
