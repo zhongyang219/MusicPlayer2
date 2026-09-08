@@ -123,6 +123,8 @@ BOOL CMediaLibDlg::OnInitDialog()
     m_rating_dlg = new CMediaClassifyDlg(ListItem::ClassificationType::CT_RATING);
     m_all_media_dlg = new CAllMediaDlg(CAllMediaDlg::DT_ALL_MEDIA);
     m_recent_media_dlg = new CAllMediaDlg(CAllMediaDlg::DT_RECENT_MEDIA);
+    m_most_played_dlg = new CAllMediaDlg(CAllMediaDlg::DT_MOST_PLAYED);
+    m_frequently_played_dlg = new CAllMediaDlg(CAllMediaDlg::DT_FREQUENTLY_PLAYED);
     m_folder_explore_dlg = new CFolderExploreDlg();
     //文件夹
     m_path_dlg->Create(IDD_SET_PATH_DIALOG);
@@ -189,6 +191,18 @@ BOOL CMediaLibDlg::OnInitDialog()
     {
         m_recent_media_dlg->Create(IDD_ALL_MEDIA_DIALOG);
         m_tab_ctrl.AddWindow(m_recent_media_dlg, theApp.m_str_table.LoadText(L"TXT_RECENT_PLAYED").c_str(), IconMgr::IconType::IT_History);
+    }
+    //播放次数最多
+    if (isTabShown(MLDI_MOST_PLAYED))
+    {
+        m_most_played_dlg->Create(IDD_ALL_MEDIA_DIALOG);
+        m_tab_ctrl.AddWindow(m_most_played_dlg, theApp.m_str_table.LoadText(L"TXT_MOST_PLAYED").c_str(), IconMgr::IconType::IT_Statistics);
+    }
+    //最近常听
+    if (isTabShown(MLDI_FREQUENTLY_PLAYED))
+    {
+        m_frequently_played_dlg->Create(IDD_ALL_MEDIA_DIALOG);
+        m_tab_ctrl.AddWindow(m_frequently_played_dlg, theApp.m_str_table.LoadText(L"TXT_FREQUENTLY_PLAYED").c_str(), IconMgr::IconType::IT_Favourite);
     }
     //文件夹浏览
     if (isTabShown(MLDI_FOLDER_EXPLORE))
@@ -269,6 +283,8 @@ void CMediaLibDlg::OnDestroy()
     if (m_rating_dlg != nullptr) { m_rating_dlg->DestroyWindow(); delete m_rating_dlg; m_rating_dlg = nullptr; }
     if (m_all_media_dlg != nullptr) { m_all_media_dlg->DestroyWindow(); delete m_all_media_dlg; m_all_media_dlg = nullptr; }
     if (m_recent_media_dlg != nullptr) { m_recent_media_dlg->DestroyWindow(); delete m_recent_media_dlg; m_recent_media_dlg = nullptr; }
+    if (m_most_played_dlg != nullptr) { m_most_played_dlg->DestroyWindow(); delete m_most_played_dlg; m_most_played_dlg = nullptr; }
+    if (m_frequently_played_dlg != nullptr) { m_frequently_played_dlg->DestroyWindow(); delete m_frequently_played_dlg; m_frequently_played_dlg = nullptr; }
     if (m_folder_explore_dlg != nullptr) { m_folder_explore_dlg->DestroyWindow(); delete m_folder_explore_dlg; m_folder_explore_dlg = nullptr; }
 }
 

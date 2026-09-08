@@ -46,6 +46,7 @@ public:
 
     void ClearPlayTime();       //清除播放时间统计数据
     void ClearLastPlayedTime();     //清除上次播放时间
+    void ClearPlayCount();      //清除播放次数统计
 
     // 创建旧媒体库条目的新路径副本（不能用于cue文件）
     void ChangeFilePath(const wstring& file_path, const wstring& new_path);
