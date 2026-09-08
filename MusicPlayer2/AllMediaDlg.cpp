@@ -129,14 +129,34 @@ void CAllMediaDlg::InitListData()
                         break;
                     }
                 }
+                else if (m_type == DT_MOST_PLAYED)   //如果显示播放次数最多的曲目，则跳过播放次数为0的曲目
+                {
+                    if (item.second.play_count == 0)
+                        continue;
+                }
+                else if (m_type == DT_FREQUENTLY_PLAYED)  //如果显示最近常听的曲目
+                {
+                    // 最近常听：最近30天内有播放记录，并且播放次数大于0
+                    if (item.second.play_count == 0 || item.second.last_played_time == 0)
+                        continue;
+                    // 只显示最近30天内播放过的曲目
+                    __int64 time_span = cur_time - item.second.last_played_time;
+                    if (time_span > 30 * 24 * 3600)
+                        continue;
+                }
                 m_list_songs.push_back(item.second);
             }
         });
     std::sort(m_list_songs.begin(), m_list_songs.end(), [&](const SongInfo& a, const SongInfo& b)
     {
-        // 显示所有曲目时默认按标题排序，显示最近曲目时默认按最近播放时间排序
+        // 显示所有曲目时默认按标题排序
+        // 显示最近曲目时默认按最近播放时间排序
+        // 显示播放次数最多时默认按播放次数降序排序
+        // 显示最近常听时默认按播放次数降序排序
         if (m_type == DT_RECENT_MEDIA)
             return a.last_played_time > b.last_played_time;
+        else if (m_type == DT_MOST_PLAYED || m_type == DT_FREQUENTLY_PLAYED)
+            return a.play_count > b.play_count;
         else
             return CCommon::StringCompareInLocalLanguage(a.title, b.title) < 0;
     });
@@ -413,14 +433,14 @@ void CAllMediaDlg::OnHdnItemclickSongList(NMHDR *pNMHDR, LRESULT *pResult)
             switch (phdr->iItem)
             {
             case COL_TITLE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_ARTIST: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_ALBUM: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_TRACK: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_GENRE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_BITRATE: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_YEAR: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_PATH: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
-            case COL_LAST_PLAYED_TIME: sort_mode = ascending ? SM_U_TITLE : SM_D_TITLE; break;
+            case COL_ARTIST: sort_mode = ascending ? SM_U_ARTIST : SM_D_ARTIST; break;
+            case COL_ALBUM: sort_mode = ascending ? SM_U_ALBUM : SM_D_ALBUM; break;
+            case COL_TRACK: sort_mode = ascending ? SM_U_TRACK : SM_D_TRACK; break;
+            case COL_GENRE: sort_mode = ascending ? SM_U_GENRE : SM_D_GENRE; break;
+            case COL_BITRATE: sort_mode = ascending ? SM_U_BITRATE : SM_D_BITRATE; break;
+            case COL_YEAR: sort_mode = ascending ? SM_U_YEAR : SM_D_YEAR; break;
+            case COL_PATH: sort_mode = ascending ? SM_U_PATH : SM_D_PATH; break;
+            case COL_LAST_PLAYED_TIME: sort_mode = ascending ? SM_U_LAST_PLAYED_TIME : SM_D_LAST_PLAYED_TIME; break;
             default: break;
             }
             auto so = CCommon::sort_permutation(list_songs, SongInfo::GetSortFunc(sort_mode));
