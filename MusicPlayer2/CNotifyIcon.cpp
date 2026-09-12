@@ -50,15 +50,15 @@ void CNotifyIcon::OnNotifyIcon(UINT msgId, HWND hMiniMode)
 {
 	if (msgId == WM_LBUTTONUP)
 	{
-		if (hMiniMode != NULL)
+		HWND hWndToToggle = (hMiniMode != NULL) ? hMiniMode : theApp.m_pMainWnd->GetSafeHwnd();
+		if (::IsWindowVisible(hWndToToggle))
 		{
-			::ShowWindow(hMiniMode, SW_RESTORE);
-			::SetForegroundWindow(hMiniMode);
+			::ShowWindow(hWndToToggle, SW_HIDE);
 		}
 		else
 		{
-			theApp.m_pMainWnd->ShowWindow(SW_RESTORE);
-			theApp.m_pMainWnd->SetForegroundWindow();
+			::ShowWindow(hWndToToggle, SW_RESTORE);
+			::SetForegroundWindow(hWndToToggle);
 		}
 
 	}
