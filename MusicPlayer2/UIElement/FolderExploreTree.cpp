@@ -5,6 +5,7 @@
 #include "UserUi.h"
 #include "TracksList.h"
 #include "TinyXml2Helper.h"
+#include "Player.h"
 
 std::shared_ptr<UiElement::TestTree::Node> UiElement::FolderExploreTree::CreateNode(std::wstring name, int song_num, std::shared_ptr<Node> parent)
 {
@@ -206,6 +207,22 @@ void UiElement::FolderExploreTree::OnSelectionChanged()
             track_list->ClearListItem();
         }
     }
+}
+
+bool UiElement::FolderExploreTree::IsHighlightRow(int row)
+{
+    if (CPlayer::GetInstance().IsFolderMode())
+    {
+        auto selected_node = GetNodeByIndex(row);
+        if (selected_node != nullptr)
+        {
+            std::wstring folder_path = GetNodePath(selected_node);
+            if (!folder_path.empty() && folder_path.back() != L'\\')
+                folder_path.push_back(L'\\');
+            return folder_path == CPlayer::GetInstance().GetCurrentDir2();
+        }
+    }
+    return false;
 }
 
 std::vector<std::shared_ptr<UiElement::TestTree::Node>>& UiElement::FolderExploreTree::GetRootNodes()

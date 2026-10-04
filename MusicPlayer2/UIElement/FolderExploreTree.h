@@ -43,6 +43,7 @@ namespace UiElement
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
         virtual bool IsMultipleSelectionEnable() override;
         virtual void OnSelectionChanged() override;
+        virtual bool IsHighlightRow(int row) override;
 
         virtual std::vector<std::shared_ptr<Node>>& GetRootNodes() override;
 
