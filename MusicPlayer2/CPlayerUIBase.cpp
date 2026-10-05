@@ -12,6 +12,7 @@
 #include "UIElement/NavigationBar.h"
 #include "UIElement/SearchBox.h"
 #include "PlayerFormulaHelper.h"
+#include "WinVersionHelper.h"
 
 bool CPlayerUIBase::m_show_ui_tip_info = false;
 
@@ -24,7 +25,6 @@ CPlayerUIBase::CPlayerUIBase(UIData& ui_data, CWnd* pMainWnd)
 
 CPlayerUIBase::~CPlayerUIBase()
 {
-    m_mem_bitmap_static.DeleteObject();
 }
 
 void CPlayerUIBase::Init(CDC* pDC)
@@ -40,56 +40,20 @@ void CPlayerUIBase::Init(CDC* pDC)
     m_first_draw = true;
 }
 
-void CPlayerUIBase::DrawInfo(bool reset)
+void CPlayerUIBase::DrawInfo(bool reset, CRgn* draw_rgn)
 {
     PreDrawInfo();
 
-#if 0
     //双缓冲绘图
     {
-        //CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
-        CDC memDC;
-        CBitmap memBitmap;
-        CBitmap* pOldBit;
-        memDC.CreateCompatibleDC(NULL);
-        if (m_mem_bitmap_static.GetSafeHandle() == NULL || reset)
-        {
-            memBitmap.CreateCompatibleBitmap(m_pDC, m_draw_rect.Width(), m_draw_rect.Height());
-            pOldBit = memDC.SelectObject(&memBitmap);
-            m_draw.SetDC(&memDC);     //将m_draw中的绘图DC设置为缓冲的DC
-            m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
-            //绘制背景
-            DrawBackground();
-            m_mem_bitmap_static.DeleteObject();
-            //bool b = m_mem_bitmap_static.Attach(CDrawCommon::CopyBitmap(memBitmap));
-            CDrawCommon::CopyBitmap(m_mem_bitmap_static, memBitmap);
-            CDrawCommon::SaveBitmap(memBitmap, L"D:\\Temp\\before.bmp");
-            CDrawCommon::SaveBitmap(m_mem_bitmap_static, L"D:\\Temp\\after.bmp");
-        }
-        else
-        {
-            //memBitmap.Attach(CDrawCommon::CopyBitmap(m_mem_bitmap_static));
-            CDrawCommon::CopyBitmap(memBitmap, m_mem_bitmap_static);
-            pOldBit = memDC.SelectObject(&memBitmap);
-            m_draw.SetDC(&memDC);     //将m_draw中的绘图DC设置为缓冲的DC
-            m_draw.SetFont(&theApp.m_font_set.normal.GetFont(theApp.m_ui_data.full_screen));
-        }
-        //绘制界面中其他信息
-        _DrawInfo(reset);
-        ////绘制背景
-        //DrawBackground();
-        m_pDC->BitBlt(m_draw_rect.left, m_draw_rect.top, m_draw_rect.Width(), m_draw_rect.Height(), &memDC, 0, 0, SRCCOPY);
-        memDC.SelectObject(pOldBit);
-        memBitmap.DeleteObject();
-        memDC.DeleteDC();
-    }
-
-#else
-    //双缓冲绘图
-    {
-        CDrawDoubleBuffer drawDoubleBuffer(m_pDC, m_draw_rect);
+        CDC* pDC = m_pDC;
+        //如果要跳过下一帧，则将绘图DC设为空，阻止绘图
+        if (m_skip_next_frame)
+            pDC = nullptr;
+        m_skip_next_frame = false;
+        CDrawDoubleBuffer drawDoubleBuffer(pDC, m_draw_rect, draw_rgn);
         m_draw.SetDC(drawDoubleBuffer.GetMemDC());  //将m_draw中的绘图DC设置为缓冲的DC
-        m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(theApp.m_ui_data.full_screen));
+        m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(IsDrawLargeIcon()));
 
         //绘制背景
         DrawBackground();
@@ -180,8 +144,6 @@ void CPlayerUIBase::DrawInfo(bool reset)
         }
     }
 
-#endif
-
     if (m_first_draw)
     {
         AddToolTips();
@@ -230,9 +192,6 @@ bool CPlayerUIBase::RButtonUp(CPoint point)
     if (!m_draw_rect.PtInRect(point))
         return false;
 
-    if (m_buttons[BTN_VOLUME].rect.PtInRect(point) == FALSE)
-        m_show_volume_adj = false;
-
     for (auto& btn : m_buttons)
     {
         if (btn.second.rect.PtInRect(point))
@@ -246,8 +205,12 @@ bool CPlayerUIBase::RButtonUp(CPoint point)
     GetCursorPos(&point1);
 
     // 其他区域显示主界面区域右键菜单
-    theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
-    return true;
+    if (m_ui_data.show_default_context_menu)
+    {
+        theApp.m_menu_mgr.GetMenu(MenuMgr::MainAreaMenu)->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point1.x, point1.y, theApp.m_pMainWnd);
+        return true;
+    }
+    return false;
 }
 
 bool CPlayerUIBase::MouseMove(CPoint point)
@@ -277,11 +240,6 @@ bool CPlayerUIBase::MouseMove(CPoint point)
 
 bool CPlayerUIBase::LButtonUp(CPoint point)
 {
-    if (!m_show_volume_adj)     //如果设有显示音量调整按钮，则点击音量区域就显示音量调整按钮
-        m_show_volume_adj = (m_buttons[BTN_VOLUME].rect.PtInRect(point) != FALSE);
-    else        //如果已经显示了音量调整按钮，则点击音量调整时保持音量调整按钮的显示
-        m_show_volume_adj = (m_buttons[BTN_VOLUME_UP].rect.PtInRect(point) || m_buttons[BTN_VOLUME_DOWN].rect.PtInRect(point));
-
     auto showMenu = [](const CRect& rect, CMenu* pMenu)
         {
             CPoint point;
@@ -448,22 +406,6 @@ bool CPlayerUIBase::ButtonClicked(BtnKey btn_type, const UIButton& btn)
     case BTN_LOCATE_TO_CURRENT:
         theApp.m_pMainWnd->SendMessage(WM_COMMAND, ID_LOCATE_TO_CURRENT);
         return true;
-
-    case BTN_VOLUME_UP:
-        if (m_show_volume_adj)
-        {
-            CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, theApp.m_nc_setting_data.volum_step);
-            return true;
-        }
-        break;
-
-    case BTN_VOLUME_DOWN:
-        if (m_show_volume_adj)
-        {
-            CPlayer::GetInstance().MusicControl(Command::VOLUME_ADJ, -theApp.m_nc_setting_data.volum_step);
-            return true;
-        }
-        break;
 
     return true;
 
@@ -941,7 +883,7 @@ void CPlayerUIBase::DrawBackground()
     draw_rect.MoveToXY(0, 0);
 
     //绘制背景
-    if (theApp.m_app_setting_data.enable_background)
+    if (theApp.m_app_setting_data.enable_background && m_ui_data.enable_background)
     {
         if (CPlayer::GetInstance().AlbumCoverExist() && theApp.m_app_setting_data.album_cover_as_background)
         {
@@ -1123,18 +1065,18 @@ void CPlayerUIBase::DrawRectangle(const CRect& rect, bool no_corner_radius, bool
     }
 }
 
-void CPlayerUIBase::DrawRectangle(CRect rect, COLORREF color)
+void CPlayerUIBase::DrawRectangle(CRect rect, COLORREF color, BYTE alpha)
 {
-    BYTE alpha;
-    if (IsDrawBackgroundAlpha())
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-    else
-        alpha = 255;
     if (!theApp.m_app_setting_data.button_round_corners)
         m_draw.FillAlphaRect(rect, color, alpha, true);
     else
         m_draw.DrawRoundRect(rect, color, CalculateRoundRectRadius(rect), alpha);
+}
 
+void CPlayerUIBase::DrawRectangle(CRect rect, COLORREF color)
+{
+    BYTE alpha = GetDefaultAlpha();
+    DrawRectangle(rect, color, alpha);
 }
 
 void CPlayerUIBase::DrawBeatIndicator(CRect rect)
@@ -1180,7 +1122,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& b
     DrawUIButton(rect, btn, GetBtnIconType(key_type), big_icon, text, font_size, checked);
 }
 
-void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon, const std::wstring& text, int font_size, bool checked)
+void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon, const std::wstring& text, int font_size, bool checked, Alignment align, bool btn_background)
 {
     btn.rect = rect;
 
@@ -1195,7 +1137,7 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
     bool is_close_btn = (&btn == &m_buttons[BTN_CLOSE] || &btn == &m_buttons[BTN_APP_CLOSE]);
 
     //绘制背景
-    if (btn.enable && (btn.pressed || btn.hover || checked))
+    if (btn.enable && (btn.pressed || btn.hover || checked || btn_background))
     {
         BYTE alpha;
         if (!is_close_btn && IsDrawBackgroundAlpha())
@@ -1218,6 +1160,8 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
                 back_color = m_colors.color_button_hover;
             else if (checked)
                 back_color = m_colors.color_button_checked;
+            else
+                back_color = m_colors.color_button_back;
         }
         if (!theApp.m_app_setting_data.button_round_corners)
             m_draw.FillAlphaRect(rc_tmp, back_color, alpha, true);
@@ -1226,12 +1170,27 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
     }
 
     CRect rect_icon{ rc_tmp };
-    if (!text.empty())
-        rect_icon.right = rect_icon.left + rect_icon.Height();      //如果要显示文本，则图标显示矩形左侧的正方形区域
+    if (icon_type != IconMgr::IT_NO_ICON)
+    {
+        //计算图标矩形区域
+        if (!text.empty())
+        {
+            //如果要显示文本，则图标和文本一起居中显示
+            int content_width = DPI(32) + m_draw.GetTextExtent(text.c_str()).cx;    //图标和文本的宽度（左侧4px+图标宽度16px+图标和文本间距8px+右侧4px+文本宽度）
+            if (align == Alignment::CENTER)
+                rect_icon.left += (rc_tmp.Width() - content_width) / 2;
+            else if (align == Alignment::RIGHT)
+                rect_icon.left += (rc_tmp.Width() - content_width);
+            else
+                rect_icon.left += (rc_tmp.Height() - DPI(24)) / 2;
+            rect_icon.right = rect_icon.left + DPI(24);
+        }
 
-    IconMgr::IconStyle icon_style = (is_close_btn && (btn.pressed || btn.hover)) ? IconMgr::IconStyle::IS_OutlinedLight : IconMgr::IconStyle::IS_Auto;
-    IconMgr::IconSize icon_size = big_icon ? IconMgr::IconSize::IS_DPI_20 : IconMgr::IconSize::IS_DPI_16;
-    DrawUiIcon(rect_icon, icon_type, icon_style, icon_size);
+        //绘制图标
+        IconMgr::IconStyle icon_style = (is_close_btn && (btn.pressed || btn.hover)) ? IconMgr::IconStyle::IS_OutlinedLight : IconMgr::IconStyle::IS_Auto;
+        IconMgr::IconSize icon_size = big_icon ? IconMgr::IconSize::IS_DPI_20 : IconMgr::IconSize::IS_DPI_16;
+        DrawUiIcon(rect_icon, icon_type, icon_style, icon_size);
+    }
 
     //绘制文本
     if (!text.empty())
@@ -1239,10 +1198,15 @@ void CPlayerUIBase::DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::Icon
         UiFontGuard set_font(this, font_size);
 
         CRect rect_text{ rc_tmp };
-        rect_text.left = rect_icon.right;
-        int right_space = (rc_tmp.Height() - DPI(16)) / 2;
-        rect_text.right -= right_space;
-        m_draw.DrawWindowText(rect_text, text.c_str(), m_colors.color_text, Alignment::LEFT, true);
+        if (icon_type != IconMgr::IT_NO_ICON)
+            rect_text.left = rect_icon.right;
+        COLORREF text_color = m_colors.color_text;
+        if (!btn.enable)
+            text_color = m_colors.color_text_disabled;
+        Alignment text_alignment = align;
+        if (icon_type != IconMgr::IT_NO_ICON)   //有图标时，图标和文本一起跟随参数的对应方式，文本的对齐方式为左对齐
+            text_alignment = Alignment::LEFT;
+        m_draw.DrawWindowText(rect_text, text.c_str(), text_color, text_alignment, true);
 
     }
 }
@@ -1314,9 +1278,19 @@ void CPlayerUIBase::DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool
     }
     else
     {
-        m_draw.DrawWindowText(rect, text, GRAY(200), Alignment::CENTER);
+        m_draw.DrawWindowText(rect, text, m_colors.color_text_disabled, Alignment::CENTER);
     }
     btn.rect = rect;
+}
+
+BYTE CPlayerUIBase::GetDefaultAlpha() const
+{
+    BYTE alpha;
+    if (IsDrawBackgroundAlpha())
+        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    else
+        alpha = 255;
+    return alpha;
 }
 
 void CPlayerUIBase::AddMouseToolTip(int btn, LPCTSTR str)
@@ -1417,7 +1391,7 @@ void CPlayerUIBase::SetSongInfoToolTipText()
 int CPlayerUIBase::Margin() const
 {
     int margin = m_layout.margin;
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
         margin = static_cast<int>(margin * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR * 1.5);
 
     return margin;
@@ -1430,7 +1404,7 @@ int CPlayerUIBase::EdgeMargin(bool x) const
     此计算方法可以确保边距占屏幕宽度的比例与屏幕宽度的英寸值成正比，即界面看起来越空旷，外侧边距就越大
     最后取以上值和theApp.DPI(40)两者中较大的值。
     */
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
     {
         int draw_size = (x ? m_draw_rect.Width() : m_draw_rect.Height());
         int margin = draw_size * draw_size / theApp.GetDPI() / 300;
@@ -1507,17 +1481,17 @@ bool CPlayerUIBase::PointInMenubarArea(CPoint point) const
 
 bool CPlayerUIBase::IsDrawBackgroundAlpha() const
 {
-    return theApp.m_app_setting_data.enable_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
+    return theApp.m_app_setting_data.enable_background && m_ui_data.enable_background && (CPlayer::GetInstance().AlbumCoverExist() || !m_ui_data.default_background.IsNull());
 }
 
 bool CPlayerUIBase::IsDrawStatusBar() const
 {
-    return CPlayerUIHelper::IsDrawStatusBar();
+    return m_ui_data.enable_statusbar && CPlayerUIHelper::IsDrawStatusBar();
 }
 
 bool CPlayerUIBase::IsDrawTitleBar() const
 {
-    return !theApp.m_app_setting_data.show_window_frame && !m_ui_data.full_screen;
+    return m_ui_data.enable_titlebar && !theApp.m_app_setting_data.show_window_frame && !m_ui_data.full_screen;
 }
 
 bool CPlayerUIBase::IsDrawMenuBar() const
@@ -1528,15 +1502,25 @@ bool CPlayerUIBase::IsDrawMenuBar() const
 wstring CPlayerUIBase::GetDisplayFormatString()
 {
     wstring result;
-    int chans = CPlayer::GetInstance().GetChannels();
-    int freq = CPlayer::GetInstance().GetFreq();
-    wstring chans_str = CSongInfoHelper::GetChannelsString(static_cast<BYTE>(chans));
-    wchar_t buff[64];
-    if (!CPlayer::GetInstance().IsMidi())
-        swprintf_s(buff, L"%s %.1fkHz %dkbps %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, CPlayer::GetInstance().GetSafeCurrentSongInfo().bitrate, chans_str.c_str());
-    else
-        swprintf_s(buff, L"%s %.1fkHz %s", CPlayer::GetInstance().GetCurrentFileType().c_str(), freq / 1000.0f, chans_str.c_str());
-    result = buff;
+    const SongInfo& cur_song{ CPlayer::GetInstance().GetSafeCurrentSongInfo() };
+    wstring chans_str = CSongInfoHelper::GetChannelsString(static_cast<BYTE>(cur_song.channels));
+    result += CPlayer::GetInstance().GetCurrentFileType().c_str();
+    wchar_t buff[64]{};
+    if (cur_song.freq != 0)
+    {
+        swprintf_s(buff, L" %.1fkHz", cur_song.freq / 1000.0f);
+        result += buff;
+    }
+    if (cur_song.bitrate != 0)
+    {
+        swprintf_s(buff, L" %dkbps", cur_song.bitrate);
+        result += buff;
+    }
+    if (cur_song.channels != 0)
+    {
+        result += L' ';
+        result += chans_str;
+    }
     if (CPlayer::GetInstance().IsMidi())
     {
         const MidiInfo& midi_info{ CPlayer::GetInstance().GetMidiInfo() };
@@ -1562,7 +1546,7 @@ CString CPlayerUIBase::GetVolumeTooltipString()
 
 int CPlayerUIBase::DPI(int pixel) const
 {
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     else
         return theApp.DPI(pixel);
@@ -1570,7 +1554,7 @@ int CPlayerUIBase::DPI(int pixel) const
 
 int CPlayerUIBase::DPI(double pixel) const
 {
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
         return static_cast<int>(theApp.DPI(pixel) * CONSTVAL::FULL_SCREEN_ZOOM_FACTOR);
     else
         return theApp.DPI(pixel);
@@ -1579,7 +1563,7 @@ int CPlayerUIBase::DPI(double pixel) const
 double CPlayerUIBase::DPIDouble(double pixel)
 {
     double rtn_val = static_cast<double>(theApp.GetDPI()) * pixel / 96;
-    if (m_ui_data.full_screen && IsDrawLargeIcon())
+    if (IsDrawLargeIcon())
         rtn_val *= CONSTVAL::FULL_SCREEN_ZOOM_FACTOR;
     return rtn_val;
 }
@@ -1612,120 +1596,12 @@ int CPlayerUIBase::CalculateRoundRectRadius(const CRect& rect)
 
 bool CPlayerUIBase::IsDrawLargeIcon() const
 {
-    return theApp.m_ui_data.full_screen;
+    return m_ui_data.full_screen;
 }
 
 bool CPlayerUIBase::IsMiniMode() const
 {
     return dynamic_cast<const CMiniModeUserUi*>(this) != nullptr;
-}
-
-void CPlayerUIBase::DrawVolumnAdjBtn()
-{
-    if (m_show_volume_adj)
-    {
-        CRect& volume_down_rect = m_buttons[BTN_VOLUME_DOWN].rect;
-        CRect& volume_up_rect = m_buttons[BTN_VOLUME_UP].rect;
-
-        //判断音量调整按钮是否会超出界面之外，如果是，则将其移动至界面内
-        int x_offset{}, y_offset{};     //移动的x和y偏移量
-        CRect rect_text;                //音量文本的区域
-        CString volume_str{};
-        if (!m_show_volume_text)
-        {
-            //如果不显示音量文本，则在音量调整按钮旁边显示音量。在这里计算文本的位置
-            rect_text = m_buttons[BTN_VOLUME_UP].rect;
-            if (CPlayer::GetInstance().GetVolume() <= 0)
-                volume_str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE").c_str();
-            else
-                volume_str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
-            int width{ m_draw.GetTextExtent(volume_str).cx };
-            rect_text.left = rect_text.right + DPI(2);
-            rect_text.right = rect_text.left + width;
-
-            if (rect_text.right > m_draw_rect.right)
-                x_offset = m_draw_rect.right - rect_text.right;
-            if (rect_text.bottom > m_draw_rect.bottom)
-                y_offset = m_draw_rect.bottom - rect_text.bottom;
-        }
-        else
-        {
-            if (volume_up_rect.right > m_draw_rect.right)
-                x_offset = m_draw_rect.right - volume_up_rect.right;
-            if (volume_up_rect.bottom > m_draw_rect.bottom)
-                y_offset = m_draw_rect.bottom - volume_up_rect.bottom;
-        }
-
-        if (x_offset != 0)
-        {
-            volume_up_rect.MoveToX(volume_up_rect.left + x_offset);
-            volume_down_rect.MoveToX(volume_down_rect.left + x_offset);
-            rect_text.MoveToX(rect_text.left + x_offset);
-        }
-        if (y_offset != 0)
-        {
-            volume_up_rect.MoveToY(volume_up_rect.top + y_offset);
-            volume_down_rect.MoveToY(volume_down_rect.top + y_offset);
-            rect_text.MoveToY(rect_text.top + y_offset);
-        }
-
-        BYTE alpha;
-        if (IsDrawBackgroundAlpha())
-            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
-        else
-            alpha = 255;
-
-        COLORREF btn_up_back_color, btn_down_back_color;
-
-        if (m_buttons[BTN_VOLUME_UP].pressed && m_buttons[BTN_VOLUME_UP].hover)
-            btn_up_back_color = m_colors.color_button_pressed;
-        else if (m_buttons[BTN_VOLUME_UP].hover)
-            btn_up_back_color = m_colors.color_button_hover;
-        else
-            btn_up_back_color = m_colors.color_text_2;
-
-        if (m_buttons[BTN_VOLUME_DOWN].pressed && m_buttons[BTN_VOLUME_DOWN].hover)
-            btn_down_back_color = m_colors.color_button_pressed;
-        else if (m_buttons[BTN_VOLUME_DOWN].hover)
-            btn_down_back_color = m_colors.color_button_hover;
-        else
-            btn_down_back_color = m_colors.color_text_2;
-
-        if (!theApp.m_app_setting_data.button_round_corners)
-        {
-            m_draw.FillAlphaRect(volume_up_rect, btn_up_back_color, alpha);
-            m_draw.FillAlphaRect(volume_down_rect, btn_down_back_color, alpha);
-        }
-        else
-        {
-            CRect rc_buttons{ volume_up_rect | volume_down_rect };
-            DrawAreaGuard guard(&m_draw, rc_buttons);
-            m_draw.DrawRoundRect(rc_buttons, m_colors.color_text_2, CalculateRoundRectRadius(rc_buttons), alpha);
-            if (m_buttons[BTN_VOLUME_UP].pressed || m_buttons[BTN_VOLUME_UP].hover)
-                m_draw.DrawRoundRect(volume_up_rect, btn_up_back_color, CalculateRoundRectRadius(volume_up_rect), alpha);
-            if (m_buttons[BTN_VOLUME_DOWN].pressed || m_buttons[BTN_VOLUME_DOWN].hover)
-                m_draw.DrawRoundRect(volume_down_rect, btn_down_back_color, CalculateRoundRectRadius(volume_down_rect), alpha);
-        }
-
-        if (m_buttons[BTN_VOLUME_DOWN].pressed)
-            volume_down_rect.MoveToXY(volume_down_rect.left + theApp.DPI(1), volume_down_rect.top + theApp.DPI(1));
-        if (m_buttons[BTN_VOLUME_UP].pressed)
-            volume_up_rect.MoveToXY(volume_up_rect.left + theApp.DPI(1), volume_up_rect.top + theApp.DPI(1));
-
-        m_draw.DrawWindowText(volume_down_rect, L"-", ColorTable::WHITE, Alignment::CENTER);
-        m_draw.DrawWindowText(volume_up_rect, L"+", ColorTable::WHITE, Alignment::CENTER);
-
-        //如果不显示音量文本且显示了音量调整按钮，则在按钮旁边显示音量
-        if (!m_show_volume_text)
-        {
-            m_draw.DrawWindowText(rect_text, volume_str, m_colors.color_text);
-        }
-    }
-    else
-    {
-        m_buttons[BTN_VOLUME_UP].rect = CRect();
-        m_buttons[BTN_VOLUME_DOWN].rect = CRect();
-    }
 }
 
 CRect CPlayerUIBase::DrawProgressBar(CRect rect, bool play_time_both_side)
@@ -1797,12 +1673,22 @@ CRect CPlayerUIBase::DrawProgess(CRect rect)
     m_draw.FillAlphaRect(played_rect, m_colors.color_spectrum, alpha);
 
     //绘制AB重复的标记
+    DrawABRepeat(rect);
+
+    //进度条能响应鼠标消息的区域（上下各增加3像素）
+    CRect progress_rect = rect;
+    progress_rect.InflateRect(0, DPI(3));
+    return progress_rect;
+}
+
+void CPlayerUIBase::DrawABRepeat(CRect rect)
+{
     auto ab_repeat_mode = CPlayer::GetInstance().GetABRepeatMode();
     if (ab_repeat_mode == CPlayer::AM_A_SELECTED || ab_repeat_mode == CPlayer::AM_AB_REPEAT)
     {
         CFont* pOldFont = m_draw.GetFont();
         //设置字体
-        m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));      //AB重复使用小一号字体，即播放时间的字体
+        m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(IsDrawLargeIcon()));      //AB重复使用小一号字体，即播放时间的字体
 
         double a_point_progres = static_cast<double>(CPlayer::GetInstance().GetARepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
         double b_point_progres = static_cast<double>(CPlayer::GetInstance().GetBRepeatPosition().toInt()) / CPlayer::GetInstance().GetSongLength();
@@ -1832,11 +1718,6 @@ CRect CPlayerUIBase::DrawProgess(CRect rect)
         //恢复字体
         m_draw.SetFont(pOldFont);
     }
-
-    //进度条能响应鼠标消息的区域（上下各增加3像素）
-    CRect progress_rect = rect;
-    progress_rect.InflateRect(0, DPI(3));
-    return progress_rect;
 }
 
 void CPlayerUIBase::DrawTopRightIcons()
@@ -1948,7 +1829,7 @@ void CPlayerUIBase::DrawCurrentTime()
     rc_tmp.left = rc_tmp.right - size.cx;
     m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(m_ui_data.full_screen));
     m_draw.DrawWindowText(rc_tmp, buff, m_colors.color_text);
-    m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(theApp.m_ui_data.full_screen));
+    m_draw.SetFont(&theApp.m_font_set.GetFontBySize(9).GetFont(IsDrawLargeIcon()));
 }
 
 void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
@@ -1972,7 +1853,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         CRect rc_fps{ rect };
         rc_fps.right = rect.right - DPI(4);
         rc_fps.left = rc_fps.right - DPI(40);
-        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));
+        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(IsDrawLargeIcon()));
         CString str_info;
         str_info.Format(_T("%dFPS"), theApp.m_fps);
         m_draw.DrawWindowText(rc_fps, str_info, m_colors.color_text, Alignment::RIGHT);
@@ -1994,7 +1875,7 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
         //绘制进度右侧的进度百分比
         CRect rc_percent{ rect };
         rc_percent.left = rc_percent.right - DPI(32);
-        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(theApp.m_ui_data.full_screen));
+        CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(8).GetFont(IsDrawLargeIcon()));
         CString str_info;
         str_info.Format(_T("%d%%"), progress_percent);
         m_draw.DrawWindowText(rc_percent, str_info, m_colors.color_text);
@@ -2116,19 +1997,22 @@ void CPlayerUIBase::DrawStatusBar(CRect rect, bool reset)
 
 void CPlayerUIBase::DrawTitleBar(CRect rect)
 {
-    //填充标题栏背景
-    bool draw_background{ IsDrawBackgroundAlpha() };
-    //绘制背景
-    BYTE alpha;
-    if (theApp.m_app_setting_data.dark_mode)
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
-    else
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    if (theApp.m_app_setting_data.show_titlebar_background)
+    {
+        //填充标题栏背景
+        bool draw_background{ IsDrawBackgroundAlpha() };
+        //绘制背景
+        BYTE alpha;
+        if (theApp.m_app_setting_data.dark_mode)
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+        else
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 
-    if (draw_background)
-        m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
-    else
-        m_draw.FillRect(rect, m_colors.color_control_bar_back);
+        if (draw_background)
+            m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
+        else
+            m_draw.FillRect(rect, m_colors.color_control_bar_back);
+    }
 
     CRect rect_temp = rect;
     //绘制左侧图标
@@ -2261,14 +2145,6 @@ CString CPlayerUIBase::GetCmdShortcutKeyForTooltips(UINT id)
     return CString();
 }
 
-CRect CPlayerUIBase::GetVolumeRect() const
-{
-    auto iter = m_buttons.find(BTN_VOLUME);
-    if (iter != m_buttons.end())
-        return iter->second.rect;
-    return CRect();
-}
-
 CRect CPlayerUIBase::GetDrawRect() const
 {
     CRect draw_rect = m_draw_rect;
@@ -2302,9 +2178,10 @@ CRect CPlayerUIBase::GetAppIconRect() const
     return m_app_icon_rect;
 }
 
-void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
+bool CPlayerUIBase::ReplaceUiStringRes(wstring& str)
 {
     size_t index{};
+    bool replaced{ false };
     while ((index = str.find(L"%(", index)) != wstring::npos)
     {
         size_t right_bracket_index = str.find(L')', index + 2);
@@ -2318,9 +2195,11 @@ void CPlayerUIBase::ReplaceUiStringRes(wstring& str)
             if (value_str == StrTable::error_str)   // LoadText内部已记录错误日志
                 break;
             str.replace(index, right_bracket_index - index + 1, value_str);
+            replaced = true;
         }
         index = right_bracket_index + 1;
     }
+    return replaced;
 }
 
 void CPlayerUIBase::DrawAlbumCover(CRect rect)
@@ -2421,81 +2300,11 @@ void CPlayerUIBase::DrawAlbumCoverWithInfo(CRect rect)
         str_title = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetFileName();
     else
         str_title = CPlayer::GetInstance().GetSafeCurrentSongInfo().GetTitle();
-    CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(12).GetFont(theApp.m_ui_data.full_screen));
+    CFont* pOldFont = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(12).GetFont(IsDrawLargeIcon()));
     static CDrawCommon::ScrollInfo scroll_info_title;
     m_draw.DrawScrollText(rect_title, str_title.c_str(), text_color, GetScrollTextPixel(true), false, scroll_info_title);
     m_draw.SetFont(pOldFont);
 
-}
-
-void CPlayerUIBase::DrawVolumeButton(CRect rect, bool adj_btn_top, bool show_text)
-{
-    m_show_volume_text = show_text;
-
-    auto& btn{ m_buttons[BTN_VOLUME] };
-    if (btn.pressed)
-        rect.MoveToXY(rect.left + theApp.DPI(1), rect.top + theApp.DPI(1));
-
-    DrawAreaGuard guard(&m_draw, rect);
-    //绘制背景
-    //if (btn.pressed || btn.hover)
-    //{
-    //    CRect rect_back{ rect };
-    //    rect_back.DeflateRect(DPI(2), DPI(2));
-    //    BYTE alpha;
-    //    if (IsDrawBackgroundAlpha())
-    //        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-    //    else
-    //        alpha = 255;
-    //    COLORREF back_color{};
-    //        if (btn.pressed)
-    //            back_color = m_colors.color_button_pressed;
-    //        else
-    //            back_color = m_colors.color_button_hover;
-    //    if (!theApp.m_app_setting_data.button_round_corners)
-    //        m_draw.FillAlphaRect(rect_back, back_color, alpha);
-    //    else
-    //        m_draw.DrawRoundRect(rect_back, back_color, theApp.DPI(3), alpha);
-    //}
-
-    //绘制图标
-    CRect rect_icon{ rect };
-    rect_icon.right = rect_icon.left + rect_icon.Height();
-    DrawUiIcon(rect_icon, GetBtnIconType(BTN_VOLUME));
-
-    //绘制文本
-    if (show_text && rect_icon.right < rect.right)
-    {
-        CRect rect_text{ rect };
-        rect_text.left = rect_icon.right;
-        CString str;
-        if (CPlayer::GetInstance().GetVolume() <= 0)
-            str = theApp.m_str_table.LoadText(L"UI_TXT_VOLUME_MUTE").c_str();
-        else
-            str.Format(_T("%d%%"), CPlayer::GetInstance().GetVolume());
-        if (m_buttons[BTN_VOLUME].hover)        //鼠标指向音量区域时，以另外一种颜色显示
-            m_draw.DrawWindowText(rect_text, str, m_colors.color_text_heighlight);
-        else
-            m_draw.DrawWindowText(rect_text, str, m_colors.color_text);
-    }
-    //设置音量调整按钮的位置
-    CRect rc_tmp = rect;
-    rc_tmp.bottom = rc_tmp.top + DPI(24);
-    m_buttons[BTN_VOLUME].rect = rc_tmp;
-    m_buttons[BTN_VOLUME].rect.DeflateRect(0, DPI(4));
-    m_buttons[BTN_VOLUME_DOWN].rect = m_buttons[BTN_VOLUME].rect;
-    m_buttons[BTN_VOLUME_DOWN].rect.bottom += DPI(4);
-    if (adj_btn_top)
-    {
-        m_buttons[BTN_VOLUME_DOWN].rect.MoveToY(m_buttons[BTN_VOLUME].rect.top - m_buttons[BTN_VOLUME_DOWN].rect.Height());
-    }
-    else
-    {
-        m_buttons[BTN_VOLUME_DOWN].rect.MoveToY(m_buttons[BTN_VOLUME].rect.bottom);
-    }
-    m_buttons[BTN_VOLUME_DOWN].rect.right = m_buttons[BTN_VOLUME].rect.left + DPI(27);      //设置单个音量调整按钮的宽度
-    m_buttons[BTN_VOLUME_UP].rect = m_buttons[BTN_VOLUME_DOWN].rect;
-    m_buttons[BTN_VOLUME_UP].rect.MoveToX(m_buttons[BTN_VOLUME_DOWN].rect.right);
 }
 
 void CPlayerUIBase::DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background, bool show_song_info)
@@ -2528,55 +2337,6 @@ void CPlayerUIBase::DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_fo
     m_draw.DrawLryicCommon(rect, theApp.m_lyric_setting_data.lyric_align, show_song_info);
 }
 
-void CPlayerUIBase::DrawCurrentPlaylistIndicator(CRect rect, UiElement::PlaylistIndicator* playlist_indicator)
-{
-    // 此m_list_cache为UI线程缓存当前列表，只有at(0)是有效的
-    ASSERT(playlist_indicator->m_list_cache.size() == 1);
-    const ListItem& list_item = playlist_indicator->m_list_cache.at(0);
-
-    IconMgr::IconType icon_type = list_item.GetTypeIcon();
-    wstring str = list_item.GetTypeDisplayName();
-    //绘制图标
-    CRect rect_icon{ rect };
-    rect_icon.right = rect_icon.left + DPI(26);
-    DrawUiIcon(rect_icon, icon_type);
-    //设置字体
-    UiFontGuard set_font(this, playlist_indicator->font_size);
-    //绘制文本
-    CRect rect_text{ rect };
-    rect_text.left = rect_icon.right;
-    rect_text.right = rect_text.left + m_draw.GetTextExtent(str.c_str()).cx;
-    m_draw.DrawWindowText(rect_text, str.c_str(), m_colors.color_text, Alignment::LEFT, true);
-    //绘制菜单按钮
-    CRect menu_btn_rect{ rect };
-    menu_btn_rect.left = rect.right - DPI(26);
-    const int icon_size{ (std::min)(DPI(24), rect.Height()) };
-    CRect menu_btn_icon_rect = CDrawCommon::CalculateCenterIconRect(menu_btn_rect, icon_size);
-    DrawUIButton(menu_btn_icon_rect, playlist_indicator->btn_menu, IconMgr::IconType::IT_Menu);
-    //绘制当前播放列表名称
-    CRect rect_name{ rect };
-    rect_name.left = rect_text.right + DPI(8);
-    rect_name.right = menu_btn_rect.left - DPI(4);
-    BYTE alpha{ 255 };
-    if (IsDrawBackgroundAlpha())
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
-    if (theApp.m_app_setting_data.button_round_corners)
-        m_draw.DrawRoundRect(rect_name, m_colors.color_control_bar_back, DPI(4), alpha);
-    else
-        m_draw.FillAlphaRect(rect_name, m_colors.color_control_bar_back, alpha);
-    playlist_indicator->rect_name = rect_name;
-    rect_name.left += DPI(6);
-    rect_name.right -= DPI(30);
-    static CDrawCommon::ScrollInfo name_scroll_info;
-    m_draw.DrawScrollText(rect_name, list_item.GetDisplayName().c_str(), m_colors.color_text_heighlight, GetScrollTextPixel(), false, name_scroll_info);
-    //绘制下拉按钮
-    CRect rect_drop_down{ rect };
-    rect_drop_down.left = rect_name.right + DPI(2);
-    rect_drop_down.right = menu_btn_rect.left - DPI(6);
-    CRect rect_drop_down_btn = CDrawCommon::CalculateCenterIconRect(rect_drop_down, icon_size);
-    DrawUIButton(rect_drop_down_btn, playlist_indicator->btn_drop_down, IconMgr::IconType::IT_DropDown);
-}
-
 void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
 {
     //绘制背景
@@ -2592,7 +2352,10 @@ void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
         //if (!theApp.m_app_setting_data.button_round_corners)
         //    m_draw.FillAlphaRect(indicator.rect, back_color, alpha);
         //else
-        m_draw.DrawRoundRect(indicator.rect, back_color, indicator.rect.Height() / 2, alpha);
+        if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+            m_draw.FillAlphaRect(indicator.rect, back_color, alpha);
+        else
+            m_draw.DrawRoundRect(indicator.rect, back_color, indicator.rect.Height() / 2, alpha);
     }
 
     //绘制圆
@@ -2619,26 +2382,30 @@ void CPlayerUIBase::DrawStackIndicator(UIButton indicator, int num, int index)
             dot_color = m_colors.color_stack_indicator;
             alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
         }
-        m_draw.DrawEllipse(rect_dot, dot_color, alpha);
+        if (!theApp.m_app_setting_data.button_round_corners && CWinVersionHelper::IsWine())
+            m_draw.FillAlphaRect(rect_dot, dot_color, alpha);
+        else
+            m_draw.DrawEllipse(rect_dot, dot_color, alpha);
     }
 }
 
 void CPlayerUIBase::DrawUiMenuBar(CRect rect)
 {
-    //m_draw.DrawWindowText(rect, L"menu bar", m_colors.color_text);
-
     //绘制背景
     bool draw_background{ IsDrawBackgroundAlpha() };
-    BYTE alpha;
-    if (theApp.m_app_setting_data.dark_mode)
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
-    else
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+    if (theApp.m_app_setting_data.show_titlebar_background)
+    {
+        BYTE alpha;
+        if (theApp.m_app_setting_data.dark_mode)
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+        else
+            alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
 
-    if (draw_background)
-        m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
-    else
-        m_draw.FillRect(rect, m_colors.color_control_bar_back);
+        if (draw_background)
+            m_draw.FillAlphaRect(rect, m_colors.color_control_bar_back, alpha);
+        else
+            m_draw.FillRect(rect, m_colors.color_control_bar_back);
+    }
 
     CRect rc_item{ rect };
     rc_item.bottom = rc_item.top + DPI(20);
@@ -2708,136 +2475,6 @@ void CPlayerUIBase::DrawUiMenuBar(CRect rect)
     drawMenuItem(MENU_HELP, menu_name_help.c_str());                           //帮助
 }
 
-void CPlayerUIBase::DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element)
-{
-    DrawAreaGuard guard(&m_draw, rect);
-    bool draw_icon{ tab_element->icon_type == UiElement::NavigationBar::ICON_AND_TEXT || tab_element->icon_type == UiElement::NavigationBar::ICON_ONLY };
-    bool draw_text{ tab_element->icon_type == UiElement::NavigationBar::ICON_AND_TEXT || tab_element->icon_type == UiElement::NavigationBar::TEXT_ONLY };
-    int x_pos{ rect.left };
-    int y_pos{ rect.top };
-    int index{};
-    tab_element->item_rects.resize(tab_element->tab_list.size());
-    for (const auto& navigation_item : tab_element->tab_list)
-    {
-        //计算矩形区域
-        int icon_width{};
-        int text_width{};
-        if (draw_icon)
-        {
-            int item_height{ tab_element->orientation == UiElement::NavigationBar::Horizontal ? rect.Height() : DPI(tab_element->item_height) };
-            icon_width = (std::max)(DPI(24), item_height - DPI(4));
-        }
-        if (draw_text)
-            text_width = m_draw.GetTextExtent(navigation_item.text.c_str()).cx;
-        CRect item_rect{ rect };
-        if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
-        {
-            item_rect.left = x_pos;
-            item_rect.right = item_rect.left + icon_width + text_width + DPI(4);
-            if (tab_element->icon_type == UiElement::NavigationBar::TEXT_ONLY)
-                item_rect.right += DPI(4);
-            else if (tab_element->icon_type == UiElement::NavigationBar::ICON_AND_TEXT && tab_element->item_height > 20)
-                item_rect.right += DPI(tab_element->item_height - 20) / 2;      //基于高度值增加一些右侧的边距
-        }
-        else
-        {
-            item_rect.top = y_pos;
-            item_rect.bottom = item_rect.top + DPI(tab_element->item_height);
-        }
-        tab_element->item_rects[index] = item_rect;
-
-        if ((rect & item_rect).IsRectEmpty())
-            continue;
-
-        //绘制背景
-        if (tab_element->hover_index == index)
-        {
-            DrawAreaGuard guard(&m_draw, rect);
-            DrawRectangle(item_rect, tab_element->pressed ? m_colors.color_button_pressed : m_colors.color_button_hover);
-        }
-
-        //绘制图标
-        CRect icon_rect{ item_rect };
-        if (draw_icon)
-        {
-            DrawAreaGuard guard(&m_draw, rect);
-            if (tab_element->icon_type != UiElement::NavigationBar::ICON_ONLY)
-            {
-                icon_rect.right = icon_rect.left + icon_width;
-                if (tab_element->orientation == UiElement::NavigationBar::Vertical)
-                    icon_rect.MoveToX(icon_rect.left + DPI(tab_element->item_left_space));
-            }
-            //使用跳动的频谱代替正在播放图标
-            if (navigation_item.icon == IconMgr::IT_NowPlaying && CPlayer::GetInstance().GetPlayingState2() != PS_STOPED && !CPlayer::GetInstance().IsMciCore())
-            {
-                DrawMiniSpectrum(icon_rect);
-            }
-            else
-            {
-                DrawUiIcon(icon_rect, navigation_item.icon);
-            }
-        }
-        else
-        {
-            icon_rect.right = icon_rect.left;
-        }
-
-        //绘制文本
-        if (draw_text)
-        {
-            DrawAreaGuard guard(&m_draw, rect);
-            CRect text_rect{ item_rect };
-            if (tab_element->icon_type != UiElement::NavigationBar::TEXT_ONLY)
-            {
-                text_rect.left = icon_rect.right;
-            }
-            else
-            {
-                text_rect.MoveToX(text_rect.left + DPI(4));
-                if (tab_element->orientation == UiElement::NavigationBar::Vertical)
-                    text_rect.left += DPI(8);
-            }
-            CFont* old_font{};  //原先的字体
-            bool big_font{ m_ui_data.full_screen && IsDrawLargeIcon() };
-            old_font = m_draw.SetFont(&theApp.m_font_set.GetFontBySize(tab_element->font_size).GetFont(big_font));
-            m_draw.DrawWindowText(text_rect, navigation_item.text.c_str(), m_colors.color_text, Alignment::LEFT, true);
-            m_draw.SetFont(old_font);
-        }
-
-        //绘制选中指示
-        if (tab_element->SelectedIndex() == index)
-        {
-            DrawAreaGuard guard(&m_draw, rect);
-            CRect selected_indicator_rect{ item_rect };
-            //水平排列时选中指示在底部
-            if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
-            {
-                selected_indicator_rect.left += DPI(4);
-                selected_indicator_rect.right -= DPI(4);
-                selected_indicator_rect.top = selected_indicator_rect.bottom - DPI(4);
-            }
-            //垂直排列时选中指示在左侧
-            else
-            {
-                selected_indicator_rect.top += DPI(4);
-                selected_indicator_rect.bottom -= DPI(4);
-                selected_indicator_rect.right = selected_indicator_rect.left + DPI(4);
-            }
-            if (theApp.m_app_setting_data.button_round_corners)
-                m_draw.DrawRoundRect(selected_indicator_rect, m_colors.color_text_heighlight, DPI(2));
-            else
-                m_draw.FillRect(selected_indicator_rect, m_colors.color_text_heighlight, true);
-
-        }
-
-        if (tab_element->orientation == UiElement::NavigationBar::Horizontal)
-            x_pos = item_rect.right + DPI(tab_element->item_space);
-        else
-            y_pos = item_rect.bottom + DPI(tab_element->item_space);
-        index++;
-    }
-}
-
 void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
 {
     COLORREF icon_color{ theApp.m_app_setting_data.dark_mode ? RGB(255, 255, 255) : RGB(110, 110, 110) };
@@ -2886,53 +2523,6 @@ void CPlayerUIBase::DrawMiniSpectrum(CRect rect)
             col_index++;
             spetral_data = 0;
         }
-    }
-}
-
-void CPlayerUIBase::DrawSearchBox(CRect rect, UiElement::SearchBox* search_box)
-{
-    //绘制背景
-    COLORREF back_color;
-    if (search_box->hover)
-        back_color = m_colors.color_button_hover;
-    else
-        back_color = m_colors.color_control_bar_back;
-    bool draw_background{ IsDrawBackgroundAlpha() };
-    BYTE alpha;
-    if (!draw_background)
-        alpha = 255;
-    else if (theApp.m_app_setting_data.dark_mode || search_box->hover)
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
-    else
-        alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency);
-    if (!theApp.m_app_setting_data.button_round_corners)
-        m_draw.FillAlphaRect(rect, back_color, alpha);
-    else
-        m_draw.DrawRoundRect(rect, back_color, CalculateRoundRectRadius(rect), alpha);
-    //绘制文本
-    CRect rect_text{ rect };
-    rect_text.left += DPI(4);
-    rect_text.right -= rect.Height();
-    std::wstring text = search_box->key_word;
-    COLORREF text_color = m_colors.color_text;
-    if (text.empty())
-    {
-        text = theApp.m_str_table.LoadText(L"TXT_SEARCH_PROMPT");
-        text_color = m_colors.color_text_heighlight;
-    }
-    m_draw.DrawWindowText(rect_text, text.c_str(), text_color, Alignment::LEFT, true);
-    //绘制图标
-    search_box->icon_rect = rect;;
-    search_box->icon_rect.left = rect_text.right;
-    if (search_box->key_word.empty())
-    {
-        DrawUiIcon(search_box->icon_rect, IconMgr::IT_Find);
-    }
-    else
-    {
-        CRect btn_rect{ search_box->icon_rect };
-        btn_rect.DeflateRect(DPI(2), DPI(2));
-        DrawUIButton(btn_rect, search_box->clear_btn, IconMgr::IT_Close);
     }
 }
 
@@ -3135,4 +2725,9 @@ void CPlayerUIBase::AddToolTips()
         std::wstring str_tooltip = GetItemTooltip(i);
         AddMouseToolTip(i, str_tooltip.c_str());
     }
+}
+
+void CPlayerUIBase::SkipNextFrame()
+{
+    m_skip_next_frame = true;
 }

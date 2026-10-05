@@ -59,6 +59,16 @@ void UiElement::ListElement::ClearData()
 	m_list_data.clear();
 }
 
+void UiElement::ListElement::SetHighlightRow(int row)
+{
+	m_highlight_row = row;
+}
+
+int UiElement::ListElement::GetHighlightRow() const
+{
+	return m_highlight_row;
+}
+
 std::wstring UiElement::ListElement::GetItemText(int row, int col)
 {
 	if (row >= 0 && row < GetRowCount() && col >= 0 && col < GetColumnCount())
@@ -111,13 +121,18 @@ IconMgr::IconType UiElement::ListElement::GetIcon(int row)
 	auto iter = m_icons.find(row);
 	if (iter != m_icons.end())
 		return iter->second;
-	return IconMgr::IconType();
+	return IconMgr::IT_NO_ICON;
 }
 
 bool UiElement::ListElement::HasIcon()
 {
 	std::lock_guard<std::mutex> guard(m_list_icon_sync);
 	return !m_icons.empty();
+}
+
+bool UiElement::ListElement::IsHighlightRow(int row)
+{
+	return row == m_highlight_row;
 }
 
 int UiElement::ListElement::_GetColumnWidth(int col)

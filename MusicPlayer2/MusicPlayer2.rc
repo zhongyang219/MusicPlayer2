@@ -95,6 +95,22 @@ BEGIN
     CONTROL         "No longer ask",IDC_NO_LONGER_ASK_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,72,10
 END
 
+IDD_UI_DIALOG DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Dialog"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+END
+
+IDD_DONATE_DIALOG DIALOGEX 0, 0, 256, 139
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "捐助"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+    LTEXT           "如果你觉得这个软件对你有帮助，你可以扫描下方的二维码通过支付宝或微信捐助作者，以帮助作者把这个软件做得更好。金额请随意。",IDC_DONATE_STATIC,7,7,242,21
+    DEFPUSHBUTTON   "关闭",IDCANCEL,199,118,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -123,6 +139,22 @@ BEGIN
         VERTGUIDE, 15
         TOPMARGIN, 7
         BOTTOMMARGIN, 72
+    END
+
+    IDD_UI_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 169
+    END
+
+    IDD_DONATE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 249
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 132
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -153,6 +185,16 @@ BEGIN
     0, 0, 100, 0,
     0, 0, 100, 0,
     0, 100, 100, 0
+END
+
+IDD_UI_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DONATE_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 
@@ -187,6 +229,8 @@ IDR_TEST_PANEL          TEXT                    "res\\ui\\test_panel.xml"
 IDR_SETTINGS_PANEL      TEXT                    "res\\ui\\settings_panel.xml"
 
 IDR_TOGGLE_SETTING_GROUP TEXT                    "res\\ui\\toggle_setting_group.xml"
+
+IDR_TEST_DIALOG         TEXT                    "res\\ui\\test_dialog.xml"
 
 #endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -289,9 +333,9 @@ BEGIN
     CONTROL         "<a>Check for update</a>",IDC_SYSLINK2,"SysLink",WS_TABSTOP,59,119,39,8
     CONTROL         "<a>GitHub</a>",IDC_GITHUB_SYSLINK,"SysLink",WS_TABSTOP,103,119,35,8
     CONTROL         "<a>License</a>",IDC_LICENSE_SYSLINK,"SysLink",WS_TABSTOP,14,129,40,8
-    CONTROL         "<a>Donate</a>",IDC_DONATE_SYSLINK,"SysLink",WS_TABSTOP,59,129,39,8
+    CONTROL         "<a>Donate</a>",IDC_DONATE_SYSLINK,"SysLink",WS_TABSTOP,103,129,37,8
     CONTROL         "<a>Acknowledgement</a>",IDC_ACKNOWLEDGEMENT_SYSLINK,
-                    "SysLink",WS_TABSTOP,103,129,57,8
+                    "SysLink",WS_TABSTOP,59,129,40,8
     DEFPUSHBUTTON   "OK",IDOK,165,148,50,14,WS_GROUP
     CONTROL         "<a>Gitee</a>",IDC_GITEE_SYSLINK,"SysLink",WS_TABSTOP,143,119,32,8
 END
@@ -387,7 +431,9 @@ BEGIN
     CONTROL         "Switch to dark/light mode",IDC_SHOW_DARK_LIGHT_BTN_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,458,126,8
     CONTROL         "Remove titlebar top frame",IDC_REMOVE_TITLE_BAR_TOP_FRAME_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,424,316,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,424,126,10
+    CONTROL         "Show title bar background",IDC_SHOW_TITLE_BAR_BACKGROUND_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,150,424,180,10
 END
 
 IDD_OPTIONS_DIALOG DIALOGEX 0, 0, 340, 239
@@ -992,15 +1038,6 @@ BEGIN
     DEFPUSHBUTTON   "Close",IDCANCEL,283,151,50,14
 END
 
-IDD_DONATE_DIALOG DIALOGEX 0, 0, 256, 139
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Donate"
-FONT 9, "微软雅黑", 400, 0, 0x0
-BEGIN
-    LTEXT           "If you think this software is helpful to you, you can scan the following QR code through Alipay or WeChart Pay to donate the author to help the author to make this software better. Please feel free for the amount.",IDC_DONATE_STATIC,7,7,242,40
-    DEFPUSHBUTTON   "Close",IDCANCEL,199,118,50,14
-END
-
 IDD_MEDIA_LIB_DIALOG DIALOGEX 0, 0, 345, 212
 STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 EXSTYLE WS_EX_APPWINDOW
@@ -1265,6 +1302,19 @@ BEGIN
     CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,5,4,301,174
     PUSHBUTTON      "Cancel",IDCANCEL,256,182,50,14
     DEFPUSHBUTTON   "Play selected",IDOK,196,182,55,14
+END
+
+IDD_OPEN_URL_DLG DIALOGEX 0, 0, 209, 90
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "%(TITLE_INPUT_URL_OPEN_URL)"
+FONT 9, "微软雅黑", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,96,69,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,152,69,50,14
+    LTEXT           "%(TXT_INPUT_URL_INPUT_NAME)",IDC_STATIC,7,7,195,8
+    EDITTEXT        IDC_INPUT_NAME_EDIT,7,18,195,12,ES_AUTOHSCROLL
+    LTEXT           "%(TXT_INPUT_URL_INPUT_URL)",IDC_STATIC,7,38,195,8
+    EDITTEXT        IDC_INPUT_URL_EDIT,7,49,195,12,ES_AUTOHSCROLL
 END
 
 
@@ -1624,14 +1674,6 @@ BEGIN
         BOTTOMMARGIN, 165
     END
 
-    IDD_DONATE_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 249
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 132
-    END
-
     IDD_MEDIA_LIB_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 5
@@ -1759,6 +1801,14 @@ BEGIN
         RIGHTMARGIN, 306
         TOPMARGIN, 4
         BOTTOMMARGIN, 196
+    END
+
+    IDD_OPEN_URL_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 202
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 83
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -1904,7 +1954,8 @@ BEGIN
     80, 0, 20, 0,
     0, 0, 100, 0,
     0, 0, 40, 0,
-    0, 0, 100, 0
+    0, 0, 40, 0,
+    40, 0, 60, 0
 END
 
 IDD_OPTIONS_DIALOG AFX_DIALOG_LAYOUT
@@ -2326,11 +2377,6 @@ BEGIN
     100, 100, 0, 0
 END
 
-IDD_DONATE_DIALOG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
 IDD_MEDIA_LIB_DIALOG AFX_DIALOG_LAYOUT
 BEGIN
     0,
@@ -2515,6 +2561,11 @@ BEGIN
     0, 0, 100, 100,
     100, 100, 0, 0,
     100, 100, 0, 0
+END
+
+IDD_OPEN_URL_DLG AFX_DIALOG_LAYOUT
+BEGIN
+    0
 END
 
 
@@ -3150,6 +3201,8 @@ IDI_ARROW_LEFT          ICON                    "res\\arrow_left.ico"
 IDI_ARROW_LEFT_D        ICON                    "res\\arrow_left_d.ico"
 
 IDI_CHECKBOX            ICON                    "res\\checkbox.ico"
+
+IDI_CHECKBOX_D          ICON                    "res\\checkbox_d.ico"
 
 IDI_DELETE              ICON                    "res\\delete.ico"
 

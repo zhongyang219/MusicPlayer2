@@ -123,16 +123,16 @@ void CUIWindowCmdHelper::SetMenuState(CMenu* pMenu)
 
 void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* medialib_item_list, DWORD command)
 {
-    std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(medialib_item_list->type, medialib_item_list->GetItemSelected());
-    std::wstring display_name = CUiMediaLibItemMgr::Instance().GetItemDisplayName(medialib_item_list->type, medialib_item_list->GetItemSelected());
+    std::wstring item_name = CUiMediaLibItemMgr::Instance().GetItemName(medialib_item_list->GetType(), medialib_item_list->GetItemSelected());
+    std::wstring display_name = CUiMediaLibItemMgr::Instance().GetItemDisplayName(medialib_item_list->GetType(), medialib_item_list->GetItemSelected());
     auto getSongList = [&](std::vector<SongInfo>& song_list)
         {
-            CMediaClassifier classifier(medialib_item_list->type);
+            CMediaClassifier classifier(medialib_item_list->GetType());
             classifier.ClassifyMedia();
             song_list = classifier.GetMeidaList()[item_name];
         };
     CMusicPlayerCmdHelper helper;
-    ListItem list_item{ LT_MEDIA_LIB, item_name, medialib_item_list->type };
+    ListItem list_item{ LT_MEDIA_LIB, item_name, medialib_item_list->GetType() };
 
     //播放
     if (command == ID_PLAY_ITEM)
@@ -170,7 +170,7 @@ void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* 
     else if (command == ID_VIEW_IN_MEDIA_LIB)
     {
         CMusicPlayerCmdHelper::eMediaLibTab tab{};
-        switch (medialib_item_list->type)
+        switch (medialib_item_list->GetType())
         {
         case ListItem::ClassificationType::CT_ARTIST: tab = CMusicPlayerCmdHelper::ML_ARTIST; break;
         case ListItem::ClassificationType::CT_ALBUM: tab = CMusicPlayerCmdHelper::ML_ALBUM; break;
@@ -200,7 +200,7 @@ void CUIWindowCmdHelper::OnMediaLibItemListCommand(UiElement::MediaLibItemList* 
 void CUIWindowCmdHelper::OnRecentPlayedListCommand(UiElement::RecentPlayedList* medialib_item_list, DWORD command)
 {
     int item_selected{ medialib_item_list->GetItemSelected() };
-    ListItem list_item = medialib_item_list->m_list_cache.GetItem(item_selected);
+    ListItem list_item = medialib_item_list->GetListCache().GetItem(item_selected);
     if (list_item.empty())
         return;
 
@@ -281,7 +281,7 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
 {
     int item_selected{ medialib_folder->GetItemSelected() };
 
-    ListItem list_item = UiElement::MediaLibFolder::m_list_cache.GetItem(item_selected);
+    ListItem list_item = UiElement::MediaLibFolder::GetListCache().GetItem(item_selected);
     CMusicPlayerCmdHelper helper;
 
     auto getSongList = [&](std::vector<SongInfo>& song_list) {
@@ -365,7 +365,7 @@ void CUIWindowCmdHelper::OnMediaLibFolderCommand(UiElement::MediaLibFolder* medi
 void CUIWindowCmdHelper::OnMediaLibPlaylistCommand(UiElement::MediaLibPlaylist* medialib_folder, DWORD command)
 {
     int item_selected{ medialib_folder->GetItemSelected() };
-    ListItem list_item = medialib_folder->m_list_cache.GetItem(item_selected);
+    ListItem list_item = medialib_folder->GetListCache().GetItem(item_selected);
     CMusicPlayerCmdHelper helper;
 
     if (command == ID_PLAY_PLAYLIST)
@@ -781,7 +781,7 @@ void CUIWindowCmdHelper::SetMediaLibFolderMenuState(CMenu* pMenu)
     if (medialib_folder != nullptr)
     {
         int item_selected{ medialib_folder->GetItemSelected() };
-        ListItem list_item = UiElement::MediaLibFolder::m_list_cache.GetItem(item_selected);
+        ListItem list_item = UiElement::MediaLibFolder::GetListCache().GetItem(item_selected);
         select_valid = !list_item.empty();
         contain_sub_folder = list_item.contain_sub_folder;
     }
@@ -805,7 +805,7 @@ void CUIWindowCmdHelper::SetMediaLibPlaylistMenuState(CMenu* pMenu)
     if (medialib_playlist != nullptr)
     {
         int item_selected{ medialib_playlist->GetItemSelected() };
-        selected_playlist = medialib_playlist->m_list_cache.GetItem(item_selected);
+        selected_playlist = medialib_playlist->GetListCache().GetItem(item_selected);
         select_valid = !selected_playlist.empty();
     }
 

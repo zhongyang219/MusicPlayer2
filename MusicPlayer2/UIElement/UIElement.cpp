@@ -6,13 +6,16 @@
 #include "ScrollArea.h"
 
 ///////////////////////////////////////////////////////////////////////////////
+UINT UiElement::Element::system_ctrl_id = 2000;
+
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 UiElement::Element::Value::Value(bool _is_vertical, Element* _owner)
     : is_vertical(_is_vertical), owner(_owner)
 {
 }
 
-void UiElement::Element::Value::FromString(const std::string str)
+void UiElement::Element::Value::FromString(const std::string& str)
 {
     size_t index = str.find('%');
     if (index != std::wstring::npos)   //如果包含百分号
@@ -52,12 +55,21 @@ void UiElement::Element::Draw()
 {
     for (const auto& item : childLst)
     {
-        if (item != nullptr && item->IsEnable(GetRect()))
+        if (item != nullptr && item->IsShown(GetRect()))
             item->Draw();
     }
 }
 
-bool UiElement::Element::IsEnable(CRect parent_rect) const
+void UiElement::Element::DrawTopMost()
+{
+    for (const auto& item : childLst)
+    {
+        if (item != nullptr && item->IsShown(GetRect()))
+            item->DrawTopMost();
+    }
+}
+
+bool UiElement::Element::IsShown(CRect parent_rect) const
 {
     if (!visible)
         return false;
@@ -104,6 +116,16 @@ bool UiElement::Element::IsHeightValid() const
     return height.IsValid();
 }
 
+void UiElement::Element::SetWidth(const std::string& str)
+{
+    width.FromString(str);
+}
+
+void UiElement::Element::SetHeight(const std::string& str)
+{
+    height.FromString(str);
+}
+
 CRect UiElement::Element::GetRect() const
 {
     return rect;
@@ -117,6 +139,36 @@ void UiElement::Element::SetRect(CRect _rect)
 void UiElement::Element::ClearRect()
 {
     //rect = CRect();
+}
+
+bool UiElement::Element::GlobalLButtonUp(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->GlobalLButtonUp(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::GlobalLButtonDown(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->GlobalLButtonDown(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::GlobalMouseMove(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->GlobalMouseMove(point))
+            return true;
+    }
+    return false;
 }
 
 UiElement::Element* UiElement::Element::RootElement()
@@ -207,6 +259,16 @@ void UiElement::Element::CalculateRect(CRect rect_parent)
     }
 }
 
+bool UiElement::Element::SetCursor()
+{
+    for (auto& child : childLst)
+    {
+        if (child->SetCursor())
+            return true;
+    }
+    return false;
+}
+
 void UiElement::Element::CalculateRect()
 {
     if (pParent == nullptr)     //根节点的矩形不需要计算
@@ -274,15 +336,164 @@ void UiElement::Element::AddChild(std::shared_ptr<Element> child)
     childLst.push_back(child);
 }
 
-bool UiElement::Element::IsEnable() const
+bool UiElement::Element::IsShown() const
 {
     if (pParent != nullptr)
     {
-        bool enable = IsEnable(pParent->GetRect());
-        return enable && pParent->IsEnable();
+        bool enable = IsShown(pParent->GetRect());
+        return enable && pParent->IsShown();
     }
     else
     {
         return true;
     }
+}
+
+void UiElement::Element::SetEnable(bool enable)
+{
+    this->enable = enable;
+    //同时设置子元素的状态
+    for (auto& child : childLst)
+        child->SetEnable(enable);
+}
+
+bool UiElement::Element::LButtonUp(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->LButtonUp(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::LButtonDown(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->LButtonDown(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::MouseMove(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->MouseMove(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::RButtonUp(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->RButtonUp(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::RButtonDown(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        child->RButtonDown(point);
+    }
+    return false;
+}
+
+bool UiElement::Element::MouseWheel(int delta, CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->MouseWheel(delta, point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::DoubleClick(CPoint point)
+{
+    for (auto& child : childLst)
+    {
+        if (child->DoubleClick(point))
+            return true;
+    }
+    return false;
+}
+
+bool UiElement::Element::MouseLeave()
+{
+    for (auto& child : childLst)
+        child->MouseLeave();
+    return false;
+}
+
+void UiElement::Element::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    name = CTinyXml2Helper::ElementName(xml_node);
+    id = CTinyXml2Helper::ElementAttribute(xml_node, "id");
+    bool visible{ true };
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "visible", visible);
+    SetVisible(visible);
+    std::string str_x = CTinyXml2Helper::ElementAttribute(xml_node, "x");
+    std::string str_y = CTinyXml2Helper::ElementAttribute(xml_node, "y");
+    std::string str_proportion = CTinyXml2Helper::ElementAttribute(xml_node, "proportion");
+    std::string str_width = CTinyXml2Helper::ElementAttribute(xml_node, "width");
+    std::string str_height = CTinyXml2Helper::ElementAttribute(xml_node, "height");
+    std::string str_max_width = CTinyXml2Helper::ElementAttribute(xml_node, "max-width");
+    std::string str_max_height = CTinyXml2Helper::ElementAttribute(xml_node, "max-height");
+    std::string str_min_width = CTinyXml2Helper::ElementAttribute(xml_node, "min-width");
+    std::string str_min_height = CTinyXml2Helper::ElementAttribute(xml_node, "min-height");
+    std::string str_margin = CTinyXml2Helper::ElementAttribute(xml_node, "margin");
+    std::string str_margin_left = CTinyXml2Helper::ElementAttribute(xml_node, "margin-left");
+    std::string str_margin_right = CTinyXml2Helper::ElementAttribute(xml_node, "margin-right");
+    std::string str_margin_top = CTinyXml2Helper::ElementAttribute(xml_node, "margin-top");
+    std::string str_margin_bottom = CTinyXml2Helper::ElementAttribute(xml_node, "margin-bottom");
+    std::string str_hide_width = CTinyXml2Helper::ElementAttribute(xml_node, "hide-width");
+    std::string str_hide_height = CTinyXml2Helper::ElementAttribute(xml_node, "hide-height");
+    if (!str_x.empty())
+        x.FromString(str_x);
+    if (!str_y.empty())
+        y.FromString(str_y);
+    if (!str_proportion.empty())
+        proportion = max(atoi(str_proportion.c_str()), 1);
+    if (!str_width.empty())
+        width.FromString(str_width);
+    if (!str_height.empty())
+        height.FromString(str_height);
+    if (!str_max_width.empty())
+        max_width.FromString(str_max_width);
+    if (!str_max_height.empty())
+        max_height.FromString(str_max_height);
+    if (!str_min_width.empty())
+        min_width.FromString(str_min_width);
+    if (!str_min_height.empty())
+        min_height.FromString(str_min_height);
+
+    if (!str_margin.empty())
+    {
+        margin_left.FromString(str_margin);
+        margin_right.FromString(str_margin);
+        margin_top.FromString(str_margin);
+        margin_bottom.FromString(str_margin);
+    }
+    if (!str_margin_left.empty())
+        margin_left.FromString(str_margin_left);
+    if (!str_margin_right.empty())
+        margin_right.FromString(str_margin_right);
+    if (!str_margin_top.empty())
+        margin_top.FromString(str_margin_top);
+    if (!str_margin_bottom.empty())
+        margin_bottom.FromString(str_margin_bottom);
+
+    if (!str_hide_width.empty())
+        hide_width.FromString(str_hide_width);
+    if (!str_hide_height.empty())
+        hide_height.FromString(str_hide_height);
+
 }

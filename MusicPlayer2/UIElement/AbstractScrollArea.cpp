@@ -12,9 +12,13 @@ void UiElement::AbstractScrollArea::Draw()
 
     //计算滚动区域的矩形区域
     RestrictOffset();
+    int scroll_area_height = GetScrollAreaHeight();
+    bool show_scroll_bar = scroll_area_height > rect.Height();
     m_scroll_area_rect = rect;
-    m_scroll_area_rect.right -= SCROLLBAR_WIDTH;
-    m_scroll_area_rect.bottom = m_scroll_area_rect.top + GetScrollAreaHeight();
+    if (show_scroll_bar)
+        m_scroll_area_rect.right -= SCROLLBAR_WIDTH;
+    m_client_area_rect = m_scroll_area_rect;
+    m_scroll_area_rect.bottom = m_scroll_area_rect.top + scroll_area_height;
     m_scroll_area_rect.MoveToY(m_scroll_area_rect.top - scroll_offset);
 
     DrawScrollArea();
@@ -39,7 +43,7 @@ void UiElement::AbstractScrollArea::Draw()
         };
 
         //开始绘制滚动条
-        if (m_scroll_area_rect.Height() > rect.Height())
+        if (show_scroll_bar)
         {
             //填充滚动条背景
             BYTE background_alpha;
@@ -97,11 +101,15 @@ bool UiElement::AbstractScrollArea::LButtonUp(CPoint point)
 {
     mouse_pressed = false;
     scrollbar_handle_pressed = false;
-    return false;
+    if (rect.PtInRect(point))
+        return Element::LButtonUp(point);
+    else
+        return false;
 }
 
 bool UiElement::AbstractScrollArea::LButtonDown(CPoint point)
 {
+    bool rtn = false;
     //点击了控件区域
     if (rect.PtInRect(point))
     {
@@ -118,10 +126,13 @@ bool UiElement::AbstractScrollArea::LButtonDown(CPoint point)
             {
                 mouse_pressed = false;
             }
+            rtn = true;
         }
-        //点击了列表区域
+        //点击了滚动区域
         else
         {
+            if (Element::LButtonDown(point))
+                return true;
             mouse_pressed = true;
         }
         mouse_pressed_offset = scroll_offset;
@@ -132,7 +143,7 @@ bool UiElement::AbstractScrollArea::LButtonDown(CPoint point)
     {
         mouse_pressed = false;
     }
-    return false;
+    return rtn;
 }
 
 bool UiElement::AbstractScrollArea::MouseMove(CPoint point)
@@ -142,6 +153,12 @@ bool UiElement::AbstractScrollArea::MouseMove(CPoint point)
 
     mouse_pos = point;
     hover = rect.PtInRect(point);
+    if (last_hover && !hover)
+    {
+        Element::MouseLeave();
+    }
+    last_hover = hover;
+
     scrollbar_hover = scrollbar_rect.PtInRect(point);
     if (scrollbar_handle_pressed)
     {
@@ -153,12 +170,20 @@ bool UiElement::AbstractScrollArea::MouseMove(CPoint point)
             int delta_playlist_offset = delta_scrollbar_offset * m_scroll_area_rect.Height() / scroll_area_height;
             scroll_offset = mouse_pressed_offset - delta_playlist_offset;
         }
+        return true;
     }
     else if (mouse_pressed)
     {
         scroll_offset = mouse_pressed_offset + (mouse_pressed_pos.y - point.y);
+        return true;
     }
-    return true;
+    else
+    {
+        if (Element::MouseMove(point))
+            return true;
+    }
+
+    return false;
 }
 
 bool UiElement::AbstractScrollArea::MouseWheel(int delta, CPoint point)
@@ -177,7 +202,7 @@ bool UiElement::AbstractScrollArea::MouseLeave()
     mouse_pressed = false;
     scrollbar_hover = false;
     scrollbar_handle_pressed = false;
-    return true;
+    return Element::MouseLeave();
 }
 
 void UiElement::AbstractScrollArea::RestrictOffset()

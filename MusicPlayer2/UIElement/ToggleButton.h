@@ -1,29 +1,19 @@
 ﻿#pragma once
-#include "UIElement/UIElement.h"
+#include "UIElement/AbstractToggleButton.h"
 namespace UiElement
 {
     //复选框
-    class ToggleButton : public Element
+    class ToggleButton : public AbstractToggleButton
     {
     public:
         virtual void Draw() override;
-        virtual bool LButtonUp(CPoint point) override;
-        virtual bool LButtonDown(CPoint point) override;
-        virtual bool MouseMove(CPoint point) override;
-        virtual bool MouseLeave() override;
 
-        void SetChecked(bool checked);
-        bool Checked() const;
-
-        void SetClickedTrigger(std::function<void(ToggleButton*)> func);
-        void BindBool(bool* value);
+        // 通过 AbstractToggleButton 继承
+        virtual COLORREF GetButtonBackColor() override;
+        virtual CRect GetClickTriggerRect() override;
 
     private:
-        bool m_hover{};
-        bool m_pressed{};
-        bool m_checked{};
-        std::function<void(ToggleButton*)> m_clicked_trigger;
-        bool* m_value{ nullptr };
+        CRect m_click_trigger_rect;
     };
 }
 

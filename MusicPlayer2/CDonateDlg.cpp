@@ -27,14 +27,6 @@ CString CDonateDlg::GetDialogName() const
 
 bool CDonateDlg::InitializeControls()
 {
-    wstring temp;
-    temp = theApp.m_str_table.LoadText(L"TITLE_DONATE");
-    SetWindowTextW(temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_DONATE_INFO");
-    SetDlgItemTextW(IDC_DONATE_STATIC, temp.c_str());
-    temp = theApp.m_str_table.LoadText(L"TXT_CLOSE");
-    SetDlgItemTextW(IDCANCEL, temp.c_str());
-
     RepositionTextBasedControls({
         { CtrlTextInfo::R1, IDCANCEL, CtrlTextInfo::W32 }
         });

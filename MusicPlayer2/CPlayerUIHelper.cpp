@@ -23,10 +23,17 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         colors.color_text_lable = theApp.m_app_setting_data.theme_color.light2;
         colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
         colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.light2;
+        colors.color_text_disabled = GRAY(200);
         if (draw_alpha)
+        {
             colors.color_back = GRAY(64);
+            colors.color_panel_back = GRAY(72);
+        }
         else
+        {
             colors.color_back = GRAY(48);
+            colors.color_panel_back = GRAY(56);
+        }
 
         colors.color_lyric_back = theApp.m_app_setting_data.theme_color.dark3;
         if (draw_alpha)
@@ -36,6 +43,10 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         colors.color_spectrum = theApp.m_app_setting_data.theme_color.light2;
         colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_progress_back = theApp.m_app_setting_data.theme_color.dark1;
+        if (draw_alpha)
+            colors.color_button_back = theApp.m_app_setting_data.theme_color.dark1_5;
+        else
+            colors.color_button_back = GRAY(76);
         colors.color_button_checked = theApp.m_app_setting_data.theme_color.dark3;
         colors.color_stack_indicator = theApp.m_app_setting_data.theme_color.light2;
         colors.color_scrollbar_handle = theApp.m_app_setting_data.theme_color.dark1;
@@ -59,24 +70,32 @@ UIColors CPlayerUIHelper::GetUIColors(bool dark, bool draw_alpha)
         colors.color_text_lable = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_text_2 = theApp.m_app_setting_data.theme_color.light1;
         colors.color_text_heighlight = theApp.m_app_setting_data.theme_color.dark1;
+        colors.color_text_disabled = GRAY(160);
         colors.color_back = ColorTable::WHITE;
+        if (draw_alpha)
+            colors.color_panel_back = ColorTable::WHITE;
+        else
+            colors.color_panel_back = GRAY(240);
         colors.color_lyric_back = theApp.m_app_setting_data.theme_color.light3;
         colors.color_control_bar_back = theApp.m_app_setting_data.theme_color.light3;
         colors.color_spectrum = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_spectrum_cover = theApp.m_app_setting_data.theme_color.original_color;
         colors.color_progress_back = theApp.m_app_setting_data.theme_color.light2_5;
-        colors.color_button_checked = theApp.m_app_setting_data.theme_color.light2;
         colors.color_stack_indicator = theApp.m_app_setting_data.theme_color.dark0;
         colors.color_scrollbar_handle = theApp.m_app_setting_data.theme_color.light2;
         if (draw_alpha)
         {
-            colors.color_button_pressed = theApp.m_app_setting_data.theme_color.dark0;
+            colors.color_button_checked = theApp.m_app_setting_data.theme_color.light2;
+            colors.color_button_back = theApp.m_app_setting_data.theme_color.light2;
             colors.color_button_hover = theApp.m_app_setting_data.theme_color.light1_5;
+            colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light1;
         }
         else
         {
+            colors.color_button_checked = theApp.m_app_setting_data.theme_color.light2_5;
+            colors.color_button_back = theApp.m_app_setting_data.theme_color.light2_5;
+            colors.color_button_hover = theApp.m_app_setting_data.theme_color.light2;
             colors.color_button_pressed = theApp.m_app_setting_data.theme_color.light1_5;
-            colors.color_button_hover = theApp.m_app_setting_data.theme_color.light2_5;
         }
         colors.color_list_selected = theApp.m_app_setting_data.theme_color.light2;
         colors.color_statusbar_progress_back = theApp.m_app_setting_data.theme_color.light2_5;
@@ -93,7 +112,7 @@ bool CPlayerUIHelper::IsMidiLyric()
 bool CPlayerUIHelper::IsDrawStatusBar()
 {
     return theApp.m_app_setting_data.always_show_statusbar || CPlayer::GetInstance().m_loading || (theApp.IsMeidaLibUpdating() && theApp.m_media_update_para.num_added > 0)
-		/*|| CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE*/;
+        /*|| CPlayer::GetInstance().GetABRepeatMode() != CPlayer::AM_NONE*/;
 
 }
 

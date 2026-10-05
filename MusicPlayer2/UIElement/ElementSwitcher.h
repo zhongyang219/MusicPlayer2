@@ -27,13 +27,15 @@ namespace UiElement
 
         void IconTypeFromString(const std::string& icon_name);
 
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+    protected:
         Style style{};
         std::string stack_element_id;
         int stack_element_index{ -1 };
         IconMgr::IconType icon_type{ IconMgr::IT_Switch_Display };    //Í¼±ê
         std::wstring text;
 
-    protected:
         CPlayerUIBase::UIButton btn;
         bool last_hover = false;
     };

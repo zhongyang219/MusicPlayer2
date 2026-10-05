@@ -26,11 +26,19 @@ public:
     static bool IsPlaylistExt(wstring ext);
 
     static void SavePlaylistToFile(const vector<SongInfo>& song_list, const wstring& file_path, Type type = PL_PLAYLIST);
+
 public:
     const static vector<wstring> m_surpported_playlist;     //支持的播放列表文件的扩展名列表
 
-private:
-    void DisposePlaylistFileLine(const string& str_current_line, bool utf8);
+protected:
+    //解析MusicPlayer2播放列表
+    void ParsePlaylistFile(const std::wstring& file_contents);
+    //解析m3u/m3u8格式播放列表
+    void ParseM3uFile(const std::wstring& file_contents);
+    //解析Windows Media Player播放列表
+    void ParseWplFile(const std::string& file_contents);
+    //解析千千静听播放列表
+    void ParseTtplFile(const std::string& file_contents);
 
 private:
     vector<SongInfo> m_playlist;

@@ -3,10 +3,13 @@
 class CUiSearchBox;
 namespace UiElement
 {
+    class AbstractListElement;
     //搜索框
     class SearchBox : public Element
     {
     public:
+        friend class CUiSearchBox;
+
         SearchBox();
         ~SearchBox();
         void InitSearchBoxControl(CWnd* pWnd);  //初始化搜索框控件。pWnd：父窗口
@@ -23,6 +26,9 @@ namespace UiElement
 
         virtual bool SetCursor() override;
 
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+    protected:
         bool hover{};       //如果鼠标指向搜索框，则为true
         std::wstring key_word;  //搜索框中的文本
         CUiSearchBox* search_box_ctrl{};    //搜索框控件

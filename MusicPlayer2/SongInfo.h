@@ -98,6 +98,7 @@ struct SongInfo
 
     //从另一个SongInfo对象复制标签信息
     void CopyAudioTag(const SongInfo& song_info);
+    bool IsTagEmpty() const;
 
     bool IsTitleEmpty() const;
     bool IsArtistEmpty() const;

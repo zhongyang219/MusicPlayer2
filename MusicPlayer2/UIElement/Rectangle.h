@@ -6,10 +6,14 @@ namespace UiElement
     class Rectangle : public Element
     {
     public:
-        bool no_corner_radius{};
-        bool theme_color{ true };
         CPlayerUIBase::ColorMode color_mode{ CPlayerUIBase::RCM_AUTO };
         virtual void Draw() override;
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+    protected:
+        bool no_corner_radius{};
+        bool theme_color{ true };
+
     };
 }
 

@@ -4,8 +4,8 @@
 class CMiniModeUserUi : public CUserUi
 {
 public:
-    CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path);
-    CMiniModeUserUi(CWnd* pMainWnd, UINT id);   // id为xml资源ID
+    CMiniModeUserUi(CWnd* pMainWnd, const std::wstring& xml_path, UIData& ui_data);
+    CMiniModeUserUi(CWnd* pMainWnd, UINT id, UIData& ui_data);   // id为xml资源ID
     ~CMiniModeUserUi();
 
     bool GetUiSize(int& width, int& height, int& height_with_playlist);
@@ -17,13 +17,6 @@ private:
 private:
     virtual void _DrawInfo(CRect draw_rect, bool reset = false) override;
     virtual void PreDrawInfo() override;
-    virtual bool IsDrawLargeIcon() const override { return false; }
-    virtual bool IsDrawStatusBar() const override { return false; }
-    virtual bool IsDrawTitleBar() const override { return false; }
-    virtual bool IsDrawMenuBar() const override { return false; }
-    virtual bool PointInControlArea(CPoint point) const override;
-
-    virtual bool RButtonUp(CPoint point) override;
 
     virtual bool ButtonClicked(BtnKey btn_type, const UIButton& btn) override;
     virtual bool ButtonRClicked(BtnKey btn_type, const UIButton& btn) override;

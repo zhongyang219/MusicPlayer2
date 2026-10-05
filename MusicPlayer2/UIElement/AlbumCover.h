@@ -6,10 +6,13 @@ namespace UiElement
     class AlbumCover : public Element
     {
     public:
-        bool square{};
-        bool show_info{};
         virtual void Draw() override;
         virtual void CalculateRect() override;
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+    protected:
+        bool square{};
+        bool show_info{};
     };
 }
 

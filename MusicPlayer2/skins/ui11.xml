@@ -11,7 +11,11 @@
           <button key="next" width="48" height="48" margin="4" bigIcon="true"/>
           <elementSwitcher width="32" height="32" margin="4" style="button" icon="playlist" text="%(UI_TIP_BTN_PLAYLIST_SHOW_HIDE)" stack_element_id="ui_big_right_stack_element"/>
         </horizontalLayout>
-        <progressBar height="40" show_play_time="true" play_time_both_side="true" margin-left="16" margin-right="16"/>
+        <horizontalLayout height="40">
+          <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+          <sliderProgressBar margin-left="8" margin-right="8"/>
+          <text text="%(SongLength)" font_size="8" width="32"/>
+        </horizontalLayout>
       </verticalLayout>
       <stackElement id="ui_big_right_stack_element">
         <verticalLayout margin-left="32">
@@ -83,7 +87,11 @@
         <button key="next" width="48" height="48" margin="4" bigIcon="true"/>
         <button key="showPlayQueue" width="32" height="32" margin="4"/>
       </horizontalLayout>
-      <progressBar height="40" show_play_time="true" play_time_both_side="true" margin-left="16" margin-right="16"/>
+      <horizontalLayout height="40">
+        <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+        <sliderProgressBar margin-left="8" margin-right="8"/>
+        <text text="%(SongLength)" font_size="8" width="32"/>
+      </horizontalLayout>
     </verticalLayout>
   </ui>
   
@@ -115,7 +123,11 @@
         <button key="next" width="48" height="48" margin="4" bigIcon="true"/>
         <button key="showPlayQueue" width="32" height="32" margin="4"/>
       </horizontalLayout>
-      <progressBar height="22" show_play_time="true" play_time_both_side="true" margin-left="16" margin-right="16"/>
+      <horizontalLayout height="22">
+        <text text="%(CurrentPosition)" font_size="8" width="32" alignment="right"/>
+        <sliderProgressBar margin-left="8" margin-right="8"/>
+        <text text="%(SongLength)" font_size="8" width="32"/>
+      </horizontalLayout>
     </verticalLayout>
   </ui>
 </root>

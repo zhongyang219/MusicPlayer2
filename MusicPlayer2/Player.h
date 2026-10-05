@@ -273,6 +273,7 @@ public:
     void GetPlayerCoreCurrentPosition();
     //用m_volume的值设置音量
     void SetVolume();
+    void SetVolume(int volume);
 
     //计算频谱分析
     void CalculateSpectralData();
@@ -500,8 +501,6 @@ public:
     bool MidiNoLyric() const { return m_pCore == nullptr ? true : m_pCore->MidiNoLyric(); }
     wstring GetSoundFontName() const { return m_pCore == nullptr ? wstring() : m_pCore->GetSoundFontName(); }
 
-    int GetChannels();
-    int GetFreq();
     unsigned int GetBassHandle() const;
 
     //重新初始化BASS。当replay为true时，如果原来正在播放，则重新初始化后继续播放

@@ -15,6 +15,7 @@ namespace UiElement
         virtual bool RButtonUp(CPoint point) override;
         virtual bool MouseLeave() override;
         virtual void HideTooltip() override;
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
         enum IconType
         {
@@ -36,6 +37,7 @@ namespace UiElement
             IconMgr::IconType icon{ IconMgr::IT_NO_ICON };
         };
 
+    protected:
         IconType icon_type{};
         Orientation orientation{ Horizontal };
         int item_space{};

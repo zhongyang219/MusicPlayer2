@@ -1,12 +1,12 @@
-#pragma once
+ï»¿#pragma once
 #include "UIElement/UIElement.h"
 namespace UiElement
 {
-    //µ±Ç°²¥·ÅÁĞ±íÖ¸Ê¾
+    //å½“å‰æ’­æ”¾åˆ—è¡¨æŒ‡ç¤º
     class PlaylistIndicator : public Element
     {
     public:
-        static CListCache m_list_cache;     // ÎªPlaylistIndicatorµÄ»æÖÆ»º´æµ±Ç°²¥·ÅµÄListItem£¬DrawÖ®Ç°µ÷ÓÃreload
+        static CListCache& GetListCache() { return m_list_cache; }
         virtual void Draw() override;
         virtual bool LButtonUp(CPoint point) override;
         virtual bool LButtonDown(CPoint point) override;
@@ -15,11 +15,15 @@ namespace UiElement
         virtual void ClearRect() override;
         virtual void HideTooltip() override;
 
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+    protected:
+        static CListCache m_list_cache;     // ä¸ºPlaylistIndicatorçš„ç»˜åˆ¶ç¼“å­˜å½“å‰æ’­æ”¾çš„ListItemï¼ŒDrawä¹‹å‰è°ƒç”¨reload
         int font_size{ 9 };
 
         IPlayerUI::UIButton btn_drop_down;
         IPlayerUI::UIButton btn_menu;
-        CRect rect_name;
+        CRect rect_label;
     };
 }
 

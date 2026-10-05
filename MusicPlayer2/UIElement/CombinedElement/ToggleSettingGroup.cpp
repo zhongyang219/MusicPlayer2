@@ -40,4 +40,12 @@ namespace UiElement
     {
         return m_toggle_btn;
     }
+
+    void ToggleSettingGroup::FromXmlNode(tinyxml2::XMLElement* xml_node)
+    {
+        CombinedElement::FromXmlNode(xml_node);
+        icon_name = CTinyXml2Helper::ElementAttribute(xml_node, "icon");
+        main_text = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "mainText"), CodeType::UTF8_NO_BOM);
+        sub_text = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(xml_node, "subText"), CodeType::UTF8_NO_BOM);
+    }
 }

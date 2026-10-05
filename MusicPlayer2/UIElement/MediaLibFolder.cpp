@@ -3,6 +3,7 @@
 #include "MusicPlayerCmdHelper.h"
 #include "UserUi.h"
 #include "TracksList.h"
+#include "TinyXml2Helper.h"
 
 CListCache UiElement::MediaLibFolder::m_list_cache(CListCache::SubsetType::ST_FOLDER);
 
@@ -75,7 +76,7 @@ int UiElement::MediaLibFolder::GetHoverButtonCount(int row)
 {
     FindTrackList();
     //如果有关联的TrackList，则不显示最后的“预览”按钮
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
         return BTN_MAX - 1;
     else
         return BTN_MAX;
@@ -141,7 +142,7 @@ void UiElement::MediaLibFolder::OnSelectionChanged()
 {
     //获取关联的trackList元素
     FindTrackList();
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
     {
         int row = GetItemSelected();
         if (row >= 0 && row < GetRowCount())
@@ -163,4 +164,10 @@ void UiElement::MediaLibFolder::FindTrackList()
         track_list = FindRelatedElement<TrackList>(track_list_element_id);
         find_track_list = true;  //找过一次没找到就不找了
     }
+}
+
+void UiElement::MediaLibFolder::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    AbstractListElement::FromXmlNode(xml_node);
+    track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
 }

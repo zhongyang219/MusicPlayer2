@@ -8,7 +8,6 @@ namespace UiElement
     class MediaLibItemList : public AbstractListElement
     {
     public:
-        ListItem::ClassificationType type{};
 
         enum Column
         {
@@ -25,6 +24,8 @@ namespace UiElement
             BTN_PREVIEW,
             BTN_MAX
         };
+
+        ListItem::ClassificationType GetType() const { return type; }
 
         // 通过 AbstractListElement 继承
         std::wstring GetItemText(int row, int col) override;
@@ -43,13 +44,15 @@ namespace UiElement
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
         virtual void OnSelectionChanged() override;
 
-    public:
-        std::string track_list_element_id;
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
     private:
         void FindTrackList();        //查找TrackList
 
     private:
+        ListItem::ClassificationType type{};
+        std::string track_list_element_id;
+
         TrackList* track_list;
         bool find_track_list{};      //如果已经查找过TrackList，则为true
 

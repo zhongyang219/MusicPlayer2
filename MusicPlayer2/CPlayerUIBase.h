@@ -8,38 +8,6 @@
 
 #define WM_MAIN_MENU_POPEDUP (WM_USER+117)      //显示弹出式主菜单的消息，wPara为表示菜单显示位置的CPoint的指针
 
-namespace UiElement
-{
-    class Element;
-    class Rectangle;
-    class Button;
-    class Text;
-    class AlbumCover;
-    class Spectrum;
-    class TrackInfo;
-    class ProgressBar;
-    class Lyrics;
-    class Volume;
-    class BeatIndicator;
-    class StackElement;
-    class AbstractListElement;
-    class Playlist;
-    class PlaylistIndicator;
-    class ClassicalControlBar;
-    class MediaLibItemList;
-    class MediaLibPlaylist;
-    class MediaLibFolder;
-    class RecentPlayedList;
-    class NavigationBar;
-    class MyFavouriteList;
-    class AllTracksList;
-    class MiniSpectrum;
-    class FolderExploreTree;
-    class SearchBox;
-    class ElementSwitcher;
-    class Icon;
-}
-
 struct SLayoutData
 {
     const int margin = theApp.DPI(4);                           //边缘的余量
@@ -66,40 +34,11 @@ public:
 
     virtual CToolTipCtrl& GetToolTipCtrl() override { return m_tool_tip; }
 
-    friend class UiElement::Element;
-    friend class UiElement::Rectangle;
-    friend class UiElement::Button;
-    friend class UiElement::Text;
-    friend class UiElement::AlbumCover;
-    friend class UiElement::Spectrum;
-    friend class UiElement::TrackInfo;
-    friend class UiElement::ProgressBar;
-    friend class UiElement::Lyrics;
-    friend class UiElement::Volume;
-    friend class UiElement::BeatIndicator;
-    friend class UiElement::StackElement;
-    friend class UiElement::AbstractListElement;
-    friend class UiElement::Playlist;
-    friend class UiElement::PlaylistIndicator;
-    friend class UiElement::ClassicalControlBar;
-    friend class UiElement::MediaLibItemList;
-    friend class UiElement::MediaLibPlaylist;
-    friend class UiElement::MediaLibFolder;
-    friend class UiElement::RecentPlayedList;
-    friend class UiElement::NavigationBar;
-    friend class UiElement::MyFavouriteList;
-    friend class UiElement::AllTracksList;
-    friend class UiElement::MiniSpectrum;
-    friend class UiElement::FolderExploreTree;
-    friend class UiElement::SearchBox;
-    friend class UiElement::ElementSwitcher;
-    friend class UiElement::Icon;
-
     friend class UiFontGuard;
 
 public:
     void Init(CDC* pDC) override;
-    virtual void DrawInfo(bool reset = false) override final;
+    virtual void DrawInfo(bool reset = false, CRgn* draw_rgn = nullptr) override final;
 
     // IMouseEvent
     virtual bool LButtonDown(CPoint point) override;
@@ -153,7 +92,6 @@ public:
 
     static CString GetCmdShortcutKeyForTooltips(UINT id);      //获取用于显示在鼠标提示中的键盘快捷键
 
-    CRect GetVolumeRect() const;    //获取音量图标的矩形区域
     CRect GetDrawRect() const;
     CRect GetClientDrawRect() const;    //获取绘图客户区的矩形区域（不包含自绘标题栏、菜单栏、状态栏）
     CRect GetAppIconRect() const;       //获取应用程序图标矩形区域
@@ -162,9 +100,8 @@ public:
     const UIColors& GetUIColors() const { return m_colors; }
     CWnd* GetOwner() const { return m_pMainWnd; }
 
-protected:
     // 将字符串形如“%(KEY_STR)”格式的字符替换成当前<language>.ini中对应id的字符串
-    static void ReplaceUiStringRes(wstring& str);
+    static bool ReplaceUiStringRes(wstring& str);
 
 public:
     enum BtnKey     //标识按钮的类型
@@ -172,8 +109,6 @@ public:
         BTN_INVALID,            //无效的按钮
         BTN_REPETEMODE,         //“循环模式”按钮
         BTN_VOLUME,             //音量按钮
-        BTN_VOLUME_UP,
-        BTN_VOLUME_DOWN,
         BTN_TRANSLATE,          //歌词翻译按钮
         BTN_SKIN,               //切换界面按钮
         BTN_SKIN_TITLEBAR,      //标题栏上的切换界面按钮
@@ -255,18 +190,17 @@ public:
     void DrawSongInfo(CRect rect, int font_size = 9, bool reset = false);
     void DrawPlayEffectTag(CRect parent_rect, CRect& previous_item_rect);   //绘制播放效果的标签。parent_rect播放效果标签所在父元素的区域；前一个元素的区域，绘制后会更新此矩形区域
     void DrawRectangle(const CRect& rect, bool no_corner_radius = false, bool theme_color = true, ColorMode color_mode = RCM_AUTO);       //绘制矩形。如果no_corner_radius为true，则总是绘制直角矩形，忽略“使用圆角风格按钮”的设置；theme_color：是否使用主题彦颜色
+    void DrawRectangle(CRect rect, COLORREF color, BYTE alpha);
     void DrawRectangle(CRect rect, COLORREF color);
     void DrawBeatIndicator(CRect rect);
-    void DrawVolumnAdjBtn();
     CRect DrawProgressBar(CRect rect, bool play_time_both_side = false);               //绘制进度条（包含时间）。play_time_both_side如果为true，则播放时间显示的进度条的两侧，否则显示在进度条的右侧（返回进度条部分的矩形区域）
     CRect DrawProgess(CRect rect);                   //绘制进度条（返回进度条部分的矩形区域）
+    void DrawABRepeat(CRect rect);      //绘制进度条上的AB重复标记
     void DrawTopRightIcons();           //绘制右上角的图标
     void DrawCurrentTime();             //在右上角绘制当前系统时间
     void DrawAlbumCover(CRect rect);                //绘制专辑封面
     void DrawAlbumCoverWithInfo(CRect rect);        //绘制专辑封面，并在上面绘制歌曲的标题和艺术家
-    void DrawVolumeButton(CRect rect, bool adj_btn_top = false, bool show_text = true);     //adj_btn_top：点击后弹出的音量调整按钮是否在上方；show_text：是否显示文本
     void DrawLyrics(CRect rect, CFont* lyric_font, CFont* lyric_tr_font, bool with_background, bool show_song_info = false);        //绘制歌词 rect：歌曲区域；with_background是否绘制背景；show_song_info:是否总是在没有歌词时显示歌曲信息
-    void DrawCurrentPlaylistIndicator(CRect rect, UiElement::PlaylistIndicator* playlist_indicator);      //绘制当前播放列表指示
     /**
      * @brief   绘制stackElement的指示器
      * @param   UIButton indicator 指示器信息
@@ -275,21 +209,21 @@ public:
      */
     void DrawStackIndicator(UIButton indicator, int num, int index);
     void DrawUiMenuBar(CRect rect);
-    void DrawNavigationBar(CRect rect, UiElement::NavigationBar* tab_element);
     void DrawMiniSpectrum(CRect rect);      //绘制图标大小的迷你频谱
-    void DrawSearchBox(CRect rect, UiElement::SearchBox* search_box);
 
     // 实际绘制一个图标
     void DrawUiIcon(const CRect& rect, IconMgr::IconType icon_type, IconMgr::IconStyle icon_style = IconMgr::IconStyle::IS_Auto, IconMgr::IconSize icon_size = IconMgr::IconSize::IS_DPI_16);
     // 绘制一个UI按钮 (使用GetBtnIconType取得的图标)
     void DrawUIButton(const CRect& rect, BtnKey key_type, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
     void DrawUIButton(const CRect& rect, BtnKey key_type, UIButton& btn, bool big_icon = false, bool show_text = false, int font_size = 9, bool checked = false);
-    void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9, bool checked = false);
+    void DrawUIButton(const CRect& rect, UIButton& btn, IconMgr::IconType icon_type, bool big_icon = false, const std::wstring& text = std::wstring(), int font_size = 9, bool checked = false, Alignment align = Alignment::LEFT, bool btn_background = false);
     // 绘制一个UI按钮，以text文本作为图标
     void DrawTextButton(CRect rect, BtnKey btn_type, LPCTSTR text, bool checked = false);
     void DrawTextButton(CRect rect, UIButton& btn, LPCTSTR text, bool checked = false);
 
-protected:
+    //获取绘图的默认不透明度
+    BYTE GetDefaultAlpha() const;
+
     virtual void AddMouseToolTip(int btn, LPCTSTR str);      //为一个按钮添加鼠标提示
     virtual void UpdateMouseToolTip(int btn, LPCTSTR str) override;
     virtual void UpdateMouseToolTipPosition(int btn, CRect rect);
@@ -301,11 +235,11 @@ protected:
     //响应一个按钮右键点击
     virtual bool ButtonRClicked(BtnKey btn_type, const UIButton& btn);
 
-public:
     bool IsDrawBackgroundAlpha() const; //是否需要绘制透明背景
-    virtual bool IsDrawStatusBar() const;       //是否需要绘制状态栏
-    virtual bool IsDrawTitleBar() const;        //是否需要绘制标题栏
-    virtual bool IsDrawMenuBar() const;         //是否需要绘制菜单栏
+    bool IsDrawStatusBar() const;       //是否需要绘制状态栏
+    bool IsDrawTitleBar() const;        //是否需要绘制标题栏
+    bool IsDrawMenuBar() const;         //是否需要绘制菜单栏
+    bool IsDrawLargeIcon() const;        //是否绘制大图标
 
     static wstring GetDisplayFormatString();       //获取显示格式的字符串
 
@@ -317,11 +251,8 @@ public:
     int DPI(double pixel) const;
     double DPIDouble(double pixel);
     int CalculateRoundRectRadius(const CRect& rect);        //计算绘制圆角矩形的半径
-
-protected:
     double GetScrollTextPixel(bool slower = false);       //计算滚动文本一次滚动的像素值，如果slower为true，则滚动得稍微慢一点
 
-    virtual bool IsDrawLargeIcon() const;        //是否绘制大图标
 
     //切换堆叠元素（查找当前界面中第一个堆叠元素，并执行一次切换）
     virtual void SwitchStackElement() {}
@@ -333,6 +264,7 @@ protected:
      */
     virtual void SwitchStackElement(std::string id, int index) {}
 
+protected:
     bool IsMiniMode() const;
     virtual bool IsDrawTitlebarLeftBtn() const { return false; }  //是否显示标题栏左侧图标
 
@@ -343,6 +275,9 @@ public:
 
     //获取一个按钮或其他界面元素的鼠标提示（tooltip_index可以是按钮的key，或者Element::TooltipIndex中的枚举值）
     std::wstring GetItemTooltip(int tooltip_index);
+
+    //跳过一帧画面
+    void SkipNextFrame();
 
 private:
     void SetRepeatModeToolTipText();
@@ -356,7 +291,7 @@ private:
 
 protected:
     CWnd* m_pMainWnd = nullptr;
-    CDC* m_pDC;
+    CDC* m_pDC = nullptr;
     UIColors m_colors;
     CUIDrawer m_draw{ m_colors };       //用于绘制文本的对象
     SLayoutData m_layout;
@@ -373,8 +308,6 @@ protected:
 
     //UI 数据
     CRect m_draw_rect;                      //绘图区域
-    bool m_show_volume_adj{ false };        //显示音量调整按钮
-    bool m_show_volume_text{};        //是否显示音量文本
 
     //这个map只保存UI中的标题栏、菜单栏和音量按钮的信息，其他按钮信息应该保存在各自的UiElement::Button中，如果map出现了其他UI中的其他按钮应为异常情况
     std::map<BtnKey, UIButton> m_buttons;
@@ -382,14 +315,14 @@ protected:
     bool m_first_draw{ true };
 
 private:
-    CBitmap m_mem_bitmap_static;
-
     enum { UI_TIP_INFO_TIMER_ID = 1728 };
 
     static bool m_show_ui_tip_info;
     wstring m_ui_tip_info;
     int m_top_right_buttons_width{};
     CRect m_app_icon_rect{};        //标题栏应用图标区域
+
+    bool m_skip_next_frame{};
 };
 
 //用于在UI中设置字体。

@@ -15,9 +15,9 @@ namespace UiElement
 
         virtual int GetHeight(CRect parent_rect) const;
         virtual bool IsHeightValid() const;
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
-
-    public:
+    protected:
         bool show_switch_display_btn{};
         StackElement* m_stack_element{};
     };

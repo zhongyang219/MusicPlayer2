@@ -57,6 +57,11 @@ CRect CGdiPlusTool::GdiplusRectToCRect(Gdiplus::Rect rect)
     return CRect(rect.GetLeft(), rect.GetTop(), rect.GetRight(), rect.GetBottom());
 }
 
+CRect CGdiPlusTool::GdiplusRectToCRect(Gdiplus::RectF rect)
+{
+    return CRect(static_cast<int>(rect.GetLeft()), static_cast<int>(rect.GetTop()), static_cast<int>(rect.GetRight()), static_cast<int>(rect.GetBottom()));
+}
+
 Gdiplus::Rect CGdiPlusTool::CRectToGdiplusRect(CRect rect)
 {
     return Gdiplus::Rect(rect.left, rect.top, rect.Width(), rect.Height());

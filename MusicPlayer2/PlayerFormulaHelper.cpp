@@ -87,12 +87,12 @@ std::wstring CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable variabl
         return std::to_wstring(CPlayer::GetInstance().GetSafeCurrentSongInfo().bitrate);
     case PlayerVariable::Channels:
     {
-        int chans = CPlayer::GetInstance().GetChannels();
+        int chans = CPlayer::GetInstance().GetSafeCurrentSongInfo().channels;
         return CSongInfoHelper::GetChannelsString(static_cast<BYTE>(chans));
     }
     case PlayerVariable::SampleFreq:
     {
-        int freq = CPlayer::GetInstance().GetFreq();
+        int freq = CPlayer::GetInstance().GetSafeCurrentSongInfo().freq;
         wchar_t buff[64]{};
         swprintf_s(buff, L"%.1f", freq / 1000.0f);
         return std::wstring(buff);
@@ -133,13 +133,13 @@ std::wstring CPlayerFormulaHelper::GetPlayerVariableValue(PlayerVariable variabl
         return CPlayer::GetInstance().GetPlayingState();
     case PlayerVariable::PlayModeName:
     {
-        UiElement::PlaylistIndicator::m_list_cache.reload();
-        return UiElement::PlaylistIndicator::m_list_cache.at(0).GetTypeDisplayName();
+        UiElement::PlaylistIndicator::GetListCache().reload();
+        return UiElement::PlaylistIndicator::GetListCache().at(0).GetTypeDisplayName();
     }
     case PlayerVariable::PlayListName:
     {
-        UiElement::PlaylistIndicator::m_list_cache.reload();
-        return UiElement::PlaylistIndicator::m_list_cache.at(0).GetDisplayName();
+        UiElement::PlaylistIndicator::GetListCache().reload();
+        return UiElement::PlaylistIndicator::GetListCache().at(0).GetDisplayName();
     }
     case PlayerVariable::CurrentPosition:
     {

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ElementSwitcher.h"
-#include "Button.h"
+#include "Helper/UiElementHelper.h"
+#include "TinyXml2Helper.h"
 
 void UiElement::ElementSwitcher::Draw()
 {
@@ -27,6 +28,8 @@ bool UiElement::ElementSwitcher::LButtonUp(CPoint point)
         if (rect.PtInRect(point))
         {
             ui->SwitchStackElement(stack_element_id, stack_element_index);
+            ::SetCursor(::LoadCursor(NULL, IDC_ARROW));
+            btn.hover = false;
         }
         return true;
     }
@@ -62,7 +65,7 @@ bool UiElement::ElementSwitcher::MouseMove(CPoint point)
         ui->UpdateMouseToolTipPosition(TooltipIndex::ELEMENT_SWITCHER, rect);
     }
     last_hover = btn.hover;
-    return true;
+    return false;
 }
 
 bool UiElement::ElementSwitcher::MouseLeave()
@@ -95,5 +98,26 @@ bool UiElement::ElementSwitcher::hover() const
 void UiElement::ElementSwitcher::IconTypeFromString(const std::string& icon_name)
 {
     if (!icon_name.empty())
-        icon_type = Button::NameToIconType(icon_name);
+        icon_type = UiElementHelper::NameToIconType(icon_name);
+}
+
+void UiElement::ElementSwitcher::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    std::string str_style = CTinyXml2Helper::ElementAttribute(xml_node, "style");
+    if (str_style == "empty")
+        style = UiElement::ElementSwitcher::Style::Empty;
+    else if (str_style == "album_cover")
+        style = UiElement::ElementSwitcher::Style::AlbumCover;
+    else if (str_style == "button")
+        style = UiElement::ElementSwitcher::Style::Button;
+
+    stack_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "stack_element_id");
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "stack_element_index", stack_element_index);
+
+    std::string str_text = CTinyXml2Helper::ElementAttribute(xml_node, "text");
+    text = CCommon::StrToUnicode(str_text, CodeType::UTF8_NO_BOM);
+    CPlayerUIBase::ReplaceUiStringRes(text);
+    std::string str_icon = CTinyXml2Helper::ElementAttribute(xml_node, "icon");
+    IconTypeFromString(str_icon);
 }

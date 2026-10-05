@@ -284,6 +284,11 @@ int CBassCore::GetFReq()
     return m_channel_info.freq;
 }
 
+int CBassCore::GetBitrate()
+{
+    return m_bitrate;
+}
+
 wstring CBassCore::GetSoundFontName()
 {
     return m_sfont_name;
@@ -306,6 +311,9 @@ void CBassCore::Open(const wchar_t * file_path)
     else
         m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, flags);
     BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
+    float bitrate{};
+    BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_BITRATE, &bitrate);
+    m_bitrate = static_cast<int>(bitrate + 0.5f);
     m_is_midi = (CAudioCommon::GetAudioTypeByBassChannel(m_channel_info.ctype) == AudioType::AU_MIDI);
     if (m_bass_midi_lib.IsSucceed() && m_is_midi && m_sfont.font != 0)
         m_bass_midi_lib.BASS_MIDI_StreamSetFonts(m_musicStream, &m_sfont, 1);
@@ -518,7 +526,10 @@ void CBassCore::SetCurPosition(int position)
 void CBassCore::GetAudioInfo(const wchar_t* file_path, AudioInfo* audio_info, AudioTag* audio_tag)
 {
     HSTREAM hStream;
-    hStream = BASS_StreamCreateFile(FALSE, file_path, 0, 0, BASS_SAMPLE_FLOAT);
+    if (CCommon::IsURL(file_path))
+        hStream = BASS_StreamCreateURL(file_path, 0, BASS_SAMPLE_FLOAT, NULL, NULL);
+    else
+        hStream = BASS_StreamCreateFile(FALSE, file_path, 0, 0, BASS_SAMPLE_FLOAT);
     BASS_CHANNELINFO info{};
     if (audio_info != nullptr)
     {

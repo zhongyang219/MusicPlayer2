@@ -9,8 +9,8 @@ class CUserUi :
     public CPlayerUIBase
 {
 public:
-    CUserUi(CWnd* pMainWnd, const std::wstring& xml_path);
-    CUserUi(CWnd* pMainWnd, UINT id);    //此构造函数不传递xml文件的路径，id为xml界面资源ID
+    CUserUi(CWnd* pMainWnd, const std::wstring& xml_path, UIData& ui_data);
+    CUserUi(CWnd* pMainWnd, UINT id, UIData& ui_data);    //此构造函数不传递xml文件的路径，id为xml界面资源ID
     ~CUserUi();
 
     void LoadFromContents(const std::string& xml_contents);
@@ -48,6 +48,8 @@ public:
     template<class T>
     void IterateAllElements(std::function<bool(T*)> func, bool visible_only = false);
 
+    IconMgr::IconType GetUiIcon() const { return m_icon; }
+
     enum { SHOW_VOLUME_TIMER_ID = 1635 };
 
     // 通过 CPlayerUIBase 继承
@@ -74,6 +76,7 @@ protected:
     std::shared_ptr<UiElement::Element> m_root_ui_narrow;
     std::shared_ptr<UiElement::Element> m_root_ui_small;
     std::wstring m_ui_name;
+    IconMgr::IconType m_icon{ IconMgr::IT_NO_ICON };
     bool m_last_mouse_in_draw_area{};
     CPanelManager m_panel_mgr{ this };
     CPoint m_mouse_clicked_point;
@@ -141,7 +144,7 @@ inline T* CUserUi::FindElement(const std::string& id)
         T* ele = dynamic_cast<T*>(element);
         if (ele != nullptr)
         {
-            if (id.empty() || id == element->id)
+            if (id.empty() || id == element->Id())
             {
                 element_found = ele;
                 return true;
@@ -161,7 +164,7 @@ inline T* CUserUi::FindElementInAllUi(const std::string& id)
         T* ele = dynamic_cast<T*>(element);
         if (ele != nullptr)
         {
-            if (id.empty() || id == element->id)
+            if (id.empty() || id == element->Id())
             {
                 element_found = ele;
                 return true;

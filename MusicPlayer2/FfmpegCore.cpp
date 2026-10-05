@@ -131,6 +131,14 @@ int CFfmpegCore::GetFReq() {
     } else return 0;
 }
 
+int CFfmpegCore::GetBitrate()
+{
+    if (IsSucceed() && handle)
+        return static_cast<short>(ffmpeg_core_get_bitrate(handle) / 1000);
+    else
+        return 0;
+}
+
 std::wstring CFfmpegCore::GetSoundFontName() {
     return L"";
 }

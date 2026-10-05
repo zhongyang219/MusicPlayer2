@@ -3,8 +3,9 @@
 #include "Common.h"
 #include "FilePathHelper.h"
 #include "SongDataManager.h"
+#include "TinyXml2Helper.h"
 
-const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8" };
+const vector<wstring> CPlaylistFile::m_surpported_playlist{ PLAYLIST_EXTENSION_2, L"m3u", L"m3u8", L"wpl", L"ttpl"};
 
 /*
 播放列表文件格式说明
@@ -34,22 +35,32 @@ wstring DeleteInvalidCh(const wstring& str)
 void CPlaylistFile::LoadFromFile(const wstring & file_path)
 {
     m_path = file_path;
-    ifstream stream{ file_path };
-    if (stream.fail())
-        return;
 
     //判断文件编码
     bool utf8{};
     wstring file_extension = CFilePathHelper(file_path).GetFileExtension();
     utf8 = (file_extension != L"m3u");
 
-    string current_line;
-    while (!stream.eof())
+    std::string file_content;
+    if (CCommon::GetFileContent(file_path.c_str(), file_content))
     {
-        std::getline(stream, current_line);
-        DisposePlaylistFileLine(current_line, utf8);
+        if (file_extension == L"wpl")
+        {
+            ParseWplFile(file_content);
+        }
+        else if (file_extension == L"ttpl")
+        {
+            ParseTtplFile(file_content);
+        }
+        else
+        {
+            std::wstring file_content_wcs = CCommon::StrToUnicode(file_content, utf8 ? CodeType::UTF8 : CodeType::ANSI);
+            if (file_extension == L"m3u" || file_extension == L"m3u8")
+                ParseM3uFile(file_content_wcs);
+            else
+                ParsePlaylistFile(file_content_wcs);
+        }
     }
-    stream.close();
 }
 
 void CPlaylistFile::SaveToFile(const wstring& file_path, Type type) const
@@ -68,10 +79,13 @@ void CPlaylistFile::SavePlaylistToFile(const vector<SongInfo>& song_list, const 
         {
             if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             stream << CCommon::UnicodeToStr(item.file_path, CodeType::UTF8_NO_BOM);
-            if (item.is_cue)
+            if (item.is_cue || CCommon::IsURL(item.file_path))
             {
                 // 出于向后兼容考虑必要这行代码，当song_list来自LoadFromFile加载的不记录cue_file_path的播放列表时item需要从媒体库加载cue_file_path
                 SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(item); // 从媒体库载入数据，媒体库不存在的话会原样返回item
+                //如果从媒体库中查询到的曲目的标签信息是空的，则使用原始的标签信息
+                if (song.IsTagEmpty())
+                    song.CopyAudioTag(item);
                 CString buff;
                 buff.Format(L"|%d|%d|%d|%s|%s|%s|%d|%d|%s|%s|%s|%s", song.is_cue, song.start_pos.toInt(), song.end_pos.toInt(),
                     DeleteInvalidCh(song.title).c_str(), DeleteInvalidCh(song.artist).c_str(), DeleteInvalidCh(song.album).c_str(),
@@ -97,6 +111,9 @@ void CPlaylistFile::SavePlaylistToFile(const vector<SongInfo>& song_list, const 
             if (item.file_path.empty()) continue;   // 不保存没有音频路径的项目
             // song_list可能来自LoadFromFile含有信息不足，此处先从媒体库载入最新数据，媒体库不存在的话会原样返回item
             SongInfo song = CSongDataManager::GetInstance().GetSongInfo3(item);
+            //如果从媒体库中查询到的曲目的标签信息是空的，则使用原始的标签信息
+            if (song.IsTagEmpty())
+                song.CopyAudioTag(item);
             if (song.is_cue)
             {
                 //如果播放列表中的项目是cue，且该cue文件没有保存过，则将其保存
@@ -178,39 +195,34 @@ bool CPlaylistFile::IsPlaylistExt(wstring ext)
     return CCommon::IsItemInVector(m_surpported_playlist, ext);
 }
 
-void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool utf8)
+void CPlaylistFile::ParsePlaylistFile(const std::wstring& file_contents)
 {
-    if (str_current_line.substr(0, 7) == "#EXTM3U" || str_current_line.substr(0, 7) == "#EXTINF")
-        return;
-
-    string current_line = str_current_line;
-    CCommon::DeleteStringBom(current_line);
-    if (!current_line.empty() && current_line.front() == '\"')
-        current_line = current_line.substr(1);
-    if (!current_line.empty() && current_line.back() == '\"')
-        current_line.pop_back();
-
-    if (current_line.size() > 3)
+    std::vector<std::wstring> lines;
+    CCommon::StringSplitLine(file_contents, lines);
+    for (wstring current_line : lines)
     {
-        SongInfo item;
-        wstring current_line_wcs = CCommon::StrToUnicode(current_line, utf8 ? CodeType::UTF8 : CodeType::ANSI);
-        size_t index = current_line_wcs.find(L'|');
-        item.file_path = current_line_wcs.substr(0, index);
+        //去掉引号
+        if (!current_line.empty() && current_line.front() == L'\"')
+            current_line = current_line.substr(1);
+        if (!current_line.empty() && current_line.back() == L'\"')
+            current_line.pop_back();
 
-        //如果是URL，则直接添加
-        if (CCommon::IsURL(item.file_path))
+        if (current_line.size() > 3)
         {
-            m_playlist.push_back(item);
-        }
-        else
-        {
+            SongInfo item;
+            size_t index = current_line.find(L'|');
+            item.file_path = current_line.substr(0, index);
+
+            //是否为URL
+            bool is_url = CCommon::IsURL(item.file_path);
             //如果是相对路径，则转换成绝对路径
-            item.file_path = CCommon::RelativePathToAbsolutePath(item.file_path, CFilePathHelper(m_path).GetDir());
+            if (!is_url)
+                item.file_path = CCommon::RelativePathToAbsolutePath(item.file_path, CFilePathHelper(m_path).GetDir());
 
-            if (index < current_line_wcs.size() - 1)
+            if (index < current_line.size() - 1)
             {
                 vector<wstring> result;
-                CCommon::StringSplit(current_line_wcs, L'|', result, false);
+                CCommon::StringSplit(current_line, L'|', result, false);
                 if (result.size() >= 2)
                     item.is_cue = (_wtoi(result[1].c_str()) != 0);
                 if (result.size() >= 3)
@@ -237,9 +249,122 @@ void CPlaylistFile::DisposePlaylistFileLine(const string& str_current_line, bool
                 if (result.size() >= 13)
                     item.cue_file_path = result[12];
             }
-            if (CCommon::IsPath(item.file_path)) // 绝对路径的语法检查
+            if (is_url || CCommon::IsPath(item.file_path)) // 绝对路径的语法检查
             {
                 m_playlist.push_back(item);
+            }
+        }
+    }
+}
+
+void CPlaylistFile::ParseM3uFile(const std::wstring& file_contents)
+{
+    std::vector<std::wstring> lines;
+    CCommon::StringSplitLine(file_contents, lines);
+    std::wstring track_name;
+    for (const wstring& current_line : lines)
+    {
+        if (current_line.substr(0, 7) == L"#EXTM3U")
+            continue;
+
+        //解析 #EXTINF 行获取曲目名称
+        if (current_line.substr(0, 7) == L"#EXTINF")
+        {
+            size_t index = current_line.rfind(L',');
+            if (index == std::wstring::npos)
+                track_name.clear();
+            else
+                track_name = current_line.substr(index + 1);
+        }
+        //不是 #EXTINF 行
+        else
+        {
+            SongInfo item;
+            item.file_path = current_line;
+            item.title = track_name;
+
+            bool is_url = CCommon::IsURL(item.file_path);
+            //如果是相对路径，则转换成绝对路径
+            if (!is_url)
+                item.file_path = CCommon::RelativePathToAbsolutePath(item.file_path, CFilePathHelper(m_path).GetDir());
+            //绝对路径的语法检查
+            if (is_url || CCommon::IsPath(item.file_path))
+                m_playlist.push_back(item);
+
+            track_name.clear();
+        }
+    }
+}
+
+void CPlaylistFile::ParseWplFile(const std::string& file_contents)
+{
+    tinyxml2::XMLDocument doc;
+    doc.Parse(file_contents.c_str(), file_contents.size());
+    auto* root = doc.RootElement();
+    if (root != nullptr)
+    {
+        for (tinyxml2::XMLElement* child = root->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
+        {
+            std::string name = CTinyXml2Helper::ElementName(child);
+            if (name == "body")
+            {
+                tinyxml2::XMLElement* seq_element = child->FirstChildElement();
+                if (seq_element != nullptr)
+                {
+                    for (tinyxml2::XMLElement* media_element = seq_element->FirstChildElement(); media_element != nullptr; media_element = media_element->NextSiblingElement())
+                    {
+                        std::wstring file_path = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(media_element, "src"), CodeType::UTF8);
+                        bool is_url = CCommon::IsURL(file_path);
+                        //如果是相对路径，则转换成绝对路径
+                        if (!is_url)
+                            file_path = CCommon::RelativePathToAbsolutePath(file_path, CFilePathHelper(m_path).GetDir());
+                        //绝对路径的语法检查
+                        if (is_url || CCommon::IsPath(file_path))
+                        {
+                            SongInfo item;
+                            item.file_path = file_path;
+                            m_playlist.push_back(item);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void CPlaylistFile::ParseTtplFile(const std::string& file_contents)
+{
+    tinyxml2::XMLDocument doc;
+    doc.Parse(file_contents.c_str(), file_contents.size());
+    auto* root = doc.RootElement();
+    if (root != nullptr)
+    {
+        for (tinyxml2::XMLElement* child = root->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
+        {
+            std::string name = CTinyXml2Helper::ElementName(child);
+            if (name == "items")
+            {
+                for (tinyxml2::XMLElement* item_element = child->FirstChildElement(); item_element != nullptr; item_element = item_element->NextSiblingElement())
+                {
+                    name = CTinyXml2Helper::ElementName(item_element);
+                    if (name == "item")
+                    {
+                        std::wstring file_path = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(item_element, "file"), CodeType::UTF8);
+                        std::wstring title = CCommon::StrToUnicode(CTinyXml2Helper::ElementAttribute(item_element, "title"), CodeType::UTF8);
+                        bool is_url = CCommon::IsURL(file_path);
+                        //如果是相对路径，则转换成绝对路径
+                        if (!is_url)
+                            file_path = CCommon::RelativePathToAbsolutePath(file_path, CFilePathHelper(m_path).GetDir());
+                        //绝对路径的语法检查
+                        if (is_url || CCommon::IsPath(file_path))
+                        {
+                            SongInfo item;
+                            item.file_path = file_path;
+                            item.title = title;
+                            m_playlist.push_back(item);
+                        }
+                    }
+                }
             }
         }
     }

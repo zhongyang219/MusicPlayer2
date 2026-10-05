@@ -2,6 +2,7 @@
 #include "CPlayerUIBase.h"
 #include "ListCache.h"
 #include "IMouseEvent.h"
+#include "tinyxml2/tinyxml2.h"
 
 //定义界面元素
 namespace UiElement
@@ -10,10 +11,12 @@ namespace UiElement
     class Element : public IMouseEvent
     {
     public:
+        friend class Layout;
+
         struct Value        //一个布局的数值
         {
             Value(bool _is_vertical, Element* _owner);
-            void FromString(const std::string str);
+            void FromString(const std::string& str);
             int GetValue(CRect parent_rect) const;   // 获取实际显示的数值
             bool IsValid() const;           // 返回true说明设置过数值
         private:
@@ -23,6 +26,15 @@ namespace UiElement
             bool is_vertical{ false };      // 数值是否为垂直方向的
             Element* owner;
         };
+
+        std::string Id() const { return id; }
+        Element* Parent() const { return pParent; }
+        std::string Name() const { return name; }
+        const std::vector<std::shared_ptr<Element>>& ChildList() const { return childLst; }
+        const Value& MinWidth() const { return min_width; }
+        const Value& MinHeight() const { return min_height; }
+
+    protected:
         Value margin_left{ false, this };
         Value margin_right{ false, this };
         Value margin_top{ true, this };
@@ -44,44 +56,57 @@ namespace UiElement
         std::string name;
         std::string id;
 
+    public:
         virtual void Draw();   //绘制此元素
-        virtual bool IsEnable(CRect parent_rect) const;
+        virtual void DrawTopMost(); //绘制元素中需要在顶层显示的部分（例如音量调节按钮）
+        virtual bool IsShown(CRect parent_rect) const;
         virtual int GetMaxWidth(CRect parent_rect) const;
         virtual int GetWidth(CRect parent_rect) const;
         virtual int GetHeight(CRect parent_rect) const;
         virtual bool IsWidthValid() const;
         virtual bool IsHeightValid() const;
+        void SetWidth(const std::string& str);
+        void SetHeight(const std::string& str);
         CRect GetRect() const;      //获取此元素在界面中的矩形区域
         void SetRect(CRect _rect);
         virtual void ClearRect();
+        virtual bool GlobalLButtonUp(CPoint point); //响应全局鼠标左键抬起事件
+        virtual bool GlobalLButtonDown(CPoint point);   //响应全局鼠标左键按下事件
+        virtual bool GlobalMouseMove(CPoint point);     //响应全局鼠标移动事件
 
         //遍历所有界面元素
         //visible_only为true时，遇到stackElement时，只遍历stackElement下面可见的子节点
         void IterateAllElements(std::function<bool(UiElement::Element*)> func, bool visible_only = false);
         void SetUi(CPlayerUIBase* _ui);
         void AddChild(std::shared_ptr<Element> child);
-        bool IsEnable() const;
+        bool IsShown() const;
         //设置元素的显示/隐藏属性
         void SetVisible(bool visible) { this->visible = visible; }
         //获取元素的显示/隐藏属性
         bool IsVisible() const { return visible; }
+        //设置元素的启用/禁用属性
+        void SetEnable(bool enable);
+        //获取元素的启用/禁用属性
+        bool IsEnable() const { return enable; }
 
         //鼠标消息虚函数。
         //即使鼠标的位置不在当前元素的矩形区域内，函数仍然会响应，因此在重写这些虚函数时需要先使用rect.PtInRect(point)判断鼠标位置是否在矩形区域内。
-        virtual bool LButtonUp(CPoint point) override { return false; }
-        virtual bool LButtonDown(CPoint point) override { return false; }
-        virtual bool MouseMove(CPoint point) override { return false; }
-        virtual bool RButtonUp(CPoint point) override { return false; }
-        virtual bool RButtonDown(CPoint point) override { return false; }
-        virtual bool MouseWheel(int delta, CPoint point) override { return false; }
-        virtual bool DoubleClick(CPoint point) override { return false; }
-        virtual bool MouseLeave() override { return false; }
+        virtual bool LButtonUp(CPoint point) override;
+        virtual bool LButtonDown(CPoint point) override;
+        virtual bool MouseMove(CPoint point)override ;
+        virtual bool RButtonUp(CPoint point) override;
+        virtual bool RButtonDown(CPoint point) override;
+        virtual bool MouseWheel(int delta, CPoint point) override;
+        virtual bool DoubleClick(CPoint point) override;
+        virtual bool MouseLeave() override;
 
         virtual void CalculateRect(CRect parent_rect);
 
-        virtual bool SetCursor() { return false; }
+        virtual bool SetCursor();
         virtual void InitComplete() {}
         virtual void HideTooltip() {}
+
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
         //根据id查找一个子节点
         Element* FindElement(const std::string& id);
@@ -99,7 +124,6 @@ namespace UiElement
         virtual void CalculateRect();           //计算此元素在界面中的矩形区域
         static void IterateElements(UiElement::Element* parent_element, std::function<bool(UiElement::Element*)> func, bool visible_only = false);
 
-    private:
         Element* RootElement();       //获取根节点
         Element* CurUiRootElement();
 
@@ -113,6 +137,8 @@ namespace UiElement
         CRect rect;     //用于保存计算得到的元素的矩形区域
         CPlayerUIBase* ui{};
         bool visible{ true };   //元素的显示/隐藏属性
+        bool enable{ true };    //元素的启用/禁用属性
+        static UINT system_ctrl_id;
     };
 
     //UI中除按钮外其他元素的鼠标提示id，必须大于按钮枚举（CPlayerUIBase::BtnKey）的最大值，且小于1000
@@ -129,10 +155,19 @@ namespace UiElement
             PROGRESS_BAR,
             ELEMENT_SWITCHER,
             TEXT,
+            TEXT_BLOCK,
             INDEX_MAX,
         };
     }
 
+    enum Orientation
+    {
+        Vertical,
+        Horizontal,
+    };
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     template<class T>
     inline T* Element::FindRelatedElement(std::string id)
     {

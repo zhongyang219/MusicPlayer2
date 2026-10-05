@@ -318,6 +318,11 @@
 #define IDR_TOGGLE_SETTING_GROUP        685
 #define IDI_DELETE                      686
 #define IDI_DELETE_D                    687
+#define IDI_CHECKBOX_D                  688
+#define IDD_UI_DIALOG                   689
+#define IDR_TEXT3                       691
+#define IDR_TEST_DIALOG                 691
+#define IDD_OPEN_URL_DLG                692
 #define IDC_LIST1                       1002
 #define IDC_PATH_LIST                   1002
 #define IDC_LYRIC_DOWN_LIST1            1002
@@ -831,6 +836,12 @@
 #define IDC_DISABLE_SCREEN_SLEEP_CHECK  1381
 #define IDC_NO_LONGER_ASK_CHECK         1382
 #define IDC_CLOSE_MAIN_WINDOW_INQUERY_INFO_STATIC 1383
+#define IDC_UI_EDIT                     1384
+#define IDC_INPUT_NAME_EDIT             1385
+#define IDC_INPUT_NAME_EDIT2            1386
+#define IDC_INPUT_URL_EDIT              1386
+#define IDC_CHECK1                      1386
+#define IDC_SHOW_TITLE_BAR_BACKGROUND_CHECK 1386
 #define ID_FILE_OPEN_FOLDER             32774
 #define ID_PLAY_PAUSE                   32778
 #define ID_STOP                         32779
@@ -856,7 +867,8 @@
 #define ID_ITEM_PROPERTY                32833
 #define ID_TEST_DIALOG                  32834
 #define ID_TEST_PANEL                   32835
-#define ID_REMOVE_FROM_PLAYLIST         32836
+#define ID_TEST_UI_DIALOG               32836
+#define ID_REMOVE_FROM_PLAYLIST         32837
 #define ID_EXPLORE_TRACK                32840
 #define ID_RE_INI_BASS                  32843
 #define ID_SORT_BY_FILE                 32850
@@ -1082,9 +1094,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        688
+#define _APS_NEXT_RESOURCE_VALUE        694
 #define _APS_NEXT_COMMAND_VALUE         33513
-#define _APS_NEXT_CONTROL_VALUE         1384
+#define _APS_NEXT_CONTROL_VALUE         1387
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

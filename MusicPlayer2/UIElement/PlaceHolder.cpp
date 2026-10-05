@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "PlaceHolder.h"
+#include "TinyXml2Helper.h"
 
 int UiElement::PlaceHolder::GetWidth(CRect parent_rect) const
 {
@@ -44,4 +45,10 @@ bool UiElement::PlaceHolder::IsHide() const
     return (show_when_use_system_titlebar
         && !theApp.m_app_setting_data.show_window_frame
         && (!theApp.m_ui_data.full_screen) || (theApp.m_ui_data.show_menu_bar && is_all_titlebar_icon_hide));
+}
+
+void UiElement::PlaceHolder::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_when_use_system_titlebar", show_when_use_system_titlebar);
 }

@@ -36,6 +36,9 @@ public:
     bool IsGenreModified(const vector<SongInfo>& list_ori);
     bool IsCommentModified(const vector<SongInfo>& list_ori);
 
+    static bool IsSongTagWriteEnable(const SongInfo& song);
+    static bool IsSongAlbumCoverWriteEnable(const SongInfo& song);
+
 private:
     //获取m_song_info中一个字段的值，如果该字段全部相同，则返回该值，如果有一个不同，则返回“多个数值”
     static wstring GetMultiValue(std::function<wstring(const SongInfo&)> fun_get_value, const vector<SongInfo>& song_list);

@@ -48,6 +48,9 @@ public:
     wstring GetAllText(const wchar_t* sperator = L"\t");
 
 protected:
+    bool IsRowSelected(int row);
+
+protected:
     const ColorTable& m_theme_color;
     COLORREF m_background_color{ GRAY(255) };	//列表控件的背景色
     int m_highlight_item{ -1 };			//高亮的项目

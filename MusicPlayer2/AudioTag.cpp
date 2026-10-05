@@ -92,7 +92,7 @@ bool CAudioTag::GetAudioTag()
             //CTagLibHelper::GetOpusTagInfo(m_song_info);
         {
             CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
-            audio_tag_old.GetOggTag();
+            succeed = audio_tag_old.GetOggTag();
         }
         break;
         case AU_WV:
@@ -111,7 +111,7 @@ bool CAudioTag::GetAudioTag()
             //CTagLibHelper::GetAnyFileTagInfo(m_song_info);
         {
             CAudioTagOld audio_tag_old(m_hStream, m_song_info, m_type);
-            audio_tag_old.GetTagDefault();
+            succeed = audio_tag_old.GetTagDefault();
         }
         break;
         case AU_CUE:

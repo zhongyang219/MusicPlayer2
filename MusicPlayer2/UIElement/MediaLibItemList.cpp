@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "UserUi.h"
 #include "TracksList.h"
+#include "TinyXml2Helper.h"
 
 std::wstring UiElement::MediaLibItemList::GetItemText(int row, int col)
 {
@@ -96,7 +97,7 @@ int UiElement::MediaLibItemList::GetHoverButtonCount(int row)
 {
     FindTrackList();
     //如果有关联的TrackList，则不显示最后的“预览”按钮
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
         return BTN_MAX - 1;
     else
         return BTN_MAX;
@@ -170,7 +171,7 @@ void UiElement::MediaLibItemList::OnHoverButtonClicked(int btn_index, int row)
 void UiElement::MediaLibItemList::OnSelectionChanged()
 {
     FindTrackList();
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
     {
         int item_selected = GetItemSelected();
         if (item_selected >= 0 && item_selected < GetRowCount())
@@ -193,4 +194,25 @@ void UiElement::MediaLibItemList::FindTrackList()
         track_list = FindRelatedElement<TrackList>(track_list_element_id);
         find_track_list = true;  //找过一次没找到就不找了
     }
+}
+
+void UiElement::MediaLibItemList::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    AbstractListElement::FromXmlNode(xml_node);
+    std::string str_type = CTinyXml2Helper::ElementAttribute(xml_node, "type");
+    if (str_type == "artist")
+        type = ListItem::ClassificationType::CT_ARTIST;
+    else if (str_type == "album")
+        type = ListItem::ClassificationType::CT_ALBUM;
+    else if (str_type == "genre")
+        type = ListItem::ClassificationType::CT_GENRE;
+    else if (str_type == "year")
+        type = ListItem::ClassificationType::CT_YEAR;
+    else if (str_type == "file_type")
+        type = ListItem::ClassificationType::CT_TYPE;
+    else if (str_type == "bitrate")
+        type = ListItem::ClassificationType::CT_BITRATE;
+    else if (str_type == "rating")
+        type = ListItem::ClassificationType::CT_RATING;
+    track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
 }

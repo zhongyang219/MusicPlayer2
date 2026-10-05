@@ -530,6 +530,15 @@ std::wstring CMusicPlayerCmdHelper::SearchAlbumCover(const SongInfo& song)
                     file_name = theApp.m_app_setting_data.AbsoluteAlbumCoverPath() + album_name + L".*";
                     CCommon::GetImageFiles(file_name, files);
                 }
+                if (files.empty() && CCommon::IsURL(song.file_path) && !song.title.empty())
+                {
+                    //如果播放的是url，查找文件名为“标题”的文件
+                    wstring title_name{ song.title };
+                    CCommon::FileNameNormalize(title_name);
+                    file_name = theApp.m_app_setting_data.AbsoluteAlbumCoverPath() + title_name + L".*";
+                    CCommon::GetImageFiles(file_name, files);
+                }
+
                 if (!files.empty())
                     album_cover_path = theApp.m_app_setting_data.AbsoluteAlbumCoverPath() + files[0];
             }
@@ -1068,8 +1077,13 @@ bool CMusicPlayerCmdHelper::OnOpenFolder()
     CFolderBrowserDlg folderPickerDlg(this->GetSafeHwnd());
     folderPickerDlg.SetInfo(title.c_str());
 #else
-    CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
-    CFolderPickerDialog folderPickerDlg(current_path.GetParentDir().c_str());
+    std::wstring cur_dir;
+    if (!CCommon::IsURL(CPlayer::GetInstance().GetCurrentDir()))
+    {
+        CFilePathHelper current_path(CPlayer::GetInstance().GetCurrentDir());
+        cur_dir = current_path.GetParentDir();
+    }
+    CFolderPickerDialog folderPickerDlg(cur_dir.c_str());
     folderPickerDlg.m_ofn.lpstrTitle = title.c_str();
     folderPickerDlg.AddCheckButton(IDC_OPEN_CHECKBOX, include_sub_dir_str, include_sub_dir);     //在打开对话框中添加一个复选框
 #endif

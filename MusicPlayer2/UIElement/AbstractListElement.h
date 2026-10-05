@@ -2,6 +2,7 @@
 #include "UIElement/AbstractScrollArea.h"
 namespace UiElement
 {
+    class SearchBox;
     //列表元素
     class AbstractListElement : public AbstractScrollArea
     {
@@ -19,6 +20,7 @@ namespace UiElement
         virtual bool RButtonUp(CPoint point) override;
         virtual bool RButtonDown(CPoint point) override;
         virtual bool MouseWheel(int delta, CPoint point) override;
+        virtual bool MouseLeave() override;
         virtual bool DoubleClick(CPoint point) override;
         void ShowContextMenu(CMenu* menu, CWnd* cmd_reciver);
         virtual void ClearRect() override;
@@ -78,18 +80,26 @@ namespace UiElement
 
         void SetRelatedSearchBox(SearchBox* search_box) { related_search_box = search_box; }
 
-        int item_height{ 28 };
-        int font_size{ 9 };
+        void SetSelectionChangedTrigger(std::function<void(AbstractListElement*)> func);
+
+        void SetDrawAlternateBackground(bool val) { draw_alternate_background = val; }
+        void SetDrawHoverRowBackground(bool val) { draw_hover_row_background = val; }
+
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+        int GetDisplayedIndexByPoint(CPoint point);     //获取一个坐标所在的行号
 
     private:
         void DisplayRowToAbsoluteRow(int& row); //将显示的行号转换为绝对行号
         void AbsoluteRowToDisplayRow(int& row); //将绝对行号转换为显示的行号
-        int GetDisplayedIndexByPoint(CPoint point);
 
     protected:
         int GetListIndexByPoint(CPoint point);
 
     protected:
+        int item_height{ 28 };
+        int font_size{ 9 };
+
         std::set<int> items_selected; //选中的序号
         CDrawCommon::ScrollInfo selected_item_scroll_info;  //绘制选中项滚动文本的结构体
         std::vector<CRect> item_rects;  //播放列表中每个项目的矩形区域
@@ -99,8 +109,16 @@ namespace UiElement
     private:
         std::vector<int> search_result; //保存搜索结果的序号
         bool searched{};                //是否处于搜索状态
+        bool draw_alternate_background{ true }; //是否为奇偶行交替绘制不同颜色的背景
+        bool draw_hover_row_background{ false };    //是否绘制鼠标指向时的背景
         SearchBox* related_search_box{};    //关联的键框
         mutable std::recursive_mutex m_selection_mutex;     //保护items_selected的互斥量
+        CPoint m_mouse_pos;
+
+        std::function<void(AbstractListElement*)> m_selection_changed_trigger;
+
+        bool last_hover{};
+        bool pressed{};
     };
 }
 

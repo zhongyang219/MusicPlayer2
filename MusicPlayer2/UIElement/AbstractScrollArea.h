@@ -21,6 +21,7 @@ namespace UiElement
 
     protected:
         CRect m_scroll_area_rect;       //滚动区域的矩形区域
+        CRect m_client_area_rect;       //获取客户区域的矩形（不包含滚动条，不包含控件外区域）
 
         bool mouse_pressed{ };          //鼠标左键是否按下
         bool hover{};                   //指标指向播放列表区域
@@ -34,6 +35,8 @@ namespace UiElement
         bool scrollbar_handle_pressed{};    //滚动条把手被按下
         int scroll_handle_length_comp{};    //计算滚动条把手长度时的补偿量
 
+    private:
+        bool last_hover{};
     };
 }
 

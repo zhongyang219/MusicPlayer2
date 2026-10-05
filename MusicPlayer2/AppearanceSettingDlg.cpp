@@ -117,6 +117,7 @@ bool CAppearanceSettingDlg::InitializeControls()
     SetDlgControlText(IDC_USE_SYSTEM_TITLEBAR_RADIO, L"TXT_OPT_APC_USE_SYSTEM_TITLE_BAR");
     SetDlgControlText(IDC_USE_OWNER_DRAW_TITLEBAR_RADIO, L"TXT_OPT_APC_USE_OWNER_DRAW_TITLE_BAR");
     SetDlgControlText(IDC_REMOVE_TITLE_BAR_TOP_FRAME_CHECK, L"TXT_OPT_APC_REMOVE_TITLE_BAR_TOP_FRAME");
+    SetDlgControlText(IDC_SHOW_TITLE_BAR_BACKGROUND_CHECK, L"TXT_OPT_APC_SHOW_TITLE_BAR_BACKGROUND");
 
     temp = theApp.m_str_table.LoadText(L"TXT_OPT_APC_TITLE_BAR_BTN_SEL");
     SetDlgItemTextW(IDC_TXT_TITLE_BAR_BTN_SEL_STATIC, temp.c_str());
@@ -248,6 +249,7 @@ void CAppearanceSettingDlg::SetControlEnable()
     EnableDlgCtrl(IDC_SHOW_MAXIMIZE_BTN_CHECK, !m_data.show_window_frame);
 
     EnableDlgCtrl(IDC_REMOVE_TITLE_BAR_TOP_FRAME_CHECK, !m_data.show_window_frame && CWinVersionHelper::IsWindows10OrLater());
+    EnableDlgCtrl(IDC_SHOW_TITLE_BAR_BACKGROUND_CHECK, !m_data.show_window_frame);
 }
 
 void CAppearanceSettingDlg::CalculatePreviewBitmapRect()
@@ -292,6 +294,7 @@ void CAppearanceSettingDlg::GetDataFromUi()
     m_data.always_show_statusbar = (IsDlgButtonChecked(IDC_ALWAYS_SHOW_STATUSBAR_CHECK) != 0);
     m_data.show_window_frame = (IsDlgButtonChecked(IDC_USE_SYSTEM_TITLEBAR_RADIO) != 0);
     m_data.remove_titlebar_top_frame = (IsDlgButtonChecked(IDC_REMOVE_TITLE_BAR_TOP_FRAME_CHECK) != 0);
+    m_data.show_titlebar_background = (IsDlgButtonChecked(IDC_SHOW_TITLE_BAR_BACKGROUND_CHECK) != 0);
 
     m_data.show_settings_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_SETTINGS_BTN_CHECK) != 0);
     m_data.show_skin_btn_in_titlebar = (IsDlgButtonChecked(IDC_SHOW_SKIN_BTN_CHECK) != 0);
@@ -498,6 +501,7 @@ BOOL CAppearanceSettingDlg::OnInitDialog()
     CheckDlgButton(IDC_SHOW_MAXIMIZE_BTN_CHECK, m_data.show_maximize_btn_in_titlebar);
     CheckDlgButton(IDC_SHOW_DARK_LIGHT_BTN_CHECK, m_data.show_dark_light_btn_in_titlebar);
     CheckDlgButton(IDC_REMOVE_TITLE_BAR_TOP_FRAME_CHECK, m_data.remove_titlebar_top_frame);
+    CheckDlgButton(IDC_SHOW_TITLE_BAR_BACKGROUND_CHECK, m_data.show_titlebar_background);
 
     //设置通知区图标预览区域的位置
     CalculatePreviewBitmapRect();

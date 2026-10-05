@@ -33,10 +33,15 @@
 #include "UIElement/RatingElement.h"
 #include "UIElement/TracksList.h"
 #include "UIElement/CheckBox.h"
+#include "UIElement/RadioButton.h"
 #include "UIElement/ToggleButton.h"
 #include "CombinedElement/ToggleSettingGroup.h"
 #include "UIElement/ScrollArea.h"
 #include "UIElement/ListElement.h"
+#include "UIElement/ComboBox.h"
+#include "UIElement/Slider.h"
+#include "UIElement/EditControl.h"
+#include "UIElement/SliderProgressBar.h"
 
 namespace UiElement
 {

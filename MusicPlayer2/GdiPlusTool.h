@@ -13,6 +13,7 @@ public:
     static int ToGDIPluseFontStyle(const FontStyle& style);
     static void CreateRoundRectPath(Gdiplus::GraphicsPath& path, CRect rect, int radius);
     static CRect GdiplusRectToCRect(Gdiplus::Rect rect);
+    static CRect GdiplusRectToCRect(Gdiplus::RectF rect);
     static Gdiplus::Rect CRectToGdiplusRect(CRect rect);
 };
 

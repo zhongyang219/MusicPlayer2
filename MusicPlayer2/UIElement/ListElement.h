@@ -14,6 +14,8 @@ namespace UiElement
         bool SetColumnText(int row, int col, const wstring& text);
         void SetIcom(int row, IconMgr::IconType icon);
         void ClearData();
+        void SetHighlightRow(int row);
+        int GetHighlightRow() const;
 
         // 通过 AbstractListElement 继承
         virtual std::wstring GetItemText(int row, int col) override;
@@ -22,6 +24,7 @@ namespace UiElement
         virtual int GetColumnWidth(int col, int total_width) override;
         virtual IconMgr::IconType GetIcon(int row) override;
         virtual bool HasIcon() override;
+        virtual bool IsHighlightRow(int row);
 
     private:
         int _GetColumnWidth(int col);
@@ -33,6 +36,7 @@ namespace UiElement
         std::map<int, IconMgr::IconType> m_icons;
         std::mutex m_list_data_sync;
         std::mutex m_list_icon_sync;
+        int m_highlight_row = -1;
     };
 }
 

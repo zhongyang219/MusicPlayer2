@@ -6,8 +6,11 @@ namespace UiElement
     class TrackInfo : public Element
     {
     public:
-        int font_size{ 9 };
         virtual void Draw() override;
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
+
+    protected:
+        int font_size{ 9 };
     };
 }
 

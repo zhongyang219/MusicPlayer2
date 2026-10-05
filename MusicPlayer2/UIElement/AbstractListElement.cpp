@@ -7,10 +7,21 @@
 #include "Player.h"
 #include "AbstractTracksList.h"
 #include "MyFavouriteList.h"
+#include "TinyXml2Helper.h"
 
 void UiElement::AbstractListElement::DrawScrollArea()
 {
-    DrawAreaGuard guard(&ui->GetDrawer(), rect);
+    //设置绘图剪辑区域。如果父节点有ScrollArea元素，则需要将绘图区域限制在ScrallArea中
+    CRect clip_rect = rect;
+    Element* ele = Parent();
+    while (ele != nullptr)
+    {
+        if (dynamic_cast<AbstractScrollArea*>(ele) != nullptr)
+            clip_rect &= ele->GetRect();
+        ele = ele->Parent();
+    }
+
+    DrawAreaGuard guard(&ui->GetDrawer(), clip_rect);
 
     if (GetRowCount() <= 0)
     {
@@ -20,16 +31,13 @@ void UiElement::AbstractListElement::DrawScrollArea()
     }
     else
     {
-        const int SCROLLBAR_WIDTH{ ui->DPI(10) };           //滚动条的宽度
-        const int SCROLLBAR_WIDTH_NARROW{ ui->DPI(6) };     //鼠标未指向滚动条时的宽度
-        const int MIN_SCROLLBAR_LENGTH{ ui->DPI(16) };      //滚动条的最小长度
         BYTE background_alpha;
         if (!ui->IsDrawBackgroundAlpha())
             background_alpha = 255;
         else if (theApp.m_app_setting_data.dark_mode)
-            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
+            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 3;
         else
-            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) * 2 / 3;
+            background_alpha = ALPHA_CHG(theApp.m_app_setting_data.background_transparency) / 2;
 
         //设置字体
         UiFontGuard set_font(ui, font_size);
@@ -44,20 +52,31 @@ void UiElement::AbstractListElement::DrawScrollArea()
             if (!IsRowDisplayed(i))
                 continue;
             CRect rect_item{ item_rects[displayed_row_index] };
-            rect_item.right -= SCROLLBAR_WIDTH;      //留出一定距离用于绘制滚动条
+            rect_item &= m_scroll_area_rect;
             //如果绘制的行在播放列表区域之外，则不绘制该行
             if (!(rect_item & rect).IsRectEmpty())
             {
                 COLORREF back_color{};
                 //选中项目的背景
-                if (IsItemSelected(i))
+                bool is_selected_item = false;
+                if (draw_hover_row_background)
+                {
+                    if (m_client_area_rect.PtInRect(m_mouse_pos))
+                        is_selected_item = GetDisplayedIndexByPoint(m_mouse_pos) == i;
+                }
+                else
+                {
+                    is_selected_item = IsItemSelected(i);
+                }
+                if (is_selected_item)
                 {
                     back_color = ui->GetUIColors().color_list_selected;
                 }
                 //偶数行的背景
                 else if (displayed_row_index % 2 == 0)
                 {
-                    back_color = ui->GetUIColors().color_control_bar_back;
+                    if (draw_alternate_background)
+                        back_color = ui->GetUIColors().color_control_bar_back;
                 }
                 //绘制背景
                 if (back_color != 0)
@@ -74,8 +93,8 @@ void UiElement::AbstractListElement::DrawScrollArea()
                 {
                     CRect rect_cur_indicator{ rect_item };
                     rect_cur_indicator.right = rect_cur_indicator.left + ui->DPI(4);
-                    int indicator_hight = item_height * 6 / 10;
-                    rect_cur_indicator.top += (item_height - indicator_hight) / 2;
+                    int indicator_hight = ItemHeight() * 6 / 10;
+                    rect_cur_indicator.top += (ItemHeight() - indicator_hight) / 2;
                     rect_cur_indicator.bottom = rect_cur_indicator.top + indicator_hight;
                     if (theApp.m_app_setting_data.button_round_corners)
                         ui->GetDrawer().DrawRoundRect(rect_cur_indicator, ui->GetUIColors().color_text_heighlight, ui->DPI(2));
@@ -141,14 +160,15 @@ void UiElement::AbstractListElement::DrawScrollArea()
                 }
 
                 //绘制图标
-                if (HasIcon())
+                IconMgr::IconType cur_icon = GetIcon(i);
+                if (cur_icon != IconMgr::IT_NO_ICON)
                 {
                     CRect rect_icon{ rect_item };
                     rect_icon.left = col_x;
                     rect_icon.right = rect_icon.left + ui->DPI(20);
                     col_x = rect_icon.right;
                     rect_icon.MoveToX(rect_icon.left + indent_space);
-                    ui->DrawUiIcon(rect_icon, GetIcon(i));
+                    ui->DrawUiIcon(rect_icon, cur_icon);
                 }
 
                 //绘制列
@@ -219,7 +239,7 @@ void UiElement::AbstractListElement::DrawScrollArea()
                     //绘制文本
                     if (!draw_mini_spectrum || j > 0)//如果第1列绘制了迷你频谱，则不再绘制文本
                     {
-                        DrawAreaGuard guard(&ui->GetDrawer(), rect & rect_text);
+                        DrawAreaGuard guard(&ui->GetDrawer(), clip_rect & rect_text);
                         if (!IsMultipleSelected() && i == GetItemSelected() && j == GetColumnScrollTextWhenSelected())
                             ui->GetDrawer().DrawScrollText(rect_text, display_name.c_str(), ui->GetUIColors().color_text, ui->GetScrollTextPixel(), false, selected_item_scroll_info, false, true);
                         else
@@ -253,6 +273,8 @@ void UiElement::AbstractListElement::Draw()
     if (last_row_selected != GetItemSelected())
     {
         OnSelectionChanged();
+        if (m_selection_changed_trigger)
+            m_selection_changed_trigger(this);
         last_row_selected = GetItemSelected();
     }
 
@@ -262,7 +284,9 @@ void UiElement::AbstractListElement::Draw()
 bool UiElement::AbstractListElement::LButtonUp(CPoint point)
 {
     AbstractScrollArea::LButtonUp(point);
-    if (rect.PtInRect(point))
+    bool pressed_tmp = pressed;
+    pressed = false;
+    if (pressed_tmp && rect.PtInRect(point))
     {
         int row{ GetListIndexByPoint(point) };        //点击的行
         //设置按钮的按下状态
@@ -283,7 +307,8 @@ bool UiElement::AbstractListElement::LButtonUp(CPoint point)
 
 bool UiElement::AbstractListElement::LButtonDown(CPoint point)
 {
-    AbstractScrollArea::LButtonDown(point);
+    pressed = rect.PtInRect(point);
+    bool rtn = AbstractScrollArea::LButtonDown(point);
     //点击了列表区域
     if (rect.PtInRect(point) && !scrollbar_rect.PtInRect(point))
     {
@@ -339,15 +364,22 @@ bool UiElement::AbstractListElement::LButtonDown(CPoint point)
         selected_item_scroll_info.Reset();
         return true;
     }
-    return false;
+    return rtn;
 }
 
 bool UiElement::AbstractListElement::MouseMove(CPoint point)
 {
+    //鼠标离开时隐藏鼠标提示
+    bool hover = rect.PtInRect(point);
+    if (last_hover && !hover)
+        HideTooltip();
+    last_hover = hover;
+
+    m_mouse_pos = point;
     if (rect.IsRectEmpty())
         return false;
 
-    AbstractScrollArea::MouseMove(point);
+    bool rtn = AbstractScrollArea::MouseMove(point);
 
     //查找鼠标指向的行
     int row = GetListIndexByPoint(point);
@@ -400,7 +432,7 @@ bool UiElement::AbstractListElement::MouseMove(CPoint point)
             }
         }
     }
-    return true;
+    return rtn;
 }
 
 bool UiElement::AbstractListElement::RButtonUp(CPoint point)
@@ -477,6 +509,14 @@ bool UiElement::AbstractListElement::MouseWheel(int delta, CPoint point)
         return true;
     }
     return false;
+}
+
+bool UiElement::AbstractListElement::MouseLeave()
+{
+    bool rtn = AbstractScrollArea::MouseLeave();
+    m_mouse_pos = CPoint(-1, -1);
+    HideTooltip();
+    return rtn;
 }
 
 bool UiElement::AbstractListElement::DoubleClick(CPoint point)
@@ -729,6 +769,11 @@ bool UiElement::AbstractListElement::IsRowDisplayed(int row)
     return false;
 }
 
+void UiElement::AbstractListElement::SetSelectionChangedTrigger(std::function<void(AbstractListElement*)> func)
+{
+    m_selection_changed_trigger = func;
+}
+
 void UiElement::AbstractListElement::DisplayRowToAbsoluteRow(int& row)
 {
     if (searched)       //查找状态下需要转换行号
@@ -774,4 +819,14 @@ int UiElement::AbstractListElement::GetDisplayedIndexByPoint(CPoint point)
             return static_cast<int>(i);
     }
     return -1;
+}
+
+void UiElement::AbstractListElement::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    AbstractScrollArea::FromXmlNode(xml_node);
+    int item_height{};
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "item_height", item_height);
+    if (item_height > 0)
+        this->item_height = item_height;
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "font_size", this->font_size);
 }

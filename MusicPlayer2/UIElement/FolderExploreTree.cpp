@@ -4,6 +4,8 @@
 #include "UiMediaLibItemMgr.h"
 #include "UserUi.h"
 #include "TracksList.h"
+#include "TinyXml2Helper.h"
+#include "Player.h"
 
 std::shared_ptr<UiElement::TestTree::Node> UiElement::FolderExploreTree::CreateNode(std::wstring name, int song_num, std::shared_ptr<Node> parent)
 {
@@ -104,7 +106,7 @@ int UiElement::FolderExploreTree::GetHoverButtonCount(int row)
 {
     FindTrackList();
     //如果有关联的TrackList，则不显示最后的“预览”按钮
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
         return BTN_MAX - 1;
     else
         return BTN_MAX;
@@ -190,7 +192,7 @@ void UiElement::FolderExploreTree::OnSelectionChanged()
 {
     //获取关联的trackList元素
     FindTrackList();
-    if (track_list != nullptr && track_list->IsEnable())
+    if (track_list != nullptr && track_list->IsShown())
     {
         auto selected_node = GetNodeByIndex(GetItemSelected());
         if (selected_node != nullptr)
@@ -207,6 +209,22 @@ void UiElement::FolderExploreTree::OnSelectionChanged()
     }
 }
 
+bool UiElement::FolderExploreTree::IsHighlightRow(int row)
+{
+    if (CPlayer::GetInstance().IsFolderMode())
+    {
+        auto selected_node = GetNodeByIndex(row);
+        if (selected_node != nullptr)
+        {
+            std::wstring folder_path = GetNodePath(selected_node);
+            if (!folder_path.empty() && folder_path.back() != L'\\')
+                folder_path.push_back(L'\\');
+            return folder_path == CPlayer::GetInstance().GetCurrentDir2();
+        }
+    }
+    return false;
+}
+
 std::vector<std::shared_ptr<UiElement::TestTree::Node>>& UiElement::FolderExploreTree::GetRootNodes()
 {
     return CUiFolderExploreMgr::Instance().GetRootNodes();
@@ -219,4 +237,10 @@ void UiElement::FolderExploreTree::FindTrackList()
         track_list = FindRelatedElement<TrackList>(track_list_element_id);
         find_track_list = true;  //找过一次没找到就不找了
     }
+}
+
+void UiElement::FolderExploreTree::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    TreeElement::FromXmlNode(xml_node);
+    track_list_element_id = CTinyXml2Helper::ElementAttribute(xml_node, "track_list_element_id");
 }

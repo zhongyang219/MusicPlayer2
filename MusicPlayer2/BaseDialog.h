@@ -84,6 +84,9 @@ protected:
 
     void SetDlgControlText(int id, const wchar_t* key);
 
+    //遍历所有子控件
+    void IterateControls(std::function<void(CWnd*)> func);
+
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
     DECLARE_MESSAGE_MAP()

@@ -9,13 +9,13 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
     if (name == "verticalLayout")
     {
         auto layout = std::make_shared<UiElement::Layout>();
-        layout->type = UiElement::Layout::Vertical;
+        layout->type = UiElement::Vertical;
         element = layout;
     }
     else if (name == "horizontalLayout")
     {
         auto layout = std::make_shared<UiElement::Layout>();
-        layout->type = UiElement::Layout::Horizontal;
+        layout->type = UiElement::Horizontal;
         element = layout;
     }
     else if (name == "stackElement")
@@ -82,6 +82,8 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::TrackList>();
     else if (name == "checkBox")
         element = std::make_shared<UiElement::CheckBox>();
+    else if (name == "radioButton")
+        element = std::make_shared<UiElement::RadioButton>();
     else if (name == "toggleButton")
         element = std::make_shared<UiElement::ToggleButton>();
     else if (name == "toggleSettingGroup")
@@ -90,6 +92,14 @@ std::shared_ptr<UiElement::Element> UiElement::CElementFactory::CreateElement(co
         element = std::make_shared<UiElement::ScrollArea>();
     else if (name == "listElement")
         element = std::make_shared<UiElement::ListElement>();
+    else if (name == "comboBox")
+        element = std::make_shared<UiElement::ComboBox>();
+    else if (name == "slider")
+        element = std::make_shared<UiElement::Slider>();
+    else if (name == "editControl")
+        element = std::make_shared<UiElement::EditControl>();
+    else if (name == "sliderProgressBar")
+        element = std::make_shared<UiElement::SliderProgressBar>();
 
     if (element != nullptr)
         element->SetUi(ui);

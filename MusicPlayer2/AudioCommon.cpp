@@ -544,6 +544,8 @@ void CAudioCommon::GetAudioInfo(vector<SongInfo>& files, int& update_cnt, bool& 
         if (refresh_mode == MR_MIN_REQUIRED && !need_get_info)
             continue;
         unsigned __int64 modified_time{};
+        if (CCommon::IsURL(song_info.file_path))
+            continue;
         if (!CCommon::GetFileLastModified(song_info.file_path, modified_time))  // 跳过当前不存在的文件
             continue;
         if (refresh_mode != MR_FOECE_FULL && song_info.modified_time == modified_time && !need_get_info)

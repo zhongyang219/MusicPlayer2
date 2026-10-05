@@ -42,6 +42,8 @@
               <toggleSettingGroup id="roundCornerStyle" height="60" margin-top="4" icon="ok" mainText="%(TXT_OPT_APC_ROUND_CORNERS)"/>
               <!--启用背景选项-->
               <toggleSettingGroup id="enableBackground" height="60" margin-top="4" icon="background" mainText="%(TXT_OPT_APC_BG_ENABLE)" subText="%(TXT_OPT_DESC_SHOW_BACKGROUND)"/>
+              <!--使用专辑封面作为背景-->
+              <toggleSettingGroup id="albumCoverAsBackground" height="60" margin-top="4" icon="albumCover" mainText="%(TXT_OPT_APC_BG_USE_COVER)"/>
               <!--显示状态栏选项-->
               <toggleSettingGroup id="showStatusbar" height="60" margin-top="4" icon="setting" mainText="%(TXT_OPT_APC_ALWAYS_SHOW_STATUS_BAR)" subText="%(TXT_OPT_DESC_SHOW_TASKBAR)"/>
               <!--显示系统标准标题栏-->
@@ -54,7 +56,7 @@
                     <text font_size="10" text="%(TXT_OPT_APC_TITLE_BAR_BTN_SEL)" height="20"/>
                     <text text="%(TXT_OPT_DESC_BUTTONS_DISPLAYED_IN_TITLABAR)" color_style="emphasis1" height="20"/>
                   </verticalLayout>
-                  <!--<button id="buttonsInTitlebarBtn" key="showHideElement" related_element_id="buttonsInTitlebarOptionGroup" icon="dropDown" height="28" width="28" margin-right="16"/>-->
+                  <button id="buttonsInTitlebarBtn" key="showHideElement" related_element_id="buttonsInTitlebarOptionGroup" icon="dropDown" height="28" width="28" margin-right="16"/>
                 </horizontalLayout>
               </rectangle>
               <verticalLayout id="buttonsInTitlebarOptionGroup" height="252">
@@ -136,8 +138,19 @@
           <!--第3页 常规设置-->
           <scrollArea>
             <verticalLayout>
-              <!--数据和配置文件-->
+              <!--语言-->
               <rectangle height="60">
+                <horizontalLayout>
+                  <icon icon="setting" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_DATA_LANGUAGE_SEL)" height="20"/>
+                    <text text="%(MSG_OPT_DATA_LANGUAGE_CHANGE_INFO)" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <comboBox id="languageCombo" width="140" height="28" margin-right="16"/>
+                </horizontalLayout>
+              </rectangle>
+              <!--数据和配置文件-->
+              <rectangle height="60" margin-top="4">
                 <horizontalLayout>
                   <icon icon="fileRelate" width="52"/>
                   <verticalLayout>
@@ -151,6 +164,21 @@
               <toggleSettingGroup id="autoDownloadLyric" height="60" margin-top="4" icon="lyric" mainText="%(TXT_OPT_DATA_AUTO_DL_LYRIC)"/>
               <!--没有专辑封面时自动下载-->
               <toggleSettingGroup id="autoDownloadAlbumCover" height="60" margin-top="4" icon="albumCover" mainText="%(TXT_OPT_DATA_AUTO_DL_COVER)"/>
+              <!--歌词和专辑封面下载服务-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="online" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_DATA_LYRICS_AND_COVER_DL_SERVICE)" height="20"/>
+                    <!--<text color_style="emphasis1" height="20"/>-->
+                  </verticalLayout>
+                </horizontalLayout>
+              </rectangle>
+              <verticalLayout id="onlineServiceOptionGroup" margin-left="52" margin-right="16" height="72">
+                <radioButton id="onlineServiceNetEaseBtn" text="%(TXT_OPT_DATA_NETEASE_CLOUD_MUSIC)" group="2"/>
+                <radioButton id="onlineServiceQQMusicBtn" text="%(TXT_OPT_DATA_QQ_MUSIC)" group="2"/>
+              </verticalLayout>
+
             </verticalLayout>
           </scrollArea>
           
@@ -159,6 +187,22 @@
             <verticalLayout>
               <toggleSettingGroup id="stopWhenErrorBtn" height="60" icon="stop" mainText="%(TXT_OPT_PLAY_STOP_WHEN_ERROR)"/>
               <toggleSettingGroup id="autoPlayWhenStartBtn" height="60" margin-top="4" icon="play" mainText="%(TXT_OPT_PLAY_AUTO_PLAY_WHEN_START)"/>
+              <!--播放内核-->
+              <rectangle height="60" margin-top="4">
+                <horizontalLayout>
+                  <icon icon="setting" width="52"/>
+                  <verticalLayout>
+                    <text font_size="10" text="%(TXT_OPT_PLAY_CORE)" height="20"/>
+                    <text text="%(TXT_OPT_DESC_PLAY_CORE)" color_style="emphasis1" height="20"/>
+                  </verticalLayout>
+                  <button id="playCoreExpandBtn" key="showHideElement" related_element_id="playCoreOptionGroup" icon="dropDown" height="28" width="28" margin-right="16"/>
+                </horizontalLayout>
+              </rectangle>
+              <verticalLayout id="playCoreOptionGroup" margin-left="52" margin-right="16" height="108">
+                <radioButton id="playCoreBass" text="%(TXT_OPT_PLAY_CORE_BASS)" group="1"/>
+                <radioButton id="playCoreMCI" text="%(TXT_OPT_PLAY_CORE_MCI)" group="1"/>
+                <radioButton id="playCoreFFMPEG" text="%(TXT_OPT_PLAY_CORE_FFMPEG)" group="1"/>
+              </verticalLayout>
             </verticalLayout>
           </scrollArea>
           

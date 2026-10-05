@@ -8,7 +8,7 @@ namespace UiElement
     class MediaLibPlaylist : public AbstractListElement
     {
     public:
-        static CListCache m_list_cache;
+        static const CListCache& GetListCache() { return m_list_cache; }
         virtual void Draw() override;
         enum Column
         {
@@ -40,14 +40,16 @@ namespace UiElement
         virtual std::wstring GetHoverButtonTooltip(int index, int row) override;
         virtual void OnHoverButtonClicked(int btn_index, int row) override;
         virtual void OnSelectionChanged() override;
-    
-    public:
-        std::string track_list_element_id;
+
+        virtual void FromXmlNode(tinyxml2::XMLElement* xml_node);
 
     private:
         void FindTrackList();        //查找TrackList
 
     private:
+        static CListCache m_list_cache;
+        std::string track_list_element_id;
+
         TrackList* track_list;
         bool find_track_list{};      //如果已经查找过TrackList，则为true
     };

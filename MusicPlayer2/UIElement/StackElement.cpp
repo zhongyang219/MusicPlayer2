@@ -1,6 +1,7 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "StackElement.h"
 #include "../UserUi.h"
+#include "TinyXml2Helper.h"
 
 void UiElement::StackElement::SetCurrentElement(int index)
 {
@@ -36,20 +37,20 @@ void UiElement::StackElement::Draw()
 
     if (cur_element != nullptr)
         cur_element->Draw();
-    //Ö»»æÖÆÒ»¸ö×ÓÔªËØ
-    //²»µ÷ÓÃ»ùÀàµÄDraw·½·¨¡£
+    //åªç»˜åˆ¶ä¸€ä¸ªå­å…ƒç´ 
+    //ä¸è°ƒç”¨åŸºç±»çš„Drawæ–¹æ³•ã€‚
 
-    //»æÖÆÖ¸Ê¾Æ÷
+    //ç»˜åˆ¶æŒ‡ç¤ºå™¨
     if (show_indicator)
     {
-        //¼ÆËãÖ¸Ê¾Æ÷µÄÎ»ÖÃ
+        //è®¡ç®—æŒ‡ç¤ºå™¨çš„ä½ç½®
         int indicator_width = ui->DPI(12) * childLst.size();
         indicator.rect.top = GetRect().bottom + ui->DPI(2) + ui->DPI(indicator_offset);
         indicator.rect.bottom = indicator.rect.top + ui->DPI(12);
         indicator.rect.left = GetRect().left + (GetRect().Width() - indicator_width) / 2;
         indicator.rect.right = indicator.rect.left + indicator_width;
         indicator.rect.InflateRect(ui->DPI(2), ui->DPI(2));
-        //»æÖÆÖ¸Ê¾Æ÷
+        //ç»˜åˆ¶æŒ‡ç¤ºå™¨
         ui->DrawStackIndicator(indicator, childLst.size(), cur_index);
     }
 }
@@ -79,7 +80,7 @@ int UiElement::StackElement::GetWidth(CRect parent_rect) const
     if (follow_child_width)
     {
         UiElement::Element* child = CurrentElement().get();
-        if (child != nullptr && child->width.IsValid())
+        if (child != nullptr && child->IsWidthValid())
             return child->GetWidth(parent_rect);
     }
     return Element::GetWidth(parent_rect);
@@ -90,7 +91,7 @@ int UiElement::StackElement::GetHeight(CRect parent_rect) const
     if (follow_child_height)
     {
         UiElement::Element* child = CurrentElement().get();
-        if (child != nullptr && child->height.IsValid())
+        if (child != nullptr && child->IsHeightValid())
             return child->GetHeight(parent_rect);
     }
     return Element::GetHeight(parent_rect);
@@ -101,7 +102,7 @@ bool UiElement::StackElement::IsWidthValid() const
     if (follow_child_width)
     {
         UiElement::Element* child = CurrentElement().get();
-        if (child != nullptr && child->width.IsValid())
+        if (child != nullptr && child->IsWidthValid())
             return true;
     }
     return Element::IsWidthValid();
@@ -112,7 +113,7 @@ bool UiElement::StackElement::IsHeightValid() const
     if (follow_child_height)
     {
         UiElement::Element* child = CurrentElement().get();
-        if (child != nullptr && child->height.IsValid())
+        if (child != nullptr && child->IsHeightValid())
             return true;
     }
     return Element::IsHeightValid();
@@ -123,6 +124,13 @@ bool UiElement::StackElement::LButtonUp(CPoint point)
     bool pressed = indicator.pressed;
     indicator.pressed = false;
 
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+    {
+        if (current_element->LButtonUp(point))
+            return true;
+    }
+
     if ((pressed && indicator.rect.PtInRect(point) && indicator.enable)
         || (click_to_switch && GetRect().PtInRect(point)))
     {
@@ -131,12 +139,12 @@ bool UiElement::StackElement::LButtonUp(CPoint point)
         return true;
     }
     
-    //ÉèÖÃÁËsweep_to_switchÊ±
+    //è®¾ç½®äº†sweep_to_switchæ—¶
     if (sweep_to_switch && rect.PtInRect(point))
     {
         if (mouse_pressed)
         {
-            //Èç¹ûÊó±êÔÚ°´ÏÂÇé¿öÏÂÒÆ¶¯³¬¹ı100ÏñËØ£¬Ôò¸ù¾İÊó±êÒÆ¶¯·½ÏòÇĞ»»ÏÔÊ¾
+            //å¦‚æœé¼ æ ‡åœ¨æŒ‰ä¸‹æƒ…å†µä¸‹ç§»åŠ¨è¶…è¿‡100åƒç´ ï¼Œåˆ™æ ¹æ®é¼ æ ‡ç§»åŠ¨æ–¹å‘åˆ‡æ¢æ˜¾ç¤º
             if (point.x - mouse_pressed_point.x > ui->DPI(100))
             {
                 SwitchDisplay(true);
@@ -155,6 +163,13 @@ bool UiElement::StackElement::LButtonUp(CPoint point)
 bool UiElement::StackElement::LButtonDown(CPoint point)
 {
     mouse_pressed_point = point;
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+    {
+        if (current_element->LButtonDown(point))
+            return true;
+    }
+
     if (indicator.enable && indicator.rect.PtInRect(point) != FALSE)
     {
         indicator.pressed = true;
@@ -169,6 +184,10 @@ bool UiElement::StackElement::LButtonDown(CPoint point)
 
 bool UiElement::StackElement::MouseMove(CPoint point)
 {
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+        current_element->MouseMove(point);
+
     if (indicator.enable)
         indicator.hover = (indicator.rect.PtInRect(point) != FALSE);
     bool hover{ GetRect().PtInRect(point) != FALSE };
@@ -176,24 +195,57 @@ bool UiElement::StackElement::MouseMove(CPoint point)
     //    ui->UpdateToolTipPositionLater();
 
     mouse_hover = hover;
-    return true;
+    return false;
+}
+
+bool UiElement::StackElement::RButtonUp(CPoint point)
+{
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+        return current_element->RButtonUp(point);
+    return false;
+}
+
+bool UiElement::StackElement::RButtonDown(CPoint point)
+{
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+        current_element->RButtonDown(point);
+    return false;
 }
 
 bool UiElement::StackElement::MouseLeave()
 {
-    //Çå³ıStackElementÖĞµÄmouse_hover×´Ì¬
+    Element::MouseLeave();
+    //æ¸…é™¤StackElementä¸­çš„mouse_hoverçŠ¶æ€
     mouse_hover = false;
     return true;
 }
 
 bool UiElement::StackElement::MouseWheel(int delta, CPoint point)
 {
-    //Èç¹ûÊó±êÖ¸ÏòÖ¸Ê¾Æ÷£¬»òÕßÖ¸¶¨ÁËscroll_to_switchÊôĞÔÊ±Êó±êÖ¸ÏòstackElementÇøÓò£¬Í¨¹ıÊó±ê¹öÂÖÇĞ»»ÏÔÊ¾
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+    {
+        if (current_element->MouseWheel(delta, point))
+            return true;
+    }
+
+    //å¦‚æœé¼ æ ‡æŒ‡å‘æŒ‡ç¤ºå™¨ï¼Œæˆ–è€…æŒ‡å®šäº†scroll_to_switchå±æ€§æ—¶é¼ æ ‡æŒ‡å‘stackElementåŒºåŸŸï¼Œé€šè¿‡é¼ æ ‡æ»šè½®åˆ‡æ¢æ˜¾ç¤º
     if ((show_indicator && indicator.rect.PtInRect(point)) || (scroll_to_switch && GetRect().PtInRect(point)))
     {
         SwitchDisplay(delta > 0);
         return true;
     }
+
+    return false;
+}
+
+bool UiElement::StackElement::DoubleClick(CPoint point)
+{
+    auto* current_element = CurrentElement().get();
+    if (current_element != nullptr)
+        return current_element->DoubleClick(point);
     return false;
 }
 
@@ -215,7 +267,7 @@ bool UiElement::StackElement::CheckSizeChangeSwitchCondition() const
         {
             int condition_width = rect.Width();
             int condition_height = rect.Height();
-            //Èç¹ûÉèÖÃÁË¸úËæ×ÓÔªËØ¿í¶È/¸ß¶È£¬Ôò³ß´ç±ä»¯Ê±ÇĞ»»µÄ¿í¶È/¸ß¶ÈÓ¦¸Ã¸¸½ÚµãµÄ¿í¶È/¸ß¶È
+            //å¦‚æœè®¾ç½®äº†è·Ÿéšå­å…ƒç´ å®½åº¦/é«˜åº¦ï¼Œåˆ™å°ºå¯¸å˜åŒ–æ—¶åˆ‡æ¢çš„å®½åº¦/é«˜åº¦åº”è¯¥çˆ¶èŠ‚ç‚¹çš„å®½åº¦/é«˜åº¦
             if (follow_child_width)
                 condition_width = ParentRect().Width();
             if (follow_child_height)
@@ -241,7 +293,7 @@ bool UiElement::StackElement::CheckSizeChangeSwitchCondition() const
 
 void UiElement::StackElement::IndexChanged()
 {
-    //²éÕÒ¹ØÁªµÄstackElement
+    //æŸ¥æ‰¾å…³è”çš„stackElement
     if (!related_stack_elements.empty())
     {
         CUserUi* user_ui = dynamic_cast<CUserUi*>(ui);
@@ -251,9 +303,9 @@ void UiElement::StackElement::IndexChanged()
                 StackElement* stack_element = dynamic_cast<StackElement*>(element);
                 if (stack_element != nullptr && stack_element != this)
                 {
-                    if (related_stack_elements.count(element->id) > 0)
+                    if (related_stack_elements.count(element->Id()) > 0)
                     {
-                        //ÉèÖÃ¹ØÁªstackElementµÄË÷Òı£¨ÕâÀï²»ÄÜÊ¹ÓÃstack_element->SetCurrentElement£¬·ñÔò»áµ¼ÖÂÎŞÏŞµ÷ÓÃ£©
+                        //è®¾ç½®å…³è”stackElementçš„ç´¢å¼•ï¼ˆè¿™é‡Œä¸èƒ½ä½¿ç”¨stack_element->SetCurrentElementï¼Œå¦åˆ™ä¼šå¯¼è‡´æ— é™è°ƒç”¨ï¼‰
                         if (cur_index >= 0 && cur_index < static_cast<int>(stack_element->childLst.size()))
                             stack_element->cur_index = cur_index;
                     }
@@ -262,21 +314,55 @@ void UiElement::StackElement::IndexChanged()
             });
         }
     }
-    //Çå¿Õ²»ÏÔÊ¾µÄ×ÓÔªËØµÄ¾ØĞÎÇøÓòºÍÊó±êÌáÊ¾
+    //æ¸…ç©ºä¸æ˜¾ç¤ºçš„å­å…ƒç´ çš„çŸ©å½¢åŒºåŸŸå’Œé¼ æ ‡æç¤º
     auto cur_element{ CurrentElement() };
-    for (size_t i{}; i < childLst.size(); i++)
+    if (cur_element != nullptr)
     {
-        if (cur_element != childLst[i])
+        cur_element->MouseLeave();
+        for (size_t i{}; i < childLst.size(); i++)
         {
-            childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
-                if (element != nullptr)
-                {
-                    element->ClearRect();
-                    element->MouseLeave();
-                    element->HideTooltip();
-                }
-                return false;
-            });
+            if (cur_element != childLst[i])
+            {
+                childLst[i]->IterateAllElements([&](UiElement::Element* element) ->bool {
+                    if (element != nullptr)
+                    {
+                        element->ClearRect();
+                        element->HideTooltip();
+                    }
+                    return false;
+                });
+            }
         }
     }
+}
+
+void UiElement::StackElement::FromXmlNode(tinyxml2::XMLElement* xml_node)
+{
+    Element::FromXmlNode(xml_node);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "click_to_switch", click_to_switch);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "hover_to_switch", hover_to_switch);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "scroll_to_switch", scroll_to_switch);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "sweep_to_switch", sweep_to_switch);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "show_indicator", show_indicator);
+    CTinyXml2Helper::GetElementAttributeInt(xml_node, "indicator_offset", indicator_offset);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "size_change_to_switch", size_change_to_switch);
+    std::string str_size_change_condition = CTinyXml2Helper::ElementAttribute(xml_node, "size_change_condition");
+    if (str_size_change_condition == "widthGreaterThan")
+        size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::WIDTH_GREATER_THAN;
+    else if (str_size_change_condition == "widthLessThan")
+        size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::WIDTH_LESS_THAN;
+    else if (str_size_change_condition == "heightGreaterThan")
+        size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::HEIGHT_GREATER_THAN;
+    else if (str_size_change_condition == "heightLessThan")
+        size_change_condition = UiElement::StackElement::SizeChangeSwitchCondition::HEIGHT_LESS_THAN;
+    std::string str_size_change_value = CTinyXml2Helper::ElementAttribute(xml_node, "size_change_value");
+    if (!str_size_change_value.empty())
+        size_change_value = GetUI()->DPI(atoi(str_size_change_value.c_str()));
+    std::string str_related_stack_elements = CTinyXml2Helper::ElementAttribute(xml_node, "related_stack_elements");
+    std::vector<std::string> vec_related_stack_elements;
+    CCommon::StringSplit(str_related_stack_elements, ',', vec_related_stack_elements);
+    for (const auto& str : vec_related_stack_elements)
+        related_stack_elements.insert(str);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "follow_child_width", follow_child_width);
+    CTinyXml2Helper::GetElementAttributeBool(xml_node, "follow_child_height", follow_child_height);
 }

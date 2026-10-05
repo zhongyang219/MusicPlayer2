@@ -751,10 +751,16 @@
         <xs:element name="icon" type="iconType"></xs:element>
         <xs:element name="rating" type="ratingType"></xs:element>
         <xs:element name="checkBox" type="checkBoxType"></xs:element>
+        <xs:element name="radioButton" type="radioButtonType"></xs:element>
         <xs:element name="toggleButton" type="toggleButtonType"></xs:element>
         <xs:element name="toggleSettingGroup" type="toggleSettingGroupType"></xs:element>
         <xs:element name="scrollArea" type="scrollAreaType"></xs:element>
         <xs:element name="listElement" type="listElementType"></xs:element>
+        <xs:element name="comboBox" type="comboBoxType"></xs:element>
+        <xs:element name="slider" type="sliderType"></xs:element>
+        <xs:element name="editControl" type="editControlType"></xs:element>
+        <xs:element name="sliderProgressBar" type="sliderProgressBarType"></xs:element>
+        <xs:element name="systemControl" type="systemControlType"></xs:element>
       </xs:choice>
     </xs:sequence>
   </xs:group>
@@ -805,6 +811,11 @@
       <xs:attribute name="index" type="xs:int">
         <xs:annotation>
           <xs:documentation> 界面的序号，至少为3。序号不能与其他界面重复。未定义此属性的界面总是排在后面。 </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="icon" type="icon_type">
+        <xs:annotation>
+          <xs:documentation>图标。仅用于UI对话框。</xs:documentation>
         </xs:annotation>
       </xs:attribute>
       <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
@@ -1000,11 +1011,11 @@
     </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
+  <!--按钮元素-->
   <xs:complexType name="buttonType">
     <xs:annotation>
       <xs:documentation>按钮</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="key">
       <xs:annotation>
         <xs:documentation> 按钮的类型。 </xs:documentation>
@@ -1246,13 +1257,42 @@
         <xs:documentation>是否为空的按钮</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="alignment" default="left">
+      <xs:annotation>
+        <xs:documentation>对齐方式。仅在show_text为true时有效。</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="left">
+            <xs:annotation>
+              <xs:documentation>左对齐</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="right">
+            <xs:annotation>
+              <xs:documentation>右对齐</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="center">
+            <xs:annotation>
+              <xs:documentation>居中</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="btn_background" type="xs:boolean" default="false">
+      <xs:annotation>
+        <xs:documentation>按钮是否有背景。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
+  
   <xs:complexType name="textType">
     <xs:annotation>
       <xs:documentation>文本</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="text" type="xs:string">
       <xs:annotation>
         <xs:documentation>显示的文本。</xs:documentation>
@@ -1441,7 +1481,6 @@
     <xs:annotation>
       <xs:documentation>频谱分析</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="draw_reflex" type="xs:boolean" default="false">
       <xs:annotation>
         <xs:documentation>是否绘制倒影。</xs:documentation>
@@ -1498,7 +1537,6 @@
     <xs:annotation>
       <xs:documentation>曲目信息（包含播放状态、文件名、歌曲标识、速度）</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="font_size" default="9" type="font_size">
       <xs:annotation>
         <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>
@@ -1510,7 +1548,6 @@
     <xs:annotation>
       <xs:documentation>进度条</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="show_play_time" type="xs:boolean" default="false">
       <xs:annotation>
         <xs:documentation>是否在进度条右边显示播放时间。</xs:documentation>
@@ -1527,7 +1564,6 @@
     <xs:annotation>
       <xs:documentation> 显示歌词的区域。歌词的显示会自动根据歌词区域的大小切换单行、双行、多行显示模式。在此区域点击鼠标右键会弹出歌词右键菜单。 </xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="no_background" type="xs:boolean" default="false">
       <xs:annotation>
         <xs:documentation>设置为true时总是不绘制歌词背景</xs:documentation>
@@ -1548,13 +1584,17 @@
         <xs:documentation>设置为true时总是在没有歌词时显示歌曲信息</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="context_menu_enable" type="xs:boolean" default="true">
+      <xs:annotation>
+        <xs:documentation>鼠标右击歌词区域时是否弹出歌词右键菜单</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="volumeType">
     <xs:annotation>
       <xs:documentation>音量按钮，点击后会弹出音量调节按钮</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="show_text" type="xs:boolean" default="false">
       <xs:annotation>
         <xs:documentation>是否在音量图标旁边显示文本。</xs:documentation>
@@ -1571,14 +1611,12 @@
     <xs:annotation>
       <xs:documentation>一个由&lt;&lt;&lt;&lt;组成的节拍指示。它仅在播放Midi音乐时才会指示正确的节拍。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="classicalControlBarType">
     <xs:annotation>
       <xs:documentation>一个由包含进度条，以及停止、上一曲、播放/暂停、下一曲、收藏、媒体库、播放列表按钮的播放控制栏。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="show_switch_display_btn" type="xs:boolean" default="false">
       <xs:annotation>
         <xs:documentation>是否显示“切换界面”按钮。</xs:documentation>
@@ -1601,7 +1639,6 @@
     <xs:annotation>
       <xs:documentation>播放列表。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
@@ -1609,7 +1646,6 @@
     <xs:annotation>
       <xs:documentation>指示当前播放列表和一个下拉按钮。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="font_size" default="9" type="font_size">
       <xs:annotation>
         <xs:documentation>字体大小，仅支持8~16。默认大小为9。</xs:documentation>
@@ -1621,7 +1657,6 @@
     <xs:annotation>
       <xs:documentation>最近播放项目的列表。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="track_list_element_id" type="xs:string">
       <xs:annotation>
         <xs:documentation>显示详细曲目列表的trackList元素的id。</xs:documentation>
@@ -1634,7 +1669,6 @@
     <xs:annotation>
       <xs:documentation>媒体库项目列表。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="type">
       <xs:annotation>
         <xs:documentation>类型。</xs:documentation>
@@ -1790,7 +1824,6 @@
     <xs:annotation>
       <xs:documentation>媒体库的文件夹。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="track_list_element_id" type="xs:string">
       <xs:annotation>
         <xs:documentation>显示详细曲目列表的trackList元素的id。</xs:documentation>
@@ -1803,7 +1836,6 @@
     <xs:annotation>
       <xs:documentation>媒体库的播放列表。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="track_list_element_id" type="xs:string">
       <xs:annotation>
         <xs:documentation>显示详细曲目列表的trackList元素的id。</xs:documentation>
@@ -1816,7 +1848,6 @@
     <xs:annotation>
       <xs:documentation>我喜欢的音乐列表。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
@@ -1824,7 +1855,6 @@
     <xs:annotation>
       <xs:documentation>所有曲目列表。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
@@ -1832,7 +1862,6 @@
     <xs:annotation>
       <xs:documentation>自定义曲目列表。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
     <xs:attributeGroup ref="listattr"></xs:attributeGroup>
   </xs:complexType>
@@ -1840,14 +1869,12 @@
     <xs:annotation>
       <xs:documentation>图标大小的频谱分析。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="medialibFolderExploreType">
     <xs:annotation>
       <xs:documentation>媒体库中的文件夹浏览。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="track_list_element_id" type="xs:string">
       <xs:annotation>
         <xs:documentation>显示详细曲目列表的trackList元素的id。</xs:documentation>
@@ -1860,7 +1887,6 @@
     <xs:annotation>
       <xs:documentation>搜索框。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="list_element_id" type="xs:string">
       <xs:annotation>
         <xs:documentation>关联的listElement的id。</xs:documentation>
@@ -1872,7 +1898,6 @@
     <xs:annotation>
       <xs:documentation>用于切换stackElement的切换器。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="style" default="empty">
       <xs:annotation>
         <xs:documentation>切换器的样式。</xs:documentation>
@@ -1923,7 +1948,6 @@
     <xs:annotation>
       <xs:documentation>一个静态图标。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="icon" type="icon_type">
       <xs:annotation>
         <xs:documentation>图标类型。</xs:documentation>
@@ -1950,17 +1974,31 @@
     <xs:annotation>
       <xs:documentation>歌曲分级（5个五角星）。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="checkBoxType">
     <xs:annotation>
       <xs:documentation>复选框。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="text" type="xs:string">
       <xs:annotation>
         <xs:documentation>显示的文本。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="radioButtonType">
+    <xs:annotation>
+      <xs:documentation>单选框。</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="text" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>显示的文本。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="group" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>单选按钮所在组，每组只会有一个单选按钮处于选中状态。</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
@@ -1969,14 +2007,12 @@
     <xs:annotation>
       <xs:documentation>开关按钮。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
   <xs:complexType name="toggleSettingGroupType">
     <xs:annotation>
       <xs:documentation>带开关按钮的选项设置组。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
     <xs:attribute name="icon" type="icon_type">
       <xs:annotation>
         <xs:documentation>左侧的图标。</xs:documentation>
@@ -2005,7 +2041,65 @@
     <xs:annotation>
       <xs:documentation>通用列表控件。</xs:documentation>
     </xs:annotation>
-    <xs:group ref="elements"></xs:group>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="comboBoxType">
+    <xs:annotation>
+      <xs:documentation>下拉列表控件。</xs:documentation>
+    </xs:annotation>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="sliderType">
+    <xs:annotation>
+      <xs:documentation>滑动条控件。</xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="orientation" default="horizontal">
+      <xs:annotation>
+        <xs:documentation>滑动条的方向。</xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="horizontal">
+            <xs:annotation>
+              <xs:documentation>水平</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+          <xs:enumeration value="vertical">
+            <xs:annotation>
+              <xs:documentation>垂直</xs:documentation>
+            </xs:annotation>
+          </xs:enumeration>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="min_value" type="xs:int" default="0">
+      <xs:annotation>
+        <xs:documentation>滑动条的最小值。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="max_value" type="xs:int" default="0">
+      <xs:annotation>
+        <xs:documentation>滑动条的最大值。</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="editControlType">
+    <xs:annotation>
+      <xs:documentation>文本编辑控件。</xs:documentation>
+    </xs:annotation>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="sliderProgressBarType">
+    <xs:annotation>
+      <xs:documentation>滑动条样式的进度条。</xs:documentation>
+    </xs:annotation>
+    <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
+  </xs:complexType>
+  <xs:complexType name="systemControlType">
+    <xs:annotation>
+      <xs:documentation>系统原生控件的占位符。</xs:documentation>
+    </xs:annotation>
     <xs:attributeGroup ref="sharedattr"></xs:attributeGroup>
   </xs:complexType>
 </xs:schema>

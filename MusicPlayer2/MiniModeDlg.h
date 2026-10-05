@@ -46,8 +46,8 @@ public:
 
 protected:
 
-    int m_position_x;
-    int m_position_y;
+    int m_position_x{};
+    int m_position_y{};
 
     int m_ui_width{};
     int m_ui_height{};
@@ -61,7 +61,7 @@ protected:
     std::vector<std::shared_ptr<CPlayerUIBase>> m_ui_list;      //保存每个界面类的指针
     int m_ui_index{};
 
-    CDC* m_pDC;
+    CDC* m_pDC{};
 
     CPlayListCtrl m_playlist_ctrl{ CPlayer::GetInstance().GetPlayList() };
 
@@ -69,6 +69,8 @@ protected:
     bool m_always_on_top{ true };
     bool m_draw_reset{ false };
     bool m_use_ui_playlist{ true };
+
+    UIData m_ui_data;
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
