@@ -58,7 +58,7 @@ You have the following ways to open and play a song:
 
 **[Click here](https://github.com/zhongyang219/MusicPlayer2/wiki) to view the documentation (Only Chinese Available).**
 
-# Screen shoots
+# Screenshots
 
 The player interface supports switching between multiple layouts, as well as dark and light modes.
 
