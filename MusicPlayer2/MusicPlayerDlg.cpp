@@ -785,7 +785,7 @@ void CMusicPlayerDlg::LoadConfig()
     CCommon::SetNumRange(theApp.m_media_lib_setting_data.playlist_item_height, MIN_PLAYLIST_ITEM_HEIGHT, MAX_PLAYLIST_ITEM_HEIGHT);
     theApp.m_media_lib_setting_data.merge_song_different_versions = ini.GetBool(L"media_lib", L"merge_song_different_versions", false);
     theApp.m_media_lib_setting_data.recent_played_range = static_cast<RecentPlayedRange>(ini.GetInt(L"media_lib", L"recent_played_range", 0));
-    theApp.m_media_lib_setting_data.display_item = ini.GetInt(L"media_lib", L"display_item", (MLDI_ARTIST | MLDI_ALBUM | MLDI_YEAR | MLDI_GENRE | MLDI_ALL | MLDI_RECENT | MLDI_FOLDER_EXPLORE));
+    theApp.m_media_lib_setting_data.display_item = ini.GetInt(L"media_lib", L"display_item", (MLDI_ARTIST | MLDI_ALBUM | MLDI_YEAR | MLDI_GENRE | MLDI_ALL | MLDI_RECENT | MLDI_MOST_PLAYED | MLDI_FREQUENTLY_PLAYED | MLDI_FOLDER_EXPLORE));
     theApp.m_media_lib_setting_data.write_id3_v2_3 = ini.GetBool(L"media_lib", L"write_id3_v2_3", true);
     theApp.m_media_lib_setting_data.enable_lastfm = ini.GetBool(L"media_lib", L"enable_lastfm", false);
     theApp.m_media_lib_setting_data.lastfm_least_perdur = ini.GetInt(L"media_lib", L"lastfm_least_perdur", 50);
@@ -4762,6 +4762,7 @@ afx_msg LRESULT CMusicPlayerDlg::OnMusicStreamOpened(WPARAM wParam, LPARAM lPara
     auto cur_time_int = cur_time.GetTime();
     SongInfo song_info{ CSongDataManager::GetInstance().GetSongInfo3(CPlayer::GetInstance().GetCurrentSongInfo()) };
     song_info.last_played_time = cur_time_int;
+    song_info.play_count++;
     CSongDataManager::GetInstance().AddItem(song_info);
 
     return 0;

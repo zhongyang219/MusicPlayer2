@@ -34,6 +34,8 @@ public:
     CMediaClassifyDlg* m_rating_dlg{};
     CAllMediaDlg* m_all_media_dlg{};
     CAllMediaDlg* m_recent_media_dlg{};
+    CAllMediaDlg* m_most_played_dlg{};
+    CAllMediaDlg* m_frequently_played_dlg{};
     CFolderExploreDlg* m_folder_explore_dlg{};
 
     void SetCurTab(int tab);

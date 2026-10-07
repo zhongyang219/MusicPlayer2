@@ -28,6 +28,8 @@ enum SortMode
     SM_D_TRACK,             // 音轨号 降序
     SM_U_LISTEN,            // 累计播放时间 升序
     SM_D_LISTEN,            // 累计播放时间 降序
+    SM_U_PLAY_COUNT,        // 播放次数 升序
+    SM_D_PLAY_COUNT,        // 播放次数 降序
     SM_U_TIME,              // 修改日期 升序
     SM_D_TIME,              // 修改日期 降序
     SM_U_GENRE,             // 流派 升序
@@ -60,6 +62,7 @@ struct SongInfo
     unsigned __int64 modified_time{};   // 修改时间
     int track{};                        // 音轨序号
     int listen_time{};                  // 歌曲累计听的时间（单位为秒）<仅在媒体库内使用>
+    int play_count{};                   // 播放次数<仅在媒体库内使用>
     int freq{};                         // 采样频率
     CPlayTime start_pos{};                   // 音频的起始位置
     CPlayTime end_pos{};                     // 音频的结束位置

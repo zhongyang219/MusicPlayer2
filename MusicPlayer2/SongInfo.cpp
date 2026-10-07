@@ -347,6 +347,16 @@ static bool ByListenTimeDecending(const SongInfo& a, const SongInfo& b)
     return a.listen_time > b.listen_time;
 }
 
+static bool ByPlayCount(const SongInfo& a, const SongInfo& b)
+{
+    return a.play_count < b.play_count;
+}
+
+static bool ByPlayCountDecending(const SongInfo& a, const SongInfo& b)
+{
+    return a.play_count > b.play_count;
+}
+
 static bool ByModifiedTime(const SongInfo& a, const SongInfo& b)
 {
     return a.modified_time < b.modified_time;
@@ -405,6 +415,8 @@ std::function<bool(const SongInfo& a, const SongInfo& b)> SongInfo::GetSortFunc(
     case SM_D_TRACK: return ByTrackDecending;
     case SM_U_LISTEN: return ByListenTime;
     case SM_D_LISTEN: return ByListenTimeDecending;
+    case SM_U_PLAY_COUNT: return ByPlayCount;
+    case SM_D_PLAY_COUNT: return ByPlayCountDecending;
     case SM_U_TIME: return ByModifiedTime;
     case SM_D_TIME: return ByModifiedTimeDecending;
     case SM_U_GENRE: return ByGenre;
@@ -436,6 +448,8 @@ wstring SongInfo::GetSortModeDisplayName(SortMode sort_mode)
     case SM_D_TRACK: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TRACK"); break;
     case SM_U_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_LISTEN"); break;
     case SM_D_LISTEN: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_LISTEN"); break;
+    case SM_U_PLAY_COUNT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_PLAY_COUNT"); break;
+    case SM_D_PLAY_COUNT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_PLAY_COUNT"); break;
     case SM_U_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_U_TIME"); break;
     case SM_D_TIME: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_D_TIME"); break;
     case SM_UNSORT: str_sort_mode = theApp.m_str_table.LoadText(L"TXT_SM_UNSORT"); break;
