@@ -4,7 +4,7 @@
 #include "AudioCommon.h"
 #include "ColorConvert.h"
 #include "ListCtrlEx.h"
-#include "Common.h"
+#include "CommonData.h"
 
 // CPlayListCtrl
 
@@ -16,9 +16,16 @@ public:
     CPlayListCtrl(const vector<SongInfo>& all_song_info);
     virtual ~CPlayListCtrl();
 
+    void SetColumnLayout(const PlaylistColumnLayout& layout);
+    void UpdateCachedColumnLayout(const PlaylistColumnLayout& layout);
+    void GetColumnLayout(PlaylistColumnLayout& layout) const;
+    bool ShowHeaderContextMenu(CWnd* pWnd, PlaylistColumnLayout& layout) const;
+    bool IsHeaderCtrl(HWND hwnd) const;
     void ShowPlaylist(DisplayFormat display_format, bool search_result = false);		//显示播放列表
     void QuickSearch(const wstring& key_words);		//根据关键字执行快速查找，查找文件名、歌曲标题、艺术家和唱片集，将找到的曲目的序号保存在m_search_result中
-    void GetItemSelectedSearched(vector<int>& item_selected);		//获取处于搜索状态下播放列表选中的项目
+    void GetItemSelectedSearched(vector<int>& item_selected) const;		//获取处于搜索状态下播放列表选中的项目
+    void GetItemSelectedSongIndexes(vector<int>& item_selected) const;
+    int GetSongIndexByItem(int item) const;
     virtual void ShowPopupMenu(CMenu* pMenu, int item_index, CWnd* pWnd) override;
 
     void AdjustColumnWidth();
@@ -35,9 +42,20 @@ protected:
     vector<int> m_search_result;					//储存快速搜索结果的歌曲序号
     bool m_searched{ false };
     ListData m_list_data;
+    vector<int> m_item_song_indexes;
+    vector<PlaylistColumnId> m_display_columns;
+    map<PlaylistColumnId, int> m_column_widths;
+    DisplayFormat m_display_format{};
 
 protected:
-    void CalculateColumeWidth(vector<int>& width);
+    void CalculateColumeWidth(vector<int>& width, bool adjust_flexible_column);
+    void RebuildColumns(bool adjust_flexible_column = false);
+    vector<PlaylistColumnId> GetOrderedDisplayColumns() const;
+    int GetDisplayColumnIndex(PlaylistColumnId column_id) const;
+    int GetColumnBaseWidth(PlaylistColumnId column_id) const;
+    wstring GetColumnTitle(PlaylistColumnId column_id) const;
+    wstring GetColumnText(PlaylistColumnId column_id, const SongInfo& song, int song_index, DisplayFormat display_format) const;
+    int GetItemBySongIndex(int song_index) const;
 
     afx_msg void OnMouseMove(UINT nFlags, CPoint point);
     virtual BOOL PreTranslateMessage(MSG* pMsg);
