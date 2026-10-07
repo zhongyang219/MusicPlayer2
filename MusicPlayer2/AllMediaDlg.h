@@ -14,7 +14,9 @@ public:
     enum DialogType
     {
         DT_ALL_MEDIA,           //所有曲目
-        DT_RECENT_MEDIA         //最近播放的曲目
+        DT_RECENT_MEDIA,        //最近播放的曲目
+        DT_MOST_PLAYED,         //播放次数最多的曲目
+        DT_FREQUENTLY_PLAYED,   //最近常听的曲目
     };
 
 public:
