@@ -93,6 +93,8 @@ using _tstring = std::string;
 #define TIMER_DESKTOP_LYRIC 1238
 #define TIMER_DESKTOP_LYRIC_2 1239
 #define TIMER_CMD_OPEN_FILES_DELAY 1240
+#define TIMER_DESKTOP_LYRIC_CHECK_TASKBAR 1241		//桌面歌词检测是否与任务栏重叠的定时器ID（2秒周期）
+#define TIMER_DESKTOP_LYRIC_ABOVE_TASKBAR 1242		//桌面歌词检测是否被任务栏覆盖的定时器ID（100毫秒周期）
 
 #define UI_INTERVAL_DEFAULT 50   //定义界面刷新时间的默认时间间隔（毫秒）
 #define MIN_UI_INTERVAL 2      //界面刷新时间间隔最小值

@@ -90,6 +90,10 @@ protected:
 
 private:
     void SetWindowStyle();
+    //检测歌词窗口是否与任务栏重叠，重叠时返回true，并通过hTaskbar返回重叠的任务栏窗口句柄
+    bool IsOverlapWithTaskbar(HWND& hTaskbar) const;
+    //检测歌词窗口是否被任务栏覆盖（任务栏窗口在Z序中位于歌词窗口的上方）
+    bool IsCoveredByTaskbar(HWND hTaskbar) const;
 
 private:
 	//CLyricsWindow m_lyric_window;

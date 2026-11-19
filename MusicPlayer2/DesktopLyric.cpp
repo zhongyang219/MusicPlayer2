@@ -44,6 +44,8 @@ void CDesktopLyric::Create()
 
     //初始化定时器
     SetTimer(TIMER_DESKTOP_LYRIC, 200, NULL);
+    //每2秒检测一次歌词窗口是否与任务栏重叠
+    SetTimer(TIMER_DESKTOP_LYRIC_CHECK_TASKBAR, 2000, NULL);
 
 }
 
@@ -785,8 +787,72 @@ void CDesktopLyric::OnTimer(UINT_PTR nIDEvent)
         KillTimer(TIMER_DESKTOP_LYRIC_2);
         SetWindowStyle();
     }
+    else if (nIDEvent == TIMER_DESKTOP_LYRIC_CHECK_TASKBAR)      //每2秒检测歌词窗口是否与任务栏重叠
+    {
+        HWND hTaskbar{};
+        if (IsOverlapWithTaskbar(hTaskbar))
+            SetTimer(TIMER_DESKTOP_LYRIC_ABOVE_TASKBAR, 100, NULL);   //与任务栏重叠时，启动100毫秒定时器检测是否被任务栏覆盖
+        else
+            KillTimer(TIMER_DESKTOP_LYRIC_ABOVE_TASKBAR);
+    }
+    else if (nIDEvent == TIMER_DESKTOP_LYRIC_ABOVE_TASKBAR)      //每100毫秒检测歌词窗口是否被任务栏覆盖，被覆盖时重新置顶歌词窗口
+    {
+        HWND hTaskbar{};
+        if (!IsOverlapWithTaskbar(hTaskbar))      //歌词窗口不再与任务栏重叠时，停止检测
+        {
+            KillTimer(TIMER_DESKTOP_LYRIC_ABOVE_TASKBAR);
+        }
+        else if (IsCoveredByTaskbar(hTaskbar))
+        {
+            //将歌词窗口重新置于任务栏之上（不激活窗口、不改变位置和大小）
+            SetWindowPos(&wndTop, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+    }
 
     CLyricsWindow::OnTimer(nIDEvent);
+}
+
+//检测歌词窗口是否与任务栏重叠，重叠时返回true，并通过hTaskbar返回重叠的任务栏窗口句柄
+bool CDesktopLyric::IsOverlapWithTaskbar(HWND& hTaskbar) const
+{
+    hTaskbar = nullptr;
+    if (GetSafeHwnd() == nullptr)
+        return false;
+    CRect rcLyric;
+    if (!GetWindowRect(rcLyric))
+        return false;
+
+    //主任务栏和多显示器下的副任务栏
+    const HWND taskbars[] = { ::FindWindow(_T("Shell_TrayWnd"), nullptr), ::FindWindow(_T("Shell_SecondaryTrayWnd"), nullptr) };
+    for (HWND hwnd : taskbars)
+    {
+        if (hwnd == nullptr)
+            continue;
+        CRect rcTaskbar;
+        CRect rcIntersection;
+        if (::GetWindowRect(hwnd, &rcTaskbar) && rcIntersection.IntersectRect(&rcLyric, &rcTaskbar))
+        {
+            hTaskbar = hwnd;
+            return true;
+        }
+    }
+    return false;
+}
+
+//检测歌词窗口是否被任务栏覆盖（任务栏窗口在Z序中位于歌词窗口的上方时，认为歌词窗口被覆盖）
+bool CDesktopLyric::IsCoveredByTaskbar(HWND hTaskbar) const
+{
+    //从歌词窗口开始沿Z序向上遍历，若先遇到任务栏窗口，则说明歌词窗口被任务栏覆盖
+    HWND hWnd = GetSafeHwnd();
+    for (int i = 0; i < 100; i++)
+    {
+        hWnd = ::GetWindow(hWnd, GW_HWNDPREV);
+        if (hWnd == nullptr)        //已遍历到Z序顶端，歌词窗口没有被覆盖
+            return false;
+        if (hWnd == hTaskbar)
+            return true;
+    }
+    return false;
 }
 
 
