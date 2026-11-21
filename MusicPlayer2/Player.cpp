@@ -146,6 +146,11 @@ void CPlayer::CreateWithPlaylist(const wstring& playlist_path)
 
 void CPlayer::IniPlayList(bool play, MediaLibRefreshMode refresh_mode, SongKey song_key)
 {
+    if (!m_thread_info.recover_folder)
+    {
+        m_folder_recovery_pending = false;
+        m_folder_recovery_failed_files.clear();
+    }
     m_no_use = SongInfo{};  // 安全起见，防止意外写入被应用
     m_playlist.clear();
     //播放列表模式下
@@ -305,6 +310,14 @@ UINT CPlayer::IniPlaylistThreadFunc(LPVOID lpParam)
 
 void CPlayer::IniPlaylistComplate()
 {
+    // 元数据和多版本合并完成后再过滤，防止cue解析重新加入已失败的文件。
+    if (m_thread_info.recover_folder)
+    {
+        m_playlist.erase(std::remove_if(m_playlist.begin(), m_playlist.end(), [this](const SongInfo& song)
+            { return m_folder_recovery_failed_files.count(song.file_path) != 0; }), m_playlist.end());
+        if (m_playlist.empty())
+            m_playlist.push_back(SongInfo{});
+    }
     //统计列表总时长
     m_total_time = 0;
     for (const auto& song : m_playlist)
@@ -482,13 +495,24 @@ void CPlayer::MusicControl(Command command, int volume_step)
     if (m_pCore == nullptr)
         return;
 
+    const bool request_play = command == Command::PLAY || (command == Command::PLAY_PAUSE && !IsPlaying());
+    if (command == Command::OPEN)
+        m_file_io_error = false;
+    if (command == Command::CLOSE || command == Command::STOP || command == Command::PAUSE
+        || (command == Command::PLAY_PAUSE && IsPlaying()))
+        m_folder_recovery_pending = false;
+
     // VOLUME_UP和VOLUME_DOWN可在无法播放时使用
-    // stop和close也可以在m_index失效无法播放时使用（RemoveSong(s)）
-    if (command != Command::VOLUME_ADJ && command != Command::STOP && command != Command::CLOSE)
+    // 停止、关闭和暂停不依赖源文件仍然存在。
+    if (command != Command::VOLUME_ADJ && command != Command::STOP && command != Command::CLOSE
+        && command != Command::PAUSE && !(command == Command::PLAY_PAUSE && IsPlaying()))
     {
         if (!CCommon::IsURL(GetCurrentFilePath()) && !CCommon::FileExist(GetCurrentFilePath()))
         {
             m_error_state = ES_FILE_NOT_EXIST;
+            m_file_io_error = !GetCurrentFilePath().empty();
+            if ((request_play || IsPlaying()) && m_file_io_error && IsFolderMode())
+                m_folder_recovery_pending = true;
             return;
         }
     }
@@ -505,7 +529,7 @@ void CPlayer::MusicControl(Command command, int volume_step)
         SongInfo& cur_song = GetCurrentSongInfo2(); // 获取m_playlist[m_index]的引用，m_index无效时取得m_no_use
         m_is_osu = COSUPlayerHelper::IsOsuFile(cur_song.file_path);
         m_pCore->Open(cur_song.file_path.c_str());
-        GetPlayerCoreError(L"Open");
+        GetPlayerCoreError(L"Open", true);
         if (m_pCore->GetCoreType() == PT_BASS && GetBassHandle() == 0)
             m_error_state = ES_FILE_CANNOT_BE_OPEN;
         m_file_opend = true;
@@ -556,7 +580,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
         ConnotPlayWarning();
         m_pCore->Play();
         m_playing = PS_PLAYING;
-        GetPlayerCoreError(L"Play");
+        GetPlayerCoreError(L"Play", true);
+        if (m_file_io_error && IsFolderMode())
+            m_folder_recovery_pending = true;
         m_controls.UpdateControls(PlaybackStatus::Playing);
         MediaTransControlsLoadThumbnailDefaultImage();
         break;
@@ -617,7 +643,9 @@ void CPlayer::MusicControl(Command command, int volume_step)
             ConnotPlayWarning();
             m_pCore->Play();
             m_playing = PS_PLAYING;
-            GetPlayerCoreError(L"Play");
+            GetPlayerCoreError(L"Play", true);
+            if (m_file_io_error && IsFolderMode())
+                m_folder_recovery_pending = true;
             m_controls.UpdateControls(PlaybackStatus::Playing);
         }
         MediaTransControlsLoadThumbnailDefaultImage();
@@ -1292,6 +1320,49 @@ bool CPlayer::ReloadPlaylist(MediaLibRefreshMode refresh_mode)
     return true;
 }
 
+bool CPlayer::RecoverFolderPlayback()
+{
+    if (m_loading || !IsFolderMode())
+        return false;
+    if (!m_folder_recovery_pending)
+    {
+        if (IsPlaying() && !IsError())
+            m_folder_recovery_failed_files.clear();
+        return false;
+    }
+
+    // 每轮最多重新扫描三次；整个目录不可读时也不会无限刷新。
+    if (m_folder_recovery_failed_files.size() >= 3 || GetCurrentFilePath().empty())
+    {
+        m_folder_recovery_pending = false;
+        return false;
+    }
+    // 此方法取得锁并保持至初始化完成，不能从持有播放状态锁的代码调用。
+    if (!BeforeIniPlayList())
+        return false;
+    const wstring failed_file = GetCurrentFilePath();
+    SongKey next_song{};
+    for (int offset = 1; offset < GetSongNum(); ++offset)
+    {
+        const auto& song = m_playlist[(m_index + offset) % m_playlist.size()];
+        if (song.file_path != failed_file && !m_folder_recovery_failed_files.count(song.file_path))
+        {
+            next_song = song;
+            break;
+        }
+    }
+    m_folder_recovery_pending = false;
+    m_folder_recovery_failed_files.insert(failed_file);
+    m_current_song_tmp = SongInfo{};
+    m_current_song_position_tmp = 0;
+    m_current_song_playing_tmp = false;
+    m_current_position.fromInt(0);
+    ResetABRepeat();
+    m_thread_info.recover_folder = true;
+    IniPlayList(true, MR_MIN_REQUIRED, next_song);
+    return true;
+}
+
 bool CPlayer::SetContainSubFolder()
 {
     if (m_playlist_mode == PM_FOLDER)
@@ -1435,11 +1506,32 @@ void CPlayer::SetOrignalPitch()
     m_pCore->SetPitch(m_pitch);
 }
 
-bool CPlayer::GetPlayerCoreError(const wchar_t* function_name)
+bool CPlayer::GetPlayerCoreError(const wchar_t* function_name, bool allow_when_loading)
 {
-    if (m_loading || !m_player_core_inited || m_pCore == nullptr)
+    if ((m_loading && !allow_when_loading) || !m_player_core_inited || m_pCore == nullptr)
         return false;
     int error_code_tmp = m_pCore->GetErrorCode();
+    const auto core_type = m_pCore->GetCoreType();
+    bool file_io_error = (core_type == PT_BASS && error_code_tmp == BASS_ERROR_FILEOPEN)
+        || (core_type == PT_MCI && (error_code_tmp == MCIERR_FILE_NOT_FOUND || error_code_tmp == MCIERR_FILE_READ));
+    // 也覆盖其他内核的文件丢失、访问拒绝和共享冲突，不把解码器/声卡错误当成目录变化。
+    if (error_code_tmp != 0 && !m_file_io_error && !GetCurrentFilePath().empty() && !CCommon::IsURL(GetCurrentFilePath()))
+    {
+        HANDLE file = ::CreateFileW(GetCurrentFilePath().c_str(), GENERIC_READ,
+            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+        if (file == INVALID_HANDLE_VALUE)
+            file_io_error = true;
+        else
+            ::CloseHandle(file);
+    }
+    if (file_io_error)
+    {
+        m_file_io_error = true;
+        if (m_error_state == ES_NO_ERROR)
+            m_error_state = ES_FILE_CANNOT_BE_OPEN;
+        if (IsPlaying() && IsFolderMode())
+            m_folder_recovery_pending = true;
+    }
     if (error_code_tmp && error_code_tmp != m_error_code)
     {
         wstring log_info = m_pCore->GetErrorInfo(error_code_tmp);
@@ -1456,7 +1548,7 @@ bool CPlayer::IsError() const
     if (m_loading || !m_player_core_inited)     //如果播放列表正在加载，则不检测错误
         return false;
     else
-        return (m_error_state != ES_NO_ERROR || m_error_code != 0 || m_pCore == nullptr || (m_file_opend && m_pCore->GetCoreType() == PT_BASS && GetBassHandle() == 0));
+        return (m_file_io_error || m_error_state != ES_NO_ERROR || m_error_code != 0 || m_pCore == nullptr || (m_file_opend && m_pCore->GetCoreType() == PT_BASS && GetBassHandle() == 0));
 }
 
 std::wstring CPlayer::GetErrorInfo()

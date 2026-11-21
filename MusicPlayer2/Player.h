@@ -10,6 +10,7 @@
 #include "SpectralDataHelper.h"
 #include "MediaTransControls.h"
 #include "ListItem.h"
+#include <set>
 
 #define WM_PLAYLIST_INI_START (WM_USER+104)         // 播放列表开始加载时的消息
 #define WM_PLAYLIST_INI_COMPLATE (WM_USER+105)      // 播放列表加载完成消息
@@ -51,6 +52,7 @@ public:
     {
         MediaLibRefreshMode refresh_mode{};
         bool play{};                            // 加载完播放列表后是否立即播放
+        bool recover_folder{};                  // 文件读取失败后重新扫描文件夹
         bool playlist_mode{};                   // 是否为播放列表模式
         SongKey play_song{};                    // 播放索引，播放列表模式下需要在cue解析时维持其指向
         int process_percent{};
@@ -108,6 +110,9 @@ private:
 
     int m_error_code{ 0 };              //储存错误代码
     ErrorState m_error_state{};
+    bool m_file_io_error{};                // 保留文件错误，避免被后续音量等操作覆盖
+    bool m_folder_recovery_pending{};
+    std::set<wstring> m_folder_recovery_failed_files; // 本轮恢复中不再尝试的文件
 
     //正在播放标志（0：已停止，1：已暂停，2：正在播放）。
     //注意此标志和IPlayerCore::GetPlayingState()返回值略有不同，比如在按下暂停键时，声音不会立刻停止，而是会有一个淡入淡出的效果，
@@ -341,6 +346,8 @@ public:
 
     // 重新载入播放列表（没能取得播放状态锁返回false）
     bool ReloadPlaylist(MediaLibRefreshMode refresh_mode);
+    bool RecoverFolderPlayback();          // 由主窗口定时器在播放状态锁外调用
+    bool IsFolderRecoveryPending() const { return m_folder_recovery_pending; }
     // 翻转是否包含子文件夹设置，如果当前为文件夹模式则直接重新加载播放列表（没能取得播放状态锁返回false）
     bool SetContainSubFolder();
 
@@ -367,7 +374,7 @@ public:
 
 private:
     // 获取CPlayer操作播放内核时产生的错误写入错误日志
-    bool GetPlayerCoreError(const wchar_t* function_name);
+    bool GetPlayerCoreError(const wchar_t* function_name, bool allow_when_loading = false);
 
 public:
     //有错误时返回ture，否则返回false

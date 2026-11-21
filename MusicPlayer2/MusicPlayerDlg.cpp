@@ -2626,7 +2626,9 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
         m_process_msg_helper.PositionChanged();
 
         // 这里在更改播放状态，需要先取得锁，没有成功取得锁的话下次再试
-        if (CPlayer::GetInstance().GetPlayStatusMutex().try_lock())
+        // 文件丢失时OPEN会提前返回，不能依赖IsFileOpened或“出错时停止”设置恢复。
+        // 恢复流程自行取得锁，交由异步列表初始化完成后释放。
+        if (!CPlayer::GetInstance().RecoverFolderPlayback() && CPlayer::GetInstance().GetPlayStatusMutex().try_lock())
         {
             //if (CPlayer::GetInstance().SongIsOver() && (!theApp.m_lyric_setting_data.stop_when_error || !CPlayer::GetInstance().IsError()))   //当前曲目播放完毕且没有出现错误时才播放下一曲
             if ((CPlayer::GetInstance().SongIsOver() || (!theApp.m_play_setting_data.stop_when_error && (CPlayer::GetInstance().IsError() || CPlayer::GetInstance().GetSongLength() <= 0)))
@@ -2649,7 +2651,8 @@ void CMusicPlayerDlg::OnTimer(UINT_PTR nIDEvent)
                 else
                     CPlayer::GetInstance().PlayTrack(NEXT, true);
             }
-            if (CPlayer::GetInstance().IsPlaying() && (theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError()))
+            if (CPlayer::GetInstance().IsPlaying() && !CPlayer::GetInstance().IsFolderRecoveryPending()
+                && (theApp.m_play_setting_data.stop_when_error && CPlayer::GetInstance().IsError()))
             {
                 CPlayer::GetInstance().MusicControl(Command::PAUSE);
                 UpdatePlayPauseButton();

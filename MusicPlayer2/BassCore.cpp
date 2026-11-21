@@ -310,6 +310,9 @@ void CBassCore::Open(const wchar_t * file_path)
         m_musicStream = BASS_StreamCreateURL(file_path, 0, flags, NULL, NULL);
     else
         m_musicStream = BASS_StreamCreateFile(FALSE, /*(GetCurrentFilePath()).c_str()*/file_path, 0, 0, flags);
+    // 保留打开失败的原始错误码，后续对空句柄的查询会将文件错误覆盖为HANDLE错误。
+    if (m_musicStream == 0)
+        return;
     BASS_ChannelGetInfo(m_musicStream, &m_channel_info);
     float bitrate{};
     BASS_ChannelGetAttribute(m_musicStream, BASS_ATTRIB_BITRATE, &bitrate);
