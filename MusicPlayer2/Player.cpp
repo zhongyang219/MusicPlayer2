@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Player.h"
+#include <mmsystem.h>
 #include "MusicPlayer2.h"
 #include "COSUPlayerHelper.h"
 #include "Playlist.h"
